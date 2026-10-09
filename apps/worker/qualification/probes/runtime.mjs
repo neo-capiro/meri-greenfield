@@ -193,39 +193,83 @@ export function checkReadOnlyRoot({ root = '/', probePath = '/opt/meri-worker/.r
   return { name: 'read-only-root', required: true, status: ok ? 'pass' : 'fail', detail: JSON.stringify(detail), evidencePaths };
 }
 
-/** Bounded DNS-denial + direct reachability probe. No credentials, no mutation. */
-export async function checkNetworkDenial({ names = ['example.com', 'api.anthropic.com'], ip = '1.1.1.1', port = 443, timeoutMs = NET_TIMEOUT_MS } = {}) {
+/** Expected DNS denial classes for a blocked name (not any arbitrary failure). */
+export const DENIAL_CODES = ['ENOTFOUND', 'EAI_NONAME', 'ENODATA'];
+
+/** True when an IPv4 address is inside the qualification VPC range 10.80.0.0/16. */
+export function addressIn10_80(address) {
+  return typeof address === 'string' && /^10\.80\./.test(address);
+}
+
+/**
+ * Pure classification of network-denial evidence. Negative names must be denied
+ * with an expected denial class (arbitrary resolver failures are NOT success);
+ * the positive control must resolve inside 10.80.0.0/16 and its connect must
+ * succeed. Negative-name resolution, missing/incorrect positive resolution or a
+ * failed connect all fail visibly.
+ */
+export function classifyNetworkResults({ negatives = [], positive = {}, connect } = {}) {
+  const reasons = [];
   const detail = {};
-  let ok = true;
-  for (const name of names) {
-    try {
-      const res = await lookup(name);
-      ok = false;
-      detail[`dns:${name}`] = `UNEXPECTEDLY RESOLVED ${res.address}`;
-    } catch (error) {
-      detail[`dns:${name}`] = `denied (${error && error.code ? error.code : 'error'})`;
+  for (const n of negatives) {
+    if (n.resolved) {
+      detail[`dns:${n.name}`] = `UNEXPECTEDLY RESOLVED ${n.address}`;
+      reasons.push(`${n.name} unexpectedly resolved`);
+    } else {
+      detail[`dns:${n.name}`] = `denied (${n.errorCode})`;
+      if (!DENIAL_CODES.includes(n.errorCode)) reasons.push(`${n.name} denied with unexpected error class ${n.errorCode}`);
     }
   }
-  const reachable = await new Promise((resolve) => {
-    const socket = connect({ host: ip, port });
-    const done = (result) => {
-      socket.destroy();
-      resolve(result);
-    };
-    socket.setTimeout(timeoutMs);
-    socket.once('connect', () => done('CONNECTED'));
-    socket.once('timeout', () => done('timeout'));
-    socket.once('error', (err) => done(`error:${err.code || 'error'}`));
-  });
-  detail[`tcp:${ip}:${port}`] = reachable;
-  if (reachable === 'CONNECTED') ok = false;
+  if (!positive.resolved) {
+    detail[`positive:${positive.name}`] = `unresolved (${positive.errorCode})`;
+    reasons.push(`positive control ${positive.name} did not resolve`);
+  } else {
+    detail[`positive:${positive.name}`] = `resolved ${positive.address}`;
+    if (!addressIn10_80(positive.address)) reasons.push(`positive control address ${positive.address} not in 10.80.0.0/16`);
+  }
+  detail.connect = connect;
+  if (connect !== 'CONNECTED') reasons.push(`positive control connect ${connect}`);
+  return { ok: reasons.length === 0, reasons, detail };
+}
+
+/** Bounded DNS-denial + positive-control probe. No credentials, no mutation. */
+export async function checkNetworkDenial({ denied = ['example.com', 'api.anthropic.com'], positiveName = 'logs.us-east-1.amazonaws.com', port = 443, timeoutMs = NET_TIMEOUT_MS } = {}) {
+  const negatives = [];
+  for (const name of denied) {
+    try {
+      const res = await lookup(name);
+      negatives.push({ name, resolved: true, address: res.address });
+    } catch (error) {
+      negatives.push({ name, resolved: false, errorCode: error && error.code ? error.code : 'UNKNOWN' });
+    }
+  }
+  let positive;
+  try {
+    const res = await lookup(positiveName);
+    positive = { name: positiveName, resolved: true, address: res.address };
+  } catch (error) {
+    positive = { name: positiveName, resolved: false, errorCode: error && error.code ? error.code : 'UNKNOWN' };
+  }
+  let connectResult = 'skipped';
+  if (positive.resolved) {
+    connectResult = await new Promise((resolve) => {
+      const socket = connect({ host: positive.address, port });
+      const done = (result) => { socket.destroy(); resolve(result); };
+      socket.setTimeout(timeoutMs);
+      socket.once('connect', () => done('CONNECTED'));
+      socket.once('timeout', () => done('timeout'));
+      socket.once('error', (err) => done(`error:${err.code || 'error'}`));
+    });
+  }
+  const cls = classifyNetworkResults({ negatives, positive, connect: connectResult });
   return {
     name: 'network-denial',
     required: true,
-    status: ok ? 'pass' : 'fail',
-    detail: JSON.stringify(detail),
+    status: cls.ok ? 'pass' : 'fail',
+    detail: JSON.stringify(cls.detail),
+    error: cls.ok ? undefined : cls.reasons.join('; '),
     evidencePaths: [],
-    note: 'DNS-denial and bounded reachability only; these probes do not establish complete network qualification',
+    note: 'DNS-denial + positive control only; does not establish complete network qualification',
   };
 }
 

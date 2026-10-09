@@ -124,14 +124,17 @@ ENV PATH="/opt/meri-venv/bin:${PATH}"
 COPY sdk-options.mjs ./
 COPY probes/ ./probes/
 
-# Matched Chromium (revision 1247 / version 155.0.8059.12) via the adopted
-# Playwright CLI. The browser tree STAYS root-owned (never chowned to 10001) so
-# the chrome-sandbox setuid helper keeps its intended owner/mode.
+# Matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12) via the
+# adopted Playwright CLI. Debian12 maps to the CFT archive
+# builds/cft/155.0.8059.12/linux64/chrome-linux64.zip -> chromium-1247/
+# chrome-linux64/{chrome,chrome_sandbox}. The CFT helper is chrome_sandbox
+# (underscore). The browser tree STAYS root-owned so the setuid helper keeps its
+# intended owner/mode.
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/meri-browsers
 RUN set -eux; \
     node node_modules/playwright/cli.js install chromium; \
     chmod -R a+rX /opt/meri-browsers; \
-    sb="$(find /opt/meri-browsers -name chrome-sandbox -print -quit)"; \
+    sb="$(find /opt/meri-browsers \( -name chrome_sandbox -o -name chrome-sandbox \) -print -quit)"; \
     test -n "$sb"; \
     chmod 4755 "$sb"
 
@@ -153,7 +156,7 @@ RUN set -eux; \
 # Final assertion: after ALL ownership operations the sandbox helper is still
 # root-owned with mode 4755 and the browser tree is root-owned.
 RUN set -eux; \
-    sb="$(find /opt/meri-browsers -name chrome-sandbox -print -quit)"; \
+    sb="$(find /opt/meri-browsers \( -name chrome_sandbox -o -name chrome-sandbox \) -print -quit)"; \
     test -n "$sb"; \
     test "$(stat -c '%U' "$sb")" = root; \
     test "$(stat -c '%a' "$sb")" = 4755; \

@@ -21,8 +21,8 @@ import {
   verifyRestore,
   InMemorySessionStore,
 } from '../sdk-options.mjs';
-import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult } from './runtime.mjs';
-import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult } from './browser.mjs';
+import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80 } from './runtime.mjs';
+import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, identifyAssociatedChromium, scanDisablingFlags } from './browser.mjs';
 import { classifySubprocess, decideNative, decideRecalc, decideRender } from './artifacts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -230,71 +230,102 @@ test('verifyRestore fails when a duplicate or UUID-less entry is missing', async
 // Exact chrome://sandbox rows and /proc Chromium process evidence
 // ---------------------------------------------------------------------------
 
-const SANDBOX_PAGE_NAMESPACE = [
-  'Sandbox Status',
-  'Namespace Sandbox: Yes',
-  'SUID Sandbox: No',
-  'Seccomp-BPF Sandbox: Yes',
-  'PID Namespace: Yes',
-].join('\n');
-const SANDBOX_PAGE_ALL_NO = ['Namespace Sandbox: No', 'SUID Sandbox: No', 'Seccomp-BPF Sandbox: No'].join('\n');
-const PROCESSES = [
-  { pid: 100, type: 'browser', argv: ['/opt/meri-browsers/chromium-1247/chrome-linux/chrome', '--headless', '--enable-features=Foo'] },
-  { pid: 101, type: 'renderer', argv: ['/opt/meri-browsers/chromium-1247/chrome-linux/chrome', '--type=renderer'] },
+const SANDBOX_ROWS_OK = [
+  ['Layer 1 Sandbox', 'Namespace'],
+  ['PID namespaces', 'Yes'],
+  ['Network namespaces', 'Yes'],
+  ['Seccomp-BPF sandbox', 'Yes'],
+  ['Seccomp-BPF sandbox supports TSYNC', 'Yes'],
+];
+const SANDBOX_OK = { text: 'Sandbox Status', rows: SANDBOX_ROWS_OK, evaluation: 'Sandbox is enabled' };
+
+const BROWSERS_ROOT = '/opt/meri-browsers';
+const RUN_PROFILE = '/workspace/qualification-browser/probe-x/profile';
+const CHROME_EXE = `${BROWSERS_ROOT}/chromium-1247/chrome-linux64/chrome`;
+const PROC_TREE = [
+  { pid: 10, ppid: 1, exe: '/usr/local/bin/node', type: 'browser', argv: ['node', 'cli.js', '--browser', 'chromium'] },
+  { pid: 100, ppid: 10, exe: CHROME_EXE, type: 'browser', argv: [CHROME_EXE, '--headless', `--user-data-dir=${RUN_PROFILE}`, '--enable-features=Foo'] },
+  { pid: 101, ppid: 100, exe: CHROME_EXE, type: 'renderer', argv: [CHROME_EXE, '--type=renderer', `--user-data-dir=${RUN_PROFILE}`] },
+  { pid: 200, ppid: 1, exe: CHROME_EXE, type: 'browser', argv: [CHROME_EXE, '--headless', '--user-data-dir=/other/profile'] },
 ];
 
-test('sandbox verdict accepts Namespace Yes + SUID No + Seccomp-BPF Yes (disabled unused alternative allowed)', () => {
-  const v = assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: PROCESSES, effectiveFlagsSource: 'proc' });
+test('process identification rejects the MCP Node launcher and unrelated profiles', () => {
+  const { browser, renderer, browsers } = identifyAssociatedChromium(PROC_TREE, { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE });
+  assert.equal(browser.pid, 100); // node pid 10 rejected by /proc exe
+  assert.equal(renderer.pid, 101); // renderer via real PPid ancestry to 100
+  assert.equal(browsers.length, 1); // /other/profile chrome not associated
+  assert.equal(identifyAssociatedChromium([PROC_TREE[0]], { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE }).browser, null); // node only
+});
+
+test('process identification requires an associated renderer and the exact run profile', () => {
+  const noRenderer = PROC_TREE.filter((p) => p.type !== 'renderer');
+  assert.equal(identifyAssociatedChromium(noRenderer, { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE }).renderer, null);
+  assert.equal(identifyAssociatedChromium(PROC_TREE, { browsersRoot: BROWSERS_ROOT, profileDir: '/nonexistent' }).browser, null);
+});
+
+test('sandbox verdict accepts Layer 1 Namespace + Seccomp-BPF Yes with an actual browser and renderer', () => {
+  const { browser, renderer } = identifyAssociatedChromium(PROC_TREE, { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE });
+  const v = assessSandboxEvidence({ sandbox: SANDBOX_OK, browser, renderer });
   assert.equal(v.ok, true, v.reasons.join('; '));
 });
 
-test('sandbox verdict rejects all-No rows and generic prose', () => {
-  assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_ALL_NO, processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'sandbox', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'yes', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'Layer 1 Sandbox: Yes', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
+test('sandbox verdict accepts Layer 1 SUID and rejects None/missing/ambiguous/No', () => {
+  const rows = (l1, s) => [['Layer 1 Sandbox', l1], ['Seccomp-BPF sandbox', s]];
+  const { browser, renderer } = identifyAssociatedChromium(PROC_TREE, { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE });
+  assert.equal(assessSandboxEvidence({ sandbox: { rows: rows('SUID', 'Yes') }, browser, renderer }).ok, true);
+  assert.equal(assessSandboxEvidence({ sandbox: { rows: rows('None', 'Yes') }, browser, renderer }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: { rows: rows('Namespace', 'No') }, browser, renderer }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: { rows: [['Seccomp-BPF sandbox', 'Yes']] }, browser, renderer }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: { rows: [['Layer 1 Sandbox', 'Namespace'], ['Seccomp-BPF sandbox', 'Maybe']] }, browser, renderer }).ok, false);
 });
 
-test('sandbox verdict rejects config-only evidence (requested config is not process evidence)', () => {
-  const v = assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: PROCESSES, effectiveFlagsSource: 'config' });
-  assert.equal(v.ok, false);
-  assert.ok(v.reasons.some((r) => /proc Chromium process evidence/.test(r)));
+test('sandbox verdict rejects missing evidence, generic prose or a missing renderer', () => {
+  const { browser } = identifyAssociatedChromium(PROC_TREE, { browsersRoot: BROWSERS_ROOT, profileDir: RUN_PROFILE });
+  assert.equal(assessSandboxEvidence({}).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: { text: 'sandbox yes' }, browser, renderer: null }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: SANDBOX_OK, browser, renderer: null }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandbox: SANDBOX_OK, browser: null, renderer: null }).ok, false);
 });
 
-test('sandbox verdict rejects absent processes and any disabling flag anywhere', () => {
-  assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: [], effectiveFlagsSource: 'proc' }).ok, false);
+test('sandbox rows: unknown labels ignored, duplicates and unexpected values ambiguous', () => {
+  assert.deepEqual(parseSandboxRows(SANDBOX_ROWS_OK).found, { layer1: 'Namespace', pidNs: 'Yes', netNs: 'Yes', seccomp: 'Yes', tsync: 'Yes' });
+  assert.deepEqual(parseSandboxRows(SANDBOX_ROWS_OK).ambiguous, []);
+  assert.deepEqual(parseSandboxRows([['Ptrace Protection with Yama LSM (Broker)', 'Yes']]).found, {});
+  assert.ok(parseSandboxRows([['Layer 1 Sandbox', 'Namespace'], ['Layer 1 Sandbox', 'None']]).ambiguous.length > 0);
+  assert.ok(parseSandboxRows([['Seccomp-BPF sandbox', 'Maybe']]).ambiguous.length > 0);
+  assert.ok(parseSandboxRows([['Layer 1 Sandbox', 'Bogus']]).ambiguous.length > 0);
+});
+
+test('disabling flags are detected anywhere in any process argv', () => {
+  assert.equal(scanDisablingFlags(PROC_TREE).length, 0);
   for (const flag of ['--no-sandbox', '--disable-namespace-sandbox', '--disable-seccomp-filter-sandbox']) {
-    const procs = [{ pid: 9, type: 'renderer', argv: ['chrome', flag, '--type=renderer'] }];
-    assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: procs, effectiveFlagsSource: 'proc' }).ok, false, flag);
+    assert.equal(scanDisablingFlags([{ pid: 9, type: 'renderer', argv: ['chrome', flag, '--type=renderer'] }]).length, 1, flag);
   }
-});
-
-test('sandbox rows: known rows parsed exactly, unknown ignored, ambiguous/duplicate fail', () => {
-  assert.deepEqual(parseSandboxRows(SANDBOX_PAGE_NAMESPACE).found, { namespace: true, suid: false, seccomp: true });
-  assert.deepEqual(parseSandboxRows(SANDBOX_PAGE_NAMESPACE).ambiguous, []);
-  assert.ok(parseSandboxRows('Namespace Sandbox: Yes\nNamespace Sandbox: No').ambiguous.length > 0);
-  assert.ok(parseSandboxRows('Seccomp-BPF Sandbox: maybe').ambiguous.length > 0);
-  assert.deepEqual(parseSandboxRows('PID Namespace: Yes\nNet Namespace: Yes').found, {});
 });
 
 // ---------------------------------------------------------------------------
 // MCP Result-section parser (real framing)
 // ---------------------------------------------------------------------------
 
-const SANDBOX_STRING = 'Sandbox Status\nNamespace Sandbox: Yes\nSeccomp-BPF Sandbox: Yes';
+const SANDBOX_OBJECT = {
+  text: 'Sandbox Status\nLayer 1 Sandbox\tNamespace\nSeccomp-BPF sandbox\tYes',
+  rows: [['Layer 1 Sandbox', 'Namespace'], ['Seccomp-BPF sandbox', 'Yes']],
+  evaluation: 'Sandbox is enabled',
+};
 const FRAME_OK = [
   '### Ran Playwright code',
   '```js',
-  'await page.evaluate(() => document.body.innerText);',
+  'await page.evaluate(() => ({ text: document.body.innerText, rows: [] }));',
   '```',
   '### Result',
-  JSON.stringify(SANDBOX_STRING),
+  JSON.stringify(SANDBOX_OBJECT),
 ].join('\n');
 
-test('extractResultSection decodes the exact Result section from real framing', () => {
+test('extractResultSection decodes the exact Result section (two-cell object with escaped newlines)', () => {
   const r = extractResultSection(FRAME_OK);
   assert.equal(r.ok, true, r.error);
-  assert.equal(r.value, SANDBOX_STRING);
+  assert.deepEqual(r.value, SANDBOX_OBJECT);
+  assert.equal(r.value.rows[0][0], 'Layer 1 Sandbox');
   assert.match(r.raw, /### Ran Playwright code/);
 });
 
@@ -411,12 +442,23 @@ test('Dockerfile performs one locked npm install with optional binaries and no f
   assert.doesNotMatch(dockerfile, /--omit=dev/);
 });
 
-test('Dockerfile installs the matched browser via the adopted Playwright CLI and keeps the sandbox', () => {
+test('Dockerfile installs the matched CfT browser via the adopted Playwright CLI and keeps the sandbox helper', () => {
   assert.match(dockerfile, /node node_modules\/playwright\/cli\.js install chromium/);
+  assert.match(dockerfile, /-name chrome_sandbox/);
   assert.match(dockerfile, /chmod 4755 "\$sb"/);
+  assert.match(dockerfile, /chrome-linux64/);
   assert.doesNotMatch(dockerfile, /--no-sandbox/);
   assert.doesNotMatch(dockerfile, /--privileged/);
   assert.doesNotMatch(dockerfile, /docker\.sock/);
+});
+
+test('component-pins.json records the inspected CfT archive, sha256 and helper path', () => {
+  assert.equal(pins.chromium.browserVersion, '155.0.8059.12');
+  assert.equal(pins.chromium.archiveFile, 'chrome-linux64.zip');
+  assert.match(pins.chromium.archiveSha256, /^[a-f0-9]{64}$/);
+  assert.match(pins.chromium.downloadPath, /builds\/cft\/155\.0\.8059\.12\/linux64\/chrome-linux64\.zip/);
+  assert.match(pins.chromium.sandboxHelper, /chrome_sandbox/);
+  assert.match(pins.chromium.extractedExecutable, /chrome-linux64\/chrome$/);
 });
 
 test('component-pins.json records resolved OS/snapshot versions and unresolved pins none remain for base', () => {
@@ -427,6 +469,36 @@ test('component-pins.json records resolved OS/snapshot versions and unresolved p
   assert.ok(pins.osPackages.resolved['libnss3']);
   assert.equal(pins.osPackages.resolved['ca-certificates'], '20230311+deb12u1');
   assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT');
+});
+
+// ---------------------------------------------------------------------------
+// Network denial classification (positive control required)
+// ---------------------------------------------------------------------------
+
+test('classifyNetworkResults requires expected denial classes and a 10.80 positive control', () => {
+  const good = classifyNetworkResults({
+    negatives: [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }, { name: 'api.anthropic.com', resolved: false, errorCode: 'EAI_NONAME' }],
+    positive: { name: 'logs.us-east-1.amazonaws.com', resolved: true, address: '10.80.4.5' },
+    connect: 'CONNECTED',
+  });
+  assert.equal(good.ok, true, good.reasons.join('; '));
+});
+
+test('classifyNetworkResults fails on resolver success, unknown error class, wrong range or failed connect', () => {
+  const neg = [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }];
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, true);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: true, address: '1.2.3.4' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: false, errorCode: 'SERVFAIL' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: false, errorCode: 'ENOTFOUND' }, connect: 'skipped' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '52.1.1.1' }, connect: 'CONNECTED' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'timeout' }).ok, false);
+});
+
+test('addressIn10_80 matches only the qualification VPC range', () => {
+  assert.equal(addressIn10_80('10.80.0.1'), true);
+  assert.equal(addressIn10_80('10.80.255.254'), true);
+  assert.equal(addressIn10_80('10.81.0.1'), false);
+  assert.equal(addressIn10_80('1.1.1.1'), false);
 });
 
 // ---------------------------------------------------------------------------

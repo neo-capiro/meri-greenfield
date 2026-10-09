@@ -59,9 +59,10 @@ documented setting for historical snapshots), a deterministic CA bootstrap (apt
 installs the exact resolved `ca-certificates` over HTTP from the same fixed
 signed snapshot, then both sources switch to HTTPS with normal CA verification),
 a single locked `npm ci --include=optional`, hash-pinned Python in an isolated
-venv, the matched Chromium (revision 1247 / 155.0.8059.12) installed via the
+venv, the matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12,
+archive `builds/cft/155.0.8059.12/linux64/chrome-linux64.zip`) installed via the
 adopted Playwright CLI with the browser tree kept root-owned and its
-`chrome-sandbox` setuid helper asserted root/4755 after all ownership operations,
+`chrome_sandbox` setuid helper asserted root/4755 after all ownership operations,
 non-root UID/GID 10001, and `VOLUME ["/workspace", "/tmp"]`. Runtime expectation
 set by Codex's ECS task definition: `readOnlyRootFilesystem=true`, no
 capabilities, no privileged mode, no Docker socket, no host networking.
@@ -87,12 +88,20 @@ hashes are preserved by default.
 ## Security posture
 
 - No `--no-sandbox`, no privileged mode, no docker socket, no extra
-  capabilities, no root. The browser verdict parses the exact chrome://sandbox
-  rows (Namespace OR SUID sandbox affirmative AND Seccomp-BPF affirmative; a
-  disabled unused alternative layer is allowed) from the exact `### Result`
-  section of the MCP response, plus actual `/proc` Chromium process evidence
-  (browser and renderer distinguished) with no disabling flag anywhere.
-  Requested config alone is never accepted; missing/ambiguous evidence fails.
+  capabilities, no root. The browser verdict parses the exact two-cell
+  chrome://sandbox table (`#sandbox-status`): Layer 1 Sandbox = Namespace or SUID
+  AND Seccomp-BPF sandbox = Yes (a disabled unused alternative layer is
+  allowed); missing/None/ambiguous/unknown fails. It requires the actual `/proc`
+  Chromium browser AND renderer for THIS run (identified by `/proc/<pid>/exe`
+  under `/opt/meri-browsers` plus the exact profileDir and real PPid ancestry, so
+  the MCP Node launcher's `--browser chromium` cannot be mislabelled) with no
+  disabling flag anywhere. Downloaded fixture bytes are checked against the known
+  payload hash; requested config alone is never accepted.
+- `probe:runtime` network-denial requires the expected DNS denial class for
+  example.com and api.anthropic.com (arbitrary resolver failures are not a pass),
+  plus a positive control that `logs.us-east-1.amazonaws.com` resolves inside
+  10.80.0.0/16 and connects on 443. The positive control failing or an unknown
+  error fails visibly.
 - `probe:artifacts` keeps every subprocess status/signal/error, recalculates a
   COPY of the XLSX in a distinct output directory (assert A4=6 after reopen),
   and treats disabled rendering (`MERI_ARTIFACTS_RENDER=off`) as a visible
