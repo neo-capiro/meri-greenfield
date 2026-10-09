@@ -201,14 +201,16 @@ export function addressIn10_80(address) {
   return typeof address === 'string' && /^10\.80\./.test(address);
 }
 
+/** Direct-IP results that establish only that the measured attempt was denied. */
+export const DIRECT_IP_DENIED = ['timeout', 'error:ENETUNREACH', 'error:EHOSTUNREACH', 'error:ECONNREFUSED'];
+
 /**
  * Pure classification of network-denial evidence. Negative names must be denied
- * with an expected denial class (arbitrary resolver failures are NOT success);
- * the positive control must resolve inside 10.80.0.0/16 and its connect must
- * succeed. Negative-name resolution, missing/incorrect positive resolution or a
- * failed connect all fail visibly.
+ * with an expected denial class; the positive control must resolve inside
+ * 10.80.0.0/16 and its connect must succeed; the direct public IP must be denied
+ * (CONNECTED fails; ambiguous/other results fail closed, never a pass).
  */
-export function classifyNetworkResults({ negatives = [], positive = {}, connect } = {}) {
+export function classifyNetworkResults({ negatives = [], positive = {}, connect, directIp } = {}) {
   const reasons = [];
   const detail = {};
   for (const n of negatives) {
@@ -229,11 +231,15 @@ export function classifyNetworkResults({ negatives = [], positive = {}, connect 
   }
   detail.connect = connect;
   if (connect !== 'CONNECTED') reasons.push(`positive control connect ${connect}`);
+  detail['directIp:1.1.1.1:443'] = directIp;
+  if (directIp === 'CONNECTED') reasons.push('direct IP 1.1.1.1:443 unexpectedly CONNECTED');
+  else if (DIRECT_IP_DENIED.includes(directIp)) detail['directIp:1.1.1.1:443'] = `denied (${directIp})`;
+  else reasons.push(`direct IP result ${JSON.stringify(directIp)} is ambiguous/inconclusive, failing closed`);
   return { ok: reasons.length === 0, reasons, detail };
 }
 
-/** Bounded DNS-denial + positive-control probe. No credentials, no mutation. */
-export async function checkNetworkDenial({ denied = ['example.com', 'api.anthropic.com'], positiveName = 'logs.us-east-1.amazonaws.com', port = 443, timeoutMs = NET_TIMEOUT_MS } = {}) {
+/** Bounded DNS-denial + positive control + direct-IP negative probe. No mutation. */
+export async function checkNetworkDenial({ denied = ['example.com', 'api.anthropic.com'], positiveName = 'logs.us-east-1.amazonaws.com', directIp = '1.1.1.1', port = 443, timeoutMs = NET_TIMEOUT_MS } = {}) {
   const negatives = [];
   for (const name of denied) {
     try {
@@ -250,18 +256,17 @@ export async function checkNetworkDenial({ denied = ['example.com', 'api.anthrop
   } catch (error) {
     positive = { name: positiveName, resolved: false, errorCode: error && error.code ? error.code : 'UNKNOWN' };
   }
-  let connectResult = 'skipped';
-  if (positive.resolved) {
-    connectResult = await new Promise((resolve) => {
-      const socket = connect({ host: positive.address, port });
-      const done = (result) => { socket.destroy(); resolve(result); };
-      socket.setTimeout(timeoutMs);
-      socket.once('connect', () => done('CONNECTED'));
-      socket.once('timeout', () => done('timeout'));
-      socket.once('error', (err) => done(`error:${err.code || 'error'}`));
-    });
-  }
-  const cls = classifyNetworkResults({ negatives, positive, connect: connectResult });
+  const connectOnce = (host) => new Promise((resolve) => {
+    const socket = connect({ host, port });
+    const done = (result) => { socket.destroy(); resolve(result); };
+    socket.setTimeout(timeoutMs);
+    socket.once('connect', () => done('CONNECTED'));
+    socket.once('timeout', () => done('timeout'));
+    socket.once('error', (err) => done(`error:${err.code || 'error'}`));
+  });
+  const connectResult = positive.resolved ? await connectOnce(positive.address) : 'skipped';
+  const directIpResult = await connectOnce(directIp);
+  const cls = classifyNetworkResults({ negatives, positive, connect: connectResult, directIp: directIpResult });
   return {
     name: 'network-denial',
     required: true,
@@ -269,7 +274,7 @@ export async function checkNetworkDenial({ denied = ['example.com', 'api.anthrop
     detail: JSON.stringify(cls.detail),
     error: cls.ok ? undefined : cls.reasons.join('; '),
     evidencePaths: [],
-    note: 'DNS-denial + positive control only; does not establish complete network qualification',
+    note: 'DNS-denial + positive control + direct-IP negative only; establishes only that the measured attempts were denied/allowed under the reviewed routes, not complete network qualification',
   };
 }
 

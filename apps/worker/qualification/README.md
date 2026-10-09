@@ -116,13 +116,26 @@ hashes are preserved by default.
   payload hash; requested config alone is never accepted.
 - `probe:runtime` network-denial requires the expected DNS denial class for
   example.com and api.anthropic.com (arbitrary resolver failures are not a pass),
-  plus a positive control that `logs.us-east-1.amazonaws.com` resolves inside
-  10.80.0.0/16 and connects on 443. The positive control failing or an unknown
-  error fails visibly.
-- `probe:artifacts` keeps every subprocess status/signal/error, recalculates a
-  COPY of the XLSX in a distinct output directory (assert A4=6 after reopen),
-  and treats disabled rendering (`MERI_ARTIFACTS_RENDER=off`) as a visible
-  NOT-PASSED result, never a pass.
+  a positive control that `logs.us-east-1.amazonaws.com` resolves inside
+  10.80.0.0/16 and connects on 443, AND a bounded direct-IP negative to
+  1.1.1.1:443 (CONNECTED fails; ambiguous/other results fail closed). The
+  positive control failing or an unknown error fails visibly; results establish
+  only that the measured attempts were allowed/denied under the reviewed routes.
+- `probe:browser` runs bounded prelaunch diagnostics (adjacent `chrome-sandbox`
+  alias discovery + stat/hash, `/proc/self` capability/mount/sysctl fields, and a
+  simple non-root `libc.unshare(CLONE_NEWUSER)` check labelled as NOT Chromium's
+  full predicate) and STOPS the browser-dependent sequence after the FIRST fatal
+  result, recording remaining steps as not-run. The setuid host expects the
+  hyphen helper; the Dockerfile creates a root-owned adjacent alias to the pinned
+  `chrome_sandbox`.
+- `probe:artifacts` keeps every child's status/signal/error/parse-status and
+  bounded stdout/stderr, emits per-format convert/PDF/page/PNG facts and the
+  recalc observed value SEPARATELY from the verdict even on failure, uses the
+  documented XlsxWriter blank cache (never seeds 6), recalculates a COPY of the
+  XLSX in a distinct output directory and requires original inputs [1,2,3], a
+  retained `=SUM(A1:A3)` formula and a NUMERIC cached 6 (a constant 6 without the
+  formula fails), and treats disabled rendering (`MERI_ARTIFACTS_RENDER=off`) as
+  a visible NOT-PASSED result, never a pass.
 - The synthetic qualification sets `settingSources: []`, `skills: []` and
   `settings.autoMemoryEnabled: false`; the builder rejects any override that
   would re-enable discovery or move the stable cwd.

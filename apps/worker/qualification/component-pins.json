@@ -135,6 +135,13 @@
       "chromeSandbox": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox"
     },
     "buildTimeCheck": "Dockerfile byte-verifies both installed files against perFilePins; browser tree stays root-owned and chrome_sandbox is asserted root/4755",
+    "sandboxHelperDiscovery": {
+      "sourceCommit": "384c82079f60e0b79cdca6e49efd5cfceefa5b74",
+      "source": "chromium/src sandbox/linux/suid/client/setuid_sandbox_host.cc (expects an adjacent `chrome-sandbox`, hyphen)",
+      "finding": "the archive helper is `chrome_sandbox` (underscore) and is never auto-discovered; the CHROME_DEVEL_SANDBOX fallback is ignored for a root-owned chrome with non-root UID 10001",
+      "remedy": "Dockerfile creates a root-owned adjacent `chrome-sandbox` alias (cp -a of the pinned helper), mode 4755, byte-identical to the pinned sha256, preserved alongside the original; verified at build time",
+      "note": "recorded as the discovery reason/source only; NOT a browser-success claim"
+    },
     "extractedExecutable": "chromium-1247/chrome-linux64/chrome",
     "sandboxHelper": "chromium-1247/chrome-linux64/chrome_sandbox (underscore; Chrome-for-Testing naming)",
     "installPathInImage": "/opt/meri-browsers",

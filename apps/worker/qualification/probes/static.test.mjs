@@ -21,8 +21,8 @@ import {
   verifyRestore,
   InMemorySessionStore,
 } from '../sdk-options.mjs';
-import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80 } from './runtime.mjs';
-import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, identifyAssociatedChromium, scanDisablingFlags } from './browser.mjs';
+import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80, DIRECT_IP_DENIED } from './runtime.mjs';
+import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, identifyAssociatedChromium, scanDisablingFlags, classifyHelperDiscovery, classifyUnshareDiagnostic, parseSelfStatus, mountFlagsFor, planBrowserSteps, shouldStopAfter } from './browser.mjs';
 import { classifySubprocess, decideNative, decideRecalc, decideRender } from './artifacts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -444,8 +444,9 @@ test('Dockerfile performs one locked npm install with optional binaries and no f
 
 test('Dockerfile installs the matched CfT browser via the adopted Playwright CLI and keeps the sandbox helper', () => {
   assert.match(dockerfile, /node node_modules\/playwright\/cli\.js install chromium/);
-  assert.match(dockerfile, /-name chrome_sandbox/);
-  assert.match(dockerfile, /chmod 4755 "\$sb"/);
+  assert.match(dockerfile, /chrome_sandbox/);
+  assert.match(dockerfile, /chrome-sandbox/);
+  assert.match(dockerfile, /chmod 4755 "\$orig" "\$alias"/);
   assert.match(dockerfile, /chrome-linux64/);
   assert.doesNotMatch(dockerfile, /--no-sandbox/);
   assert.doesNotMatch(dockerfile, /--privileged/);
@@ -540,18 +541,19 @@ test('classifyNetworkResults requires expected denial classes and a 10.80 positi
     negatives: [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }, { name: 'api.anthropic.com', resolved: false, errorCode: 'EAI_NONAME' }],
     positive: { name: 'logs.us-east-1.amazonaws.com', resolved: true, address: '10.80.4.5' },
     connect: 'CONNECTED',
+    directIp: 'timeout',
   });
   assert.equal(good.ok, true, good.reasons.join('; '));
 });
 
 test('classifyNetworkResults fails on resolver success, unknown error class, wrong range or failed connect', () => {
   const neg = [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }];
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, true);
-  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: true, address: '1.2.3.4' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: false, errorCode: 'SERVFAIL' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: false, errorCode: 'ENOTFOUND' }, connect: 'skipped' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '52.1.1.1' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, true);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: true, address: '1.2.3.4' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: false, errorCode: 'SERVFAIL' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: false, errorCode: 'ENOTFOUND' }, connect: 'skipped', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '52.1.1.1' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'timeout', directIp: 'timeout' }).ok, false);
 });
 
 test('addressIn10_80 matches only the qualification VPC range', () => {
@@ -573,18 +575,19 @@ test('classifySubprocess fails on nonzero status, signal or spawn error', () => 
 });
 
 test('decideNative fails when generation or PPTX inspection fails', () => {
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: true }).status, 'pass');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: true } }, pptxOk: true }).status, 'pass');
   assert.equal(decideNative({ gen: { status: 1 }, pptxOk: true }).status, 'fail');
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: false } }, pptxOk: true }).status, 'fail');
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: false }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: false } }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: false }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: true } }, pptxOk: false }).status, 'fail');
 });
 
-test('decideRecalc requires successful conversion, a NEW file and A4=6', () => {
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: 6 }).status, 'pass');
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, a4: 6 }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: null }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, a4: 6 }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, a4: 6 }).status, 'fail');
+test('decideRecalc requires successful conversion, a NEW file and observed numeric 6', () => {
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: OBS_GOOD }).status, 'pass');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: { inspected: false } }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, observed: OBS_GOOD }).status, 'fail');
 });
 
 const GOOD_PDFS = {
@@ -611,4 +614,88 @@ test('decideRender fails on any failed conversion, missing PNG or failed PDF ins
 test('the SDK reference store is the actual pinned upstream export', () => {
   assert.equal(typeof InMemorySessionStore, 'function');
   assert.ok(createReferenceStore() instanceof InMemorySessionStore);
+});
+
+// ---------------------------------------------------------------------------
+// Prelaunch helper discovery, unshare diagnostic, mounts and stop sequence
+// ---------------------------------------------------------------------------
+
+const PINNED = { path: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', realpath: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', uid: 0, gid: 0, mode: '04755', sha256: 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314' };
+const ALIAS_OK = { path: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox', realpath: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox', uid: 0, gid: 0, mode: '04755', sha256: 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314' };
+
+test('helper discovery accepts a root-owned 4755 alias matching the pinned helper', () => {
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: ALIAS_OK, aliasExpected: ALIAS_OK.path }).ok, true);
+});
+
+test('helper discovery rejects a missing, wrong-bytes, non-root or non-4755 alias', () => {
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { path: ALIAS_OK.path, error: 'missing' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, sha256: 'deadbeef' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, uid: 10001 }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, mode: '0755' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: { path: null, error: 'none' }, alias: ALIAS_OK, aliasExpected: ALIAS_OK.path }).ok, false);
+});
+
+test('classifyUnshareDiagnostic reads the simple newuserns check without claiming the full predicate', () => {
+  assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'unshare_ret=0 errno=0' }).newUserNsAsNonRoot, true);
+  const denied = classifyUnshareDiagnostic({ status: 3, stdout: 'unshare_ret=-1 errno=1' });
+  assert.equal(denied.newUserNsAsNonRoot, false);
+  assert.match(denied.note, /simple check only/);
+  assert.equal(classifyUnshareDiagnostic({ status: null, timedOut: true }).outcome, 'timeout');
+  assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'noise' }).outcome, 'unavailable');
+});
+
+test('parseSelfStatus and mountFlagsFor extract bounded security fields', () => {
+  const status = 'Name:\tchrome\nUid:\t10001\t10001\t10001\t10001\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t2\nSeccomp_filters:\t1\nTracerPid:\t0\n';
+  const parsed = parseSelfStatus(status);
+  assert.equal(parsed.CapEff, '0000000000000000');
+  assert.equal(parsed.Seccomp, '2');
+  const mountinfo = '21 27 0:20 / /opt/meri-browsers rw,nosuid,nodev,relatime - ext4 /dev/x rw\n1 0 0:1 / / ro,relatime - overlay overlay rw\n';
+  assert.deepEqual(mountFlagsFor('/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', mountinfo).options, ['rw', 'nosuid', 'nodev', 'relatime']);
+  assert.deepEqual(mountFlagsFor('/', mountinfo).options, ['ro', 'relatime']);
+  assert.deepEqual(mountFlagsFor('/anything-else', mountinfo).options, ['ro', 'relatime']); // falls back to the root mount prefix
+});
+
+test('planBrowserSteps/shouldStopAfter stop after the first fatal browser-dependent result', () => {
+  assert.deepEqual(planBrowserSteps().slice(0, 2), ['browser_get_config', 'navigate-fixture']);
+  assert.equal(shouldStopAfter('navigate-fixture', { isError: true }), true);
+  assert.equal(shouldStopAfter('navigate-fixture', { isError: false }), false);
+  assert.equal(shouldStopAfter('browser_get_config', { isError: false, decodedOk: false }), true);
+  assert.equal(shouldStopAfter('snapshot', { isError: false }), false);
+});
+
+// ---------------------------------------------------------------------------
+// Office recalculation observed-value fixtures (never collapse to a pass)
+// ---------------------------------------------------------------------------
+
+const OK_CONVERT = { status: 0, signal: null, error: null };
+const OBS_GOOD = { inspected: true, inputs: [1, 2, 3], formula: '=SUM(A1:A3)', cachedValue: 6, cachedType: 'int' };
+
+test('decideRecalc passes only on original inputs, retained formula and numeric 6', () => {
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD }).status, 'pass');
+});
+
+test('decideRecalc fails on wrong 0, actual null, missing inspection, python failure, malformed parse and constant 6 without formula', () => {
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, cachedValue: 0 } }).status, 'fail'); // wrong 0
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, cachedValue: null, cachedType: 'NoneType' } }).status, 'fail'); // actual null
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { inspected: false } }).status, 'fail'); // missing inspection
+  assert.equal(decideRecalc({ convert: { status: 1, signal: null }, newFile: true, observed: OBS_GOOD }).status, 'fail'); // python/convert failure
+  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: false, observed: OBS_GOOD }).status, 'fail'); // no new file
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, formula: 6 } }).status, 'fail'); // constant 6 without formula
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, inputs: [1, 2] } }).status, 'fail'); // missing input
+});
+
+// ---------------------------------------------------------------------------
+// Direct-IP negative fixtures
+// ---------------------------------------------------------------------------
+
+test('classifyNetworkResults requires the direct-IP negative and fails on CONNECTED or ambiguous results', () => {
+  const base = { negatives: [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' };
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'timeout' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:ENETUNREACH' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EHOSTUNREACH' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'CONNECTED' }).ok, false);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EACCES' }).ok, false); // ambiguous fails closed
+  assert.equal(classifyNetworkResults({ ...base, directIp: undefined }).ok, false);
+  assert.ok(DIRECT_IP_DENIED.includes('timeout'));
 });

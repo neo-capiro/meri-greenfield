@@ -161,25 +161,30 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/opt/meri-browsers
 RUN set -eux; \
     node node_modules/playwright/cli.js install chromium; \
     chmod -R a+rX /opt/meri-browsers; \
-    sb="$(find /opt/meri-browsers \( -name chrome_sandbox -o -name chrome-sandbox \) -print -quit)"; \
-    test -n "$sb"; \
-    chmod 4755 "$sb"
+    base="/opt/meri-browsers/chromium-1247/chrome-linux64"; \
+    orig="$base/chrome_sandbox"; alias="$base/chrome-sandbox"; \
+    test -f "$orig"; \
+    cp -a "$orig" "$alias"; \
+    chmod 4755 "$orig" "$alias"; \
+    test "$(sha256sum "$orig" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"; \
+    test "$(sha256sum "$alias" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"
 
-# Byte-verify the installed CFT chrome and chrome_sandbox against the exact
-# per-file SHA256s independently inspected from the pinned archive
-# (https://cdn.playwright.dev/builds/cft/155.0.8059.12/linux64/chrome-linux64.zip,
-# sha256 a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489,
-# 198335306 bytes) at the established /opt/meri-browsers/chromium-1247/ paths.
+# Byte-verify the installed CFT chrome, the pinned original helper and its
+# root-owned adjacent hyphen alias against the exact per-file SHA256s
+# independently inspected from the pinned archive. Chromium 155's setuid host
+# expects adjacent `chrome-sandbox`; the archive helper is `chrome_sandbox`.
 RUN set -eux; \
     base="/opt/meri-browsers/chromium-1247/chrome-linux64"; \
-    cb="$base/chrome"; sb="$base/chrome_sandbox"; \
-    test -f "$cb"; test -f "$sb"; \
+    cb="$base/chrome"; orig="$base/chrome_sandbox"; alias="$base/chrome-sandbox"; \
+    test -f "$cb"; test -f "$orig"; test -f "$alias"; \
     test "$(sha256sum "$cb" | cut -d' ' -f1)" = "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0"; \
-    test "$(sha256sum "$sb" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"; \
+    test "$(sha256sum "$orig" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"; \
+    test "$(sha256sum "$alias" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"; \
     printf '%s\n' \
       "cft-archive sha256: a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489 (198335306 bytes; independently inspected)" \
-      "cft-chrome sha256: $(sha256sum "$cb" | cut -d' ' -f1) (verified against pin adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0)" \
-      "cft-helper sha256: $(sha256sum "$sb" | cut -d' ' -f1) (verified against pin be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314)" \
+      "cft-chrome sha256: $(sha256sum "$cb" | cut -d' ' -f1) (pin adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0)" \
+      "cft-helper-original sha256: $(sha256sum "$orig" | cut -d' ' -f1) (pin be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314)" \
+      "cft-helper-alias sha256: $(sha256sum "$alias" | cut -d' ' -f1) (matched to pinned original; hyphen alias for Chromium setuid host)" \
       > /opt/meri-worker/cft-hashes.txt; \
     cat /opt/meri-worker/cft-hashes.txt
 
@@ -198,14 +203,18 @@ RUN set -eux; \
     mkdir -p /workspace/conversation /workspace/home /workspace/config /tmp; \
     chown -R 10001:10001 /workspace /tmp /opt/meri-worker
 
-# Final assertion: after ALL ownership operations the sandbox helper is still
-# root-owned with mode 4755 and the browser tree is root-owned.
+# Final assertion: after ALL ownership operations the pinned original helper AND
+# its adjacent hyphen alias are still root-owned with mode 4755 and setuid, and
+# the browser tree is root-owned.
 RUN set -eux; \
-    sb="$(find /opt/meri-browsers \( -name chrome_sandbox -o -name chrome-sandbox \) -print -quit)"; \
-    test -n "$sb"; \
-    test "$(stat -c '%U' "$sb")" = root; \
-    test "$(stat -c '%a' "$sb")" = 4755; \
-    test -u "$sb"; \
+    base="/opt/meri-browsers/chromium-1247/chrome-linux64"; \
+    orig="$base/chrome_sandbox"; alias="$base/chrome-sandbox"; \
+    test -f "$orig"; test -f "$alias"; \
+    for sb in "$orig" "$alias"; do \
+      test "$(stat -c '%U' "$sb")" = root; \
+      test "$(stat -c '%a' "$sb")" = 4755; \
+      test -u "$sb"; \
+    done; \
     test "$(stat -c '%U' /opt/meri-browsers)" = root
 
 ENV HOME=/workspace/home \

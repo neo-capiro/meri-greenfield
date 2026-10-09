@@ -7,10 +7,11 @@ interrupted on a test hang; stage 3 fixed the hang and committed `bf72484`; stag
 4 applied review repairs and committed `a5d6f0e`; stage 5 corrected pinned-browser
 handling and committed `3d85f4a`; stage 6 fixed the first-build apt poppler pin
 (`4f69d68`, integrated; the probe-only candidate then built and was ECR-scanned);
-stage 7 refreshed the security recipe (`e68c796`); this is the stage-8 narrow
-evidence-repair continuation of the same session)
+stage 7 refreshed the security recipe (`e68c796`); stage 8 hardened build
+evidence (`f01d6be`); this is the stage-9 runtime-probe-repair continuation of
+the same session)
 Branch/worktree (cwd): `hermes/w02-image` at `C:\dev\main\meri-greenfield-worktrees\w02-image`
-Base commit: `e68c796b5151defcf6a58ceede7f1480400b01ee`
+Base commit: `f01d6be6296fa1f533cfa56d2376e488cea007fe`
 Result: HEAD of this task commit (full SHA returned in the handoff message)
 
 Preparation only. Green offline checks prove local structural/path/parsing
@@ -182,6 +183,45 @@ probes/static.test.mjs and this report changed (README already correct).
   sandbox is not weakened and failures are not hidden. Independent diagnosis and
   a separate runtime-probe repair follow.
 
+## Stage-9 runtime-probe repair (helper alias, diagnostics, Office facts, direct-IP)
+
+Narrow repair at base `f01d6be`. Runtime evidence: task `cfcc4a32e3ea45a7be898d322f663411`
+stopped exit 1 at 20:57:40Z; four probes passed (identity, mounts, read-only
+root, SDK static, DNS negative+positive) and browser+Office failed. These are
+failed G1 probes under the OLD recipe, NOT proof of universal Fargate
+incompatibility; sandbox is not weakened and failures are not hidden.
+- A. Browser helper discovery/diagnostics: `browser.mjs` reports bounded
+  prelaunch diagnostics — pinned `chrome_sandbox` + adjacent `chrome-sandbox`
+  alias with path/realpath/uid/gid/mode/sha256 (Chromium 155.0.8059.12
+  `setuid_sandbox_host.cc` expects the hyphen name; the underscore helper is
+  never auto-discovered and the CHROME_DEVEL_SANDBOX fallback is ignored for a
+  root-owned chrome with non-root UID 10001) — plus `/proc/self` Cap*/NoNewPrivs/
+  TracerPid/Seccomp and UID/GID maps, the helper/root mount flags (nosuid/ro/
+  noexec relevant), read-only sysctls and a simple non-root
+  `libc.unshare(CLONE_NEWUSER)` child diagnostic (labelled NOT Chromium's full
+  predicate; not a standalone required pass). The Dockerfile creates a
+  root-owned adjacent `chrome-sandbox` alias (cp -a of the pinned helper, mode
+  4755, byte-identical, original preserved) and byte-verifies it at the
+  established paths. The browser-dependent sequence STOPS after the FIRST fatal
+  launch/navigation result; remaining steps are recorded not-run; independent
+  Office/runtime probes continue.
+- B. Office evidence: `artifacts.py` uses the documented XlsxWriter blank cache
+  (`write_formula(3,0,formula,None,"")`, never seeding 6) and reports observed
+  inputs/formula/cached value separately from the verdict plus bounded A4 XML and
+  calcPr facts and file hashes; `artifacts.mjs` preserves each child's status/
+  signal/error/parse-status and bounded stdout/stderr, emits per-format
+  convert/PDF/page/PNG facts and the recalc observed value even on failure, and
+  requires original inputs [1,2,3], the retained SUM formula and a numeric cached
+  6 (constant 6 without the formula fails). Actual Office output is unavailable
+  on the authoring host, so a target rerun is needed. Visual acceptance is NOT
+  claimed (pixels are not exported).
+- C. Network: `probe:runtime` extends the opt-in probe with a bounded direct TCP
+  443 to the fixed public `1.1.1.1` (no DNS/provider/model/source HTTP). It
+  requires the positive private Logs-endpoint control plus DNS negatives plus a
+  direct-IP denial; CONNECTED fails; ambiguous/other results fail closed. A
+  timeout/ENETUNREACH/EHOSTUNREACH establishes only that the measured attempt was
+  denied under the reviewed SG/routes. No route/SG/IAM change here.
+
 ## Changed files (the fifteen owned tracked paths)
 
 | Path | SHA-256 |
@@ -190,16 +230,16 @@ probes/static.test.mjs and this report changed (README already correct).
 | apps/worker/qualification/package-lock.json | ed0c7329cd1cd24487848f4bf6fcf5cfd97f877f17b25240fd4c255d385f58b4 |
 | apps/worker/qualification/.gitignore | 69f504fac53d1b2ff914d4f3c297f638bfad612e3080a8e070a9c20b02581536 |
 | apps/worker/qualification/.dockerignore | 1bb5cd790f07faeec7b85b5b9fc2291d6461b82fe0d1150e1085f971c6eccfda |
-| apps/worker/qualification/Dockerfile | 112b5831d235b575e078221e546e00304826d0a109b6aeb53458af7c54097359 |
+| apps/worker/qualification/Dockerfile | 5e19c6aa5829221ea61f09a3df82cff5414c53b24119edd004c2cec367842c2c |
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
-| apps/worker/qualification/component-pins.json | 312d4cd3de149312932205e6d55a6af8a3c7af504474c2b54b8d67b7eb0d012a |
+| apps/worker/qualification/component-pins.json | a793b7ba2a28e82a4057815ed9bb79a8e800e6ab0cea4c89c2e9fe1af9b82b79 |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | 1809cfbb06a74849176d0729ddd3267ee2dd66dd5c6d8a20287d796238e86c49 |
-| apps/worker/qualification/probes/runtime.mjs | d52d3812eda58eacc6a516fc9c78b90bcd95b3886583a5d2883ce5189092b64a |
-| apps/worker/qualification/probes/browser.mjs | c4e6f59d8f11e6f465c136d045ab9701d257fbd5fa27d8c9a118a04c61841324 |
-| apps/worker/qualification/probes/artifacts.mjs | 2fe50c87d727b95e3a37341e375c0e467af6a26582859d1b684b5ea5ff7b37ed |
-| apps/worker/qualification/probes/artifacts.py | 2adf78dbc3728393c62c9472c437e5caf725e79c988b7354eebba9fe2ed33bef |
-| apps/worker/qualification/README.md | c8f60e99c6dc0b963d5cb3e04167a816f51043969932d2543903f6d22c8c2bde |
+| apps/worker/qualification/probes/static.test.mjs | 55e8e2e7cfdafa6074e4b472cb26685d4e0b87a62e1c91477f40bf0179ee132f |
+| apps/worker/qualification/probes/runtime.mjs | 586f400d957ab2518009b40b63ed3d2ad86d9a1cf9ccf15d4ab9b59fc981ef55 |
+| apps/worker/qualification/probes/browser.mjs | f3f3b8856141947c7053ed71eab9aea9c23bae150613bce955a5e835a31d759a |
+| apps/worker/qualification/probes/artifacts.mjs | 557b9372e6221d986b2e9850ac1d9a46c2057adc3860a3cf3f5b529cd204480d |
+| apps/worker/qualification/probes/artifacts.py | b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15 |
+| apps/worker/qualification/README.md | fd47fc3e65cf2524ceb100f9d650a9ab3944c95e5672523ad58a2b1187881076 |
 | docs/coordination/reports/W02-01-WORKER-IMAGE.md | this file |
 
 No other tracked path was modified. No contract, root lockfile, migration, plan
@@ -210,11 +250,11 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 61 / pass 61 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 69 / pass 69 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 58 → 61 (stage-8 CFT per-file, build-evidence fail-closed and
-runtime-probe-evidence assertions). All non-vacuous.
+Nested suite grew 61 → 69 (stage-9 helper-discovery, unshare/mount, stop-sequence,
+Office observed-value and direct-IP fixtures). All non-vacuous.
 
 ## Adopted versions, licenses and integrity
 
