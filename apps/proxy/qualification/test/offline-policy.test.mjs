@@ -349,6 +349,26 @@ test('stream: lifecycle, index, identity, usage and terminal invariants are enfo
   assert.equal(validateStream([start, openText, { type: 'cancelled' }]).reasonCode, DENY.STREAM_CANCELLED);
 });
 
+test('stream: a completed tool stays private on later error, cancellation, truncation or invalid terminal', () => {
+  const completed = [
+    { type: 'message_start', usage: { input_tokens: 10 } },
+    { type: 'content_block_start', index: 0, blockKind: 'tool_use', name: 'local_echo', id: 'toolu_1' },
+    { type: 'content_block_delta', index: 0, deltaType: 'input_json_delta', partial_json: '{"text":"hi"}' },
+    { type: 'content_block_stop', index: 0, blockKind: 'tool_use' },
+  ];
+  const terminal = [{ type: 'message_delta', usage: { output_tokens: 5 } }, { type: 'message_stop' }];
+  for (const tail of [
+    [{ type: 'error' }], [{ type: 'cancelled' }], [],
+    [...terminal, { type: 'message_stop' }],
+    [{ type: 'message_delta', usage: {} }, { type: 'message_stop' }],
+  ]) {
+    const result = validateStream([...completed, ...tail]);
+    assert.equal(result.success, false, JSON.stringify(tail));
+    assert.deepEqual(result.completedToolBlocks, [], JSON.stringify(tail));
+  }
+  assert.deepEqual(validateStream([...completed, ...terminal]).completedToolBlocks, [0]);
+});
+
 test('proxy-config.json enables redaction and leaves callbacks empty', () => {
   const config = JSON.parse(readFileSync(new URL('../proxy-config.json', import.meta.url), 'utf8'));
   assert.equal(config.litellm_settings.turn_off_message_logging, true);

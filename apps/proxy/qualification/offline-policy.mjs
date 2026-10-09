@@ -416,6 +416,8 @@ function applyActual(ledger, requestId, r, actualCostMicrousd) {
   const nextConsumed = ledger.consumedMicrousd + actualCostMicrousd;
   if (!Number.isSafeInteger(nextConsumed)) {
     ledger.reservations.set(requestId, { ...r, state: 'unresolved' });
+    ledger.revision += 1;
+    ledger.breached = true;
     return NO(DENY.OVERFLOW, { state: 'unresolved' });
   }
   ledger.consumedMicrousd = nextConsumed;
@@ -546,6 +548,9 @@ export function validateStream(events = []) {
   if (!validStartUsage(events[0].usage)) return { ...base, reasonCode: DENY.STREAM_INVALID_USAGE };
 
   const blocks = new Map();
+  // Completed blocks remain private until the entire stream succeeds. Failure,
+  // cancellation and truncation must expose no executable-looking command.
+  const pendingToolBlocks = [];
   let phase = 'in_message';
   let deltaSeen = false;
   for (let i = 1; i < events.length; i++) {
@@ -582,7 +587,7 @@ export function validateStream(events = []) {
           let parsed;
           try { parsed = JSON.parse(b.json); } catch { return { ...base, reasonCode: DENY.STREAM_TOOL_INPUT_INCOMPLETE_JSON }; }
           if (!isPlainObject(parsed)) return { ...base, reasonCode: DENY.STREAM_TOOL_INPUT_INCOMPLETE_JSON };
-          base.completedToolBlocks.push(e.index);
+          pendingToolBlocks.push(e.index);
         }
         b.closed = true;
         break;
@@ -611,7 +616,7 @@ export function validateStream(events = []) {
   }
   if (!base.terminalSeen) return { ...base, reasonCode: DENY.STREAM_MISSING_TERMINAL };
   if (!base.usageSeen) return { ...base, reasonCode: DENY.STREAM_MISSING_USAGE };
-  return { ...base, ok: true, success: true, reasonCode: null };
+  return { ...base, ok: true, success: true, reasonCode: null, completedToolBlocks: pendingToolBlocks };
 }
 
 export const RECONCILE = Object.freeze({
