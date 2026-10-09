@@ -314,7 +314,7 @@ export function parseAnthropicMessagesRequest({ method, path, headers, body }, {
 
   // Diagnostic-only rough size (NOT a verified token bound and never used for a
   // successful reservation; see createTrustedCountObservation).
-  const approxInputChars = canonicalSha256(body).length; // stable, deterministic, diagnostic only
+  const approxInputChars = JSON.stringify(body).length; // diagnostic only; never a token bound
 
   const request = deepFreeze({
     route: MESSAGES_ROUTE,
@@ -551,6 +551,7 @@ export function validateStream(events = []) {
   // Completed blocks remain private until the entire stream succeeds. Failure,
   // cancellation and truncation must expose no executable-looking command.
   const pendingToolBlocks = [];
+  const toolIds = new Set();
   let phase = 'in_message';
   let deltaSeen = false;
   for (let i = 1; i < events.length; i++) {
@@ -564,12 +565,17 @@ export function validateStream(events = []) {
         if (!Number.isSafeInteger(e.index) || e.index < 0 || blocks.has(e.index)) return { ...base, reasonCode: DENY.STREAM_DUPLICATE_INDEX };
         if (!['text', 'tool_use'].includes(e.blockKind)) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
         if (e.blockKind === 'tool_use' && (!nonEmptyString(e.name) || !nonEmptyString(e.id))) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
+        if (e.blockKind === 'tool_use') {
+          if (toolIds.has(e.id)) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
+          toolIds.add(e.id);
+        }
         blocks.set(e.index, { kind: e.blockKind, name: e.name ?? null, id: e.id ?? null, json: '', closed: false });
         break;
       }
       case 'content_block_delta': {
         const b = blocks.get(e.index);
         if (!b || b.closed) return { ...base, reasonCode: DENY.STREAM_OUT_OF_ORDER };
+        if ((e.blockKind != null && e.blockKind !== b.kind) || (e.name != null && e.name !== b.name) || (e.id != null && e.id !== b.id)) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
         if (e.deltaType === 'text_delta') {
           if (b.kind !== 'text') return { ...base, reasonCode: DENY.STREAM_MISMATCH };
         } else if (e.deltaType === 'input_json_delta') {
@@ -583,6 +589,7 @@ export function validateStream(events = []) {
         const b = blocks.get(e.index);
         if (!b || b.closed) return { ...base, reasonCode: DENY.STREAM_OUT_OF_ORDER };
         if (e.blockKind != null && e.blockKind !== b.kind) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
+        if ((e.name != null && e.name !== b.name) || (e.id != null && e.id !== b.id)) return { ...base, reasonCode: DENY.STREAM_MISMATCH };
         if (b.kind === 'tool_use') {
           let parsed;
           try { parsed = JSON.parse(b.json); } catch { return { ...base, reasonCode: DENY.STREAM_TOOL_INPUT_INCOMPLETE_JSON }; }

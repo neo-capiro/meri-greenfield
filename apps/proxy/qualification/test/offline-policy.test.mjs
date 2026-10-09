@@ -380,3 +380,23 @@ test('proxy-config.json enables redaction and leaves callbacks empty', () => {
   assert.equal(config.router_settings.num_retries, 0);
   assert.deepEqual(config.router_settings.fallbacks, []);
 });
+
+test('stream: tool identity stays immutable and tool-use IDs are unique across indexes', () => {
+  const start = { type: 'message_start', usage: { input_tokens: 10 } };
+  const tool = { type: 'content_block_start', index: 0, blockKind: 'tool_use', name: 'local_echo', id: 'toolu_1' };
+  const delta = { type: 'content_block_delta', index: 0, deltaType: 'input_json_delta', partial_json: '{}' };
+  const stop = { type: 'content_block_stop', index: 0, blockKind: 'tool_use' };
+  const tail = [{ type: 'message_delta', usage: { output_tokens: 1 } }, { type: 'message_stop' }];
+  for (const field of [{ name: 'other' }, { id: 'other' }, { blockKind: 'text' }]) {
+    for (const sequence of [[start, tool, { ...delta, ...field }, stop, ...tail], [start, tool, delta, { ...stop, ...field }, ...tail]]) {
+      const result = validateStream(sequence);
+      assert.equal(result.success, false);
+      assert.deepEqual(result.completedToolBlocks, []);
+    }
+  }
+  const duplicate = [start, tool, delta, stop, { ...tool, index: 1 }, { ...delta, index: 1 }, { ...stop, index: 1 }, ...tail];
+  assert.equal(validateStream(duplicate).success, false);
+  assert.deepEqual(validateStream(duplicate).completedToolBlocks, []);
+  const valid = [start, tool, { ...delta, name: tool.name, id: tool.id, blockKind: tool.blockKind }, { ...stop, name: tool.name, id: tool.id }, ...tail];
+  assert.deepEqual(validateStream(valid).completedToolBlocks, [0]);
+});
