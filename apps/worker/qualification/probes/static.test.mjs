@@ -455,10 +455,38 @@ test('Dockerfile installs the matched CfT browser via the adopted Playwright CLI
 test('component-pins.json records the inspected CfT archive, sha256 and helper path', () => {
   assert.equal(pins.chromium.browserVersion, '155.0.8059.12');
   assert.equal(pins.chromium.archiveFile, 'chrome-linux64.zip');
-  assert.match(pins.chromium.archiveSha256, /^[a-f0-9]{64}$/);
+  assert.equal(pins.chromium.archiveBytes, 198335306);
+  assert.equal(pins.chromium.archiveSha256, 'a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489');
   assert.match(pins.chromium.downloadPath, /builds\/cft\/155\.0\.8059\.12\/linux64\/chrome-linux64\.zip/);
   assert.match(pins.chromium.sandboxHelper, /chrome_sandbox/);
   assert.match(pins.chromium.extractedExecutable, /chrome-linux64\/chrome$/);
+});
+
+test('component-pins.json records CFT per-file pins and provenance', () => {
+  assert.equal(pins.chromium.perFilePins['chrome-linux64/chrome'], 'adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0');
+  assert.equal(pins.chromium.perFilePins['chrome-linux64/chrome_sandbox'], 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314');
+  assert.equal(pins.chromium.installedPaths.chrome, '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome');
+  assert.equal(pins.chromium.installedPaths.chromeSandbox, '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox');
+  assert.match(pins.chromium.archiveProvenance, /W02-01-BUILD-ACCEPTANCE/);
+});
+
+test('Dockerfile byte-verifies CFT files at the established paths and emits build evidence fail-closed', () => {
+  assert.ok(dockerfile.includes('/opt/meri-browsers/chromium-1247/chrome-linux64'));
+  assert.ok(dockerfile.includes('adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0'));
+  assert.ok(dockerfile.includes('be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314'));
+  assert.ok(dockerfile.includes('cat /opt/meri-worker/os-installed-packages.txt'));
+  assert.ok(dockerfile.includes("grep -Eq 'LibreOffice [0-9]'"));
+  assert.ok(!dockerfile.includes('|| echo "libreoffice version unavailable"'));
+  assert.ok(!dockerfile.includes('| sort > /opt/meri-worker/os-installed-packages.txt'), 'dpkg-query must not run inside an unchecked pipeline');
+});
+
+test('component-pins.json records base license source and the prior runtime-probe evidence', () => {
+  assert.match(pins.baseImage.licenseSource, /nodejs\/node\/v24\.21\.0\/LICENSE/);
+  assert.match(pins.baseImage.licenseSource, /License audit INCOMPLETE/);
+  assert.ok(pins.priorBuiltCandidate.scanStatus.includes('UNRESOLVED'));
+  assert.equal(pins.runtimeProbeEvidence.taskId, 'cfcc4a32e3ea45a7be898d322f663411');
+  assert.equal(pins.runtimeProbeEvidence.stopped, 'exit 1 at 2026-10-09T20:57:40Z');
+  assert.match(pins.runtimeProbeEvidence.failed['browser-sandbox'], /No usable sandbox/);
 });
 
 test('component-pins.json records resolved OS/snapshot versions and unresolved pins none remain for base', () => {

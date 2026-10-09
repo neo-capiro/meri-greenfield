@@ -103,12 +103,27 @@ RUN set -eux; \
 WORKDIR /opt/meri-worker
 
 # Record the exact installed package inventory and runtime versions from the
-# real build (safe no-network version commands only).
+# real build. dpkg-query output is written then emitted to real build stdout,
+# and the build fails closed if it errors or is empty (no unchecked pipeline
+# hides a failing status).
 RUN set -eux; \
-    dpkg-query -W -f='${Package}=${Version}\n' | sort > /opt/meri-worker/os-installed-packages.txt; \
-    { echo "node $(node --version)"; echo "python3 $(python3 --version 2>&1)"; } > /opt/meri-worker/runtime-versions.txt; \
-    (HOME=/tmp soffice --version 2>/dev/null | head -n1 >> /opt/meri-worker/runtime-versions.txt) || echo "libreoffice version unavailable" >> /opt/meri-worker/runtime-versions.txt; \
-    cat /opt/meri-worker/runtime-versions.txt
+    dpkg-query -W -f='${Package}=${Version}\n' > /opt/meri-worker/os-installed-packages.txt; \
+    sort -o /opt/meri-worker/os-installed-packages.txt /opt/meri-worker/os-installed-packages.txt; \
+    test -s /opt/meri-worker/os-installed-packages.txt; \
+    echo "=== installed dpkg inventory ($(wc -l < /opt/meri-worker/os-installed-packages.txt) packages) ==="; \
+    cat /opt/meri-worker/os-installed-packages.txt
+
+# Capture Node/Python/LibreOffice versions with checked commands (HOME=/tmp for
+# a writable LibreOffice profile; no network). Any command failure fails the
+# build and no placeholder may count as success; stderr is preserved.
+RUN set -eux; \
+    node --version > /opt/meri-worker/runtime-versions.txt; \
+    python3 --version >> /opt/meri-worker/runtime-versions.txt; \
+    HOME=/tmp soffice --version > /tmp/lo.out 2> /opt/meri-worker/libreoffice-version.err; \
+    grep -Eq 'LibreOffice [0-9]' /tmp/lo.out || grep -Eq 'LibreOffice [0-9]' /opt/meri-worker/libreoffice-version.err; \
+    head -n1 /tmp/lo.out >> /opt/meri-worker/runtime-versions.txt; \
+    echo "=== libreoffice stderr ==="; cat /opt/meri-worker/libreoffice-version.err; \
+    echo "=== runtime versions ==="; cat /opt/meri-worker/runtime-versions.txt
 
 # Node candidate packages: one locked install from the nested lockfile,
 # including optional platform binaries (the SDK's linux-x64 CLI). No fallback.
@@ -150,20 +165,21 @@ RUN set -eux; \
     test -n "$sb"; \
     chmod 4755 "$sb"
 
-# Record the installed CFT chrome/helper hashes. The CFT archive was
-# independently inspected on the authoring host (sha256 a24546e0e6c763bf86
-# 4861ce50498f38783663e24cd2af2a16798c25dc3a9489) but NO per-file prior hash is
-# pinned, so an independent byte comparison is UNAVAILABLE here and recorded as
-# such rather than claimed.
+# Byte-verify the installed CFT chrome and chrome_sandbox against the exact
+# per-file SHA256s independently inspected from the pinned archive
+# (https://cdn.playwright.dev/builds/cft/155.0.8059.12/linux64/chrome-linux64.zip,
+# sha256 a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489,
+# 198335306 bytes) at the established /opt/meri-browsers/chromium-1247/ paths.
 RUN set -eux; \
-    cb="$(find /opt/meri-browsers -path '*chrome-linux64/chrome' -print -quit)"; \
-    sb="$(find /opt/meri-browsers \( -name chrome_sandbox -o -name chrome-sandbox \) -print -quit)"; \
-    test -n "$cb"; test -n "$sb"; \
+    base="/opt/meri-browsers/chromium-1247/chrome-linux64"; \
+    cb="$base/chrome"; sb="$base/chrome_sandbox"; \
+    test -f "$cb"; test -f "$sb"; \
+    test "$(sha256sum "$cb" | cut -d' ' -f1)" = "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0"; \
+    test "$(sha256sum "$sb" | cut -d' ' -f1)" = "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314"; \
     printf '%s\n' \
-      "cft-chrome sha256: $(sha256sum "$cb" | cut -d' ' -f1)" \
-      "cft-helper sha256: $(sha256sum "$sb" | cut -d' ' -f1)" \
-      "archive-sha256 (independently inspected): a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489" \
-      "per-file prior-hash comparison: UNAVAILABLE (no per-file hash pinned)" \
+      "cft-archive sha256: a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489 (198335306 bytes; independently inspected)" \
+      "cft-chrome sha256: $(sha256sum "$cb" | cut -d' ' -f1) (verified against pin adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0)" \
+      "cft-helper sha256: $(sha256sum "$sb" | cut -d' ' -f1) (verified against pin be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314)" \
       > /opt/meri-worker/cft-hashes.txt; \
     cat /opt/meri-worker/cft-hashes.txt
 

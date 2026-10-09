@@ -7,9 +7,10 @@ interrupted on a test hang; stage 3 fixed the hang and committed `bf72484`; stag
 4 applied review repairs and committed `a5d6f0e`; stage 5 corrected pinned-browser
 handling and committed `3d85f4a`; stage 6 fixed the first-build apt poppler pin
 (`4f69d68`, integrated; the probe-only candidate then built and was ECR-scanned);
-this is the stage-7 security recipe-refresh continuation of the same session)
+stage 7 refreshed the security recipe (`e68c796`); this is the stage-8 narrow
+evidence-repair continuation of the same session)
 Branch/worktree (cwd): `hermes/w02-image` at `C:\dev\main\meri-greenfield-worktrees\w02-image`
-Base commit: `4f69d68f78052c6509f8441a02433fd15d87e8cc`
+Base commit: `e68c796b5151defcf6a58ceede7f1480400b01ee`
 Result: HEAD of this task commit (full SHA returned in the handoff message)
 
 Preparation only. Green offline checks prove local structural/path/parsing
@@ -120,26 +121,66 @@ Chromium/Python-library pins):
   main/security), then `apt-get -y --no-remove dist-upgrade` refreshes ALL
   inherited packages from the signed fixed sources (no-removal; fails rather than
   silently removing).
-- 10 of 12 critical findings have current bookworm fixes now applied: perl
-  5.36.0-7+deb12u4 (CVE-2026-12087/-13221/-57433/-8376/-42496; -8376 is 32-bit
-  specific), libnss3 2:3.87.1-1+deb12u4 (CVE-2026-16389), libgnutls30
-  3.7.9-2+deb12u7 (CVE-2026-33845/-42010), python3.11 3.11.2-6+deb12u9
+- Pending real build/rescan (NOT yet verified): the refreshed pins + no-removal
+  dist-upgrade are EXPECTED to carry current bookworm fixes for 10 of 12 critical
+  findings: perl 5.36.0-7+deb12u4 (CVE-2026-12087/-13221/-57433/-8376/-42496;
+  -8376 is 32-bit specific), libnss3 2:3.87.1-1+deb12u4 (CVE-2026-16389),
+  libgnutls30 3.7.9-2+deb12u7 (CVE-2026-33845/-42010), python3.11 3.11.2-6+deb12u9
   (CVE-2026-19445; server-SNI specific), libssl3/openssl 3.0.22-1~deb12u1
   (CVE-2026-75803). Still open: CVE-2026-95210 (GnuTLS) and CVE-2026-52490
   (tiff/tiffcrop 4.5.0-6+deb12u4) — recorded, not suppressed, not called
   unreachable. Package metadata is not a completed security audit and does not
-  establish zero vulnerabilities.
-- Build-time byte/version evidence added: full `dpkg-query` inventory to
-  `/opt/meri-worker/os-installed-packages.txt`, Node/Python/LibreOffice versions
-  to `runtime-versions.txt`, the pinned SDK Linux binary SHA256 verified against
-  `4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358`, and CFT
-  chrome/chrome_sandbox hashes recorded to `cft-hashes.txt` (per-file comparison
-  to a prior hash is UNAVAILABLE: only the archive sha256 `a24546e0...` was
-  independently inspected — recorded, not claimed).
+  establish zero vulnerabilities; the refreshed candidate is UNBUILT and the
+  prior candidate's 12 CRITICAL / 64 HIGH findings remain outstanding until a
+  targeted real build and rescan.
+- Build-time byte/version evidence: full `dpkg-query` inventory written and then
+  emitted to real build stdout (fail-closed; no unchecked pipeline), Node/Python
+  versions captured with checked commands and LibreOffice `--version` captured
+  with `HOME=/tmp`, stderr preserved and a nonempty `LibreOffice <n>` required
+  (no placeholder counts as success), the pinned SDK Linux binary SHA256 verified
+  against `4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358`, and
+  the installed CFT chrome/chrome_sandbox byte-verified against the
+  independently inspected per-file pins (chrome `adf078f8...`, chrome_sandbox
+  `be9f5d4b...`) at `/opt/meri-browsers/chromium-1247/chrome-linux64/`.
 
 Docker is unavailable here; no build/scan was attempted. The known missing
 direct-IP egress probe remains a separate, later gap; no browser/Office/network/
 session/proxy code was rewritten.
+
+## Stage-8 evidence repair (build-output hardening + CFT per-file pins)
+
+Narrow repair at base `e68c796`; only Dockerfile, component-pins.json,
+probes/static.test.mjs and this report changed (README already correct).
+- Dockerfile now writes the complete `dpkg-query` inventory and then emits it to
+  real build stdout, failing closed on dpkg-query error or empty output (the old
+  `dpkg-query | sort` pipeline masked its status).
+- Runtime versions are captured with checked commands: `node --version` and
+  `python3 --version` fail the build if they fail; `HOME=/tmp soffice --version`
+  captures stdout and stderr, and a nonempty `LibreOffice <n>` is required. The
+  old silent `2>/dev/null | head` with an "unavailable" fallback (which could
+  count as success) is removed. Exact collected versions are printed.
+- CFT per-file pins added and byte-verified at the established image paths:
+  `/opt/meri-browsers/chromium-1247/chrome-linux64/chrome` =
+  `adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0` and
+  `.../chrome_sandbox` =
+  `be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314`, from the
+  archive `chrome-linux64.zip` (`a24546e0...`, 198335306 bytes) independently
+  inspected by Codex + subagent (provenance: integration-repo report
+  `docs/coordination/reports/W02-01-BUILD-ACCEPTANCE.md`). Root ownership, mode
+  4755 helper, read-only/nonroot/dropALL and all app/browser pins are preserved;
+  no browser execution on the authoring host.
+- Handoff corrected to current adopted values (Node 24.21.0, snapshot
+  `20261009T000000Z`, CA `20250419~deb12u1`), the "10 of 12 fixes applied" claim
+  replaced with targeted pending real build/rescan language, and an official base
+  license/source reference added (license audit honestly INCOMPLETE).
+- Prior runtime-probe evidence recorded (runtime code unchanged this stage): task
+  `cfcc4a32e3ea45a7be898d322f663411` started in isolated Fargate after the exact
+  DNS repair and STOPPED exit 1 at 2026-10-09T20:57:40Z. Identity/mounts/
+  read-only-root/SDK-static/DNS controls PASSED; browser `--sandbox` failed
+  FATAL No usable sandbox and XLSX recalc returned null. These are FAILED G1
+  probes under the OLD recipe, NOT proof of universal Fargate incompatibility;
+  sandbox is not weakened and failures are not hidden. Independent diagnosis and
+  a separate runtime-probe repair follow.
 
 ## Changed files (the fifteen owned tracked paths)
 
@@ -149,11 +190,11 @@ session/proxy code was rewritten.
 | apps/worker/qualification/package-lock.json | ed0c7329cd1cd24487848f4bf6fcf5cfd97f877f17b25240fd4c255d385f58b4 |
 | apps/worker/qualification/.gitignore | 69f504fac53d1b2ff914d4f3c297f638bfad612e3080a8e070a9c20b02581536 |
 | apps/worker/qualification/.dockerignore | 1bb5cd790f07faeec7b85b5b9fc2291d6461b82fe0d1150e1085f971c6eccfda |
-| apps/worker/qualification/Dockerfile | 0843ebd51637fd40edb6b8baf52d921a4fe68a61166997c4752cc0cf6d9306b1 |
+| apps/worker/qualification/Dockerfile | 112b5831d235b575e078221e546e00304826d0a109b6aeb53458af7c54097359 |
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
-| apps/worker/qualification/component-pins.json | 2e206599a9b6bbf00e7b284b75c68297be82c650e55fe52e4cf37bee10d9e958 |
+| apps/worker/qualification/component-pins.json | 312d4cd3de149312932205e6d55a6af8a3c7af504474c2b54b8d67b7eb0d012a |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | 9b55dd3f8eda5966fd2826bd79118ca3c17d84f720d7d8a02fb73b6d4b175ddb |
+| apps/worker/qualification/probes/static.test.mjs | 1809cfbb06a74849176d0729ddd3267ee2dd66dd5c6d8a20287d796238e86c49 |
 | apps/worker/qualification/probes/runtime.mjs | d52d3812eda58eacc6a516fc9c78b90bcd95b3886583a5d2883ce5189092b64a |
 | apps/worker/qualification/probes/browser.mjs | c4e6f59d8f11e6f465c136d045ab9701d257fbd5fa27d8c9a118a04c61841324 |
 | apps/worker/qualification/probes/artifacts.mjs | 2fe50c87d727b95e3a37341e375c0e467af6a26582859d1b684b5ea5ff7b37ed |
@@ -169,11 +210,11 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 58 / pass 58 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 61 / pass 61 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 49 → 58 (stage 5/6 plus stage-7 base/snapshot/pin, dist-upgrade
-and prior-built-vs-unbuilt assertions). All non-vacuous.
+Nested suite grew 58 → 61 (stage-8 CFT per-file, build-evidence fail-closed and
+runtime-probe-evidence assertions). All non-vacuous.
 
 ## Adopted versions, licenses and integrity
 
@@ -188,10 +229,16 @@ and prior-built-vs-unbuilt assertions). All non-vacuous.
   `chrome-linux64.zip`, SHA-256 `a24546e0…`, helper `chrome_sandbox`.
 - Python (hash-pinned): python-docx 1.2.0, XlsxWriter 3.2.9, openpyxl 3.1.5,
   pypdf 6.20.0; transitives lxml 6.1.3, et_xmlfile 2.0.0, typing_extensions 4.16.0.
-- OS: base `node:24.9.0-bookworm-slim@sha256:3e69116c…`; Debian repositories
-  pinned to snapshot `20260901T000000Z` (main + security) with signature
-  verification and source-scoped `Check-Valid-Until: no`; candidate packages plus
-  `ca-certificates=20230311+deb12u1` resolved to exact versions.
+- OS: base `node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20`
+  (linux/amd64 manifest `sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd`);
+  Debian repositories pinned to snapshot `20261009T000000Z` (main + security) with
+  signature verification and source-scoped `Check-Valid-Until: no`; direct pins at
+  the highest snapshot candidates plus `ca-certificates=20250419~deb12u1`, then a
+  no-removal `apt-get -y --no-remove dist-upgrade`. Base license/source:
+  https://raw.githubusercontent.com/nodejs/node/v24.21.0/LICENSE ,
+  https://nodejs.org/en/blog/release/v24.21.0 ,
+  https://raw.githubusercontent.com/docker-library/official-images/master/library/node ;
+  license audit INCOMPLETE (links recorded, notice files/full audit not retained).
 - Per-file license SHA-256 recorded in `component-pins.json` `licenseFiles`.
   This is NOT a completed license audit.
 
