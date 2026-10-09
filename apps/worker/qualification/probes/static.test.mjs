@@ -583,7 +583,7 @@ test('decideNative fails when generation or PPTX inspection fails', () => {
 });
 
 test('decideRecalc requires successful conversion, a NEW file and observed numeric 6', () => {
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: OBS_GOOD }).status, 'pass');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: OBS_GOOD, inspect: { status: 0, parseOk: true, nestedOk: true } }).status, 'pass');
   assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, observed: OBS_GOOD }).status, 'fail');
   assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: { inspected: false } }).status, 'fail');
   assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, observed: OBS_GOOD }).status, 'fail');
