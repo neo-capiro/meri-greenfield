@@ -1,0 +1,147 @@
+{
+  "schema": "meri.qualification.component-pins/1",
+  "generatedAt": "2026-10-09T16:50:00Z",
+  "status": "preparation-only",
+  "notes": [
+    "W02-02 trusted model proxy recipe candidates. Preparation only: nothing here is an accepted runtime, built image, deployed proxy or live qualification.",
+    "Hashes and digests were read from upstream PyPI/GitHub/ghcr metadata and from artifacts downloaded into owned scratch (apps/proxy/qualification/.runtime, never committed) during this session.",
+    "Registry license labels are not a completed license audit. The MIT label covers content OUTSIDE the enterprise/ directory only; no enterprise feature is adopted.",
+    "assembledImageDigest stays null until Codex performs a real isolated build and records the immutable digest.",
+    "No secret value, real key or customer/source content is recorded here.",
+    "The offline reference uses an immutable credential registry (deep-frozen snapshot), a deep-frozen branded request DTO with private WeakMap provenance, a separate trusted token-count observation bound to the canonical raw-request hash, and budget settlement/reconciliation that re-checks combined committed spend. char/4 is NOT a verified token bound."
+  ],
+  "assembledImageDigest": null,
+  "upstream": {
+    "package": "litellm",
+    "version": "1.104.2",
+    "pypiPublished": "2026-10-08",
+    "requiresPython": ">=3.10,<3.15",
+    "sourceCommit": "fc3920bf403124ad075bc04990f999f7e0612e12",
+    "sourceCommitVerifiedAs": "GitHub tag v1.104.2 resolves to this commit; the published image OCI revision label equals it",
+    "licenseExpression": "MIT (package metadata License-Expression)",
+    "licenseScope": "content outside enterprise/ is MIT; enterprise/ has a separate license (enterprise/LICENSE.md); no enterprise feature adopted",
+    "artifacts": {
+      "wheelLinuxX86_64": {
+        "file": "litellm-1.104.2-cp310-abi3-manylinux_2_28_x86_64.whl",
+        "bytes": 36850695,
+        "sha256": "416c3538ea78b08d637ec45564a919232aa2093e73adb9dd7752f7cff2ec585e",
+        "sha256Verified": true
+      },
+      "sdist": {
+        "file": "litellm-1.104.2.tar.gz",
+        "bytes": 19706913,
+        "sha256": "f766de3dd38b977ca70f17f409df04c0a9a3e90aed82582a965d348b6e2fe399",
+        "sha256Verified": true
+      }
+    },
+    "licenseFiles": [
+      { "path": "LICENSE (outer, MIT + enterprise carve-out)", "sha256": "b170d6bf8e8835dd357e011681db028f4d51e2fb0ea892058f56e01fb39b8273" },
+      { "path": "enterprise/LICENSE.md (separate license)", "sha256": "a3160d1176cb556447255ca8652855486d681f8025550291828796a439e1b2f9" }
+    ]
+  },
+  "containerImage": {
+    "repository": "ghcr.io/berriai/litellm",
+    "tag": "v1.104.2",
+    "tagResolvedAt": "2026-10-09",
+    "indexDigest": "sha256:3d88bd757134a00e8c00237b85a021ab1f6d54abb9c1df750f411dbe7256a500",
+    "platformManifestDigestLinuxAmd64": "sha256:ff11074add7b1cee63759b90eb2a9e4072763e520297761ea05a911b4a5b251d",
+    "configDigestLinuxAmd64": "sha256:db4055eec62df7f5f23828795de317b1856275178688ce1735ca16e1b343044c",
+    "ociRevisionLabel": "fc3920bf403124ad075bc04990f999f7e0612e12",
+    "baseImageLabel": "Chainguard wolfi-base",
+    "defaultUser": "root",
+    "nonRootSuitability": "NOT VERIFIED (image config User=root; non-root + read-only-root-filesystem requires live isolated verification and blocks later live use)",
+    "signatureVerification": "NOT VERIFIED (no cosign/signature check performed)",
+    "prismaToolchain": "present (PRISMA_OFFLINE_MODE=true, PRISMA_BINARY_CACHE_DIR=/opt/prisma/binaries) for Postgres-backed virtual keys; no migration run in this ticket",
+    "pinnedAs": "FROM ghcr.io/berriai/litellm@sha256:3d88bd75... (index digest, never the moving tag)"
+  },
+  "configLoader": {
+    "finding": "proxy_server.py load_config reads the config file with yaml.safe_load",
+    "evidence": "litellm/proxy/proxy_server.py:5231 yaml.safe_load(file); :5252 yaml.safe_load(config_file)",
+    "implication": "JSON is accepted as a YAML subset, so proxy-config.json is a valid config document"
+  },
+  "verifiedConfigFields": {
+    "modelList": "model_list[].model_name + litellm_params.model + aws_region_name",
+    "routerSettings": ["num_retries", "allowed_fails", "fallbacks", "context_window_fallbacks"],
+    "generalSettings": ["fail_closed_budget_enforcement", "disable_budget_reservation", "database_url", "master_key"],
+    "litellmSettings": ["drop_params", "callbacks", "turn_off_message_logging", "redact_messages_in_exceptions", "redact_user_api_key_info"],
+    "secretRefs": "os.environ/<VAR> references are resolved by the config loader (proxy_server.py:5512-5542)",
+    "litellmSettingsPlacement": "unrecognised litellm_settings keys are applied with setattr(litellm, key, value) (proxy_server.py:6380-6388), so the redaction flags below are supported config placements"
+  },
+  "loggingRedaction": {
+    "upstreamDefaults": {
+      "turn_off_message_logging": false,
+      "redact_messages_in_exceptions": false,
+      "redact_user_api_key_info": false
+    },
+    "evidence": [
+      "litellm/__init__.py:204 turn_off_message_logging = False",
+      "litellm/__init__.py:211 redact_messages_in_exceptions = False",
+      "litellm/__init__.py:212 redact_user_api_key_info = False",
+      "litellm/litellm_core_utils/exception_mapping_utils.py:2407 appends `Messages: ...` to the exception when redact_messages_in_exceptions is False"
+    ],
+    "prepared": "proxy-config.json sets turn_off_message_logging=true, redact_messages_in_exceptions=true, redact_user_api_key_info=true under litellm_settings; a regression test asserts these and that callbacks stays empty",
+    "note": "Empty callbacks is NOT redaction. Necessary non-content billing metadata is preserved; no prompt/completion/tool payload, bearer key or credential is logged. No logging server was run."
+  },
+  "retryLimitation": {
+    "finding": "router_settings.num_retries=0 does not disable BaseAnthropicMessagesConfig.max_retry_on_anthropic_messages_http_error, which is a hardcoded @property returning 2 with no config/env knob",
+    "evidence": [
+      "litellm/llms/base_llm/anthropic_messages/transformation.py:151-176 max_retry_on_anthropic_messages_http_error returns 2; should_retry only on HTTP 400 invalid-thinking-signature",
+      "litellm/llms/custom_httpx/llm_http_handler.py:1851-1916 _async_post_anthropic_messages_with_http_error_retry loops up to max_attempts and re-signs/re-sends the mutated body"
+    ],
+    "mitigation": "the strict raw classifier denies any 'thinking' field, so an admitted request cannot carry the encrypted thinking/signature blocks that trigger this path",
+    "residualGap": "unmitigated for unqualified features: no supported config disables this upstream retry, so 'all provider attempts disabled' is NOT claimed. Requires later no-retry wire evidence before live use."
+  },
+  "bedrockRoute": {
+    "clientAlias": "meri-sonnet-qualification",
+    "upstreamModel": "bedrock/invoke/us.anthropic.claude-sonnet-4-6",
+    "awsRegion": "us-east-1",
+    "normalizedAwsModelId": "us.anthropic.claude-sonnet-4-6",
+    "endpoint": "POST /v1/messages (anthropic_endpoints/endpoints.py:120, Depends(user_api_key_auth), route_type anthropic_messages)",
+    "explicitInvokeRationale": "avoids unintentionally exercising the Converse/Mantle/platform translation; no client model_id/api_base/credential override"
+  },
+  "budgetReservation": {
+    "module": "litellm/proxy/spend_tracking/budget_reservation.py",
+    "functions": [
+      "reserve_budget_for_request (line 248)",
+      "reconcile_budget_reservation (line 380)",
+      "release_or_invalidate_budget_reservation (line 451)"
+    ],
+    "authIntegration": "litellm/proxy/auth/user_api_key_auth.py:3094-3112 (skip when disable_budget_reservation is True; fail_closed_budget_enforcement passed through)",
+    "settings": { "general_settings.fail_closed_budget_enforcement": true, "general_settings.disable_budget_reservation": false },
+    "knownGaps": [
+      "strict mode skips unknown/nonpositive cost estimates (no reservation) — admission must deny these explicitly",
+      "input/output estimator omits cache-creation surcharges; ordinary-input estimates are not a worst-case billing bound",
+      "defaults can fail open on reservation-write failure or reduce a reservation to remaining headroom while allowing the request",
+      "counters are cached/TTL-bound; no-Redis synchronization is in-process only; outstanding reservations are not a durable per-request ledger",
+      "cancellation settles estimated input and releases output; missing actual_cost reconciles as zero; failure cleanup may release to zero",
+      "global litellm.max_budget is a cached aggregate read check, not an atomic reservation scope"
+    ],
+    "authoritativeCeiling": "safe integer 10000000 microUSD (application reference), one non-resetting qualification team max_budget=10 covering every task/attempt key"
+  },
+  "admissionHook": {
+    "adoption": "OSS CustomLogger instance registered under litellm_settings.callbacks",
+    "signature": "async_pre_call_hook(self, user_api_key_dict, cache, data, call_type) (litellm/integrations/custom_logger.py:413)",
+    "streamingHook": "async_post_call_streaming_iterator_hook(self, user_api_key_dict, response, request_data) (custom_logger.py:522)",
+    "callType": "anthropic_messages",
+    "note": "awaited before provider dispatch; exceptions propagate; raise an explicit denial rather than returning a string. Not implemented in this ticket; callbacks is left empty.",
+    "duringCallWarning": "async_moderation_hook/during-call runs concurrently with the model and cannot authorize/reserve before spend",
+    "customAuthWarning": "replacing general_settings.custom_auth skips common checks unless general_settings.custom_auth_run_common_checks:true; prefer native virtual-key auth plus the pre-call extension"
+  },
+  "credentialBinding": {
+    "model": "trusted server-side registry keyId -> immutable opaque grant; the caller-supplied key object and HTTP headers are NEVER the grant",
+    "grantFields": ["keyId", "model (exact alias)", "allowedRoutes (exact nonempty)", "state", "expiresAt", "policyRevision", "binding (RunBinding)"],
+    "comparison": "grant.binding is compared to the authenticated broker task observation AND the authoritative active run attempt/worker/fence/policy; absent/malformed fields deny instead of comparing undefined===undefined",
+    "provenanceNote": "trustedIdentity.source === 'broker' is FIXTURE PROVENANCE ONLY and is not an authenticator"
+  },
+  "frozenContractBoundary": {
+    "contracts": "0.1.0",
+    "statement": "CapabilityClaims has no inference action and only meri-gateway/meri-broker audiences. This ticket adds no model.invoke action, no proxy audience and no shared field. A broker-to-proxy internal inference grant/issuance interface must be proposed to Codex separately."
+  },
+  "unresolvedPins": [
+    "Assembled image digest (assembledImageDigest null until a real isolated build)",
+    "Image signature (cosign) verification",
+    "Non-root / read-only-root-filesystem suitability of the upstream image",
+    "Postgres/Redis state topology, least privilege and migration IDs (none allocated)",
+    "Exact SDK 0.3.295 / CLI 2.1.295 Anthropic Messages header/feature/tool/stream/cancel/resume behaviour"
+  ]
+}

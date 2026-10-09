@@ -1,0 +1,193 @@
+{
+  "schema": "meri.qualification.proxy-policy-fixture/1",
+  "generatedAt": "2026-10-09T16:45:00Z",
+  "status": "preparation-only",
+  "synthetic": true,
+  "warnings": [
+    "ALL identity, key, token-count and price values here are SYNTHETIC fixtures. They are NOT real credentials and NOT current Bedrock prices.",
+    "Pricing below is invented round-number fixture data used only to exercise safe-integer microUSD arithmetic. Freeze verified current Bedrock pricing/token limits before any paid test.",
+    "The credential registry is a trusted server-side fixture map keyId -> immutable opaque grant. A caller-supplied key object or headers are NEVER treated as the grant.",
+    "trustedIdentity.source === 'broker' is FIXTURE PROVENANCE ONLY; the string is not an authenticator. Production identity must arrive over an authenticated broker channel.",
+    "No secret value, real key, tenant or customer content is present. The fixture references the frozen RunBinding/Budgets shapes by structure only.",
+    "Token-count bounds are a SEPARATE trusted internal observation created by createTrustedCountObservation from the classified raw request (FIXTURE PROVENANCE). char/4 is NOT a verified worst-case bound and wire-body token claims cannot supply the bound."
+  ],
+  "qualificationCeilingMicrousd": 10000000,
+  "nativeTeamMaxBudgetUsd": 10,
+  "modelAlias": "meri-sonnet-qualification",
+  "upstreamModel": "bedrock/invoke/us.anthropic.claude-sonnet-4-6",
+  "nativeModelId": "us.anthropic.claude-sonnet-4-6",
+  "awsRegion": "us-east-1",
+  "messagesRoute": "/v1/messages",
+  "messagesMethod": "POST",
+  "allowedBetas": [],
+  "pricing": {
+    "revision": "synthetic-2026-10-09",
+    "note": "SYNTHETIC microUSD-per-token (== dollars per million tokens). NOT Bedrock prices.",
+    "models": {
+      "meri-sonnet-qualification": {
+        "inputPerMTok": 3,
+        "outputPerMTok": 15,
+        "maxInputTokens": 200000,
+        "maxOutputTokens": 64000
+      }
+    }
+  },
+  "budgets": {
+    "maxTurns": 40,
+    "maxRuntimeSeconds": 3600,
+    "maxCostMicrousd": 10000000,
+    "maxOutputBytes": 1048576
+  },
+  "binding": {
+    "tenantId": "synthetic-tenant-a",
+    "actorId": "synthetic-actor-a",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "22222222-2222-4222-8222-222222222222",
+    "attemptId": "33333333-3333-4333-8333-333333333333",
+    "workerId": "44444444-4444-4444-8444-444444444444",
+    "writerFence": 1
+  },
+  "policyRevision": "policy-synthetic-1",
+  "trustedIdentity": {
+    "source": "broker",
+    "tenantId": "synthetic-tenant-a",
+    "actorId": "synthetic-actor-a",
+    "conversationId": "11111111-1111-4111-8111-111111111111",
+    "runId": "22222222-2222-4222-8222-222222222222",
+    "attemptId": "33333333-3333-4333-8333-333333333333",
+    "workerId": "44444444-4444-4444-8444-444444444444",
+    "writerFence": 1,
+    "policyRevision": "policy-synthetic-1"
+  },
+  "credentialRegistry": [
+    {
+      "keyId": "synthetic-key-1",
+      "grant": {
+        "keyId": "synthetic-key-1",
+        "model": "meri-sonnet-qualification",
+        "allowedRoutes": ["/v1/messages"],
+        "state": "active",
+        "expiresAt": "2026-10-09T23:00:00Z",
+        "policyRevision": "policy-synthetic-1",
+        "binding": {
+          "tenantId": "synthetic-tenant-a",
+          "actorId": "synthetic-actor-a",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        }
+      }
+    },
+    {
+      "keyId": "synthetic-key-old",
+      "grant": {
+        "keyId": "synthetic-key-old",
+        "model": "meri-sonnet-qualification",
+        "allowedRoutes": ["/v1/messages"],
+        "state": "active",
+        "expiresAt": "2026-10-09T23:00:00Z",
+        "policyRevision": "policy-synthetic-1",
+        "binding": {
+          "tenantId": "synthetic-tenant-a",
+          "actorId": "synthetic-actor-a",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "99999999-9999-4999-8999-999999999999",
+          "workerId": "88888888-8888-4888-8888-888888888888",
+          "writerFence": 1
+        }
+      }
+    },
+    {
+      "keyId": "synthetic-key-revoked",
+      "grant": {
+        "keyId": "synthetic-key-revoked",
+        "model": "meri-sonnet-qualification",
+        "allowedRoutes": ["/v1/messages"],
+        "state": "revoked",
+        "expiresAt": "2026-10-09T23:00:00Z",
+        "policyRevision": "policy-synthetic-1",
+        "binding": {
+          "tenantId": "synthetic-tenant-a",
+          "actorId": "synthetic-actor-a",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        }
+      }
+    },
+    {
+      "keyId": "synthetic-key-expired",
+      "grant": {
+        "keyId": "synthetic-key-expired",
+        "model": "meri-sonnet-qualification",
+        "allowedRoutes": ["/v1/messages"],
+        "state": "active",
+        "expiresAt": "2026-10-09T19:59:59Z",
+        "policyRevision": "policy-synthetic-1",
+        "binding": {
+          "tenantId": "synthetic-tenant-a",
+          "actorId": "synthetic-actor-a",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        }
+      }
+    },
+    {
+      "keyId": "synthetic-key-wildcard",
+      "grant": {
+        "keyId": "synthetic-key-wildcard",
+        "model": "*",
+        "allowedRoutes": [],
+        "state": "active",
+        "expiresAt": "2026-10-09T23:00:00Z",
+        "policyRevision": "policy-synthetic-1",
+        "binding": {
+          "tenantId": "synthetic-tenant-a",
+          "actorId": "synthetic-actor-a",
+          "conversationId": "11111111-1111-4111-8111-111111111111",
+          "runId": "22222222-2222-4222-8222-222222222222",
+          "attemptId": "33333333-3333-4333-8333-333333333333",
+          "workerId": "44444444-4444-4444-8444-444444444444",
+          "writerFence": 1
+        }
+      }
+    }
+  ],
+  "rawMessages": {
+    "method": "POST",
+    "path": "/v1/messages",
+    "headers": {
+      "content-type": "application/json",
+      "anthropic-version": "2023-06-01"
+    },
+    "body": {
+      "model": "meri-sonnet-qualification",
+      "max_tokens": 512,
+      "stream": true,
+      "system": "You are a synthetic qualification assistant.",
+      "messages": [
+        { "role": "user", "content": "hello" },
+        {
+          "role": "assistant",
+          "content": [{ "type": "tool_use", "id": "toolu_1", "name": "local_echo", "input": { "text": "hi" } }]
+        },
+        {
+          "role": "user",
+          "content": [{ "type": "tool_result", "tool_use_id": "toolu_1", "content": "hi" }]
+        }
+      ],
+      "tools": [
+        { "name": "local_echo", "description": "Echo text locally.", "input_schema": { "type": "object", "properties": { "text": { "type": "string" } }, "required": ["text"] } }
+      ],
+      "tool_choice": { "type": "auto" }
+    }
+  }
+}
