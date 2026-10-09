@@ -148,12 +148,15 @@ class RuntimeStack extends Stack {
         `logs.${target.region}.amazonaws.com`,
         `prod-${target.region}-starport-layer-bucket.s3.${target.region}.amazonaws.com`,
         `prod-${target.region}-starport-layer-bucket.s3.amazonaws.com`,
+        // Observed CNAME target of the regional ECR-layer bucket; retain full
+        // redirection inspection rather than trusting a blocked target.
+        `s3-r-w.${target.region}.amazonaws.com`,
       ],
     });
     const blockedDns = new resolver.CfnFirewallDomainList(this, 'BlockedDns', { name: 'meri-greenfield-qualification-deny', domains: ['*'] });
     const dnsRules = new resolver.CfnFirewallRuleGroup(this, 'DnsRules', {
       name: 'meri-greenfield-qualification', firewallRules: [
-        { action: 'ALLOW', firewallDomainListId: allowedDns.attrId, priority: 100 },
+        { action: 'ALLOW', firewallDomainListId: allowedDns.attrId, priority: 100, firewallDomainRedirectionAction: 'INSPECT_REDIRECTION_DOMAIN' },
         { action: 'BLOCK', blockResponse: 'NXDOMAIN', firewallDomainListId: blockedDns.attrId, priority: 200 },
       ],
     });

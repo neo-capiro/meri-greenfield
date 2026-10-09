@@ -1,18 +1,19 @@
 # Component adoption and qualification register
 
-Prepared 9 October 2026. Exact versions below were read from upstream npm/PyPI registry metadata during discovery. Contract and CDK development dependencies are installed and lockfile-pinned. Runtime versions remain qualification candidates; no assembled runtime, binary image digest or compatibility is accepted. Recheck package contents/license notices and retain exact hashes/digests in the W02 result before G1. No current Capiro package is imported.
+Updated 9 October 2026. Contract and CDK dependencies are installed and locked. Worker preparation4f69d68 has passed separate Hermes review plus independent15+56 checks, and integrationf4f008f built successfully. Its immutable digest is recorded below for a bounded synthetic isolation probe only. No application runtime/component set or G1 is accepted. Package notices/hashes are recorded in apps/worker/qualification/component-pins.json; security remediation and actual runtime compatibility remain open. No current Capiro package is imported.
 
 | Subsystem | Package and exact candidate | Registry license | Status |
 | --- | --- | --- | --- |
 | Schema validation | ajv 8.20.0; ajv-formats 3.0.1 | MIT | installed, npm lock integrity; 10 boundary tests pass |
 | Canonical JSON hashing | canonicalize 5.1.0 | Apache-2.0 | installed, npm lock integrity; approval-hash tests pass |
 | Agent harness | @anthropic-ai/claude-agent-sdk 0.3.295 | SEE LICENSE IN README.md | inspect bundled runtime and commercial terms; qualify official SessionStore/configuration |
-| Runtime CLI reference | @anthropic-ai/claude-code 2.1.295 | SEE LICENSE IN README.md | discover actual SDK bundled CLI; do not assume separately installed versions match |
-| UI transport | ai 7.0.137 | Apache-2.0 | UI transport only; no second model loop |
+| Runtime CLI reference | SDK-bundled CLI 2.1.295 / platform package0.3.295 | SEE LICENSE IN README.md | no standalone CLI added; published linux-x64 binary checksum pinned; actual container version remains to be measured |
+| UI transport | @ai-sdk/react4.0.140 with exact ai7.0.137 | Apache-2.0 | exact published dependency/API/license inspection in docs/qualification/UI-TRANSPORT-CANDIDATE.md; producer/consumer/reconnect fixture not run; no second model loop |
 | UI components | ai-elements 1.9.0 | Apache-2.0 | inspect official installation workflow and component compatibility |
 | UI framework | next 16.4.0; react 19.3.0 | MIT | qualify combined UI dependency compatibility |
 | Browser | @playwright/mcp 0.0.83 with exact playwright/playwright-core 1.64.0-alpha-1790635538000 | Apache-2.0 | selected MCP qualification candidate; matched Chromium revision 1247, version 155.0.8059.12; static package inspection only |
-| Durable execution | @temporalio/worker 1.24.0 | MIT | pin compatible TypeScript packages and production server/image separately |
+| Durable execution | Temporal server1.32.1 / matching TypeScript packages1.24.0 | MIT | source/schema/topology candidates in docs/qualification/PROXY-TEMPORAL-DECISIONS.md; platform image digest, PostgreSQL compatibility and narrow compile/runtime qualification remain open |
+| Trusted model proxy | LiteLLM1.104.2 | OSS MIT; Enterprise separately licensed | inspected exact release source and Bedrock adapter; bounded offline Hermes preparation running; image/service/auth/budget/SDK wire behavior unqualified |
 | Identity | @clerk/backend 3.23.1 | MIT | new authoritative identity bridge, current membership checks |
 | Storage client | @aws-sdk/client-s3 3.1148.0 | Apache-2.0 | service-side scoped storage APIs |
 | Infrastructure | aws-cdk-lib 2.273.0; aws-cdk 2.1145.0; constructs 10.8.1 | Apache-2.0 | installed, root lock integrity; bootstrapless qualification synthesis; 6 static boundary checks; new Build stack CREATE_COMPLETE |
@@ -24,7 +25,7 @@ Prepared 9 October 2026. Exact versions below were read from upstream npm/PyPI r
 | Observability | @opentelemetry/api 1.9.1 | Apache-2.0 | candidate; pin matching SDK/exporters after integration choice |
 | Development worker | installed Hermes 0.20.0 (2026.8.3) | not bundled in production | actual H00 edit/explicit resume/commit accepted at a398b9ea after independent Hermes review + Codex 15-test rerun; scope/cleanup findings retained |
 
-Still unpinned: Linux base image and digest, LibreOffice and fonts/templates, PostgreSQL, Temporal server, optional OCR. W02-image session is assigned to pin/probe the worker toolchain; local Docker is unavailable. Record upstream license texts/notices and content hashes before bundling. Registry license labels are not a complete license audit.
+Worker Linux candidate: node24.9.0-bookworm-slim indexsha256:3e69116c924bfcba6c6979aff60d966c37aef56d488ce091c69d442ebec9f103, signed Debian snapshot20260901T000000Z, LibreOffice4:7.4.7-1+deb12u14 and explicit open fonts/OS pins. Successful buildaaec4b57 produced ECRsha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837. ECRbasic scan reported12CRITICAL/64HIGH/70MEDIUM/16LOW/3UNDEFINED; this image is NOT security-qualified or accepted for application use. A current security recipe refresh and findings disposition are required before component acceptance. See reports/W02-01-BUILD-2.md. Templates/skill pack, PostgreSQL, proxy/Temporal platform digests and optional OCR remain unqualified. Registry labels are not a complete license audit.
 
 Independent exact-tarball inspection confirmed SDK 0.3.295 declares bundled Claude Code 2.1.295 and platform binaries at 0.3.295. SessionStore is best-effort: append failures can emit mirror_error and drop batches; it cannot be combined with persistSession:false or enableFileCheckpointing:true. Use separate broker-verified workspace snapshots and fail closed if expected remote state is missing. The pinned SDK supports explicit settingSources:[] and settings.autoMemoryEnabled:false; do not rely on omitted settings defaults.
 

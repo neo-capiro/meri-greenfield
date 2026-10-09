@@ -63,8 +63,10 @@ test('DNS has exact allow names followed by a wildcard block', () => {
   assert(lists.some(l => l.Domains.length === 1 && l.Domains[0] === '*'));
   const allow = lists.find(l => l.Domains[0] !== '*');
   assert(allow.Domains.every(d => !d.includes('*') && !d.includes('capiro')));
+  assert(allow.Domains.includes('s3-r-w.us-east-1.amazonaws.com'), 'inspect the observed ECR-layer CNAME target');
   const [rules] = resources(runtime, 'AWS::Route53Resolver::FirewallRuleGroup');
   assert.deepEqual(rules.FirewallRules.map(r => [r.Priority, r.Action]), [[100, 'ALLOW'], [200, 'BLOCK']]);
+  assert.equal(rules.FirewallRules[0].FirewallDomainRedirectionAction, 'INSPECT_REDIRECTION_DOMAIN');
   assert.equal(rules.FirewallRules[1].BlockResponse, 'NXDOMAIN');
   assert.equal(resources(runtime, 'AWS::Route53Resolver::FirewallRuleGroupAssociation').length, 1);
 });

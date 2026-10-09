@@ -1,0 +1,15 @@
+# G1 remaining scope and sequence
+
+Codex independent plan audit, 9 October 2026. The supplied deployment plan's G1 is a bounded real runtime qualification spike plus a production Temporal design decision. Full production HA deployment/restore, durable product broker/UI/command suites and release load/rollback checks belong to W03/G2, W05–W06/G4 and G6. Do not promote W03 before G1, or invent additional full-production prerequisites for G1.
+
+Required qualification evidence still open:
+
+1. Consolidated exact component/image/notice/compatibility set. The second worker build exists but remains probe-only with unresolved scan findings. Actual SDK/CLI/browser/Office binary versions must be measured, and the security refresh reviewed.
+2. Real isolated Fargate UID/read-only-root/writable mounts/capabilities/empty worker role and bounded stop/cleanup; effective Chromium browser AND renderer sandbox; approved public navigation/download after the baseline synthetic loopback test.
+3. Enforced egress: permitted-path positive control, DNS and direct-IP attempts to forbidden public/provider/source paths. Structural controls and the removed direct-IP probe do not satisfy the measurement.
+4. Real SDK query/stream through a qualified trusted proxy, dedicated inert configuration, memory disabled, pinned original curated skill fixture and inert uploaded configuration. Persist opaque transcript plus verified file manifest, interrupt/kill, restore a replacement task at stable cwd, resume, and reject stale publication. H00 covers local Hermes delegation only.
+5. Actual native DOCX/XLSX/PPTX bytes, rendering/inspection/revision and spreadsheet recalculation; collect visual output for review. Measure readiness, memory/disk, export/restore timing and usage/cost for the qualification workload.
+6. Actual pinned proxy Messages/tool/stream/error/cancel behavior, authenticated task/current run/fence authority and enforced aggregate $10 ceiling before paid dispatch. Offline reference checks are preparation only. UI needs compatible exact pins plus a small custom-stream producer/consumer/reconnect fixture.
+7. Explicit Temporal production topology/persistence/authTLS/recovery/upgrade decision with compatible server/SDK/schema/platform pins, PostgreSQL support and capacity/shard assumptions identified. Existing research covers most design substance. A narrow exact-version compatibility fixture supports this decision; a devserver alone cannot replace it. Final production RPO/RTO/retention objectives are later owner decisions before production/G6.
+
+Order: finish baseline Fargate probe and repair measured defects; independently review offline proxy preparation then qualify its live boundary; run SDK session/files/skills recovery spike using accepted image+proxy; independently prepare UI/Office evidence collection; accept Temporal design/compatibility and review the complete G1 evidence. Independent preparation can overlap without promoting dependencies. Live-source G0 scope/identity/principal decisions remain separate. No complete gate has passed.
