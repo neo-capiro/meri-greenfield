@@ -41,8 +41,10 @@ W02 tooling preparation has begun and the owner was notified in this chat. Real 
 
 ## Missing inputs and later decisions
 
+Current tooling state: first image session20261009_152136_008131 stopped partial with no commit/check acceptance and clean process cleanup. Its checkpoint/file hashes are preserved. Codex inspected concrete probe/recipe defects and explicitly resumed that same session under PID33128 with W02-01-IMAGE-STAGE2.md; no automatic restart or new session. No image build or runtime deployment yet. Builder context update is UPDATE_COMPLETE with unchanged project/role identity. User selected Bedrock US-only Sonnet4.6 synthetic tests with $10 aggregate model-test cap (D004); no calls until proxy/budget qualification.
+
 1. Repository/account choice accepted. Bootstrap and bounded Hermes qualification can proceed. Live source integration remains gated; the owner requires eventual Capiro connectivity and notification when tooling integration begins.
-2. New trusted model-proxy provider credential/access mechanism, restricted source endpoint/principal, Clerk identity bridge and actual tenant feature/entitlement matrix are not yet qualified. Existing secret names do not authorize credential reuse.
+2. Bedrock model/profile/US destination regions and synthetic paid-test limit are accepted in D004; a new trusted proxy role/token/budget path remains unqualified. Restricted source endpoint/principal, Clerk identity bridge and actual tenant feature/entitlement matrix remain live-source gaps. Existing secret names do not authorize credential reuse.
 3. Agree numeric revocation propagation deadline before G3; proposed target is at most 30 seconds. Agree retention/legal hold/backup expiry, capability scope and human artifact rubric before their release checks.
 4. Determine numeric task/tenant cost caps from W02 measurements. No universal cost cap or production performance result is invented.
 5. Docker image build path needs qualification because this local daemon is unavailable. A new isolated CodeBuild stack is prepared for the approved AWS target; no existing runner or infrastructure is repurposed. Production CI OIDC remains a later foundation requirement.
