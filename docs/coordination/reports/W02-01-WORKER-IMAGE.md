@@ -265,12 +265,12 @@ static.test.mjs, README.md and this report changed.
 | apps/worker/qualification/.dockerignore | 1bb5cd790f07faeec7b85b5b9fc2291d6461b82fe0d1150e1085f971c6eccfda |
 | apps/worker/qualification/Dockerfile | 5e19c6aa5829221ea61f09a3df82cff5414c53b24119edd004c2cec367842c2c |
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
-| apps/worker/qualification/component-pins.json | a793b7ba2a28e82a4057815ed9bb79a8e800e6ab0cea4c89c2e9fe1af9b82b79 |
+| apps/worker/qualification/component-pins.json | a92a505b8580f1d1d343288fca480f962b2bf9dd67aaca6f81c9f12a6c54b17b |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | 00856594b9417a5ce332e6e0d50d42edef110b922a49d7390126f25a0ef309b5 |
-| apps/worker/qualification/probes/runtime.mjs | 586f400d957ab2518009b40b63ed3d2ad86d9a1cf9ccf15d4ab9b59fc981ef55 |
-| apps/worker/qualification/probes/browser.mjs | e77eddce7011e4fceba1b04cc1b510e892f4b08e6b3133aa6c693153bbd92462 |
-| apps/worker/qualification/probes/artifacts.mjs | df06cabd5571e4b6807437c62bed4ababc439dc0284363e465fd35df235aac19 |
+| apps/worker/qualification/probes/static.test.mjs | ef89b8e353aa63c214d2e9cdfa31d4319a069dd08344a01957b18e9d34682166 |
+| apps/worker/qualification/probes/runtime.mjs | 56873762181926b276fc8283ceb9485d9fd55ef788bd4204b55feef241236716 |
+| apps/worker/qualification/probes/browser.mjs | c09bd204a86c0cbfcdfa397b9b1f6938b078f7b4b3c6989a59d3588db2c481e0 |
+| apps/worker/qualification/probes/artifacts.mjs | 3155bd31447f37b27c512cc2522a46947241c0f3fd74d738bed54920486757d6 |
 | apps/worker/qualification/probes/artifacts.py | b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15 |
 | apps/worker/qualification/README.md | 98ebdbb3f8dad9981b4b35a26ccf040b168da251b759567a68456b32fb7e97e6 |
 | docs/coordination/reports/W02-01-WORKER-IMAGE.md | this file |
@@ -283,11 +283,10 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 79 / pass 79 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 81 / pass 81 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 69 → 79 (stage-10 real-flow substep gating fixtures and Office
-false-pass regressions). All non-vacuous.
+Nested suite grew69 to79 in Hermes Stage10, then81 after separately attributed owner fixes. The current table records owner reruns on final code577e8f0. These are offline checks only.
 
 ## Adopted versions, licenses and integrity
 
@@ -368,3 +367,7 @@ the fifteen owned paths (plus ignored `.runtime/` and nested `node_modules/`).
 Commit the fifteen owned paths; Codex reruns checks, commissions a separate
 read-only Hermes review on the exact SHA, then builds the image and runs the
 isolated Fargate evidence for the NOT RUN gates.
+
+## Owner documentation correction after separate review
+
+Codex corrected stale per-file hashes and test counts after separate review5c976e0. The table now binds exact Git blob bytes at code577e8f07cf0f79029218d8d73fd0166244745cff, not authoring-worktree line endings. Codex thin fixes9225329/9789cd0/577e8f0 are independently attributed in W02-01-CODEX-REVIEW-RUNTIME-REPAIRS.md; they are not Hermes implementation output. This documentation-only commit changes no recipe or runtime code. The previous review remains preserved unchanged as W02-01-IMAGE-REVIEW-577E.md. Final build/probe-only acceptance remains an owner decision after correction verification; no G1/security/runtime pass.
