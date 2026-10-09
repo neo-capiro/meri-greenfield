@@ -126,6 +126,11 @@ finally:
         record['pid']=process.pid
     if job is not None:
         try:
+            # Job accounting can briefly include a parent whose process handle
+            # has already signaled. Allow that bookkeeping to settle before
+            # classifying the remaining count as surviving descendants.
+            if process is not None and process.poll() is not None:
+                job.wait_empty(timeout=0.5)
             remaining=job.active_processes()
             record['processesRemainingAtCleanup']=remaining
             if remaining:

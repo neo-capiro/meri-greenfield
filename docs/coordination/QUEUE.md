@@ -5,8 +5,8 @@ Git-backed task ledger is the selected fallback because no qualified active Herm
 | Task/package | State | Dependencies | Owner/owned paths | Acceptance |
 | --- | --- | --- | --- | --- |
 | W00 discovery | in progress | user decisions/source discovery | Codex, docs/coordination and inventory | real repository/account/region/source/scope decisions |
-| W01 contracts 0.1.0 | independently reviewed, awaiting pinned commit | independent source policy discovery | Codex, packages/contracts and root lockfile | review accepted, 10 checks passed; pinned freeze commit pending |
-| H00 Hermes qualification | prepared, not launched | confirmed repository + accepted W01 freeze | one Hermes implementation session, evals/qualification/hermes-session* and own handoff only | edit/checkpoint/explicit resume/commit; independent Hermes review and Codex rerun |
+| W01 contracts 0.1.0 | frozen at 7a44d575 | independent source policy discovery | Codex, packages/contracts and root lockfile | review accepted, 10 checks passed; contracts/v0.1.0 pinned |
+| H00 Hermes qualification | stage 1 running, unaccepted | confirmed repository + accepted W01 freeze | one Hermes implementation session, evals/qualification/hermes-session* and own handoff only | edit/checkpoint/explicit resume/commit; independent Hermes review and Codex rerun |
 | W02 runtime qualification | queued | W00–W01 + accepted H00 | Lane A, apps/worker/qualification and scoped infra qualification paths | pinned SDK/CLI/Chromium/Office/proxy, Fargate sandbox/egress, interrupt+state/files restore, Temporal topology |
 | W03 isolated foundation | queued | accepted W02 | Lane A, new infra only | G2 new stack, sources disabled, IAM/network/encryption/ownership fixtures |
 | W04 authorization and reads | queued | W01; W03 for live sources | Lane B, apps/gateway and own eval fixtures | G3 all agreed domains, tenant/wall/mail/private-memory/revocation fixtures |
