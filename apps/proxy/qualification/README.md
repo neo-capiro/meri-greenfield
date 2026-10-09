@@ -24,7 +24,7 @@ allocated base `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`.
 | `Dockerfile` | recipe pinning the verified upstream **index digest**; NOT built (no Docker daemon) |
 | `component-pins.json` | exact versions, hashes, digests, license paths and known gaps |
 | `proxy-config.json` | minimal LiteLLM config (JSON accepted as a YAML subset by `yaml.safe_load`) |
-| `policy.fixture.json` | synthetic keys/identity/binding/pricing (NOT real, NOT current Bedrock prices) |
+| `policy.fixture.json` | synthetic credential registry / identity / pricing (NOT real, NOT current Bedrock prices) |
 | `offline-policy.mjs` | pure offline admission/budget **test reference** |
 | `test/offline-policy.test.mjs` | deterministic offline tests (no socket/AWS/model/proxy/DB) |
 
@@ -32,14 +32,15 @@ allocated base `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`.
 
 - LiteLLM `1.104.2` wheel and sdist SHA-256 match the recorded upstream metadata exactly; package `License-Expression: MIT` (content outside `enterprise/`; no enterprise feature adopted).
 - The `ghcr.io/berriai/litellm:v1.104.2` tag resolves to index digest `sha256:3d88bd75...`; the linux/amd64 config's OCI revision label equals the pinned source commit. The image's default user is `root`.
-- The config loader uses `yaml.safe_load`, so `proxy-config.json` is a valid config document; the settings used here exist in this release.
+- The config loader uses `yaml.safe_load`, so `proxy-config.json` is a valid config document; the settings used here exist in this release, including the redaction flags.
 
 ## What is NOT established (blocks later live use)
 
 - No image was built; `assembledImageDigest` is null. No signature (cosign) verification was performed.
 - Non-root / read-only-root-filesystem suitability of the upstream image is **NOT VERIFIED** (image default user is root). No `USER` override is applied, because the upstream entrypoint may require root; live isolated verification is required.
 - No proxy/Postgres/Redis server was started; no migration was run; no database/master/salt value is invented (runtime `os.environ/...` references only).
-- `litellm_settings.callbacks` is deliberately **empty**: the future trusted admission `CustomLogger` instance (proposed registration point for broker admission) is a later bounded ticket. Naming a non-existent handler would break startup.
+- `litellm_settings.callbacks` is deliberately **empty**: the future trusted admission `CustomLogger` instance is a later bounded ticket. Empty callbacks is **not** redaction.
+- `router_settings.num_retries: 0` does **not** disable the upstream `max_retry_on_anthropic_messages_http_error` (a hardcoded `@property` returning 2, with no config/env knob; see `component-pins.json.retryLimitation`). "All provider attempts disabled" is **not** claimed. The strict classifier denies `thinking` blocks so an admitted request cannot trigger that 400 path, but an unqualified feature could still be retried upstream — a mandatory later no-retry wire test.
 - Actual SDK 0.3.295 / CLI 2.1.295 Anthropic Messages header/feature/tool/stream/cancel/resume behaviour, binary-to-SSE translation, usage/cache accounting and retry/no-retry behaviour remain unrun.
 - The offline policy reference is a **test fixture, not a deployed auth service or a replacement for LiteLLM's auth engine**. It opens no socket and proves nothing about real authentication.
 
@@ -48,28 +49,36 @@ allocated base `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`.
 `offline-policy.mjs` models only the application invariants LiteLLM does not
 supply, and is labelled a test reference:
 
-- **Admission**: denies absent/unknown/expired/revoked keys, missing or untrusted
-  caller identity (trusted identity must come from an authenticated broker
-  observation, never caller headers), tenant/actor/conversation/run mismatch,
-  stale attempt/worker/fence/policy revision, inactive/cancelled run, alternate
-  model/route variants and state lookup failure. A stolen key plus forged binding
-  headers cannot authorize a different task; a replaced worker needs a newly
-  issued key after the authoritative fence update.
-- **Feature admission**: freezes a text + ordinary local `tool_use`/`tool_result`
-  subset and rejects unknown betas, context-management, structured-output, speed,
-  container, server-tool, proxy-MCP, credential/routing overrides and unapproved
-  helper models *before* translation (the Bedrock adapter would otherwise drop
-  them silently).
-- **Budget**: safe integer microUSD; reserves worst-case cost before dispatch;
+- **Credential binding**: admission looks the credential ID up in a trusted
+  server-side registry (`keyId -> immutable opaque grant`). The caller-supplied
+  key object and HTTP headers are never the grant. The grant's full `RunBinding`,
+  exact model and exact nonempty `allowedRoutes` are compared to the authenticated
+  broker task observation **and** the authoritative active run
+  attempt/worker/fence/policy. Missing/malformed fields deny (validated with the
+  frozen 0.1.0 `RunBinding` shape) instead of comparing `undefined === undefined`.
+  Old keys fail before TTL; new keys authorize only after the authoritative
+  fence update. `trustedIdentity.source === 'broker'` is fixture provenance only,
+  not an authenticator.
+- **Raw Messages classifier**: a strict parser is the only producer of the trusted
+  request DTO (branded). Unknown/malformed/unsupported fields, credential/routing
+  overrides, and nested server-tool/thinking/context/structured/container/MCP
+  features are denied from their actual raw header/body representation. No silent
+  strip or sanitize-and-pass; unknown bounds fail admission. Actual SDK
+  fields/betas/cache/thinking remain unqualified.
+- **Budget**: safe integer microUSD; worst-case reservation before dispatch;
   denies unknown/nonpositive estimates, missing output bounds, oversize
-  input/output, duplicate request IDs, stale pricing and any reservation that
-  would cross the ceiling. Ambiguous outcomes (missing usage, HTTP200 error,
-  process loss, TTL expiry) keep a retained worst-case hold instead of releasing
-  it; only an explicit pre-dispatch rejection releases cleanly. Budget resets are
-  refused.
-- **Streams**: only a valid `message_start ... message_stop` sequence with usage
-  is a success; semantic failures stay visible and never mark success, execute a
-  partial tool command, refund unknown spend or trigger a retry.
+  input/output, duplicate request IDs, stale pricing and ceiling breaches. Real
+  liability above the reservation bound is surfaced (`OVER_RESERVED_BOUND`) and a
+  breach quarantines the ledger and denies later dispatch — never clamped or
+  fabricated safe. An unresolved hold is retained until explicit trustworthy
+  `provider_reconciliation` evidence; an inconsistent later outcome cannot release
+  it. Budget resets are refused; TTL/process loss keeps the hold.
+- **Streams**: pure synthetic validation requiring ordered message/block
+  lifecycle, unique indexes, immutable block identity/type/tool name/id, matching
+  start/delta/stop, all blocks closed before the final delta/terminal, exactly one
+  terminal with no events after it, and safe complete usage fields. Accumulated
+  tool input must be complete valid JSON before any executable-tool assertion;
+  semantic failures never mark success or expose a partial command.
 
 ## Checks
 

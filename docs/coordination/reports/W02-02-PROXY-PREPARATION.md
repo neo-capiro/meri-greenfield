@@ -23,6 +23,33 @@ check failed); it confirmed the exact twelve owned paths and unchanged protected
 files, re-ran the three checks, added this note, and created one new commit (no
 amend, no push). Source/config/policy findings and all NOT RUN gates above are
 preserved unchanged.
+
+## Repair (Codex rejection of 0575bb4)
+
+Codex rejected commit 0575bb4 despite green checks and exposed six concrete
+defects via a separate review agent and root in-memory reproductions. This
+continuation repaired them offline (no production services, no new provider/SSE
+translator):
+
+1. Authoritative credential binding — admission now resolves the credential ID in
+   a trusted server-side registry (`keyId -> immutable opaque grant`) and compares
+   the grant's full RunBinding/model/routes to the authenticated broker observation
+   AND the authoritative active run; caller key objects/headers are never the
+   grant; missing/malformed fields deny instead of comparing undefined===undefined.
+2. Raw Messages subset — a strict branded classifier/parser is the only trusted
+   request producer; unknown/override/nested features deny from raw headers/body.
+3. Stream validation — full lifecycle/index/identity/usage/terminal invariants and
+   complete-valid tool JSON; truncation never exposes an executable partial.
+4. Settlement invariants — real liability is preserved (no clamp/fabrication);
+   breaches quarantine the ledger and deny later dispatch; unresolved holds need
+   explicit provider reconciliation.
+5. Logging — `turn_off_message_logging`/`redact_messages_in_exceptions`/
+   `redact_user_api_key_info` set true under `litellm_settings` (supported
+   placement) with a regression assertion; empty callbacks is not redaction.
+6. Retry limitation — `max_retry_on_anthropic_messages_http_error` is a hardcoded
+   property with no config knob; documented as an unmitigated gap with the
+   classifier denying `thinking` blocks; no "all attempts disabled" claim.
+
 - Process/checkpoint: single bounded session, one attempt, no retries, no
   delegation, no background scheduler. Owned scratch `apps/proxy/qualification/.runtime/**`
   is ignored and uncommitted.
@@ -87,7 +114,7 @@ Run from the assigned worktree:
 | Command | Exit | Result |
 | --- | --- | --- |
 | `npm run check` (root, Codex-owned, unchanged) | 0 | 15 tests, 15 pass, 0 fail, 0 skipped |
-| `npm --prefix apps/proxy/qualification test` | 0 | 21 tests, 21 pass, 0 fail, 0 skipped |
+| `npm --prefix apps/proxy/qualification test` | 0 | 26 tests, 26 pass, 0 fail, 0 skipped |
 | `git diff --check` | 0 | no whitespace errors |
 
 The nested suite opens no socket and contacts no AWS/model/proxy/DB. Nested

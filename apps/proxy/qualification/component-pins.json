@@ -62,8 +62,33 @@
     "modelList": "model_list[].model_name + litellm_params.model + aws_region_name",
     "routerSettings": ["num_retries", "allowed_fails", "fallbacks", "context_window_fallbacks"],
     "generalSettings": ["fail_closed_budget_enforcement", "disable_budget_reservation", "database_url", "master_key"],
-    "litellmSettings": ["drop_params", "callbacks"],
-    "secretRefs": "os.environ/<VAR> references are resolved by the config loader (proxy_server.py:5512-5542)"
+    "litellmSettings": ["drop_params", "callbacks", "turn_off_message_logging", "redact_messages_in_exceptions", "redact_user_api_key_info"],
+    "secretRefs": "os.environ/<VAR> references are resolved by the config loader (proxy_server.py:5512-5542)",
+    "litellmSettingsPlacement": "unrecognised litellm_settings keys are applied with setattr(litellm, key, value) (proxy_server.py:6380-6388), so the redaction flags below are supported config placements"
+  },
+  "loggingRedaction": {
+    "upstreamDefaults": {
+      "turn_off_message_logging": false,
+      "redact_messages_in_exceptions": false,
+      "redact_user_api_key_info": false
+    },
+    "evidence": [
+      "litellm/__init__.py:204 turn_off_message_logging = False",
+      "litellm/__init__.py:211 redact_messages_in_exceptions = False",
+      "litellm/__init__.py:212 redact_user_api_key_info = False",
+      "litellm/litellm_core_utils/exception_mapping_utils.py:2407 appends `Messages: ...` to the exception when redact_messages_in_exceptions is False"
+    ],
+    "prepared": "proxy-config.json sets turn_off_message_logging=true, redact_messages_in_exceptions=true, redact_user_api_key_info=true under litellm_settings; a regression test asserts these and that callbacks stays empty",
+    "note": "Empty callbacks is NOT redaction. Necessary non-content billing metadata is preserved; no prompt/completion/tool payload, bearer key or credential is logged. No logging server was run."
+  },
+  "retryLimitation": {
+    "finding": "router_settings.num_retries=0 does not disable BaseAnthropicMessagesConfig.max_retry_on_anthropic_messages_http_error, which is a hardcoded @property returning 2 with no config/env knob",
+    "evidence": [
+      "litellm/llms/base_llm/anthropic_messages/transformation.py:151-176 max_retry_on_anthropic_messages_http_error returns 2; should_retry only on HTTP 400 invalid-thinking-signature",
+      "litellm/llms/custom_httpx/llm_http_handler.py:1851-1916 _async_post_anthropic_messages_with_http_error_retry loops up to max_attempts and re-signs/re-sends the mutated body"
+    ],
+    "mitigation": "the strict raw classifier denies any 'thinking' field, so an admitted request cannot carry the encrypted thinking/signature blocks that trigger this path",
+    "residualGap": "unmitigated for unqualified features: no supported config disables this upstream retry, so 'all provider attempts disabled' is NOT claimed. Requires later no-retry wire evidence before live use."
   },
   "bedrockRoute": {
     "clientAlias": "meri-sonnet-qualification",
@@ -100,6 +125,12 @@
     "note": "awaited before provider dispatch; exceptions propagate; raise an explicit denial rather than returning a string. Not implemented in this ticket; callbacks is left empty.",
     "duringCallWarning": "async_moderation_hook/during-call runs concurrently with the model and cannot authorize/reserve before spend",
     "customAuthWarning": "replacing general_settings.custom_auth skips common checks unless general_settings.custom_auth_run_common_checks:true; prefer native virtual-key auth plus the pre-call extension"
+  },
+  "credentialBinding": {
+    "model": "trusted server-side registry keyId -> immutable opaque grant; the caller-supplied key object and HTTP headers are NEVER the grant",
+    "grantFields": ["keyId", "model (exact alias)", "allowedRoutes (exact nonempty)", "state", "expiresAt", "policyRevision", "binding (RunBinding)"],
+    "comparison": "grant.binding is compared to the authenticated broker task observation AND the authoritative active run attempt/worker/fence/policy; absent/malformed fields deny instead of comparing undefined===undefined",
+    "provenanceNote": "trustedIdentity.source === 'broker' is FIXTURE PROVENANCE ONLY and is not an authenticator"
   },
   "frozenContractBoundary": {
     "contracts": "0.1.0",

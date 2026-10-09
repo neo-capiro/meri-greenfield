@@ -25,6 +25,9 @@
   },
   "litellm_settings": {
     "drop_params": false,
-    "callbacks": []
+    "callbacks": [],
+    "turn_off_message_logging": true,
+    "redact_messages_in_exceptions": true,
+    "redact_user_api_key_info": true
   }
 }
