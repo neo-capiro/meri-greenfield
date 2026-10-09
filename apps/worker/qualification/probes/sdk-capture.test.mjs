@@ -19,6 +19,8 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { Writable } from 'node:stream';
 import zlib from 'node:zlib';
+import { EventEmitter } from 'node:events';
+import { createHash } from 'node:crypto';
 
 import {
   LOOPBACK_HOST,
@@ -951,4 +953,67 @@ test('runCapture requires child stdio EOF before a PASS', async () => {
   const stuckReport = await runCapture({ host: stuckHost, source: {} });
   assert.equal(stuckReport.ok, false);
   assert.match(stuckReport.reasons.join(' '), /child stdio not drained/);
+});
+
+// Owner corrections exercise the real adapter body with a fake child. No
+// process, SDK, server or socket starts, and production spawn code is unchanged.
+function isolatedRealSpawner(child) {
+  const source = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
+  const body = source.slice(source.indexOf('export function realSpawner('), source.indexOf('// Synthetic input stream')).replace('export function', 'function');
+  return new Function('nodeSpawn', 'createHash', 'MAX_STDERR_BYTES', 'STDERR_PREVIEW_CHARS', 'boundedPreview', `${body};return realSpawner;`)(() => child, createHash, 65536, 2048, () => '[scrubbed]');
+}
+
+test('real adapter waits for child close after stderr EOF and snapshots final bytes', async () => {
+  const child = new EventEmitter(); child.stderr = new EventEmitter();
+  const record = {};
+  isolatedRealSpawner(child)({ command: 'never-executed', args: [] }, record);
+  let closed = false; record.stdioDone.then(() => { closed = true; });
+  child.stderr.emit('data', Buffer.from('first'));
+  child.stderr.emit('end');
+  await Promise.resolve();
+  assert.equal(closed, false, 'stderr EOF cannot establish all child stdio closed');
+  child.emit('close', 0);
+  await record.stdioDone;
+  assert.equal(closed, true);
+  assert.equal(record.stderrTotalBytes, 5);
+  assert.equal(record.stderrSha256, createHash('sha256').update('first').digest('hex'));
+});
+
+test('real adapter overflow and read error reach the violation callback', async () => {
+  const child = new EventEmitter(); child.stderr = new EventEmitter();
+  const record = {}; const violations = [];
+  isolatedRealSpawner(child)({ command: 'never-executed', args: [] }, record, (reason) => violations.push(reason));
+  child.stderr.emit('data', Buffer.alloc(65537, 120));
+  child.stderr.emit('error', new Error('OPAQUE_SYNTHETIC_CREDENTIAL'));
+  child.emit('close', 1);
+  await record.stdioDone;
+  assert.deepEqual(violations, ['stderr overflow', 'stderr read failed']);
+  assert.equal(record.stderrReadError, true);
+  assert.equal(record.stderrTotalBytes, 65537);
+  assert.equal(record.stderrHashedBytes, 65536);
+  assert.equal(record.stderrTruncated, true);
+});
+
+test('public spawn hook forwards the violation callback to its adapter', () => {
+  const violations = []; const callback = (reason) => violations.push(reason);
+  const record = {}; const counters = { spawns: 0 };
+  const hook = buildSpawnHook(counters, record, (_options, _record, onViolation) => { onViolation('synthetic adapter violation'); return makeFakeChild(); }, callback);
+  hook({ command: 'never-executed', args: [], env: {} });
+  assert.deepEqual(violations, ['synthetic adapter violation']);
+});
+
+test('top-level fatal output uses a fixed bounded write and sanitized error type', async () => {
+  const source = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
+  const body = source.slice(source.lastIndexOf('.catch(async (error) => {') + '.catch(async (error) => {'.length, source.lastIndexOf('\n    });'));
+  assert.ok(body.includes('writeLines'));
+  const fakeProcess = { exitCode: 0, stdout: {} }; const writes = [];
+  const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+  const fatal = new AsyncFunction('error', 'process', 'writeLines', 'errorType', body);
+  const before = Date.now();
+  await fatal({ name: 'OPAQUE_SYNTHETIC_CREDENTIAL' }, fakeProcess, async (...args) => { writes.push(args); return { ok: false }; }, errorType);
+  assert.equal(fakeProcess.exitCode, 1);
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0][1], fakeProcess.stdout);
+  assert.ok(writes[0][2].deadlineAt >= before + 5000 && writes[0][2].deadlineAt <= Date.now() + 5000);
+  assert.equal(JSON.stringify(writes).includes('OPAQUE_SYNTHETIC_CREDENTIAL'), false);
 });

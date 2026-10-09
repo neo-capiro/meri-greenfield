@@ -642,7 +642,7 @@ export function buildSpawnHook(counters, record, spawnImpl, onViolation) {
     record.cwd = spawnOptions.cwd;
     record.envNames = Object.keys(spawnOptions.env || {}).sort();
     record.spawned = true;
-    const child = spawnImpl(spawnOptions, record);
+    const child = spawnImpl(spawnOptions, record, onViolation);
     record.child = child;
     record.exitPromise = new Promise((resolve) => {
       if (child && typeof child.once === 'function') {
@@ -698,7 +698,7 @@ export async function confirmChildCleanup(record, { graceMs = EXIT_GRACE_MS, now
 
 /** Real spawner: SDK AbortSignal forwarded, stdio piped to SDK, bounded stderr.
  * Exposes an INTERNAL completion contract (`record.stdioDone`) that resolves
- * only after the child stdio is fully drained (stderr 'end' or child 'close'),
+ * only after the child 'close' event confirms all child stdio has closed,
  * so the orchestrator can require actual drain before a PASS. */
 export function realSpawner(spawnOptions, record, onViolation) {
   const child = nodeSpawn(spawnOptions.command, spawnOptions.args, {
@@ -737,10 +737,16 @@ export function realSpawner(spawnOptions, record, onViolation) {
     }
   });
   child.stderr.on('end', () => {
+    record.stderrEnded = true;
+  });
+  child.stderr.on('error', () => {
+    record.stderrReadError = true;
+    if (typeof onViolation === 'function') onViolation('stderr read failed');
+  });
+  if (child.on) child.on('close', () => {
     snapshot();
     resolveStdio();
   });
-  if (child.on) child.on('close', () => resolveStdio());
   return child;
 }
 
@@ -994,6 +1000,7 @@ export async function runCapture({
   if (counters.spawns !== 1) reasons.push(`expected 1 native spawn, observed ${counters.spawns}`);
   if (!spawnRecord.envNames.includes('ANTHROPIC_BASE_URL')) reasons.push('spawn env lacks ANTHROPIC_BASE_URL');
   if (spawnRecord.stderrOverflow) reasons.push(`stderr exceeded ${MAX_STDERR_BYTES} bytes (truncated)`);
+  if (spawnRecord.stderrReadError) reasons.push('stderr read failed');
   if (state.requests.some((r) => r.hashOnly)) reasons.push('sensitive material detected in captured body (hash-only, no raw export)');
   const resultCheck = validateResultMessage(resultMessage);
   if (!resultCheck.ok) reasons.push(`result: ${resultCheck.error}`);
@@ -1228,12 +1235,8 @@ if (invokedDirectly) {
     .then((code) => {
       process.exitCode = code; // never process.exit(): stdout must drain.
     })
-    .catch((error) => {
+    .catch(async (error) => {
       process.exitCode = 1;
-      try {
-        process.stdout.write(`${JSON.stringify({ record: 'sdk-capture-manifest', ok: false, reasons: [`fatal (${errorType(error)})`] })}\n`);
-      } catch {
-        /* ignore */
-      }
+      await writeLines([{ record: 'sdk-capture-manifest', ok: false, reasons: [`fatal (${errorType(error)})`] }], process.stdout, { deadlineAt: Date.now() + 5000 }).catch(() => {});
     });
 }
