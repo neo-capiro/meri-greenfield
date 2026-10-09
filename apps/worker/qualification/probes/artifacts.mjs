@@ -2,19 +2,18 @@
 //
 // NEVER run by `npm test`. Generates native DOCX/XLSX (via probes/artifacts.py)
 // and a native two-slide PPTX (via the adopted pptxgenjs 4.0.1), inspects the
-// actual OOXML/ZIP structures, then (unless rendering is explicitly disabled)
-// exports all three formats to separate PDFs, renders page PNGs, inspects
-// PDF/text, and recalculates a COPY of the XLSX with LibreOffice to assert
-// A4=6 after reopen. Missing converters/fonts fail the required live probe;
-// rendering that cannot run is a live gate.
+// OOXML/ZIP structures, then exports all three formats to separate PDFs, renders
+// page PNGs, inspects PDF/text, and recalculates a COPY of the XLSX in a
+// distinct output directory with LibreOffice to assert A4=6 after reopen.
 //
-// Live output/profiles default under /workspace; the authoring host keeps
-// scratch under .runtime. Originals, revisions, rendered PDFs/PNGs, hashes and
-// failures are all preserved. pdfjs-dist 6.4.299 is referenced as the adopted
-// preview candidate only; no new viewer is implemented here.
+// Every subprocess result keeps authoritative status/signal/error, and every
+// nested ok is propagated. Disabling rendering (MERI_ARTIFACTS_RENDER=off) is a
+// visible NOT-PASSED result, never a required-qualification pass. Live
+// output/profiles default under /workspace; authoring host uses .runtime.
+// pdfjs-dist 6.4.299 is referenced as the adopted preview candidate only.
 
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, readdirSync, existsSync, copyFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, existsSync, copyFileSync, statSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join, basename } from 'node:path';
@@ -35,16 +34,61 @@ export function which(cmd) {
   return null;
 }
 
+/** Authoritative subprocess classification: nonzero status, signal or error fail. */
+export function classifySubprocess({ status, signal, error } = {}) {
+  if (error) return { ok: false, detail: `spawn error: ${String(error.message || error).slice(0, 160)}` };
+  if (signal) return { ok: false, detail: `killed by signal ${signal}` };
+  if (status !== 0) return { ok: false, detail: `exit status ${status}` };
+  return { ok: true, detail: 'exit 0' };
+}
+
+/** Pure native-generation decision. */
+export function decideNative({ gen, pptxOk } = {}) {
+  const reasons = [];
+  if (!gen || gen.status !== 0 || !gen.parsed || gen.parsed.ok !== true) reasons.push(`python native generation failed (status ${gen && gen.status})`);
+  if (!pptxOk) reasons.push('PPTX structure missing expected slide/notes parts');
+  return { status: reasons.length === 0 ? 'pass' : 'fail', reasons };
+}
+
+/** Pure XLSX recalculation decision: distinct output file, successful conversion, A4=6. */
+export function decideRecalc({ convert, newFile, a4 } = {}) {
+  const reasons = [];
+  const cls = classifySubprocess(convert || {});
+  if (!cls.ok) reasons.push(`recalc conversion failed: ${cls.detail}`);
+  if (!newFile) reasons.push('recalc produced no NEW file in the distinct output directory');
+  if (a4 !== 6) reasons.push(`recalculated A4 is ${JSON.stringify(a4)}, expected 6`);
+  return { status: reasons.length === 0 ? 'pass' : 'fail', reasons, a4 };
+}
+
+/** Pure render decision over per-format facts and the recalc fact. */
+export function decideRender({ disabled, soffice, pdftoppm, pdfs, recalc } = {}) {
+  if (disabled) return { status: 'fail', reasons: ['rendering disabled by MERI_ARTIFACTS_RENDER; required qualification render was NOT passed'] };
+  const reasons = [];
+  if (!soffice) reasons.push('LibreOffice (soffice) not found');
+  if (!pdftoppm) reasons.push('pdftoppm not found');
+  for (const name of ['docx', 'xlsx', 'pptx']) {
+    const f = pdfs && pdfs[name] ? pdfs[name] : {};
+    if (!f.convertOk) reasons.push(`${name}: PDF conversion failed (${f.convertDetail || 'no result'})`);
+    if (!f.pdfExists) reasons.push(`${name}: PDF file missing`);
+    if (!f.pdftoppmOk) reasons.push(`${name}: PNG rendering failed (${f.pngDetail || 'no result'})`);
+    if (!(f.pngCount >= 1)) reasons.push(`${name}: no page PNG produced`);
+    if (!f.pdfInspectOk) reasons.push(`${name}: PDF inspection failed (${f.inspectDetail || 'no result'})`);
+    if (!(f.pages >= 1)) reasons.push(`${name}: PDF page count unavailable`);
+  }
+  if (!recalc || recalc.status !== 'pass') reasons.push('XLSX recalculation did not pass');
+  return { status: reasons.length === 0 ? 'pass' : 'fail', reasons };
+}
+
 function run(cmd, args, opts = {}) {
   return spawnSync(cmd, args, { encoding: 'utf8', timeout: opts.timeout || 180000, maxBuffer: 32 * 1024 * 1024 });
 }
 
-/** Run a python subcommand and require exit 0 AND a parseable ok:true verdict. */
+/** Run a python subcommand; require exit 0 AND a parseable ok:true verdict. */
 function runPython(args) {
   const res = run(pythonBin, [join(HERE, 'artifacts.py'), ...args]);
   const parsed = parseStructuredOutput(res.stdout);
-  const ok = res.status === 0 && parsed.ok && parsed.value && parsed.value.ok === true;
-  return { ok, status: res.status, stderr: (res.stderr || '').slice(0, 300), parsed: parsed.value };
+  const ok = res.status === 0 && !res.signal && parsed.ok && parsed.value && parsed.value.ok === true;
+  return { ok, status: res.status, signal: res.signal, stderr: (res.stderr || '').slice(0, 300), parsed: parsed.value };
 }
 
 async function generatePptx(outdir) {
@@ -62,98 +106,94 @@ async function generatePptx(outdir) {
   return file;
 }
 
-function convertToPdf(soffice, profileUri, srcFile, dstDir) {
+function convert(soffice, profileUri, srcFile, dstDir, toPdf = true) {
   mkdirSync(dstDir, { recursive: true });
-  const res = run(soffice, ['--headless', `-env:UserInstallation=${profileUri}`, '--convert-to', 'pdf', '--outdir', dstDir, srcFile], { timeout: 120000 });
-  const pdf = join(dstDir, `${basename(srcFile).replace(/\.(docx|xlsx|pptx)$/, '')}.pdf`);
-  return { exit: res.status, pdfPath: existsSync(pdf) ? pdf : null };
-}
-
-function recalcXlsx(soffice, profileUri, srcXlsx, renderDir) {
-  const dir = join(renderDir, 'recalc');
-  mkdirSync(dir, { recursive: true });
-  const copy = join(dir, 'qualification-copy.xlsx');
-  copyFileSync(srcXlsx, copy);
-  run(soffice, ['--headless', `-env:UserInstallation=${profileUri}`, '--convert-to', 'xlsx', '--outdir', dir, copy], { timeout: 120000 });
-  const check = runPython(['xlsxrecalc', copy]);
-  return { ok: check.ok, reopened: check.parsed && check.parsed.results ? check.parsed.results[0].reopened : null, status: check.status };
+  const args = ['--headless', `-env:UserInstallation=${profileUri}`, '--convert-to', toPdf ? 'pdf' : 'xlsx', '--outdir', dstDir, srcFile];
+  const res = run(soffice, args, { timeout: 120000 });
+  const cls = classifySubprocess(res);
+  return { ...cls, status: res.status, signal: res.signal, stdout: (res.stdout || '').slice(0, 200), stderr: (res.stderr || '').slice(0, 200) };
 }
 
 async function main() {
-  const reasons = [];
   const evidencePaths = [];
-  let ok = false;
   const runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
   const nativeDir = join(runDir, 'native');
   const renderDir = join(runDir, 'render');
+  const disabled = RENDER_MODE === '0' || RENDER_MODE === 'off';
   try {
     mkdirSync(nativeDir, { recursive: true });
     mkdirSync(renderDir, { recursive: true });
     evidencePaths.push(runDir);
 
     const gen = runPython(['generate', nativeDir]);
-    if (!gen.ok) reasons.push(`python native generation failed (status ${gen.status}): ${gen.stderr}`);
     const docx = join(nativeDir, 'qualification.docx');
     const xlsx = join(nativeDir, 'qualification.xlsx');
-
     let pptxFile = null;
     let pptxOk = false;
     try {
       pptxFile = await generatePptx(nativeDir);
       pptxOk = runPython(['inspect', pptxFile]).ok;
-      if (!pptxOk) reasons.push('PPTX structure missing expected slide/notes parts');
-    } catch (error) {
-      reasons.push(`PPTX generation failed: ${String(error && error.message ? error.message : error).slice(0, 200)}`);
-    }
-    const nativeOk = gen.ok && pptxOk;
+    } catch { pptxOk = false; }
+    const native = decideNative({ gen, pptxOk });
 
-    const renderRequired = RENDER_MODE !== '0' && RENDER_MODE !== 'off';
     const soffice = which('soffice') || which('libreoffice');
     const pdftoppm = which('pdftoppm');
-    let render = { status: 'skipped', detail: 'render disabled by MERI_ARTIFACTS_RENDER' };
-    if (renderRequired) {
-      if (!soffice || !pdftoppm) {
-        render = { status: 'fail', detail: `missing converter/render tools: soffice=${soffice}, pdftoppm=${pdftoppm}` };
-        reasons.push(render.detail);
-      } else {
-        try {
-          const profileUri = pathToFileURL(join(renderDir, 'lo-profile')).href;
-          const pdfs = {};
-          for (const [name, file] of [['docx', docx], ['xlsx', xlsx], ['pptx', pptxFile]]) {
-            const dst = join(renderDir, name);
-            const conv = convertToPdf(soffice, profileUri, file, dst);
-            const entry = { exit: conv.exit, pdf: conv.pdfPath, pages: null, pngCount: 0 };
-            if (conv.pdfPath) {
-              run(pdftoppm, ['-png', '-r', '96', conv.pdfPath, join(dst, 'page')]);
-              const pp = runPython(['pdf', conv.pdfPath]);
-              entry.pages = pp.parsed && pp.parsed.results ? pp.parsed.results[0].pageCount : null;
-              entry.pngCount = readdirSync(dst).filter((f) => f.endsWith('.png')).length;
-            }
-            pdfs[name] = entry;
-          }
-          const recalc = recalcXlsx(soffice, profileUri, xlsx, renderDir);
-          const allPdfs = ['docx', 'xlsx', 'pptx'].every((k) => pdfs[k].pdf && pdfs[k].pages >= 1);
-          const allPngs = ['docx', 'xlsx', 'pptx'].every((k) => pdfs[k].pngCount >= 1);
-          render = { status: allPdfs && allPngs && recalc.ok ? 'pass' : 'fail', pdfs, recalc };
-          if (render.status !== 'pass') reasons.push('LibreOffice/poppler render or XLSX recalculation did not complete cleanly');
-        } catch (error) {
-          render = { status: 'fail', detail: `render error: ${String(error && error.message ? error.message : error).slice(0, 200)}` };
-          reasons.push(render.detail);
+    const pdfs = {};
+    let recalc = { status: 'fail', reasons: ['recalc not attempted'] };
+    if (!disabled && soffice && pdftoppm) {
+      const profileUri = pathToFileURL(join(renderDir, 'lo-profile')).href;
+      for (const [name, file] of [['docx', docx], ['xlsx', xlsx], ['pptx', pptxFile]]) {
+        const dst = join(renderDir, name);
+        const conv = convert(soffice, profileUri, file, dst, true);
+        const pdfPath = join(dst, `${basename(file).replace(/\.(docx|xlsx|pptx)$/, '')}.pdf`);
+        const entry = { convertOk: conv.ok, convertDetail: conv.detail, pdfExists: existsSync(pdfPath), pdftoppmOk: false, pngDetail: null, pngCount: 0, pdfInspectOk: false, inspectDetail: null, pages: null };
+        if (entry.pdfExists) {
+          const png = run(pdftoppm, ['-png', '-r', '96', pdfPath, join(dst, 'page')]);
+          const pngCls = classifySubprocess(png);
+          entry.pdftoppmOk = pngCls.ok;
+          entry.pngDetail = pngCls.detail;
+          entry.pngCount = readdirSync(dst).filter((f) => f.endsWith('.png')).length;
+          const insp = runPython(['pdf', pdfPath]);
+          entry.pdfInspectOk = insp.ok;
+          entry.inspectDetail = insp.ok ? 'ok' : `python pdf status ${insp.status}`;
+          entry.pages = insp.ok && insp.parsed && insp.parsed.results ? insp.parsed.results[0].pageCount : null;
         }
+        pdfs[name] = entry;
       }
+      // Recalculate a COPY of the XLSX in a DISTINCT output directory.
+      const recalcIn = join(renderDir, 'recalc-in');
+      const recalcOut = join(renderDir, 'recalc-out');
+      mkdirSync(recalcIn, { recursive: true });
+      mkdirSync(recalcOut, { recursive: true });
+      const copy = join(recalcIn, 'qualification-copy.xlsx');
+      copyFileSync(xlsx, copy);
+      const conv = convert(soffice, profileUri, copy, recalcOut, false);
+      const newFile = join(recalcOut, 'qualification-copy.xlsx');
+      const newFileExists = existsSync(newFile) && statSync(newFile).mtimeMs >= statSync(copy).mtimeMs - 1;
+      let a4 = null;
+      if (conv.ok && newFileExists) {
+        const check = runPython(['xlsxrecalc', newFile]);
+        if (check.ok && check.parsed && check.parsed.results) a4 = check.parsed.results[0].reopened.a4CachedValueAfterRecalc;
+      }
+      recalc = decideRecalc({ convert: conv, newFile: newFileExists, a4 });
+    } else if (!disabled) {
+      recalc = { status: 'fail', reasons: ['LibreOffice/poppler unavailable; recalc not attempted'] };
     }
+    const render = decideRender({ disabled, soffice, pdftoppm, pdfs, recalc });
 
-    ok = nativeOk && (!renderRequired || render.status === 'pass');
-    process.stdout.write(JSON.stringify({
+    const ok = native.status === 'pass' && render.status === 'pass';
+    const payload = {
       probe: 'artifacts',
       ok,
-      native: { status: nativeOk ? 'pass' : 'fail', python: gen.parsed, pptxFile, pptxOk },
+      native,
       render,
-      renderRequired,
+      renderRequired: true,
+      recalc,
       pdfPreviewCandidate: 'pdfjs-dist 6.4.299 (adopted preview candidate; no viewer implemented)',
-      reasons,
+      reasons: [...native.reasons, ...render.reasons],
       evidencePaths,
-    }, null, 2) + '\n');
+    };
+    process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
     process.exit(ok ? 0 : 1);
   } catch (error) {
     process.stdout.write(JSON.stringify({ probe: 'artifacts', ok: false, reasons: [String(error).slice(0, 300)], evidencePaths }, null, 2) + '\n');

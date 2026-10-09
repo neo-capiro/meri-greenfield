@@ -22,7 +22,8 @@ import {
   InMemorySessionStore,
 } from '../sdk-options.mjs';
 import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult } from './runtime.mjs';
-import { assessSandboxEvidence } from './browser.mjs';
+import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult } from './browser.mjs';
+import { classifySubprocess, decideNative, decideRecalc, decideRender } from './artifacts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PKG = join(HERE, '..');
@@ -226,45 +227,96 @@ test('verifyRestore fails when a duplicate or UUID-less entry is missing', async
 });
 
 // ---------------------------------------------------------------------------
-// Browser sandbox verdict: reject weak or non-process evidence
+// Exact chrome://sandbox rows and /proc Chromium process evidence
 // ---------------------------------------------------------------------------
 
-const REAL_SANDBOX_PAGE = [
+const SANDBOX_PAGE_NAMESPACE = [
   'Sandbox Status',
-  'Layer 1 Sandbox: Yes',
   'Namespace Sandbox: Yes',
+  'SUID Sandbox: No',
+  'Seccomp-BPF Sandbox: Yes',
   'PID Namespace: Yes',
-  'Net Namespace: Yes',
-  'Seccomp-BPF: Yes',
+].join('\n');
+const SANDBOX_PAGE_ALL_NO = ['Namespace Sandbox: No', 'SUID Sandbox: No', 'Seccomp-BPF Sandbox: No'].join('\n');
+const PROCESSES = [
+  { pid: 100, type: 'browser', argv: ['/opt/meri-browsers/chromium-1247/chrome-linux/chrome', '--headless', '--enable-features=Foo'] },
+  { pid: 101, type: 'renderer', argv: ['/opt/meri-browsers/chromium-1247/chrome-linux/chrome', '--type=renderer'] },
+];
+
+test('sandbox verdict accepts Namespace Yes + SUID No + Seccomp-BPF Yes (disabled unused alternative allowed)', () => {
+  const v = assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: PROCESSES, effectiveFlagsSource: 'proc' });
+  assert.equal(v.ok, true, v.reasons.join('; '));
+});
+
+test('sandbox verdict rejects all-No rows and generic prose', () => {
+  assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_ALL_NO, processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandboxPageText: 'sandbox', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandboxPageText: 'yes', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
+  assert.equal(assessSandboxEvidence({ sandboxPageText: 'Layer 1 Sandbox: Yes', processes: PROCESSES, effectiveFlagsSource: 'proc' }).ok, false);
+});
+
+test('sandbox verdict rejects config-only evidence (requested config is not process evidence)', () => {
+  const v = assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: PROCESSES, effectiveFlagsSource: 'config' });
+  assert.equal(v.ok, false);
+  assert.ok(v.reasons.some((r) => /proc Chromium process evidence/.test(r)));
+});
+
+test('sandbox verdict rejects absent processes and any disabling flag anywhere', () => {
+  assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: [], effectiveFlagsSource: 'proc' }).ok, false);
+  for (const flag of ['--no-sandbox', '--disable-namespace-sandbox', '--disable-seccomp-filter-sandbox']) {
+    const procs = [{ pid: 9, type: 'renderer', argv: ['chrome', flag, '--type=renderer'] }];
+    assert.equal(assessSandboxEvidence({ sandboxPageText: SANDBOX_PAGE_NAMESPACE, processes: procs, effectiveFlagsSource: 'proc' }).ok, false, flag);
+  }
+});
+
+test('sandbox rows: known rows parsed exactly, unknown ignored, ambiguous/duplicate fail', () => {
+  assert.deepEqual(parseSandboxRows(SANDBOX_PAGE_NAMESPACE).found, { namespace: true, suid: false, seccomp: true });
+  assert.deepEqual(parseSandboxRows(SANDBOX_PAGE_NAMESPACE).ambiguous, []);
+  assert.ok(parseSandboxRows('Namespace Sandbox: Yes\nNamespace Sandbox: No').ambiguous.length > 0);
+  assert.ok(parseSandboxRows('Seccomp-BPF Sandbox: maybe').ambiguous.length > 0);
+  assert.deepEqual(parseSandboxRows('PID Namespace: Yes\nNet Namespace: Yes').found, {});
+});
+
+// ---------------------------------------------------------------------------
+// MCP Result-section parser (real framing)
+// ---------------------------------------------------------------------------
+
+const SANDBOX_STRING = 'Sandbox Status\nNamespace Sandbox: Yes\nSeccomp-BPF Sandbox: Yes';
+const FRAME_OK = [
+  '### Ran Playwright code',
+  '```js',
+  'await page.evaluate(() => document.body.innerText);',
+  '```',
+  '### Result',
+  JSON.stringify(SANDBOX_STRING),
 ].join('\n');
 
-test('sandbox verdict requires affirmative namespace/SUID AND seccomp layers', () => {
-  assert.equal(assessSandboxEvidence({}).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'sandbox', effectiveFlags: ['--headless'], effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'yes', effectiveFlags: ['--headless'], effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: 'namespace', effectiveFlags: ['--headless'], effectiveFlagsSource: 'proc' }).ok, false);
+test('extractResultSection decodes the exact Result section from real framing', () => {
+  const r = extractResultSection(FRAME_OK);
+  assert.equal(r.ok, true, r.error);
+  assert.equal(r.value, SANDBOX_STRING);
+  assert.match(r.raw, /### Ran Playwright code/);
 });
 
-test('sandbox verdict rejects all-No table text', () => {
-  const allNo = 'Namespace Sandbox: No\nSeccomp-BPF: No\nPID Namespace: No';
-  assert.equal(assessSandboxEvidence({ sandboxPageText: allNo, effectiveFlags: ['--headless'], effectiveFlagsSource: 'proc' }).ok, false);
+test('extractResultSection decodes multi-line pretty JSON Result', () => {
+  const frame = ['### Ran Playwright code', 'x', '### Result', '{\n  "browser": {\n    "launchOptions": { "chromiumSandbox": true }\n  }\n}'].join('\n');
+  const r = extractResultSection(frame);
+  assert.equal(r.ok, true, r.error);
+  assert.equal(r.value.browser.launchOptions.chromiumSandbox, true);
 });
 
-test('sandbox verdict rejects config-only (non-process) effective flags', () => {
-  const v = assessSandboxEvidence({ sandboxPageText: REAL_SANDBOX_PAGE, effectiveFlags: ['--headless'], effectiveFlagsSource: 'config' });
-  assert.equal(v.ok, false);
-  assert.ok(v.reasons.some((r) => /not actual process/.test(r)));
+test('extractResultSection fails closed on missing, duplicate, empty, error or malformed Result', () => {
+  assert.equal(extractResultSection('### Ran Playwright code\nx').ok, false);
+  assert.equal(extractResultSection('### Result\n1\n### Result\n2').ok, false);
+  assert.equal(extractResultSection('### Result\n\n### Ran Playwright code\nx').ok, false);
+  assert.equal(extractResultSection('### Error\nboom').ok, false);
+  assert.equal(extractResultSection('### Result\n{ not json }').ok, false);
 });
 
-test('sandbox verdict rejects absent flags and disabling flags', () => {
-  assert.equal(assessSandboxEvidence({ sandboxPageText: REAL_SANDBOX_PAGE, effectiveFlags: [], effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: REAL_SANDBOX_PAGE, effectiveFlags: ['--no-sandbox'], effectiveFlagsSource: 'proc' }).ok, false);
-  assert.equal(assessSandboxEvidence({ sandboxPageText: REAL_SANDBOX_PAGE, effectiveFlags: ['--disable-seccomp-filter-sandbox'], effectiveFlagsSource: 'proc' }).ok, false);
-});
-
-test('sandbox verdict accepts a real affirmative table with complete process flags', () => {
-  const v = assessSandboxEvidence({ sandboxPageText: REAL_SANDBOX_PAGE, effectiveFlags: ['--headless', '--enable-features=Foo'], effectiveFlagsSource: 'proc' });
-  assert.equal(v.ok, true, v.reasons.join('; '));
+test('decodeToolResult prefers structuredContent over the Result section', () => {
+  const r = decodeToolResult({ structuredContent: { result: { x: 1 } }, content: [{ type: 'text', text: '### Result\n2' }] });
+  assert.equal(r.source, 'structuredContent');
+  assert.deepEqual(r.value, { x: 1 });
 });
 
 // ---------------------------------------------------------------------------
@@ -331,10 +383,26 @@ test('Dockerfile declares the writable mount points and read-only-root expectati
   assert.match(dockerfile, /CHROMIUM_SANDBOX_REQUIRED=true/);
 });
 
-test('Dockerfile pins Debian repositories to the snapshot with signature verification', () => {
+test('Dockerfile pins Debian repositories to the snapshot with signature verification and Check-Valid-Until disabled', () => {
   assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
   assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian-security\/20260901T000000Z/);
   assert.match(dockerfile, /Signed-By: \/usr\/share\/keyrings\/debian-archive-keyring\.gpg/);
+  assert.match(dockerfile, /Check-Valid-Until: no/);
+  assert.doesNotMatch(dockerfile, /trusted=yes/);
+  assert.doesNotMatch(dockerfile, /allow-unauthenticated|AllowUnauthenticated/);
+});
+
+test('Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version', () => {
+  assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
+  assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
+  assert.match(dockerfile, /ca-certificates=20230311\+deb12u1/);
+});
+
+test('Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops', () => {
+  assert.match(dockerfile, /stat -c '%U' "\$sb"/);
+  assert.match(dockerfile, /stat -c '%a' "\$sb"/);
+  assert.match(dockerfile, /chown -R 10001:10001 \/workspace \/tmp \/opt\/meri-worker/);
+  assert.doesNotMatch(dockerfile, /chown[^\n]*\/opt\/meri-browsers/);
 });
 
 test('Dockerfile performs one locked npm install with optional binaries and no fallback', () => {
@@ -357,7 +425,55 @@ test('component-pins.json records resolved OS/snapshot versions and unresolved p
   assert.equal(pins.osPackages.snapshotTimestamp, '20260901T000000Z');
   assert.ok(pins.osPackages.resolved['libreoffice-core']);
   assert.ok(pins.osPackages.resolved['libnss3']);
+  assert.equal(pins.osPackages.resolved['ca-certificates'], '20230311+deb12u1');
   assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT');
+});
+
+// ---------------------------------------------------------------------------
+// Office render/recalc error propagation (pure decision helpers)
+// ---------------------------------------------------------------------------
+
+test('classifySubprocess fails on nonzero status, signal or spawn error', () => {
+  assert.equal(classifySubprocess({ status: 1 }).ok, false);
+  assert.equal(classifySubprocess({ status: 0, signal: 'SIGKILL' }).ok, false);
+  assert.equal(classifySubprocess({ status: 0, error: new Error('x') }).ok, false);
+  assert.equal(classifySubprocess({ status: 0 }).ok, true);
+});
+
+test('decideNative fails when generation or PPTX inspection fails', () => {
+  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: true }).status, 'pass');
+  assert.equal(decideNative({ gen: { status: 1 }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: false } }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: false }).status, 'fail');
+});
+
+test('decideRecalc requires successful conversion, a NEW file and A4=6', () => {
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: 6 }).status, 'pass');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, a4: 6 }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: null }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, a4: 6 }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, a4: 6 }).status, 'fail');
+});
+
+const GOOD_PDFS = {
+  docx: { convertOk: true, pdfExists: true, pdftoppmOk: true, pngCount: 1, pdfInspectOk: true, pages: 1 },
+  xlsx: { convertOk: true, pdfExists: true, pdftoppmOk: true, pngCount: 1, pdfInspectOk: true, pages: 1 },
+  pptx: { convertOk: true, pdfExists: true, pdftoppmOk: true, pngCount: 1, pdfInspectOk: true, pages: 1 },
+};
+
+test('decideRender treats disabled rendering as a visible not-passed result', () => {
+  assert.equal(decideRender({ disabled: true }).status, 'fail');
+  assert.ok(decideRender({ disabled: true }).reasons.some((r) => /disabled/.test(r)));
+});
+
+test('decideRender fails on any failed conversion, missing PNG or failed PDF inspection', () => {
+  assert.equal(decideRender({ disabled: false, soffice: '/s', pdftoppm: '/p', pdfs: GOOD_PDFS, recalc: { status: 'pass' } }).status, 'pass');
+  assert.equal(decideRender({ disabled: false, soffice: null, pdftoppm: '/p', pdfs: GOOD_PDFS, recalc: { status: 'pass' } }).status, 'fail');
+  const badInspect = { ...GOOD_PDFS, docx: { ...GOOD_PDFS.docx, pdfInspectOk: false } };
+  assert.equal(decideRender({ disabled: false, soffice: '/s', pdftoppm: '/p', pdfs: badInspect, recalc: { status: 'pass' } }).status, 'fail');
+  const noPng = { ...GOOD_PDFS, pptx: { ...GOOD_PDFS.pptx, pngCount: 0 } };
+  assert.equal(decideRender({ disabled: false, soffice: '/s', pdftoppm: '/p', pdfs: noPng, recalc: { status: 'pass' } }).status, 'fail');
+  assert.equal(decideRender({ disabled: false, soffice: '/s', pdftoppm: '/p', pdfs: GOOD_PDFS, recalc: { status: 'fail' } }).status, 'fail');
 });
 
 test('the SDK reference store is the actual pinned upstream export', () => {

@@ -117,10 +117,13 @@
       "security": "https://snapshot.debian.org/archive/debian-security/20260901T000000Z (suite bookworm-security, components main)"
     },
     "signatureVerification": "Debian archive keyring (Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg)",
+    "checkValidUntil": "disabled source-scoped (Check-Valid-Until: no) on both fixed snapshot sources only, as Debian documents for historical snapshots; signature verification retained",
+    "caBootstrap": "the upstream slim Node image ships without ca-certificates; apt bootstraps ca-certificates=20230311+deb12u1 over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS with normal CA verification",
     "bookwormVersionAtSnapshot": "12.15",
     "resolvedAt": "2026-10-09",
     "note": "Versions resolved from the snapshot's Packages index. The real isolated build records the exact installed versions to /opt/meri-worker/os-package-versions.txt; apt pins these exact versions in the Dockerfile.",
     "resolved": {
+      "ca-certificates": "20230311+deb12u1",
       "python3": "3.11.2-1+b1",
       "python3-venv": "3.11.2-1+b1",
       "libreoffice-core": "4:7.4.7-1+deb12u14",

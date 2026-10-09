@@ -54,12 +54,17 @@ docker build --pull --platform linux/amd64 \
 
 The recipe: immutable base `node:24.9.0-bookworm-slim@sha256:3e69116c...`,
 Debian repositories pinned to snapshot `20260901T000000Z` (main + security) with
-normal signature verification, a single locked `npm ci --include=optional`,
-hash-pinned Python in an isolated venv, the matched Chromium (revision 1247 /
-155.0.8059.12) installed via the adopted Playwright CLI, non-root UID/GID
-10001, and `VOLUME ["/workspace", "/tmp"]`. Runtime expectation set by Codex's
-ECS task definition: `readOnlyRootFilesystem=true`, no capabilities, no
-privileged mode, no Docker socket, no host networking.
+normal signature verification and source-scoped `Check-Valid-Until: no` (Debian's
+documented setting for historical snapshots), a deterministic CA bootstrap (apt
+installs the exact resolved `ca-certificates` over HTTP from the same fixed
+signed snapshot, then both sources switch to HTTPS with normal CA verification),
+a single locked `npm ci --include=optional`, hash-pinned Python in an isolated
+venv, the matched Chromium (revision 1247 / 155.0.8059.12) installed via the
+adopted Playwright CLI with the browser tree kept root-owned and its
+`chrome-sandbox` setuid helper asserted root/4755 after all ownership operations,
+non-root UID/GID 10001, and `VOLUME ["/workspace", "/tmp"]`. Runtime expectation
+set by Codex's ECS task definition: `readOnlyRootFilesystem=true`, no
+capabilities, no privileged mode, no Docker socket, no host networking.
 
 ### Volume / writable-path behaviour REQUIRES LIVE VERIFICATION
 
@@ -82,9 +87,16 @@ hashes are preserved by default.
 ## Security posture
 
 - No `--no-sandbox`, no privileged mode, no docker socket, no extra
-  capabilities, no root. The browser verdict requires actual namespace/SUID AND
-  Seccomp-BPF evidence plus complete effective `/proc` Chromium flags; requested
-  config alone is not effective process evidence.
+  capabilities, no root. The browser verdict parses the exact chrome://sandbox
+  rows (Namespace OR SUID sandbox affirmative AND Seccomp-BPF affirmative; a
+  disabled unused alternative layer is allowed) from the exact `### Result`
+  section of the MCP response, plus actual `/proc` Chromium process evidence
+  (browser and renderer distinguished) with no disabling flag anywhere.
+  Requested config alone is never accepted; missing/ambiguous evidence fails.
+- `probe:artifacts` keeps every subprocess status/signal/error, recalculates a
+  COPY of the XLSX in a distinct output directory (assert A4=6 after reopen),
+  and treats disabled rendering (`MERI_ARTIFACTS_RENDER=off`) as a visible
+  NOT-PASSED result, never a pass.
 - The synthetic qualification sets `settingSources: []`, `skills: []` and
   `settings.autoMemoryEnabled: false`; the builder rejects any override that
   would re-enable discovery or move the stable cwd.

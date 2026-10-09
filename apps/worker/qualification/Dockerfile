@@ -1,11 +1,11 @@
 # Meri W02-01 qualification worker image recipe (PREPARATION ONLY).
 #
-# This file has NOT been built: no Docker daemon exists on the authoring host and
-# no cloud build is authorized here. The assembled immutable image digest stays
-# null until Codex performs a real isolated build (see component-pins.json).
+# NOT built: no Docker daemon on the authoring host and no cloud build is
+# authorized here. assembledImageDigest stays null until Codex performs a real
+# isolated build (see component-pins.json).
 #
 # Intended build (build context is THIS qualification package directory so the
-# owned .dockerignore applies and no other repository file enters the context):
+# owned .dockerignore applies):
 #   docker build --pull --platform linux/amd64 \
 #     -f apps/worker/qualification/Dockerfile \
 #     -t <ecr>/meri-greenfield/qualification-worker:<sha> \
@@ -22,33 +22,62 @@
 # Index digest resolved 2026-10-09 from registry-1.docker.io library/node.
 FROM node:24.9.0-bookworm-slim@sha256:3e69116c924bfcba6c6979aff60d966c37aef56d488ce091c69d442ebec9f103
 
-# Pin Debian repositories to an exact available snapshot timestamp (bookworm
-# main + bookworm-security) with normal Release signature verification through
-# the base image's Debian archive keyring. Versions below were resolved from
-# that snapshot on 2026-10-09; the real build records the exact installed
-# versions to /opt/meri-worker/os-package-versions.txt.
+# The upstream slim Node image ships WITHOUT ca-certificates (the official
+# bookworm-slim Dockerfile purges build-only packages). Debian's documentation
+# for historical snapshots requires source-scoped Check-Valid-Until: no, and the
+# September snapshot's security Release metadata is expired by build time. So:
+#   1) bootstrap apt over the fixed signed snapshot via HTTP only (no CA needed),
+#      installing the exact resolved ca-certificates version;
+#   2) switch both fixed sources to HTTPS with normal CA verification for every
+#      subsequent download.
+# Signed-By keyring verification is retained throughout; no trust bypass, no
+# unauthenticated downloads, no TLS bypass.
 RUN set -eux; \
     rm -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list; \
+    printf '%s\n' \
+      'Acquire::http::User-Agent "meri-qualification-snapshot/1";' \
+      'Acquire::https::User-Agent "meri-qualification-snapshot/1";' \
+      > /etc/apt/apt.conf.d/99meri-snapshot-ua; \
+    printf '%s\n' \
+      'Types: deb' \
+      'URIs: http://snapshot.debian.org/archive/debian/20260901T000000Z' \
+      'Suites: bookworm' \
+      'Components: main' \
+      'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
+      'Check-Valid-Until: no' \
+      '' \
+      'Types: deb' \
+      'URIs: http://snapshot.debian.org/archive/debian-security/20260901T000000Z' \
+      'Suites: bookworm-security' \
+      'Components: main' \
+      'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
+      'Check-Valid-Until: no' \
+      > /etc/apt/sources.list.d/meri-snapshot.sources; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates=20230311+deb12u1; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch both fixed snapshot sources to HTTPS with normal CA verification.
+RUN set -eux; \
     printf '%s\n' \
       'Types: deb' \
       'URIs: https://snapshot.debian.org/archive/debian/20260901T000000Z' \
       'Suites: bookworm' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
+      'Check-Valid-Until: no' \
       '' \
       'Types: deb' \
       'URIs: https://snapshot.debian.org/archive/debian-security/20260901T000000Z' \
       'Suites: bookworm-security' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
-      > /etc/apt/sources.list.d/meri-snapshot.sources; \
-    printf '%s\n' \
-      'Acquire::http::User-Agent "meri-qualification-snapshot/1";' \
-      'Acquire::https::User-Agent "meri-qualification-snapshot/1";' \
-      > /etc/apt/apt.conf.d/99meri-snapshot-ua
+      'Check-Valid-Until: no' \
+      > /etc/apt/sources.list.d/meri-snapshot.sources
 
-# OS packages for Linux x86_64. Versions resolved from snapshot 20260901T000000Z
-# (Debian bookworm 12.15): see component-pins.json osPackages.resolved.
+# OS packages for Linux x86_64. Versions pinned to snapshot 20260901T000000Z
+# (Debian bookworm 12.15); see component-pins.json osPackages.resolved.
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -73,7 +102,8 @@ WORKDIR /opt/meri-worker
 # Record the exact OS package versions produced by the real build.
 RUN set -eux; \
     dpkg-query -W -f='${Package}=${Version}\n' \
-      python3 libreoffice-core fonts-liberation poppler-utils libnss3 libatk1.0-0 \
+      ca-certificates python3 libreoffice-core fonts-liberation poppler-utils \
+      libnss3 libatk1.0-0 \
       > /opt/meri-worker/os-package-versions.txt; \
     cat /opt/meri-worker/os-package-versions.txt
 
@@ -95,7 +125,8 @@ COPY sdk-options.mjs ./
 COPY probes/ ./probes/
 
 # Matched Chromium (revision 1247 / version 155.0.8059.12) via the adopted
-# Playwright CLI bundled with the pinned playwright package.
+# Playwright CLI. The browser tree STAYS root-owned (never chowned to 10001) so
+# the chrome-sandbox setuid helper keeps its intended owner/mode.
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/meri-browsers
 RUN set -eux; \
     node node_modules/playwright/cli.js install chromium; \
@@ -109,14 +140,25 @@ RUN set -eux; \
     groupadd --gid 10001 meri; \
     useradd --uid 10001 --gid 10001 --home-dir /workspace/home --shell /usr/sbin/nologin meri
 
-# UID/GID 10001 ownership on both writable mount points. ECS mounts empty
-# writable volumes at /workspace and /tmp; declaring VOLUME lets Docker
-# initialise an empty volume from this image directory (copying content and
-# ownership). THIS VOLUME-INITIALISATION BEHAVIOUR REQUIRES LIVE VERIFICATION.
+# UID/GID 10001 ownership on both writable mount points and the app sources.
+# The browser tree deliberately keeps root ownership (its setuid helper must
+# stay root-owned); only /workspace, /tmp and /opt/meri-worker are reassigned.
+# ECS mounts empty volumes at /workspace and /tmp; declaring VOLUME lets Docker
+# initialise an empty volume from this image directory (content + ownership).
+# THIS VOLUME-INITIALISATION BEHAVIOUR REQUIRES LIVE VERIFICATION.
 RUN set -eux; \
     mkdir -p /workspace/conversation /workspace/home /workspace/config /tmp; \
-    chown -R 10001:10001 /workspace /tmp; \
-    chown -R 10001:10001 /opt/meri-worker /opt/meri-browsers
+    chown -R 10001:10001 /workspace /tmp /opt/meri-worker
+
+# Final assertion: after ALL ownership operations the sandbox helper is still
+# root-owned with mode 4755 and the browser tree is root-owned.
+RUN set -eux; \
+    sb="$(find /opt/meri-browsers -name chrome-sandbox -print -quit)"; \
+    test -n "$sb"; \
+    test "$(stat -c '%U' "$sb")" = root; \
+    test "$(stat -c '%a' "$sb")" = 4755; \
+    test -u "$sb"; \
+    test "$(stat -c '%U' /opt/meri-browsers)" = root
 
 ENV HOME=/workspace/home \
     TMPDIR=/tmp \
