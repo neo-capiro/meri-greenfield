@@ -57,7 +57,7 @@ other-report change. `.runtime/` and `node_modules/` are gitignored scratch.
 
 - Nested scripts-disabled install: `npm install --ignore-scripts` — 28 packages, exit 0.
 - Typecheck: `tsc -p tsconfig.json` (5.9.3, noEmit) — **0 errors**.
-- Offline tests: `node --test qualification.test.mjs` — **17 pass / 0 fail**.
+- Offline tests after owner thin fixes: `node --test qualification.test.mjs` — **19 pass / 0 fail** (Hermes92e7 originally17).
 - Root check: `npm run check` (contracts + evals) — 15 pass / 0 fail (contracts unchanged).
 - `git diff --check` — clean.
 - Frozen schema blob re-verified: `e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b`.
@@ -76,6 +76,8 @@ admission, no durable cancel, run status unchanged); input/nested mutation immun
 vs run-outcome separation.
 
 ## Frozen source / hashes
+
+Owner update after independent92e7 review: Codex thin fix7d094e12d15ab1693c8dd526808a712513c14cb9 uses a private Map for approved error messages, so prototype-looking codes cannot return inherited functions/objects. Send commands and Chat.id now use the projection's immutable authorized-view snapshot; mutating the caller's options cannot split send/reconnect identity. Two actual regression tests bring the final count to19. These changes are Codex owner output after clean implementation-session closure, not Hermes92e7 output. Real authentication, browser/React mounting and deployed transport remain unqualified. Separate actual Hermes review and owner acceptance are pending.
 
 - Contract commit `7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3`, version `0.1.0`.
 - `meri.schema.json` SHA-256 `e3de8781…` (50043 bytes, LF). The earlier `0bf7d88…` value

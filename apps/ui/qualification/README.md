@@ -24,7 +24,7 @@ Frozen inputs:
 | `guarded-transport.ts` | `MeriGuardedTransport implements ChatTransport` (validates every decoded chunk, rejects malformed/unexpected native frames, `resumeStreamIsReplay = false`, `close()` without durable cancellation) **and the runtime factory `createMeriChat`** that wires one external `Chat` (id bound to `view.conversationId`) + guarded transport + projection. |
 | `projection.ts` | Synchronous conversation-wide projection: deep-frozen input snapshots, immutable `eventId`+payload dedup, duplicate-sequence conflict, contiguous cursor, gap pause/repair, run status separate from stream/HTTP outcome, `acceptOrReject` for the data path, safe `run.error` rendering. |
 | `client-facade.tsx` | Type-checked only: React hook facade (`useChat({ chat, resume: false })`) + detach helper; re-exports the factory. Not mounted. |
-| `qualification.test.mjs` | 17 offline composed fixtures driving the real factory/external `Chat` (mock fetch + web `Response`/`ReadableStream`; global fetch throws). |
+| `qualification.test.mjs` | 19 offline composed fixtures driving the real factory/external `Chat` (mock fetch + web `Response`/`ReadableStream`; global fetch throws). |
 
 `.runtime/` and `node_modules/` are gitignored scratch. No dependency is added to a
 root or shared lockfile.
