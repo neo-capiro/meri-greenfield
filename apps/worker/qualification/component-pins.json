@@ -1,22 +1,35 @@
 {
   "schema": "meri.qualification.component-pins/1",
-  "generatedAt": "2026-10-09T19:45:00Z",
+  "generatedAt": "2026-10-09T20:45:00Z",
   "status": "preparation-only",
   "notes": [
-    "W02-01 worker image recipe candidates. Preparation only: nothing here is an accepted runtime, built image or live qualification.",
+    "W02-01 worker image recipe candidates. Preparation only: nothing here is an accepted runtime or live qualification.",
+    "The PRIOR probe-only candidate was built and ECR-scanned by Codex; THIS refreshed recipe is NOT YET BUILT and has no assembled digest.",
     "Versions and integrity values were read from upstream npm/PyPI registry metadata and from downloaded package files in this session.",
-    "Registry license labels are not a completed license audit; retain upstream notice files before bundling. See licenseFiles with per-file SHA-256.",
-    "assembledImageDigest stays null until Codex performs a real isolated build and records the immutable digest."
+    "Registry license labels are not a completed license audit, and package metadata is not a security audit; retain upstream notice files and installed-binary verification before bundling. See licenseFiles with per-file SHA-256."
   ],
   "assembledImageDigest": null,
+  "assembledImageDigestNote": "null = the refreshed recipe below is NOT YET BUILT. Do NOT reuse the prior candidate digest for this recipe.",
+  "priorBuiltCandidate": {
+    "digest": "sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837",
+    "buildId": "aaec4b57-0bb1-4a80-a464-21d364be6465",
+    "builtAt": "2026-10-09T20:28:02Z..20:31:17Z",
+    "integratedCommit": "f4f008f6afaf0517ea64822d008a39823e0b0032",
+    "sourceRecipeCommit": "4f69d68f78052c6509f8441a02433fd15d87e8cc",
+    "ecrScan": { "critical": 12, "high": 64, "medium": 70, "low": 16, "undefined": 3, "scanner": "ECR basic scan, COMPLETE" },
+    "admittedProbe": "one synthetic closed-network baseline kernel/tool probe only; no source/provider/external-content access",
+    "status": "probe-only candidate; NOT application/G1 accepted; superseded by the refreshed unbuilt recipe"
+  },
   "baseImage": {
-    "reference": "node:24.9.0-bookworm-slim",
-    "indexDigest": "sha256:3e69116c924bfcba6c6979aff60d966c37aef56d488ce091c69d442ebec9f103",
-    "platformManifestDigestAmd64": "sha256:fc1f67e84e3fd5e1a1e5d47d99736a5ba2d66268b9125700b0f2faf13884be5d",
+    "reference": "node:24.21.0-bookworm-slim",
+    "indexDigest": "sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20",
+    "platformManifestDigestAmd64": "sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd",
     "tagResolvedAt": "2026-10-09",
-    "resolvedVia": "registry-1.docker.io library/node manifests API",
+    "resolvedVia": "registry-1.docker.io library/node manifests API (tag 24.21.0-bookworm-slim; index + linux/amd64)",
+    "nodeVersion": "24.21.0",
     "nodeMajor": 24,
-    "pythonSeries": "3.11 (Debian bookworm system python3)"
+    "pythonSeries": "3.11 (Debian bookworm system python3)",
+    "replaces": "node:24.9.0-bookworm-slim@sha256:3e69116c924bfcba6c6979aff60d966c37aef56d488ce091c69d442ebec9f103"
   },
   "npm": [
     {
@@ -119,18 +132,41 @@
     { "name": "typing_extensions", "version": "4.16.0", "license": "PSF-2.0", "wheel": "typing_extensions-4.16.0-py3-none-any.whl", "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8" }
   ],
   "osPackages": {
-    "status": "RESOLVED-FROM-SNAPSHOT",
-    "snapshotTimestamp": "20260901T000000Z",
+    "status": "RESOLVED-FROM-SNAPSHOT-REFRESHED-UNBUILT",
+    "snapshotTimestamp": "20261009T000000Z",
     "repositories": {
-      "main": "https://snapshot.debian.org/archive/debian/20260901T000000Z (suite bookworm, components main)",
-      "security": "https://snapshot.debian.org/archive/debian-security/20260901T000000Z (suite bookworm-security, components main)"
+      "main": "https://snapshot.debian.org/archive/debian/20261009T000000Z (suite bookworm, components main)",
+      "security": "https://snapshot.debian.org/archive/debian-security/20261009T000000Z (suite bookworm-security, components main)"
     },
     "signatureVerification": "Debian archive keyring (Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg)",
     "checkValidUntil": "disabled source-scoped (Check-Valid-Until: no) on both fixed snapshot sources only, as Debian documents for historical snapshots; signature verification retained",
-    "caBootstrap": "the upstream slim Node image ships without ca-certificates; apt bootstraps ca-certificates=20230311+deb12u1 over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS with normal CA verification",
+    "snapshotEvidence": {
+      "mainReleaseDate": "Sat, 11 Jul 2026 10:16:37 UTC (bookworm 12.15)",
+      "securityInReleaseDate": "Thu, 08 Oct 2026 23:02:21 UTC",
+      "securityPackagesXzSha256": "d97872da3ff1a60952a9bf64d2c908b1275b32f67a73beb20ae455dc5bcd8137",
+      "securityPackagesXzBytes": 349348,
+      "note": "by-hash fetch matched the security InRelease Packages.xz SHA256; the real build verifies Release signatures via Signed-By"
+    },
+    "caBootstrap": "the upstream slim Node image ships without ca-certificates; apt bootstraps ca-certificates=20250419~deb12u1 over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS with normal CA verification",
     "bookwormVersionAtSnapshot": "12.15",
     "resolvedAt": "2026-10-09",
-    "note": "Versions resolved from the snapshot's Packages index. The real isolated build records the exact installed versions to /opt/meri-worker/os-package-versions.txt; apt pins these exact versions in the Dockerfile.",
+    "note": "Direct pins are the highest appropriate candidates in snapshot 20261009T000000Z; the Dockerfile then runs `apt-get -y --no-remove dist-upgrade` to refresh ALL inherited installed packages from the signed fixed sources (no-removal; fails rather than silently removing a needed package). The real build records the full installed inventory to /opt/meri-worker/os-installed-packages.txt.",
+    "securityFindings": {
+      "scan": "ECR basic scan of the PRIOR candidate f669d360: 12 CRITICAL / 64 HIGH / 70 MEDIUM / 16 LOW / 3 UNDEFINED",
+      "source": "Debian security tracker (https://security-tracker.debian.org/tracker/<CVE-ID>) and source packages; public metadata only",
+      "criticalFixesInThisRefresh": {
+        "perl/perl-base": "5.36.0-7+deb12u3 -> 5.36.0-7+deb12u4 (CVE-2026-12087, -13221, -57433, -8376, -42496; -8376 is 32-bit specific)",
+        "libnss3": "2:3.87.1-1+deb12u2 -> 2:3.87.1-1+deb12u4 (CVE-2026-16389)",
+        "libgnutls30": "3.7.9-2+deb12u5 -> 3.7.9-2+deb12u7 (CVE-2026-33845, -42010)",
+        "python3.11": "3.11.2-6+deb12u8 -> 3.11.2-6+deb12u9 (CVE-2026-19445; server-SNI specific)",
+        "libssl3/openssl": "3.0.20-1~deb12u2 -> 3.0.22-1~deb12u1 (CVE-2026-75803)"
+      },
+      "remainingOpen": {
+        "CVE-2026-95210": "GnuTLS; no fixed version available in this snapshot",
+        "CVE-2026-52490": "tiff/libtiff6 4.5.0-6+deb12u4; tracker describes the tiffcrop utility; NOT suppressed and NOT called unreachable without installed-binary/use evidence"
+      },
+      "note": "10 of 12 critical findings have current bookworm fixes applied via the refreshed pins + dist-upgrade. Package metadata is NOT a completed security audit and does NOT establish zero vulnerabilities; installed-binary/use verification (dpkg inventory, SDK binary SHA256, CFT chrome/helper hashes) is recorded at real build time, and remaining scanner findings are not hidden."
+    },
     "firstBuildFailure": {
       "buildId": "meri-greenfield-qualification-build:7464da9b-af57-4481-b4a4-959b9789e7ec",
       "at": "2026-10-09T20:15:15Z..20:15:54Z",
@@ -142,7 +178,7 @@
       "coherenceScan": "all other pinned packages' exact-version (=) Dependencies resolve to the snapshot versions (python3->libpython3-stdlib, python3-venv->python3, libreoffice-impress->libreoffice-core/libreoffice-draw); no other mismatch found. libnss3/libexpat1/ca-certificates were left at their resolved versions (no exact-dependency conflict; changing them would be unrelated scope)"
     },
     "resolved": {
-      "ca-certificates": "20230311+deb12u1",
+      "ca-certificates": "20250419~deb12u1",
       "python3": "3.11.2-1+b1",
       "python3-venv": "3.11.2-1+b1",
       "libreoffice-core": "4:7.4.7-1+deb12u14",
@@ -155,7 +191,7 @@
       "fonts-crosextra-carlito": "20220224-1",
       "fonts-crosextra-caladea": "20200211-1",
       "poppler-utils": "22.12.0-2+deb12u3",
-      "libnss3": "2:3.87.1-1+deb12u2",
+      "libnss3": "2:3.87.1-1+deb12u4",
       "libnspr4": "2:4.35-1",
       "libatk1.0-0": "2.46.0-5",
       "libatk-bridge2.0-0": "2.46.0-5",
@@ -175,10 +211,22 @@
       "libxcb1": "1.15-1",
       "libxext6": "2:1.3.4-1+b1",
       "libglib2.0-0": "2.74.6-2+deb12u9",
-      "libexpat1": "2.5.0-1+deb12u2"
+      "libexpat1": "2.5.0-1+deb12u4"
+    },
+    "expectedInheritedVersions": {
+      "note": "Inherited installed packages refreshed by `apt-get -y --no-remove dist-upgrade` from snapshot 20261009T000000Z; the real build records the actual inventory. Not exact-pinned (they are not direct dependencies we select), but expected to resolve to at least:",
+      "perl-base": "5.36.0-7+deb12u4",
+      "perl": "5.36.0-7+deb12u4",
+      "libgnutls30": "3.7.9-2+deb12u7",
+      "libssl3": "3.0.22-1~deb12u1",
+      "libtiff6": "4.5.0-6+deb12u4",
+      "python3.11-venv": "3.11.2-6+deb12u9"
     }
   },
   "unresolvedPins": [
-    "Assembled image digest (assembledImageDigest null until a real isolated build)"
+    "Assembled image digest for THIS refreshed recipe (assembledImageDigest null; the prior f669d360 candidate is a separate, probe-only build)",
+    "CVE-2026-95210 (GnuTLS) and CVE-2026-52490 (tiff/tiffcrop) have no fix in snapshot 20261009T000000Z and remain open",
+    "CFT per-file hash: only the archive sha256 (a24546e0...) was independently inspected; no per-file chrome/chrome_sandbox hash is pinned, so the build-time per-file comparison is UNAVAILABLE (recorded, not verified)",
+    "Installed-binary/use verification of flagged utilities (e.g. tiffcrop) requires the built image; not available at authoring time"
   ]
 }

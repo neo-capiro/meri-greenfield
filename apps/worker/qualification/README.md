@@ -7,6 +7,17 @@ This is PREPARATION ONLY. Nothing here is an accepted runtime, a built image or
 live qualification evidence. G1 stays incomplete and W03 stays blocked until
 Codex independently builds the image and runs the isolated Fargate evidence.
 
+A PRIOR probe-only candidate was built and ECR-scanned by Codex (digest
+`sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837`,
+12 CRITICAL / 64 HIGH / 70 MEDIUM / 16 LOW / 3 UNDEFINED). THIS refreshed recipe
+(Node LTS 24.21.0 base, current fixed security snapshot `20261009T000000Z`) is
+NOT YET BUILT and has no assembled digest; the prior digest does not apply to it.
+The refresh re-pins patched OS packages (perl, NSS, GnuTLS, Python, OpenSSL) and
+`dist-upgrade`s all inherited packages from the signed fixed sources. Package
+metadata is not a completed security audit and does not establish zero
+vulnerabilities: CVE-2026-95210 (GnuTLS) and CVE-2026-52490 (tiff/tiffcrop)
+remain open. See `component-pins.json`.
+
 ## Layout
 
 ```
@@ -52,20 +63,26 @@ docker build --pull --platform linux/amd64 \
   apps/worker/qualification
 ```
 
-The recipe: immutable base `node:24.9.0-bookworm-slim@sha256:3e69116c...`,
-Debian repositories pinned to snapshot `20260901T000000Z` (main + security) with
-normal signature verification and source-scoped `Check-Valid-Until: no` (Debian's
-documented setting for historical snapshots), a deterministic CA bootstrap (apt
-installs the exact resolved `ca-certificates` over HTTP from the same fixed
-signed snapshot, then both sources switch to HTTPS with normal CA verification),
-a single locked `npm ci --include=optional`, hash-pinned Python in an isolated
-venv, the matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12,
-archive `builds/cft/155.0.8059.12/linux64/chrome-linux64.zip`) installed via the
-adopted Playwright CLI with the browser tree kept root-owned and its
-`chrome_sandbox` setuid helper asserted root/4755 after all ownership operations,
-non-root UID/GID 10001, and `VOLUME ["/workspace", "/tmp"]`. Runtime expectation
-set by Codex's ECS task definition: `readOnlyRootFilesystem=true`, no
-capabilities, no privileged mode, no Docker socket, no host networking.
+The recipe: immutable base `node:24.21.0-bookworm-slim@sha256:d6aa754f...`
+(Node LTS 24.21.0), Debian repositories pinned to snapshot `20261009T000000Z`
+(main + security) with normal signature verification and source-scoped
+`Check-Valid-Until: no` (Debian's documented setting for historical snapshots), a
+deterministic CA bootstrap (apt installs the exact resolved `ca-certificates`
+over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS
+with normal CA verification), exact direct OS pins at the highest snapshot
+candidates followed by `apt-get -y --no-remove dist-upgrade` to refresh ALL
+inherited installed packages from the signed fixed sources (no-removal; never
+silently drops a needed package), a single locked `npm ci --include=optional`,
+hash-pinned Python in an isolated venv, the matched Chromium (revision 1247 /
+Chrome-for-Testing 155.0.8059.12, archive
+`builds/cft/155.0.8059.12/linux64/chrome-linux64.zip`) installed via the adopted
+Playwright CLI with the browser tree kept root-owned and its `chrome_sandbox`
+setuid helper asserted root/4755 after all ownership operations, non-root UID/GID
+10001, and `VOLUME ["/workspace", "/tmp"]`. The build records the full dpkg
+inventory and Node/Python/LibreOffice versions and byte-verifies the pinned SDK
+Linux binary. Runtime expectation set by Codex's ECS task definition:
+`readOnlyRootFilesystem=true`, no capabilities, no privileged mode, no Docker
+socket, no host networking.
 
 ### Volume / writable-path behaviour REQUIRES LIVE VERIFICATION
 

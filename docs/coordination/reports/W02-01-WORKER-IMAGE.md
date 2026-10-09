@@ -5,10 +5,11 @@ Task: W02-01 Worker image and offline qualification preparation
 Explicit Hermes session ID: `20261009_152136_008131` (stage 1 partial; stage 2
 interrupted on a test hang; stage 3 fixed the hang and committed `bf72484`; stage
 4 applied review repairs and committed `a5d6f0e`; stage 5 corrected pinned-browser
-handling and committed `3d85f4a`; this is the stage-6 first-build apt-fix
-continuation of the same session)
+handling and committed `3d85f4a`; stage 6 fixed the first-build apt poppler pin
+(`4f69d68`, integrated; the probe-only candidate then built and was ECR-scanned);
+this is the stage-7 security recipe-refresh continuation of the same session)
 Branch/worktree (cwd): `hermes/w02-image` at `C:\dev\main\meri-greenfield-worktrees\w02-image`
-Base commit: `3d85f4ae9fed85956a2cc1afd9cce4c13e8bcefd`
+Base commit: `4f69d68f78052c6509f8441a02433fd15d87e8cc`
 Result: HEAD of this task commit (full SHA returned in the handoff message)
 
 Preparation only. Green offline checks prove local structural/path/parsing
@@ -91,6 +92,55 @@ unrelated scope). Signature/HTTPS verification and the scoped snapshot
 weakening, host switch or retry loop. Docker is unavailable here; no local/cloud
 build was attempted. `assembledImageDigest` stays null.
 
+## Stage-7 security recipe refresh (Codex build/scan evidence)
+
+The prior probe-only candidate built by Codex (CodeBuild
+`aaec4b57-0bb1-4a80-a464-21d364be6465`, ECR
+`sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837`) is
+NOT application/G1 accepted. Its ECR basic scan was COMPLETE with 12 CRITICAL /
+64 HIGH / 70 MEDIUM / 16 LOW / 3 UNDEFINED. `assembledImageDigest` stays null and
+now records that THIS refreshed recipe is a SEPARATE, NOT-YET-BUILT candidate
+(`priorBuiltCandidate` preserves the old digest/build/scan; the old digest must
+not be applied to the new recipe).
+
+Refresh (keeping Debian bookworm / Python 3.11 / Node 24, and all app/SDK/MCP/
+Chromium/Python-library pins):
+- Base moved to Node LTS `node:24.21.0-bookworm-slim` at the independently
+  observed index digest `sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20`
+  (linux/amd64 manifest `sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd`).
+- Sources moved to the current fixed snapshot `20261009T000000Z` (main +
+  security). Security `InRelease` Date `Thu, 08 Oct 2026 23:02:21 UTC`;
+  `Packages.xz` SHA256 `d97872da3ff1a60952a9bf64d2c908b1275b32f67a73beb20ae455dc5bcd8137`
+  (349348 bytes) matched by-hash. Signature/HTTPS verification and scoped
+  `Check-Valid-Until: no` are unchanged.
+- Direct OS pins set to the highest snapshot candidates (notably libnss3
+  `2:3.87.1-1+deb12u4`, libexpat1 `2.5.0-1+deb12u4`, poppler-utils
+  `22.12.0-2+deb12u3`, ca-certificates `20250419~deb12u1`; libreoffice
+  `4:7.4.7-1+deb12u14` and libglib2.0-0 `2.74.6-2+deb12u9` kept as the higher of
+  main/security), then `apt-get -y --no-remove dist-upgrade` refreshes ALL
+  inherited packages from the signed fixed sources (no-removal; fails rather than
+  silently removing).
+- 10 of 12 critical findings have current bookworm fixes now applied: perl
+  5.36.0-7+deb12u4 (CVE-2026-12087/-13221/-57433/-8376/-42496; -8376 is 32-bit
+  specific), libnss3 2:3.87.1-1+deb12u4 (CVE-2026-16389), libgnutls30
+  3.7.9-2+deb12u7 (CVE-2026-33845/-42010), python3.11 3.11.2-6+deb12u9
+  (CVE-2026-19445; server-SNI specific), libssl3/openssl 3.0.22-1~deb12u1
+  (CVE-2026-75803). Still open: CVE-2026-95210 (GnuTLS) and CVE-2026-52490
+  (tiff/tiffcrop 4.5.0-6+deb12u4) — recorded, not suppressed, not called
+  unreachable. Package metadata is not a completed security audit and does not
+  establish zero vulnerabilities.
+- Build-time byte/version evidence added: full `dpkg-query` inventory to
+  `/opt/meri-worker/os-installed-packages.txt`, Node/Python/LibreOffice versions
+  to `runtime-versions.txt`, the pinned SDK Linux binary SHA256 verified against
+  `4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358`, and CFT
+  chrome/chrome_sandbox hashes recorded to `cft-hashes.txt` (per-file comparison
+  to a prior hash is UNAVAILABLE: only the archive sha256 `a24546e0...` was
+  independently inspected — recorded, not claimed).
+
+Docker is unavailable here; no build/scan was attempted. The known missing
+direct-IP egress probe remains a separate, later gap; no browser/Office/network/
+session/proxy code was rewritten.
+
 ## Changed files (the fifteen owned tracked paths)
 
 | Path | SHA-256 |
@@ -99,16 +149,16 @@ build was attempted. `assembledImageDigest` stays null.
 | apps/worker/qualification/package-lock.json | ed0c7329cd1cd24487848f4bf6fcf5cfd97f877f17b25240fd4c255d385f58b4 |
 | apps/worker/qualification/.gitignore | 69f504fac53d1b2ff914d4f3c297f638bfad612e3080a8e070a9c20b02581536 |
 | apps/worker/qualification/.dockerignore | 1bb5cd790f07faeec7b85b5b9fc2291d6461b82fe0d1150e1085f971c6eccfda |
-| apps/worker/qualification/Dockerfile | d4508c8428eccb5294b669e14820e9dad7734f1ce52503f4ea66019357561867 |
+| apps/worker/qualification/Dockerfile | 0843ebd51637fd40edb6b8baf52d921a4fe68a61166997c4752cc0cf6d9306b1 |
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
-| apps/worker/qualification/component-pins.json | cb8b863b2fee1ae659408607394db6666acb81560ddcef63e27bf188ff6a7dbe |
+| apps/worker/qualification/component-pins.json | 2e206599a9b6bbf00e7b284b75c68297be82c650e55fe52e4cf37bee10d9e958 |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | 9e42026b722f42b24f6485fee3390d2ffbab5d828f8e421617863d295a0c983c |
+| apps/worker/qualification/probes/static.test.mjs | 9b55dd3f8eda5966fd2826bd79118ca3c17d84f720d7d8a02fb73b6d4b175ddb |
 | apps/worker/qualification/probes/runtime.mjs | d52d3812eda58eacc6a516fc9c78b90bcd95b3886583a5d2883ce5189092b64a |
 | apps/worker/qualification/probes/browser.mjs | c4e6f59d8f11e6f465c136d045ab9701d257fbd5fa27d8c9a118a04c61841324 |
 | apps/worker/qualification/probes/artifacts.mjs | 2fe50c87d727b95e3a37341e375c0e467af6a26582859d1b684b5ea5ff7b37ed |
 | apps/worker/qualification/probes/artifacts.py | 2adf78dbc3728393c62c9472c437e5caf725e79c988b7354eebba9fe2ed33bef |
-| apps/worker/qualification/README.md | cfee3e9e5bdf72cf799b7086494be9a412629adfc839e6abff5f4b82d93b7bac |
+| apps/worker/qualification/README.md | c8f60e99c6dc0b963d5cb3e04167a816f51043969932d2543903f6d22c8c2bde |
 | docs/coordination/reports/W02-01-WORKER-IMAGE.md | this file |
 
 No other tracked path was modified. No contract, root lockfile, migration, plan
@@ -119,11 +169,11 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 56 / pass 56 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 58 / pass 58 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 49 → 56 (stage 5 two-cell sandbox/process/network tests plus a
-stage-6 Dockerfile↔component-pins pin-drift test). All non-vacuous.
+Nested suite grew 49 → 58 (stage 5/6 plus stage-7 base/snapshot/pin, dist-upgrade
+and prior-built-vs-unbuilt assertions). All non-vacuous.
 
 ## Adopted versions, licenses and integrity
 

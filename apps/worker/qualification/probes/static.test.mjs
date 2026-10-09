@@ -401,7 +401,7 @@ test('summarize/computeExitCode treat a required skipped or failed check as not-
 // ---------------------------------------------------------------------------
 
 test('Dockerfile pins an immutable base digest and non-root UID/GID 10001', () => {
-  assert.match(dockerfile, /^FROM node:24\.9\.0-bookworm-slim@sha256:[a-f0-9]{64}$/m);
+  assert.match(dockerfile, /^FROM node:24\.21\.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20$/m);
   assert.match(dockerfile, /^USER 10001:10001$/m);
   assert.match(dockerfile, /groupadd --gid 10001 meri/);
   assert.match(dockerfile, /useradd --uid 10001 --gid 10001/);
@@ -415,8 +415,8 @@ test('Dockerfile declares the writable mount points and read-only-root expectati
 });
 
 test('Dockerfile pins Debian repositories to the snapshot with signature verification and Check-Valid-Until disabled', () => {
-  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian-security\/20260901T000000Z/);
+  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian-security\/20261009T000000Z/);
   assert.match(dockerfile, /Signed-By: \/usr\/share\/keyrings\/debian-archive-keyring\.gpg/);
   assert.match(dockerfile, /Check-Valid-Until: no/);
   assert.doesNotMatch(dockerfile, /trusted=yes/);
@@ -424,9 +424,9 @@ test('Dockerfile pins Debian repositories to the snapshot with signature verific
 });
 
 test('Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version', () => {
-  assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /ca-certificates=20230311\+deb12u1/);
+  assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /ca-certificates=20250419~deb12u1/);
 });
 
 test('Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops', () => {
@@ -462,13 +462,15 @@ test('component-pins.json records the inspected CfT archive, sha256 and helper p
 });
 
 test('component-pins.json records resolved OS/snapshot versions and unresolved pins none remain for base', () => {
-  assert.equal(pins.baseImage.reference, 'node:24.9.0-bookworm-slim');
+  assert.equal(pins.baseImage.reference, 'node:24.21.0-bookworm-slim');
+  assert.equal(pins.baseImage.nodeVersion, '24.21.0');
   assert.match(pins.baseImage.indexDigest, /^sha256:[a-f0-9]{64}$/);
-  assert.equal(pins.osPackages.snapshotTimestamp, '20260901T000000Z');
+  assert.equal(pins.osPackages.snapshotTimestamp, '20261009T000000Z');
   assert.ok(pins.osPackages.resolved['libreoffice-core']);
   assert.ok(pins.osPackages.resolved['libnss3']);
-  assert.equal(pins.osPackages.resolved['ca-certificates'], '20230311+deb12u1');
-  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT');
+  assert.equal(pins.osPackages.resolved['ca-certificates'], '20250419~deb12u1');
+  assert.equal(pins.osPackages.resolved['libnss3'], '2:3.87.1-1+deb12u4');
+  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT-REFRESHED-UNBUILT');
 });
 
 test('Dockerfile OS package pins match the component-pins resolved versions (no drift)', () => {
@@ -478,6 +480,27 @@ test('Dockerfile OS package pins match the component-pins resolved versions (no 
   // The security-updated poppler set is the coherent fix for the first build failure.
   assert.equal(pins.osPackages.resolved['poppler-utils'], '22.12.0-2+deb12u3');
   assert.ok(pins.osPackages.firstBuildFailure);
+});
+
+test('Dockerfile refreshes inherited packages and records build-time evidence', () => {
+  assert.ok(dockerfile.includes('apt-get -y --no-remove dist-upgrade'), 'no-removal bounded upgrade');
+  assert.ok(dockerfile.includes('os-installed-packages.txt'), 'dpkg inventory');
+  assert.ok(dockerfile.includes('runtime-versions.txt'), 'runtime versions');
+  assert.ok(dockerfile.includes('claude-agent-sdk-linux-x64/claude'), 'SDK binary path');
+  assert.ok(dockerfile.includes('4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358'), 'SDK binary checksum');
+  assert.ok(dockerfile.includes('cft-hashes.txt'), 'CFT hash evidence');
+});
+
+test('component-pins.json distinguishes the prior built candidate from the unbuilt refresh', () => {
+  assert.equal(pins.assembledImageDigest, null);
+  assert.match(pins.priorBuiltCandidate.digest, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(pins.priorBuiltCandidate.ecrScan.critical, 12);
+  assert.ok(pins.priorBuiltCandidate.buildId);
+  assert.ok(pins.priorBuiltCandidate.sourceRecipeCommit);
+  assert.ok(pins.osPackages.securityFindings.scan.includes('12 CRITICAL'));
+  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-95210']);
+  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-52490']);
+  assert.ok(pins.osPackages.expectedInheritedVersions['libgnutls30']);
 });
 
 // ---------------------------------------------------------------------------
