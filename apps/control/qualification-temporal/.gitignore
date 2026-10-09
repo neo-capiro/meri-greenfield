@@ -1,0 +1,4 @@
+# Owned nested scratch/cache for this qualification package only.
+node_modules/
+.runtime/
+*.tsbuildinfo
