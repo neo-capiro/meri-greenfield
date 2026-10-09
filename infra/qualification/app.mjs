@@ -89,7 +89,7 @@ class BuildStack extends Stack {
           ] },
           build: { commands: [
             'set -euo pipefail',
-            'docker build --pull --platform linux/amd64 -f apps/worker/qualification/Dockerfile -t "$REPOSITORY_URI:$IMAGE_TAG" .',
+            'docker build --pull --platform linux/amd64 -f apps/worker/qualification/Dockerfile -t "$REPOSITORY_URI:$IMAGE_TAG" apps/worker/qualification',
           ] },
           post_build: { commands: [
             'set -euo pipefail',

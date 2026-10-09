@@ -89,5 +89,6 @@ test('trusted builder preserves versioned evidence and can resolve pushed digest
   const [project] = resources(build, 'AWS::CodeBuild::Project');
   assert.equal(project.ConcurrentBuildLimit, 1); assert.equal(project.TimeoutInMinutes, 30);
   const spec = JSON.parse(project.Source.BuildSpec);
+  assert(spec.phases.build.commands.find(c => c.startsWith('docker build')).endsWith(' apps/worker/qualification'));
   assert(spec.phases.post_build.commands.indexOf('[ "${CODEBUILD_BUILD_SUCCEEDING:-0}" = 1 ]') < spec.phases.post_build.commands.findIndex(c => c.startsWith('docker push')));
 });
