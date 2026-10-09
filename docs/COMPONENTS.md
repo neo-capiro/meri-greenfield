@@ -1,6 +1,6 @@
 # Component adoption and qualification register
 
-Prepared 9 October 2026. Exact versions below were read from upstream npm/PyPI registry metadata during discovery. Only the contract development dependencies are installed and lockfile-pinned. Other versions are qualification candidates; no assembled runtime, binary image digest or compatibility is accepted. Recheck package contents/license notices and retain exact hashes/digests in the W02 result before G1. No current Capiro package is imported.
+Prepared 9 October 2026. Exact versions below were read from upstream npm/PyPI registry metadata during discovery. Contract and CDK development dependencies are installed and lockfile-pinned. Runtime versions remain qualification candidates; no assembled runtime, binary image digest or compatibility is accepted. Recheck package contents/license notices and retain exact hashes/digests in the W02 result before G1. No current Capiro package is imported.
 
 | Subsystem | Package and exact candidate | Registry license | Status |
 | --- | --- | --- | --- |
@@ -15,16 +15,16 @@ Prepared 9 October 2026. Exact versions below were read from upstream npm/PyPI r
 | Durable execution | @temporalio/worker 1.24.0 | MIT | pin compatible TypeScript packages and production server/image separately |
 | Identity | @clerk/backend 3.23.1 | MIT | new authoritative identity bridge, current membership checks |
 | Storage client | @aws-sdk/client-s3 3.1148.0 | Apache-2.0 | service-side scoped storage APIs |
-| Infrastructure | aws-cdk-lib 2.273.0 | Apache-2.0 | pin compatible CDK CLI/constructs and new bootstrap role; no deployment yet |
+| Infrastructure | aws-cdk-lib 2.273.0; aws-cdk 2.1145.0; constructs 10.8.1 | Apache-2.0 | installed, root lock integrity; bootstrapless qualification synthesis; 6 static boundary checks; new Build stack CREATE_COMPLETE |
 | Word | python-docx 1.2.0 | MIT | candidate; original skills, file/render tests required |
 | Spreadsheets | XlsxWriter 3.2.9; openpyxl 3.1.5 | BSD-2-Clause; MIT | candidate; supported formulas/references/recalc/edit fidelity required |
 | Presentations | pptxgenjs 4.0.1 | MIT | candidate; native open/render/revision checks required |
 | PDF | pdfjs-dist 6.4.299; pypdf 6.20.0 | Apache-2.0; BSD-3-Clause | preview/extraction candidates; object authorization required |
 | Evaluations | promptfoo 0.124.1 | MIT | candidate; freeze benchmark/rubric before grading |
 | Observability | @opentelemetry/api 1.9.1 | Apache-2.0 | candidate; pin matching SDK/exporters after integration choice |
-| Development worker | installed Hermes 0.20.0 (2026.8.3) | not bundled in production | discovered executable/help/profiles/doctor; actual edit/resume/commit not yet run |
+| Development worker | installed Hermes 0.20.0 (2026.8.3) | not bundled in production | actual H00 edit/explicit resume/commit accepted at a398b9ea after independent Hermes review + Codex 15-test rerun; scope/cleanup findings retained |
 
-Still unpinned: Linux base image and digest, LibreOffice and fonts/templates, PostgreSQL, Temporal server, CDK CLI/constructs, optional OCR. Record upstream license texts/notices and content hashes before bundling. Registry license labels are not a complete license audit.
+Still unpinned: Linux base image and digest, LibreOffice and fonts/templates, PostgreSQL, Temporal server, optional OCR. W02-image session is assigned to pin/probe the worker toolchain; local Docker is unavailable. Record upstream license texts/notices and content hashes before bundling. Registry license labels are not a complete license audit.
 
 Independent exact-tarball inspection confirmed SDK 0.3.295 declares bundled Claude Code 2.1.295 and platform binaries at 0.3.295. SessionStore is best-effort: append failures can emit mirror_error and drop batches; it cannot be combined with persistSession:false or enableFileCheckpointing:true. Use separate broker-verified workspace snapshots and fail closed if expected remote state is missing. The pinned SDK supports explicit settingSources:[] and settings.autoMemoryEnabled:false; do not rely on omitted settings defaults.
 
