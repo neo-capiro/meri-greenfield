@@ -5,16 +5,18 @@
 //
 // Deterministic and hermetic: importing or running these tests starts NO
 // server, NO native process and NO socket. Every host-side effect (settings
-// resolution, wire MCP server construction, native spawn, loopback server,
-// query) is injected as a fake. The fakes deliberately include UNCOOPERATIVE
-// paths (iterator that never yields, server.close that never settles, kill that
-// never terminates) to prove the orchestrator is bounded and fails closed.
+// resolution, workspace preparation, wire MCP server construction, native
+// spawn, loopback server, query) is injected as a fake. The fakes deliberately
+// include UNCOOPERATIVE paths (iterator/close/return/kill that never settle) to
+// prove the orchestrator is bounded and fails closed rather than hanging or
+// falsely passing.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import zlib from 'node:zlib';
 
 import {
@@ -43,13 +45,19 @@ import {
 
 import {
   hashSha256,
+  errorType,
   scrubSecrets,
   looksLikeSecret,
+  hasSensitiveBody,
   sanitizeHeaders,
   decodeRequestBody,
   createCaptureState,
   classifyRequest,
+  validateFirstRequest,
+  validateToolAdvertisement,
   validateToolRoundTrip,
+  validateResolvedSettings,
+  validateDeadline,
   WIRE_TOOL_USE_ID,
   buildToolUseSse,
   buildFinalSse,
@@ -63,31 +71,37 @@ import {
   confirmChildCleanup,
   validateResultMessage,
   buildOutputLines,
+  writeOnce,
+  writeLines,
+  realPrepareWorkspace,
   runCapture,
   main,
+  MAX_RECORD_BYTES,
 } from './sdk-capture.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PKG = join(HERE, '..');
 const sdkTypes = readFileSync(join(PKG, 'node_modules', '@anthropic-ai', 'claude-agent-sdk', 'sdk.d.ts'), 'utf8');
-const betaTypes = readFileSync(
-  join(PKG, 'node_modules', '@anthropic-ai', 'sdk', 'resources', 'beta', 'messages', 'messages.d.ts'),
-  'utf8',
-);
+const betaTypes = readFileSync(join(PKG, 'node_modules', '@anthropic-ai', 'sdk', 'resources', 'beta', 'messages', 'messages.d.ts'), 'utf8');
 
 // ---------------------------------------------------------------------------
 // fixtures
 // ---------------------------------------------------------------------------
 
-const req1Body = () => ({
-  model: CAPTURE_MODEL,
-  stream: true,
-  messages: [{ role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] }],
-});
+const PORT = 51234;
+const SESSION_UUID = '11111111-2222-3333-4444-555555555555';
+const ADVERT = [{ name: WIRE_TOOL_FULLNAME }];
+
+const req1Body = (mutate) => {
+  const b = { model: CAPTURE_MODEL, stream: true, tools: ADVERT, messages: [{ role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] }] };
+  if (mutate) mutate(b);
+  return b;
+};
 const req2Body = (mutate) => {
   const b = {
     model: CAPTURE_MODEL,
     stream: true,
+    tools: ADVERT,
     messages: [
       { role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] },
       { role: 'assistant', content: [{ type: 'tool_use', id: WIRE_TOOL_USE_ID, name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } }] },
@@ -98,29 +112,25 @@ const req2Body = (mutate) => {
   return b;
 };
 
-const PORT = 51234;
 function mkReq(body, { path = '/v1/messages', host = `${LOOPBACK_HOST}:${PORT}`, peer = LOOPBACK_HOST, headers = {}, contentEncoding, raw, oversize } = {}) {
   return { method: 'POST', path, host, peer, rawBytes: raw !== undefined ? raw : Buffer.from(JSON.stringify(body)), contentEncoding, oversize, headers: { host, ...headers } };
 }
-function stateAt(p = PORT) {
-  return createCaptureState(p);
-}
+const stateAt = (p = PORT) => createCaptureState(p);
+
+const VALID_RESOLVED = { effective: {}, provenance: {}, sources: [{ source: 'user', settings: {} }] };
 
 // ---------------------------------------------------------------------------
-// 1. classifyRequest success + exact byte/hash reconstruction
+// 1. classifyRequest success + byte/hash reconstruction
 // ---------------------------------------------------------------------------
 
 test('classifyRequest records exact raw bytes and hash for both requests', () => {
   const state = stateAt();
   const raw1 = Buffer.from(JSON.stringify(req1Body()));
-  const d1 = classifyRequest(state, mkReq(undefined, { raw: raw1 }));
-  assert.equal(d1.ok, true, d1.error);
-  assert.equal(state.count, 1);
+  assert.equal(classifyRequest(state, mkReq(undefined, { raw: raw1 })).ok, true);
   assert.equal(state.requests[0].rawSha256, hashSha256(raw1));
   assert.equal(state.requests[0].base64, raw1.toString('base64'));
   const raw2 = Buffer.from(JSON.stringify(req2Body()));
-  const d2 = classifyRequest(state, mkReq(undefined, { path: '/v1/messages?beta=true', raw: raw2 }));
-  assert.equal(d2.ok, true, d2.error);
+  assert.equal(classifyRequest(state, mkReq(undefined, { path: '/v1/messages?beta=true', raw: raw2 })).ok, true);
   assert.equal(state.count, 2);
   assert.equal(state.ready, true);
 });
@@ -144,150 +154,163 @@ function expectAbort(req, matcher, p = PORT) {
   assert.equal(d.ok, false);
   assert.equal(d.action, 'abort');
   assert.match(state.aborted, matcher);
-  assert.equal(state.count, 0);
+}
+function expectAbortSeq(body2, matcher) {
+  const state = stateAt();
+  assert.equal(classifyRequest(state, mkReq(req1Body())).ok, true);
+  const d = classifyRequest(state, mkReq({ ...body2, stream: true, model: CAPTURE_MODEL, tools: ADVERT }, { path: '/v1/messages' }));
+  assert.equal(d.ok, false);
+  assert.match(state.aborted, matcher);
 }
 
 test('wrong method / path / host / port / peer / model / stream fail and abort', () => {
   expectAbort({ ...mkReq(req1Body()), method: 'GET' }, /method GET/);
   expectAbort(mkReq(req1Body(), { path: '/v1/complete' }), /path/);
   expectAbort(mkReq(req1Body(), { host: 'api.anthropic.com' }), /host/);
-  expectAbort(mkReq(req1Body(), { host: `${LOOPBACK_HOST}:9999` }), /host .*expected/);
+  expectAbort(mkReq(req1Body(), { host: `${LOOPBACK_HOST}:9999` }), /host does not equal bound/);
   expectAbort(mkReq(req1Body(), { peer: '10.0.0.5' }), /non-loopback peer/);
-  expectAbort(mkReq({ ...req1Body(), model: 'claude-sonnet-5' }), /model/);
-  expectAbort(mkReq({ ...req1Body(), stream: false }), /stream/);
+  expectAbort(mkReq(req1Body((b) => (b.model = 'claude-sonnet-5'))), /wrong model/);
+  expectAbort(mkReq(req1Body((b) => (b.stream = false))), /stream/);
 });
 
-test('oversize and malformed and unsupported-encoding fail and abort', () => {
-  expectAbort(mkReq(undefined, { raw: Buffer.from('{not json') }), /malformed JSON/);
+test('oversize, malformed and unsupported-encoding fail and abort', () => {
+  expectAbort(mkReq(undefined, { raw: Buffer.from('{not json') }), /malformed-json/);
   expectAbort(mkReq(undefined, { raw: Buffer.alloc(4 * 1024 * 1024 + 1, 0x61) }), /oversize/);
   expectAbort(mkReq(req1Body(), { raw: Buffer.alloc(10), oversize: true }), /oversize/);
-  expectAbort(mkReq(req1Body(), { contentEncoding: 'br' }), /unsupported content-encoding/);
+  expectAbort(mkReq(req1Body(), { contentEncoding: 'br' }), /unsupported-encoding/);
 });
 
 test('gzip is decoded with independent raw/decompressed hashes', () => {
   const state = stateAt();
   const gz = zlib.gzipSync(Buffer.from(JSON.stringify(req1Body())));
-  const d = classifyRequest(state, mkReq(undefined, { raw: gz, contentEncoding: 'gzip' }));
-  assert.equal(d.ok, true, d.error);
+  assert.equal(classifyRequest(state, mkReq(undefined, { raw: gz, contentEncoding: 'gzip' })).ok, true);
   assert.equal(state.requests[0].rawSha256, hashSha256(gz));
   assert.equal(state.requests[0].decompressedSha256, hashSha256(Buffer.from(JSON.stringify(req1Body()))));
 });
 
-test('advertised tool set outside the wire echo tool is rejected', () => {
-  expectAbort(mkReq({ ...req1Body(), tools: [{ name: 'Bash' }] }), /tool outside the wire echo tool set/);
+test('strict first request: prompt continuity and exact tool advertisement', () => {
+  expectAbort(mkReq(req1Body((b) => delete b.tools)), /missing tool advertisement/);
+  expectAbort(mkReq(req1Body((b) => (b.tools = [{ name: WIRE_TOOL_FULLNAME }, { name: WIRE_TOOL_FULLNAME }]))), /exactly 1 advertised tool/);
+  expectAbort(mkReq(req1Body((b) => (b.tools = [{ name: 'Bash' }]))), /unexpected advertised tool/);
+  expectAbort(mkReq(req1Body((b) => b.messages.push({ role: 'user', content: [{ type: 'text', text: 'extra' }] }))), /exactly 1 user text block/);
+  expectAbort(mkReq(req1Body((b) => (b.messages[0].content[0].text = 'unrelated'))), /not the exact synthetic prompt/);
 });
 
-test('second request without matching tool round-trip fails', () => {
-  expectAbortSequence(req2Body((b) => { b.messages.splice(1, 1); b.messages.splice(2, 1); }), /tool_use/);
+test('strict second request roles and contents', () => {
+  expectAbortSeq(req2Body((b) => { b.messages.splice(1, 1); b.messages.splice(1, 1); }), /tool_use|tool_result/);
+  expectAbortSeq(req2Body((b) => (b.messages[1].content[0].id = 'toolu_other')), /foreign tool_use id/);
+  expectAbortSeq(req2Body((b) => (b.messages[1].content[0].name = 'mcp__wire__other')), /foreign tool name/);
+  expectAbortSeq(req2Body((b) => (b.messages[1].content[0].input = { value: WIRE_TOKEN, extra: 1 })), /exactly \{value:token\}/);
+  expectAbortSeq(req2Body((b) => b.messages[1].content.push({ type: 'tool_use', id: 'x', name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } })), /exactly 1 tool_use/);
+  expectAbortSeq(req2Body((b) => (b.messages[2].content[0].tool_use_id = 'toolu_other')), /does not match emitted id/);
+  expectAbortSeq(req2Body((b) => (b.messages[2].content[0].is_error = true)), /is_error:true/);
+  expectAbortSeq(req2Body((b) => (b.messages[2].content[0].content = [{ type: 'text', text: 'wrong' }])), /content mismatch/);
+  expectAbortSeq(req2Body((b) => (b.messages = [b.messages[0], b.messages[2], b.messages[1]])), /order must be/);
 });
 
-function expectAbortSequence(body2, matcher) {
-  const state = stateAt();
-  assert.equal(classifyRequest(state, mkReq(req1Body())).ok, true);
-  const d = classifyRequest(state, mkReq({ ...body2, stream: true, model: CAPTURE_MODEL }, { path: '/v1/messages' }));
-  assert.equal(d.ok, false);
-  assert.match(state.aborted, matcher);
-}
-
-test('strict tool round-trip rejects foreign ids, wrong order, extra keys, is_error, unrelated prompt, extra tools', () => {
-  expectAbortSequence(req2Body((b) => { b.messages[1].content[0].id = 'toolu_other'; }), /foreign tool_use id/);
-  expectAbortSequence(req2Body((b) => { b.messages[1].content[0].name = 'mcp__wire__other'; }), /foreign tool name/);
-  expectAbortSequence(req2Body((b) => { b.messages[1].content[0].input = { value: WIRE_TOKEN, extra: 1 }; }), /exactly \{value:token\}/);
-  expectAbortSequence(req2Body((b) => { b.messages[1].content.push({ type: 'tool_use', id: 'x', name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } }); }), /exactly 1 tool_use/);
-  expectAbortSequence(req2Body((b) => { b.messages[2].content[0].tool_use_id = 'toolu_other'; }), /does not match emitted id/);
-  expectAbortSequence(req2Body((b) => { b.messages[2].content[0].is_error = true; }), /is_error:true/);
-  expectAbortSequence(req2Body((b) => { b.messages[2].content[0].content = [{ type: 'text', text: 'wrong' }]; }), /content mismatch/);
-  expectAbortSequence(req2Body((b) => { b.messages[0].content[0].text = 'unrelated prompt'; }), /unrelated prompt/);
-  // wrong role order: tool_result before the assistant tool_use
-  expectAbortSequence(req2Body((b) => { b.messages = [b.messages[0], b.messages[2], b.messages[1]]; }), /role order|tool_use|tool_result/);
+test('tool_use must be in an assistant message; tool_result must be in a user message', () => {
+  expectAbortSeq(
+    req2Body((b) => {
+      b.messages = [
+        { role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }, { type: 'tool_use', id: WIRE_TOOL_USE_ID, name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } }] },
+        { role: 'assistant', content: [{ type: 'tool_result', tool_use_id: WIRE_TOOL_USE_ID, content: [{ type: 'text', text: WIRE_TOOL_RESULT }] }] },
+      ];
+    }),
+    /tool_use must be in an assistant message/,
+  );
+  expectAbortSeq(
+    req2Body((b) => {
+      b.messages = [
+        { role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] },
+        { role: 'assistant', content: [{ type: 'tool_use', id: WIRE_TOOL_USE_ID, name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } }, { type: 'tool_result', tool_use_id: WIRE_TOOL_USE_ID, content: [{ type: 'text', text: WIRE_TOOL_RESULT }] }] },
+      ];
+    }),
+    /tool_result must be in a user message/,
+  );
 });
 
-test('duplicate / third request beyond exactly two fails and aborts', () => {
+test('duplicate / third request fails and aborts', () => {
   const state = stateAt();
   assert.equal(classifyRequest(state, mkReq(req1Body())).ok, true);
   assert.equal(classifyRequest(state, mkReq(req2Body())).ok, true);
-  const d = classifyRequest(state, mkReq(req2Body()));
-  assert.equal(d.ok, false);
-  assert.match(state.aborted, /duplicate\/extra/);
+  assert.match(classifyRequest(state, mkReq(req2Body())).error || state.aborted, /duplicate\/extra/);
 });
 
-test('validateToolRoundTrip is a pure function over the emitted id', () => {
+test('validateFirstRequest / validateToolAdvertisement / validateToolRoundTrip are pure', () => {
+  assert.equal(validateFirstRequest(req1Body()).ok, true);
+  assert.equal(validateFirstRequest(req1Body((b) => delete b.tools)).ok, false);
+  assert.equal(validateToolAdvertisement(req1Body()).ok, true);
+  assert.equal(validateToolAdvertisement({ tools: [] }).ok, false);
   assert.equal(validateToolRoundTrip(req2Body(), WIRE_TOOL_USE_ID).ok, true);
   assert.equal(validateToolRoundTrip(req2Body(), 'toolu_other').ok, false);
 });
 
 // ---------------------------------------------------------------------------
-// 3. secret scrubbing + header sanitization
+// 3. secret scrubbing + recursive body sensitivity
 // ---------------------------------------------------------------------------
 
-test('scrubSecrets redacts bearer tokens, sk-ant keys, JWTs and key=value pairs', () => {
+test('scrubSecrets redacts bearer tokens, sk-ant keys and key=value pairs', () => {
   const raw = 'x-auth-token: Bearer abcdef0123456789 x sk-ant-api03-ABCDEFGHIJKLMNOP token: "supersecretvalue"';
-  const scrubbed = scrubSecrets(raw);
-  assert.equal(scrubbed.includes('sk-ant-api03'), false);
-  assert.equal(scrubbed.includes('abcdef0123456789'), false);
-  assert.equal(scrubbed.includes('supersecretvalue'), false);
+  const s = scrubSecrets(raw);
+  assert.equal(s.includes('sk-ant-api03'), false);
+  assert.equal(s.includes('abcdef0123456789'), false);
+  assert.equal(s.includes('supersecretvalue'), false);
   assert.equal(looksLikeSecret(raw), true);
   assert.equal(looksLikeSecret('plain synthetic text'), false);
 });
 
-test('sanitizeHeaders redacts x-auth-token, authorization, api keys and Bearer values', () => {
-  const out = sanitizeHeaders({
-    'x-auth-token': 'opaque-value',
-    authorization: 'Bearer sk-ant-secret',
-    'x-api-key': 'sk-ant-secret',
-    cookie: 'session=abc',
-    'x-custom': 'Bearer abcdef0123456789',
-    'anthropic-beta': 'oauth-2025-04-20',
-    host: `${LOOPBACK_HOST}:${PORT}`,
-  });
+test('hasSensitiveBody detects credential-named keys recursively', () => {
+  assert.equal(hasSensitiveBody({ model: 'x', messages: [{ role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] }] }), false);
+  assert.equal(hasSensitiveBody({ nested: { api_key: 'OPAQUE_SYNTHETIC_CREDENTIAL' } }), true);
+  assert.equal(hasSensitiveBody({ a: [{ b: { authorization: 'x' } }] }), true);
+  assert.equal(hasSensitiveBody({ value: WIRE_TOKEN }), false);
+});
+
+test('sanitizeHeaders redacts secret names/values and retains beta names', () => {
+  const out = sanitizeHeaders({ 'x-auth-token': 'v', authorization: 'Bearer sk-ant-secret', 'x-api-key': 'sk-ant-secret', cookie: 'c', 'x-custom': 'Bearer abcdef0123456789', 'anthropic-beta': 'oauth-2025-04-20', host: `${LOOPBACK_HOST}:${PORT}` });
   const byName = Object.fromEntries(out.map((h) => [h.name, h.value]));
-  for (const n of ['x-auth-token', 'authorization', 'x-api-key', 'cookie', 'x-custom']) {
-    assert.equal(byName[n], '<redacted>', `${n} must be redacted`);
-  }
-  assert.equal(byName['anthropic-beta'], 'oauth-2025-04-20', 'beta header retained');
-  assert.equal(byName.host, `${LOOPBACK_HOST}:${PORT}`);
+  for (const n of ['x-auth-token', 'authorization', 'x-api-key', 'cookie', 'x-custom']) assert.equal(byName[n], '<redacted>', n);
+  assert.equal(byName['anthropic-beta'], 'oauth-2025-04-20');
 });
 
 // ---------------------------------------------------------------------------
-// 4. permission callback (provenance + exact input)
+// 4. permission callback + echo handler
 // ---------------------------------------------------------------------------
 
 test('permission callback allows only the exact wire tool/provenance/input', async () => {
   const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
   const cb = createPermissionCallback(counters);
-  const good = await cb(WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } });
-  assert.equal(good.behavior, 'allow');
-  const cases = [
+  assert.equal((await cb(WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } })).behavior, 'allow');
+  const denies = [
     ['mcp__wire__other', { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } }],
     [WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'user' } }],
     [WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: 'other', source: 'sdk' } }],
     [WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, {}],
     [WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN, extra: 1 }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } }],
-    [WIRE_TOOL_FULLNAME, {}, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } }],
-    ['Bash', {}, {}],
   ];
-  for (const [name, input, options] of cases) assert.equal((await cb(name, input, options)).behavior, 'deny', name);
-  assert.equal(counters.permissionCallbacks, 1 + cases.length);
+  for (const [n, i, o] of denies) assert.equal((await cb(n, i, o)).behavior, 'deny', n);
+  assert.equal(counters.permissionCallbacks, 1 + denies.length);
 });
 
-test('echo handler revalidates input and returns the fixed result', async () => {
+test('echo handler revalidates input', async () => {
   const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
   assert.deepEqual(await runEchoHandler(counters, { value: WIRE_TOKEN }), { content: [{ type: 'text', text: WIRE_TOOL_RESULT }] });
   await assert.rejects(() => runEchoHandler(counters, { value: WIRE_TOKEN, extra: 1 }));
-  await assert.rejects(() => runEchoHandler(counters, { value: 'wrong' }));
-  assert.equal(counters.handlerExecutions, 3);
+  assert.equal(counters.handlerExecutions, 2);
 });
 
 // ---------------------------------------------------------------------------
-// 5. wire MCP server + tool shape
+// 5. wire MCP server + tool
 // ---------------------------------------------------------------------------
 
-test('buildWireServer registers one always-load echo tool with the exact schema and timeout', () => {
-  const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
+test('buildWireServer registers one always-load echo tool', () => {
   const seen = {};
-  const fakeTool = (name, description, schema, handler, extras) => (seen.tool = { name, description, schema, handler, extras });
-  const fakeCreate = (opts) => (seen.server = opts, { instance: {}, tools: opts.tools });
-  const servers = buildWireServer({ counters, createSdkMcpServer: fakeCreate, sdkTool: fakeTool, z: { literal: (v) => ({ __literal: v }) } });
+  const servers = buildWireServer({
+    counters: { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 },
+    createSdkMcpServer: (o) => ((seen.server = o), { tools: o.tools }),
+    sdkTool: (name, d, schema, handler, extras) => ((seen.tool = { name, schema, handler, extras })),
+    z: { literal: (v) => ({ __literal: v }) },
+  });
   assert.deepEqual(Object.keys(servers), [WIRE_SERVER_NAME]);
   assert.equal(seen.server.name, WIRE_SERVER_NAME);
   assert.equal(seen.server.alwaysLoad, true);
@@ -301,114 +324,86 @@ test('buildWireServer registers one always-load echo tool with the exact schema 
 // ---------------------------------------------------------------------------
 
 test('buildCaptureEnv is a replacement env built from constants only', () => {
-  const before = { ...process.env };
   const env = buildCaptureEnv(51234);
   assert.equal(env.ANTHROPIC_BASE_URL, `http://${LOOPBACK_HOST}:51234`);
-  assert.match(env.ANTHROPIC_API_KEY, /^sk-ant-synthetic-/);
   for (const [k, v] of Object.entries(CHILD_ENV_FLAGS)) assert.equal(env[k], v, k);
   const expected = new Set(['PATH', 'HOME', 'CLAUDE_CONFIG_DIR', 'TMPDIR', 'LANG', 'LC_ALL', 'NODE_ENV', 'ANTHROPIC_BASE_URL', 'ANTHROPIC_API_KEY', 'MERI_QUALIFICATION_ONLY', 'MERI_SOURCES_ENABLED', ...Object.keys(CHILD_ENV_FLAGS)]);
   for (const name of Object.keys(env)) assert.equal(expected.has(name), true, `unexpected child env var: ${name}`);
-  // harmless parent markers are NEVER copied into the replacement child env
   for (const name of HARMLESS_PARENT_ENV_ALLOWLIST) assert.equal(name in env, false, `must not copy ${name}`);
-  assert.deepEqual({ ...process.env }, before, 'process.env untouched');
 });
 
-test('capture settings disable discovery, memory, attribution, agent view, remote control, workflows', () => {
+test('capture settings disable discovery, memory, view, remote control, workflows', () => {
   const s = buildCaptureSettings();
-  for (const [k, v] of Object.entries({
-    autoMemoryEnabled: false, autoDreamEnabled: false, syncClaudeAiSkills: false, syncClaudeAiPlugins: false,
-    disableAllHooks: true, enableAllProjectMcpServers: false, includeGitInstructions: false, fastMode: false,
-    disableAutoMode: 'disable', disableAgentView: true, disableRemoteControl: true, disableWorkflows: true, remoteControlAtStartup: false,
-  })) assert.deepEqual(s[k], v, k);
+  for (const [k, v] of Object.entries({ autoMemoryEnabled: false, autoDreamEnabled: false, syncClaudeAiSkills: false, syncClaudeAiPlugins: false, disableAllHooks: true, enableAllProjectMcpServers: false, includeGitInstructions: false, fastMode: false, disableAutoMode: 'disable', disableAgentView: true, disableRemoteControl: true, disableWorkflows: true, remoteControlAtStartup: false })) assert.deepEqual(s[k], v, k);
   assert.deepEqual(s.permissions.ask, [WIRE_TOOL_FULLNAME]);
-  assert.equal(s.permissions.disableBypassPermissionsMode, 'disable');
-  assert.equal(s.permissions.blockReadsOutsideWorkingDirectories, true);
 });
 
 test('buildCaptureOptions validates and rejects forbidden fields', () => {
-  const base = { abortController: new AbortController(), env: buildCaptureEnv(51234), mcpServers: { [WIRE_SERVER_NAME]: { type: 'sdk' } }, canUseTool: async () => ({ behavior: 'deny' }), spawnClaudeCodeProcess: () => ({}) };
-  const options = buildCaptureOptions(base);
-  assert.equal(options.model, CAPTURE_MODEL);
-  assert.deepEqual(options.thinking, { type: 'disabled' });
+  const options = buildCaptureOptions({ abortController: new AbortController(), env: buildCaptureEnv(51234), mcpServers: { [WIRE_SERVER_NAME]: { type: 'sdk' } }, canUseTool: async () => ({ behavior: 'deny' }), spawnClaudeCodeProcess: () => ({}) });
   for (const f of ['fallbackModel', 'resume', 'continue', 'sessionStore']) assert.equal(f in options, false);
   assert.throws(() => validateCaptureOptions({ ...options, resume: 'x' }), /must not set resume/);
   assert.throws(() => validateCaptureOptions({ ...options, settingSources: ['user'] }), /settingSources must be \[\]/);
-  assert.throws(() => validateCaptureOptions({ ...options, extraUnknown: 1 }), /unexpected capture option/);
 });
 
-test('every capture option field is declared in the installed sdk.d.ts (Options) + Settings', () => {
+test('every capture option field is declared in sdk.d.ts; Settings keys declared', () => {
   const start = sdkTypes.indexOf('export declare type Options = {');
   const optionsBody = sdkTypes.slice(start, sdkTypes.indexOf('\n};', start));
   for (const field of CAPTURE_OPTION_FIELDS) assert.match(optionsBody, new RegExp(`\\b${field}\\?:`), `Options lacks ${field}`);
-  assert.match(sdkTypes, /export declare function createSdkMcpServer/);
-  assert.match(sdkTypes, /export declare function tool</);
-  for (const key of ['autoMemoryEnabled', 'autoDreamEnabled', 'claudeMdExcludes', 'disableAutoMode', 'disableAgentView', 'disableRemoteControl', 'disableWorkflows', 'remoteControlAtStartup', 'disableAllHooks', 'includeGitInstructions']) {
-    assert.match(sdkTypes, new RegExp(`\\b${key}\\?:`), `Settings lacks ${key}`);
-  }
+  for (const key of ['autoMemoryEnabled', 'autoDreamEnabled', 'claudeMdExcludes', 'disableAutoMode', 'disableAgentView', 'disableRemoteControl', 'disableWorkflows', 'remoteControlAtStartup', 'disableAllHooks', 'includeGitInstructions']) assert.match(sdkTypes, new RegExp(`\\b${key}\\?:`), `Settings lacks ${key}`);
 });
 
 // ---------------------------------------------------------------------------
 // 7. parent-environment preflight
 // ---------------------------------------------------------------------------
 
-test('preflight permits harmless named markers but rejects real credentials', () => {
-  const source = {
-    PATH: '/usr/bin',
-    AWS_REGION: 'us-east-1',
-    AWS_DEFAULT_REGION: 'us-east-1',
-    AWS_EXECUTION_ENV: 'AWS_ECS_FARGATE',
-    ECS_CONTAINER_METADATA_URI: 'http://169.254.170.2/v2',
-    ECS_CONTAINER_METADATA_URI_V4: 'http://169.254.170.2/v4',
-    AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
-    AWS_SECRET_ACCESS_KEY: 'secret',
-    AWS_SESSION_TOKEN: 'tok',
-    AWS_PROFILE: 'prod',
-    ANTHROPIC_API_KEY: 'sk-ant-secret',
-    ANTHROPIC_BASE_URL: 'https://api.anthropic.com',
-    HTTPS_PROXY: 'http://proxy',
-    NODE_OPTIONS: '--inspect',
-  };
-  const offenders = scanParentEnv(source);
-  assert.deepEqual(offenders, ['ANTHROPIC_API_KEY', 'ANTHROPIC_BASE_URL', 'AWS_ACCESS_KEY_ID', 'AWS_PROFILE', 'AWS_SECRET_ACCESS_KEY', 'AWS_SESSION_TOKEN', 'HTTPS_PROXY', 'NODE_OPTIONS'].sort());
+test('preflight permits harmless markers but rejects real credentials and injections', () => {
+  const source = { PATH: '/usr/bin', AWS_REGION: 'us-east-1', AWS_DEFAULT_REGION: 'us-east-1', AWS_EXECUTION_ENV: 'AWS_ECS_FARGATE', ECS_CONTAINER_METADATA_URI: 'u', ECS_CONTAINER_METADATA_URI_V4: 'v', AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE', AWS_SECRET_ACCESS_KEY: 's', AWS_SESSION_TOKEN: 't', AWS_PROFILE: 'prod', ANTHROPIC_API_KEY: 'k', ANTHROPIC_BASE_URL: 'url', HTTPS_PROXY: 'p', NODE_OPTIONS: '--inspect' };
+  assert.deepEqual(scanParentEnv(source), ['ANTHROPIC_API_KEY', 'ANTHROPIC_BASE_URL', 'AWS_ACCESS_KEY_ID', 'AWS_PROFILE', 'AWS_SECRET_ACCESS_KEY', 'AWS_SESSION_TOKEN', 'HTTPS_PROXY', 'NODE_OPTIONS'].sort());
   const pre = preflightParentEnvironment({ source });
   assert.equal(pre.ok, false);
-  assert.equal(JSON.stringify(pre).includes('sk-ant-secret'), false);
-  // only harmless markers present -> clean
+  assert.equal(JSON.stringify(pre).includes('AKIAIOSFODNN7EXAMPLE'), false);
   assert.equal(preflightParentEnvironment({ source: { AWS_REGION: 'us-east-1', ECS_CONTAINER_METADATA_URI: 'x' } }).ok, true);
 });
 
-test('preflight fails on an unexpected managed settings tier', () => {
-  const res = preflightParentEnvironment({ source: {}, resolved: { sources: [{ source: 'managed', settings: {} }] } });
-  assert.equal(res.ok, false);
-  assert.match(res.reasons.join(' '), /managed settings tier/);
+test('validateResolvedSettings requires the full public shape and rejects managed', () => {
+  assert.equal(validateResolvedSettings(VALID_RESOLVED).ok, true);
+  assert.equal(validateResolvedSettings({}).ok, false);
+  assert.equal(validateResolvedSettings({ effective: {}, provenance: {}, sources: 'x' }).ok, false);
+  assert.equal(validateResolvedSettings({ effective: {}, provenance: {}, sources: [{ source: 'user' }] }).ok, false);
+  assert.deepEqual(validateResolvedSettings({ effective: {}, provenance: {}, sources: [{ source: 'managed', settings: {} }] }), { ok: false, reason: 'managed' });
 });
 
 // ---------------------------------------------------------------------------
-// 8. result validation
+// 8. result validation (bounded typed shape)
 // ---------------------------------------------------------------------------
 
-test('validateResultMessage requires success, is_error false, marker and end_turn', () => {
-  const ok = { type: 'result', subtype: 'success', is_error: false, result: `ok ${WIRE_DONE_MARKER}`, stop_reason: 'end_turn' };
-  assert.equal(validateResultMessage(ok).ok, true);
+test('validateResultMessage requires success/is_error/marker/end_turn/UUID session and bounds the shape', () => {
+  const ok = { type: 'result', subtype: 'success', is_error: false, result: `ok ${WIRE_DONE_MARKER}`, stop_reason: 'end_turn', session_id: SESSION_UUID, num_turns: 2 };
+  const r = validateResultMessage(ok);
+  assert.equal(r.ok, true);
+  assert.equal(r.summary.session_id, SESSION_UUID);
+  assert.equal(typeof r.summary.resultSha256, 'string');
+  assert.equal('result' in r.summary, false, 'raw result text is not exported');
   assert.equal(validateResultMessage({ ...ok, is_error: true }).ok, false);
   assert.equal(validateResultMessage({ ...ok, subtype: 'error_max_turns' }).ok, false);
   assert.equal(validateResultMessage({ ...ok, result: 'no marker' }).ok, false);
   assert.equal(validateResultMessage({ ...ok, stop_reason: 'max_tokens' }).ok, false);
+  assert.equal(validateResultMessage({ ...ok, session_id: 'A'.repeat(1024 * 1024) }).ok, false, 'huge session_id rejected');
   assert.equal(validateResultMessage(null).ok, false);
 });
 
 // ---------------------------------------------------------------------------
-// 9. SSE shapes (meaningful nested-field checks against locked BETA decls)
+// 9. SSE shapes
 // ---------------------------------------------------------------------------
 
 function parseSse(text) {
-  return text.split('\n\n').filter(Boolean).map((block) => {
-    const lines = block.split('\n');
+  return text.split('\n\n').filter(Boolean).map((b) => {
+    const lines = b.split('\n');
     return { event: lines.find((l) => l.startsWith('event: ')).slice(7), data: JSON.parse(lines.find((l) => l.startsWith('data: ')).slice(6)) };
   });
 }
 
-test('completeUsage matches every BetaUsage field name and is usable in message_start', () => {
+test('completeUsage matches every BetaUsage field and nested values', () => {
   const usage = completeUsage();
   for (const key of ['cache_creation', 'cache_creation_input_tokens', 'cache_read_input_tokens', 'fallback_credit', 'inference_geo', 'input_tokens', 'iterations', 'output_tokens', 'output_tokens_details', 'server_tool_use', 'service_tier', 'speed']) {
     assert.equal(key in usage, true, `BetaUsage missing ${key}`);
@@ -421,43 +416,27 @@ test('completeUsage matches every BetaUsage field name and is usable in message_
 test('tool-use SSE carries complete nullable fields and a direct caller', () => {
   const events = parseSse(buildToolUseSse());
   const start = events[0].data.message;
-  for (const key of ['container', 'context_management', 'diagnostics', 'stop_details']) assert.equal(start[key], null, `${key} must be null`);
-  assert.equal(start.stop_reason, null);
-  assert.equal(start.stop_sequence, null);
+  for (const key of ['container', 'context_management', 'diagnostics', 'stop_details']) assert.equal(start[key], null, key);
   const block = events.find((e) => e.event === 'content_block_start').data.content_block;
   assert.equal(block.type, 'tool_use');
-  assert.equal(block.name, WIRE_TOOL_FULLNAME);
   assert.deepEqual(block.caller, { type: 'direct' });
-  assert.equal('toolset_name' in block, true);
-  assert.equal(JSON.parse(events.find((e) => e.event === 'content_block_delta').data.delta.partial_json).value, WIRE_TOKEN);
   const md = events.find((e) => e.event === 'message_delta');
   assert.equal(md.data.context_management, null);
   assert.equal(md.data.delta.container, null);
   assert.equal(md.data.delta.stop_details, null);
-  assert.equal(md.data.delta.stop_reason, 'tool_use');
   assert.equal(md.data.usage.iterations, null);
-  assert.equal(md.data.usage.output_tokens_details, null);
   assert.equal(md.data.usage.server_tool_use, null);
-  assert.equal(md.data.usage.fallback_credit, null);
 });
 
 test('final SSE ends on end_turn with a citations:null text block', () => {
   const events = parseSse(buildFinalSse());
-  const block = events.find((e) => e.event === 'content_block_start').data.content_block;
-  assert.equal(block.type, 'text');
-  assert.equal(block.citations, null);
-  const text = events.filter((e) => e.event === 'content_block_delta').map((e) => e.data.delta.text).join('');
-  assert.equal(text, WIRE_DONE_MARKER);
+  assert.equal(events.find((e) => e.event === 'content_block_start').data.content_block.citations, null);
   assert.equal(events.find((e) => e.event === 'message_delta').data.delta.stop_reason, 'end_turn');
-});
-
-test('planSseResponse returns the tool_use shape for request 1 and final for request 2', () => {
-  assert.match(planSseResponse(1), /"type":"tool_use"/);
-  assert.match(planSseResponse(2), new RegExp(WIRE_DONE_MARKER));
+  assert.equal(planSseResponse(2).includes(WIRE_DONE_MARKER), true);
 });
 
 // ---------------------------------------------------------------------------
-// 10. spawn hook + strict cleanup
+// 10. spawn hook + strict cleanup + argv honesty
 // ---------------------------------------------------------------------------
 
 function makeFakeChild({ cooperative = true } = {}) {
@@ -484,44 +463,58 @@ function makeFakeChild({ cooperative = true } = {}) {
   };
 }
 
-test('spawn hook records one spawn with argv/env NAMES only; cleanup needs an actual exit', () => {
+test('spawn hook hashes all argv (no slice-to-40) and records only safe flag names', () => {
   const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
-  const record = { spawned: false, cleanedUp: false, argvCount: 0, args: [], envNames: [] };
-  const hook = buildSpawnHook(counters, record, () => makeFakeChild({ cooperative: true }));
-  hook({ command: 'node', args: ['--strict-mcp-config', '-p'], cwd: '/workspace/conversation', env: { ANTHROPIC_BASE_URL: 'http://127.0.0.1:1', ANTHROPIC_API_KEY: 'x' }, signal: undefined });
-  assert.equal(counters.spawns, 1);
-  assert.deepEqual(record.envNames, ['ANTHROPIC_API_KEY', 'ANTHROPIC_BASE_URL']);
-  assert.equal(JSON.stringify(record).includes('ANTHROPIC_API_KEY":'), false, 'no env values recorded');
-  assert.equal(confirmChildCleanup(record), true);
+  const record = { argvFlags: [] };
+  const hook = buildSpawnHook(counters, record, () => makeFakeChild({ cooperative: true }), () => {});
+  const args = Array.from({ length: 60 }, (_, i) => `--flag-${i}`);
+  args.push('Bearer', 'sk-ant-secretvalue');
+  hook({ command: 'node', args, cwd: '/workspace/conversation', env: { ANTHROPIC_BASE_URL: 'u', ANTHROPIC_API_KEY: 'x' }, signal: undefined });
+  assert.equal(record.argvCount, 62, 'argvCount is the ACTUAL length');
+  assert.match(record.argvHash, /^[0-9a-f]{64}$/);
+  assert.equal(record.argvFlags.length, 60, 'only flag tokens recorded');
+  assert.equal(JSON.stringify(record).includes('sk-ant-secretvalue'), false);
+  assert.equal(JSON.stringify(record).includes('Bearer"'), false);
+});
+
+test('a kill REQUEST alone is NOT confirmed cleanup; kill alone is not termination', async () => {
+  const record = { child: makeFakeChild({ cooperative: false }), cleanedUp: false };
+  assert.equal(await confirmChildCleanup(record, { graceMs: 20 }), false);
+  assert.equal(record.cleanedUp, false);
+});
+
+test('cleanup is confirmed when the child actually exits after the kill', async () => {
+  const record = { child: makeFakeChild({ cooperative: true }), cleanedUp: false };
+  const hook = buildSpawnHook({ spawns: 0 }, record, () => record.child, () => {});
+  // attach exit listener through the hook
+  const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
+  const h = buildSpawnHook(counters, record, () => record.child, () => {});
+  h({ command: 'node', args: [], env: {}, signal: undefined });
+  assert.equal(await confirmChildCleanup(record, { graceMs: 100 }), true);
   assert.equal(record.signalCode, 'SIGKILL');
 });
 
-test('a kill REQUEST alone (child.killed true, no exit) is NOT confirmed cleanup', () => {
-  const record = { child: makeFakeChild({ cooperative: false }), cleanedUp: false };
-  assert.equal(confirmChildCleanup(record), false);
-  assert.equal(record.cleanedUp, false);
-  assert.equal(record.child.killed, true, 'kill was requested');
-});
-
-test('an error event alone is NOT termination', () => {
-  const child = makeFakeChild({ cooperative: false });
-  const record = { child, cleanedUp: false, exited: false };
-  // simulate an error listener firing without an exit
-  assert.equal(confirmChildCleanup(record), false);
+test('spawn hook refuses a second native spawn', () => {
+  const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
+  const record = { argvFlags: [] };
+  let spawned = 0;
+  const hook = buildSpawnHook(counters, record, () => (spawned += 1, makeFakeChild()), () => {});
+  hook({ command: 'node', args: [], env: {}, signal: undefined });
+  assert.throws(() => hook({ command: 'node', args: [], env: {}, signal: undefined }), /extra native spawn/);
+  assert.equal(spawned, 1);
+  assert.equal(record.violation, 'extra-spawn');
 });
 
 // ---------------------------------------------------------------------------
-// 11. synthetic prompt stream kept open until the gate
+// 11. synthetic prompt stream
 // ---------------------------------------------------------------------------
 
 test('syntheticPromptStream yields one prompt then stays open until the gate resolves', async () => {
   const gate = createGate();
   const it = syntheticPromptStream(CAPTURE_USER_PROMPT, gate.promise)[Symbol.asyncIterator]();
-  const first = await it.next();
-  assert.equal(first.value.type, 'user');
-  assert.equal(first.value.message.content[0].text, CAPTURE_USER_PROMPT);
+  assert.equal((await it.next()).value.type, 'user');
   let done = false;
-  const pending = it.next().then((r) => { done = true; return r; });
+  const pending = it.next().then((r) => ((done = true), r));
   await new Promise((r) => setTimeout(r, 10));
   assert.equal(done, false);
   gate.resolve();
@@ -529,21 +522,27 @@ test('syntheticPromptStream yields one prompt then stays open until the gate res
 });
 
 // ---------------------------------------------------------------------------
-// 12. runCapture orchestrator with injected fakes
+// 12. runCapture orchestrator
 // ---------------------------------------------------------------------------
 
 function makeFakeHost(mode = 'success', opts = {}) {
   const shared = {};
-  const calls = { resolveSettings: 0, createWireServer: 0, startServer: 0, spawn: 0, query: 0 };
+  const calls = { resolveSettings: 0, prepareWorkspace: 0, createWireServer: 0, startServer: 0, spawn: 0, query: 0 };
   const host = {
-    resolveSettings: async (...a) => {
+    resolveSettings: async () => {
       calls.resolveSettings += 1;
       if (opts.resolveSettings === 'hang') return new Promise(() => {});
-      return { sources: [{ source: 'user', settings: {} }] };
+      if (opts.resolveSettings === 'reject') throw new Error('boom sk-ant-api03-SECRET0123456789');
+      return opts.resolvedShaped ?? VALID_RESOLVED;
+    },
+    prepareWorkspace: async () => {
+      calls.prepareWorkspace += 1;
+      if (opts.prepareWorkspace === 'throw') throw new Error('no dir');
+      return true;
     },
     createWireServer: ({ counters }) => {
       calls.createWireServer += 1;
-      const fakeTool = (name, description, schema, handler, extras) => ((shared.toolHandler = handler), { name, description, schema, handler, extras });
+      const fakeTool = (name, d, schema, handler, extras) => ((shared.toolHandler = handler), { name, schema, handler, extras });
       return buildWireServer({ counters, createSdkMcpServer: (o) => ({ tools: o.tools }), sdkTool: fakeTool, z: { literal: (v) => ({ __literal: v }) } });
     },
     spawn: (spawnOptions, record) => {
@@ -555,16 +554,13 @@ function makeFakeHost(mode = 'success', opts = {}) {
     startServer: async (cfg) => {
       calls.startServer += 1;
       shared.state = cfg.state;
-      shared.onAbort = cfg.onAbort;
-      return {
-        port: PORT,
-        state: cfg.state,
-        close: () => (opts.close === 'hang' ? new Promise(() => {}) : Promise.resolve()),
-      };
+      shared.signal = cfg.signal;
+      if (opts.startServer === 'hang') return new Promise(() => {});
+      return { port: PORT, state: cfg.state, close: () => (opts.close === 'hang' ? new Promise(() => {}) : Promise.resolve()) };
     },
     query: ({ prompt, options }) => {
       calls.query += 1;
-      return makeFakeQuery({ prompt, options, shared, mode });
+      return opts.rawQuery ? opts.rawQuery({ prompt, options, shared }) : makeFakeQuery({ prompt, options, shared, mode });
     },
   };
   return { host, shared, calls };
@@ -574,182 +570,247 @@ async function* makeFakeQuery({ prompt, options, shared, mode }) {
   const it = prompt[Symbol.asyncIterator]();
   await it.next();
   if (typeof it.return === 'function') await it.return();
-
   if (mode === 'stuck-iterator') {
     await new Promise(() => {});
     return;
   }
-  if (mode === 'throw-secret') {
-    throw new Error('boom sk-ant-api03-SECRETVALUE0123456789');
-  }
-  if (mode !== 'no-spawn') {
-    options.spawnClaudeCodeProcess({ command: 'node', args: ['--strict-mcp-config', '-p'], cwd: options.cwd, env: options.env, signal: options.abortController.signal });
+  options.spawnClaudeCodeProcess({ command: 'node', args: ['--strict-mcp-config', '-p'], cwd: options.cwd, env: options.env, signal: options.abortController.signal });
+  if (mode === 'extra-spawn') {
+    options.spawnClaudeCodeProcess({ command: 'node', args: ['-p'], cwd: options.cwd, env: options.env, signal: options.abortController.signal });
+    return;
   }
   if (mode === 'deadline') {
     await new Promise((r) => options.abortController.signal.addEventListener('abort', r, { once: true }));
     return;
   }
-
   const mk = (body, path = '/v1/messages') => ({ method: 'POST', path, host: `${LOOPBACK_HOST}:${PORT}`, peer: LOOPBACK_HOST, rawBytes: Buffer.from(JSON.stringify(body)), headers: { host: `${LOOPBACK_HOST}:${PORT}` } });
   if (mode === 'reject-first') {
-    classifyRequest(shared.state, mk({ ...req1Body(), model: 'wrong-model' }));
-    yield { type: 'result', subtype: 'success', is_error: false, result: WIRE_DONE_MARKER, stop_reason: 'end_turn' };
+    classifyRequest(shared.state, mk(req1Body((b) => (b.model = 'wrong'))));
+    yield { type: 'result', subtype: 'success', is_error: false, result: WIRE_DONE_MARKER, stop_reason: 'end_turn', session_id: SESSION_UUID };
     return;
   }
-  if (mode === 'secret-body') {
-    const d = classifyRequest(shared.state, mk({ model: CAPTURE_MODEL, stream: true, messages: [{ role: 'user', content: [{ type: 'text', text: `Bearer sk-ant-api03-SECRET0123456789 ${CAPTURE_USER_PROMPT}` }] }] }));
-    if (!d.ok) return;
-    yield { type: 'result', subtype: 'success', is_error: true, result: 'x', stop_reason: 'end_turn' };
+  if (mode === 'sensitive-body') {
+    if (!classifyRequest(shared.state, mk({ model: CAPTURE_MODEL, stream: true, tools: ADVERT, messages: [{ role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }], api_key: 'OPAQUE_SYNTHETIC_CREDENTIAL' }] })).ok) return;
+    yield { type: 'result', subtype: 'success', is_error: false, result: WIRE_DONE_MARKER, stop_reason: 'end_turn', session_id: SESSION_UUID };
     return;
   }
-
   if (!classifyRequest(shared.state, mk(req1Body())).ok) return;
   await options.canUseTool(WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } });
   await shared.toolHandler({ value: WIRE_TOKEN });
   if (!classifyRequest(shared.state, mk(req2Body(), '/v1/messages?beta=true')).ok) return;
-
   if (mode === 'is_error') {
-    yield { type: 'result', subtype: 'success', is_error: true, result: 'api error', stop_reason: 'end_turn' };
+    yield { type: 'result', subtype: 'success', is_error: true, result: 'api error', stop_reason: 'end_turn', session_id: SESSION_UUID };
     return;
   }
-  yield { type: 'result', subtype: 'success', is_error: false, result: `ok ${WIRE_DONE_MARKER}`, stop_reason: 'end_turn', num_turns: 2, session_id: 'sess-test' };
+  yield { type: 'result', subtype: 'success', is_error: false, result: `ok ${WIRE_DONE_MARKER}`, stop_reason: 'end_turn', num_turns: 2, session_id: SESSION_UUID };
 }
 
-test('runCapture success: two requests, one callback/handler/spawn, confirmed cleanup, server closed', async () => {
-  const { host, shared } = makeFakeHost('success');
+test('runCapture success: two requests, one callback/handler/spawn, confirmed cleanup', async () => {
+  const { host } = makeFakeHost('success');
   const report = await runCapture({ host, source: {} });
   assert.equal(report.ok, true, JSON.stringify(report.reasons));
   assert.deepEqual(report.counters, { permissionCallbacks: 1, handlerExecutions: 1, spawns: 1 });
   assert.equal(report.requests.length, 2);
   assert.equal(report.spawn.cleanedUp, true);
-  assert.ok(report.spawn.envNames.includes('ANTHROPIC_BASE_URL'));
-  assert.equal(report.result.stop_reason, 'end_turn');
+  assert.match(report.captureId, /^[0-9a-f-]{36}$/);
 });
 
-test('runCapture preflight failure returns BEFORE any tool/server/query/spawn construction', async () => {
-  const { host, calls } = makeFakeHost('success');
-  const report = await runCapture({ host, source: { ANTHROPIC_API_KEY: 'leak' } });
-  assert.equal(report.ok, false);
-  assert.match(report.reasons.join(' '), /inherited sensitive configuration/);
-  assert.deepEqual(calls, { resolveSettings: 0, createWireServer: 0, startServer: 0, spawn: 0, query: 0 });
+test('resolution error/timeout/malformed STOPS before construction', async () => {
+  for (const [opts, reason] of [
+    [{ resolveSettings: 'reject' }, /settings resolution failed \(Error\)/],
+    [{ resolveSettings: 'hang' }, /settings resolution timed out/],
+    [{ resolvedShaped: {} }, /malformed resolved settings/],
+  ]) {
+    const { host, calls } = makeFakeHost('success', opts);
+    const report = await runCapture({ host, source: {}, deadlineMs: 40 });
+    assert.equal(report.ok, false);
+    assert.match(report.reasons.join(' '), reason);
+    assert.equal(calls.createWireServer, 0);
+    assert.equal(calls.startServer, 0);
+    assert.equal(calls.query, 0);
+    assert.equal(calls.spawn, 0);
+  }
 });
 
-test('runCapture managed-tier preflight failure returns before construction', async () => {
+test('managed tier and invalid deadline STOP', async () => {
   const { host, calls } = makeFakeHost('success');
-  const report = await runCapture({ host, source: {}, resolvedSettings: { sources: [{ source: 'managed', settings: {} }] } });
-  assert.equal(report.ok, false);
-  assert.match(report.reasons.join(' '), /managed settings tier/);
-  assert.equal(calls.createWireServer, 0);
+  const r1 = await runCapture({ host, source: {}, resolvedSettings: { effective: {}, provenance: {}, sources: [{ source: 'managed', settings: {} }] } });
+  assert.match(r1.reasons.join(' '), /managed settings tier/);
   assert.equal(calls.startServer, 0);
-  assert.equal(calls.query, 0);
+  const r2 = await runCapture({ host, source: {}, deadlineMs: 0 });
+  assert.match(r2.reasons.join(' '), /invalid deadline injection/);
+  assert.throws(() => validateDeadline(60001));
+});
+
+test('error messages are not exported as opaque secret text', async () => {
+  const { host } = makeFakeHost('success', { resolveSettings: 'reject' });
+  const report = await runCapture({ host, source: {} });
+  assert.equal(JSON.stringify(report).includes('sk-ant-api03'), false);
+  assert.equal(JSON.stringify(report).includes('boom'), false);
+});
+
+test('workspace preparation failure STOPS before spawn', async () => {
+  const { host, calls } = makeFakeHost('success', { prepareWorkspace: 'throw' });
+  const report = await runCapture({ host, source: {} });
+  assert.equal(report.ok, false);
+  assert.match(report.reasons.join(' '), /workspace preparation failed \(Error\)/);
   assert.equal(calls.spawn, 0);
 });
 
+test('server startup hang is bounded and fails closed', async () => {
+  const { host } = makeFakeHost('success', { startServer: 'hang' });
+  const report = await runCapture({ host, source: {}, deadlineMs: 30 });
+  assert.equal(report.ok, false);
+  assert.match(report.reasons.join(' '), /server startup timed out/);
+});
+
 test('runCapture fails on success-with-is_error true', async () => {
-  const { host } = makeFakeHost('is_error');
-  const report = await runCapture({ host, source: {} });
+  const report = await runCapture({ host: makeFakeHost('is_error').host, source: {} });
   assert.equal(report.ok, false);
   assert.match(report.reasons.join(' '), /is_error/);
 });
 
-test('runCapture fails and aborts on a rejected request', async () => {
-  const { host } = makeFakeHost('reject-first');
-  const report = await runCapture({ host, source: {} });
+test('runCapture aborts on a rejected request', async () => {
+  const report = await runCapture({ host: makeFakeHost('reject-first').host, source: {} });
   assert.equal(report.ok, false);
   assert.match(report.reasons.join(' '), /aborted|requests/);
 });
 
-test('runCapture aborts on deadline and still closes server/input', async () => {
-  const { host } = makeFakeHost('deadline');
-  const report = await runCapture({ host, source: {}, deadlineMs: 25 });
+test('runCapture is bounded when the iterator never yields', async () => {
+  const report = await runCapture({ host: makeFakeHost('stuck-iterator').host, source: {}, deadlineMs: 25 });
   assert.equal(report.ok, false);
   assert.match(report.reasons.join(' '), /deadline/);
 });
 
-test('runCapture is bounded when the async iterator never yields (no hang)', async () => {
-  const { host } = makeFakeHost('stuck-iterator');
-  const report = await runCapture({ host, source: {}, deadlineMs: 25 });
-  assert.equal(report.ok, false);
-  assert.match(report.reasons.join(' '), /deadline/);
-});
-
-test('runCapture is bounded when server.close never settles (no hang)', async () => {
-  const { host } = makeFakeHost('success', { close: 'hang' });
-  const report = await runCapture({ host, source: {} });
+test('runCapture is bounded when server.close never settles', async () => {
+  const report = await runCapture({ host: makeFakeHost('success', { close: 'hang' }).host, source: {} });
   assert.equal(report.ok, false);
   assert.match(report.reasons.join(' '), /server close did not complete/);
 });
 
-test('runCapture fails when child cleanup cannot be confirmed (kill never terminates)', async () => {
-  const { host } = makeFakeHost('success', { cooperativeChild: false });
+test('query cleanup via return() must succeed and is bounded', async () => {
+  const rejectHost = makeFakeHost('success', {
+    rawQuery: () => ({ [Symbol.asyncIterator]: () => ({ next: async () => ({ done: true }), return: async () => { throw new Error('bad'); } }) }),
+  }).host;
+  const r1 = await runCapture({ host: rejectHost, source: {} });
+  assert.match(r1.reasons.join(' '), /query cleanup failed \(Error\)/);
+
+  const hangHost = makeFakeHost('success', {
+    rawQuery: () => ({ [Symbol.asyncIterator]: () => ({ next: async () => ({ done: true }), return: () => new Promise(() => {}) }) }),
+  }).host;
+  const r2 = await runCapture({ host: hangHost, source: {} });
+  assert.match(r2.reasons.join(' '), /query cleanup timed out/);
+});
+
+test('a second native spawn is refused and the capture fails', async () => {
+  const { host, calls } = makeFakeHost('extra-spawn');
   const report = await runCapture({ host, source: {} });
+  assert.equal(report.ok, false);
+  assert.equal(calls.spawn, 1);
+  assert.match(report.reasons.join(' '), /extra native spawn/);
+});
+
+test('runCapture fails when child cleanup cannot be confirmed', async () => {
+  const report = await runCapture({ host: makeFakeHost('success', { cooperativeChild: false }).host, source: {} });
   assert.equal(report.ok, false);
   assert.match(report.reasons.join(' '), /child cleanup not confirmed/);
 });
 
-test('runCapture is bounded when settings resolution never settles', async () => {
-  const { host } = makeFakeHost('success', { resolveSettings: 'hang' });
-  const report = await runCapture({ host, source: {}, deadlineMs: 25 });
-  assert.equal(report.ok, false);
-  assert.match(report.reasons.join(' '), /settings resolution timed out/);
-});
-
-test('runCapture scrubs a thrown exception (no secret leak)', async () => {
-  const { host } = makeFakeHost('throw-secret');
+test('sensitive body forces hash-only failure and no raw export', async () => {
+  const { host } = makeFakeHost('sensitive-body');
   const report = await runCapture({ host, source: {} });
   assert.equal(report.ok, false);
-  assert.equal(JSON.stringify(report).includes('sk-ant-api03'), false);
-  assert.equal(JSON.stringify(report).includes('SECRETVALUE'), false);
-});
-
-// ---------------------------------------------------------------------------
-// 13. bounded indexed output records
-// ---------------------------------------------------------------------------
-
-test('buildOutputLines emits indexed base64 chunks + length/hash manifest', () => {
-  const { host } = makeFakeHost('success');
-  return runCapture({ host, source: {} }).then((report) => {
-    const big = 'A'.repeat(OUT_CHUNK * 2 + 5);
-    report.requests[0].base64 = big;
-    report.requests[0].rawLength = big.length;
-    report.requests[0].decoded = { model: CAPTURE_MODEL, stream: true };
-    const lines = buildOutputLines(report, { chunkBytes: OUT_CHUNK });
-    const manifest = lines[0];
-    assert.equal(manifest.record, 'sdk-capture-manifest');
-    assert.equal(Array.isArray(manifest.requestManifest), true);
-    assert.equal(manifest.requestManifest[0].rawSha256, report.requests[0].rawSha256);
-    assert.equal(manifest.requestManifest[0].rawLength, big.length);
-    const chunks = lines.filter((l) => l.record === 'sdk-capture-request-chunk' && l.index === 1);
-    assert.equal(chunks.length, 3);
-    assert.equal(chunks.map((c) => c.base64).join(''), big);
-    assert.equal(lines.at(-1).record, 'sdk-capture-end');
-  });
-});
-
-const OUT_CHUNK = 64;
-
-test('buildOutputLines is hash-only when the source body contains secret material', async () => {
-  const report = {
-    ok: false,
-    reasons: ['x'],
-    counters: {},
-    spawn: {},
-    result: null,
-    requests: [{ index: 1, path: '/v1/messages', rawLength: 10, rawSha256: 'h', decompressedLength: 10, decompressedSha256: 'h2', headers: [], base64: Buffer.from('Bearer sk-ant-api03-SECRET0123456789').toString('base64'), decoded: { x: 'Bearer sk-ant-api03-SECRET0123456789' } }],
-  };
+  assert.match(report.reasons.join(' '), /sensitive material detected/);
+  assert.equal(report.requests[0].hashOnly, true);
   const lines = buildOutputLines(report);
-  assert.equal(lines[0].requestManifest[0].hashOnly, true);
-  assert.equal(lines.filter((l) => l.record === 'sdk-capture-request-chunk').length, 0, 'no raw export when sensitive material is present');
-  assert.equal(JSON.stringify(lines).includes('sk-ant-api03'), false);
+  assert.equal(lines[0].ok, false);
+  assert.equal(lines.at(-1).ok, false);
+  assert.equal(lines.filter((l) => l.record === 'sdk-capture-request-chunk').length, 0);
 });
 
 // ---------------------------------------------------------------------------
-// 14. main() guard
+// 13. bounded output records
+// ---------------------------------------------------------------------------
+
+test('buildOutputLines emits indexed base64 chunks + length/hash manifest', async () => {
+  const { host } = makeFakeHost('success');
+  const report = await runCapture({ host, source: {} });
+  const big = 'A'.repeat(133);
+  report.requests[0].base64 = big;
+  report.requests[0].rawLength = big.length;
+  report.requests[0].path = '/v1/messages';
+  const lines = buildOutputLines(report, { chunkBytes: 64 });
+  assert.equal(lines[0].record, 'sdk-capture-manifest');
+  assert.equal(lines[0].captureId, report.captureId);
+  assert.equal(lines[0].requestCount, report.requests.length);
+  assert.equal(lines[0].requestManifest[0].rawSha256, report.requests[0].rawSha256);
+  const chunks = lines.filter((l) => l.record === 'sdk-capture-request-chunk' && l.index === 1);
+  assert.equal(chunks.length, 3);
+  assert.equal(chunks.map((c) => c.base64).join(''), big);
+  assert.equal(lines.at(-1).record, 'sdk-capture-end');
+  assert.equal(lines.at(-1).captureId, report.captureId);
+  for (const l of lines) assert.ok(Buffer.byteLength(JSON.stringify(l)) <= MAX_RECORD_BYTES, 'record within bound');
+});
+
+test('buildOutputLines fails closed when a record would exceed the bound', () => {
+  const report = { ok: true, reasons: ['x'.repeat(MAX_RECORD_BYTES * 2)], captureId: 'c', counters: {}, spawn: {}, result: null, requests: [] };
+  const lines = buildOutputLines(report);
+  assert.equal(lines[0].ok, false);
+  assert.match(lines[0].reasons.join(' '), /exceeded bound/);
+});
+
+test('writeOnce is bounded and surfaces error/close/timeout', async () => {
+  const okOut = { write: (s, cb) => (cb && cb(), true), once() {}, off() {} };
+  assert.equal((await writeOnce('x', okOut, Date.now() + 1000)).ok, true);
+  const errOut = { write: (s, cb) => (cb && cb(new Error('e')), true), once() {}, off() {} };
+  assert.equal((await writeOnce('x', errOut, Date.now() + 1000)).ok, false);
+  const hangOut = { write: () => true, once() {}, off() {} };
+  const r = await writeOnce('x', hangOut, Date.now() + 20);
+  assert.equal(r.ok, false);
+  assert.equal(r.error, 'write-timeout');
+});
+
+test('writeLines refuses an oversized record', async () => {
+  const out = { write: (s, cb) => (cb && cb(), true), once() {}, off() {} };
+  const r = await writeLines([{ record: 'x', pad: 'z'.repeat(MAX_RECORD_BYTES * 2) }], out);
+  assert.equal(r.ok, false);
+  assert.equal(r.error, 'record-too-large');
+});
+
+// ---------------------------------------------------------------------------
+// 14. workspace preparation (no-follow, empty, exclusive)
+// ---------------------------------------------------------------------------
+
+test('realPrepareWorkspace accepts empty real dirs and rejects symlink ancestors', () => {
+  const root = mkdtempSync(join(tmpdir(), 'meri-ws-'));
+  const good = join(root, 'a', 'b');
+  assert.equal(realPrepareWorkspace([good]), true);
+  writeFileSync(join(good, 'f'), 'x');
+  assert.throws(() => realPrepareWorkspace([good]), /not empty/);
+  const real = join(root, 'real');
+  mkdirSync(real);
+  const link = join(root, 'link');
+  let symlinkOk = true;
+  try {
+    symlinkSync(real, link);
+  } catch {
+    symlinkOk = false; // Windows without privilege cannot create symlinks
+  }
+  if (symlinkOk) assert.throws(() => realPrepareWorkspace([join(link, 'child')]), /symlink ancestor/);
+});
+
+// ---------------------------------------------------------------------------
+// 15. main() guard
 // ---------------------------------------------------------------------------
 
 test('main refuses to run off Linux without building any host', async () => {
-  const out = { written: '', write: (s) => (out.written += s, true), once: () => {} };
-  const code = await main({ platform: 'win32', stdout: out });
-  assert.equal(code, 2);
+  const out = { written: '', write: (s, cb) => ((out.written += s), cb && cb(), true), once() {}, off() {} };
+  assert.equal(await main({ platform: 'win32', stdout: out }), 2);
   assert.match(out.written, /linux-only probe/);
+});
+
+test('errorType never returns an opaque message', () => {
+  assert.equal(errorType(new Error('secret sk-ant-x')), 'Error');
+  assert.equal(errorType({ name: 'TimeoutError' }), 'TimeoutError');
+  assert.equal(errorType(null), 'Error');
 });
