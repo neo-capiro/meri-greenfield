@@ -66,12 +66,13 @@ export function decideRecalc({ convert, newFile, observed, inspect } = {}) {
   const cls = classifySubprocess(convert || {});
   if (!cls.ok) reasons.push(`recalc conversion failed: ${cls.detail}`);
   if (!newFile) reasons.push('recalc produced no NEW file in the distinct output directory');
-  if (inspect) {
+  if (!inspect) reasons.push('recalc inspection child facts missing');
+  else {
     if (inspect.error) reasons.push(`recalc inspection spawn error: ${String(inspect.error).slice(0, 160)}`);
     if (inspect.signal) reasons.push(`recalc inspection killed by signal ${inspect.signal}`);
     if (inspect.status !== 0) reasons.push(`recalc inspection exit status ${inspect.status}`);
-    if (inspect.parseOk === false) reasons.push(`recalc inspection parse failed: ${String(inspect.parseError || 'unparseable stdout').slice(0, 160)}`);
-    if (inspect.nestedOk === false) reasons.push('recalc inspection nested ok was false');
+    if (inspect.parseOk !== true) reasons.push(`recalc inspection parse failed: ${String(inspect.parseError || 'unparseable stdout').slice(0, 160)}`);
+    if (inspect.nestedOk !== true) reasons.push('recalc inspection nested ok was not true');
   }
   const o = observed || {};
   if (!o.inspected) {
@@ -150,6 +151,8 @@ function convert(soffice, profileUri, srcFile, dstDir, toPdf = true) {
 
 async function main() {
   const evidencePaths = [];
+  // Keep accumulated observations even if a later generation/conversion throws.
+  const partial = { nativeFacts: {}, renderFacts: {}, recalc: null };
   const runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
   const nativeDir = join(runDir, 'native');
   const renderDir = join(runDir, 'render');
@@ -160,6 +163,7 @@ async function main() {
     evidencePaths.push(runDir);
 
     const gen = runPython(['generate', nativeDir]);
+    partial.nativeFacts.generate = gen;
     const docx = join(nativeDir, 'qualification.docx');
     const xlsx = join(nativeDir, 'qualification.xlsx');
     let pptxFile = null;
@@ -173,26 +177,36 @@ async function main() {
       pptxInspect = { ok: false, error: String(error && error.message ? error.message : error).slice(0, 200) };
     }
     const native = decideNative({ gen, pptxOk });
+    partial.nativeFacts.pptx = pptxInspect;
+    partial.native = native;
 
     const soffice = which('soffice') || which('libreoffice');
     const pdftoppm = which('pdftoppm');
-    const pdfs = {};
+    const pdfs = partial.renderFacts;
     let recalc = { status: 'fail', reasons: ['recalc not attempted'], observed: null };
     if (!disabled && soffice && pdftoppm) {
       const profileUri = pathToFileURL(join(renderDir, 'lo-profile')).href;
       for (const [name, file] of [['docx', docx], ['xlsx', xlsx], ['pptx', pptxFile]]) {
+        if (!file || !existsSync(file)) {
+          pdfs[name] = { convertOk: false, convertDetail: 'native input unavailable', pdfExists: false, pngCount: 0 };
+          continue;
+        }
         const dst = join(renderDir, name);
         const conv = convert(soffice, profileUri, file, dst, true);
         const pdfPath = join(dst, `${basename(file).replace(/\.(docx|xlsx|pptx)$/, '')}.pdf`);
         const entry = { convertOk: conv.ok, convertDetail: conv.detail, convertStatus: conv.status, convertSignal: conv.signal, convertStderr: conv.stderr, pdfExists: existsSync(pdfPath), pdfPath: existsSync(pdfPath) ? pdfPath : null, pdftoppmOk: false, pngDetail: null, pngStatus: null, pngCount: 0, pdfInspectOk: false, inspectDetail: null, pages: null };
+        entry.convert = conv;
+        pdfs[name] = entry;
         if (entry.pdfExists) {
           const png = run(pdftoppm, ['-png', '-r', '96', pdfPath, join(dst, 'page')]);
           const pngCls = classifySubprocess(png);
           entry.pdftoppmOk = pngCls.ok;
           entry.pngDetail = pngCls.detail;
           entry.pngStatus = png.status;
+          entry.pngChild = { status: png.status, signal: png.signal, error: png.error ? String(png.error.message || png.error).slice(0, 200) : null, stdout: (png.stdout || '').slice(0, 500), stderr: (png.stderr || '').slice(0, 500) };
           entry.pngCount = readdirSync(dst).filter((f) => f.endsWith('.png')).length;
           const insp = runPython(['pdf', pdfPath]);
+          entry.pdfInspection = insp;
           entry.pdfInspectOk = insp.ok;
           entry.inspectDetail = insp.ok ? 'ok' : `python pdf status ${insp.status} signal ${insp.signal} parseOk ${insp.parseOk}`;
           entry.pages = insp.parsed && insp.parsed.results ? insp.parsed.results[0].pageCount : null;
@@ -228,22 +242,15 @@ async function main() {
         };
       }
       recalc = decideRecalc({ convert: conv, newFile: newFileExists, observed, inspect });
-      recalc.child = recalcChild ? {
-        status: recalcChild.status,
-        signal: recalcChild.signal,
-        error: recalcChild.error,
-        parseOk: recalcChild.parseOk,
-        parseError: recalcChild.parseError,
-        nestedOk: recalcChild.parsed ? recalcChild.parsed.ok : false,
-        stdout: recalcChild.stdout,
-        stderr: recalcChild.stderr,
-      } : null;
+      recalc.child = recalcChild;
+      recalc.convert = conv;
       recalc.observedA4 = observed ? observed.cachedValue : null;
       recalc.file = newFileExists ? newFile : null;
     } else if (!disabled) {
       recalc = { status: 'fail', reasons: ['LibreOffice/poppler unavailable; recalc not attempted'], observed: null };
     }
     const render = decideRender({ disabled, soffice, pdftoppm, pdfs, recalc });
+    partial.recalc = recalc;
 
     const ok = native.status === 'pass' && render.status === 'pass';
     const payload = {
@@ -263,7 +270,7 @@ async function main() {
     process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
     process.exit(ok ? 0 : 1);
   } catch (error) {
-    process.stdout.write(JSON.stringify({ probe: 'artifacts', ok: false, reasons: [String(error).slice(0, 300)], evidencePaths }, null, 2) + '\n');
+    process.stdout.write(JSON.stringify({ probe: 'artifacts', ok: false, ...partial, reasons: [String(error).slice(0, 300)], evidencePaths }, null, 2) + '\n');
     process.exit(1);
   }
 }

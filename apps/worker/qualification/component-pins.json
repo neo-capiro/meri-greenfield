@@ -253,7 +253,7 @@
   "unresolvedPins": [
     "Assembled image digest for THIS refreshed recipe (assembledImageDigest null; the prior f669d360 candidate is a separate, probe-only build)",
     "CVE-2026-95210 (GnuTLS) and CVE-2026-52490 (tiff/tiffcrop) have no fix in snapshot 20261009T000000Z and remain open",
-    "CFT per-file hash: only the archive sha256 (a24546e0...) was independently inspected; no per-file chrome/chrome_sandbox hash is pinned, so the build-time per-file comparison is UNAVAILABLE (recorded, not verified)",
+    "CFT archive and per-file chrome/chrome_sandbox SHA256 values are pinned and asserted by the recipe; refreshed-image installed-byte assertions remain unexecuted until its build",
     "Installed-binary/use verification of flagged utilities (e.g. tiffcrop) requires the built image; not available at authoring time"
   ]
 }

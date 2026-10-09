@@ -357,8 +357,9 @@ export async function runBoundedSequence(steps) {
   let stoppedAfter = null;
   for (const step of steps) {
     if (stoppedAfter) { notRun.push(step.name); continue; }
-    ran.push(step.name);
     const res = (await step.run()) || {};
+    if (res.skipped) notRun.push(step.name);
+    else ran.push(step.name);
     details[step.name] = res.detail === undefined ? null : res.detail;
     if (res.fatal) stoppedAfter = step.name;
   }
@@ -445,7 +446,7 @@ export function buildBrowserSteps({ callTool, toolNames = [], evidence, reasons,
   const wantsConfig = toolNames.length === 0 || toolNames.includes('browser_get_config');
   return [
     { name: 'get_config', run: async () => {
-      if (!wantsConfig) return { fatal: false, detail: 'browser_get_config tool absent' };
+      if (!wantsConfig) return { fatal: false, skipped: true, detail: 'browser_get_config tool absent' };
       const cfg = await callTool('browser_get_config', {});
       const decoded = decodeToolResult(cfg);
       evidence.rawResults.get_config = decoded.raw;

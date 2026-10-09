@@ -202,7 +202,9 @@ export function addressIn10_80(address) {
 }
 
 /** Direct-IP results that establish only that the measured attempt was denied. */
-export const DIRECT_IP_DENIED = ['timeout', 'error:ENETUNREACH', 'error:EHOSTUNREACH', 'error:ECONNREFUSED'];
+// A peer RST/refusal may require packets to reach the public peer; it is not
+// evidence that the worker's egress boundary blocked the connection.
+export const DIRECT_IP_DENIED = ['timeout', 'error:ENETUNREACH', 'error:EHOSTUNREACH'];
 
 /**
  * Pure classification of network-denial evidence. Negative names must be denied

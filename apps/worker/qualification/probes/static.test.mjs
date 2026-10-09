@@ -763,7 +763,9 @@ const OK_CONVERT = { status: 0, signal: null, error: null };
 const OBS_GOOD = { inspected: true, inputs: [1, 2, 3], formula: '=SUM(A1:A3)', cachedValue: 6, cachedType: 'int' };
 
 test('decideRecalc passes only on original inputs, retained formula and numeric 6', () => {
-  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD }).status, 'pass');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { status: 0, parseOk: true, nestedOk: true } }).status, 'pass');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { status: 0 } }).status, 'fail');
 });
 
 test('decideRecalc fails on wrong 0, actual null, missing inspection, python failure, malformed parse and constant 6 without formula', () => {
@@ -798,6 +800,17 @@ test('classifyNetworkResults requires the direct-IP negative and fails on CONNEC
   assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EHOSTUNREACH' }).ok, true);
   assert.equal(classifyNetworkResults({ ...base, directIp: 'CONNECTED' }).ok, false);
   assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EACCES' }).ok, false); // ambiguous fails closed
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:ECONNREFUSED' }).ok, false); // peer refusal is inconclusive
   assert.equal(classifyNetworkResults({ ...base, directIp: undefined }).ok, false);
   assert.ok(DIRECT_IP_DENIED.includes('timeout'));
+});
+
+test('an absent optional MCP config tool is recorded as not-run, without a call', async () => {
+  const evidence = { rawResults: {} };
+  let calls = 0;
+  const [configStep] = buildBrowserSteps({ callTool: async () => { calls += 1; }, toolNames: ['browser_navigate'], evidence, reasons: [] });
+  const sequence = await runBoundedSequence([configStep]);
+  assert.equal(calls, 0);
+  assert.deepEqual(sequence.ran, []);
+  assert.deepEqual(sequence.notRun, ['get_config']);
 });
