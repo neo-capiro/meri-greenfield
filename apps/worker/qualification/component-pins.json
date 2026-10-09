@@ -131,6 +131,16 @@
     "bookwormVersionAtSnapshot": "12.15",
     "resolvedAt": "2026-10-09",
     "note": "Versions resolved from the snapshot's Packages index. The real isolated build records the exact installed versions to /opt/meri-worker/os-package-versions.txt; apt pins these exact versions in the Dockerfile.",
+    "firstBuildFailure": {
+      "buildId": "meri-greenfield-qualification-build:7464da9b-af57-4481-b4a4-959b9789e7ec",
+      "at": "2026-10-09T20:15:15Z..20:15:54Z",
+      "stage": "apt dependency resolution (failed BEFORE any npm/browser/runtime execution)",
+      "note": "The signed HTTP CA bootstrap and the subsequent verified HTTPS snapshot apt update both succeeded.",
+      "error": "poppler-utils : Depends: libpoppler126 (= 22.12.0-2+deb12u2) but 22.12.0-2+deb12u3 is to be installed",
+      "cause": "bookworm-security updates libpoppler126 to 22.12.0-2+deb12u3; poppler-utils was pinned to the older main version deb12u2, whose exact dependency then conflicted",
+      "fix": "pin poppler-utils to the security-updated 22.12.0-2+deb12u3 (libpoppler126 resolves to the matching deb12u3); do not downgrade the security library",
+      "coherenceScan": "all other pinned packages' exact-version (=) Dependencies resolve to the snapshot versions (python3->libpython3-stdlib, python3-venv->python3, libreoffice-impress->libreoffice-core/libreoffice-draw); no other mismatch found. libnss3/libexpat1/ca-certificates were left at their resolved versions (no exact-dependency conflict; changing them would be unrelated scope)"
+    },
     "resolved": {
       "ca-certificates": "20230311+deb12u1",
       "python3": "3.11.2-1+b1",
@@ -144,7 +154,7 @@
       "fonts-noto-core": "20201225-1",
       "fonts-crosextra-carlito": "20220224-1",
       "fonts-crosextra-caladea": "20200211-1",
-      "poppler-utils": "22.12.0-2+deb12u2",
+      "poppler-utils": "22.12.0-2+deb12u3",
       "libnss3": "2:3.87.1-1+deb12u2",
       "libnspr4": "2:4.35-1",
       "libatk1.0-0": "2.46.0-5",
