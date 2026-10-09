@@ -10,6 +10,17 @@ the four owned exporter, decoder, tests and implementation-report files.
 for initial `89a36bf` remains historical evidence in `W02-07-OFFICE-REVIEW.md`;
 this Codex audit does not overwrite or attribute a new verdict to that reviewer.
 
+The separate actual repair2 reviewer20261009_190910_ed9911 subsequently closed
+23:18:32.438916Z with verified empty process tree/readers/cleanup. Report-only
+commitef9edeea284aa7f63e803b7681e9d1789123a9b6 is retained unchanged as
+W02-07-OFFICE-REVIEW-2.md. Its47owned+17adversarial passes do not resolve these
+additional owner reproductions. The reviewer acknowledges nested-fact
+contradictions but treats them as unreachable from an honest unchanged probe;
+the allocated owner criteria require retained complete facts and strict cleanup
+regardless. Its claims that every source ancestor/pre-read timestamp/cleanup fact
+is checked are contradicted by the cases below. Codex's REJECT remains controlling;
+the explicit implementation repair3 is active. No reviewer verdict promotes a gate.
+
 Independent checks passed: Office fake suite **47/47**, unchanged worker suite
 **81/81**, root contracts/session suite **15/15**, and `git diff --check`.
 Independent adversarial replay nevertheless reproduced these required repair gaps:
