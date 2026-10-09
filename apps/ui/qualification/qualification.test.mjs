@@ -534,3 +534,31 @@ test('a completed stream outcome does not mark the run complete without an autho
   projection.accept(makeEvent('run.status', { state: 'completed', reasonCode: null }, { sequence: 1 }));
   assert.equal(projection.isRunCompleted(), true);
 });
+
+test('prototype-looking run error codes use only the generic safe string', () => {
+  for (const code of ['toString', 'constructor', '__proto__']) {
+    const result = renderRunError(makeEvent('run.error', { code, retryable: false, message: 'private provider detail' }));
+    assert.equal(typeof result.message, 'string');
+    assert.equal(result.message, 'The run stopped because of an error.');
+  }
+});
+
+test('mutating factory view input cannot change send or reconnect conversation identity', async () => {
+  const view = { ...VIEW };
+  const { fetchImpl, calls } = makeMockFetch({
+    POST: () => eventStreamResponse([makeEvent('run.status', { state: 'running', reasonCode: null }, { sequence: 1 })]),
+    GET: () => new Response(null, { status: 204 }),
+  });
+  const { chat, projection } = createMeriChat({ view, validateEvent, fetchImpl });
+  view.conversationId = randomUUID();
+  view.tenantId = 'changed-tenant';
+  view.actorId = 'changed-actor';
+  await chat.sendMessage({ text: 'go' });
+  await chat.resumeStream();
+  assert.equal(chat.id, VIEW.conversationId);
+  assert.deepEqual(projection.view, VIEW);
+  assert.equal(JSON.parse(calls[0].body).command.conversationId, VIEW.conversationId);
+  assert.equal(calls[1].url, CONVERSATION_STREAM_URL);
+  assert.equal(calls[1].headers['x-meri-resume-sequence'], '1');
+  await chat.dispose();
+});

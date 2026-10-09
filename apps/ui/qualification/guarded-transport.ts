@@ -229,7 +229,7 @@ export function createMeriChat(options: CreateMeriChatOptions): MeriChatHandle {
     ...(options.fetchImpl ? { fetch: options.fetchImpl } : {}),
     prepareSendMessagesRequest: ({ body, headers }) => ({
       // The client-sent conversation id/messages are untrusted; send an intended command only.
-      body: { ...body, command: { conversationId: options.view.conversationId, intent: 'view.subscribe' } },
+      body: { ...body, command: { conversationId: projection.view.conversationId, intent: 'view.subscribe' } },
       headers: toHeaderRecord(headers),
     }),
     prepareReconnectToStreamRequest: ({ headers }) => ({
@@ -250,7 +250,7 @@ export function createMeriChat(options: CreateMeriChatOptions): MeriChatHandle {
   });
 
   const chat = new Chat<MeriUIMessage>({
-    id: options.view.conversationId,
+    id: projection.view.conversationId,
     transport,
     sendAutomaticallyWhen: () => false,
     onError: () => {

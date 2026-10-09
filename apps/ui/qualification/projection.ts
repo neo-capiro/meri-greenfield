@@ -240,12 +240,12 @@ export class ConversationProjection {
   }
 }
 
-const APPROVED_RUN_ERROR_MESSAGES: Record<string, string> = {
-  provider_unavailable: 'The assistant service is temporarily unavailable.',
-  budget_exceeded: 'The run stopped because its budget was reached.',
-  authorization_denied: 'The run stopped because access was not authorized.',
-  internal_error: 'The run stopped because of an internal error.',
-};
+const APPROVED_RUN_ERROR_MESSAGES = new Map<string, string>([
+  ['provider_unavailable', 'The assistant service is temporarily unavailable.'],
+  ['budget_exceeded', 'The run stopped because its budget was reached.'],
+  ['authorization_denied', 'The run stopped because access was not authorized.'],
+  ['internal_error', 'The run stopped because of an internal error.'],
+]);
 
 /**
  * Renders a `run.error` event by approved code or a generic message. The raw
@@ -259,6 +259,6 @@ export function renderRunError(event: Extract<UIEvent, { type: 'run.error' }>): 
   return {
     code: event.data.code,
     retryable: event.data.retryable,
-    message: APPROVED_RUN_ERROR_MESSAGES[event.data.code] ?? 'The run stopped because of an error.',
+    message: APPROVED_RUN_ERROR_MESSAGES.get(event.data.code) ?? 'The run stopped because of an error.',
   };
 }
