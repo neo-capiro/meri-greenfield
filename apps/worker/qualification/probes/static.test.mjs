@@ -471,6 +471,15 @@ test('component-pins.json records resolved OS/snapshot versions and unresolved p
   assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT');
 });
 
+test('Dockerfile OS package pins match the component-pins resolved versions (no drift)', () => {
+  for (const p of ['ca-certificates', 'poppler-utils', 'libnss3', 'libexpat1', 'libreoffice-core', 'python3']) {
+    assert.ok(dockerfile.includes(`${p}=${pins.osPackages.resolved[p]}`), `Dockerfile pin for ${p}`);
+  }
+  // The security-updated poppler set is the coherent fix for the first build failure.
+  assert.equal(pins.osPackages.resolved['poppler-utils'], '22.12.0-2+deb12u3');
+  assert.ok(pins.osPackages.firstBuildFailure);
+});
+
 // ---------------------------------------------------------------------------
 // Network denial classification (positive control required)
 // ---------------------------------------------------------------------------

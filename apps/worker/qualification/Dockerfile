@@ -86,7 +86,7 @@ RUN set -eux; \
       libreoffice-calc=4:7.4.7-1+deb12u14 libreoffice-impress=4:7.4.7-1+deb12u14 \
       fonts-liberation=1:1.07.4-11 fonts-dejavu-core=2.37-6 fonts-noto-core=20201225-1 \
       fonts-crosextra-carlito=20220224-1 fonts-crosextra-caladea=20200211-1 \
-      poppler-utils=22.12.0-2+deb12u2 \
+      poppler-utils=22.12.0-2+deb12u3 \
       libnss3=2:3.87.1-1+deb12u2 libnspr4=2:4.35-1 libatk1.0-0=2.46.0-5 \
       libatk-bridge2.0-0=2.46.0-5 libcups2=2.4.2-3+deb12u9 libdrm2=2.4.114-1+b1 \
       libxkbcommon0=1.5.0-1 libxcomposite1=1:0.4.5-1 libxdamage1=1:1.1.6-1 \

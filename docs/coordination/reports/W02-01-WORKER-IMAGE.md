@@ -4,10 +4,11 @@ Status: `ready-for-review` (not accepted)
 Task: W02-01 Worker image and offline qualification preparation
 Explicit Hermes session ID: `20261009_152136_008131` (stage 1 partial; stage 2
 interrupted on a test hang; stage 3 fixed the hang and committed `bf72484`; stage
-4 applied review repairs and committed `a5d6f0e`; this is the stage-5 pinned
-browser-correction continuation of the same session)
+4 applied review repairs and committed `a5d6f0e`; stage 5 corrected pinned-browser
+handling and committed `3d85f4a`; this is the stage-6 first-build apt-fix
+continuation of the same session)
 Branch/worktree (cwd): `hermes/w02-image` at `C:\dev\main\meri-greenfield-worktrees\w02-image`
-Base commit: `a5d6f0e1142fe0dac33a6db9b9b732a8e6c7f914`
+Base commit: `3d85f4ae9fed85956a2cc1afd9cce4c13e8bcefd`
 Result: HEAD of this task commit (full SHA returned in the handoff message)
 
 Preparation only. Green offline checks prove local structural/path/parsing
@@ -61,6 +62,35 @@ sessions or Fargate isolation. G1 remains incomplete and W03 stays blocked.
    error fails visibly. Pure `classifyNetworkResults`/`addressIn10_80` are covered
    offline.
 
+## Stage-6 first-build apt fix (Codex build evidence)
+
+The first real isolated CodeBuild (`meri-greenfield-qualification-build:7464da9b-af57-4481-b4a4-959b9789e7ec`,
+2026-10-09T20:15:15Z–20:15:54Z) failed during **apt dependency resolution, BEFORE
+any npm/browser/runtime execution**. The signed HTTP CA bootstrap and the
+subsequent verified HTTPS snapshot apt update both succeeded. Exact error:
+
+```
+poppler-utils : Depends: libpoppler126 (= 22.12.0-2+deb12u2) but 22.12.0-2+deb12u3 is to be installed
+E: Unable to correct problems, you have held broken packages.
+```
+
+Cause: `bookworm-security` in the fixed snapshot `20260901T000000Z` updates
+`libpoppler126` to `22.12.0-2+deb12u3`, while `poppler-utils` was pinned to the
+older main version `22.12.0-2+deb12u2`. Fix: pin `poppler-utils` to the
+security-updated `22.12.0-2+deb12u3` (libpoppler126 resolves to the matching
+`deb12u3`); the security library is NOT downgraded.
+
+Coherence scan against primary package metadata for BOTH `bookworm/main` and
+`bookworm-security` (same snapshot): every other pinned package's exact-version
+(`=`) Dependency resolves to the snapshot version — `python3`→`libpython3-stdlib`,
+`python3-venv`→`python3`, `libreoffice-impress`→`libreoffice-core`/`libreoffice-draw`
+— with no other mismatch. `libnss3`, `libexpat1` and `ca-certificates` were left
+at their resolved versions (no exact-dependency conflict; changing them would be
+unrelated scope). Signature/HTTPS verification and the scoped snapshot
+`Check-Valid-Until: no` handling are unchanged; no repository/tag move, sandbox
+weakening, host switch or retry loop. Docker is unavailable here; no local/cloud
+build was attempted. `assembledImageDigest` stays null.
+
 ## Changed files (the fifteen owned tracked paths)
 
 | Path | SHA-256 |
@@ -69,11 +99,11 @@ sessions or Fargate isolation. G1 remains incomplete and W03 stays blocked.
 | apps/worker/qualification/package-lock.json | ed0c7329cd1cd24487848f4bf6fcf5cfd97f877f17b25240fd4c255d385f58b4 |
 | apps/worker/qualification/.gitignore | 69f504fac53d1b2ff914d4f3c297f638bfad612e3080a8e070a9c20b02581536 |
 | apps/worker/qualification/.dockerignore | 1bb5cd790f07faeec7b85b5b9fc2291d6461b82fe0d1150e1085f971c6eccfda |
-| apps/worker/qualification/Dockerfile | 680c0d682bbc883da7d6b58019008bcc230ccad8b7358a584097cdfc36863de0 |
+| apps/worker/qualification/Dockerfile | d4508c8428eccb5294b669e14820e9dad7734f1ce52503f4ea66019357561867 |
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
-| apps/worker/qualification/component-pins.json | 5da824e16c2afbeb88e469360bbbb8f37d669895ff83695f7e2e850d45fe2412 |
+| apps/worker/qualification/component-pins.json | cb8b863b2fee1ae659408607394db6666acb81560ddcef63e27bf188ff6a7dbe |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | ebada473bc6655d5fcb07a465e3fc9d4af08211a3c1c590c81d5a05b4b98bd91 |
+| apps/worker/qualification/probes/static.test.mjs | 9e42026b722f42b24f6485fee3390d2ffbab5d828f8e421617863d295a0c983c |
 | apps/worker/qualification/probes/runtime.mjs | d52d3812eda58eacc6a516fc9c78b90bcd95b3886583a5d2883ce5189092b64a |
 | apps/worker/qualification/probes/browser.mjs | c4e6f59d8f11e6f465c136d045ab9701d257fbd5fa27d8c9a118a04c61841324 |
 | apps/worker/qualification/probes/artifacts.mjs | 2fe50c87d727b95e3a37341e375c0e467af6a26582859d1b684b5ea5ff7b37ed |
@@ -89,11 +119,11 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 55 / pass 55 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 56 / pass 56 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 49 → 55 with the two-cell sandbox fixtures, process-tree
-identification tests and network-classification tests. All non-vacuous.
+Nested suite grew 49 → 56 (stage 5 two-cell sandbox/process/network tests plus a
+stage-6 Dockerfile↔component-pins pin-drift test). All non-vacuous.
 
 ## Adopted versions, licenses and integrity
 
