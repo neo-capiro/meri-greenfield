@@ -1,0 +1,52 @@
+# Meri kickoff status
+
+Updated 9 October 2026, America/New_York. Owner: Codex integration.
+
+## Current outcome
+
+Both user-supplied plans have been read. The user authorized an independent build and isolated Fargate environment, with current Meri retained until a completed, tested cutover candidate. No existing Meri code or infrastructure has been changed. No application infrastructure has been deployed. No production release or cutover is authorized at kickoff.
+
+The owner approved private `neo-capiro/meri-greenfield` and fully independent AWS resources in account `967807252336`, region `us-east-1`, on 9 October 2026. Checkout: `C:\dev\main\meri-greenfield-kickoff-20261009`. Repository bootstrap and contract-freeze commit are in progress. Current Meri remains untouched; eventual Capiro integration is through newly written authorized gateway connectors. See DECISIONS.md D001.
+
+## Environment discovered
+
+- Execution host: Windows 11, PowerShell; Node 24.19.0; AWS CLI 2.36.8; Git/GitHub CLI present. GitHub authentication is `neo-capiro`, with repository/workflow access. Docker client 29.7.2 is installed; the Linux daemon is unavailable. No image or browser has been qualified.
+- Hermes: `C:\Users\neoma\AppData\Local\hermes\hermes-agent\venv\Scripts\hermes.exe`, 0.20.0 (2026.8.3), Python 3.11.15. Existing default profile uses OpenRouter `deepseek/deepseek-v4.1-flash`; `capirophase04` and `capirophase58` use OpenRouter `openai/gpt-5.6-sol`. Credentials were checked for presence only. Doctor reports OpenRouter connectivity; this is not Claude model or Fargate qualification.
+- Hermes Kanban has only an empty default board, gateways stopped, no active dispatcher. Use bounded CLI fallback without starting another dispatcher. Actual installed CLI supports `chat --cli -q ... -Q --max-turns ... --pass-session-id --checkpoints -t terminal,file`; it lacks the plan's `--in`, `--query-file` and `--format stream-json`. Launch with structured process arguments and worktree cwd; use explicit session ID on resume. Never use global `--oneshot`, which bypasses approvals in this installed version.
+- AWS: profile `capiro-dev` currently resolves to account `967807252336`, IAM user `arn:aws:iam::967807252336:user/capirocli`, region `us-east-1`. `default` has no credentials. The owner approved this account/region for independent resources. Recheck identity immediately before each deployment; deploy only new scoped stacks.
+- Existing account contains ECS cluster `capiro-dev` and existing Capiro stacks; these are discovery references only. Existing VPC CIDRs observed: `10.40.0.0/16`, `10.0.0.0/16`, default `172.31.0.0/16`. New networking must not reuse them or connect to them implicitly.
+- Route53 zones observed: `capiro.ai`, `cloudwest.ai`, private `capiro.dev.local`. No new DNS name chosen or altered. Clerk and Anthropic secret names exist under current Capiro prefixes; values were not retrieved and these secrets are not assigned to the new worker or deployment.
+
+## Source discovery and scope
+
+Actual existing checkout is `C:\dev\main\git`, origin `https://github.com/neo-capiro/capirov2.git`, local `main` at `75fb394938144b5a78c9e9c74165a5399d69d3f3`. Its cached tracking is stale and six untracked paths must be preserved. `C:\dev\main\capirov2-main` is a dependency directory, not the repository.
+
+Read-only GitHub discovery pinned the source snapshot to `fd8765ec01d292013758606204f2c9d886cd31c1` (9 October 2026, 16:44:31 UTC). No root or nested AGENTS.md was present in that source tree. Current registry contains 139 capabilities: 104 reads, 35 writes. Current catalog contains 22 datasets, broader than the plan's historical 18-domain summary. See `docs/SOURCE-INVENTORY.md` and the provisional capability ledger when present.
+
+Important policy boundary: current application database roles bypass RLS. New gateway needs a restricted non-owner source principal and explicit current-authorization checks. Clerk IDs and local actor IDs differ. Client wall grants, governed memory lifecycle grants and mailbox/meeting ownership are distinct checks; tenant filtering alone is insufficient.
+
+Defined v1 follows the supplied plans: SDK workspace, agreed reads and canonical memory, native artifacts/revisions, public browser first, durable runs/recovery/schedules, initial commands memory proposals/tasks/artifact filing. Expanded current business workflows, other mutations, user-device bridge, full Office WYSIWYG and unqualified authenticated browser integrations remain deferred. Source availability does not imply selected workflow parity.
+
+## Gates and evidence
+
+G0 is OPEN. Repository and AWS destination decisions are accepted. Source connection/identity bridge details and final capability dispositions remain unresolved for live integration. No gate has passed. G1–G7 are NOT RUN.
+
+Contract draft `0.1.0` contains 28 strict JSON Schema definitions and protocol semantics for identity/run bindings, task capabilities/budgets, scopes, tools/evidence/coverage, approvals/receipts, ordered UI events, artifacts, SDK plus file checkpoints, lifecycle and usage. Independent Codex review found three issues, all repaired: approved intent now survives executor replacement, manifest file-ancestor conflicts are rejected, and truncated coverage cannot claim completeness. All ten boundary tests pass, including an independent reviewer rerun. The reviewer accepted freeze readiness. These checks do not establish authorization, durability or runtime isolation. Freeze still requires a pinned integration commit after repository confirmation.
+
+Discovery outputs are complete at the pinned source SHA: `docs/SOURCE-INVENTORY.md`, `docs/CAPABILITIES.json`, `docs/CAPABILITY-SCOPE.md`. All 139 unique rows were inventoried: 96 provisionally selected and 43 deferred; zero are accepted parity. Proposed dispositions follow the defined-v1 boundaries and await scope acceptance. Current tenant flags were not queried.
+
+First ready bounded worker contract is `docs/coordination/tasks/H00-HERMES-QUALIFICATION.md`. It is PREPARED, NOT LAUNCHED, pending repository confirmation, pinned contract freeze and base commit/worktree allocation. Stage 1 edits/checks a synthetic fixture and persists a handoff; stage 2 resumes the explicit session and commits. Separate Hermes review plus Codex rerun precede acceptance. `scripts/launch-hermes.py` is a thin process launcher prepared for the actual installed flags, explicit session IDs, bounded runtime, captured scrubbed text logs and one-writer lock. Python compilation and help pass; actual launch/checkpoint/resume remains untested. W02 Fargate qualification follows only accepted dependencies; its required evidence is in `docs/coordination/tasks/W02-01-FARGATE-QUALIFICATION.md`. No source connections are enabled by H00.
+
+## Missing inputs and later decisions
+
+1. Repository/account choice accepted. Bootstrap and bounded Hermes qualification can proceed. Live source integration remains gated; the owner requires eventual Capiro connectivity and notification when tooling integration begins.
+2. New trusted model-proxy provider credential/access mechanism, restricted source endpoint/principal, Clerk identity bridge and actual tenant feature/entitlement matrix are not yet qualified. Existing secret names do not authorize credential reuse.
+3. Agree numeric revocation propagation deadline before G3; proposed target is at most 30 seconds. Agree retention/legal hold/backup expiry, capability scope and human artifact rubric before their release checks.
+4. Determine numeric task/tenant cost caps from W02 measurements. No universal cost cap or production performance result is invented.
+5. Docker image build path needs qualification because this local daemon is unavailable. A new isolated CI/CodeBuild path can be considered once the AWS target is approved; no existing runner or infrastructure is repurposed.
+
+## Next steps and rollback
+
+Accept independent contract review, record the approved repository/account decisions, create the new repository/integration commit and dedicated Hermes worktree, run H00 checkpoint/resume, independently verify its exact commit, then begin W02 qualification in the approved isolated Fargate environment. Parallel fixture work may begin only from accepted contracts with nonconflicting path ownership.
+
+Rollback at present requires no cloud action: no resources or current Meri behavior changed. Preserve preparation and partial evidence. Later qualification resources require their own tagged inventory and teardown/rollback runbook; do not delete shared Capiro resources.

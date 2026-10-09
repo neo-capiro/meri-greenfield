@@ -1,0 +1,1162 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-09",
+  "status": "discovered metadata; no implementation or parity acceptance",
+  "source": {
+    "repository": "neo-capiro/capirov2",
+    "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "path": "packages/shared/src/index.ts",
+    "export": "MERI_CAPABILITY_REGISTRY",
+    "url": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts",
+    "method": "GitHub contents API read; metadata fields extracted in memory; source implementation not retained"
+  },
+  "counts": {
+    "total": 139,
+    "uniqueNames": 139,
+    "readOnly": 104,
+    "writes": 35,
+    "meri": 134,
+    "federalMarket": 5,
+    "fullChat": 139,
+    "inEditor": 25
+  },
+  "capabilities": [
+    {
+      "name": "manage_research_portfolio",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_analytics",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_changes",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_research_portfolio_snapshot",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "request_research_portfolio_output",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_research_portfolio_output_to_client",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "watch_research_portfolio",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "update_research_portfolio_change_state",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_bookmarks",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_research_portfolio_bookmark",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_fit",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_reviews",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "add_research_portfolio_review_note",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_rules",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_imports",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_portfolio_operations",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "prepare_research_portfolio_brief",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "prepare_research_portfolio_meeting",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_research_evidence",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "read_chat_attachments",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "read_monday_client_boards",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_capiro_data",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_client_context",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_research_sources",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "run_analysis",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_client_knowledge",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "query_intelligence",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "query_knowledge_graph",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "find_path_to",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_memory",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "list_memory_proposals",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_congress_bills",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_bill_status",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "read_bill_text",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_certification_status",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_floor_votes",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_cbo_cost_estimates",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "resolve_entity",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_lda_filings",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "list_global_datasets",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "query_global_data",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_sec_filings",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_fara_registrations",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_federal_grants",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_federal_awards",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_gao_reports",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_state_bills",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_state_bill_status",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_state_floor_votes",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_state_legislator",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_committee_roster",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_representation",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "list_members",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_state_rule_status",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_intel_articles",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_committee_hearings",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_legiwatch_review",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_legiwatch_news",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_florida_budget_project",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "compare_florida_budget_amounts",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "prepare_legiwatch_briefing",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_legislative_research",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_legal_reference",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "compare_legislative_versions",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_legislative_research",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "preview_legiwatch_relevance",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_legiwatch_relevance",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "apply_legiwatch_suggestion",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_crs_reports",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "query_economic_data",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_district_nexus_context",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_district_nexus_changes",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_public_web",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "scrape_web_page",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_meeting_brief",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "draft_policy_memo",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_note",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_chat_attachments",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "send_email",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "list_emails",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_emails",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_email_thread",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "list_upcoming_meetings",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "reply_email",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_memory",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "confirm_memory",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "correct_memory",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "forget_memory",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_program_elements",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_program_element",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_pe_budget_timeline",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_pe_buyer_workspace",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_pe_contractors",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_pe_bills",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_pe_report_language",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_acquisition_personnel",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "get_acquisition_person",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "create_word",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_excel",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_powerpoint",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "schedule_task",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "list_scheduled_tasks",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "cancel_scheduled_task",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "update_scheduled_task",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "query_tasks",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "query_action_items",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_tracked_bills",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "query_regulatory_dockets",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "search_sam_opportunities",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "query_debriefs",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "read_client_meetings",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "query_outreach",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "read_client_documents",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat",
+        "in_editor"
+      ]
+    },
+    {
+      "name": "lookup_client_registry",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_client",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "create_task",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "update_task",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "update_client_profile",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "find_contacts",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_funding_opportunities",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_funding_opportunity_requirements",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_funding_opportunity",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "explain_opportunity_match",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_opportunity_client_context",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_opportunity_government_landscape",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "compare_funding_opportunities",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "build_opportunity_action_plan",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_federal_contract_awards",
+      "readOnly": true,
+      "backend": "federal_market",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_federal_subawards",
+      "readOnly": true,
+      "backend": "federal_market",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_contract_vehicles",
+      "readOnly": true,
+      "backend": "federal_market",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "search_procurement_forecasts",
+      "readOnly": true,
+      "backend": "federal_market",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_business_development_context",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_business_development_evidence",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_business_development_brief",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "resolve_business_development_source",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "save_business_development_brief",
+      "readOnly": false,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_business_development_recent_changes",
+      "readOnly": true,
+      "backend": "meri",
+      "surfaces": [
+        "full_chat"
+      ]
+    },
+    {
+      "name": "get_district_federal_market",
+      "readOnly": true,
+      "backend": "federal_market",
+      "surfaces": [
+        "full_chat"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+cdk.out/
+coverage/
+.worktrees/
+docs/coordination/private-evidence/
+*.log
+__pycache__/
+.hermes-session.lock
+.task-inputs/

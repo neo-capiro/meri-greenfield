@@ -1,0 +1,17 @@
+{
+  "name": "meri-greenfield",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "check:contracts": "node --test packages/contracts/test/*.test.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "canonicalize": "5.1.0"
+  }
+}

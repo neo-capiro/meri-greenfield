@@ -1,0 +1,99 @@
+# Meri source discovery inventory
+
+Recorded 9 October 2026. This is read-only source discovery for a new independent Meri deployment. It establishes source metadata and policy evidence, not live source access, complete coverage, accepted capability parity or a passed deployment gate. No current Capiro implementation is imported. Existing Meri must remain available until the new build is finished, tested and explicitly cut over.
+
+## Verified repository snapshot
+
+The actual local Capiro checkout is `C:\dev\main\git`, origin `https://github.com/neo-capiro/capirov2.git`. Its local `main` HEAD is `75fb394938144b5a78c9e9c74165a5399d69d3f3`; the initial status reported it 810 commits behind its cached tracking branch. No fetch, checkout, reset or edits were performed. `C:\dev\main\capirov2-main` contains only `node_modules` and is not a Git checkout.
+
+Preserve existing untracked work: `apps/web/engagement-qa-harness.html`, `apps/web/src/vnext/testing/visual/engagement-qa-auth.tsx`, `apps/web/vite.engagement-qa.config.ts`, `docs/defense-budget/JEV-SHADOW-VERIFICATION-PILOT.md`, `docs/defense-budget/package-b/`, and `packages/meriv2-core/tmp/`.
+
+Current GitHub `main` was read independently through `gh api`, then subsequent reads were pinned to commit **`fd8765ec01d292013758606204f2c9d886cd31c1`**, committed `2026-10-09T16:44:31Z` (12:44:31 p.m. America/New_York), PR #2281, Record C2 Krisp production acceptance. This is the authoritative discovery snapshot for the inventories below; it is a point-in-time snapshot and is not a claim that main will remain unchanged. [Commit](https://github.com/neo-capiro/capirov2/commit/fd8765ec01d292013758606204f2c9d886cd31c1).
+
+No `AGENTS.md` was found in the actual local checkout or the complete GitHub tree at the pinned SHA; the GitHub recursive tree reported `truncated: false`. No `AGENTS.md` was found at the local workspace ancestors. Existing authentication files have inline change-control comments requiring explicit approval before modifying existing Clerk, JWT/session, tenant middleware, Microsoft Graph OAuth, webhooks or integration token persistence. This discovery does not modify those paths.
+
+## Inventory meaning and acceptance
+
+The current retrieval dataset catalog declares 22 datasets. Its entity/domain tags are an inventory input, not a count of completed adapters. The plan's historical 18-domain vocabulary and the 22 dataset entries represent different abstractions. The authoritative business registry independently contains 139 unique capabilities: 104 read-only, 35 writes, 134 `meri` backend and 5 `federal_market`; all 139 advertise `full_chat`, and 25 also advertise `in_editor`. The four source metadata fields are retained in `CAPABILITIES.json`; the provisional scope map is in `CAPABILITY-SCOPE.md`.
+
+Each new adapter must independently declare and test exact lookup, search, filtering, aggregates/counts, pagination, historical queries and freshness. Source code declarations below are not proof of those behaviors under the new principal. Results need record IDs, contributing security scopes, source and retrieval timestamps, authorized citations, completeness limits and continuation information. Unsupported operations, inaccessible encrypted content and bounded scans must remain visible; zero results do not prove absence.
+
+## Current catalog datasets
+
+The following IDs, scope labels and source descriptions were read from [the pinned dataset catalog](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/retrieval/meri-data-catalog.ts). All inclusion is **provisional pending source-inventory agreement**; all live connectivity, restricted-role authorization and coverage tests remain unproven.
+
+| Dataset | Declared source scope | Authoritative content and qualification focus |
+| --- | --- | --- |
+| client_portfolio | tenant_and_client | Authorized clients, profile/capability/strategy context; client visibility, current membership and lifecycle. |
+| client_documents | tenant_and_client | Client file inventory and extracted content; object ownership, encrypted text, current citations and original bytes. |
+| mail_messages | tenant | Microsoft 365 and Google Workspace synchronized messages; mailbox owner, thread chronology, exact counts, paging, snapshot asOf and explicit sync coverage. |
+| contacts | tenant | Synchronized and CRM contacts; connection ownership and field restrictions need per-source policy qualification. |
+| meetings_and_debriefs | tenant_and_client | Meetings, notes, transcripts and debriefs; owner/share/client association and encrypted body authorization are distinct. |
+| engagement_tasks | tenant_and_client | Tasks, commitments, status, owner and deadlines; private Research Portfolio tasks have additional ownership requirements. |
+| action_items | tenant_and_client | Needs Attention/action recommendations; status, priority, deadlines and source links. |
+| outreach | tenant_and_client | Outreach campaign/recipient/send/response state; private draft ownership and confidential data restrictions. No send authorization follows from read access. |
+| institutional_memory | tenant_and_client | Canonical governed memory and historical nuance; private owner, client walls, lifecycle, grants and source provenance. Memory is not automatically current operational truth. |
+| tracked_legislation | tenant_and_client | Client-linked tracked bills and federal/state bill identity, stages and actions; current client scope and version history. |
+| committee_hearings | public | Congressional committee hearing identity, schedules, dates and linked public sources; tenant relevance overlays require separate checks. |
+| government_directory | public | Committees, members, representation and acquisition personnel; public identities versus client mappings must remain distinct. |
+| regulatory_dockets | public | Federal/state rule and docket lifecycle, comment deadlines and effective dates; authoritative history and source timestamps. |
+| federal_intelligence_sources | public | Capiro-synced news/intelligence, GAO and CRS source records; summaries must cite authorized source evidence and disclose freshness. |
+| economic_data | public | Census, BLS and BEA observations; geography, period, units, aggregates and revisions. |
+| defense_budget | tenant_and_client | Program Elements, years, projects, marks, report language and provenance; source/cycle/unit agreement and client-linked overlays. |
+| federal_opportunities | public | SAM.gov and related opportunity identity, agencies, deadlines and status; provider coverage and archived/history limits. |
+| client_funding_pipeline | tenant_and_client | Client-scored grant/contract opportunity posture, recorded decisions and landscape; raw data availability does not establish scoring/workflow parity. |
+| federal_awards | public | Federal award occurrences, recipients, amounts and agencies; provider pagination, time ranges and identifier reconciliation. |
+| federal_grants | public | Grant opportunities, eligibility, agencies and deadlines; source revision and completeness. |
+| public_registries | public | LDA, SEC and FARA identities/filings/identifiers; source-linked evidence, provider access and history. |
+| public_web | public | Current public search and explicit page reads; new supported tools, approved egress, citations and conversation-scoped browser state. |
+
+## Additional surfaces that the 22 datasets do not fully enumerate
+
+| Surface | Verified metadata evidence | Decision or missing coverage |
+| --- | --- | --- |
+| Research Portfolios | Registry names plus `ResearchPortfolio`, grants, members, events, rules, imports, snapshots, outputs, filing receipts, bookmarks, reviews and fit models in the main schema | Proposed basic record/evidence/history reads only; private ownership/client grants and included records need agreement. Analytics, imports, management, reviews, watches and domain workflow parity are deferred. |
+| Business Development | Registry names plus prospect, preferences, decisions, brief/version, watch/source state, alert/delivery models | Proposed record/evidence/recent-change reads only; actual tenant flags and provider entitlements unqueried. Scoring/brief publication/watch workflows deferred. |
+| Monday client boards | `read_monday_client_boards` registry entry and `MeetingPrepMondayMapping` in the main schema | Required source group in the plan; actual connection, board ownership, field policy, pagination and history are unknown. |
+| Uploaded/chat attachments and generated files | `read_chat_attachments`, `save_chat_attachments`; source documents and Research Portfolio output/file-receipt models | Original bytes, MIME/size validation, object keys, upload provenance, encrypted content and download authorization need a dedicated inventory. No current bucket credentials were read. |
+| Strategies and separate services | Tree verified `apps/api-strategy/prisma/schema.prisma`, `apps/workspace/prisma/schema.prisma`, `apps/intel-api/prisma/schema.prisma`, `apps/defense-api/prisma/schema.prisma`, `apps/onboard-api/prisma/schema.prisma` | File presence is verified, but per-service models, source endpoints, roles and connectivity require further bounded discovery. Do not assume the main API schema is the only source database. |
+| Knowledge graph/history/embeddings | `query_knowledge_graph` and research capabilities; main schema knowledge event/assertion/evidence/episode models and memory edges | Scope, source revisions, evidence visibility, graph history and embedding principal/store are not fully inventoried. Do not reuse old retrieval code. |
+| Krisp and meeting imports | Current commit is Krisp acceptance; main schema `KrispNotetakerPreference` and `KrispMeetingImport` | Import ownership, transcript provenance, provider consent/configuration and lifecycle need qualification. No new provider ingestion or account access is implied. |
+| Federal Market and district overlays | Five `federal_market` registry entries: contracts, subawards, vehicles, procurement forecasts, district market; district nexus capabilities | Provider availability/credentials and tenant/client overlays are unknown; source coverage does not establish recommendation workflow parity. |
+| Browser sessions and schedules | Legacy public-web and schedule capability metadata; plans require new Playwright and Temporal implementations | New application state and schedules are independent. Authenticated sites qualify individually; no desktop-browser/device bridge or legacy schedule-store parity is assumed. |
+
+## Authoritative schema metadata
+
+The main [Prisma schema](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/prisma/schema.prisma) establishes these useful external-data identities; only schema metadata was read:
+
+| Source group | Representative table/model identities |
+| --- | --- |
+| Identity and current membership | `tenants`, `users`, `tenant_memberships`; `tenants.clerk_org_id`, `users.clerk_user_id`, canonical local UUIDs and active membership. |
+| Client authorization | `clients`, `client_memory_access`, `client_team_members`; client memory wall membership is distinct from team membership. |
+| Connections and communications | `engagement_connections`, `engagement_connection_tokens`, `mail_threads`, `mail_messages`, `meetings`, `meeting_notes`, `meeting_debriefs`, `engagement_contacts`. Token columns were observed by name only; no stored values were read. |
+| Client work | `client_capabilities`, `client_people`, `client_activity`, `client_facilities`, `client_targets`, `client_target_recommendations`, `client_capability_fit_recommendations`, `engagement_tasks`, `action_recommendation`. |
+| Files and government evidence | `source_document`, `document_parse_job`, `bill_text`, `committee_hearing`, `federal_register_document`, `regulatory_docket`, `regulatory_comment`, Program Element/project/year/source/provenance models. |
+| Canonical memory | `clio_memory`, `memory_items`, `memory_edges`, `memory_candidate`, `memory_access_grant`, `memory_transition_audit`, `memory_cleanup_outbox`. Legacy and governed memory representations must be reconciled without replacing canonical memory. |
+| Knowledge history | `knowledge_events`, `knowledge_assertions`, `knowledge_evidence`, `knowledge_episodes` and mailbox/extraction/projection jobs. |
+| Separate workflow domains | Research Portfolio and Business Development models above; dedicated service schemas still require detailed inventory. |
+
+## Current authorization and flag evidence
+
+1. **Identity is server-bound.** [Clerk service](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/auth/clerk.service.ts) uses the official backend SDK, normalizes compact v2 organization claims and checks a configured issuer. [Shared tenant guard](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/auth/src/tenant.guard.ts) resolves canonical organization/tenant identity, cross-checks claims and requires an active local membership. Clerk IDs are not local user UUIDs.
+2. **Membership revocation is authoritative.** [Main middleware](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/tenant/tenant-context.middleware.ts) selects active memberships and can provision a genuinely missing membership from verified Clerk claims; an existing removed/suspended membership is not resurrected. It has additional impersonation rules. The new session/gateway must explicitly define equivalent intended resolution without modifying existing authentication.
+3. **Client walls are separate from memory permissions.** [Wall helpers](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/memory/memory-wall.helpers.ts) deny unknown clients/users and walled clients without a `client_memory_access` row, including administrators. This table has no status, expiry or revoked fields: wall revocation deletes the grant. The lifecycle-bearing `memory_access_grant` is a different table for governed permissions.
+4. **Governed memory needs owner, role, class, scope and lifecycle checks.** [Authorization service](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/memory/memory-authorization.service.ts) checks walls and active reasoned grants with future expiry. [Policy helper](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/memory/memory-authorization.helpers.ts) distinguishes private ownership, shared proposal/read, mutation authority, client lifecycle, legal hold and self-review. Current administrator self-review is an explicit exception; it does not bypass ethical walls. Lifecycle eligibility must be verified across complete read paths, not inferred from this helper alone.
+5. **Mailbox and body authorization are distinct.** [Engagement access helpers](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/engagement/engagement-access.helpers.ts) require connection ownership for mail and created/owned connection for personal meetings, with deleted records excluded. Confidential note/debrief body access follows author/role/access-level rules. [Mail query](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/engagement/mail-query.ts) joins tenant/thread/connection, requires the authenticated connection owner, returns exact stored counts/pages and coverage. Initial/recovery sync is bounded to 365 days; connection timestamps and stored oldest/newest messages do not prove completeness. Broader client/firm meeting-prep context is a separate policy surface and must not become a general mailbox grant.
+6. **Existing application credentials are unsuitable for the new boundary.** Both wall and engagement helper comments document that the runtime application role bypasses RLS; application predicates are material enforcement. The new connector requires a restricted non-owner principal, approved tables/views, actual-role RLS tests and explicit policies where RLS is absent. No such new role has been identified or tested. Workers must receive no source database login.
+7. **Code defaults are known; actual tenant values are not.** [Tenant flag code](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/common/tenant-flags.ts) reads `settings_jsonb.clioFeatureFlags`. MeriV2 global `MERIV2_ENABLED` defaults off; its three tenant surface flags default true when globally enabled. Jobs (`meri.jobs`) and firm mail context (`engagementFirmMailContext`) default off. Strategy/BizDev/meetings and provider flags have their own defaults and entitlements. [Capability rollout](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/meriv2-core/src/rollout/capability-rollout.ts) separately resolves off/shadow/enforce with tenant/surface enrollment. [Governed-memory tenant selection](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/memory/memory-governance-tenant-scope.ts) is another distinct control. No live flags, entitlements, source rows, token values or keys were queried.
+
+## Decisions and access missing before live integration
+
+- Accept the source and capability scope, including additional private/workflow domains. Assign owners and expected policy/behavior fixtures before claiming full data access.
+- Identify exact authorized source endpoints, databases/views, private connectivity, restricted principals, document/object stores, encrypted-field access/decryption boundary, provider connections and graph/embedding stores. Current production endpoints and DNS were not discovered in this source-only task.
+- Resolve canonical identity/membership integration and whether any read-only upstream identity endpoint has provisioning side effects; no existing auth change is authorized here.
+- Obtain authorized current tenant flags/entitlements and mailbox/client/grant matrices. Build two-tenant and within-tenant fixtures under the actual new restricted principal.
+- Agree a numeric maximum revocation-propagation deadline before G3, targeting at most 30 seconds as the deployment plan proposes; measure live cancellation, publication denial and old thread/file/preview/artifact access.
+- Define retention/deletion, legal holds, export policy, cache invalidation, backup expiry and restore behavior across all stores.
+- Establish selected capability fixtures, representative tasks and independent verification. Discovery does not pass G0; source access, policy correctness and later deployment gates remain unproven.
+
+The new build must use separate infrastructure, application data/storage/configuration and original connectors. Fargate is the required initial execution host, one task per active conversation; no current Meri task, queue, runtime, database credential, storage bucket or deployment module is reused by this inventory.
