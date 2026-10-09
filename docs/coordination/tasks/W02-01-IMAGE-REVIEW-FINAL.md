@@ -1,6 +1,6 @@
 # W02 corrected image preparation independent rereview
 
-Explicit reviewer resume20261009_155115_bada70, same hermes/w02-image-review branch/cwd C:\dev\main\meri-greenfield-worktrees\w02-image-review. Codex will pin the exact final implementation SHA and fast-forward this checkout before launch. No launch until returned implementation process tree/readers are clean and the exact base is allocated.
+Explicit reviewer resume20261009_155115_bada70, same hermes/w02-image-review branch/cwd C:\dev\main\meri-greenfield-worktrees\w02-image-review. Exact pinned review base/result is3d85f4ae9fed85956a2cc1afd9cce4c13e8bcefd; parenta5d6f0e1142fe0dac33a6db9b9b732a8e6c7f914. Codex fast-forwards this checkout before launch. Implementation Stage5 exited0 with zero remaining processes and confirmed tree/readers cleanup; its explicit session marker is20261009_152136_008131. This return is unaccepted until review and Codex independent checks pass.
 
 Only owned write path docs/coordination/reports/W02-01-IMAGE-REVIEW.md, overwriting the prior report whose unchanged copy Codex preserved in integration reports/W02-01-IMAGE-REVIEW-FIRST.md. No implementation repairs, commits, installs, push, scratch/OS Temp, browser/Office/model/cloud probes, other repositories or credential/config reads. One bounded60minute/max30turn continuation. Existing dependencies are installed; reject verification nudges conflicting with scope. Report concise, preferably <=120 lines, concrete evidence over extended restatement.
 

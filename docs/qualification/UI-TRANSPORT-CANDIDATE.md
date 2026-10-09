@@ -1,0 +1,76 @@
+# AI SDK UI transport qualification candidate
+
+Prepared 2026-10-09 by Codex independent discovery. **Candidate only; G1 remains open.** No dependencies were installed, package scripts executed, UI implemented, shared contract changed, paid/model/cloud call made, or current Capiro implementation inspected. Registry metadata and exact published package source were read; tarballs were decompressed in memory only. No live transport or React test was run.
+
+This follows `docs/plans/MERI-DEPLOYMENT.md`: Claude Agent SDK remains the sole model/agent loop; AI SDK supplies UI transport and state utilities. The frozen contract is `contracts/v0.1.0`, peeled commit `7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3`, schema SHA-256 `0bf7d88dcef83e139eb1788864249d6d5c9396497e192e547c8d87ec6cc2965a`.
+
+## Exact compatible candidates
+
+| Package | Exact stable candidate | License | Compatibility observed from published metadata |
+| --- | --- | --- | --- |
+| `@ai-sdk/react` | `4.0.140` | Apache-2.0 | Current npm `latest`; depends exactly on `ai 7.0.137`; Node >=22; React peer `^18 || ~19.0.1 || ~19.1.2 || ^19.2.1` |
+| `ai` | `7.0.137` | Apache-2.0 | Current npm `latest`, already in COMPONENTS.md; Node >=22; Zod peer `^3.25.76 || ^4.1.8` |
+| `react` | `19.3.0` | MIT | Current npm `latest`, already the UI framework candidate; satisfies the React peer range |
+| `zod` | `4.6.5` | MIT | Current npm `latest`; satisfies the AI SDK peer range; does not replace the frozen Ajv contract validator |
+
+Primary metadata: [React UI adapter](https://registry.npmjs.org/@ai-sdk%2freact/4.0.140), [AI SDK](https://registry.npmjs.org/ai/7.0.137), [React](https://registry.npmjs.org/react/19.3.0), [Zod](https://registry.npmjs.org/zod/4.6.5). This is declared dependency compatibility, not a compiled Next.js/React/AI Elements compatibility result. No full UI lockfile was generated. The React adapter also brings `swr ^2.4.1`, `throttleit 2.1.0`, `@ai-sdk/mcp 2.0.73`, `@ai-sdk/provider 4.0.26`, and `@ai-sdk/provider-utils 5.0.58`; `ai` brings `@ai-sdk/gateway 4.0.110`. Presence of these packages does not authorize using their model, MCP or workflow integrations.
+
+Downloaded source identity, independently SHA-512 checked against registry SRI:
+
+| Exact upstream tarball | SHA-256 |
+| --- | --- |
+| [react-4.0.140.tgz](https://registry.npmjs.org/@ai-sdk/react/-/react-4.0.140.tgz) | `6e1718e0627724b24ff0baffd8bdfcbb8e2dbf814a8803b716d399191d40e39f` |
+| [ai-7.0.137.tgz](https://registry.npmjs.org/ai/-/ai-7.0.137.tgz) | `d40be3e407ebde2fa74ad895a0384bc4b582494d4781cad0f877561ef734f931` |
+
+Both tarballs contain `package/LICENSE`; each license file SHA-256 is `b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529`. Preserve the Apache license/notice obligations in the eventual assembled candidate. This observation does not constitute a complete transitive license/security audit.
+
+## Verified APIs and a custom backend stream
+
+The exact tarballs include TypeScript source as well as public `.d.ts` exports. The relevant source was inspected, rather than assuming documentation examples run unchanged:
+
+| Published source path (inside the package tarball) | Observed capability |
+| --- | --- |
+| React `src/index.ts:8-9`; `src/use-chat.ts:44-62,127-132,284-294` | Public `useChat` and `Chat`; accepts typed `UIMessage`, a transport, `resume`, callbacks, initial messages; exposes send, stop, resume and local message state |
+| AI `src/ui-message-stream/create-ui-message-stream.ts:29-70,141-175` | `createUIMessageStream<UI_MESSAGE>` invokes caller-owned `execute({writer})`; `writer.write`, `merge`, `setOutcome`; no model invocation is required |
+| AI `src/ui-message-stream/create-ui-message-stream-response.ts:21-49` | `createUIMessageStreamResponse({stream, keepAliveMs?, consumeSseStream?, headers?, status?})` returns a standard web `Response` |
+| AI `src/ui-message-stream/ui-message-chunks.ts:173-181,223-229`; `src/ui/ui-messages.ts:44-48,258-264` | Typed `data-${NAME}` chunks/parts with `id`, `data`, optional `transient` on chunks |
+| AI `src/ui/default-chat-transport.ts:19-34`; `src/ui/http-chat-transport.ts:158-213,232-297` | Default HTTP transport parses and validates SSE chunks; POST submission and GET reconnection; customizable auth/request preparation; 204 means no resumable stream |
+
+The adoption path is: the existing Claude Agent SDK worker publishes validated, fenced events through the new trusted broker; the trusted UI/control service subscribes to authorized persisted events and writes UI chunks with these helpers. `useChat` consumes that stream through `DefaultChatTransport`. This is a projection of broker events, not a second agent loop. Do not call AI SDK `streamText`, `generateText`, agent APIs or its model gateway for this path. Those calls in documentation examples are optional examples, not prerequisites for the inspected writer API. [Stream creation API](https://ai-sdk.dev/docs/reference/ai-sdk-ui/create-ui-message-stream), [response API](https://ai-sdk.dev/docs/reference/ai-sdk-ui/create-ui-message-stream-response).
+
+A sufficient custom data chunk shape is:
+
+```ts
+{ type: 'data-meri-event', id: event.eventId, data: event }
+```
+
+Here `event` is the complete already-authorized frozen `UIEvent`, unchanged. The associated type can be `UIMessage<Metadata, { 'meri-event': UIEvent }>`; install a runtime `dataPartSchemas['data-meri-event']` validator backed by the frozen contract in addition to static types. The outer SDK chunk schema accepts `data: unknown` and loose records, so its validation alone does not enforce Meri's closed records. The exact source validates an optional data-part schema before delivering callbacks. [Custom data documentation](https://ai-sdk.dev/docs/ai-sdk-ui/streaming-data).
+
+Emit a stable `start` message envelope, the data chunks, and a deliberate `finish` for the transport message. Native assistant text projection uses matching `text-start`/`text-delta`/`text-end` IDs; the client rejects deltas without an active text block. The helpers produce SSE `data: <JSON>`, terminal `[DONE]`, `content-type: text/event-stream`, `x-vercel-ai-ui-message-stream: v1`, and no-cache/no-buffering headers. Optional keep-alive comments are supported; no platform deployment dependency is implied by the header name. These bytes/behaviors were confirmed in `json-to-sse-transform-stream.ts`, `ui-message-stream-headers.ts`, and `create-sse-stream-with-keep-alive.ts`. [Wire protocol](https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol).
+
+## Preserve the frozen semantics
+
+Every event retains `contractVersion`, `eventId`, complete tenant/actor/conversation/run/attempt/worker/fence binding, conversation-wide `sequence`, timestamp, scopes and exact data. AI SDK message/part IDs do not substitute for those fields.
+
+| Frozen variant | Required projection rule |
+| --- | --- |
+| `message.delta` | Preserve durable `messageId` and delta; native text is optional derived display state with explicit start/end synthesis and replay rules |
+| `run.status`, `run.error` | Preserve authoritative state/error; connection finish or hook status is not proof the durable run completed |
+| `tool.started`, `tool.completed` | Keep the custom event and authorized result reference; the frozen payload lacks full native tool input/output, so do not invent those fields |
+| `source.available` | Preserve source evidence/lineage; resolve citations through current-authority endpoints |
+| `approval.required` | Preserve proposal ID, immutable command hash and expiry; use the governed approval API, not local `addToolApprovalResponse` state as execution authority |
+| `artifact.available` | Preserve artifact/version IDs; obtain an authorized preview/download rather than publishing storage URLs |
+| `checkpoint.verified`, `usage.recorded` | Preserve receipt/reference IDs; UI parts do not prove checkpoint durability or usage reconciliation |
+
+Never expose opaque SDK transcripts, hidden reasoning, capabilities or provider keys. An AI SDK reasoning chunk exists but is not authorized by the frozen event contract. Reauthorize stream attach, replay, every protected publication and later reference resolution. The client-sent conversation ID/messages are untrusted input; request preparation should send the intended command/reference, while the server resolves current identity/history. [Transport customization](https://ai-sdk.dev/docs/ai-sdk-ui/transport).
+
+## Replay, cancellation and measured limitations still to qualify
+
+- `prepareReconnectToStreamRequest` can put an acknowledged sequence in an authenticated GET URL/header. There is no automatic Meri sequence acknowledgement, immutable event deduplication, gap detection, stale-fence rejection or authorization in these helpers. The SSE serializer does not emit event `id:` lines. Keep the durable event store and cursor semantics in the broker/control adapter. Within one UI message a repeated data part `(type,id)` replaces data, but `onData` still fires; this is not exactly-once event processing.
+- Choose and test one projection strategy: full frozen events as the authoritative data channel, then a deduplicated projection into native text/display state. Blindly replaying both custom events and native text deltas can duplicate visible text. Native stream message lifecycle is distinct from conversation-wide ordering across multiple runs/attempts. The frozen contract has no message-start/end variant; transport synthesis must remain an adapter concern unless integration owner approves a versioned change.
+- A source-observed full-replay caveat: AI `ChatTransport.resumeStreamIsReplay` is read by `src/ui/chat.ts:1051-1053` to reset state on resumed full replay. React `src/use-chat.ts:171-178` wraps an inline transport and forwards only `sendMessages`/`reconnectToStream`, omitting that flag. The exported externally managed `Chat` path bypasses the wrapper (`187-194`), but this workaround is untested. Do not claim inline full replay works; first qualify incremental cursor replay and, if needed, the explicit Chat path/upstream issue. No replacement transport framework is justified yet.
+- `useChat.stop()` aborts the client request, and the hook also stops its owned Chat on unmount. This must detach a subscriber rather than accidentally cancel the durable broker run. A dedicated authenticated stop command must separately request cancellation, persist its outcome and propagate to the worker. `resume`/`resumeStream` reconnects a stream; it does not resume an SDK process or restore a workspace. [Official resume/stop guidance](https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-resume-streams).
+- `writer.write` returns void and suppresses enqueue-after-close errors; it is neither a durable receipt nor an awaited backpressure boundary. `consumeSseStream` tees a connection stream and does not itself provide durable storage. Bound subscriber queues and detach slow clients without losing broker events. Record separate stream outcome/run outcome: current `writer.setOutcome` and `onEnd` support explicit completed/failed/aborted/unknown; a normal HTTP close is insufficient evidence of run success.
+- Still NOT RUN: isolated package lock/install/build; real React hook/SSE interoperability and malformed-frame fixtures; all ten event variants; slow-client/memory limits; disconnect/duplicate/gap/late-event replay; multiple runs; expired authorization/revocation and historical access; approved stop versus tab closure; error redaction; network proof of no AI SDK provider calls; actual AWS load-balancer streaming/idle timeouts; AI Elements/Next.js component compatibility; accessibility/end-to-end controls. These require a bounded later qualification task and independent exact-commit/live review.
+
+Only this discovery document was written. No gate is passed and no dependent live-integration task is authorized by this document.
