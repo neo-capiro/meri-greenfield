@@ -39,6 +39,6 @@ Baseline1 stopped before startup; exact DNS repair retained redirection inspecti
 
 ## Remaining work
 
-Finish UI review and new browser-host qualification, and continue independent G1 SDK/proxy wire capture, inert config/skills/session/file recovery and bounded artifact export/visual inspection. No paid dispatch until authenticated request binding and aggregate cap controls pass review. See docs/qualification/G1-REMAINING-WORK.md; full production Temporal HA is later, accepted design belongs G1.
+Two real bounded Hermes implementation sessions are active: W02-05 SDK synthetic wire-capture preparation (4new files/basea41e83b) and W02-06 approved browser-host preparation (9new files/base76148d6), each40turns/3600seconds and no deployment/native execution authority. Separate exact-commit reviews precede owner build/run. Continue independent artifact export planning, then inert config/skills/session/file recovery and live trusted-proxy qualification. No paid dispatch until authenticated request binding and aggregate cap controls pass review. See docs/qualification/G1-REMAINING-WORK.md; full production Temporal HA is later, accepted design belongs G1.
 
 Live-source identity/restricted principal/capability scope/tenant features remain unresolved. Agree numeric revocation, retention/legal hold/backup expiry, human artifact rubric and measured task/tenant caps before their later gates. No invented production RPO/RTO/performance result. No migration IDs. Cutover requires completed tests and explicit owner authorization.
