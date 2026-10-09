@@ -22,7 +22,7 @@ import {
   InMemorySessionStore,
 } from '../sdk-options.mjs';
 import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80, DIRECT_IP_DENIED } from './runtime.mjs';
-import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, identifyAssociatedChromium, scanDisablingFlags, classifyHelperDiscovery, classifyUnshareDiagnostic, parseSelfStatus, mountFlagsFor, planBrowserSteps, shouldStopAfter } from './browser.mjs';
+import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, decodeRawText, identifyAssociatedChromium, scanDisablingFlags, classifyHelperDiscovery, classifyUnshareDiagnostic, parseSelfStatus, mountFlagsFor, planBrowserSteps, shouldStopAfter, hasActualError, buildBrowserSteps, runBoundedSequence } from './browser.mjs';
 import { classifySubprocess, decideNative, decideRecalc, decideRender } from './artifacts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -635,12 +635,14 @@ test('helper discovery rejects a missing, wrong-bytes, non-root or non-4755 alia
   assert.equal(classifyHelperDiscovery({ pinned: { path: null, error: 'none' }, alias: ALIAS_OK, aliasExpected: ALIAS_OK.path }).ok, false);
 });
 
-test('classifyUnshareDiagnostic reads the simple newuserns check without claiming the full predicate', () => {
+test('classifyUnshareDiagnostic reads the simple newuserns check and never calls killed/timeout/spawn-error children ok', () => {
   assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'unshare_ret=0 errno=0' }).newUserNsAsNonRoot, true);
   const denied = classifyUnshareDiagnostic({ status: 3, stdout: 'unshare_ret=-1 errno=1' });
   assert.equal(denied.newUserNsAsNonRoot, false);
   assert.match(denied.note, /simple check only/);
-  assert.equal(classifyUnshareDiagnostic({ status: null, timedOut: true }).outcome, 'timeout');
+  assert.equal(classifyUnshareDiagnostic({ status: null, timedOut: true, stdout: 'unshare_ret=0 errno=0' }).outcome, 'timeout');
+  assert.equal(classifyUnshareDiagnostic({ status: null, signal: 'SIGKILL', stdout: 'unshare_ret=0 errno=0' }).outcome, 'signal:SIGKILL');
+  assert.equal(classifyUnshareDiagnostic({ status: null, error: { code: 'ENOENT' }, stdout: 'unshare_ret=0 errno=0' }).outcome, 'spawn-error');
   assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'noise' }).outcome, 'unavailable');
 });
 
@@ -655,12 +657,102 @@ test('parseSelfStatus and mountFlagsFor extract bounded security fields', () => 
   assert.deepEqual(mountFlagsFor('/anything-else', mountinfo).options, ['ro', 'relatime']); // falls back to the root mount prefix
 });
 
-test('planBrowserSteps/shouldStopAfter stop after the first fatal browser-dependent result', () => {
-  assert.deepEqual(planBrowserSteps().slice(0, 2), ['browser_get_config', 'navigate-fixture']);
-  assert.equal(shouldStopAfter('navigate-fixture', { isError: true }), true);
-  assert.equal(shouldStopAfter('navigate-fixture', { isError: false }), false);
-  assert.equal(shouldStopAfter('browser_get_config', { isError: false, decodedOk: false }), true);
+test('planBrowserSteps lists the granular browser-dependent substeps', () => {
+  assert.deepEqual(planBrowserSteps(), ['get_config', 'nav-fixture', 'snapshot', 'download-nav', 'download-bytes', 'version-nav', 'version-eval', 'sandbox-nav', 'sandbox-eval']);
+  assert.equal(shouldStopAfter('get_config', { isError: false, decodedOk: false }), true);
+  assert.equal(shouldStopAfter('nav-fixture', { isError: true }), true);
   assert.equal(shouldStopAfter('snapshot', { isError: false }), false);
+});
+
+// ---------------------------------------------------------------------------
+// Real-flow driver fixtures: fail each actual substep in turn, assert no later
+// MCP call runs. Uses the SAME buildBrowserSteps + runBoundedSequence path as
+// main(); NO network, process launch or real browser.
+// ---------------------------------------------------------------------------
+
+const FAKE_IO = {
+  port: 1234,
+  outputDir: '/owned/output',
+  exists: () => true,
+  readdir: () => ['meri-fixture.txt'],
+  readFile: () => Buffer.from('meri-loopback-fixture-download\n'),
+  sha256: () => 'FIXEDHASH',
+  expectedVersion: '155.0.8059.12',
+};
+
+function makeFakeCallTool(overrides = {}) {
+  const calls = [];
+  const okText = (t) => ({ content: [{ type: 'text', text: t }] });
+  const okEval = (v) => ({ content: [{ type: 'text', text: `### Result\n${JSON.stringify(v)}\n` }] });
+  const defaults = {
+    browser_get_config: () => okEval({ browsers: ['chromium'] }),
+    browser_navigate: (args) => (args && String(args.url).includes('chrome://'))
+      ? okText('### Page\n- navigated')
+      : okText('### Page\n- navigated'),
+    browser_snapshot: () => okText('### Snapshot\n- marker meri-loopback-ok'),
+    browser_evaluate: (args) => (args && typeof args.function === 'string' && args.function.includes('navigator.userAgent'))
+      ? okEval({ userAgent: 'Mozilla/5.0 Chrome/155.0.8059.12', text: 'x' })
+      : okEval({ text: 's', rows: [['Layer 1 Sandbox', 'Namespace'], ['Seccomp-BPF sandbox', 'Yes']], evaluation: 'OK' }),
+  };
+  const callTool = async (name, args) => {
+    calls.push(name);
+    const fn = Object.prototype.hasOwnProperty.call(overrides, name) ? overrides[name] : defaults[name];
+    return typeof fn === 'function' ? fn(args) : fn;
+  };
+  return { calls, callTool };
+}
+
+async function runBrowserFixture(overrides) {
+  const { calls, callTool } = makeFakeCallTool(overrides);
+  const evidence = { rawResults: {} };
+  const reasons = [];
+  const steps = buildBrowserSteps({ callTool, toolNames: ['browser_get_config'], evidence, reasons, io: FAKE_IO });
+  const seq = await runBoundedSequence(steps);
+  return { calls, seq, reasons, evidence };
+}
+
+test('real-flow: nav/snapshot success without a Result section is NOT fatal', async () => {
+  const { seq, evidence } = await runBrowserFixture();
+  assert.equal(seq.stoppedAfter, null);
+  assert.deepEqual(seq.ran, planBrowserSteps());
+  assert.ok(evidence.sandbox && evidence.sandbox.rows.length === 2);
+});
+
+for (const [step, overrides, expectedCalls] of [
+  ['get_config', { browser_get_config: { content: [{ type: 'text', text: '### Error\nboom' }], isError: true } }, 1],
+  ['nav-fixture', { browser_navigate: (a) => (String(a.url).includes('/download') ? { content: [{ type: 'text', text: '### Page' }] } : { content: [{ type: 'text', text: '### Error\nnav' }], isError: true }) }, 2],
+  ['snapshot', { browser_snapshot: { content: [{ type: 'text', text: '### Snapshot\n- no marker here' }] } }, 3],
+  ['download-nav', { browser_navigate: (a) => (String(a.url).includes('/download') ? { content: [{ type: 'text', text: '### Error\ndl' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 4],
+  ['version-nav', { browser_navigate: (a) => (String(a.url).includes('chrome://version') ? { content: [{ type: 'text', text: '### Error\nv' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 5],
+  ['sandbox-nav', { browser_navigate: (a) => (String(a.url).includes('chrome://sandbox') ? { content: [{ type: 'text', text: '### Error\ns' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 7],
+]) {
+  test(`real-flow: a fatal ${step} stops the sequence and runs no later MCP call`, async () => {
+    const { calls, seq } = await runBrowserFixture(overrides);
+    assert.equal(seq.stoppedAfter, step);
+    assert.equal(calls.length, expectedCalls, `expected exactly ${expectedCalls} MCP calls, got ${calls.length}`);
+    const later = seq.notRun;
+    assert.ok(later.length >= 1, 'expected remaining substeps recorded not-run');
+  });
+}
+
+test('real-flow: download-bytes failure (no file) stops before version/sandbox MCP calls', async () => {
+  const { calls, seq } = await runBrowserFixture();
+  // re-run with a special IO where the downloaded file is absent
+  const { callTool } = makeFakeCallTool();
+  const evidence = { rawResults: {} };
+  const reasons = [];
+  const steps = buildBrowserSteps({ callTool, toolNames: ['browser_get_config'], evidence, reasons, io: { ...FAKE_IO, exists: () => false } });
+  const seq2 = await runBoundedSequence(steps);
+  assert.equal(seq2.stoppedAfter, 'download-bytes');
+  assert.ok(seq2.notRun.includes('version-nav'));
+  assert.ok(seq2.notRun.includes('sandbox-eval'));
+});
+
+test('real-flow: version-eval failure stops before sandbox navigation', async () => {
+  const { seq } = await runBrowserFixture({ browser_evaluate: (a) => (a.function.includes('navigator.userAgent') ? { content: [{ type: 'text', text: '### Error\nbad eval' }], isError: true } : { content: [{ type: 'text', text: '### Result\n{}' }] }) });
+  assert.equal(seq.stoppedAfter, 'version-eval');
+  assert.ok(!seq.ran.includes('sandbox-nav'));
+  assert.ok(seq.notRun.includes('sandbox-eval'));
 });
 
 // ---------------------------------------------------------------------------
@@ -683,6 +775,16 @@ test('decideRecalc fails on wrong 0, actual null, missing inspection, python fai
   assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: false, observed: OBS_GOOD }).status, 'fail'); // no new file
   assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, formula: 6 } }).status, 'fail'); // constant 6 without formula
   assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, inputs: [1, 2] } }).status, 'fail'); // missing input
+});
+
+test('decideRecalc rejects good-looking observed facts from a failed inspection child (false-pass guard)', () => {
+  const okChild = { status: 0, signal: null, error: null, parseOk: true, nestedOk: true };
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: okChild }).status, 'pass');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: 1 } }).status, 'fail'); // exit 1
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: null, signal: 'SIGKILL' } }).status, 'fail'); // signal
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: null, error: 'spawn ENOENT' } }).status, 'fail'); // spawn error
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, parseOk: false, parseError: 'bad json' } }).status, 'fail'); // parse failure
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, nestedOk: false } }).status, 'fail'); // nested ok false
 });
 
 // ---------------------------------------------------------------------------

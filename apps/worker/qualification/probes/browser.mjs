@@ -291,60 +291,118 @@ export function mountFlagsFor(path, mountinfoText) {
   return best;
 }
 
-/** Bounded non-root child: Python3.11 ctypes libc.unshare(CLONE_NEWUSER) check. */
+/** Bounded non-root child: Python3.11 ctypes libc.unshare(CLONE_NEWUSER) check.
+ * Retains raw spawn facts (error type/code) plus bounded stdout/stderr, not just
+ * a classification. */
 export function runUsernsDiagnostic({ pythonBin = 'python3', timeoutMs = 5000 } = {}) {
   const code = "import ctypes,sys\nlibc=ctypes.CDLL('libc.so.6',use_errno=True)\nr=libc.unshare(0x10000000)\nprint('unshare_ret=%d errno=%d' % (r, ctypes.get_errno()))\nsys.exit(0 if r==0 else 3)\n";
   const res = spawnSync(pythonBin, ['-c', code], { encoding: 'utf8', timeout: timeoutMs });
-  const timedOut = !!(res.error && res.error.code === 'ETIMEDOUT');
-  return { status: res.status, signal: res.signal, timedOut, stdout: (res.stdout || '').slice(0, 200), stderr: (res.stderr || '').slice(0, 200) };
+  return {
+    status: res.status,
+    signal: res.signal,
+    timedOut: !!(res.error && res.error.code === 'ETIMEDOUT'),
+    error: res.error ? { message: String(res.error.message || res.error).slice(0, 200), code: res.error.code || null, type: res.error.name || null } : null,
+    stdout: (res.stdout || '').slice(0, 200),
+    stderr: (res.stderr || '').slice(0, 200),
+  };
 }
 
 /**
  * Classify the simple unshare diagnostic. This is NOT Chromium's full namespace
  * predicate (credentials.cc clone/map/drop/second-unshare) and is NOT a
  * standalone required pass if the browser qualifies by another supported route.
+ * A timed-out, signal-killed or spawn-errored child is NEVER classified as ok,
+ * regardless of any stdout it may have produced.
  */
-export function classifyUnshareDiagnostic({ status, signal, timedOut, stdout, stderr } = {}) {
+export function classifyUnshareDiagnostic({ status, signal, timedOut, stdout, stderr, error } = {}) {
   if (timedOut) return { outcome: 'timeout', newUserNsAsNonRoot: null };
+  if (error) return { outcome: 'spawn-error', newUserNsAsNonRoot: null, error: error.code || error.message || 'unknown' };
+  if (signal) return { outcome: `signal:${signal}`, newUserNsAsNonRoot: null };
   const m = /unshare_ret=(-?\d+) errno=(\d+)/.exec(String(stdout || ''));
   if (status === 0 && m && m[1] === '0') return { outcome: 'unshare-newuserns-ok', newUserNsAsNonRoot: true, errno: Number(m[2]) };
   if (m && m[1] !== '0') return { outcome: 'unshare-newuserns-denied', newUserNsAsNonRoot: false, errno: Number(m[2]), note: 'simple check only; not Chromium full predicate' };
-  if (signal) return { outcome: `signal:${signal}`, newUserNsAsNonRoot: null };
   return { outcome: 'unavailable', newUserNsAsNonRoot: null, stderr: String(stderr || '').slice(0, 200) };
 }
 
-/** Browser-dependent steps after launch, in order. */
+/** Browser-dependent steps after launch, in order (granular actual MCP substeps). */
 export function planBrowserSteps() {
-  return ['browser_get_config', 'navigate-fixture', 'snapshot', 'download', 'version', 'sandbox'];
+  return ['get_config', 'nav-fixture', 'snapshot', 'download-nav', 'download-bytes', 'version-nav', 'version-eval', 'sandbox-nav', 'sandbox-eval'];
+}
+
+/** True when an MCP tool result carries an isError flag or an actual `### Error` section. */
+export function hasActualError(result) {
+  if (!result || result.isError) return true;
+  const text = (result && Array.isArray(result.content) ? result.content : []).filter((c) => c && c.type === 'text').map((c) => c.text).join('\n');
+  return /^###\s+Error\s*$/m.test(text);
 }
 
 /** Decide whether the browser-dependent sequence must stop after a step. */
 export function shouldStopAfter(step, { isError, decodedOk } = {}) {
-  if (step === 'browser_get_config') return !!isError || decodedOk === false;
+  if (step === 'browser_get_config' || step === 'get_config') return !!isError || decodedOk === false;
   return !!isError;
+}
+
+/**
+ * Small actual sequence driver. Each step is { name, run: async () => ({ fatal, detail }) }.
+ * After the FIRST fatal step, NO later step's run() is invoked; remaining steps
+ * are recorded as not-run. main() and the offline fake-client fixtures use this
+ * SAME path, so a fixture that makes an early step fatal asserts that no later
+ * MCP callback is executed.
+ */
+export async function runBoundedSequence(steps) {
+  const order = steps.map((s) => s.name);
+  const ran = [];
+  const notRun = [];
+  const details = {};
+  let stoppedAfter = null;
+  for (const step of steps) {
+    if (stoppedAfter) { notRun.push(step.name); continue; }
+    ran.push(step.name);
+    const res = (await step.run()) || {};
+    details[step.name] = res.detail === undefined ? null : res.detail;
+    if (res.fatal) stoppedAfter = step.name;
+  }
+  return { order, ran, notRun, stoppedAfter, details };
+}
+
+/** Discover the installed Chrome-for-Testing executable under the browsers root. */
+export function discoverChrome(browsersRoot = BROWSERS_ROOT) {
+  const chromePath = findFileBounded(browsersRoot, 'chrome');
+  return chromePath ? statHelper(chromePath) : { path: null, error: 'chrome executable not found under browsers root' };
 }
 
 /** Collect bounded prelaunch diagnostics (no browser launch). */
 export function collectPrelaunchDiagnostics({ browsersRoot = BROWSERS_ROOT } = {}) {
   const discovery = discoverSandboxHelper(browsersRoot);
   const helperVerdict = classifyHelperDiscovery(discovery);
+  const chrome = discoverChrome(browsersRoot);
   let mountinfo = '';
   try { mountinfo = readFileSync('/proc/self/mountinfo', 'utf8'); } catch {}
   let selfStatus = '';
   try { selfStatus = readFileSync('/proc/self/status', 'utf8'); } catch {}
+  let uidMap = 'unavailable';
+  let gidMap = 'unavailable';
+  try { uidMap = readFileSync('/proc/self/uid_map', 'utf8').trim().slice(0, 200); } catch {}
+  try { gidMap = readFileSync('/proc/self/gid_map', 'utf8').trim().slice(0, 200); } catch {}
   const sysctls = {};
   for (const k of ['kernel.unprivileged_userns_clone', 'user.max_user_namespaces', 'kernel.unprivileged_bpf_disabled', 'kernel.apparmor_restrict_unprivileged_userns']) {
     try { sysctls[k] = readFileSync(`/proc/sys/${k.replace(/\./g, '/')}`, 'utf8').trim(); } catch { sysctls[k] = 'unavailable'; }
   }
   const helperPathForMount = (discovery.alias && discovery.alias.path) || (discovery.pinned && discovery.pinned.path) || '/';
+  const usernsRaw = runUsernsDiagnostic();
   return {
     discovery,
     helperVerdict,
+    chrome,
     selfStatus: parseSelfStatus(selfStatus),
+    selfUidMap: uidMap,
+    selfGidMap: gidMap,
     helperMount: mountFlagsFor(helperPathForMount, mountinfo),
+    chromeMount: chrome && chrome.path ? mountFlagsFor(chrome.path, mountinfo) : null,
     rootMount: mountFlagsFor('/', mountinfo),
     sysctls,
-    userns: classifyUnshareDiagnostic(runUsernsDiagnostic()),
+    usernsRaw,
+    userns: classifyUnshareDiagnostic(usernsRaw),
   };
 }
 
@@ -363,6 +421,100 @@ function startFixtureServer() {
 
 const SANDBOX_EXPR = '() => ({ text: document.body.innerText, rows: Array.from(document.querySelectorAll("#sandbox-status tr"), (r) => Array.from(r.cells, (c) => c.innerText.trim())), evaluation: document.querySelector("#evaluation")?.innerText })';
 const VERSION_EXPR = '() => ({ userAgent: navigator.userAgent, text: document.body.innerText })';
+
+/** Concatenate an MCP tool result's text content (no Result-section requirement). */
+export function decodeRawText(result) {
+  return (result && Array.isArray(result.content) ? result.content : []).filter((c) => c && c.type === 'text').map((c) => c.text).join('\n');
+}
+
+/**
+ * Build the granular browser-dependent steps shared by main() and the offline
+ * fake-client fixtures. `callTool(name, args)` is the injected MCP call; `io`
+ * supplies port/outputDir plus readdir/exists/readFile/sha256/expectedVersion.
+ * Nav/snapshot successes often have NO Result section, so only an isError flag,
+ * an actual Error section or a missing required marker is fatal for them;
+ * structured browser_evaluate stays strict (decodeToolResult).
+ */
+export function buildBrowserSteps({ callTool, toolNames = [], evidence, reasons, io = {} }) {
+  const { port, outputDir } = io;
+  const exists = io.exists || existsSync;
+  const readDir = io.readdir || readdirSync;
+  const readFile = io.readFile || readFileSync;
+  const sha = io.sha256 || sha256;
+  const expectedVersion = io.expectedVersion || EXPECTED_CHROMIUM_VERSION;
+  const wantsConfig = toolNames.length === 0 || toolNames.includes('browser_get_config');
+  return [
+    { name: 'get_config', run: async () => {
+      if (!wantsConfig) return { fatal: false, detail: 'browser_get_config tool absent' };
+      const cfg = await callTool('browser_get_config', {});
+      const decoded = decodeToolResult(cfg);
+      evidence.rawResults.get_config = decoded.raw;
+      if (hasActualError(cfg) || !decoded.ok) { reasons.push('browser_get_config failed'); return { fatal: true, detail: decoded.error || 'isError' }; }
+      evidence.resolvedConfig = typeof decoded.value === 'object' ? decoded.value : null;
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'nav-fixture', run: async () => {
+      const nav = await callTool('browser_navigate', { url: `http://127.0.0.1:${port}/` });
+      evidence.rawResults.nav = decodeRawText(nav).slice(0, 4000);
+      if (hasActualError(nav)) { reasons.push(`fixture navigation error: ${evidence.rawResults.nav.slice(0, 200)}`); return { fatal: true, detail: 'navigation error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'snapshot', run: async () => {
+      const snap = await callTool('browser_snapshot', {});
+      const raw = decodeRawText(snap);
+      evidence.rawResults.snapshot = raw.slice(0, 800);
+      if (hasActualError(snap) || !/meri-loopback-ok/.test(raw)) { reasons.push('fixture navigation did not return the loopback marker'); return { fatal: true, detail: 'missing marker' }; }
+      return { fatal: false, detail: 'marker present' };
+    } },
+    { name: 'download-nav', run: async () => {
+      const dl = await callTool('browser_navigate', { url: `http://127.0.0.1:${port}/download` });
+      evidence.rawResults.download = decodeRawText(dl).slice(0, 4000);
+      if (hasActualError(dl)) { reasons.push(`download navigation error: ${evidence.rawResults.download.slice(0, 200)}`); return { fatal: true, detail: 'download nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'download-bytes', run: async () => {
+      const downloaded = exists(outputDir) ? readDir(outputDir).find((f) => /meri-fixture/.test(f)) : undefined;
+      if (!downloaded) { evidence.download = { found: false }; reasons.push('loopback download not observed in owned output dir'); return { fatal: true, detail: 'no download' }; }
+      const bytes = readFile(join(outputDir, downloaded));
+      const hash = sha(bytes);
+      const expectedHash = sha(Buffer.from(DOWNLOAD_PAYLOAD));
+      evidence.download = { found: true, file: downloaded, bytes: bytes.length, sha256: hash, expectedSha256: expectedHash, payloadMatches: hash === expectedHash };
+      if (hash !== expectedHash) { reasons.push('downloaded bytes do not match the known fixture payload'); return { fatal: true, detail: 'hash mismatch' }; }
+      return { fatal: false, detail: 'bytes match' };
+    } },
+    { name: 'version-nav', run: async () => {
+      const verNav = await callTool('browser_navigate', { url: 'chrome://version' });
+      evidence.rawResults.versionNav = decodeRawText(verNav).slice(0, 4000);
+      if (hasActualError(verNav)) { reasons.push('chrome://version navigation error'); return { fatal: true, detail: 'version nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'version-eval', run: async () => {
+      const verEval = await callTool('browser_evaluate', { function: VERSION_EXPR });
+      const verDecoded = decodeToolResult(verEval);
+      evidence.rawResults.version = verDecoded.raw.slice(0, 4000);
+      if (hasActualError(verEval) || !verDecoded.ok || typeof verDecoded.value !== 'object' || verDecoded.value === null || typeof verDecoded.value.userAgent !== 'string') { reasons.push('chrome://version evaluate did not return {userAgent,text}'); return { fatal: true, detail: 'version eval failed' }; }
+      evidence.versionData = { userAgent: verDecoded.value.userAgent.slice(0, 300), text: String(verDecoded.value.text || '').slice(0, 400) };
+      const m = /Chrome\/([0-9][0-9.]*)/.exec(verDecoded.value.userAgent);
+      evidence.browserVersion = m ? m[1] : null;
+      if (evidence.browserVersion !== expectedVersion) { reasons.push(`browser version ${evidence.browserVersion} != pinned ${expectedVersion}`); return { fatal: true, detail: 'version mismatch' }; }
+      return { fatal: false, detail: evidence.browserVersion };
+    } },
+    { name: 'sandbox-nav', run: async () => {
+      const sandboxNav = await callTool('browser_navigate', { url: 'chrome://sandbox' });
+      evidence.rawResults.sandboxNav = decodeRawText(sandboxNav).slice(0, 4000);
+      if (hasActualError(sandboxNav)) { reasons.push('chrome://sandbox navigation error'); return { fatal: true, detail: 'sandbox nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'sandbox-eval', run: async () => {
+      const sandboxEval = await callTool('browser_evaluate', { function: SANDBOX_EXPR });
+      const sandboxDecoded = decodeToolResult(sandboxEval);
+      evidence.rawResults.sandbox = sandboxDecoded.raw.slice(0, 4000);
+      if (hasActualError(sandboxEval) || !sandboxDecoded.ok || typeof sandboxDecoded.value !== 'object' || sandboxDecoded.value === null || !Array.isArray(sandboxDecoded.value.rows)) { reasons.push('chrome://sandbox evaluate did not return {text,rows,evaluation}'); return { fatal: true, detail: 'sandbox eval failed' }; }
+      evidence.sandbox = { text: String(sandboxDecoded.value.text || '').slice(0, 800), rows: sandboxDecoded.value.rows, evaluation: String(sandboxDecoded.value.evaluation || '').slice(0, 300) };
+      return { fatal: false, detail: 'rows captured' };
+    } },
+  ];
+}
 
 async function main() {
   const reasons = [];
@@ -414,95 +566,11 @@ async function main() {
     const toolNames = (toolList.tools || []).map((t) => t.name);
     evidence.tools = toolNames;
 
-    // Browser-dependent sequence: STOP after the FIRST fatal result.
-    const order = planBrowserSteps();
-    const ran = [];
-    const notRun = [];
-    let stoppedAfter = null;
-    const maybeStop = (step, facts) => { if (shouldStopAfter(step, facts)) stoppedAfter = step; };
-
-    if (!stoppedAfter) {
-      ran.push('browser_get_config');
-      if (toolNames.includes('browser_get_config')) {
-        const cfg = await client.callTool({ name: 'browser_get_config', arguments: {} });
-        const decoded = decodeToolResult(cfg);
-        evidence.rawResults.get_config = decoded.raw;
-        if (cfg.isError || !decoded.ok) reasons.push('browser_get_config failed');
-        else evidence.resolvedConfig = typeof decoded.value === 'object' ? decoded.value : null;
-        maybeStop('browser_get_config', { isError: cfg.isError, decodedOk: decoded.ok });
-      }
-    }
-
-    if (!stoppedAfter) {
-      ran.push('navigate-fixture');
-      const nav = await client.callTool({ name: 'browser_navigate', arguments: { url: `http://127.0.0.1:${port}/` } });
-      evidence.rawResults.nav = decodeToolResult(nav).raw;
-      if (nav.isError) reasons.push(`fixture navigation error: ${evidence.rawResults.nav.slice(0, 200)}`);
-      maybeStop('navigate-fixture', { isError: nav.isError });
-    }
-
-    if (!stoppedAfter) {
-      ran.push('snapshot', 'download');
-      const snap = await client.callTool({ name: 'browser_snapshot', arguments: {} });
-      const snapDecoded = decodeToolResult(snap);
-      evidence.rawResults.snapshot = snapDecoded.raw.slice(0, 800);
-      if (snap.isError || !/meri-loopback-ok/.test(snapDecoded.raw)) reasons.push('fixture navigation did not return the loopback marker');
-      const dl = await client.callTool({ name: 'browser_navigate', arguments: { url: `http://127.0.0.1:${port}/download` } });
-      evidence.rawResults.download = decodeToolResult(dl).raw;
-      if (dl.isError) reasons.push(`download navigation error: ${evidence.rawResults.download.slice(0, 200)}`);
-      const downloaded = existsSync(outputDir) ? readdirSync(outputDir).find((f) => /meri-fixture/.test(f)) : undefined;
-      if (!downloaded) {
-        evidence.download = { found: false };
-        reasons.push('loopback download not observed in owned output dir');
-      } else {
-        const bytes = readFileSync(join(outputDir, downloaded));
-        const hash = sha256(bytes);
-        const expectedHash = sha256(Buffer.from(DOWNLOAD_PAYLOAD));
-        evidence.download = { found: true, file: downloaded, bytes: bytes.length, sha256: hash, expectedSha256: expectedHash, payloadMatches: hash === expectedHash };
-        if (hash !== expectedHash) reasons.push('downloaded bytes do not match the known fixture payload');
-      }
-    } else {
-      notRun.push('snapshot', 'download');
-    }
-
-    if (!stoppedAfter) {
-      ran.push('version');
-      const verNav = await client.callTool({ name: 'browser_navigate', arguments: { url: 'chrome://version' } });
-      evidence.rawResults.versionNav = decodeToolResult(verNav).raw;
-      if (verNav.isError) reasons.push('chrome://version navigation error');
-      const verEval = await client.callTool({ name: 'browser_evaluate', arguments: { function: VERSION_EXPR } });
-      const verDecoded = decodeToolResult(verEval);
-      evidence.rawResults.version = verDecoded.raw;
-      if (verEval.isError || !verDecoded.ok || typeof verDecoded.value !== 'object' || verDecoded.value === null || typeof verDecoded.value.userAgent !== 'string') {
-        reasons.push('chrome://version evaluate did not return {userAgent,text}');
-      } else {
-        evidence.versionData = { userAgent: verDecoded.value.userAgent.slice(0, 300), text: String(verDecoded.value.text || '').slice(0, 400) };
-        const m = /Chrome\/([0-9][0-9.]*)/.exec(verDecoded.value.userAgent);
-        evidence.browserVersion = m ? m[1] : null;
-        if (evidence.browserVersion !== EXPECTED_CHROMIUM_VERSION) reasons.push(`browser version ${evidence.browserVersion} != pinned ${EXPECTED_CHROMIUM_VERSION}`);
-      }
-    } else {
-      notRun.push('version');
-    }
-
-    if (!stoppedAfter) {
-      ran.push('sandbox');
-      const sandboxNav = await client.callTool({ name: 'browser_navigate', arguments: { url: 'chrome://sandbox' } });
-      evidence.rawResults.sandboxNav = decodeToolResult(sandboxNav).raw;
-      if (sandboxNav.isError) reasons.push('chrome://sandbox navigation error');
-      const sandboxEval = await client.callTool({ name: 'browser_evaluate', arguments: { function: SANDBOX_EXPR } });
-      const sandboxDecoded = decodeToolResult(sandboxEval);
-      evidence.rawResults.sandbox = sandboxDecoded.raw;
-      if (sandboxEval.isError || !sandboxDecoded.ok || typeof sandboxDecoded.value !== 'object' || sandboxDecoded.value === null || !Array.isArray(sandboxDecoded.value.rows)) {
-        reasons.push('chrome://sandbox evaluate did not return {text,rows,evaluation}');
-      } else {
-        evidence.sandbox = { text: String(sandboxDecoded.value.text || '').slice(0, 800), rows: sandboxDecoded.value.rows, evaluation: String(sandboxDecoded.value.evaluation || '').slice(0, 300) };
-      }
-    } else {
-      notRun.push('sandbox');
-    }
-
-    evidence.stepSequence = { order, ran, notRun, stoppedAfter };
+    // Browser-dependent sequence: the SAME bounded driver used by the offline
+    // fake-client fixtures. After the FIRST fatal substep, no later MCP call runs.
+    const callTool = (name, args) => client.callTool({ name, arguments: args });
+    const steps = buildBrowserSteps({ callTool, toolNames, evidence, reasons, io: { port, outputDir } });
+    evidence.stepSequence = await runBoundedSequence(steps);
 
     const processes = readProcesses();
     evidence.processes = processes.map((p) => ({ pid: p.pid, ppid: p.ppid, exe: p.exe, type: p.type, argv: p.argv }));

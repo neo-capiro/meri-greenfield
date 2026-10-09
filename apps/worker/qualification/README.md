@@ -121,21 +121,30 @@ hashes are preserved by default.
   1.1.1.1:443 (CONNECTED fails; ambiguous/other results fail closed). The
   positive control failing or an unknown error fails visibly; results establish
   only that the measured attempts were allowed/denied under the reviewed routes.
-- `probe:browser` runs bounded prelaunch diagnostics (adjacent `chrome-sandbox`
-  alias discovery + stat/hash, `/proc/self` capability/mount/sysctl fields, and a
-  simple non-root `libc.unshare(CLONE_NEWUSER)` check labelled as NOT Chromium's
-  full predicate) and STOPS the browser-dependent sequence after the FIRST fatal
-  result, recording remaining steps as not-run. The setuid host expects the
-  hyphen helper; the Dockerfile creates a root-owned adjacent alias to the pinned
-  `chrome_sandbox`.
+- `probe:browser` runs bounded prelaunch diagnostics — adjacent `chrome-sandbox`
+  alias discovery plus the actual pinned `chrome` path/realpath/uid/gid/mode/
+  sha256, helper/chrome/root mount flags, `/proc/self` Cap*/Seccomp/NoNewPrivs/
+  TracerPid + UID/GID maps, read-only sysctls, and a simple non-root
+  `libc.unshare(CLONE_NEWUSER)` child (raw spawn facts + bounded stdout/stderr,
+  labelled NOT Chromium's full predicate; timed-out/signal-killed/spawn-errored
+  children are never called ok). The browser-dependent work runs through ONE
+  shared granular driver (`buildBrowserSteps` + `runBoundedSequence`, the same
+  path the offline fixtures use): after the FIRST fatal substep NO later MCP call
+  runs and remaining substeps are recorded not-run. Nav/snapshot successes with
+  no Result section are NOT treated as fatal (only isError/actual Error section/
+  missing marker are); structured `browser_evaluate` stays strict. The setuid
+  host expects the hyphen helper; the Dockerfile creates a root-owned adjacent
+  alias to the pinned `chrome_sandbox`.
 - `probe:artifacts` keeps every child's status/signal/error/parse-status and
   bounded stdout/stderr, emits per-format convert/PDF/page/PNG facts and the
   recalc observed value SEPARATELY from the verdict even on failure, uses the
   documented XlsxWriter blank cache (never seeds 6), recalculates a COPY of the
   XLSX in a distinct output directory and requires original inputs [1,2,3], a
-  retained `=SUM(A1:A3)` formula and a NUMERIC cached 6 (a constant 6 without the
-  formula fails), and treats disabled rendering (`MERI_ARTIFACTS_RENDER=off`) as
-  a visible NOT-PASSED result, never a pass.
+  retained `=SUM(A1:A3)` formula and a NUMERIC cached 6. The SAME decision path
+  (`decideRecalc`) also requires a SUCCESSFUL inspection child — an exit-1,
+  signal-killed, spawn-errored, unparseable or nested-ok-false child fails even
+  when the observed facts look good (a constant 6 without the formula fails, as
+  does disabled rendering `MERI_ARTIFACTS_RENDER=off`).
 - The synthetic qualification sets `settingSources: []`, `skills: []` and
   `settings.autoMemoryEnabled: false`; the builder rejects any override that
   would re-enable discovery or move the stable cwd.

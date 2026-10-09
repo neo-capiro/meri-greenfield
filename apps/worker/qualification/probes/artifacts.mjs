@@ -54,15 +54,25 @@ export function decideNative({ gen, pptxOk } = {}) {
 
 /**
  * Pure XLSX recalculation decision. Requires a successful conversion, a NEW
- * file, and OBSERVED original inputs [1,2,3], a retained `=SUM(A1:A3)` formula
- * and a NUMERIC cached value of 6. A constant 6 with no formula, a wrong value,
- * a missing inspection or a failed command all fail.
+ * file, a successful INSPECTION child (authoritative status/signal/error/
+ * parseOk/nestedOk), and OBSERVED original inputs [1,2,3], a retained
+ * `=SUM(A1:A3)` formula and a NUMERIC cached value of 6. Good-looking observed
+ * facts from a failed child (exit 1, signal, spawn error, parse failure, nested
+ * ok false) can NEVER produce a pass; a constant 6 with no formula, a wrong
+ * value or a missing inspection also fail.
  */
-export function decideRecalc({ convert, newFile, observed } = {}) {
+export function decideRecalc({ convert, newFile, observed, inspect } = {}) {
   const reasons = [];
   const cls = classifySubprocess(convert || {});
   if (!cls.ok) reasons.push(`recalc conversion failed: ${cls.detail}`);
   if (!newFile) reasons.push('recalc produced no NEW file in the distinct output directory');
+  if (inspect) {
+    if (inspect.error) reasons.push(`recalc inspection spawn error: ${String(inspect.error).slice(0, 160)}`);
+    if (inspect.signal) reasons.push(`recalc inspection killed by signal ${inspect.signal}`);
+    if (inspect.status !== 0) reasons.push(`recalc inspection exit status ${inspect.status}`);
+    if (inspect.parseOk === false) reasons.push(`recalc inspection parse failed: ${String(inspect.parseError || 'unparseable stdout').slice(0, 160)}`);
+    if (inspect.nestedOk === false) reasons.push('recalc inspection nested ok was false');
+  }
   const o = observed || {};
   if (!o.inspected) {
     reasons.push('recalc inspection did not complete (no observed value)');
@@ -203,13 +213,31 @@ async function main() {
       const newFileExists = existsSync(newFile) && statSync(newFile).mtimeMs >= statSync(copy).mtimeMs - 1;
       let observed = null;
       let recalcChild = null;
+      let inspect = null;
       if (conv.ok && newFileExists) {
         recalcChild = runPython(['xlsxrecalc', newFile]);
         observed = recalcChild.parsed && recalcChild.parsed.results ? recalcChild.parsed.results[0].observed : { inspected: false };
         if (!observed) observed = { inspected: false };
+        inspect = {
+          status: recalcChild.status,
+          signal: recalcChild.signal,
+          error: recalcChild.error,
+          parseOk: recalcChild.parseOk,
+          parseError: recalcChild.parseError,
+          nestedOk: recalcChild.parsed ? recalcChild.parsed.ok : false,
+        };
       }
-      recalc = decideRecalc({ convert: conv, newFile: newFileExists, observed });
-      recalc.child = recalcChild ? { status: recalcChild.status, signal: recalcChild.signal, parseOk: recalcChild.parseOk, parseError: recalcChild.parseError, stderr: recalcChild.stderr } : null;
+      recalc = decideRecalc({ convert: conv, newFile: newFileExists, observed, inspect });
+      recalc.child = recalcChild ? {
+        status: recalcChild.status,
+        signal: recalcChild.signal,
+        error: recalcChild.error,
+        parseOk: recalcChild.parseOk,
+        parseError: recalcChild.parseError,
+        nestedOk: recalcChild.parsed ? recalcChild.parsed.ok : false,
+        stdout: recalcChild.stdout,
+        stderr: recalcChild.stderr,
+      } : null;
       recalc.observedA4 = observed ? observed.cachedValue : null;
       recalc.file = newFileExists ? newFile : null;
     } else if (!disabled) {

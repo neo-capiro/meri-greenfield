@@ -8,10 +8,10 @@ interrupted on a test hang; stage 3 fixed the hang and committed `bf72484`; stag
 handling and committed `3d85f4a`; stage 6 fixed the first-build apt poppler pin
 (`4f69d68`, integrated; the probe-only candidate then built and was ECR-scanned);
 stage 7 refreshed the security recipe (`e68c796`); stage 8 hardened build
-evidence (`f01d6be`); this is the stage-9 runtime-probe-repair continuation of
-the same session)
+evidence (`f01d6be`); stage 9 repaired the runtime probes (`496abbf`); this is the
+stage-10 integration-repair continuation of the same session)
 Branch/worktree (cwd): `hermes/w02-image` at `C:\dev\main\meri-greenfield-worktrees\w02-image`
-Base commit: `f01d6be6296fa1f533cfa56d2376e488cea007fe`
+Base commit: `496abbfcde212b96e02ad69a22488cc70bfeb83a`
 Result: HEAD of this task commit (full SHA returned in the handoff message)
 
 Preparation only. Green offline checks prove local structural/path/parsing
@@ -222,6 +222,39 @@ incompatibility; sandbox is not weakened and failures are not hidden.
   timeout/ENETUNREACH/EHOSTUNREACH establishes only that the measured attempt was
   denied under the reviewed SG/routes. No route/SG/IAM change here.
 
+## Stage-10 integration repair (actual-flow gating + Office false-pass + diagnostics)
+
+Narrow repair at base `496abbf`; owner rejected the stage-9 ready claim after an
+independent actual-flow inspection. Only browser.mjs, artifacts.mjs,
+static.test.mjs, README.md and this report changed.
+- 1. Browser sequence wiring: the only exercised stop gate now runs through ONE
+  shared granular driver (`buildBrowserSteps` + `runBoundedSequence`) that main()
+  and the offline fake-client fixtures both use. After the FIRST fatal substep
+  (get_config, nav-fixture, snapshot marker, download-nav, download-bytes,
+  version-nav, version-eval, sandbox-nav, sandbox-eval) NO later MCP call runs and
+  the rest are recorded not-run. Nav/snapshot successes without a Result section
+  are NOT fatal (only isError/actual Error section/missing marker); structured
+  `browser_evaluate` stays strict. Offline negative fixtures fail each actual
+  substep in turn and assert the exact MCP call count / not-run set; no calls,
+  network, process or browser in default tests.
+- 2. Office false-pass: `decideRecalc` — the same path main() uses — now also
+  requires an authoritative inspection child (status 0, no signal, no spawn
+  error, parseOk, nestedOk). Good-looking observed facts from an exit-1, signal,
+  spawn-error, parse-failure or nested-ok-false child can no longer produce a
+  PASS. `recalc.child` carries status/signal/error/parseOk/parseError/nestedOk and
+  bounded stdout/stderr. Regression fixtures cover all of these plus the existing
+  wrong-0/null/constant-6/no-new-file/convert-fail cases.
+- 3. Prelaunch diagnostics: added the actual pinned `chrome` path/realpath/uid/
+  gid/mode/sha256 and its mount flags, the prelaunch UID/GID maps, and the raw
+  `runUsernsDiagnostic` spawn facts (error type/code + bounded stdout/stderr) kept
+  alongside the simple classification. A timed-out, signal-killed or spawn-errored
+  unshare child is never classified ok regardless of stdout. No elevation, global
+  writes or authoring-host browser/Office execution.
+- Unchanged: alias root/4755 checks, security refresh/coherent OS pins/signed CA/
+  no-removal upgrade, CFT/SDK checksums and direct-IP negative controls. New
+  candidate UNBUILT; old f669 12C/64H and the failed baseline-2 STOPPED run remain
+  visible. No G1/security/application/cutover pass.
+
 ## Changed files (the fifteen owned tracked paths)
 
 | Path | SHA-256 |
@@ -234,12 +267,12 @@ incompatibility; sandbox is not weakened and failures are not hidden.
 | apps/worker/qualification/requirements.lock.txt | dc9723a2b883277483f960ad4251ff79b140cab15fdadae198ea222866488564 |
 | apps/worker/qualification/component-pins.json | a793b7ba2a28e82a4057815ed9bb79a8e800e6ab0cea4c89c2e9fe1af9b82b79 |
 | apps/worker/qualification/sdk-options.mjs | 174efdfcf4731845d65c1f32de4c73e8a9032ccf1522022ab7675ccc7e6a5d9e |
-| apps/worker/qualification/probes/static.test.mjs | 55e8e2e7cfdafa6074e4b472cb26685d4e0b87a62e1c91477f40bf0179ee132f |
+| apps/worker/qualification/probes/static.test.mjs | 00856594b9417a5ce332e6e0d50d42edef110b922a49d7390126f25a0ef309b5 |
 | apps/worker/qualification/probes/runtime.mjs | 586f400d957ab2518009b40b63ed3d2ad86d9a1cf9ccf15d4ab9b59fc981ef55 |
-| apps/worker/qualification/probes/browser.mjs | f3f3b8856141947c7053ed71eab9aea9c23bae150613bce955a5e835a31d759a |
-| apps/worker/qualification/probes/artifacts.mjs | 557b9372e6221d986b2e9850ac1d9a46c2057adc3860a3cf3f5b529cd204480d |
+| apps/worker/qualification/probes/browser.mjs | e77eddce7011e4fceba1b04cc1b510e892f4b08e6b3133aa6c693153bbd92462 |
+| apps/worker/qualification/probes/artifacts.mjs | df06cabd5571e4b6807437c62bed4ababc439dc0284363e465fd35df235aac19 |
 | apps/worker/qualification/probes/artifacts.py | b75d7eacc12c88fc87b23c7aab6bfa22adbb22eee99b4236f01ac90bde858d15 |
-| apps/worker/qualification/README.md | fd47fc3e65cf2524ceb100f9d650a9ab3944c95e5672523ad58a2b1187881076 |
+| apps/worker/qualification/README.md | 98ebdbb3f8dad9981b4b35a26ccf040b168da251b759567a68456b32fb7e97e6 |
 | docs/coordination/reports/W02-01-WORKER-IMAGE.md | this file |
 
 No other tracked path was modified. No contract, root lockfile, migration, plan
@@ -250,11 +283,11 @@ or existing Meri/Capiro file was touched.
 | # | Command | Exit | Result |
 | --- | --- | --- | --- |
 | 1 | `npm run check` (root canonical contract/H00) | 0 | tests 15 / pass 15 / fail 0 |
-| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 69 / pass 69 / fail 0 |
+| 2 | `npm --prefix apps/worker/qualification test` | 0 | tests 79 / pass 79 / fail 0 |
 | 3 | `git diff --check` | 0 | no whitespace/conflict errors |
 
-Nested suite grew 61 → 69 (stage-9 helper-discovery, unshare/mount, stop-sequence,
-Office observed-value and direct-IP fixtures). All non-vacuous.
+Nested suite grew 69 → 79 (stage-10 real-flow substep gating fixtures and Office
+false-pass regressions). All non-vacuous.
 
 ## Adopted versions, licenses and integrity
 
