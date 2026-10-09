@@ -7,11 +7,17 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "check:contracts": "node --test packages/contracts/test/*.test.mjs"
+    "check": "node --test packages/contracts/test/*.test.mjs evals/qualification/hermes-session.test.mjs",
+    "check:contracts": "node --test packages/contracts/test/*.test.mjs",
+    "synth:qualification": "node infra/qualification/app.mjs",
+    "check:infra": "npm run synth:qualification && node --test infra/qualification/security.test.mjs"
   },
   "devDependencies": {
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
-    "canonicalize": "5.1.0"
+    "aws-cdk": "2.1145.0",
+    "aws-cdk-lib": "2.273.0",
+    "canonicalize": "5.1.0",
+    "constructs": "10.8.1"
   }
 }
