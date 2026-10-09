@@ -4,17 +4,17 @@
 // filesystem write on import. It consumes a captured CloudWatch stream (either
 // plain marker-prefixed log lines or a documented JSON array of event messages)
 // and, WITHOUT trusting event ordering or any lone ok:true, validates the
-// bounded protocol BEFORE writing: version/capture identity, the exact eleven
-// file set, allowlisted paths/kinds/caps/counts, integer ranges, canonical
-// strict base64, byte-identical duplicate tolerance, changed-duplicate/mixed-
-// capture rejection, complete chunk coverage, and the end/manifest hash
-// bindings plus every decoded hash/length. Only a fully consistent capture is
-// written; any failure writes NO partial artifact. Byte-identical duplicate
-// delivery is tolerated; changed duplicates and mixed capture IDs are not.
+// bounded protocol BEFORE writing: input/line/record bounds, version + UUID
+// capture identity, exact limits, strict generation facts (no failed child,
+// exact formula/inputs/value/page/PNG counts), the exact eleven file set,
+// allowlisted paths/kinds/caps/counts, integer ranges, canonical strict base64,
+// byte-identical duplicate tolerance, changed-duplicate/mixed-capture/unknown-
+// field rejection, complete chunk coverage, and the end/manifest hash bindings
+// plus every decoded hash/length. Only a fully consistent capture is written;
+// any failure writes NO partial artifact. The output directory is acquired
+// EXCLUSIVELY (mkdir; never reused) and files are created exclusively.
 //
 // CLI: node office-reconstruct.mjs --input <captured.ndjson> --out <new-dir>
-// The destination must be a NEW directory whose ancestors are all real
-// directories (no symlinks); existing files are never overwritten.
 
 import {
   readFileSync,
@@ -22,13 +22,22 @@ import {
   mkdirSync,
   existsSync,
   lstatSync,
-  realpathSync,
+  rmSync,
 } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve, sep, relative, isAbsolute } from 'node:path';
 
-import { MARKER, PROTOCOL, EXPECTED_FILES, CAPS, CHUNK_BYTES } from './office-export.mjs';
+import {
+  MARKER,
+  PROTOCOL,
+  EXPECTED_FILES,
+  CAPS,
+  CHUNK_BYTES,
+  MAX_LINE_BYTES,
+  EXPECTED_LIMITS,
+  validateGenerationFacts,
+} from './office-export.mjs';
 
 /** Strict per-kind field allowlists (unknown fields are rejected). */
 export const RECORD_FIELDS = Object.freeze({
@@ -39,9 +48,19 @@ export const RECORD_FIELDS = Object.freeze({
 });
 
 const MANIFEST_FILE_FIELDS = ['path', 'kind', 'index', 'bytes', 'sha256', 'chunks'];
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Aggregate allocation bounds enforced BEFORE heavy processing. */
+export const MAX_INPUT_BYTES = 32 * 1024 * 1024;
+export const MAX_LINES = 20000;
+export const MAX_RECORDS = 20000;
+const MAX_ELAPSED_MS = 3600000;
 
 export function sha256Hex(data) {
   return createHash('sha256').update(data).digest('hex');
+}
+function errMsg(error) {
+  return String(error && error.message ? error.message : error).slice(0, 120);
 }
 
 function isInt(value, min, max) {
@@ -62,7 +81,7 @@ export function isCanonicalBase64(value) {
 }
 
 function hasOnlyFields(obj, allowed) {
-  return Object.keys(obj).every((k) => allowed.includes(k));
+  return obj && typeof obj === 'object' && !Array.isArray(obj) && Object.keys(obj).every((k) => allowed.includes(k));
 }
 
 function sameFields(a, b, fields) {
@@ -77,14 +96,16 @@ function sameFields(a, b, fields) {
 export function extractRecordLines(text) {
   const ignored = [];
   const messages = [];
-  const trimmed = typeof text === 'string' ? text.trim() : '';
+  const raw = typeof text === 'string' ? text : '';
+  if (Buffer.byteLength(raw, 'utf8') > MAX_INPUT_BYTES) return { lines: [], ignored, parseError: `input exceeds ${MAX_INPUT_BYTES} bytes` };
+  const trimmed = raw.trim();
   if (!trimmed) return { lines: [], ignored, parseError: 'empty input' };
   if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
     let parsed;
     try {
       parsed = JSON.parse(trimmed);
     } catch (error) {
-      return { lines: [], ignored, parseError: `invalid JSON envelope: ${String(error && error.message ? error.message : error).slice(0, 120)}` };
+      return { lines: [], ignored, parseError: `invalid JSON envelope: ${errMsg(error)}` };
     }
     const events = Array.isArray(parsed) ? parsed : parsed.events || parsed.logEvents || [parsed];
     if (!Array.isArray(events)) return { lines: [], ignored, parseError: 'JSON envelope has no event array' };
@@ -111,20 +132,27 @@ export function parseRecordLine(line) {
   try {
     record = JSON.parse(json);
   } catch (error) {
-    return { marker: true, error: `malformed record JSON: ${String(error && error.message ? error.message : error).slice(0, 120)}` };
+    return { marker: true, error: `malformed record JSON: ${errMsg(error)}` };
   }
   if (record === null || typeof record !== 'object' || Array.isArray(record)) return { marker: true, error: 'record is not a JSON object' };
   return { marker: true, record };
 }
 
-/** Collect and structurally validate records from raw captured text. */
+/**
+ * Collect and structurally validate records from raw captured text, enforcing
+ * aggregate input/line/record bounds BEFORE any heavy allocation/decoding.
+ */
 export function collectRecords(text) {
   const reasons = [];
+  const raw = typeof text === 'string' ? text : '';
+  if (Buffer.byteLength(raw, 'utf8') > MAX_INPUT_BYTES) return { ok: false, reasons: [`input exceeds ${MAX_INPUT_BYTES} bytes`], records: [] };
   const { lines, parseError } = extractRecordLines(text);
   if (parseError) return { ok: false, reasons: [parseError], records: [] };
+  if (lines.length > MAX_LINES) return { ok: false, reasons: [`input has ${lines.length} lines exceeding ${MAX_LINES}`], records: [] };
   const records = [];
   for (const line of lines) {
     if (!line.includes(MARKER)) continue;
+    if (Buffer.byteLength(line, 'utf8') > MAX_LINE_BYTES) { reasons.push(`protocol line exceeds ${MAX_LINE_BYTES} bytes`); continue; }
     const parsed = parseRecordLine(line);
     if (!parsed.marker) continue;
     if (parsed.error) { reasons.push(parsed.error); continue; }
@@ -134,6 +162,7 @@ export function collectRecords(text) {
     if (!hasOnlyFields(rec, RECORD_FIELDS[kind])) { reasons.push(`${kind} record has unknown fields`); continue; }
     records.push(rec);
   }
+  if (records.length > MAX_RECORDS) return { ok: false, reasons: [`${records.length} records exceed ${MAX_RECORDS}`], records: [] };
   if (records.length === 0 && reasons.length === 0) reasons.push('no marker records found');
   return { ok: reasons.length === 0, reasons, records };
 }
@@ -150,8 +179,15 @@ export function validateManifestEntry(entry) {
   if (!isInt(entry.bytes, 0, spec.cap)) reasons.push(`manifest ${spec.path} bytes ${JSON.stringify(entry.bytes)} out of range (cap ${spec.cap})`);
   if (typeof entry.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(entry.sha256)) reasons.push(`manifest ${spec.path} sha256 malformed`);
   const wantChunks = entry.bytes === 0 ? 1 : Math.ceil(entry.bytes / CHUNK_BYTES);
-  if (!isInt(entry.chunks, 1, 1500) || entry.chunks !== wantChunks) reasons.push(`manifest ${spec.path} chunks ${JSON.stringify(entry.chunks)} != ${wantChunks}`);
+  if (!isInt(entry.chunks, 1, EXPECTED_LIMITS.maxTotalChunks) || entry.chunks !== wantChunks) reasons.push(`manifest ${spec.path} chunks ${JSON.stringify(entry.chunks)} != ${wantChunks}`);
   return { ok: reasons.length === 0, reasons };
+}
+
+function sameLimits(a) {
+  if (!a || typeof a !== 'object' || Array.isArray(a)) return false;
+  const keys = Object.keys(EXPECTED_LIMITS);
+  if (Object.keys(a).length !== keys.length) return false;
+  return keys.every((k) => a[k] === EXPECTED_LIMITS[k]);
 }
 
 function normalizeFiles(entries) {
@@ -186,11 +222,9 @@ export function validateCapture(text) {
   const records = collected.records;
   if (records.length === 0) return { ok: false, reasons, files: [] };
   for (const rec of records) {
-    if (rec.v !== PROTOCOL) { reasons.push(`record kind ${rec.kind} has version ${JSON.stringify(rec.v)} != ${PROTOCOL}`); }
+    if (rec.v !== PROTOCOL) reasons.push(`record kind ${rec.kind} has version ${JSON.stringify(rec.v)} != ${PROTOCOL}`);
   }
-  if (records.some((r) => r.kind === 'error')) {
-    return { ok: false, reasons: [...reasons, 'capture stream contains an error record'], files: [] };
-  }
+  if (records.some((r) => r.kind === 'error')) return { ok: false, reasons: [...reasons, 'capture stream contains an error record'], files: [] };
   const captures = records.filter((r) => r.kind === 'capture');
   const ends = records.filter((r) => r.kind === 'end');
   const chunks = records.filter((r) => r.kind === 'chunk');
@@ -201,13 +235,16 @@ export function validateCapture(text) {
   if (ends.length > 1 && !ends.every((e) => JSON.stringify(e) === JSON.stringify(ends[0]))) reasons.push('conflicting end records');
   const capture = captures[0];
   const end = ends[0];
-  // Capture identity must be unanimous across every record.
   const captureId = capture && capture.capture;
-  if (typeof captureId !== 'string' || captureId.length === 0) reasons.push('capture id missing');
-  for (const rec of records) if (rec.capture !== captureId) reasons.push('mixed capture ids across records');
+  if (typeof captureId !== 'string' || !UUID_RE.test(captureId)) reasons.push('capture id is not a UUID');
+  for (const rec of records) if (typeof rec.capture !== 'string' || !UUID_RE.test(rec.capture) || rec.capture !== captureId) reasons.push('mixed/invalid capture ids across records');
   if (reasons.length) return { ok: false, reasons, files: [] };
 
   if (capture.protocol !== MARKER) reasons.push(`capture protocol ${JSON.stringify(capture.protocol)} != ${MARKER}`);
+  if (!sameLimits(capture.limits)) reasons.push('capture limits missing or do not match the exact expected limits');
+  const genV = validateGenerationFacts(capture.generation);
+  reasons.push(...genV.reasons);
+
   if (!Array.isArray(capture.files) || capture.files.length !== EXPECTED_FILES.length) {
     reasons.push(`capture manifest must list exactly ${EXPECTED_FILES.length} files`);
   } else {
@@ -224,7 +261,6 @@ export function validateCapture(text) {
   }
   if (reasons.length) return { ok: false, reasons, files: [] };
 
-  // End bindings: counts + manifest hash over the capture's own files array.
   const manifestEntries = capture.files;
   const totalChunks = manifestEntries.reduce((n, f) => n + f.chunks, 0);
   const totalBytes = manifestEntries.reduce((n, f) => n + f.bytes, 0);
@@ -232,15 +268,18 @@ export function validateCapture(text) {
   if (capture.fileCount !== EXPECTED_FILES.length) reasons.push(`capture fileCount ${JSON.stringify(capture.fileCount)} != ${EXPECTED_FILES.length}`);
   if (capture.chunkCount !== totalChunks) reasons.push('capture chunkCount disagrees with manifest');
   if (capture.totalBytes !== totalBytes) reasons.push('capture totalBytes disagrees with manifest');
+  // End bindings: counts, strict end.files entries, and the manifest hash.
   if (end.fileCount !== EXPECTED_FILES.length) reasons.push(`end fileCount ${JSON.stringify(end.fileCount)} != ${EXPECTED_FILES.length}`);
   if (end.chunkCount !== totalChunks) reasons.push('end chunkCount disagrees with manifest');
   if (end.totalBytes !== totalBytes) reasons.push('end totalBytes disagrees with manifest');
+  if (!Array.isArray(end.files)) reasons.push('end.files is not an array');
+  else for (const entry of end.files) reasons.push(...validateManifestEntry(entry).reasons);
   if (!sameManifest(end.files, manifestEntries)) reasons.push('end file set differs from capture manifest');
+  if (!(end.elapsedMs === null || (typeof end.elapsedMs === 'number' && Number.isFinite(end.elapsedMs) && end.elapsedMs >= 0 && end.elapsedMs <= MAX_ELAPSED_MS))) reasons.push('end elapsedMs invalid');
   const manifestSha256 = sha256Hex(JSON.stringify(manifestEntries));
   if (end.manifestSha256 !== manifestSha256) reasons.push('end manifestSha256 does not bind the capture manifest');
   if (reasons.length) return { ok: false, reasons, files: [] };
 
-  // Gather chunks: identical duplicates tolerated, changed duplicates rejected.
   const byFile = new Map();
   for (const spec of EXPECTED_FILES) byFile.set(spec.path, new Map());
   for (const chunk of chunks) {
@@ -263,7 +302,6 @@ export function validateCapture(text) {
   }
   if (reasons.length) return { ok: false, reasons, files: [] };
 
-  // Complete coverage + exact decoded hash/length per file BEFORE writing.
   const files = [];
   for (const entry of manifestEntries) {
     const slot = byFile.get(entry.path);
@@ -283,11 +321,11 @@ export function validateCapture(text) {
   return { ok: true, reasons: [], files, capture: captureId, manifestSha256 };
 }
 
-/** Reject a destination that already exists or has a non-directory/symlink ancestor. */
+/** Reject a destination whose ancestors are missing, non-directory or symlinks. */
 export function checkDestination(outDir) {
   const reasons = [];
-  const abs = resolve(String(outDir));
-  if (existsSync(abs)) reasons.push(`destination already exists: ${abs}`);
+  if (typeof outDir !== 'string' || outDir.length === 0) return { ok: false, reasons: ['destination path required'], abs: null };
+  const abs = resolve(outDir);
   let cur = abs;
   const chain = [];
   while (true) {
@@ -300,10 +338,10 @@ export function checkDestination(outDir) {
     if (!existsSync(ancestor)) { reasons.push(`destination ancestor missing: ${ancestor}`); continue; }
     try {
       const st = lstatSync(ancestor);
-      if (st.isSymbolicLink()) reasons.push(`destination ancestor is a symlink: ${ancestor}`);
+      if (st.isSymbolicLink()) reasons.push(`destination ancestor is a symlink/junction: ${ancestor}`);
       else if (!st.isDirectory()) reasons.push(`destination ancestor is not a directory: ${ancestor}`);
     } catch (error) {
-      reasons.push(`cannot inspect ancestor ${ancestor}: ${String(error && error.message ? error.message : error).slice(0, 80)}`);
+      reasons.push(`cannot inspect ancestor ${ancestor}: ${errMsg(error)}`);
     }
   }
   return { ok: reasons.length === 0, reasons, abs };
@@ -314,28 +352,37 @@ function pathedContained(root, child) {
   return rel === '' || (!rel.startsWith('..' + sep) && rel !== '..' && !isAbsolute(rel));
 }
 
-/** Write fully validated buffers into a NEW directory (fail if any exists). */
+/**
+ * Write fully validated buffers into a NEW directory. The destination is
+ * acquired EXCLUSIVELY with mkdir (never reused; a race loses with EEXIST),
+ * then each file is created exclusively with flag 'wx'. Any write failure
+ * removes the freshly-created output so no partial artifact remains.
+ */
 export function writeReconstruction(files, outDir) {
-  const reasons = [];
   const dest = checkDestination(outDir);
   if (!dest.ok) return { ok: false, reasons: dest.reasons };
   try {
+    mkdirSync(dest.abs); // exclusive; EEXIST if it already exists
+  } catch (error) {
+    const code = error && error.code;
+    return { ok: false, reasons: [code === 'EEXIST' ? `destination already exists: ${dest.abs}` : `destination not exclusively acquired: ${code || errMsg(error)}`] };
+  }
+  const reasons = [];
+  try {
     for (const file of files) {
       const full = join(dest.abs, file.path);
-      if (!pathedContained(dest.abs, full)) { reasons.push(`${file.path} escapes the destination`); continue; }
+      if (!pathedContained(dest.abs, full)) { reasons.push(`${file.path} escapes the destination`); throw new Error('containment violation'); }
       mkdirSync(dirname(full), { recursive: true });
       writeFileSync(full, file.buffer, { flag: 'wx' });
     }
   } catch (error) {
-    return { ok: false, reasons: [...reasons, String(error && error.message ? error.message : error).slice(0, 160)] };
+    try { rmSync(dest.abs, { recursive: true, force: true }); } catch { /* best effort */ }
+    return { ok: false, reasons: [...reasons, `write failed: ${errMsg(error)}`], cleaned: true };
   }
   return { ok: true, reasons: [], written: files.length, dest: dest.abs };
 }
 
-/**
- * End-to-end pure helper used by the CLI and tests: validate captured text, then
- * (only on success) write to a NEW directory. Returns { ok, reasons, written }.
- */
+/** Validate captured text, then (only on success) write to a NEW directory. */
 export function reconstruct(text, outDir) {
   const validated = validateCapture(text);
   if (!validated.ok) return { ok: false, reasons: validated.reasons, written: 0 };
@@ -364,7 +411,7 @@ export function runCli(argv = process.argv.slice(2), { readFile = (p) => readFil
   try {
     text = readFile(args.input);
   } catch (error) {
-    log(JSON.stringify({ probe: 'office-reconstruct', ok: false, reasons: [`cannot read input: ${String(error && error.message ? error.message : error).slice(0, 120)}`] }));
+    log(JSON.stringify({ probe: 'office-reconstruct', ok: false, reasons: [`cannot read input: ${errMsg(error)}`] }));
     return 1;
   }
   const result = reconstruct(text, args.out);

@@ -1,14 +1,18 @@
 # W02-07 bounded synthetic Office evidence export — Hermes implementation report
 
-Status: **implemented, offline qualification PASS; native NOT RUN; ready for independent review**.
-No gate passed, no deployment/push, no cutover, no W03 promotion. Codex owns acceptance and a
-separate real Hermes exact-commit review precedes the owner's build and any native/browser
-execution. This is evidence-export preparation only — not native revision/editor fidelity,
-publication, auth, recovery or G1 acceptance. Genuine revision remains a later bounded task.
+Status: **repair implemented, offline qualification PASS; native NOT RUN; ready for
+re-review**. The initial candidate `89a36bf0e8ae515468c39738f4e8d3874dce7617` was **REJECTED**
+by the owner's independent audit (`.task-inputs/office-audit-89a36bf`, 39 pass / 1 skip + 81 + 15).
+This document covers that initial implementation AND the bounded same-session repair that fixes every
+reported defect. No gate passed, no deployment/push, no cutover, no W03 promotion. Codex owns
+acceptance; a separate real Hermes exact-commit review precedes the owner's build and any native/
+browser execution. This is evidence-export preparation only — not native revision/editor fidelity,
+publication, auth, recovery or G1 acceptance.
 
-- Pinned base (exact launcher allocation commit): `d5849941126f226828f006a5301c12aea220ddeb`
+- Repair base (rejected initial candidate): `89a36bf0e8ae515468c39738f4e8d3874dce7617`
+  (original pinned allocation base: `d5849941126f226828f006a5301c12aea220ddeb`)
 - Branch: `hermes/w02-office-export`; worktree `C:\dev\main\meri-greenfield-worktrees\w02-office-export`
-- Session: `20261009_183026_e5b164` (one bounded real Hermes session)
+- Session: `20261009_183026_e5b164` (one bounded real Hermes session, explicit same-session repair)
 - Bounds: <=40 turns / <=3600s; no self-resume, no retry, no recursive delegation, no global
   settings, no push, no amend.
 - Dependencies: accepted worker `797da3a`/code `577e8f0`, mechanically passing baseline `3`.
@@ -20,91 +24,93 @@ publication, auth, recovery or G1 acceptance. Genuine revision remains a later b
 - `apps/worker/qualification/probes/office-export.test.mjs`
 - `docs/coordination/reports/W02-07-OFFICE-EXPORT.md` (this file)
 
-No change to any existing probe, `artifacts.mjs`, the Dockerfile, package/lock, contracts, infra,
-task brief or other report. `artifacts.mjs` is spawned UNCHANGED, exactly once. The existing Docker
-`COPY probes/ ./probes/` already includes the new `.mjs` files, so the owner can build with the
-accepted SDK capture later without a Dockerfile edit.
+No change to any existing probe, `artifacts.mjs`/`artifacts.py`, the Dockerfile, package/lock,
+contracts, infra, task brief or other report. `artifacts.mjs` is spawned UNCHANGED, exactly once.
+The existing Docker `COPY probes/ ./probes/` already includes the new `.mjs` files.
 
-## What was implemented
+## What the initial candidate implemented (retained)
 
-### `office-export.mjs` (opt-in Linux Office-only wrapper)
+An opt-in Linux `office-export.mjs` that runs the unchanged `artifacts.mjs` once with REQUIRED
+rendering in a fresh `/workspace/qualification-artifacts` subtree, verifies the structured verdict,
+and streams the exact eleven allowlisted files as marker-prefixed (`MERI_OFFICE_EXPORT_V1`), indexed
+6144-byte base64 chunk records plus a `capture` manifest and an `end` record; and a pure
+`office-reconstruct.mjs` decoder that validates the bounded protocol before writing to a NEW
+directory, with a CLI. The eleven files are `native/{qualification.docx,qualification.xlsx,
+qualification.pptx}`, `render/{docx,xlsx,pptx}/qualification.pdf`, `render/{docx,xlsx}/page-1.png`,
+`render/pptx/{page-1,page-2}.png`, `render/recalc-out/qualification-copy.xlsx`.
 
-- Spawns the unchanged `artifacts.mjs` exactly once as a child of `process.execPath`, in a fresh
-  output root `<base>/office-export-<uuid>` under `/workspace/qualification-artifacts`, with
-  `MERI_ARTIFACTS_RENDER=required` so the probe's own `probe-<uuid>` subtree is generated.
-- Parses the child's single structured JSON object (`parseStructuredOutput`) and requires a clean
-  exit AND `native.status==='pass'` AND `render.status==='pass'` AND `recalc.status==='pass'` AND
-  the numeric cached recalc value `6` AND PDF page counts docx/xlsx/pptx `1/1/2` with matching PNG
-  counts. Any error/signal/timeout/unparseable/missing fact fails — a good-looking nested payload
-  after a failed child can never pass.
-- Bounded child stdout (4 MiB) / stderr (64 KiB) and a <=120s generation deadline. It does **not**
-  accept a kill signal as confirmation of exit: `runArtifactsChild` resolves only on the child
-  `close` event (stdio drained AND process reaped); if close never arrives within a small grace
-  after `SIGKILL` it fails as uncertain.
-- Scans exactly the eleven allowlisted files (never a recursive walk), rejecting a missing file, a
-  symlink, a hard link (`nlink>1`), a non-regular/special file, a cap breach and any escape from
-  the run root; then revalidates descriptor/stat identity (`dev/ino/size`) after an `O_NOFOLLOW`
-  open and requires a full-length read. The eleven-file cap hit is disclosed, never truncated.
-- Emits each file as indexed raw chunks of 6144 bytes -> base64, one record per line, every line
-  prefixed with the fixed marker `MERI_OFFICE_EXPORT_V1`, each line asserted <=12KiB, aggregate
-  <=1500 chunks. Writes with an async stdout callback/drain and aborts on a stream error or the
-  <=120s export deadline instead of letting `process.exit` truncate pending writes. A failed
-  generation or a truncated export emits a single `error` record and exits nonzero, so no
-  capture/end (and therefore no accepted payload) is ever produced after failure.
-- Record kinds (stable field sets): `capture` (uuid, protocol, counts, limits, bounded
-  native/convert/recalc/page facts, generation/export elapsed timings, optional read-only
-  cgroup-wide observations accurately scoped), `chunk`, `end` (counts + `manifestSha256` binding),
-  and `error`. Arbitrary subprocess stderr/env values are never emitted.
+## Repair (same session) — every audited defect fixed
 
-### `office-reconstruct.mjs` (pure decoder/reconstructor + CLI)
+The owner audit (pure/fake reproductions, no native/Office execution) reported six concrete defects;
+each is now fixed and covered by a regression test:
 
-- No AWS client, no network, no native/probe execution and no top-level write/process on import.
-- Accepts plain marker log lines OR a documented JSON array of CloudWatch-style event messages
-  (`{message}` / `{events|logEvents:[...]}`), preserving embedded newlines. Non-marker lines are
-  ignored (interleaved logs); a marker line with malformed JSON fails.
-- Validates BEFORE writing and never trusts event ordering or a lone `ok:true`: version, unanimous
-  capture id, exactly one capture + one end (byte-identical duplicates tolerated; conflicting ones
-  rejected), the exact eleven-file set, allowlisted paths/kinds, per-index integer ranges and caps,
-  canonical strict base64 (re-encode equality), chunk/total/seq consistency, complete chunk
-  coverage, byte-identical duplicate tolerance, changed-duplicate/unknown-path/mixed-capture
-  rejection, and the end/count/`manifestSha256` bindings plus every decoded hash and length. Unknown
-  protocol fields are rejected.
-- `reconstruct(text, out)` writes only after full validation; the destination must be a NEW
-  directory with all-real-directory ancestors (no symlinks). Existing files are never overwritten
-  and a failed validation writes no partial artifact. CLI: `--input <captured.ndjson> --out <new-dir>`.
+1. **Unbounded pending writes.** `streamRecords` awaited a write callback that could never fire, and
+   a late final write falsely passed. Now every write is raced against the remaining **absolute**
+   deadline (`writeBounded` with a timer + stream `error` + callback + throw, each settling exactly
+   once), stream listeners/timers are always cleaned up, the deadline is re-checked absolutely after
+   the last write, and `normalizeDeadlineMs` rejects NaN/Infinity/non-positive/over-120 s values
+   (used for the generation deadline, the export deadline and abort emission). Audit results flipped
+   to `{ok:false}` for stuck-write, error-during-pending, late-final-write.
+2. **Unclean child exit.** `runArtifactsChild` now spawns the probe in its own **owned Linux detached
+   process group**, kills ONLY that validated group (`defaultGroupKill` / injectable `groupKill`),
+   and resolves only after the child `close` event AND a confirmed absent process group/descendants
+   within a bounded grace (`defaultProbeGroup` / injectable `probeGroup`). A kill request, a false
+   kill result or an error is NOT confirmation of exit; uncertainty fails closed
+   (`cleanupConfirmed:false` + `error`), and `verifyArtifactsVerdict` requires cleanup. Full
+   structured child/native/convert/png/pdf/recalc facts are retained; raw stderr is never emitted.
+3. **File-boundary gaps.** `inspectExpectedFiles` now validates EVERY real-directory ancestor of each
+   file (rejecting an internal `native/` junction/symlink), the leaf type/linkcount/cap, real-path
+   containment, and descriptor identity/linkcount/type/size/timestamp **before AND after** the read
+   (`O_NOFOLLOW` on Linux). The reconstructor acquires the output **exclusively** with `mkdir`
+   (`EEXIST` loses; an existing dir/file is never reused), creates files exclusively (`flag:'wx'`),
+   validates everything BEFORE output, and removes the fresh directory on any write failure so no
+   partial artifact remains. Audit `ancestorJunction` flipped to `false`.
+4. **False wrapper verdict.** `verifyArtifactsVerdict` now builds a bounded authoritative
+   generation-facts object and validates it strictly: clean exit + `cleanupConfirmed`, `ok:true`,
+   native `generate`/`pptx` child `ok/status0/no signal/no error/parseOk`, per-format convert + PNG +
+   PDF-inspection child statuses, `pages` and `pngCount` **exactly 1/1/2**, recalc child
+   `ok/status0/parseOk/nestedOk`, formula `=SUM(A1:A3)`, inputs `[1,2,3]` and numeric `6`. It no
+   longer trusts a nested `status:pass` alone. `end.elapsedMs` is now a genuinely measured export
+   phase value (through the last chunk flush; the end line's own flush is excluded and scoped in
+   code). Audit `badVerdicts` all flipped to `false`.
+5. **Loose decoder.** The decoder now enforces input/line/record bounds BEFORE heavy work (every
+   complete protocol line <=12 KiB before parsing; aggregate input <=32 MiB; <=20000 lines/records),
+   requires a **UUID** capture identity, exact `limits`, strict generation facts (no failed
+   generation), strict `end.files` entries (unknown nested fields rejected) and a bounded
+   `end.elapsedMs`. Original exact-11-file/hash/base64/end-integrity checks are retained and the
+   provisional caps are NOT expanded. Audit `decoder.*` all flipped to `false`; `invalidBeforeWrite`
+   remains `{result:false, exists:false}`.
+
+Adversarial regressions added: never-callback/error-pending/late-final-write, invalid deadlines,
+no-close and false-close/descendant-remaining cleanup, an internal Windows **junction** ancestor
+(not a skipped symlink), exclusive-output acquisition race, non-UUID/limits/generation/oversized-line
+decoder rejections, and the audit's verdict mutations.
 
 ## Checks (separate outcomes / counts)
 
-- `node --test apps/worker/qualification/probes/office-export.test.mjs` — **39 pass / 1 skipped / 0
-  fail** (40 tests). The one skip is the symlink-rejection case (`EPERM` creating a symlink on this
-  Windows authoring host without developer mode); it executes on the owner's Linux host.
+- `node --test apps/worker/qualification/probes/office-export.test.mjs` — **47 pass / 0 fail / 0
+  skipped** (47 tests).
+- Owner audit reproduction rerun (`.task-inputs/office-audit-89a36bf/audit.mjs`, fakes only) — every
+  previously-failing field now demonstrates the fail-closed value (no `PENDING`, no `true` where a
+  failure is required).
 - Worker existing suite `npm test` (apps/worker/qualification) — **81 pass / 0 fail** (unchanged).
 - Root `npm run check` (contracts + evals) — **15 pass / 0 fail** (contracts unchanged).
 - `git diff --check` — clean.
 
-Test coverage includes: full eleven-file byte round-trip; out-of-order delivery; byte-identical
-duplicate delivery; CloudWatch-envelope input; missing end/chunk; changed duplicate; wrong
-hash/length/count; non-canonical base64; mixed capture; unknown field; present `error` record;
-malformed marker line; missing/directory-as-file/hard-link/symlink/special-file; decoys ignored;
-cap breach with no truncation-as-success; failed/signalled/timed-out/unparseable generation cannot
-export success; kill-signal-not-exit (await close) semantics; stdout overflow; stream error and
-export deadline; reconstruction failure writes nothing and leaves a new destination absent; existing
-destination refused and untouched; CLI paths.
-
 ## Provisional limits (fail-closed)
 
 - Native 512 KiB each / PDF 1 MiB / PNG 2 MiB / total 8 MiB. The accepted baseline did not record
-  actual sizes, so these are provisional fail-closed caps. Actual bytes are measured and any cap hit
-  is disclosed; the export never truncates and calls it success. The owner should confirm the caps
-  against the measured live sizes.
+  actual sizes, so these are provisional fail-closed caps; actual bytes are measured, cap hits are
+  disclosed, and the export never truncates and calls it success. The owner should confirm these
+  against measured live sizes.
 
 ## Native NOT RUN (explicit)
 
-The real `artifacts.mjs`, LibreOffice/`soffice`, `pdftoppm`, Python native generators, the
-pptxgenjs writer, the Playwright/browser probe, any AWS/CloudWatch/Fargate/ECR action, any
-socket/server, and any provider/model/source/credential call are **NOT RUN** by this session. The
-export child and filesystem subtree are injected fakes over synthetic bytes. No native Office,
-render, recalc or visual QA was performed; no image was built; nothing was deployed.
+The real `artifacts.mjs`, LibreOffice/`soffice`, `pdftoppm`, Python native generators, the pptxgenjs
+writer, the Playwright/browser probe, any AWS/CloudWatch/Fargate/ECR action, any socket/server and
+any provider/model/source/credential call are **NOT RUN**. The export child and filesystem subtrees
+are injected fakes over synthetic bytes. No native Office/render/recalc/visual QA, no image build,
+no deployment.
 
 ## Known limits / partial state
 
@@ -114,8 +120,10 @@ render, recalc or visual QA was performed; no image was built; nothing was deplo
   secrets, closed private network/execution role and the exact CloudWatch stream reconstruction are
   OWNER actions after review. `RunTask` command cannot replace the image ENTRYPOINT; this recipe does
   not change the Dockerfile `ENTRYPOINT`.
-- fail-closed/reconstruct correctness is proven only against synthetic fixtures; real captured
-  bytes, exact CloudWatch chunking/ordering and human visual review remain unqualified.
+- The detached process-group kill and group-absence probe are Linux-only (the platform the export
+  task runs on); on the Windows authoring host the injected fake/fallback path is exercised. Correct
+  fail-closed/reconstruct behaviour is proven only against synthetic fixtures; real captured bytes,
+  exact CloudWatch chunking/ordering and human visual review remain unqualified.
 - The cgroup observations are read-only, cgroup-wide snapshots and are not a per-child peak or cost.
 
 ## Process state / integrity
