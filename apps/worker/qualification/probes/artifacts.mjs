@@ -47,7 +47,7 @@ export function classifySubprocess({ status, signal, error } = {}) {
 /** Pure native-generation decision. */
 export function decideNative({ gen, pptxOk } = {}) {
   const reasons = [];
-  if (!gen || gen.status !== 0 || !gen.parseOk || !gen.parsed || gen.parsed.ok !== true) reasons.push(`python native generation failed (status ${gen && gen.status}, parseOk ${gen && gen.parseOk})`);
+  if (!gen || !classifySubprocess(gen).ok || !gen.parseOk || !gen.parsed || gen.parsed.ok !== true) reasons.push(`python native generation failed (status ${gen && gen.status}, parseOk ${gen && gen.parseOk})`);
   if (!pptxOk) reasons.push('PPTX structure missing expected slide/notes parts');
   return { status: reasons.length === 0 ? 'pass' : 'fail', reasons };
 }
@@ -114,7 +114,7 @@ function runPython(args) {
   const parsed = parseStructuredOutput(res.stdout);
   const parseOk = parsed.ok && parsed.value && parsed.value.ok === true;
   return {
-    ok: res.status === 0 && !res.signal && parseOk,
+    ok: classifySubprocess(res).ok && parseOk,
     status: res.status,
     signal: res.signal,
     error: res.error ? String(res.error.message || res.error).slice(0, 200) : null,
@@ -223,6 +223,7 @@ async function main() {
       const copy = join(recalcIn, 'qualification-copy.xlsx');
       copyFileSync(xlsx, copy);
       const conv = convert(soffice, profileUri, copy, recalcOut, false);
+      partial.recalc = { convert: conv, file: null, child: null };
       const newFile = join(recalcOut, 'qualification-copy.xlsx');
       const newFileExists = existsSync(newFile) && statSync(newFile).mtimeMs >= statSync(copy).mtimeMs - 1;
       let observed = null;
@@ -230,6 +231,8 @@ async function main() {
       let inspect = null;
       if (conv.ok && newFileExists) {
         recalcChild = runPython(['xlsxrecalc', newFile]);
+        partial.recalc.child = recalcChild;
+        partial.recalc.file = newFile;
         observed = recalcChild.parsed && recalcChild.parsed.results ? recalcChild.parsed.results[0].observed : { inspected: false };
         if (!observed) observed = { inspected: false };
         inspect = {

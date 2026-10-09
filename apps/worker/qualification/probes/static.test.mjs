@@ -814,3 +814,10 @@ test('an absent optional MCP config tool is recorded as not-run, without a call'
   assert.deepEqual(sequence.ran, []);
   assert.deepEqual(sequence.notRun, ['get_config']);
 });
+
+test('native generation never accepts successful-looking JSON from a signalled or errored child', () => {
+  const gen = { status: 0, parseOk: true, parsed: { ok: true } };
+  assert.equal(decideNative({ gen, pptxOk: true }).status, 'pass');
+  assert.equal(decideNative({ gen: { ...gen, error: { code: 'ETIMEDOUT' } }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { ...gen, signal: 'SIGKILL' }, pptxOk: true }).status, 'fail');
+});
