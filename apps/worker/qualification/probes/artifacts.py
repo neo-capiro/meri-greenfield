@@ -10,13 +10,16 @@ driven by probes/artifacts.mjs and are live gates, not performed here.
 
 Never invoked by `npm test`. Uses only scoped installed dependencies and the
 owned output directory passed on the command line. Every nested failure is
-propagated to the top-level `ok`.
+propagated to the top-level `ok`, and observed values are reported SEPARATELY
+from verdicts so a wrong value, a failed command or a parse error never
+collapses into a plausible-looking success.
 """
 
 import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import zipfile
 
@@ -38,6 +41,24 @@ def sha256(path: str) -> str:
 def zip_structure(path: str) -> list:
     with zipfile.ZipFile(path) as zf:
         return sorted(zf.namelist())
+
+
+def _zip_read_bounded(path: str, member: str, limit: int = 600) -> str:
+    try:
+        with zipfile.ZipFile(path) as zf:
+            return zf.read(member).decode("utf-8", "replace")[:limit]
+    except Exception:
+        return ""
+
+
+def _xlsx_facts(path: str) -> dict:
+    sheet = _zip_read_bounded(path, "xl/worksheets/sheet1.xml", 4000)
+    m = re.search(r"<c r=\"A4\".*?</c>", sheet, re.S)
+    calc = re.search(r"<calcPr[^>]*/>", _zip_read_bounded(path, "xl/workbook.xml", 4000))
+    return {
+        "a4Xml": (m.group(0) if m else "")[:400],
+        "calcProperties": (calc.group(0) if calc else ""),
+    }
 
 
 def generate_docx(outdir: str) -> dict:
@@ -75,7 +96,10 @@ def generate_xlsx(outdir: str) -> dict:
     sheet = workbook.add_worksheet("qual")
     for row, value in enumerate(XLSX_INPUTS):
         sheet.write_number(row, 0, value)
-    sheet.write_formula(3, 0, XLSX_FORMULA)
+    # Documented XlsxWriter blank cache so non-Excel apps recalculate rather than
+    # show the default cached zero. Never seed the expected result here.
+    # https://xlsxwriter.readthedocs.io/faq.html#q-why-do-my-formulas-show-a-zero-result-in-some-non-excel-applications
+    sheet.write_formula(3, 0, XLSX_FORMULA, None, "")
     workbook.close()
 
     import openpyxl
@@ -84,14 +108,16 @@ def generate_xlsx(outdir: str) -> dict:
     cached = openpyxl.load_workbook(out, data_only=True).active["A4"].value
     structure = zip_structure(out)
     inputs = [ws.cell(row=r, column=1).value for r in range(1, 4)]
+    facts = _xlsx_facts(out)
     ok = (inputs == XLSX_INPUTS and ws["A4"].value == XLSX_FORMULA
           and "xl/worksheets/sheet1.xml" in structure)
     return {
         "file": out, "sha256": sha256(out), "ok": ok,
         "expected": {"inputs": XLSX_INPUTS, "formula": XLSX_FORMULA, "recalculatedResult": XLSX_EXPECTED},
-        "reopened": {"inputs": inputs, "a4Formula": ws["A4"].value, "a4CachedValue": cached},
-        "cachedValueNote": "no cached value expected without a recalculation engine; cached values do not prove LibreOffice recalculation or Excel fidelity",
+        "reopened": {"inputs": inputs, "a4Formula": ws["A4"].value, "a4GeneratedCachedValue": cached},
+        "cachedValueNote": "the generated fixture uses a blank cached result; a cached value that is absent/zero here does not prove LibreOffice recalculation or Excel fidelity",
         "structure": structure, "hasSheetXml": "xl/worksheets/sheet1.xml" in structure,
+        "xmlFacts": facts,
     }
 
 
@@ -125,15 +151,33 @@ def inspect_pdf(path: str) -> dict:
 
 
 def xlsx_recalc(path: str) -> dict:
-    """Reopen a LibreOffice-recalculated XLSX copy and assert A4 == 6."""
+    """Reopen a LibreOffice-recalculated XLSX copy and report observed facts.
+
+    Requires original inputs (1,2,3), a retained `=SUM(A1:A3)` formula and a
+    NUMERIC cached result of 6. A hand-typed constant 6 with no formula fails.
+    """
     import openpyxl
 
-    wb = openpyxl.load_workbook(path, data_only=True)
-    value = wb.active["A4"].value
+    wb_f = openpyxl.load_workbook(path, data_only=False)
+    ws_f = wb_f.active
+    inputs = [ws_f.cell(row=r, column=1).value for r in range(1, 4)]
+    formula = ws_f["A4"].value
+    cached = openpyxl.load_workbook(path, data_only=True).active["A4"].value
+    observed = {
+        "inspected": True,
+        "inputs": inputs,
+        "formula": formula,
+        "cachedValue": cached,
+        "cachedType": type(cached).__name__,
+    }
+    ok = (inputs == XLSX_INPUTS and formula == XLSX_FORMULA
+          and isinstance(cached, (int, float)) and not isinstance(cached, bool) and cached == XLSX_EXPECTED)
     return {
-        "file": path, "sha256": sha256(path), "ok": value == XLSX_EXPECTED,
-        "expectedRecalculatedResult": XLSX_EXPECTED,
-        "reopened": {"a4CachedValueAfterRecalc": value},
+        "file": path, "sha256": sha256(path), "ok": ok,
+        "expected": {"inputs": XLSX_INPUTS, "formula": XLSX_FORMULA, "recalculatedResult": XLSX_EXPECTED},
+        "observed": observed,
+        "observedA4": cached,
+        "xmlFacts": _xlsx_facts(path),
     }
 
 

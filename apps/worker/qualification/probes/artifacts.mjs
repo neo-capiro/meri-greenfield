@@ -4,13 +4,15 @@
 // and a native two-slide PPTX (via the adopted pptxgenjs 4.0.1), inspects the
 // OOXML/ZIP structures, then exports all three formats to separate PDFs, renders
 // page PNGs, inspects PDF/text, and recalculates a COPY of the XLSX in a
-// distinct output directory with LibreOffice to assert A4=6 after reopen.
+// distinct output directory with LibreOffice.
 //
-// Every subprocess result keeps authoritative status/signal/error, and every
-// nested ok is propagated. Disabling rendering (MERI_ARTIFACTS_RENDER=off) is a
-// visible NOT-PASSED result, never a required-qualification pass. Live
-// output/profiles default under /workspace; authoring host uses .runtime.
-// pdfjs-dist 6.4.299 is referenced as the adopted preview candidate only.
+// Observed values are preserved SEPARATELY from verdicts: every child keeps its
+// authoritative status/signal/error/parse status and bounded stdout/stderr, and
+// per-format convert/PDF/page/PNG facts and the recalc observed value are
+// emitted even on failure, so a wrong value or a failed command never collapses
+// into a plausible null/pass. Disabling rendering is a visible NOT-PASSED result.
+// Live output/profiles default under /workspace; the authoring host uses
+// .runtime. pdfjs-dist 6.4.299 is referenced as the adopted preview candidate.
 
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readdirSync, existsSync, copyFileSync, statSync } from 'node:fs';
@@ -45,19 +47,42 @@ export function classifySubprocess({ status, signal, error } = {}) {
 /** Pure native-generation decision. */
 export function decideNative({ gen, pptxOk } = {}) {
   const reasons = [];
-  if (!gen || gen.status !== 0 || !gen.parsed || gen.parsed.ok !== true) reasons.push(`python native generation failed (status ${gen && gen.status})`);
+  if (!gen || !classifySubprocess(gen).ok || !gen.parseOk || !gen.parsed || gen.parsed.ok !== true) reasons.push(`python native generation failed (status ${gen && gen.status}, parseOk ${gen && gen.parseOk})`);
   if (!pptxOk) reasons.push('PPTX structure missing expected slide/notes parts');
   return { status: reasons.length === 0 ? 'pass' : 'fail', reasons };
 }
 
-/** Pure XLSX recalculation decision: distinct output file, successful conversion, A4=6. */
-export function decideRecalc({ convert, newFile, a4 } = {}) {
+/**
+ * Pure XLSX recalculation decision. Requires a successful conversion, a NEW
+ * file, a successful INSPECTION child (authoritative status/signal/error/
+ * parseOk/nestedOk), and OBSERVED original inputs [1,2,3], a retained
+ * `=SUM(A1:A3)` formula and a NUMERIC cached value of 6. Good-looking observed
+ * facts from a failed child (exit 1, signal, spawn error, parse failure, nested
+ * ok false) can NEVER produce a pass; a constant 6 with no formula, a wrong
+ * value or a missing inspection also fail.
+ */
+export function decideRecalc({ convert, newFile, observed, inspect } = {}) {
   const reasons = [];
   const cls = classifySubprocess(convert || {});
   if (!cls.ok) reasons.push(`recalc conversion failed: ${cls.detail}`);
   if (!newFile) reasons.push('recalc produced no NEW file in the distinct output directory');
-  if (a4 !== 6) reasons.push(`recalculated A4 is ${JSON.stringify(a4)}, expected 6`);
-  return { status: reasons.length === 0 ? 'pass' : 'fail', reasons, a4 };
+  if (!inspect) reasons.push('recalc inspection child facts missing');
+  else {
+    if (inspect.error) reasons.push(`recalc inspection spawn error: ${String(inspect.error).slice(0, 160)}`);
+    if (inspect.signal) reasons.push(`recalc inspection killed by signal ${inspect.signal}`);
+    if (inspect.status !== 0) reasons.push(`recalc inspection exit status ${inspect.status}`);
+    if (inspect.parseOk !== true) reasons.push(`recalc inspection parse failed: ${String(inspect.parseError || 'unparseable stdout').slice(0, 160)}`);
+    if (inspect.nestedOk !== true) reasons.push('recalc inspection nested ok was not true');
+  }
+  const o = observed || {};
+  if (!o.inspected) {
+    reasons.push('recalc inspection did not complete (no observed value)');
+  } else {
+    if (JSON.stringify(o.inputs) !== JSON.stringify([1, 2, 3])) reasons.push(`recalc inputs ${JSON.stringify(o.inputs)} != [1,2,3]`);
+    if (o.formula !== '=SUM(A1:A3)') reasons.push(`recalc lost or changed the SUM formula (${JSON.stringify(o.formula)})`);
+    if (typeof o.cachedValue !== 'number' || o.cachedValue !== 6) reasons.push(`recalc cached A4 ${JSON.stringify(o.cachedValue)} (${o.cachedType}) is not the numeric value 6`);
+  }
+  return { status: reasons.length === 0 ? 'pass' : 'fail', reasons, observed: o };
 }
 
 /** Pure render decision over per-format facts and the recalc fact. */
@@ -83,12 +108,22 @@ function run(cmd, args, opts = {}) {
   return spawnSync(cmd, args, { encoding: 'utf8', timeout: opts.timeout || 180000, maxBuffer: 32 * 1024 * 1024 });
 }
 
-/** Run a python subcommand; require exit 0 AND a parseable ok:true verdict. */
+/** Run a python subcommand and return RICH facts (never collapse to a bare ok). */
 function runPython(args) {
   const res = run(pythonBin, [join(HERE, 'artifacts.py'), ...args]);
   const parsed = parseStructuredOutput(res.stdout);
-  const ok = res.status === 0 && !res.signal && parsed.ok && parsed.value && parsed.value.ok === true;
-  return { ok, status: res.status, signal: res.signal, stderr: (res.stderr || '').slice(0, 300), parsed: parsed.value };
+  const parseOk = parsed.ok && parsed.value && parsed.value.ok === true;
+  return {
+    ok: classifySubprocess(res).ok && parseOk,
+    status: res.status,
+    signal: res.signal,
+    error: res.error ? String(res.error.message || res.error).slice(0, 200) : null,
+    parseOk: parsed.ok,
+    parseError: parsed.ok ? null : parsed.error,
+    stdout: (res.stdout || '').slice(-2000),
+    stderr: (res.stderr || '').slice(0, 500),
+    parsed: parsed.value,
+  };
 }
 
 async function generatePptx(outdir) {
@@ -111,11 +146,13 @@ function convert(soffice, profileUri, srcFile, dstDir, toPdf = true) {
   const args = ['--headless', `-env:UserInstallation=${profileUri}`, '--convert-to', toPdf ? 'pdf' : 'xlsx', '--outdir', dstDir, srcFile];
   const res = run(soffice, args, { timeout: 120000 });
   const cls = classifySubprocess(res);
-  return { ...cls, status: res.status, signal: res.signal, stdout: (res.stdout || '').slice(0, 200), stderr: (res.stderr || '').slice(0, 200) };
+  return { ...cls, status: res.status, signal: res.signal, error: res.error ? String(res.error.message || res.error).slice(0, 160) : null, stdout: (res.stdout || '').slice(0, 300), stderr: (res.stderr || '').slice(0, 300) };
 }
 
 async function main() {
   const evidencePaths = [];
+  // Keep accumulated observations even if a later generation/conversion throws.
+  const partial = { nativeFacts: {}, renderFacts: {}, recalc: null };
   const runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
   const nativeDir = join(runDir, 'native');
   const renderDir = join(runDir, 'render');
@@ -126,37 +163,55 @@ async function main() {
     evidencePaths.push(runDir);
 
     const gen = runPython(['generate', nativeDir]);
+    partial.nativeFacts.generate = gen;
     const docx = join(nativeDir, 'qualification.docx');
     const xlsx = join(nativeDir, 'qualification.xlsx');
     let pptxFile = null;
     let pptxOk = false;
+    let pptxInspect = null;
     try {
       pptxFile = await generatePptx(nativeDir);
-      pptxOk = runPython(['inspect', pptxFile]).ok;
-    } catch { pptxOk = false; }
+      pptxInspect = runPython(['inspect', pptxFile]);
+      pptxOk = pptxInspect.ok;
+    } catch (error) {
+      pptxInspect = { ok: false, error: String(error && error.message ? error.message : error).slice(0, 200) };
+    }
     const native = decideNative({ gen, pptxOk });
+    partial.nativeFacts.pptx = pptxInspect;
+    partial.native = native;
 
     const soffice = which('soffice') || which('libreoffice');
     const pdftoppm = which('pdftoppm');
-    const pdfs = {};
-    let recalc = { status: 'fail', reasons: ['recalc not attempted'] };
+    const pdfs = partial.renderFacts;
+    let recalc = { status: 'fail', reasons: ['recalc not attempted'], observed: null };
     if (!disabled && soffice && pdftoppm) {
       const profileUri = pathToFileURL(join(renderDir, 'lo-profile')).href;
       for (const [name, file] of [['docx', docx], ['xlsx', xlsx], ['pptx', pptxFile]]) {
+        if (!file || !existsSync(file)) {
+          pdfs[name] = { convertOk: false, convertDetail: 'native input unavailable', pdfExists: false, pngCount: 0 };
+          continue;
+        }
         const dst = join(renderDir, name);
         const conv = convert(soffice, profileUri, file, dst, true);
         const pdfPath = join(dst, `${basename(file).replace(/\.(docx|xlsx|pptx)$/, '')}.pdf`);
-        const entry = { convertOk: conv.ok, convertDetail: conv.detail, pdfExists: existsSync(pdfPath), pdftoppmOk: false, pngDetail: null, pngCount: 0, pdfInspectOk: false, inspectDetail: null, pages: null };
+        const entry = { convertOk: conv.ok, convertDetail: conv.detail, convertStatus: conv.status, convertSignal: conv.signal, convertStderr: conv.stderr, pdfExists: existsSync(pdfPath), pdfPath: existsSync(pdfPath) ? pdfPath : null, pdftoppmOk: false, pngDetail: null, pngStatus: null, pngCount: 0, pdfInspectOk: false, inspectDetail: null, pages: null };
+        entry.convert = conv;
+        pdfs[name] = entry;
         if (entry.pdfExists) {
           const png = run(pdftoppm, ['-png', '-r', '96', pdfPath, join(dst, 'page')]);
           const pngCls = classifySubprocess(png);
           entry.pdftoppmOk = pngCls.ok;
           entry.pngDetail = pngCls.detail;
+          entry.pngStatus = png.status;
+          entry.pngChild = { status: png.status, signal: png.signal, error: png.error ? String(png.error.message || png.error).slice(0, 200) : null, stdout: (png.stdout || '').slice(0, 500), stderr: (png.stderr || '').slice(0, 500) };
           entry.pngCount = readdirSync(dst).filter((f) => f.endsWith('.png')).length;
           const insp = runPython(['pdf', pdfPath]);
+          entry.pdfInspection = insp;
           entry.pdfInspectOk = insp.ok;
-          entry.inspectDetail = insp.ok ? 'ok' : `python pdf status ${insp.status}`;
-          entry.pages = insp.ok && insp.parsed && insp.parsed.results ? insp.parsed.results[0].pageCount : null;
+          entry.inspectDetail = insp.ok ? 'ok' : `python pdf status ${insp.status} signal ${insp.signal} parseOk ${insp.parseOk}`;
+          entry.pages = insp.parsed && insp.parsed.results ? insp.parsed.results[0].pageCount : null;
+          entry.pdfInspectStatus = insp.status;
+          entry.pdfInspectStderr = insp.stderr;
         }
         pdfs[name] = entry;
       }
@@ -168,27 +223,49 @@ async function main() {
       const copy = join(recalcIn, 'qualification-copy.xlsx');
       copyFileSync(xlsx, copy);
       const conv = convert(soffice, profileUri, copy, recalcOut, false);
+      partial.recalc = { convert: conv, file: null, child: null };
       const newFile = join(recalcOut, 'qualification-copy.xlsx');
       const newFileExists = existsSync(newFile) && statSync(newFile).mtimeMs >= statSync(copy).mtimeMs - 1;
-      let a4 = null;
+      let observed = null;
+      let recalcChild = null;
+      let inspect = null;
       if (conv.ok && newFileExists) {
-        const check = runPython(['xlsxrecalc', newFile]);
-        if (check.ok && check.parsed && check.parsed.results) a4 = check.parsed.results[0].reopened.a4CachedValueAfterRecalc;
+        recalcChild = runPython(['xlsxrecalc', newFile]);
+        partial.recalc.child = recalcChild;
+        partial.recalc.file = newFile;
+        observed = recalcChild.parsed && recalcChild.parsed.results ? recalcChild.parsed.results[0].observed : { inspected: false };
+        if (!observed) observed = { inspected: false };
+        inspect = {
+          status: recalcChild.status,
+          signal: recalcChild.signal,
+          error: recalcChild.error,
+          parseOk: recalcChild.parseOk,
+          parseError: recalcChild.parseError,
+          nestedOk: recalcChild.parsed ? recalcChild.parsed.ok : false,
+        };
       }
-      recalc = decideRecalc({ convert: conv, newFile: newFileExists, a4 });
+      recalc = decideRecalc({ convert: conv, newFile: newFileExists, observed, inspect });
+      recalc.child = recalcChild;
+      recalc.convert = conv;
+      recalc.observedA4 = observed ? observed.cachedValue : null;
+      recalc.file = newFileExists ? newFile : null;
     } else if (!disabled) {
-      recalc = { status: 'fail', reasons: ['LibreOffice/poppler unavailable; recalc not attempted'] };
+      recalc = { status: 'fail', reasons: ['LibreOffice/poppler unavailable; recalc not attempted'], observed: null };
     }
     const render = decideRender({ disabled, soffice, pdftoppm, pdfs, recalc });
+    partial.recalc = recalc;
 
     const ok = native.status === 'pass' && render.status === 'pass';
     const payload = {
       probe: 'artifacts',
       ok,
       native,
+      nativeFacts: { generate: gen, pptx: pptxInspect },
       render,
       renderRequired: true,
+      renderFacts: pdfs,
       recalc,
+      tools: { soffice, pdftoppm },
       pdfPreviewCandidate: 'pdfjs-dist 6.4.299 (adopted preview candidate; no viewer implemented)',
       reasons: [...native.reasons, ...render.reasons],
       evidencePaths,
@@ -196,7 +273,7 @@ async function main() {
     process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
     process.exit(ok ? 0 : 1);
   } catch (error) {
-    process.stdout.write(JSON.stringify({ probe: 'artifacts', ok: false, reasons: [String(error).slice(0, 300)], evidencePaths }, null, 2) + '\n');
+    process.stdout.write(JSON.stringify({ probe: 'artifacts', ok: false, ...partial, reasons: [String(error).slice(0, 300)], evidencePaths }, null, 2) + '\n');
     process.exit(1);
   }
 }

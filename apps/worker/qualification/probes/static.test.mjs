@@ -21,8 +21,8 @@ import {
   verifyRestore,
   InMemorySessionStore,
 } from '../sdk-options.mjs';
-import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80 } from './runtime.mjs';
-import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, identifyAssociatedChromium, scanDisablingFlags } from './browser.mjs';
+import { summarize, computeExitCode, parseStructuredOutput, classifyChildResult, classifyNetworkResults, addressIn10_80, DIRECT_IP_DENIED } from './runtime.mjs';
+import { assessSandboxEvidence, parseSandboxRows, extractResultSection, decodeToolResult, decodeRawText, identifyAssociatedChromium, scanDisablingFlags, classifyHelperDiscovery, classifyUnshareDiagnostic, parseSelfStatus, mountFlagsFor, planBrowserSteps, shouldStopAfter, hasActualError, buildBrowserSteps, runBoundedSequence } from './browser.mjs';
 import { classifySubprocess, decideNative, decideRecalc, decideRender } from './artifacts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -401,7 +401,7 @@ test('summarize/computeExitCode treat a required skipped or failed check as not-
 // ---------------------------------------------------------------------------
 
 test('Dockerfile pins an immutable base digest and non-root UID/GID 10001', () => {
-  assert.match(dockerfile, /^FROM node:24\.9\.0-bookworm-slim@sha256:[a-f0-9]{64}$/m);
+  assert.match(dockerfile, /^FROM node:24\.21\.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20$/m);
   assert.match(dockerfile, /^USER 10001:10001$/m);
   assert.match(dockerfile, /groupadd --gid 10001 meri/);
   assert.match(dockerfile, /useradd --uid 10001 --gid 10001/);
@@ -415,8 +415,8 @@ test('Dockerfile declares the writable mount points and read-only-root expectati
 });
 
 test('Dockerfile pins Debian repositories to the snapshot with signature verification and Check-Valid-Until disabled', () => {
-  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian-security\/20260901T000000Z/);
+  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /snapshot\.debian\.org\/archive\/debian-security\/20261009T000000Z/);
   assert.match(dockerfile, /Signed-By: \/usr\/share\/keyrings\/debian-archive-keyring\.gpg/);
   assert.match(dockerfile, /Check-Valid-Until: no/);
   assert.doesNotMatch(dockerfile, /trusted=yes/);
@@ -424,9 +424,9 @@ test('Dockerfile pins Debian repositories to the snapshot with signature verific
 });
 
 test('Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version', () => {
-  assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20260901T000000Z/);
-  assert.match(dockerfile, /ca-certificates=20230311\+deb12u1/);
+  assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
+  assert.match(dockerfile, /ca-certificates=20250419~deb12u1/);
 });
 
 test('Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops', () => {
@@ -444,8 +444,9 @@ test('Dockerfile performs one locked npm install with optional binaries and no f
 
 test('Dockerfile installs the matched CfT browser via the adopted Playwright CLI and keeps the sandbox helper', () => {
   assert.match(dockerfile, /node node_modules\/playwright\/cli\.js install chromium/);
-  assert.match(dockerfile, /-name chrome_sandbox/);
-  assert.match(dockerfile, /chmod 4755 "\$sb"/);
+  assert.match(dockerfile, /chrome_sandbox/);
+  assert.match(dockerfile, /chrome-sandbox/);
+  assert.match(dockerfile, /chmod 4755 "\$orig" "\$alias"/);
   assert.match(dockerfile, /chrome-linux64/);
   assert.doesNotMatch(dockerfile, /--no-sandbox/);
   assert.doesNotMatch(dockerfile, /--privileged/);
@@ -455,20 +456,50 @@ test('Dockerfile installs the matched CfT browser via the adopted Playwright CLI
 test('component-pins.json records the inspected CfT archive, sha256 and helper path', () => {
   assert.equal(pins.chromium.browserVersion, '155.0.8059.12');
   assert.equal(pins.chromium.archiveFile, 'chrome-linux64.zip');
-  assert.match(pins.chromium.archiveSha256, /^[a-f0-9]{64}$/);
+  assert.equal(pins.chromium.archiveBytes, 198335306);
+  assert.equal(pins.chromium.archiveSha256, 'a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489');
   assert.match(pins.chromium.downloadPath, /builds\/cft\/155\.0\.8059\.12\/linux64\/chrome-linux64\.zip/);
   assert.match(pins.chromium.sandboxHelper, /chrome_sandbox/);
   assert.match(pins.chromium.extractedExecutable, /chrome-linux64\/chrome$/);
 });
 
+test('component-pins.json records CFT per-file pins and provenance', () => {
+  assert.equal(pins.chromium.perFilePins['chrome-linux64/chrome'], 'adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0');
+  assert.equal(pins.chromium.perFilePins['chrome-linux64/chrome_sandbox'], 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314');
+  assert.equal(pins.chromium.installedPaths.chrome, '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome');
+  assert.equal(pins.chromium.installedPaths.chromeSandbox, '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox');
+  assert.match(pins.chromium.archiveProvenance, /W02-01-BUILD-ACCEPTANCE/);
+});
+
+test('Dockerfile byte-verifies CFT files at the established paths and emits build evidence fail-closed', () => {
+  assert.ok(dockerfile.includes('/opt/meri-browsers/chromium-1247/chrome-linux64'));
+  assert.ok(dockerfile.includes('adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0'));
+  assert.ok(dockerfile.includes('be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314'));
+  assert.ok(dockerfile.includes('cat /opt/meri-worker/os-installed-packages.txt'));
+  assert.ok(dockerfile.includes("grep -Eq 'LibreOffice [0-9]'"));
+  assert.ok(!dockerfile.includes('|| echo "libreoffice version unavailable"'));
+  assert.ok(!dockerfile.includes('| sort > /opt/meri-worker/os-installed-packages.txt'), 'dpkg-query must not run inside an unchecked pipeline');
+});
+
+test('component-pins.json records base license source and the prior runtime-probe evidence', () => {
+  assert.match(pins.baseImage.licenseSource, /nodejs\/node\/v24\.21\.0\/LICENSE/);
+  assert.match(pins.baseImage.licenseSource, /License audit INCOMPLETE/);
+  assert.ok(pins.priorBuiltCandidate.scanStatus.includes('UNRESOLVED'));
+  assert.equal(pins.runtimeProbeEvidence.taskId, 'cfcc4a32e3ea45a7be898d322f663411');
+  assert.equal(pins.runtimeProbeEvidence.stopped, 'exit 1 at 2026-10-09T20:57:40Z');
+  assert.match(pins.runtimeProbeEvidence.failed['browser-sandbox'], /No usable sandbox/);
+});
+
 test('component-pins.json records resolved OS/snapshot versions and unresolved pins none remain for base', () => {
-  assert.equal(pins.baseImage.reference, 'node:24.9.0-bookworm-slim');
+  assert.equal(pins.baseImage.reference, 'node:24.21.0-bookworm-slim');
+  assert.equal(pins.baseImage.nodeVersion, '24.21.0');
   assert.match(pins.baseImage.indexDigest, /^sha256:[a-f0-9]{64}$/);
-  assert.equal(pins.osPackages.snapshotTimestamp, '20260901T000000Z');
+  assert.equal(pins.osPackages.snapshotTimestamp, '20261009T000000Z');
   assert.ok(pins.osPackages.resolved['libreoffice-core']);
   assert.ok(pins.osPackages.resolved['libnss3']);
-  assert.equal(pins.osPackages.resolved['ca-certificates'], '20230311+deb12u1');
-  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT');
+  assert.equal(pins.osPackages.resolved['ca-certificates'], '20250419~deb12u1');
+  assert.equal(pins.osPackages.resolved['libnss3'], '2:3.87.1-1+deb12u4');
+  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT-REFRESHED-UNBUILT');
 });
 
 test('Dockerfile OS package pins match the component-pins resolved versions (no drift)', () => {
@@ -480,6 +511,27 @@ test('Dockerfile OS package pins match the component-pins resolved versions (no 
   assert.ok(pins.osPackages.firstBuildFailure);
 });
 
+test('Dockerfile refreshes inherited packages and records build-time evidence', () => {
+  assert.ok(dockerfile.includes('apt-get -y --no-remove dist-upgrade'), 'no-removal bounded upgrade');
+  assert.ok(dockerfile.includes('os-installed-packages.txt'), 'dpkg inventory');
+  assert.ok(dockerfile.includes('runtime-versions.txt'), 'runtime versions');
+  assert.ok(dockerfile.includes('claude-agent-sdk-linux-x64/claude'), 'SDK binary path');
+  assert.ok(dockerfile.includes('4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358'), 'SDK binary checksum');
+  assert.ok(dockerfile.includes('cft-hashes.txt'), 'CFT hash evidence');
+});
+
+test('component-pins.json distinguishes the prior built candidate from the unbuilt refresh', () => {
+  assert.equal(pins.assembledImageDigest, null);
+  assert.match(pins.priorBuiltCandidate.digest, /^sha256:[a-f0-9]{64}$/);
+  assert.equal(pins.priorBuiltCandidate.ecrScan.critical, 12);
+  assert.ok(pins.priorBuiltCandidate.buildId);
+  assert.ok(pins.priorBuiltCandidate.sourceRecipeCommit);
+  assert.ok(pins.osPackages.securityFindings.scan.includes('12 CRITICAL'));
+  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-95210']);
+  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-52490']);
+  assert.ok(pins.osPackages.expectedInheritedVersions['libgnutls30']);
+});
+
 // ---------------------------------------------------------------------------
 // Network denial classification (positive control required)
 // ---------------------------------------------------------------------------
@@ -489,18 +541,19 @@ test('classifyNetworkResults requires expected denial classes and a 10.80 positi
     negatives: [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }, { name: 'api.anthropic.com', resolved: false, errorCode: 'EAI_NONAME' }],
     positive: { name: 'logs.us-east-1.amazonaws.com', resolved: true, address: '10.80.4.5' },
     connect: 'CONNECTED',
+    directIp: 'timeout',
   });
   assert.equal(good.ok, true, good.reasons.join('; '));
 });
 
 test('classifyNetworkResults fails on resolver success, unknown error class, wrong range or failed connect', () => {
   const neg = [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }];
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, true);
-  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: true, address: '1.2.3.4' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: false, errorCode: 'SERVFAIL' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: false, errorCode: 'ENOTFOUND' }, connect: 'skipped' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '52.1.1.1' }, connect: 'CONNECTED' }).ok, false);
-  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, true);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: true, address: '1.2.3.4' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: [{ name: 'example.com', resolved: false, errorCode: 'SERVFAIL' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: false, errorCode: 'ENOTFOUND' }, connect: 'skipped', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '52.1.1.1' }, connect: 'CONNECTED', directIp: 'timeout' }).ok, false);
+  assert.equal(classifyNetworkResults({ negatives: neg, positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'timeout', directIp: 'timeout' }).ok, false);
 });
 
 test('addressIn10_80 matches only the qualification VPC range', () => {
@@ -522,18 +575,19 @@ test('classifySubprocess fails on nonzero status, signal or spawn error', () => 
 });
 
 test('decideNative fails when generation or PPTX inspection fails', () => {
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: true }).status, 'pass');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: true } }, pptxOk: true }).status, 'pass');
   assert.equal(decideNative({ gen: { status: 1 }, pptxOk: true }).status, 'fail');
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: false } }, pptxOk: true }).status, 'fail');
-  assert.equal(decideNative({ gen: { status: 0, parsed: { ok: true } }, pptxOk: false }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: false } }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: false }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { status: 0, parseOk: true, parsed: { ok: true } }, pptxOk: false }).status, 'fail');
 });
 
-test('decideRecalc requires successful conversion, a NEW file and A4=6', () => {
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: 6 }).status, 'pass');
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, a4: 6 }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, a4: null }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, a4: 6 }).status, 'fail');
-  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, a4: 6 }).status, 'fail');
+test('decideRecalc requires successful conversion, a NEW file and observed numeric 6', () => {
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: OBS_GOOD, inspect: { status: 0, parseOk: true, nestedOk: true } }).status, 'pass');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: false, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0 }, newFile: true, observed: { inspected: false } }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 1 }, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, observed: OBS_GOOD }).status, 'fail');
 });
 
 const GOOD_PDFS = {
@@ -560,4 +614,210 @@ test('decideRender fails on any failed conversion, missing PNG or failed PDF ins
 test('the SDK reference store is the actual pinned upstream export', () => {
   assert.equal(typeof InMemorySessionStore, 'function');
   assert.ok(createReferenceStore() instanceof InMemorySessionStore);
+});
+
+// ---------------------------------------------------------------------------
+// Prelaunch helper discovery, unshare diagnostic, mounts and stop sequence
+// ---------------------------------------------------------------------------
+
+const PINNED = { path: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', realpath: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', uid: 0, gid: 0, mode: '04755', sha256: 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314' };
+const ALIAS_OK = { path: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox', realpath: '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox', uid: 0, gid: 0, mode: '04755', sha256: 'be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314' };
+
+test('helper discovery accepts a root-owned 4755 alias matching the pinned helper', () => {
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: ALIAS_OK, aliasExpected: ALIAS_OK.path }).ok, true);
+});
+
+test('helper discovery rejects a missing, wrong-bytes, non-root or non-4755 alias', () => {
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { path: ALIAS_OK.path, error: 'missing' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, sha256: 'deadbeef' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, uid: 10001 }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: PINNED, alias: { ...ALIAS_OK, mode: '0755' }, aliasExpected: ALIAS_OK.path }).ok, false);
+  assert.equal(classifyHelperDiscovery({ pinned: { path: null, error: 'none' }, alias: ALIAS_OK, aliasExpected: ALIAS_OK.path }).ok, false);
+});
+
+test('classifyUnshareDiagnostic reads the simple newuserns check and never calls killed/timeout/spawn-error children ok', () => {
+  assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'unshare_ret=0 errno=0' }).newUserNsAsNonRoot, true);
+  const denied = classifyUnshareDiagnostic({ status: 3, stdout: 'unshare_ret=-1 errno=1' });
+  assert.equal(denied.newUserNsAsNonRoot, false);
+  assert.match(denied.note, /simple check only/);
+  assert.equal(classifyUnshareDiagnostic({ status: null, timedOut: true, stdout: 'unshare_ret=0 errno=0' }).outcome, 'timeout');
+  assert.equal(classifyUnshareDiagnostic({ status: null, signal: 'SIGKILL', stdout: 'unshare_ret=0 errno=0' }).outcome, 'signal:SIGKILL');
+  assert.equal(classifyUnshareDiagnostic({ status: null, error: { code: 'ENOENT' }, stdout: 'unshare_ret=0 errno=0' }).outcome, 'spawn-error');
+  assert.equal(classifyUnshareDiagnostic({ status: 0, stdout: 'noise' }).outcome, 'unavailable');
+});
+
+test('parseSelfStatus and mountFlagsFor extract bounded security fields', () => {
+  const status = 'Name:\tchrome\nUid:\t10001\t10001\t10001\t10001\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t2\nSeccomp_filters:\t1\nTracerPid:\t0\n';
+  const parsed = parseSelfStatus(status);
+  assert.equal(parsed.CapEff, '0000000000000000');
+  assert.equal(parsed.Seccomp, '2');
+  const mountinfo = '21 27 0:20 / /opt/meri-browsers rw,nosuid,nodev,relatime - ext4 /dev/x rw\n1 0 0:1 / / ro,relatime - overlay overlay rw\n';
+  assert.deepEqual(mountFlagsFor('/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox', mountinfo).options, ['rw', 'nosuid', 'nodev', 'relatime']);
+  assert.deepEqual(mountFlagsFor('/', mountinfo).options, ['ro', 'relatime']);
+  assert.deepEqual(mountFlagsFor('/anything-else', mountinfo).options, ['ro', 'relatime']); // falls back to the root mount prefix
+});
+
+test('planBrowserSteps lists the granular browser-dependent substeps', () => {
+  assert.deepEqual(planBrowserSteps(), ['get_config', 'nav-fixture', 'snapshot', 'download-nav', 'download-bytes', 'version-nav', 'version-eval', 'sandbox-nav', 'sandbox-eval']);
+  assert.equal(shouldStopAfter('get_config', { isError: false, decodedOk: false }), true);
+  assert.equal(shouldStopAfter('nav-fixture', { isError: true }), true);
+  assert.equal(shouldStopAfter('snapshot', { isError: false }), false);
+});
+
+// ---------------------------------------------------------------------------
+// Real-flow driver fixtures: fail each actual substep in turn, assert no later
+// MCP call runs. Uses the SAME buildBrowserSteps + runBoundedSequence path as
+// main(); NO network, process launch or real browser.
+// ---------------------------------------------------------------------------
+
+const FAKE_IO = {
+  port: 1234,
+  outputDir: '/owned/output',
+  exists: () => true,
+  readdir: () => ['meri-fixture.txt'],
+  readFile: () => Buffer.from('meri-loopback-fixture-download\n'),
+  sha256: () => 'FIXEDHASH',
+  expectedVersion: '155.0.8059.12',
+};
+
+function makeFakeCallTool(overrides = {}) {
+  const calls = [];
+  const okText = (t) => ({ content: [{ type: 'text', text: t }] });
+  const okEval = (v) => ({ content: [{ type: 'text', text: `### Result\n${JSON.stringify(v)}\n` }] });
+  const defaults = {
+    browser_get_config: () => okEval({ browsers: ['chromium'] }),
+    browser_navigate: (args) => (args && String(args.url).includes('chrome://'))
+      ? okText('### Page\n- navigated')
+      : okText('### Page\n- navigated'),
+    browser_snapshot: () => okText('### Snapshot\n- marker meri-loopback-ok'),
+    browser_evaluate: (args) => (args && typeof args.function === 'string' && args.function.includes('navigator.userAgent'))
+      ? okEval({ userAgent: 'Mozilla/5.0 Chrome/155.0.8059.12', text: 'x' })
+      : okEval({ text: 's', rows: [['Layer 1 Sandbox', 'Namespace'], ['Seccomp-BPF sandbox', 'Yes']], evaluation: 'OK' }),
+  };
+  const callTool = async (name, args) => {
+    calls.push(name);
+    const fn = Object.prototype.hasOwnProperty.call(overrides, name) ? overrides[name] : defaults[name];
+    return typeof fn === 'function' ? fn(args) : fn;
+  };
+  return { calls, callTool };
+}
+
+async function runBrowserFixture(overrides) {
+  const { calls, callTool } = makeFakeCallTool(overrides);
+  const evidence = { rawResults: {} };
+  const reasons = [];
+  const steps = buildBrowserSteps({ callTool, toolNames: ['browser_get_config'], evidence, reasons, io: FAKE_IO });
+  const seq = await runBoundedSequence(steps);
+  return { calls, seq, reasons, evidence };
+}
+
+test('real-flow: nav/snapshot success without a Result section is NOT fatal', async () => {
+  const { seq, evidence } = await runBrowserFixture();
+  assert.equal(seq.stoppedAfter, null);
+  assert.deepEqual(seq.ran, planBrowserSteps());
+  assert.ok(evidence.sandbox && evidence.sandbox.rows.length === 2);
+});
+
+for (const [step, overrides, expectedCalls] of [
+  ['get_config', { browser_get_config: { content: [{ type: 'text', text: '### Error\nboom' }], isError: true } }, 1],
+  ['nav-fixture', { browser_navigate: (a) => (String(a.url).includes('/download') ? { content: [{ type: 'text', text: '### Page' }] } : { content: [{ type: 'text', text: '### Error\nnav' }], isError: true }) }, 2],
+  ['snapshot', { browser_snapshot: { content: [{ type: 'text', text: '### Snapshot\n- no marker here' }] } }, 3],
+  ['download-nav', { browser_navigate: (a) => (String(a.url).includes('/download') ? { content: [{ type: 'text', text: '### Error\ndl' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 4],
+  ['version-nav', { browser_navigate: (a) => (String(a.url).includes('chrome://version') ? { content: [{ type: 'text', text: '### Error\nv' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 5],
+  ['sandbox-nav', { browser_navigate: (a) => (String(a.url).includes('chrome://sandbox') ? { content: [{ type: 'text', text: '### Error\ns' }], isError: true } : { content: [{ type: 'text', text: '### Page' }] }) }, 7],
+]) {
+  test(`real-flow: a fatal ${step} stops the sequence and runs no later MCP call`, async () => {
+    const { calls, seq } = await runBrowserFixture(overrides);
+    assert.equal(seq.stoppedAfter, step);
+    assert.equal(calls.length, expectedCalls, `expected exactly ${expectedCalls} MCP calls, got ${calls.length}`);
+    const later = seq.notRun;
+    assert.ok(later.length >= 1, 'expected remaining substeps recorded not-run');
+  });
+}
+
+test('real-flow: download-bytes failure (no file) stops before version/sandbox MCP calls', async () => {
+  const { calls, seq } = await runBrowserFixture();
+  // re-run with a special IO where the downloaded file is absent
+  const { callTool } = makeFakeCallTool();
+  const evidence = { rawResults: {} };
+  const reasons = [];
+  const steps = buildBrowserSteps({ callTool, toolNames: ['browser_get_config'], evidence, reasons, io: { ...FAKE_IO, exists: () => false } });
+  const seq2 = await runBoundedSequence(steps);
+  assert.equal(seq2.stoppedAfter, 'download-bytes');
+  assert.ok(seq2.notRun.includes('version-nav'));
+  assert.ok(seq2.notRun.includes('sandbox-eval'));
+});
+
+test('real-flow: version-eval failure stops before sandbox navigation', async () => {
+  const { seq } = await runBrowserFixture({ browser_evaluate: (a) => (a.function.includes('navigator.userAgent') ? { content: [{ type: 'text', text: '### Error\nbad eval' }], isError: true } : { content: [{ type: 'text', text: '### Result\n{}' }] }) });
+  assert.equal(seq.stoppedAfter, 'version-eval');
+  assert.ok(!seq.ran.includes('sandbox-nav'));
+  assert.ok(seq.notRun.includes('sandbox-eval'));
+});
+
+// ---------------------------------------------------------------------------
+// Office recalculation observed-value fixtures (never collapse to a pass)
+// ---------------------------------------------------------------------------
+
+const OK_CONVERT = { status: 0, signal: null, error: null };
+const OBS_GOOD = { inspected: true, inputs: [1, 2, 3], formula: '=SUM(A1:A3)', cachedValue: 6, cachedType: 'int' };
+
+test('decideRecalc passes only on original inputs, retained formula and numeric 6', () => {
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { status: 0, parseOk: true, nestedOk: true } }).status, 'pass');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { status: 0 } }).status, 'fail');
+});
+
+test('decideRecalc fails on wrong 0, actual null, missing inspection, python failure, malformed parse and constant 6 without formula', () => {
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, cachedValue: 0 } }).status, 'fail'); // wrong 0
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, cachedValue: null, cachedType: 'NoneType' } }).status, 'fail'); // actual null
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { inspected: false } }).status, 'fail'); // missing inspection
+  assert.equal(decideRecalc({ convert: { status: 1, signal: null }, newFile: true, observed: OBS_GOOD }).status, 'fail'); // python/convert failure
+  assert.equal(decideRecalc({ convert: { status: 0, signal: 'SIGSEGV' }, newFile: true, observed: OBS_GOOD }).status, 'fail');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: false, observed: OBS_GOOD }).status, 'fail'); // no new file
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, formula: 6 } }).status, 'fail'); // constant 6 without formula
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: { ...OBS_GOOD, inputs: [1, 2] } }).status, 'fail'); // missing input
+});
+
+test('decideRecalc rejects good-looking observed facts from a failed inspection child (false-pass guard)', () => {
+  const okChild = { status: 0, signal: null, error: null, parseOk: true, nestedOk: true };
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: okChild }).status, 'pass');
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: 1 } }).status, 'fail'); // exit 1
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: null, signal: 'SIGKILL' } }).status, 'fail'); // signal
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, status: null, error: 'spawn ENOENT' } }).status, 'fail'); // spawn error
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, parseOk: false, parseError: 'bad json' } }).status, 'fail'); // parse failure
+  assert.equal(decideRecalc({ convert: OK_CONVERT, newFile: true, observed: OBS_GOOD, inspect: { ...okChild, nestedOk: false } }).status, 'fail'); // nested ok false
+});
+
+// ---------------------------------------------------------------------------
+// Direct-IP negative fixtures
+// ---------------------------------------------------------------------------
+
+test('classifyNetworkResults requires the direct-IP negative and fails on CONNECTED or ambiguous results', () => {
+  const base = { negatives: [{ name: 'example.com', resolved: false, errorCode: 'ENOTFOUND' }], positive: { name: 'x', resolved: true, address: '10.80.4.5' }, connect: 'CONNECTED' };
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'timeout' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:ENETUNREACH' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EHOSTUNREACH' }).ok, true);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'CONNECTED' }).ok, false);
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:EACCES' }).ok, false); // ambiguous fails closed
+  assert.equal(classifyNetworkResults({ ...base, directIp: 'error:ECONNREFUSED' }).ok, false); // peer refusal is inconclusive
+  assert.equal(classifyNetworkResults({ ...base, directIp: undefined }).ok, false);
+  assert.ok(DIRECT_IP_DENIED.includes('timeout'));
+});
+
+test('an absent optional MCP config tool is recorded as not-run, without a call', async () => {
+  const evidence = { rawResults: {} };
+  let calls = 0;
+  const [configStep] = buildBrowserSteps({ callTool: async () => { calls += 1; }, toolNames: ['browser_navigate'], evidence, reasons: [] });
+  const sequence = await runBoundedSequence([configStep]);
+  assert.equal(calls, 0);
+  assert.deepEqual(sequence.ran, []);
+  assert.deepEqual(sequence.notRun, ['get_config']);
+});
+
+test('native generation never accepts successful-looking JSON from a signalled or errored child', () => {
+  const gen = { status: 0, parseOk: true, parsed: { ok: true } };
+  assert.equal(decideNative({ gen, pptxOk: true }).status, 'pass');
+  assert.equal(decideNative({ gen: { ...gen, error: { code: 'ETIMEDOUT' } }, pptxOk: true }).status, 'fail');
+  assert.equal(decideNative({ gen: { ...gen, signal: 'SIGKILL' }, pptxOk: true }).status, 'fail');
 });

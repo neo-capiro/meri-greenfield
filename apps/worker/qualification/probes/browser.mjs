@@ -2,16 +2,19 @@
 //
 // NEVER run by `npm test`. Drives @playwright/mcp 0.0.83 -> playwright-core
 // 1.64.0-alpha-1790635538000 (Chromium 155.0.8059.12, Chrome-for-Testing) via
-// the official @modelcontextprotocol/sdk 1.32.1 Client + StdioClientTransport
-// (an adopted diagnostic driver, NOT a second integration).
+// the official @modelcontextprotocol/sdk 1.32.1 Client + StdioClientTransport.
 //
 // Non-root, explicit --sandbox, isolated per-probe profile + owned output dir.
-// No --no-sandbox, no desktop browser, no second integration, no root. This
-// Windows host cannot qualify the target Linux sandbox; the probe is prepared
-// and statically inspected and is NOT RUN here.
+// No --no-sandbox, no desktop browser, no second integration, no root, no extra
+// capabilities. It ALSO reports bounded pre-launch diagnostics (helper alias
+// discovery, /proc security fields, mount flags, sysctls and a simple non-root
+// libc.unshare(CLONE_NEWUSER) check) and STOPS the browser-dependent sequence
+// after the FIRST fatal result. This Windows host cannot qualify the target
+// Linux sandbox; the probe is prepared and statically inspected and is NOT RUN.
 
 import { createServer } from 'node:http';
-import { mkdirSync, readdirSync, writeFileSync, existsSync, readFileSync, readlinkSync, statSync } from 'node:fs';
+import { mkdirSync, readdirSync, writeFileSync, existsSync, readFileSync, readlinkSync, statSync, realpathSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -32,10 +35,13 @@ const DOWNLOAD_PAYLOAD = 'meri-loopback-fixture-download\n';
 
 const DISABLING_FLAGS = ['--no-sandbox', '--disable-namespace-sandbox', '--disable-seccomp-filter-sandbox'];
 
+// ---------------------------------------------------------------------------
+// MCP Result-section parsing and sandbox rows (fail-closed)
+// ---------------------------------------------------------------------------
+
 /**
  * Fail-closed parser for the EXACT `### Result` Markdown section emitted by
  * playwright-core Response.serialize. Returns { ok, value, raw, error }.
- * Multiple/missing/empty/malformed Result sections fail; an Error section fails.
  */
 export function extractResultSection(text) {
   const raw = typeof text === 'string' ? text : '';
@@ -79,12 +85,7 @@ const KNOWN_ROWS = {
   'Seccomp-BPF sandbox supports TSYNC': 'tsync',
 };
 
-/**
- * Parse exact two-cell chrome://sandbox rows (Chromium 155 builds a two-cell
- * table via sandbox_internals.ts: label + value). Unknown labels are ignored; a
- * duplicated known label or a known label with an unexpected value is ambiguous.
- * Returns { found, ambiguous }.
- */
+/** Parse exact two-cell chrome://sandbox rows. Returns { found, ambiguous }. */
 export function parseSandboxRows(rows) {
   const found = {};
   const ambiguous = [];
@@ -102,12 +103,7 @@ export function parseSandboxRows(rows) {
   return { found, ambiguous };
 }
 
-/**
- * Pure sandbox verdict from the exact chrome://sandbox table plus identified
- * /proc process evidence. Requires Layer 1 Sandbox = Namespace or SUID AND
- * Seccomp-BPF sandbox = Yes, and an associated actual browser AND renderer.
- * Missing/ambiguous/None/unknown fails. Requested config is never substituted.
- */
+/** Pure sandbox verdict from the exact table plus identified process evidence. */
 export function assessSandboxEvidence({ sandbox, browser, renderer } = {}) {
   const reasons = [];
   const rows = sandbox && Array.isArray(sandbox.rows) ? sandbox.rows : null;
@@ -135,12 +131,11 @@ export function scanDisablingFlags(processes) {
   return hits;
 }
 
-/**
- * Select the actual Chromium processes for THIS run. Executable identity comes
- * from /proc/<pid>/exe, not argv: the MCP Node launcher passes `--browser
- * chromium` yet its exe is node and is rejected. The browser must run our exact
- * profileDir; renderers are associated through real PPid ancestry.
- */
+// ---------------------------------------------------------------------------
+// Process identification
+// ---------------------------------------------------------------------------
+
+/** Select the actual Chromium processes for THIS run (exe identity, not argv). */
 export function identifyAssociatedChromium(processes, { browsersRoot = BROWSERS_ROOT, profileDir } = {}) {
   const all = Array.isArray(processes) ? processes : [];
   const byPid = new Map(all.map((p) => [p.pid, p]));
@@ -163,7 +158,7 @@ export function identifyAssociatedChromium(processes, { browsersRoot = BROWSERS_
   return { browser, renderer, browsers };
 }
 
-/** Read ALL processes from /proc with exe, ppid and --type; no exe filtering here. */
+/** Read ALL processes from /proc with exe, ppid and --type. */
 export function readProcesses(procRoot = '/proc') {
   const out = [];
   try {
@@ -206,8 +201,7 @@ export function readProcEvidence(pid, procRoot = '/proc') {
     }
   } catch { evidence.namespaces = 'unavailable'; }
   try {
-    const status = readFileSync(join(procRoot, String(pid), 'status'), 'utf8');
-    evidence.status = status.split('\n').filter((l) => /^(Name|Uid|Gid|CapEff|NoNewPrivs|Seccomp|Seccomp_filters|NSpid):/.test(l)).join(' | ').slice(0, 400);
+    evidence.status = readFileSync(join(procRoot, String(pid), 'status'), 'utf8').split('\n').filter((l) => /^(Name|Uid|Gid|CapEff|NoNewPrivs|Seccomp|Seccomp_filters|NSpid):/.test(l)).join(' | ').slice(0, 400);
   } catch { evidence.status = 'unavailable'; }
   try { evidence.uid_map = readFileSync(join(procRoot, String(pid), 'uid_map'), 'utf8').trim().slice(0, 200); } catch {}
   try { evidence.gid_map = readFileSync(join(procRoot, String(pid), 'gid_map'), 'utf8').trim().slice(0, 200); } catch {}
@@ -215,6 +209,203 @@ export function readProcEvidence(pid, procRoot = '/proc') {
 }
 
 function sha256(buf) { return createHash('sha256').update(buf).digest('hex'); }
+
+// ---------------------------------------------------------------------------
+// Prelaunch diagnostics: helper alias discovery, /proc, mounts, userns check
+// ---------------------------------------------------------------------------
+
+/** Bounded depth-first search for a filename under a root. */
+export function findFileBounded(root, name, maxDepth = 4) {
+  const stack = [{ dir: root, depth: 0 }];
+  while (stack.length) {
+    const { dir, depth } = stack.pop();
+    let entries = [];
+    try { entries = readdirSync(dir, { withFileTypes: true }); } catch { continue; }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isFile() && e.name === name) return full;
+      if (e.isDirectory() && depth < maxDepth) stack.push({ dir: full, depth: depth + 1 });
+    }
+  }
+  return null;
+}
+
+/** Stat + realpath + sha256 for a helper path. */
+export function statHelper(path) {
+  try {
+    const st = statSync(path);
+    return { path, realpath: realpathSync(path), uid: st.uid, gid: st.gid, mode: `0${(st.mode & 0o7777).toString(8)}`, sha256: sha256(readFileSync(path)) };
+  } catch (error) { return { path, error: String(error && error.message ? error.message : error).slice(0, 160) }; }
+}
+
+/** Discover the pinned CFT helper (chrome_sandbox) and its adjacent hyphen alias. */
+export function discoverSandboxHelper(browsersRoot = BROWSERS_ROOT, aliasName = 'chrome-sandbox') {
+  const pinnedPath = findFileBounded(browsersRoot, 'chrome_sandbox');
+  const pinned = pinnedPath ? statHelper(pinnedPath) : { path: null, error: 'chrome_sandbox not found under browsers root' };
+  const aliasExpected = pinnedPath ? join(dirname(pinnedPath), aliasName) : null;
+  const alias = aliasExpected && existsSync(aliasExpected) ? statHelper(aliasExpected) : { path: aliasExpected, error: 'adjacent chrome-sandbox alias missing' };
+  return { pinned, aliasExpected, alias };
+}
+
+/**
+ * Pure helper-discovery verdict. Chromium 155's setuid host
+ * (sandbox/linux/suid/client/setuid_sandbox_host.cc) expects an adjacent
+ * `chrome-sandbox` (hyphen); the archive helper is `chrome_sandbox` (underscore)
+ * and is never auto-discovered. The alias must match the pinned bytes, be
+ * root-owned and mode 4755.
+ */
+export function classifyHelperDiscovery({ pinned, alias, aliasExpected } = {}) {
+  const reasons = [];
+  if (!pinned || pinned.error || !pinned.path) reasons.push('pinned chrome_sandbox helper not found');
+  if (!aliasExpected) reasons.push('adjacent chrome-sandbox path could not be derived');
+  if (!alias || alias.error || !alias.path) reasons.push('adjacent chrome-sandbox alias missing (setuid host expects the hyphen name)');
+  else {
+    if (pinned && pinned.sha256 && alias.sha256 !== pinned.sha256) reasons.push('alias sha256 differs from the pinned helper');
+    if (alias.uid !== 0) reasons.push(`alias not root-owned (uid ${alias.uid})`);
+    if (alias.mode !== '04755') reasons.push(`alias mode ${alias.mode} != 04755`);
+  }
+  return { ok: reasons.length === 0, reasons };
+}
+
+/** Parse security-relevant fields from /proc/<pid>/status text. */
+export function parseSelfStatus(text) {
+  const out = {};
+  for (const line of String(text).split('\n')) {
+    const m = /^(CapInh|CapPrm|CapEff|CapBnd|CapAmb|NoNewPrivs|TracerPid|Seccomp|Seccomp_filters|Uid|Gid):\s*(.*)$/.exec(line);
+    if (m) out[m[1]] = m[2].trim();
+  }
+  return out;
+}
+
+/** Longest-prefix mount flags for a path from /proc/self/mountinfo text. */
+export function mountFlagsFor(path, mountinfoText) {
+  let best = null;
+  for (const line of String(mountinfoText).split('\n')) {
+    const parts = line.split(' ');
+    if (parts.length < 6) continue;
+    const mp = parts[4];
+    if (path === mp || path.startsWith(mp.endsWith('/') ? mp : `${mp}/`)) {
+      if (!best || mp.length > best.mountPoint.length) best = { mountPoint: mp, options: parts[5].split(',') };
+    }
+  }
+  return best;
+}
+
+/** Bounded non-root child: Python3.11 ctypes libc.unshare(CLONE_NEWUSER) check.
+ * Retains raw spawn facts (error type/code) plus bounded stdout/stderr, not just
+ * a classification. */
+export function runUsernsDiagnostic({ pythonBin = 'python3', timeoutMs = 5000 } = {}) {
+  const code = "import ctypes,sys\nlibc=ctypes.CDLL('libc.so.6',use_errno=True)\nr=libc.unshare(0x10000000)\nprint('unshare_ret=%d errno=%d' % (r, ctypes.get_errno()))\nsys.exit(0 if r==0 else 3)\n";
+  const res = spawnSync(pythonBin, ['-c', code], { encoding: 'utf8', timeout: timeoutMs });
+  return {
+    status: res.status,
+    signal: res.signal,
+    timedOut: !!(res.error && res.error.code === 'ETIMEDOUT'),
+    error: res.error ? { message: String(res.error.message || res.error).slice(0, 200), code: res.error.code || null, type: res.error.name || null } : null,
+    stdout: (res.stdout || '').slice(0, 200),
+    stderr: (res.stderr || '').slice(0, 200),
+  };
+}
+
+/**
+ * Classify the simple unshare diagnostic. This is NOT Chromium's full namespace
+ * predicate (credentials.cc clone/map/drop/second-unshare) and is NOT a
+ * standalone required pass if the browser qualifies by another supported route.
+ * A timed-out, signal-killed or spawn-errored child is NEVER classified as ok,
+ * regardless of any stdout it may have produced.
+ */
+export function classifyUnshareDiagnostic({ status, signal, timedOut, stdout, stderr, error } = {}) {
+  if (timedOut) return { outcome: 'timeout', newUserNsAsNonRoot: null };
+  if (error) return { outcome: 'spawn-error', newUserNsAsNonRoot: null, error: error.code || error.message || 'unknown' };
+  if (signal) return { outcome: `signal:${signal}`, newUserNsAsNonRoot: null };
+  const m = /unshare_ret=(-?\d+) errno=(\d+)/.exec(String(stdout || ''));
+  if (status === 0 && m && m[1] === '0') return { outcome: 'unshare-newuserns-ok', newUserNsAsNonRoot: true, errno: Number(m[2]) };
+  if (m && m[1] !== '0') return { outcome: 'unshare-newuserns-denied', newUserNsAsNonRoot: false, errno: Number(m[2]), note: 'simple check only; not Chromium full predicate' };
+  return { outcome: 'unavailable', newUserNsAsNonRoot: null, stderr: String(stderr || '').slice(0, 200) };
+}
+
+/** Browser-dependent steps after launch, in order (granular actual MCP substeps). */
+export function planBrowserSteps() {
+  return ['get_config', 'nav-fixture', 'snapshot', 'download-nav', 'download-bytes', 'version-nav', 'version-eval', 'sandbox-nav', 'sandbox-eval'];
+}
+
+/** True when an MCP tool result carries an isError flag or an actual `### Error` section. */
+export function hasActualError(result) {
+  if (!result || result.isError) return true;
+  const text = (result && Array.isArray(result.content) ? result.content : []).filter((c) => c && c.type === 'text').map((c) => c.text).join('\n');
+  return /^###\s+Error\s*$/m.test(text);
+}
+
+/** Decide whether the browser-dependent sequence must stop after a step. */
+export function shouldStopAfter(step, { isError, decodedOk } = {}) {
+  if (step === 'browser_get_config' || step === 'get_config') return !!isError || decodedOk === false;
+  return !!isError;
+}
+
+/**
+ * Small actual sequence driver. Each step is { name, run: async () => ({ fatal, detail }) }.
+ * After the FIRST fatal step, NO later step's run() is invoked; remaining steps
+ * are recorded as not-run. main() and the offline fake-client fixtures use this
+ * SAME path, so a fixture that makes an early step fatal asserts that no later
+ * MCP callback is executed.
+ */
+export async function runBoundedSequence(steps) {
+  const order = steps.map((s) => s.name);
+  const ran = [];
+  const notRun = [];
+  const details = {};
+  let stoppedAfter = null;
+  for (const step of steps) {
+    if (stoppedAfter) { notRun.push(step.name); continue; }
+    const res = (await step.run()) || {};
+    if (res.skipped) notRun.push(step.name);
+    else ran.push(step.name);
+    details[step.name] = res.detail === undefined ? null : res.detail;
+    if (res.fatal) stoppedAfter = step.name;
+  }
+  return { order, ran, notRun, stoppedAfter, details };
+}
+
+/** Discover the installed Chrome-for-Testing executable under the browsers root. */
+export function discoverChrome(browsersRoot = BROWSERS_ROOT) {
+  const chromePath = findFileBounded(browsersRoot, 'chrome');
+  return chromePath ? statHelper(chromePath) : { path: null, error: 'chrome executable not found under browsers root' };
+}
+
+/** Collect bounded prelaunch diagnostics (no browser launch). */
+export function collectPrelaunchDiagnostics({ browsersRoot = BROWSERS_ROOT } = {}) {
+  const discovery = discoverSandboxHelper(browsersRoot);
+  const helperVerdict = classifyHelperDiscovery(discovery);
+  const chrome = discoverChrome(browsersRoot);
+  let mountinfo = '';
+  try { mountinfo = readFileSync('/proc/self/mountinfo', 'utf8'); } catch {}
+  let selfStatus = '';
+  try { selfStatus = readFileSync('/proc/self/status', 'utf8'); } catch {}
+  let uidMap = 'unavailable';
+  let gidMap = 'unavailable';
+  try { uidMap = readFileSync('/proc/self/uid_map', 'utf8').trim().slice(0, 200); } catch {}
+  try { gidMap = readFileSync('/proc/self/gid_map', 'utf8').trim().slice(0, 200); } catch {}
+  const sysctls = {};
+  for (const k of ['kernel.unprivileged_userns_clone', 'user.max_user_namespaces', 'kernel.unprivileged_bpf_disabled', 'kernel.apparmor_restrict_unprivileged_userns']) {
+    try { sysctls[k] = readFileSync(`/proc/sys/${k.replace(/\./g, '/')}`, 'utf8').trim(); } catch { sysctls[k] = 'unavailable'; }
+  }
+  const helperPathForMount = (discovery.alias && discovery.alias.path) || (discovery.pinned && discovery.pinned.path) || '/';
+  const usernsRaw = runUsernsDiagnostic();
+  return {
+    discovery,
+    helperVerdict,
+    chrome,
+    selfStatus: parseSelfStatus(selfStatus),
+    selfUidMap: uidMap,
+    selfGidMap: gidMap,
+    helperMount: mountFlagsFor(helperPathForMount, mountinfo),
+    chromeMount: chrome && chrome.path ? mountFlagsFor(chrome.path, mountinfo) : null,
+    rootMount: mountFlagsFor('/', mountinfo),
+    sysctls,
+    usernsRaw,
+    userns: classifyUnshareDiagnostic(usernsRaw),
+  };
+}
 
 function startFixtureServer() {
   const server = createServer((req, res) => {
@@ -232,10 +423,104 @@ function startFixtureServer() {
 const SANDBOX_EXPR = '() => ({ text: document.body.innerText, rows: Array.from(document.querySelectorAll("#sandbox-status tr"), (r) => Array.from(r.cells, (c) => c.innerText.trim())), evaluation: document.querySelector("#evaluation")?.innerText })';
 const VERSION_EXPR = '() => ({ userAgent: navigator.userAgent, text: document.body.innerText })';
 
+/** Concatenate an MCP tool result's text content (no Result-section requirement). */
+export function decodeRawText(result) {
+  return (result && Array.isArray(result.content) ? result.content : []).filter((c) => c && c.type === 'text').map((c) => c.text).join('\n');
+}
+
+/**
+ * Build the granular browser-dependent steps shared by main() and the offline
+ * fake-client fixtures. `callTool(name, args)` is the injected MCP call; `io`
+ * supplies port/outputDir plus readdir/exists/readFile/sha256/expectedVersion.
+ * Nav/snapshot successes often have NO Result section, so only an isError flag,
+ * an actual Error section or a missing required marker is fatal for them;
+ * structured browser_evaluate stays strict (decodeToolResult).
+ */
+export function buildBrowserSteps({ callTool, toolNames = [], evidence, reasons, io = {} }) {
+  const { port, outputDir } = io;
+  const exists = io.exists || existsSync;
+  const readDir = io.readdir || readdirSync;
+  const readFile = io.readFile || readFileSync;
+  const sha = io.sha256 || sha256;
+  const expectedVersion = io.expectedVersion || EXPECTED_CHROMIUM_VERSION;
+  const wantsConfig = toolNames.length === 0 || toolNames.includes('browser_get_config');
+  return [
+    { name: 'get_config', run: async () => {
+      if (!wantsConfig) return { fatal: false, skipped: true, detail: 'browser_get_config tool absent' };
+      const cfg = await callTool('browser_get_config', {});
+      const decoded = decodeToolResult(cfg);
+      evidence.rawResults.get_config = decoded.raw;
+      if (hasActualError(cfg) || !decoded.ok) { reasons.push('browser_get_config failed'); return { fatal: true, detail: decoded.error || 'isError' }; }
+      evidence.resolvedConfig = typeof decoded.value === 'object' ? decoded.value : null;
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'nav-fixture', run: async () => {
+      const nav = await callTool('browser_navigate', { url: `http://127.0.0.1:${port}/` });
+      evidence.rawResults.nav = decodeRawText(nav).slice(0, 4000);
+      if (hasActualError(nav)) { reasons.push(`fixture navigation error: ${evidence.rawResults.nav.slice(0, 200)}`); return { fatal: true, detail: 'navigation error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'snapshot', run: async () => {
+      const snap = await callTool('browser_snapshot', {});
+      const raw = decodeRawText(snap);
+      evidence.rawResults.snapshot = raw.slice(0, 800);
+      if (hasActualError(snap) || !/meri-loopback-ok/.test(raw)) { reasons.push('fixture navigation did not return the loopback marker'); return { fatal: true, detail: 'missing marker' }; }
+      return { fatal: false, detail: 'marker present' };
+    } },
+    { name: 'download-nav', run: async () => {
+      const dl = await callTool('browser_navigate', { url: `http://127.0.0.1:${port}/download` });
+      evidence.rawResults.download = decodeRawText(dl).slice(0, 4000);
+      if (hasActualError(dl)) { reasons.push(`download navigation error: ${evidence.rawResults.download.slice(0, 200)}`); return { fatal: true, detail: 'download nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'download-bytes', run: async () => {
+      const downloaded = exists(outputDir) ? readDir(outputDir).find((f) => /meri-fixture/.test(f)) : undefined;
+      if (!downloaded) { evidence.download = { found: false }; reasons.push('loopback download not observed in owned output dir'); return { fatal: true, detail: 'no download' }; }
+      const bytes = readFile(join(outputDir, downloaded));
+      const hash = sha(bytes);
+      const expectedHash = sha(Buffer.from(DOWNLOAD_PAYLOAD));
+      evidence.download = { found: true, file: downloaded, bytes: bytes.length, sha256: hash, expectedSha256: expectedHash, payloadMatches: hash === expectedHash };
+      if (hash !== expectedHash) { reasons.push('downloaded bytes do not match the known fixture payload'); return { fatal: true, detail: 'hash mismatch' }; }
+      return { fatal: false, detail: 'bytes match' };
+    } },
+    { name: 'version-nav', run: async () => {
+      const verNav = await callTool('browser_navigate', { url: 'chrome://version' });
+      evidence.rawResults.versionNav = decodeRawText(verNav).slice(0, 4000);
+      if (hasActualError(verNav)) { reasons.push('chrome://version navigation error'); return { fatal: true, detail: 'version nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'version-eval', run: async () => {
+      const verEval = await callTool('browser_evaluate', { function: VERSION_EXPR });
+      const verDecoded = decodeToolResult(verEval);
+      evidence.rawResults.version = verDecoded.raw.slice(0, 4000);
+      if (hasActualError(verEval) || !verDecoded.ok || typeof verDecoded.value !== 'object' || verDecoded.value === null || typeof verDecoded.value.userAgent !== 'string') { reasons.push('chrome://version evaluate did not return {userAgent,text}'); return { fatal: true, detail: 'version eval failed' }; }
+      evidence.versionData = { userAgent: verDecoded.value.userAgent.slice(0, 300), text: String(verDecoded.value.text || '').slice(0, 400) };
+      const m = /Chrome\/([0-9][0-9.]*)/.exec(verDecoded.value.userAgent);
+      evidence.browserVersion = m ? m[1] : null;
+      if (evidence.browserVersion !== expectedVersion) { reasons.push(`browser version ${evidence.browserVersion} != pinned ${expectedVersion}`); return { fatal: true, detail: 'version mismatch' }; }
+      return { fatal: false, detail: evidence.browserVersion };
+    } },
+    { name: 'sandbox-nav', run: async () => {
+      const sandboxNav = await callTool('browser_navigate', { url: 'chrome://sandbox' });
+      evidence.rawResults.sandboxNav = decodeRawText(sandboxNav).slice(0, 4000);
+      if (hasActualError(sandboxNav)) { reasons.push('chrome://sandbox navigation error'); return { fatal: true, detail: 'sandbox nav error' }; }
+      return { fatal: false, detail: 'ok' };
+    } },
+    { name: 'sandbox-eval', run: async () => {
+      const sandboxEval = await callTool('browser_evaluate', { function: SANDBOX_EXPR });
+      const sandboxDecoded = decodeToolResult(sandboxEval);
+      evidence.rawResults.sandbox = sandboxDecoded.raw.slice(0, 4000);
+      if (hasActualError(sandboxEval) || !sandboxDecoded.ok || typeof sandboxDecoded.value !== 'object' || sandboxDecoded.value === null || !Array.isArray(sandboxDecoded.value.rows)) { reasons.push('chrome://sandbox evaluate did not return {text,rows,evaluation}'); return { fatal: true, detail: 'sandbox eval failed' }; }
+      evidence.sandbox = { text: String(sandboxDecoded.value.text || '').slice(0, 800), rows: sandboxDecoded.value.rows, evaluation: String(sandboxDecoded.value.evaluation || '').slice(0, 300) };
+      return { fatal: false, detail: 'rows captured' };
+    } },
+  ];
+}
+
 async function main() {
   const reasons = [];
   const evidencePaths = [];
-  const evidence = { probe: 'browser', uid: null, serverVersion: null, browserVersion: null, versionData: null, sandbox: null, browserProcess: null, rendererProcess: null, processes: [], procEvidence: {}, download: null, rawResults: {}, reasons, evidencePaths };
+  const evidence = { probe: 'browser', uid: null, serverVersion: null, browserVersion: null, versionData: null, sandbox: null, browserProcess: null, rendererProcess: null, processes: [], procEvidence: {}, download: null, rawResults: {}, prelaunch: null, stepSequence: null, reasons, evidencePaths };
   let server = null;
   let client = null;
   let transport = null;
@@ -248,6 +533,8 @@ async function main() {
     evidence.uid = uid;
     if (uid === null) throw new Error('process.getuid() unsupported: cannot prove non-root');
     if (uid === 0) throw new Error('refusing to run browser probe as root (uid 0)');
+
+    evidence.prelaunch = collectPrelaunchDiagnostics();
 
     runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
     profileDir = join(runDir, 'profile');
@@ -280,63 +567,11 @@ async function main() {
     const toolNames = (toolList.tools || []).map((t) => t.name);
     evidence.tools = toolNames;
 
-    if (toolNames.includes('browser_get_config')) {
-      const cfg = await client.callTool({ name: 'browser_get_config', arguments: {} });
-      const decoded = decodeToolResult(cfg);
-      evidence.rawResults.get_config = decoded.raw;
-      if (cfg.isError || !decoded.ok) reasons.push('browser_get_config failed');
-      else evidence.resolvedConfig = typeof decoded.value === 'object' ? decoded.value : null;
-    }
-
-    const nav = await client.callTool({ name: 'browser_navigate', arguments: { url: `http://127.0.0.1:${port}/` } });
-    evidence.rawResults.nav = (await decodeToolResult(nav)).raw;
-    if (nav.isError) reasons.push(`fixture navigation error: ${evidence.rawResults.nav.slice(0, 200)}`);
-    const snap = await client.callTool({ name: 'browser_snapshot', arguments: {} });
-    const snapDecoded = decodeToolResult(snap);
-    evidence.rawResults.snapshot = snapDecoded.raw.slice(0, 800);
-    if (snap.isError || !/meri-loopback-ok/.test(snapDecoded.raw)) reasons.push('fixture navigation did not return the loopback marker');
-
-    const dl = await client.callTool({ name: 'browser_navigate', arguments: { url: `http://127.0.0.1:${port}/download` } });
-    evidence.rawResults.download = (await decodeToolResult(dl)).raw;
-    if (dl.isError) reasons.push(`download navigation error: ${evidence.rawResults.download.slice(0, 200)}`);
-    const downloaded = existsSync(outputDir) ? readdirSync(outputDir).find((f) => /meri-fixture/.test(f)) : undefined;
-    if (!downloaded) {
-      evidence.download = { found: false };
-      reasons.push('loopback download not observed in owned output dir');
-    } else {
-      const bytes = readFileSync(join(outputDir, downloaded));
-      const hash = sha256(bytes);
-      const expectedHash = sha256(Buffer.from(DOWNLOAD_PAYLOAD));
-      evidence.download = { found: true, file: downloaded, bytes: bytes.length, sha256: hash, expectedSha256: expectedHash, payloadMatches: hash === expectedHash };
-      if (hash !== expectedHash) reasons.push('downloaded bytes do not match the known fixture payload');
-    }
-
-    const verNav = await client.callTool({ name: 'browser_navigate', arguments: { url: 'chrome://version' } });
-    evidence.rawResults.versionNav = (await decodeToolResult(verNav)).raw;
-    if (verNav.isError) reasons.push('chrome://version navigation error');
-    const verEval = await client.callTool({ name: 'browser_evaluate', arguments: { function: VERSION_EXPR } });
-    const verDecoded = decodeToolResult(verEval);
-    evidence.rawResults.version = verDecoded.raw;
-    if (verEval.isError || !verDecoded.ok || typeof verDecoded.value !== 'object' || verDecoded.value === null || typeof verDecoded.value.userAgent !== 'string') {
-      reasons.push('chrome://version evaluate did not return {userAgent,text}');
-    } else {
-      evidence.versionData = { userAgent: verDecoded.value.userAgent.slice(0, 300), text: String(verDecoded.value.text || '').slice(0, 400) };
-      const m = /Chrome\/([0-9][0-9.]*)/.exec(verDecoded.value.userAgent);
-      evidence.browserVersion = m ? m[1] : null;
-      if (evidence.browserVersion !== EXPECTED_CHROMIUM_VERSION) reasons.push(`browser version ${evidence.browserVersion} != pinned ${EXPECTED_CHROMIUM_VERSION}`);
-    }
-
-    const sandboxNav = await client.callTool({ name: 'browser_navigate', arguments: { url: 'chrome://sandbox' } });
-    evidence.rawResults.sandboxNav = (await decodeToolResult(sandboxNav)).raw;
-    if (sandboxNav.isError) reasons.push('chrome://sandbox navigation error');
-    const sandboxEval = await client.callTool({ name: 'browser_evaluate', arguments: { function: SANDBOX_EXPR } });
-    const sandboxDecoded = decodeToolResult(sandboxEval);
-    evidence.rawResults.sandbox = sandboxDecoded.raw;
-    if (sandboxEval.isError || !sandboxDecoded.ok || typeof sandboxDecoded.value !== 'object' || sandboxDecoded.value === null || !Array.isArray(sandboxDecoded.value.rows)) {
-      reasons.push('chrome://sandbox evaluate did not return {text,rows,evaluation}');
-    } else {
-      evidence.sandbox = { text: String(sandboxDecoded.value.text || '').slice(0, 800), rows: sandboxDecoded.value.rows, evaluation: String(sandboxDecoded.value.evaluation || '').slice(0, 300) };
-    }
+    // Browser-dependent sequence: the SAME bounded driver used by the offline
+    // fake-client fixtures. After the FIRST fatal substep, no later MCP call runs.
+    const callTool = (name, args) => client.callTool({ name, arguments: args });
+    const steps = buildBrowserSteps({ callTool, toolNames, evidence, reasons, io: { port, outputDir } });
+    evidence.stepSequence = await runBoundedSequence(steps);
 
     const processes = readProcesses();
     evidence.processes = processes.map((p) => ({ pid: p.pid, ppid: p.ppid, exe: p.exe, type: p.type, argv: p.argv }));
@@ -345,8 +580,7 @@ async function main() {
     evidence.rendererProcess = identified.renderer ? { pid: identified.renderer.pid, exe: identified.renderer.exe, type: identified.renderer.type, argv: identified.renderer.argv } : null;
     evidence.effectiveFlagsSource = identified.browser ? 'proc' : 'none';
     evidence.disablingFlags = scanDisablingFlags(processes);
-    const selfPid = process.pid;
-    for (const [label, pid] of [['self', selfPid], ['browser', identified.browser && identified.browser.pid], ['renderer', identified.renderer && identified.renderer.pid]]) {
+    for (const [label, pid] of [['self', process.pid], ['browser', identified.browser && identified.browser.pid], ['renderer', identified.renderer && identified.renderer.pid]]) {
       if (pid) evidence.procEvidence[label] = readProcEvidence(pid);
     }
 
