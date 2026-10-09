@@ -111,7 +111,7 @@
     "replicas": 2,
     "namespaceRole": "write",
     "grantsBroaderNamespaceWriteThanTenantWall": true,
-    "defaultAuthorizerAllowed": false
+    "workerOnlyRoleAllowedByDefaultAuthorizer": false
   },
   "conversationExecutors": {
     "temporalIngress": false
@@ -131,7 +131,7 @@
     { "id": "role_added", "rule": "R1", "description": "An extra server role is added", "patch": { "roles": { "sixth": { "replicas": 1, "ingress": "internode" } } } },
     { "id": "worker_role_namespace_worker", "rule": "R6", "description": "Trusted app worker claims namespace:worker (RoleWorker1 false positive)", "patch": { "trustedApplicationWorkers": { "namespaceRole": "worker" } } },
     { "id": "worker_role_admin", "rule": "R6", "description": "Trusted app worker is granted namespace admin", "patch": { "trustedApplicationWorkers": { "namespaceRole": "admin" } } },
-    { "id": "worker_role_default_authorizer", "rule": "R6", "description": "Default-authorizer write is claimed for a trusted app worker", "patch": { "trustedApplicationWorkers": { "defaultAuthorizerAllowed": true } } },
+    { "id": "worker_only_role_default_authorizer", "rule": "R6", "description": "Default-authorizer write is claimed for RoleWorker1 alone", "patch": { "trustedApplicationWorkers": { "workerOnlyRoleAllowedByDefaultAuthorizer": true } } },
     { "id": "trusted_workers_missing", "rule": "R6", "description": "Trusted app worker declaration is missing", "omit": ["trustedApplicationWorkers"] },
     { "id": "internal_frontend_external_ingress", "rule": "R4", "description": "Internal frontend is exposed on the external ingress", "patch": { "roles": { "internal-frontend": { "ingress": "external" } } } },
     { "id": "internal_frontend_duplicate_audience", "rule": "R4", "description": "Internal frontend declares an external audience", "patch": { "roles": { "internal-frontend": { "externalAudience": "meri-temporal" } } } },
@@ -147,6 +147,7 @@
     { "id": "matching_mtls_missing", "rule": "R10", "description": "Matching role mTLS block is absent", "omit": ["roles.matching.mtls"] },
     { "id": "history_mtls_disabled", "rule": "R10", "description": "History internode mTLS is disabled", "patch": { "roles": { "history": { "mtls": { "enabled": false } } } } },
     { "id": "public_client_override", "rule": "R11", "description": "A publicClient override forces system workers onto the external frontend", "patch": { "publicClientOverride": true } },
+    { "id": "public_client_hostport_override", "rule": "R11", "description": "An actual publicClient hostPort overrides internal-frontend routing even when the synthetic flag stays false", "patch": { "publicClient": { "hostPort": "frontend.meri.internal:7233" } } },
     { "id": "frontend_dual_ingress", "rule": "R5", "description": "A role mixes external and internode ingress", "patch": { "roles": { "frontend": { "ingress": "external+internode" } } } },
     { "id": "history_external_ingress", "rule": "R5", "description": "A non-frontend role is exposed on the external ingress", "patch": { "roles": { "history": { "ingress": "external" } } } },
     { "id": "frontend_tls_disabled", "rule": "R2", "description": "Frontend TLS is disabled", "patch": { "roles": { "frontend": { "tls": { "enabled": false } } } } },
@@ -167,6 +168,7 @@
     { "id": "conversation_ingress_enabled", "rule": "R7", "description": "Conversation/browser/artifact executor polls Temporal directly", "patch": { "conversationExecutors": { "temporalIngress": true } } },
     { "id": "history_shards_zero", "rule": "R8", "description": "History shard count is not a positive integer", "patch": { "historyShards": 0 } },
     { "id": "server_digest_mismatch", "rule": "R12", "description": "Top-level server amd64 digest does not match the pinned component digest", "patch": { "server": { "imageAmd64Digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000" } } },
+    { "id": "server_config_digest_mismatch", "rule": "R12", "description": "Top-level server image config digest does not match the pinned component digest", "patch": { "server": { "configDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000" } } },
     { "id": "server_version_mismatch", "rule": "R12", "description": "Top-level server version does not match the pinned component version", "patch": { "server": { "version": "1.31.0" } } }
   ]
 }

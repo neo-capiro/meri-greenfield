@@ -2,9 +2,10 @@
 //
 // Preparation only. This module is compiled against @temporalio/workflow
 // 1.24.0 and is NEVER run: no Worker is created, no connection is opened, and
-// there is no SDK/model/browser/Office call. Nothing here executes at test time
-// except the pure, Temporal-free `planContinuation` helper (exported for an
-// isolated unit test).
+// there is no model/browser/Office call. Importing this module initializes JS
+// workflow declarations; no native worker core or server is invoked. The pure
+// planContinuation helper and a separate mock-SDK control-flow test qualify
+// only bounded fixture decisions, not actual Temporal execution or cancellation.
 //
 // It declares the deterministic constructs the production design depends on:
 //   - typed activity calls via proxyActivities
@@ -113,6 +114,12 @@ export async function meriOrchestrationWorkflow(input: RunInput): Promise<string
     cancelled: false,
   };
   let cancelRequested = false;
+  const cancellationResult = (stage: string): string | null => {
+    if (!cancelRequested) return null;
+    state.cancelled = true;
+    state.stage = `cancelled-${stage}`;
+    return `workflow ${input.runId} cancelled ${stage}`;
+  };
 
   setHandler(noteSignal, (note: string) => {
     // Recorded as an observation only; never treated as approval.
@@ -149,14 +156,20 @@ export async function meriOrchestrationWorkflow(input: RunInput): Promise<string
       return `workflow ${input.runId} cancelled at stage ${stage}`;
     }
     await sleep('5 seconds');
+    const afterSleep = cancellationResult(`after-sleep-${stage}`);
+    if (afterSleep) return afterSleep;
     await CancellationScope.cancellable(async () => {
       await recordCheckpoint({ runId: input.runId, tenantRef: input.tenantRef, stage: `stage-${stage}`, sequence: stage });
     });
+    const afterCheckpoint = cancellationResult(`after-checkpoint-${stage}`);
+    if (afterCheckpoint) return afterCheckpoint;
     state.checkpoints += 1;
     state.stage = `stage-${stage}`;
   }
 
   // External write happens only after the full batch and an authoritative approval.
+  const beforePublication = cancellationResult('before-publication');
+  if (beforePublication) return beforePublication;
   try {
     await publishArtifact({ runId: input.runId, objectKey: input.objectKey, contentDigest: `batch-${input.continuation}` });
   } catch (err) {
@@ -169,6 +182,12 @@ export async function meriOrchestrationWorkflow(input: RunInput): Promise<string
     }
     throw err;
   }
+
+  // A custom cancel signal during an already-dispatched activity cannot undo
+  // that activity. Observe it before any next step/Continue-as-New; real effect
+  // cancellation and current-authority enforcement remain later runtime gates.
+  const afterPublication = cancellationResult('after-publication');
+  if (afterPublication) return afterPublication;
 
   // Explicit bounded Continue-as-New boundary with the next continuation passed.
   if (plan.action === 'continue-as-new') {

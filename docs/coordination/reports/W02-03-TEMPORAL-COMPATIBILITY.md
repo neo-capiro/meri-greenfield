@@ -27,7 +27,7 @@ Independent review reproduced the validator returning `ok:true` for accepted bad
 | signal could confer approval authority | approval authority now comes only from the trusted `collectApproval` activity; the note signal records an observation only |
 | cancellation after the first condition not observed | `cancelRequested` is re-checked at every stage boundary (>=4 references) |
 
-Prohibited coverage grew from 20 to **41** cases, each asserted to be rejected with its expected rule; a regression assertion requires cases for R6/R10/R11/R12/R13/R14. `internal-worker` now declares `temporalRole:"worker"` (R15), documenting the Fargate service -> real Temporal role mapping.
+Prohibited coverage grew from 20 to **43** cases, each asserted to be rejected with its expected rule; a regression assertion requires cases for R6/R10/R11/R12/R13/R14. `internal-worker` now declares `temporalRole:"worker"` (R15), documenting the Fargate service -> real Temporal role mapping.
 
 ## Owned paths delivered (14)
 
@@ -47,17 +47,16 @@ No root/shared lock, contract, infra, launcher, task-brief or other-worker path 
 | --- | --- | --- |
 | Root suite | `npm run check` | 15 tests, 15 pass, 0 fail (exit 0) |
 | Nested typecheck | `npm --prefix apps/control/qualification-temporal run typecheck` (`tsc --noEmit`) | exit 0 |
-| Nested offline tests | `npm --prefix apps/control/qualification-temporal test` (`node --test`) | 18 tests, 18 pass, 0 fail (exit 0) |
+| Nested offline tests | `npm --prefix apps/control/qualification-temporal test` (`node --test`) | 22 tests, 22 pass, 0 fail (exit 0) |
 | Whitespace | `git diff --check` | clean (exit 0) |
 
 Nested tests include: exact pin/lock/component-pins agreement; a byte-exact
 fixture-vs-pins server comparison; the installed 1.24.0 `.d.ts` member
 assertions; source-fixture symbol/determinism checks; the base five-role fixture
-validating cleanly; all 41 prohibited boundary cases rejected with the expected
+validating cleanly; all 43 prohibited boundary cases rejected with the expected
 rule (covering every previously-accepted false positive); the fixture compiling
 cleanly (all `@ts-expect-error` used); a real expected-diagnostic run; and an
-isolated pure-decision test that compiles `planContinuation` and asserts the
-bounded continuation table.
+in-memory transpiled actual-workflow tests with deterministic SDK/activity stubs: the bounded continuation table and cancellation at final sleep/checkpoint/publication. No real Temporal module/native core/server is loaded by that harness.
 
 ## Source and pin observations (recorded, not run)
 
@@ -86,3 +85,7 @@ after the run). Ignored `node_modules/` and `.runtime/` only under the owned
 package. No servers, containers, native core, AWS, model, browser or Office
 execution. G1 remains IN PROGRESS; W03 remains queued; no gate promoted; no
 production, durability or proxy-acceptance claim.
+
+## Owner thin-fix disclosure after rejected repair0f38128
+
+Independent review found0f38128 still accepted the actual publicClient object despite checking a synthetic flag, and allowed late custom cancellation to reach publication/continuation. After its writer closed, Codex owner corrected the actual-object/configDigest boundaries, renamed the worker-only authorizer fact, checked cancellation after awaits/before publication/continuation, and added actual fixture control-flow regressions with deterministic SDK/activity stubs. Final owner typecheck plus22tests/43prohibited cases pass. These thin fixes and disclosure are Codex changes, not Hermes0f38128 implementation output. A cancel signal during an already-dispatched activity cannot undo that effect; the fixture observes it before further steps. Real Temporal cancellation/replay/durability/current-authority behavior remains unrun. Separate actual Hermes review and integration-owner acceptance are still required; no G1 or deployment promotion.

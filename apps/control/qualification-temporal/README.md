@@ -6,9 +6,10 @@ fixture that is compiled and statically checked against the exact pinned
 against prohibited-boundary cases.
 
 This is PREPARATION ONLY. Nothing here is a deployed server, database, Fargate
-task or namespace. No connection is opened, no Worker is created, no workflow or
-activity runs (except one pure, Temporal-free helper in an isolated unit test),
-and no SDK/model/browser/Office/AWS call is made. G1 stays incomplete and W03
+task or namespace. No connection is opened or Worker created. Offline tests run
+the actual fixture JavaScript against deterministic SDK/activity stubs; no real
+Temporal module/native core/server is loaded by that harness. No real Temporal
+workflow/activity, model/browser/Office/AWS call is executed. G1 stays incomplete and W03
 stays blocked until Codex independently reviews this and the later live gates
 execute.
 
@@ -25,7 +26,7 @@ client-options.ts          real ConnectionOptions/NativeConnectionOptions builde
 activities.ts              inert activity interface (heartbeat/echo), @temporalio/activity
 workflow.ts                deterministic workflow + pure planContinuation helper
 negative-types.ts          @ts-expect-error fixtures + positive controls
-deployment.fixture.json    five-role topology + 41 prohibited boundary cases
+deployment.fixture.json    five-role topology + 43 prohibited boundary cases
 compatibility.test.mjs     canonical OFFLINE tests (node --test)
 component-pins.json        server/SDK/schema/compiler pins with integrities
 ```
@@ -64,7 +65,7 @@ application-worker builder (TLS **and** bearer) and marks the internode helper
 server-only; and `workflow.ts` runs a finite three-stage loop with a bounded
 continuation counter (0=one Continue-as-New, 1=complete, else rejected).
 
-## What the offline checks establish (18 tests, this session)
+## What the offline checks establish (22 tests, final owner rerun)
 
 - The five direct packages and the compiler/type pins are exact, locked with
   sha512 integrity, and agree across package.json / package-lock.json /
@@ -78,7 +79,7 @@ continuation counter (0=one Continue-as-New, 1=complete, else rejected).
   (a relaxed API turns the directive into a TS2578 failure) while the positive
   controls compile — verified by a real `tsc` run plus a separate
   expected-diagnostic check.
-- The five-role fixture validates cleanly, and all 41 prohibited boundary cases
+- The five-role fixture validates cleanly, and all 43 prohibited boundary cases
   (missing/extra role; worker `namespace:worker`/admin/default-authorizer;
   missing trusted-workers; internal-frontend external ingress / duplicate
   audience / conversation ingress; empty audience; missing JWKS; zero key
@@ -131,3 +132,7 @@ live behavior; internode mTLS and service discovery; replay/cancel/replacement/
 approval/schedule fixtures; measured startup/memory/disk/timings/cost; Fargate
 placement. Local compile results cannot pass these gates. No proxy acceptance is
 implied by anything in this package.
+
+## Owner thin-fix disclosure after rejected repair0f38128
+
+Independent review found0f38128 still accepted the actual publicClient object despite checking a synthetic flag, and allowed late custom cancellation to reach publication/continuation. After its writer closed, Codex owner corrected the actual-object/configDigest boundaries, renamed the worker-only authorizer fact, checked cancellation after awaits/before publication/continuation, and added actual fixture control-flow regressions with deterministic SDK/activity stubs. Final owner typecheck plus22tests/43prohibited cases pass. These thin fixes and disclosure are Codex changes, not Hermes0f38128 implementation output. A cancel signal during an already-dispatched activity cannot undo that effect; the fixture observes it before further steps. Real Temporal cancellation/replay/durability/current-authority behavior remains unrun. Separate actual Hermes review and integration-owner acceptance are still required; no G1 or deployment promotion.

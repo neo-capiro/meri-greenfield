@@ -5,7 +5,9 @@
 // boundaries only: exact package/lock/pin alignment, the exact installed
 // 1.24.0 type declarations, the inert source fixtures, the five-role deployment
 // boundary rules (including the previously-accepted false positives), a real
-// compiler diagnostic check, and an isolated pure-decision unit test.
+// compiler diagnostic check, and the actual workflow's JavaScript control flow
+// with deterministic SDK/activity stubs. Those probes do not initialize any
+// real Temporal module or establish runtime, native-core or server compatibility.
 //
 // The `tsc` invocations below compile the pinned local compiler. They use no
 // network and no server.
@@ -13,9 +15,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
 
 const PKG = dirname(fileURLToPath(import.meta.url));
 const read = (rel) => readFileSync(join(PKG, rel), 'utf8');
@@ -179,8 +183,8 @@ test('workflow.ts has a finite three-stage loop, bounded continuation, and cance
   assert.match(src, /state\.checkpoints \+= 1;/);
   assert.match(src, /continueAsNew<typeof meriOrchestrationWorkflow>/);
   assert.match(src, /continuation: plan\.nextContinuation/);
-  // Cancellation is observed more than once (handler + condition + loop boundary).
-  assert.ok((src.match(/cancelRequested/g) || []).length >= 4, 'cancellation must be observed repeatedly');
+  // Cancellation behavior is checked below by running this source with stubs;
+  // counting references cannot establish that the final await boundaries work.
   // Signals never grant approval: the note signal only records; approval is authoritative.
   assert.match(src, /noteSignal/);
   assert.doesNotMatch(src, /approvalSignal/);
@@ -229,11 +233,12 @@ function validateDeployment(cfg, pinSet) {
 
   // R11 no publicClient override that forces system workers onto the external frontend
   if (cfg.publicClientOverride !== false) add('R11', 'publicClientOverride must be false');
+  if (Object.hasOwn(cfg, 'publicClient')) add('R11', 'publicClient must be absent so system workers use the internal frontend');
 
   // R12 top-level server pin matches component-pins exactly
   const s = cfg.server || {};
   const ps = (pinSet && pinSet.server) || {};
-  for (const k of ['version', 'sourceCommit', 'imageIndexDigest', 'imageAmd64Digest']) {
+  for (const k of ['version', 'sourceCommit', 'imageIndexDigest', 'imageAmd64Digest', 'configDigest']) {
     if (s[k] !== ps[k]) add('R12', `server.${k} must match the pinned component value`);
   }
 
@@ -293,7 +298,7 @@ function validateDeployment(cfg, pinSet) {
   // R6 trusted application workers
   const w = cfg.trustedApplicationWorkers || {};
   if (w.namespaceRole !== 'write') add('R6', 'trusted app worker namespaceRole must be exactly write (RoleWriter4)');
-  if (w.defaultAuthorizerAllowed === true) add('R6', 'RoleWorker1 cannot poll/complete/heartbeat with the default authorizer');
+  if (w.workerOnlyRoleAllowedByDefaultAuthorizer !== false) add('R6', 'RoleWorker1 alone cannot poll/complete/heartbeat with the default authorizer');
 
   // R7 conversation executors
   const ex = cfg.conversationExecutors || {};
@@ -328,7 +333,9 @@ test('the base five-role fixture is well-formed and validates cleanly', () => {
   assert.equal(fixture.roles['internal-worker'].temporalRole, 'worker');
   assert.equal(fixture.roles.frontend.mtls.requireClientAuth, true);
   assert.equal(fixture.publicClientOverride, false);
+  assert.equal(Object.hasOwn(fixture, 'publicClient'), false);
   assert.equal(fixture.trustedApplicationWorkers.namespaceRole, 'write');
+  assert.equal(fixture.trustedApplicationWorkers.workerOnlyRoleAllowedByDefaultAuthorizer, false);
 });
 
 test('every prohibited boundary case is rejected with its expected rule', () => {
@@ -389,23 +396,98 @@ test('expected-diagnostic: a missing defaultVersioningBehavior fails, a correct 
   rmSync(goodFile, { force: true });
 });
 
-test('isolated pure-decision test: planContinuation encodes the bounded continuation policy', async () => {
-  const outDir = join(PKG, '.runtime', 'out');
-  rmSync(outDir, { recursive: true, force: true });
-  const res = spawnSync(
-    process.execPath,
-    [TSC, '--outDir', outDir, '--module', 'nodenext', '--moduleResolution', 'nodenext', '--target', 'es2022', '--strict', '--skipLibCheck', 'workflow.ts', 'activities.ts'],
-    { cwd: PKG, encoding: 'utf8' },
-  );
-  assert.equal(res.status, 0, `${res.stdout || ''}${res.stderr || ''}`);
+// Transpile the actual source in memory. The only permitted runtime import is
+// replaced by this small deterministic facade; neither @temporalio/workflow nor
+// the activity module is loaded. This checks our branching and signal handling,
+// not Temporal scheduling, replay, cancellation propagation or durability.
+function loadOfflineWorkflow({ cancelAt = null } = {}) {
+  const handlers = new Map();
+  const calls = [];
+  let sleeps = 0;
+  let nextInput;
+  const continued = new Error('offline Continue-as-New boundary');
+  const cancel = () => {
+    const handler = handlers.get('cancelRequested');
+    assert.equal(typeof handler, 'function', 'workflow must register its cancel signal');
+    handler();
+  };
+  const sdk = {
+    proxyActivities: () => ({
+      collectApproval: async () => {
+        calls.push('collectApproval');
+        return 'approved';
+      },
+      recordCheckpoint: async ({ sequence }) => {
+        calls.push(`checkpoint:${sequence}`);
+        if (cancelAt === 'checkpoint3' && sequence === 3) cancel();
+      },
+      publishArtifact: async () => {
+        calls.push('publishArtifact');
+        if (cancelAt === 'publish') cancel();
+      },
+    }),
+    defineSignal: (name) => name,
+    defineQuery: (name) => name,
+    setHandler: (name, handler) => handlers.set(name, handler),
+    // Model an elapsed initial cancellation window without real time or timers.
+    condition: async () => false,
+    sleep: async () => {
+      sleeps += 1;
+      calls.push(`sleep:${sleeps}`);
+      if (cancelAt === 'sleep3' && sleeps === 3) cancel();
+    },
+    continueAsNew: async (input) => {
+      calls.push(`continueAsNew:${input.continuation}`);
+      nextInput = structuredClone(input);
+      throw continued;
+    },
+    CancellationScope: { cancellable: (fn) => fn() },
+    isCancellation: () => false,
+    ActivityFailure: class extends Error {},
+    ApplicationFailure: {
+      create: ({ message, type, nonRetryable }) => Object.assign(new Error(message), { type, nonRetryable }),
+    },
+  };
+  const { outputText, diagnostics } = ts.transpileModule(read('workflow.ts'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    reportDiagnostics: true,
+    fileName: 'workflow.ts',
+  });
+  assert.equal(diagnostics?.length ?? 0, 0, 'in-memory transpilation must be clean; separate tsc checks types');
+  const wf = {};
+  runInNewContext(outputText, {
+    exports: wf,
+    require: (name) => {
+      assert.equal(name, '@temporalio/workflow', 'unexpected workflow runtime import');
+      return sdk;
+    },
+  }, { filename: 'workflow.offline-probe.cjs' });
+  return {
+    wf,
+    async run(input) {
+      let outcome = 'complete';
+      let result;
+      try {
+        result = await wf.meriOrchestrationWorkflow(input);
+      } catch (err) {
+        if (err !== continued) throw err;
+        outcome = 'continue-as-new';
+      }
+      const query = handlers.get('state');
+      assert.equal(typeof query, 'function', 'workflow must register its state query');
+      return { outcome, result, nextInput, calls: [...calls], state: structuredClone(query()) };
+    },
+  };
+}
 
-  const wf = await import(pathToFileURL(join(outDir, 'workflow.js')).href);
+test('offline stubbed workflow: planContinuation encodes the bounded continuation policy', () => {
+  const { wf } = loadOfflineWorkflow();
   assert.equal(wf.STAGES, 3);
   assert.deepEqual([...wf.ALLOWED_CONTINUATIONS], [0, 1]);
 
   // continuation 0 (fresh) permits one Continue-as-New; continuation 1 completes.
-  assert.deepEqual(wf.planContinuation(0), { ok: true, action: 'continue-as-new', nextContinuation: 1, reason: null });
-  assert.deepEqual(wf.planContinuation(1), { ok: true, action: 'complete', nextContinuation: 1, reason: null });
+  assert.deepEqual(structuredClone(wf.planContinuation(0)), { ok: true, action: 'continue-as-new', nextContinuation: 1, reason: null });
+  assert.deepEqual(structuredClone(wf.planContinuation(1)), { ok: true, action: 'complete', nextContinuation: 1, reason: null });
 
   // negative / unsafe values are rejected.
   for (const bad of [-1, 2, 1.5, NaN, Infinity, -Infinity, Number.MAX_SAFE_INTEGER + 1, '0', null, undefined, {}, []]) {
@@ -413,5 +495,37 @@ test('isolated pure-decision test: planContinuation encodes the bounded continua
     assert.equal(plan.ok, false, `continuation ${String(bad)} must be rejected`);
     assert.equal(plan.action, 'complete');
   }
-  rmSync(outDir, { recursive: true, force: true });
 });
+
+test('actual workflow control flow with stubs: continuation 0 continues once, continuation 1 completes', async () => {
+  const input = { runId: 'synthetic-run', tenantRef: 'synthetic-tenant', objectKey: 'synthetic-object', continuation: 0 };
+  const first = await loadOfflineWorkflow().run(input);
+  assert.equal(first.outcome, 'continue-as-new');
+  assert.deepEqual(first.nextInput, { ...input, continuation: 1 });
+  assert.deepEqual(first.calls, ['collectApproval', 'sleep:1', 'checkpoint:1', 'sleep:2', 'checkpoint:2', 'sleep:3', 'checkpoint:3', 'publishArtifact', 'continueAsNew:1']);
+  assert.equal(first.state.checkpoints, 3);
+
+  const second = await loadOfflineWorkflow().run(first.nextInput);
+  assert.equal(second.outcome, 'complete');
+  assert.match(second.result, /completed continuation 1 after 3 checkpoints/);
+  assert.deepEqual(second.calls, first.calls.slice(0, -1));
+  assert.equal(second.state.checkpoints, 3);
+  assert.equal(second.state.stage, 'completed');
+});
+
+for (const cancelAt of ['sleep3', 'checkpoint3', 'publish']) {
+  test(`actual workflow control flow with stubs: cancellation at ${cancelAt} stops before continuation`, async () => {
+    const input = { runId: 'synthetic-run', tenantRef: 'synthetic-tenant', objectKey: 'synthetic-object', continuation: 0 };
+    const observed = await loadOfflineWorkflow({ cancelAt }).run(input);
+    assert.equal(observed.outcome, 'complete');
+    assert.match(observed.result, /cancelled/);
+    assert.equal(observed.state.cancelled, true);
+    assert.equal(observed.calls.some((call) => call.startsWith('continueAsNew:')), false, 'a cancellation signal must not be discarded across Continue-as-New');
+    if (cancelAt === 'publish') {
+      assert.equal(observed.calls.filter((call) => call === 'publishArtifact').length, 1, 'this signal arrives after publication is already started');
+    } else {
+      assert.equal(observed.calls.includes(cancelAt === 'sleep3' ? 'sleep:3' : 'checkpoint:3'), true, 'the injected final-stage cancellation point must be reached');
+      assert.equal(observed.calls.includes('publishArtifact'), false, 'a final-stage cancellation must prevent publication');
+    }
+  });
+}
