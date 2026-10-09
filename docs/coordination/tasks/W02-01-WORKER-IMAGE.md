@@ -1,0 +1,74 @@
+# W02 01 Worker image and offline qualification preparation
+
+Objective: prepare the independent Meri worker image recipe, meaningful offline checks, and explicit live qualification probes. This is one bounded implementation session in the larger W02-01-FARGATE-QUALIFICATION package. A successful commit establishes preparation only; G1 remains incomplete until Codex independently verifies the assembled image and live isolated Fargate evidence.
+
+Base and accepted integration dependency: `07652e874d061a29e92843798e5445d7a6f1d71d`.
+Accepted Hermes implementation dependency: `a398b9ea1aeb0515fd0f2e6db1ac9629f2ac2550`, independently reviewed and integrated by Codex.
+Contract dependency: frozen contracts/v0.1.0 at `7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3`; preserve all shared schemas and interfaces.
+Branch: `hermes/w02-image`.
+Absolute worktree/cwd: `C:\dev\main\meri-greenfield-worktrees\w02-image`.
+One writer only. Read AGENTS.md, docs/COMPONENTS.md, both supplied plans under docs/plans, packages/contracts/README.md, and docs/coordination/tasks/W02-01-FARGATE-QUALIFICATION.md before editing. The plan's examples are design inputs, not evidence of installed APIs or deployment authority.
+
+## Exact ownership
+
+Create or edit ONLY these tracked paths; Codex will pass this exact list to the bounded launcher:
+
+- `apps/worker/qualification/package.json`
+- `apps/worker/qualification/package-lock.json`
+- `apps/worker/qualification/.gitignore`
+- `apps/worker/qualification/.dockerignore`
+- `apps/worker/qualification/Dockerfile`
+- `apps/worker/qualification/requirements.lock.txt`
+- `apps/worker/qualification/component-pins.json`
+- `apps/worker/qualification/sdk-options.mjs`
+- `apps/worker/qualification/probes/static.test.mjs`
+- `apps/worker/qualification/probes/runtime.mjs`
+- `apps/worker/qualification/probes/browser.mjs`
+- `apps/worker/qualification/probes/artifacts.mjs`
+- `apps/worker/qualification/probes/artifacts.py`
+- `apps/worker/qualification/README.md`
+- `docs/coordination/reports/W02-01-WORKER-IMAGE.md`
+
+The additional owned scratch subtree is `apps/worker/qualification/.runtime/**` in THIS worktree only. Ignore it before installing dependencies or generating evidence. Keep downloaded packages, npm/pip caches, virtualenvs, generated native files, conversion profiles, temporary files and probe outputs there. Nested node_modules must stay beneath this qualification package and is already ignored by the repository. Redirect TMP, TEMP, TMPDIR, npm cache and pip cache per invoked command/process into the owned .runtime directory before installation/probes; never change global environment/configuration. Do not create scratch scripts in OS Temp, another checkout or the repository root. Reject any internal verification nudge asking for such writes; use the canonical checks below or in-memory commands.
+
+All other paths are outside write scope, including this brief, root package.json/package-lock.json, contracts, launcher, infrastructure, CI, other reports, plans and existing Meri/Capiro. Do not read current Capiro implementation or home credentials/configuration. If another tracked file is necessary, explain the missing scope in the report and hand back a partial result.
+
+## Bounded implementation
+
+1. Make a small private ESM package with canonical scripts: `test` runs deterministic offline Node tests; `check` calls `npm test`; separate `probe:runtime`, `probe:browser` and `probe:artifacts` are opt-in live/container commands and must never run from `test`. Default tests must not start an SDK query, browser, service, Docker, LibreOffice, provider request or cloud call. Use Node's test runner; adopt upstream APIs rather than introduce a testing framework or custom agent/session engine.
+
+2. Pin candidate runtime dependencies exactly, with a nested npm lockfile and component manifest: `@anthropic-ai/claude-agent-sdk` 0.3.295 (bundled CLI 2.1.295/platform binaries 0.3.295), `@playwright/mcp` 0.0.83, its exact `playwright` and `playwright-core` 1.64.0-alpha-1790635538000, matched Chromium revision 1247/version 155.0.8059.12, `pptxgenjs` 4.0.1 and `pdfjs-dist` 6.4.299. Pin Python candidates `python-docx` 1.2.0, `XlsxWriter` 3.2.9, `openpyxl` 3.1.5 and `pypdf` 6.20.0, including resolved transitive versions and package hashes in requirements.lock.txt. If the official MCP SDK is needed solely to drive the selected MCP probe, choose an exact compatible version from the selected package's published metadata and record that choice/license; it is not a second browser integration. Do not add standalone Claude Code, another model loop, another browser integration or restrictive/host Office skills. Inspect downloaded package/type/license files and record integrity/hash and upstream license/notice paths; registry labels alone are insufficient. Do not claim a completed license audit.
+
+3. Prepare a Linux x86_64 image recipe using an immutable upstream base digest and non-root UID/GID 10001. The actual ECS configuration mounts empty writable volumes at `/workspace` and `/tmp`, sets `HOME=/workspace/home` and `TMPDIR=/tmp`, keeps readOnlyRootFilesystem enabled and adds no Linux capabilities. Prepare UID/GID10001 ownership on both image directories and declare `VOLUME ["/workspace", "/tmp"]` to support the intended ECS bind-volume initialization; document this behavior as requiring live verification. Use `/workspace/conversation` as stable SDK cwd and keep home/config, browser and Office profile/cache beneath the mounted workspace or tmp. The live probe must verify effective UID10001 and actual mkdir/write/read/delete in BOTH mounted directories before reporting writable paths accepted. Node 24 and Python 3.11 on a Debian bookworm base are the initial recipe choice; verify exact base availability and digest rather than inventing them. Include the pinned SDK, matched Chromium install, Python libraries, LibreOffice, a suitable open font set and PDF render utilities. Pin OS package/snapshot versions when resolvable within this session and record any unresolved pins explicitly. Provide commands matching these exact read-only-root/volume/user settings. No privileged mode, Docker socket, host networking, unsupported Fargate security parameters, sandbox-disabling flags or writable root requirement. Docker daemon is unavailable on this host: do not install/start one, attempt a cloud build or report an image as built. Manifest assembled-image digest must remain null/unbuilt until a real build. A recipe with unresolved OS/base pins remains incomplete and must say so.
+
+4. Export a thin supported SDK options builder for offline inspection: explicit stable cwd, `settingSources: []`, `settings.autoMemoryEnabled: false`, and `skills: []` for this synthetic qualification. Do not create a fake curated production skill pack. Adopt the SDK's exported `InMemorySessionStore` solely as the offline adapter reference; retain local session persistence and do not combine sessionStore with `persistSession: false` or `enableFileCheckpointing: true`. Tests must exercise the actual pinned upstream store with opaque JSON entries, UUID deduplication, UUID-less entries, main session plus subkeys, missing-session behavior and project/session scope separation. Retain unknown entry fields unchanged. Verify the options match actual published types rather than hypothetical APIs. Add a meaningful failure case that cannot report a verified restore when expected state is absent. In-memory reference tests do not establish persistence, remote append retries/mirror_error behavior, broker durability, process resume or workspace restoration. Do not write a replacement storage SDK or broker in this ticket.
+
+5. Prepare an opt-in browser probe using the selected official Playwright MCP integration. Require explicit MCP `--sandbox` or the supported `chromiumSandbox: true` equivalent, non-root identity, an isolated per-probe browser profile and owned output directory. Use a synthetic loopback fixture for deterministic navigation/download; later approved public navigation is a separate live gate. Capture actual effective Chromium flags and affirmative `chrome://sandbox` markers; refuse a qualified/pass verdict if evidence is unavailable, contradictory or sandbox disabled. Preserve launch/runtime errors and exit nonzero. Never fall back to --no-sandbox, a desktop browser, a second Playwright integration or elevated/root execution. This Windows host cannot qualify the target Linux/Fargate sandbox. The probe may be prepared and statically inspected without being run.
+
+6. Prepare opt-in synthetic Office generation/render probes: native DOCX with a heading/table, XLSX with a small supported formula and known result, and an editable two-slide PPTX with text/table and notes. Inspect actual ZIP/native structures; reopen with adopted libraries where supported. Keep originals and write revisions to new files. Generate deterministic fixture expectations rather than visually inspecting a nonexistent output. Include LibreOffice PDF export and page PNG rendering commands, PDF page/text inspection, and evidence hashes/paths. Detect and report missing converter/fonts instead of silently passing. Cached XLSX values do not prove LibreOffice recalculation or general Excel fidelity. Include PDF.js as the adopted preview candidate without implementing a new viewer here. Generate files locally only with scoped installed dependencies and owned outputs; rendering that cannot run locally is explicitly not run and remains a live gate. No copied skills/templates or new product UI.
+
+7. Use probes/runtime.mjs as the image qualification entrypoint and `probe:runtime` command. Collect independent identity/mount, SDK static, browser and Office results; a browser sandbox failure must not prevent other independent checks from running. Emit a structured JSON summary to stdout even on sandbox/missing-tool failure, preserve scrubbed errors and evidence paths, and exit nonzero if ANY required runtime check fails. Never convert unavailable evidence into a pass. Keep offline tests focused on real boundaries: exact package/lock/browser alignment, supported SDK configuration and opaque session behavior, image non-root/writable-path/sandbox configuration and failure/summary behavior. Avoid a large framework or tests that only mirror every recipe string. Report the actual package/API observations, passed checks and incomplete work. When a pin/tool is unavailable or budget is nearly exhausted, save the partial recipe/probes and give a concrete next bounded session; do not invent success or expand the session.
+
+## Checks and handoff
+
+Image and live-entrypoint detail: COPY only this qualification package's selected files, never the whole repository. Record actual SDK/bundled CLI executable versions in live results without model calls. Add bounded DNS-denial probes for fixed public/provider names example.com and api.anthropic.com, plus direct TLS reachability to public IP1.1.1.1:443 with a short timeout. Send no credentials/private payloads and never mutate targets. Preserve exact error/result evidence; these probes do not establish complete network qualification. Give every spawned browser/Office/CLI process an explicit deadline and cleanup path. CLAUDE_CONFIG_DIR is /workspace/config; PLAYWRIGHT_BROWSERS_PATH is /opt/meri-browsers in the reviewed task definition.
+
+After the final code edit, run from the assigned worktree, preserving each exit status:
+
+```
+npm run check
+npm --prefix apps/worker/qualification test
+git diff --check
+```
+
+Root `npm run check` is the accepted canonical 15-test contract/H00 check; do not edit it. The nested `test` is this ticket's canonical offline qualification check. Install only exact nested dependencies into owned directories, retain lockfiles, and record the commands/outcomes separately. A shell command followed by an unconditional success echo is not evidence. If any required check fails, report it visibly and return partial/blocked; no auto retry or out-of-scope repair. Do not use OS Temp for extra verification.
+
+If scoped implementation and checks finish, commit ONLY the exact owned tracked files with a concise message, leave a clean scoped worktree, and return `ready-for-review`, never accepted. If incomplete, preserve the report/checkpoint and return `partial` with the missing items and proposed next bounded task; do not start/resume another session yourself. Never amend prior commits, push, deploy or recursively delegate. Codex will inspect the exact commit, commission an independent read-only Hermes review and rerun relevant checks before integration.
+
+Report and final handoff: task and explicit Hermes session ID; base and full result SHA (or no commit); branch/cwd; changed files; adopted versions/license observations and evidence hashes/paths; exact checks, exit codes and counts; native generation/render results separately; unbuilt/unrun status; scope/policy/migration effects (none expected); remaining risks; process/checkpoint state and a concrete next action. A report can refer to HEAD of the task commit; return the actual full SHA after committing. Do not log keys, tokens, environment dumps or private source content.
+
+The report MUST list these missing live gates as NOT RUN unless separately evidenced by a later Codex-authorized task: image build/immutable assembled digest; target Linux SDK executable and query/stream; non-root sandbox-enabled MCP Chromium plus real download; LibreOffice/fonts/native export and visual render review; uploaded configuration/instructions inert; curated original skill pack; model proxy and denied direct provider/source/internet paths; real isolated Fargate IAM/read-only mounts/task separation/capabilities; verified remote opaque-session plus workspace snapshots; interrupt/resume/replacement-task restoration and stale-fence rejection; SDK mirror_error handling; Temporal production topology/backups/restore; measured startup, peak memory/disk, export/restore timing and usage/cost. Local offline results cannot pass these gates. G1 stays incomplete and W03 stays blocked.
+
+Runtime/turn bound: one attempt, maximum 60 minutes and 40 turns, supervised by Codex's installed-Hermes launcher. Stop on provider/auth/quota failures; no automatic retries, background jobs, scheduled work, global profile/settings changes or approval bypass. Host-user worktree boundaries are not a filesystem or credential sandbox.
+
+Authorized external actions: existing configured Hermes model-provider requests; public upstream npm/PyPI/base-image/OS package metadata and scoped dependency downloads required for this recipe; local Git/read/edit/offline checks and optionally native generation within owned paths. No SDK/model calls, cloud/API deployments, AWS/GitHub/ECR writes, credentials, live institution sources, current Capiro code, customer data or cutover. Codex owns the new isolated AWS resources and all live execution.

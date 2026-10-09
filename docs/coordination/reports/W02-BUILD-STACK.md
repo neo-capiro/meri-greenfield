@@ -1,0 +1,11 @@
+# Qualification builder deployment evidence
+
+Codex deployed only NEW stack `MeriGreenfield-QualificationBuild` in approved account `967807252336`, region `us-east-1`, 9 October 2026. Source commit `07652e874d061a29e92843798e5445d7a6f1d71d`. Independent infrastructure review accepted the repaired draft; six synthesized security checks passed. Reviewed change set `kickoff-07652e8-20261009` contained exactly nine additions, no replacements/updates/deletions. Fresh STS identity was checked before creation and execution. Stack status: `CREATE_COMPLETE`.
+
+New resources: encrypted/versioned source-and-evidence bucket `meri-greenfield-qual-build-967807252336-us-east-1`; encrypted immutable repository `meri-greenfield/qualification-worker`; CodeBuild project `meri-greenfield-qualification-build`; KMS key/alias `alias/meri-greenfield/qualification-build`; log group `/meri-greenfield/qualification/build`; builder role/policy; bucket policy. Exact physical inventory, template, template SHA256, change set and stack descriptors are preserved in ignored `docs/coordination/private-evidence/qualification-build-stack/`. No secret values are in this report or evidence.
+
+Post-deployment CodeBuild descriptor matches the synthesized build specification. Project concurrency one, build deadline thirty minutes. Privileged Docker exists only inside this trusted image-build job. Its role has only new qualification bucket/repository/log/key access. It cannot delete evidence. No image build has been started; no source archive uploaded. StartBuild must pin the accepted source commit, archive SHA256 and exact uploaded S3 VersionId, then record actual build ID and resulting digest in a trusted manifest.
+
+No Runtime stack, VPC, Fargate task, ECS service, source connection, production CI or cutover exists from this deployment. Current Capiro resources remain untouched. This builder does not pass G1 or G2.
+
+Rollback: stop any active builds in this named project before cleanup. Preserve the exact evidence/resource inventory first. CloudFormation deletion would retain bucket, repository, key and logs intentionally; explicit cleanup of those new resources requires inventory-checked targets. Never delete existing Capiro resources or shared bootstrap resources. Keeping this empty builder does not affect current Meri availability.
