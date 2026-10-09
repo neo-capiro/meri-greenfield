@@ -1,0 +1,15 @@
+# W02-04 integration-owner acceptance
+
+Codex,9 October2026. Accepted **offline transport preparation only** at final `3c836eee9f4a70c9cd6314e3eac2bc35639f2177`, code `7d094e12d15ab1693c8dd526808a712513c14cb9`. This does not pass G1, deploy UI or qualify authentication/browser storage.
+
+Real Hermes implementation `20261009_172411_d70282` returned df2d0bb then92e7d62. Owner rejected the first despite14 passing checks: actual factory conflict handling, reconnect identity, mutable projection state and active-stop coverage were deficient. The repaired17-check candidate still had inherited error-name lookup and mutable original-view send identity defects. After its writer closed, owner7d094e1 fixed those boundaries and added actual composed regressions; documentation3c836ee separately attributes that output and19 final checks.
+
+Separate real Hermes reviewer `20261009_180714_1c878e` independently ran root15, typecheck, nested19 and10 additional composed reproductions on exact3c836ee. Its initial24-turn attempt stopped before writing the report. An explicitly bounded8-turn/600-second continuation wrote only the completed report and returned `756695e80f207fa38b63fa227858ec32f4f64107`. Both attempts exited with zero remaining processes, finished readers and confirmed cleanup; ignored scratch was removed. Its report remains unchanged in W02-04-UI-REVIEW.md.
+
+Independent Codex review also ran19/typecheck and28 additional composed assertions, including eight prototype-like codes, mutation before send and actual resume, preserved authorized identity/cursor and command overwrite. Codex inspected the exact14 owned cumulative paths and protected contracts/root locks. After merge and report integrationf576769, owner reran root15, nested typecheck and19 nested checks successfully; diff check clean.
+
+Accepted evidence covers the actual upstream writer, guarded DefaultChatTransport and external Chat with mock fetch, frozen events, pre-forward synchronous projection validation, immutable canonical dedup/conflicts, gap recovery, conversation-wide cursor, safe error strings, reconnect/204 and subscriber stop/dispose. It does not make the offline view fixture an authentication authority. Current fencing stays broker-owned. HTTP finish/ready is not durable run completion.
+
+Two independent upstream issues must stay distinct: explicit event validation handles dataPartSchemas' key mismatch; external useChat({chat}) preserves transport replay/close behavior lost by the inline transport wrapper. The review's adjacent wording should not be interpreted as one fixing the other. Neither issue requires a second model loop.
+
+Not run: actual React rendering, browser-safe compiled schema, durable browser persistence, authenticated gateway/SSE/ALB behavior, revocation/replay authorization, slow-client behavior, UI components/accessibility/E2E. AI Elements CLI was not executed; later component source/lock/notices must be frozen separately. No cloud/provider/source call or deployment was part of this acceptance. G1 remains open.

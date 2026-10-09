@@ -1,6 +1,6 @@
 # Component adoption and qualification register
 
-Updated 9 October 2026. Contract/CDK dependencies are locked. Worker final797da3a(code577e8f0) passed separate real Hermes review and owner15+81checks; source8785118 built image7327. Baseline3 passed five mechanical probes but failed Chromium namespace creation. Proxy1ba863b is accepted offline only; Temporal d96168b is accepted design/offline only; UI3c836ee/19checks awaits separate review. No application component set or G1 is accepted. Recipe-time pins/notices are in apps/worker/qualification/component-pins.json; build/runtime reports are authoritative for later observations. No current Capiro package is imported.
+Updated 9 October 2026. Contract/CDK dependencies are locked. Worker final797da3a(code577e8f0) passed separate real Hermes review and owner15+81checks; source8785118 built image7327. Baseline3 passed five mechanical probes but failed Chromium namespace creation. Proxy1ba863b is accepted offline only; Temporal d96168b is accepted design/offline only; UI3c836ee/19checks is accepted offline after separate review. No application component set or G1 is accepted. Recipe-time pins/notices are in apps/worker/qualification/component-pins.json; build/runtime reports are authoritative for later observations. No current Capiro package is imported.
 
 | Subsystem | Package and exact candidate | Registry license | Status |
 | --- | --- | --- | --- |
@@ -8,7 +8,7 @@ Updated 9 October 2026. Contract/CDK dependencies are locked. Worker final797da3
 | Canonical JSON hashing | canonicalize 5.1.0 | Apache-2.0 | installed, npm lock integrity; approval-hash tests pass |
 | Agent harness | @anthropic-ai/claude-agent-sdk 0.3.295 | SEE LICENSE IN README.md | inspect bundled runtime and commercial terms; qualify official SessionStore/configuration |
 | Runtime CLI reference | SDK-bundled CLI 2.1.295 / platform package0.3.295 | SEE LICENSE IN README.md | build/baseline measured exact version and pinned binary hash; no actual query/proxy/recovery acceptance |
-| UI transport | @ai-sdk/react4.0.140 with exact ai7.0.137 | Apache-2.0 | actual mock writer/transport/externalChat fixtures19+typecheck; separate exact review pending; no React mount/real auth or second model loop |
+| UI transport | @ai-sdk/react4.0.140 with exact ai7.0.137 | Apache-2.0 | actual mock writer/transport/externalChat fixtures19+typecheck; separate exact review accepted; no React mount/real auth or second model loop |
 | UI components | ai-elements 1.9.0 | Apache-2.0 | inspect official installation workflow and component compatibility |
 | UI framework | next 16.4.0; react 19.3.0 | MIT | qualify combined UI dependency compatibility |
 | Browser | @playwright/mcp 0.0.83 with exact playwright/playwright-core 1.64.0-alpha-1790635538000 | Apache-2.0 | Chromium1247/155.0.8059.12 hashes/helper modes verified; Fargate namespace EPERM; D005 new isolated browser-host qualification approved, not yet run |

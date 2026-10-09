@@ -27,7 +27,7 @@ Read-only Capiro snapshot fd8765ec01d292013758606204f2c9d886cd31c1:139 capabilit
 - Worker797da3a(code577e8f0) accepted for one build/probe only after separate real Hermes code/document reviews and owner15root/81nested checks. Source8785118 built image7327. Earlier rejected reviews/findings remain preserved.
 - Proxy1ba863b(code7aeffa9) accepted **offline only**, separate real Hermes review and owner adversarial checks;29nested. Live service/auth/count-request binding/durable holds/native budget/retry/SDK wire remain unqualified. See W02-02-OFFLINE-ACCEPTANCE.
 - Temporal d96168b accepted **design/offline only**, reviewer20261009_175809_821a18 and owner post-integration15root/typecheck/22nested,43 prohibited configurations. Prior e67/0f rejected; owner thin changes separately attributed. No real Temporal runtime/HA/recovery. See W02-03-TEMPORAL-ACCEPTANCE.
-- UI3c836ee(code7d094e1) passes typecheck/19nested and additional composed owner checks. Separate real Hermes exact-commit review active; **not yet accepted/integrated**. No React mount/browser storage/authenticated network path.
+- UI3c836ee(code7d094e1) accepted offline after separate real Hermes exact review20261009_180714_1c878e and owner post-integration15root/typecheck/19nested plus composed adversarial checks. No React mount/browser storage/authenticated network path.
 
 ## Actual AWS state
 
