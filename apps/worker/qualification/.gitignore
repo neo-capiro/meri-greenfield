@@ -1,0 +1,6 @@
+# Owned scratch subtree: downloads, caches, virtualenvs, generated files,
+# conversion profiles, temporary files and probe outputs. Never committed.
+.runtime/
+node_modules/
+__pycache__/
+*.pyc
