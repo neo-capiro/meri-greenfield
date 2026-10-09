@@ -1,0 +1,10 @@
+# Only the selected qualification files may enter the image build context.
+# This context is the qualification package directory itself (see README).
+# The offline policy reference and its tests are deliberately EXCLUDED: they
+# are a local test fixture, not shipped runtime code.
+**
+!Dockerfile
+!proxy-config.json
+!component-pins.json
+!README.md
+!.dockerignore

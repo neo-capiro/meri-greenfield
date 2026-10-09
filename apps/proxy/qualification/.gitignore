@@ -1,0 +1,6 @@
+# Owned scratch subtree: cached downloads, pip/npm caches, extracted package
+# trees, generated manifests and any transient files. Never committed.
+.runtime/
+node_modules/
+__pycache__/
+*.pyc

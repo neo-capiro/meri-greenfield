@@ -1,0 +1,14 @@
+{
+  "name": "@meri/qualification-proxy",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Meri W02-02 trusted model proxy qualification recipe, offline admission/budget policy reference and deterministic offline tests. Preparation only; not a product package, not a deployed broker or gateway.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "npm test"
+  }
+}
