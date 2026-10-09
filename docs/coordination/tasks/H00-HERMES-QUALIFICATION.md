@@ -4,9 +4,9 @@ Objective: qualify the installed Hermes development workflow with real edits, ch
 
 User-visible outcome: a verified delegation path; no claim of application/Fargate readiness.
 
-Base commit: UNASSIGNED. Codex fills this from the accepted contract-freeze integration commit before launch.
-Branch and absolute worktree: UNASSIGNED. Dedicated branch/worktree only; no second writer.
-Dependency commits: W01 contract freeze and repository bootstrap, both UNASSIGNED pending owner repository choice and review.
+Base commit: 7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3. Reviewed contract-freeze commit; tag contracts/v0.1.0.
+Branch: hermes/h00-qualification. Absolute worktree: C:\dev\main\meri-greenfield-worktrees\h00. Dedicated worktree only; no second writer.
+Dependency commits: W01 contract freeze and repository bootstrap 7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3, accepted by Codex after independent review. Repository/account choices accepted by owner.
 
 Owned paths: `evals/qualification/hermes-session.fixture.json`, `evals/qualification/hermes-session.test.mjs`, `docs/coordination/reports/H00-HERMES-QUALIFICATION.md`.
 Paths requiring Codex approval: every other path, including contracts, shared tests, package.json, lockfile, AGENTS.md, infrastructure and plans.
