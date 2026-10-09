@@ -1,6 +1,6 @@
 {
   "schema": "meri.qualification.proxy-policy-fixture/1",
-  "generatedAt": "2026-10-09T21:30:00Z",
+  "generatedAt": "2026-10-09T16:45:00Z",
   "status": "preparation-only",
   "synthetic": true,
   "warnings": [
@@ -8,7 +8,8 @@
     "Pricing below is invented round-number fixture data used only to exercise safe-integer microUSD arithmetic. Freeze verified current Bedrock pricing/token limits before any paid test.",
     "The credential registry is a trusted server-side fixture map keyId -> immutable opaque grant. A caller-supplied key object or headers are NEVER treated as the grant.",
     "trustedIdentity.source === 'broker' is FIXTURE PROVENANCE ONLY; the string is not an authenticator. Production identity must arrive over an authenticated broker channel.",
-    "No secret value, real key, tenant or customer content is present. The fixture references the frozen RunBinding/Budgets shapes by structure only."
+    "No secret value, real key, tenant or customer content is present. The fixture references the frozen RunBinding/Budgets shapes by structure only.",
+    "Token-count bounds are a SEPARATE trusted internal observation created by createTrustedCountObservation from the classified raw request (FIXTURE PROVENANCE). char/4 is NOT a verified worst-case bound and wire-body token claims cannot supply the bound."
   ],
   "qualificationCeilingMicrousd": 10000000,
   "nativeTeamMaxBudgetUsd": 10,

@@ -1,13 +1,14 @@
 {
   "schema": "meri.qualification.component-pins/1",
-  "generatedAt": "2026-10-09T20:05:00Z",
+  "generatedAt": "2026-10-09T16:50:00Z",
   "status": "preparation-only",
   "notes": [
     "W02-02 trusted model proxy recipe candidates. Preparation only: nothing here is an accepted runtime, built image, deployed proxy or live qualification.",
     "Hashes and digests were read from upstream PyPI/GitHub/ghcr metadata and from artifacts downloaded into owned scratch (apps/proxy/qualification/.runtime, never committed) during this session.",
     "Registry license labels are not a completed license audit. The MIT label covers content OUTSIDE the enterprise/ directory only; no enterprise feature is adopted.",
     "assembledImageDigest stays null until Codex performs a real isolated build and records the immutable digest.",
-    "No secret value, real key or customer/source content is recorded here."
+    "No secret value, real key or customer/source content is recorded here.",
+    "The offline reference uses an immutable credential registry (deep-frozen snapshot), a deep-frozen branded request DTO with private WeakMap provenance, a separate trusted token-count observation bound to the canonical raw-request hash, and budget settlement/reconciliation that re-checks combined committed spend. char/4 is NOT a verified token bound."
   ],
   "assembledImageDigest": null,
   "upstream": {

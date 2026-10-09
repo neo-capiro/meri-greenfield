@@ -50,6 +50,39 @@ translator):
    property with no config knob; documented as an unmitigated gap with the
    classifier denying `thinking` blocks; no "all attempts disabled" claim.
 
+## Repair v3 (Codex rejection of 059d610)
+
+Codex reran 15 root + 26 proxy checks green but rejected 059d610 for reproducible
+reference defects. This continuation repaired them offline:
+
+1. Strict nested classifier — message/system/text/tool_use/tool_result/tool
+   definition/tool_choice/metadata nodes now validate strict allowed keys/types
+   recursively; nested thinking, cache_control, routing overrides and unknown keys
+   deny from their actual raw representation (no silent strip). Arbitrary JSON
+   inside a local tool's input/input_schema remains DATA and is not censored;
+   tool_result permits only text content. Added the exact repro negatives plus
+   safe user/tool-data cases.
+2. Immutability/provenance — the parsed DTO is deep-frozen and its provenance is a
+   private WeakMap, so mutating it throws and a spread/forged copy is rejected;
+   `createCredentialRegistry` stores deep-frozen snapshots (not caller references);
+   lookup/state failures and malformed/wildcard/mixed-route grants deny.
+3. Trusted token-count observation — a separate trusted observation (fixture
+   provenance) bound to the canonical raw-request hash (canonicalSha256) plus
+   model/pricing revision supplies the input bound; wire-body token claims cannot;
+   char/4 is diagnostic only and no longer used for a successful reservation;
+   missing/mismatched/unsafe bounds deny. Official AWS token bounds remain a live
+   blocker.
+4. Budget reconciliation repro — reserve 5M + 5M, settle first
+   error_after_dispatch, reconcile first with provider_reconciliation/6M now
+   returns LEDGER_BREACHED, quarantines the ledger and denies later admission,
+   preserving the real 11M combined liability. Settlement/reconciliation now
+   compare the real actual to the original reservation AND re-check combined
+   consumed + remaining holds; added below-ceiling over-reserved, safe-zero,
+   overflow and duplicate fixtures with explicit state transitions.
+
+Also corrected `generatedAt` in the fixture/component-pins to the session time
+(previously a future timestamp) and refreshed stale test counts (now 27).
+
 - Process/checkpoint: single bounded session, one attempt, no retries, no
   delegation, no background scheduler. Owned scratch `apps/proxy/qualification/.runtime/**`
   is ignored and uncommitted.
@@ -114,7 +147,7 @@ Run from the assigned worktree:
 | Command | Exit | Result |
 | --- | --- | --- |
 | `npm run check` (root, Codex-owned, unchanged) | 0 | 15 tests, 15 pass, 0 fail, 0 skipped |
-| `npm --prefix apps/proxy/qualification test` | 0 | 26 tests, 26 pass, 0 fail, 0 skipped |
+| `npm --prefix apps/proxy/qualification test` | 0 | 27 tests, 27 pass, 0 fail, 0 skipped |
 | `git diff --check` | 0 | no whitespace errors |
 
 The nested suite opens no socket and contacts no AWS/model/proxy/DB. Nested

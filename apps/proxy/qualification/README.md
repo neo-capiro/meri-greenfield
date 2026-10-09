@@ -51,7 +51,8 @@ supply, and is labelled a test reference:
 
 - **Credential binding**: admission looks the credential ID up in a trusted
   server-side registry (`keyId -> immutable opaque grant`). The caller-supplied
-  key object and HTTP headers are never the grant. The grant's full `RunBinding`,
+  key object and HTTP headers are never the grant, and the registry keeps a
+  deep-frozen snapshot rather than the caller's entry object. The grant's full `RunBinding`,
   exact model and exact nonempty `allowedRoutes` are compared to the authenticated
   broker task observation **and** the authoritative active run
   attempt/worker/fence/policy. Missing/malformed fields deny (validated with the
@@ -62,15 +63,28 @@ supply, and is labelled a test reference:
 - **Raw Messages classifier**: a strict parser is the only producer of the trusted
   request DTO (branded). Unknown/malformed/unsupported fields, credential/routing
   overrides, and nested server-tool/thinking/context/structured/container/MCP
-  features are denied from their actual raw header/body representation. No silent
-  strip or sanitize-and-pass; unknown bounds fail admission. Actual SDK
-  fields/betas/cache/thinking remain unqualified.
+  features are denied from their actual raw header/body representation, including
+  nested message/system/text/tool_use/tool_result/tool-definition/tool_choice/
+  metadata nodes (thinking, cache_control, routing overrides, unknown keys).
+  Arbitrary JSON inside a local tool's input/input_schema is DATA and is not
+  censored. The parsed DTO is deep-frozen and its provenance lives in a private
+  WeakMap, so a forged copy is rejected. No silent strip or sanitize-and-pass;
+  unknown bounds fail admission. Actual SDK fields/betas/cache/thinking remain
+  unqualified.
+- **Trusted token-count observation**: a SEPARATE trusted internal observation
+  (fixture provenance), bound to the canonical hash of the classified raw request
+  plus the model/pricing revision, supplies the input-token bound; wire-body token
+  claims cannot. char/4 is diagnostic only and is NOT a verified worst-case bound;
+  missing/mismatched/unsafe bounds deny.
 - **Budget**: safe integer microUSD; worst-case reservation before dispatch;
   denies unknown/nonpositive estimates, missing output bounds, oversize
   input/output, duplicate request IDs, stale pricing and ceiling breaches. Real
   liability above the reservation bound is surfaced (`OVER_RESERVED_BOUND`) and a
   breach quarantines the ledger and denies later dispatch — never clamped or
-  fabricated safe. An unresolved hold is retained until explicit trustworthy
+  fabricated safe. Settlement and reconciliation compare the real actual to the
+  ORIGINAL reservation AND re-check combined consumed + every remaining hold, so an
+  over-bound or over-cap result quarantines the ledger and denies later dispatch.
+  An unresolved hold is retained until explicit trustworthy
   `provider_reconciliation` evidence; an inconsistent later outcome cannot release
   it. Budget resets are refused; TTL/process loss keeps the hold.
 - **Streams**: pure synthetic validation requiring ordered message/block
