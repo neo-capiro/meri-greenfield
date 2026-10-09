@@ -1,0 +1,11 @@
+# Runtime structural preflight
+
+Codex's independent review agent inspected integration08b5c33 and the matching Runtime template SHA25632eff7f62cfaaba05eade0bcf18179b70bfd459e071f8a232e5301c748de5832. All28 resources form an acyclic dependency graph. No structural blocker to a future direct CloudFormation CREATE change-set review was found. This is preparation evidence, not deployment or G1 acceptance.
+
+The template creates an independent10.80/16 VPC, isolated subnets, cluster, security groups, roles, KMS key and logs. No imports, NAT, IGW, peering, ECS service, source grant or provider credential exists. Worker IAM has zero actions. Execution IAM is limited to the new repository pull/token, runtime logs and Logs-mediated use of the new key. Fargate uses Linux/X86_64, UID/GID10001, read-only root, unprivileged execution, dropALL and deliberate workspace/tmp mounts. WorkerImage requires the new account/repository's immutable digest. Private ECR/log endpoints and restricted regional S3 layer reads are configured.
+
+Deployment must use the reviewed TemplateBody via direct CloudFormation APIs. The current CDK assembly manifest still advertises shared default deploy/execution roles; old assets files remain unreferenced. Do not invoke cdk deploy or assume that path is bootstrap-independent.
+
+Before execution: accept actual image provenance/digest; review CREATE changes; freshly assert account identity. Before task launch: read back new IAM/KMS/task definition/subnets/security groups, confirm DNS association ready and explicitly set/read FirewallFailOpen=DISABLED, select only the new subnet/SG, disable public IP, use count1 and an explicit Fargate platform with an external deadline. Default DNS firewall redirection inspection may require exact observed AWS CNAME targets; do not widen to wildcard AWS domains to hide a pull failure.
+
+Live-only evidence remains required for image pull/logs, effective mount ownership/write/read-only behavior, UID/capabilities, Chromium sandbox/processes, permitted and denied network paths, stop deadline and confirmed task cleanup. Missing direct-IP negative coverage and uncollected Office output bytes remain known G1 gaps. No runtime stack/task or model call resulted from this preflight.

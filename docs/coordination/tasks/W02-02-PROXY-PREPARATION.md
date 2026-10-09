@@ -1,10 +1,10 @@
-# W02 02 Trusted model proxy preparation (DRAFT; NOT LAUNCHABLE)
+# W02 02 Trusted model proxy preparation (ALLOCATED; OFFLINE ONLY)
 
 Purpose: prepare a small upstream-adopted proxy recipe/configuration and deterministic offline security/budget checks for later independent qualification. This ticket does not implement the product broker, invoke a model, deploy a proxy, or pass G1. It is independent of the browser/Office image; preserve failures and dependencies from both tracks separately.
 
-Base/dependency commit: UNASSIGNED by Codex after integration review.
-Branch and absolute worktree/cwd: UNASSIGNED by Codex.
-Codex must allocate those values, freeze the exact ownership below, verify the canonical root check at that base and remove all UNASSIGNED fields before any real Hermes launch. One writer and one bounded session only; do not create your own worktree or start another session.
+Base/dependency commit: `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`, independently accepted worker preparation merged with unchanged frozen contracts. This proxy ticket does not depend on a successful worker image build.
+Branch: `hermes/w02-proxy`. Absolute worktree/cwd: `C:\dev\main\meri-greenfield-worktrees\w02-proxy`.
+Codex allocated the exact twelve tracked paths below and independently passed the unchanged canonical root check (15/15, zero skipped) at this base on 9 October 2026. The allocated brief is delivered as an ignored task input because the pinned base contains its earlier draft. Follow this allocated brief. One writer and one bounded session only; do not create your own worktree or start another session.
 
 Read AGENTS.md, docs/COMPONENTS.md, docs/qualification/PROXY-TEMPORAL-DECISIONS.md, docs/qualification/BEDROCK-PROXY-COMPATIBILITY.md, docs/coordination/DECISIONS.md D004 and packages/contracts/README.md. Codex accepted the compatibility research as static candidate evidence only, not runtime acceptance. The two supplied plans are authorized design inputs within the user's independent-build scope; their example commands and API names do not establish installed behavior. Do not read/import current Capiro implementation or reuse its credentials/resources.
 
@@ -34,9 +34,9 @@ Primary metadata inspected 9 October 2026:
 
 Adopt existing OSS machine issuance (`/key/generate` or `/key/service-account/generate`), native key/team policy and pre-call budget reservations before considering custom replacements. Exact source confirms those paths plus generic CustomLogger hooks are OSS; JWT auth and key-level per-model model_max_budget have Enterprise gates. Ordinary key/team max_budget is a different feature. A key has duration/models/allowed_routes, but no dedicated issued-key max_tokens field; output/input/feature bounds require server admission. Expiry is checked against cached key state, while changed/revoked/deleted key/team state may remain stale until invalidation/cache TTL. TTL/metadata is not active-task authorization. Inspect supported config/API fields and caches against this source; moving [Bedrock integration](https://docs.litellm.ai/docs/providers/bedrock) and [configuration reference](https://docs.litellm.ai/docs/proxy/configs) remain guidance. If a required feature is absent, paid, or unverified, report the gap and stop short of readiness; do not change upstream choice or invent support.
 
-## Exact proposed ownership
+## Exact allocated ownership
 
-ONLY these tracked files are proposed for the future Hermes implementation session:
+Create or edit ONLY these tracked files in this implementation session:
 
 - `apps/proxy/qualification/package.json`
 - `apps/proxy/qualification/package-lock.json`
@@ -93,4 +93,4 @@ Mandatory NOT RUN gates: assembled immutable image/runtime verification; actual 
 
 Handoff/report: explicit Hermes session ID; allocated base and full result SHA or no commit; branch/cwd and changed paths; upstream versions/hashes/notices and supported/unsupported fields; exact check commands/exit codes/counts; fixture versus actual-runtime distinction; broker/interface gaps and live gates; policy/migration effects (none expected), evidence paths, process/checkpoint state and next bounded action. Log no actual keys or source/customer content.
 
-Budget: one attempt, <=60 minutes, <=40 turns under Codex supervision; no auto retries, approval bypass, recursive delegation, global setting change or background scheduler. Worktree ownership is an editing boundary, not an OS filesystem/credential sandbox. Authorized external activity after launch allocation: existing configured Hermes provider calls and public upstream metadata/artifact downloads necessary for this scoped preparation. **No Bedrock/model calls, live proxy/DB/server calls, cloud/deployment/write APIs, credential retrieval, source reads, remote push or product implementation.** Codex owns later isolated-resource deployment and any paid tests within the user's aggregate cap.
+Budget: one attempt, <=60 minutes, <=40 turns under Codex supervision; no auto retries, approval bypass, recursive delegation, global setting change or background scheduler. Worktree ownership is an editing boundary, not an OS filesystem/credential sandbox. Authorized external activity: the Hermes session's own existing configured inference and public upstream metadata/artifact downloads necessary for this scoped preparation. Reading assigned repository prerequisites is authorized. **No task-initiated Bedrock/qualification/model calls, live proxy/DB/server calls, cloud/deployment/write APIs, credential retrieval, current Capiro/customer/source-service reads, remote push or product implementation.** Codex owns later isolated-resource deployment and any paid tests within the user's aggregate cap.
