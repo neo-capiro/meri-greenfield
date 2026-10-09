@@ -7,10 +7,14 @@ retrieval or product implementation occurred.
 - Hermes session ID: `20261009_162217_f476e4`
 - Allocated base/dependency commit: `08b5c33d6b53a3758ed6c1835d6e55825939c0cb`
 - Branch / cwd: `hermes/w02-proxy` at `C:\dev\main\meri-greenfield-worktrees\w02-proxy`
-- Result commit: none yet at the time of writing — this report is committed in the
-  same bounded checkpoint session, so its own 40-char SHA cannot be embedded here
-  without being self-referential. The resulting SHA is returned in the final CLI
-  handoff and recorded on the branch head (`git log -1 --format=%H`).
+- Hermes repair implementation: `010e2bdd4f2239398820c9841df852be9e63180f`.
+- Final code candidate: `7aeffa9c066c6cc65ed5080414994f3a8256e9e1`, including
+  separately attributed Codex owner thin fixes `c745e65` and `7aeffa9` after the
+  implementation writer closed. They keep completed tools private until whole
+  stream success, quarantine overflow, bind tool identity across delta/stop and
+  reject duplicate tool-use IDs. They also correct a diagnostic character count;
+  it remains unused for token or price admission. These are owner changes, not
+  Hermes implementation output. This documentation correction is a later commit.
 
 ## Continuation
 
@@ -81,7 +85,8 @@ reference defects. This continuation repaired them offline:
    overflow and duplicate fixtures with explicit state transitions.
 
 Also corrected `generatedAt` in the fixture/component-pins to the session time
-(previously a future timestamp) and refreshed stale test counts (now 27).
+(previously a future timestamp) and refreshed its then-current test count to27;
+the later owner fixes bring the current final suite to29.
 
 - Process/checkpoint: single bounded session, one attempt, no retries, no
   delegation, no background scheduler. Owned scratch `apps/proxy/qualification/.runtime/**`
@@ -147,7 +152,7 @@ Run from the assigned worktree:
 | Command | Exit | Result |
 | --- | --- | --- |
 | `npm run check` (root, Codex-owned, unchanged) | 0 | 15 tests, 15 pass, 0 fail, 0 skipped |
-| `npm --prefix apps/proxy/qualification test` | 0 | 27 tests, 27 pass, 0 fail, 0 skipped |
+| `npm --prefix apps/proxy/qualification test` (owner final rerun) | 0 | 29 tests, 29 pass, 0 fail, 0 skipped |
 | `git diff --check` | 0 | no whitespace errors |
 
 The nested suite opens no socket and contacts no AWS/model/proxy/DB. Nested
@@ -199,7 +204,7 @@ audience was modified.
   license paths, verified config fields, known budget/hook gaps, unresolved pins.
 - `apps/proxy/qualification/proxy-config.json` — minimal config.
 - `apps/proxy/qualification/offline-policy.mjs` + `test/offline-policy.test.mjs` —
-  offline reference and 21 tests.
+  offline reference and29current tests.
 - Owned scratch `apps/proxy/qualification/.runtime/**` (ignored, uncommitted):
   downloaded wheel/sdist/LICENSE files, extracted upstream source, and captured
   ghcr token/manifest/config used for the digest findings.
