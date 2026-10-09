@@ -97,14 +97,14 @@ export const GEN_KEYS = Object.freeze(['exitStatus', 'signal', 'timedOut', 'prob
 export const GEN_NATIVE_KEYS = Object.freeze(['status', 'generate', 'pptx']);
 export const GEN_RENDER_KEYS = Object.freeze(['status']);
 export const GEN_GENERATE_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'parseOk', 'parsedOk', 'resultCount', 'docx', 'xlsx']);
-export const GEN_DOCX_KEYS = Object.freeze(['ok', 'headings', 'tableText', 'tableCount', 'hasDocumentXml']);
-export const GEN_XLSX_KEYS = Object.freeze(['ok', 'inputs', 'a4Formula', 'a4CachedValue', 'hasSheetXml']);
+export const GEN_DOCX_KEYS = Object.freeze(['ok', 'headings', 'tableText', 'tableCount', 'structure', 'hasDocumentXml']);
+export const GEN_XLSX_KEYS = Object.freeze(['ok', 'inputs', 'a4Formula', 'a4CachedValue', 'structure', 'hasSheetXml']);
 export const GEN_PPTX_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'parseOk', 'parsedOk', 'resultCount', 'resultOk', 'slideCount', 'notesCount', 'hasSlideParts', 'hasNotesParts']);
 export const GEN_SUB_KEYS = Object.freeze(['ok', 'status', 'signal', 'error']);
 export const GEN_PNG_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'count']);
 export const GEN_PDF_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'parseOk', 'parsedOk', 'resultCount', 'resultOk', 'pageCount']);
 export const GEN_RECALC_KEYS = Object.freeze(['status', 'inspected', 'inputs', 'formula', 'cachedValue', 'newFile', 'convert', 'child']);
-export const GEN_RECALC_CHILD_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'parseOk', 'parsedOk', 'resultCount', 'resultOk', 'observedInspected', 'observedInputs', 'observedFormula', 'observedCachedValue']);
+export const GEN_RECALC_CHILD_KEYS = Object.freeze(['ok', 'status', 'signal', 'error', 'parseOk', 'parsedOk', 'resultCount', 'resultOk', 'file', 'observedInspected', 'observedInputs', 'observedFormula', 'observedCachedValue']);
 export const GEN_TOOLS_KEYS = Object.freeze(['soffice', 'pdftoppm']);
 export const GEN_MAP_KEYS = Object.freeze(['docx', 'xlsx', 'pptx']);
 export const CGROUP_KEYS = Object.freeze(['scope', 'memoryCurrent', 'memoryPeak', 'memoryMax', 'pidsCurrent', 'cpuStatLines']);
@@ -250,14 +250,16 @@ export function buildGenerationFacts(payload, child) {
           headings: strArray(dReop.headings),
           tableText: tableArray(dReop.tableText),
           tableCount: num(dReop.tableCount),
-          hasDocumentXml: strArray(docxR.structure) ? docxR.structure.includes(EXPECT_DOCX_PART) : (docxR.hasDocumentXml === true),
+          structure: strArray(docxR.structure),
+          hasDocumentXml: docxR.hasDocumentXml === true,
         },
         xlsx: {
           ok: xlsxR.ok === true,
           inputs: numArray(xReop.inputs),
           a4Formula: typeof xReop.a4Formula === 'string' ? xReop.a4Formula : null,
-          a4CachedValue: xReop.a4GeneratedCachedValue === undefined ? null : num(xReop.a4GeneratedCachedValue),
-          hasSheetXml: strArray(xlsxR.structure) ? xlsxR.structure.includes(EXPECT_XLSX_PART) : (xlsxR.hasSheetXml === true),
+          a4CachedValue: xReop.a4GeneratedCachedValue,
+          structure: strArray(xlsxR.structure),
+          hasSheetXml: xlsxR.hasSheetXml === true,
         },
       },
       pptx: {
@@ -286,6 +288,7 @@ export function buildGenerationFacts(payload, child) {
         ...sub(rcChild), parseOk: rcChild.parseOk === true, parsedOk: rcParsed.ok === true,
         resultCount: Array.isArray(rcParsed.results) ? rcParsed.results.length : null,
         resultOk: rc0.ok === true,
+        file: typeof rc0.file === 'string' ? rc0.file : null,
         observedInspected: rcObs.inspected === true,
         observedInputs: numArray(rcObs.inputs),
         observedFormula: typeof rcObs.formula === 'string' ? rcObs.formula : null,
@@ -297,7 +300,7 @@ export function buildGenerationFacts(payload, child) {
     tools: { soffice: !!(p.tools && p.tools.soffice), pdftoppm: !!(p.tools && p.tools.pdftoppm) },
     elapsedMs: null,
     cgroup: null,
-    evidencePaths: Array.isArray(p.evidencePaths) ? p.evidencePaths.map((x) => String(x)).slice(0, MAX_EVIDENCE_PATHS) : [],
+    evidencePaths: Array.isArray(p.evidencePaths) ? [...p.evidencePaths] : null,
   };
 }
 
@@ -328,6 +331,13 @@ function cgroupReasons(cgroup) {
   return [];
 }
 function sameJson(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+function normalizedPath(value) { return typeof value === 'string' ? value.replaceAll('\\', '/') : null; }
+function validStructure(value, requiredPart) {
+  return Array.isArray(value) && value.length > 0 && value.length <= 128
+    && value.every((part) => typeof part === 'string' && part.length > 0 && part.length <= 256
+      && !part.startsWith('/') && !part.includes('\\') && !part.split('/').includes('..'))
+    && new Set(value).size === value.length && value.includes(requiredPart);
+}
 
 /**
  * Strict validator for the bounded generation facts. Used by BOTH the encoder
@@ -355,7 +365,7 @@ export function validateGenerationFacts(g) {
     reasons.push(...subReasons((g.convert || {})[name], `convert.${name}`, GEN_SUB_KEYS));
     const pngSub = (g.png || {})[name];
     reasons.push(...subReasons(pngSub, `png.${name}`, GEN_PNG_KEYS));
-    if (pngSub && Number.isInteger(pngSub.count) && pngSub.count !== EXPECTED_PAGES[name]) reasons.push(`png.${name} count ${pngSub.count} != ${EXPECTED_PAGES[name]}`);
+    if (pngSub && (!Number.isInteger(pngSub.count) || pngSub.count !== EXPECTED_PAGES[name])) reasons.push(`png.${name} count ${JSON.stringify(pngSub.count)} != ${EXPECTED_PAGES[name]}`);
     const pdfSub = (g.pdf || {})[name];
     reasons.push(...subReasons(pdfSub, `pdf.${name}`, GEN_PDF_KEYS));
     if (pdfSub) {
@@ -370,7 +380,7 @@ export function validateGenerationFacts(g) {
   if (!hasOnlyFields(g.png, GEN_MAP_KEYS)) reasons.push('png has unknown fields');
   if (!hasOnlyFields(g.pdf, GEN_MAP_KEYS)) reasons.push('pdf has unknown fields');
 
-  reasons.push(...validateRecalc(g.recalc));
+  reasons.push(...validateRecalc(g.recalc, g.evidencePaths));
 
   for (const name of GEN_MAP_KEYS) {
     if ((g.pages || {})[name] !== EXPECTED_PAGES[name]) reasons.push(`pages.${name} ${JSON.stringify((g.pages || {})[name])} != ${EXPECTED_PAGES[name]}`);
@@ -405,6 +415,7 @@ function validateGenerate(gen) {
     if (!sameJson(docx.headings, EXPECT_DOCX_HEADING ? [EXPECT_DOCX_HEADING] : null)) reasons.push('DOCX reopened headings mismatch');
     if (!sameJson(docx.tableText, EXPECT_DOCX_TABLE)) reasons.push('DOCX reopened table mismatch');
     if (docx.tableCount !== 1) reasons.push('DOCX tableCount != 1');
+    if (!validStructure(docx.structure, EXPECT_DOCX_PART)) reasons.push('DOCX structure missing, malformed or missing word/document.xml');
     if (docx.hasDocumentXml !== true) reasons.push('DOCX missing word/document.xml');
   }
   const xlsx = gen.xlsx;
@@ -414,6 +425,7 @@ function validateGenerate(gen) {
     if (!sameJson(xlsx.inputs, EXPECTED_INPUTS)) reasons.push('XLSX reopened inputs mismatch');
     if (xlsx.a4Formula !== EXPECTED_FORMULA) reasons.push('XLSX a4Formula mismatch');
     if (xlsx.a4CachedValue !== null) reasons.push('XLSX a4GeneratedCachedValue must be blank (null), distinct from recalc 6');
+    if (!validStructure(xlsx.structure, EXPECT_XLSX_PART)) reasons.push('XLSX structure missing, malformed or missing xl/worksheets/sheet1.xml');
     if (xlsx.hasSheetXml !== true) reasons.push('XLSX missing xl/worksheets/sheet1.xml');
   }
   return reasons;
@@ -437,7 +449,7 @@ function validatePptx(pptx) {
   return reasons;
 }
 
-function validateRecalc(rc) {
+function validateRecalc(rc, evidencePaths) {
   const reasons = [];
   if (!hasAllFields(rc, GEN_RECALC_KEYS)) { reasons.push('recalc fields missing/unknown'); if (!rc || typeof rc !== 'object') return reasons; }
   if (rc.status !== 'pass') reasons.push('recalc status is not pass');
@@ -445,7 +457,11 @@ function validateRecalc(rc) {
   if (!sameJson(rc.inputs, EXPECTED_INPUTS)) reasons.push(`recalc inputs ${JSON.stringify(rc.inputs)} != ${JSON.stringify(EXPECTED_INPUTS)} (must not be sliced)`);
   if (rc.formula !== EXPECTED_FORMULA) reasons.push('recalc formula mismatch');
   if (typeof rc.cachedValue !== 'number' || rc.cachedValue !== EXPECTED_RECALC) reasons.push('recalc cachedValue is not numeric 6');
-  if (!(rc.newFile === null || (typeof rc.newFile === 'string' && rc.newFile.length > 0))) reasons.push('recalc newFile must be a non-empty path or null');
+  const file = normalizedPath(rc.newFile);
+  const suffix = '/render/recalc-out/qualification-copy.xlsx';
+  if (!file || file.length > MAX_EVIDENCE_PATH_LEN || !isAbsolute(rc.newFile)
+      || !file.endsWith(suffix) || file.split('/').includes('..')) reasons.push('recalc.file must name the bounded distinct recalculated copy');
+  else if (!Array.isArray(evidencePaths) || !evidencePaths.some((path) => normalizedPath(path) === file.slice(0, -suffix.length))) reasons.push('recalc.file is outside the reported fresh run root');
   reasons.push(...subReasons(rc.convert, 'recalc.convert', GEN_SUB_KEYS));
   const child = rc.child;
   if (!hasAllFields(child, GEN_RECALC_CHILD_KEYS)) reasons.push('recalc.child fields missing/unknown');
@@ -458,6 +474,7 @@ function validateRecalc(rc) {
     if (child.parsedOk !== true) reasons.push('recalc.child parsed.ok is not true');
     if (child.resultCount !== 1) reasons.push('recalc.child resultCount != 1');
     if (child.resultOk !== true) reasons.push('recalc.child result ok is not true');
+    if (child.file !== rc.newFile) reasons.push('recalc.child inspected file disagrees with recalc.file');
     if (child.observedInspected !== rc.inspected) reasons.push('recalc.child observed.inspected disagrees');
     if (!sameJson(child.observedInputs, rc.inputs)) reasons.push('recalc.child observed.inputs disagree with selected observations');
     if (child.observedFormula !== rc.formula) reasons.push('recalc.child observed.formula disagrees');
@@ -507,14 +524,17 @@ export function readCgroupObservations(readFile = (p) => readFileSync(p, 'utf8')
  * must be a real directory: no symlink/junction at any level, including ABOVE
  * the run root.
  */
-export function assertPathChainIsRealDirectories(absPath, lstat = lstatSync) {
+export function assertPathChainIsRealDirectories(absPath, lstat = lstatSync, allowMissing = false) {
   const abs = resolve(absPath);
   const parts = [];
   let cur = abs;
   while (true) { parts.unshift(cur); const parent = dirname(cur); if (parent === cur) break; cur = parent; }
   for (const p of parts) {
     let st;
-    try { st = lstat(p); } catch { return { ok: false, reason: `path component unreadable: ${p}` }; }
+    try { st = lstat(p); } catch (error) {
+      if (allowMissing && error && error.code === 'ENOENT') continue;
+      return { ok: false, reason: `path component unreadable: ${p}` };
+    }
     if (st.isSymbolicLink()) return { ok: false, reason: `path component is a symlink/junction: ${p}` };
     if (!st.isDirectory()) return { ok: false, reason: `path component is not a directory: ${p}` };
   }
@@ -602,7 +622,8 @@ export function readRegularFileVerified(full, lst) {
 export function defaultGroupKill(child, signal = 'SIGKILL') {
   if (!child) return false;
   const pid = child.pid;
-  if (process.platform === 'linux' && Number.isInteger(pid) && pid > 1) {
+  if (process.platform === 'linux') {
+    if (!Number.isInteger(pid) || pid <= 1) return false;
     try { process.kill(-pid, signal); return true; } catch { return false; }
   }
   try { return typeof child.kill === 'function' && child.kill(signal) === true; } catch { return false; }
@@ -616,7 +637,8 @@ export function defaultGroupKill(child, signal = 'SIGKILL') {
 export function defaultProbeGroup(child) {
   if (!child) return undefined;
   const pid = child.pid;
-  if (process.platform === 'linux' && Number.isInteger(pid) && pid > 1) {
+  if (process.platform === 'linux') {
+    if (!Number.isInteger(pid) || pid <= 1) return undefined;
     try { process.kill(-pid, 0); return true; } catch (error) { return error && error.code === 'ESRCH' ? false : undefined; }
   }
   // Non-Linux: no owned detached group was created, so the direct child is gone.
@@ -637,6 +659,7 @@ export function runArtifactsChild({
   return new Promise((resolve) => {
     const dl = normalizeDeadlineMs(deadlineMs, { fallback: DEFAULT_DEADLINE_MS });
     if (!dl.ok) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: dl.reason, stdout: '', stderr: '' }); return; }
+    if (!Number.isFinite(graceMs) || graceMs <= 0 || graceMs > 5000) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: 'invalid cleanup grace', stdout: '', stderr: '' }); return; }
     const useDetached = detached === undefined ? process.platform === 'linux' : !!detached;
     const childEnv = { ...env, MERI_ARTIFACTS_OUTPUT_DIR: base, MERI_ARTIFACTS_RENDER: 'required' };
     let child;
@@ -811,8 +834,14 @@ export async function main(opts = {}) {
   if (!expDl.ok) { await emitAbort([expDl.reason]); return 1; }
   try {
     const base = join(baseRoot, `office-export-${capture}`);
+    const preflight = assertPathChainIsRealDirectories(baseRoot, lstatSync, true);
+    if (!preflight.ok) { await emitAbort([preflight.reason]); return 1; }
     mkdir(baseRoot, { recursive: true });
+    const rootCheck = assertPathChainIsRealDirectories(baseRoot);
+    if (!rootCheck.ok) { await emitAbort([rootCheck.reason]); return 1; }
     try { mkdir(base); } catch (error) { if (error && error.code === 'EEXIST') { await emitAbort(['fresh run base already exists']); return 1; } throw error; }
+    const baseCheck = assertPathChainIsRealDirectories(base);
+    if (!baseCheck.ok) { await emitAbort([baseCheck.reason]); return 1; }
     const genStart = now();
     const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached });
     const genElapsedMs = now() - genStart;
@@ -820,6 +849,9 @@ export async function main(opts = {}) {
     if (!verdict.ok) { await emitAbort(verdict.reasons); return 1; }
     const disco = discoverRunDir(base);
     if (!disco.ok) { await emitAbort(disco.reasons); return 1; }
+    if (resolve(verdict.generation.recalc.newFile) !== resolve(join(disco.runDir, 'render/recalc-out/qualification-copy.xlsx'))) {
+      await emitAbort(['recalc.file does not name the newly generated run copy']); return 1;
+    }
     const scan = inspectExpectedFiles(disco.runDir);
     if (!scan.ok) { await emitAbort(scan.reasons); return 1; }
     const exportStart = now();
@@ -827,7 +859,12 @@ export async function main(opts = {}) {
     const plan = planExport(scan.entries, capture, {});
     if (!plan.ok) { await emitAbort(plan.reasons); return 1; }
     const generation = { ...verdict.generation, elapsedMs: genElapsedMs, cgroup: readCgroup() };
+    const generationCheck = validateGenerationFacts(generation);
+    if (!generationCheck.ok) { await emitAbort(generationCheck.reasons); return 1; }
     const records = buildRecords({ capture, plan, generation });
+    if (records.some((record) => Buffer.byteLength(encodeRecord(record), 'utf8') > MAX_LINE_BYTES)) {
+      await emitAbort(['complete protocol record exceeds the 12KiB line cap']); return 1;
+    }
     const head = records.slice(0, -1);
     const endRecord = records.at(-1);
     const streamed = await streamRecords(writeStream, head, { deadlineAt: exportDeadlineAt, now });

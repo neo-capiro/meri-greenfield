@@ -42,6 +42,7 @@ import {
   MAX_LINE_BYTES,
   EXPECTED_LIMITS,
   validateGenerationFacts,
+  assertPathChainIsRealDirectories,
 } from './office-export.mjs';
 
 /** Strict per-kind field allowlists (unknown fields are rejected). */
@@ -106,13 +107,17 @@ export function extractRecordLines(text) {
     try { parsed = JSON.parse(trimmed); } catch (error) { return { lines: [], ignored: [], parseError: `invalid JSON envelope: ${errMsg(error)}` }; }
     const events = Array.isArray(parsed) ? parsed : parsed.events || parsed.logEvents || [parsed];
     if (!Array.isArray(events)) return { lines: [], ignored: [], parseError: 'JSON envelope has no event array' };
+    if (events.length > MAX_LINES) return { lines: [], ignored: [], parseError: `input has more than ${MAX_LINES} event lines` };
     const messages = [];
+    let lineCount = 0;
     for (const ev of events) {
-      if (typeof ev === 'string') messages.push(ev);
-      else if (ev && typeof ev.message === 'string') messages.push(ev.message);
-      else return { lines: [], ignored: [], parseError: 'event without a string message' };
+      const message = typeof ev === 'string' ? ev : ev && ev.message;
+      if (typeof message !== 'string') return { lines: [], ignored: [], parseError: 'event without a string message' };
+      const counted = countLinesUpTo(message, MAX_LINES - lineCount);
+      if (counted.exceeded || lineCount + counted.count > MAX_LINES) return { lines: [], ignored: [], parseError: `input has more than ${MAX_LINES} lines` };
+      lineCount += counted.count;
+      messages.push(message);
     }
-    if (countLinesUpTo(messages.join('\n'), MAX_LINES).exceeded) return { lines: [], ignored: [], parseError: `input has more than ${MAX_LINES} lines` };
     const lines = messages.flatMap((m) => m.split('\n')).map((l) => l.replace(/\r$/, ''));
     return { lines, ignored: [], parseError: null };
   }
@@ -339,8 +344,9 @@ export function writeReconstruction(files, outDir) {
       writeFileSync(full, file.buffer, { flag: 'wx' });
     }
   } catch (error) {
-    try { rmSync(dest.abs, { recursive: true, force: true }); } catch { /* best effort */ }
-    return { ok: false, reasons: [...reasons, `write failed: ${errMsg(error)}`], cleaned: true };
+    let cleaned = false;
+    try { rmSync(dest.abs, { recursive: true, force: true }); cleaned = !existsSync(dest.abs); } catch { /* uncertainty is retained */ }
+    return { ok: false, reasons: [...reasons, `write failed: ${errMsg(error)}`, ...(!cleaned ? ['partial output cleanup unconfirmed'] : [])], cleaned };
   }
   return { ok: true, reasons: [], written: files.length, dest: dest.abs };
 }
@@ -357,18 +363,27 @@ export function reconstruct(text, outDir) {
  * and a post-read identity check. Rejects non-regular/symlink/changed input.
  */
 export function readBoundedText(path, maxBytes = MAX_INPUT_BYTES) {
+  if (!Number.isInteger(maxBytes) || maxBytes <= 0 || maxBytes > MAX_INPUT_BYTES) throw new Error('invalid input byte cap');
+  const chain = assertPathChainIsRealDirectories(dirname(resolve(path)));
+  if (!chain.ok) throw new Error(chain.reason);
+  const listed = lstatSync(path);
+  if (listed.isSymbolicLink() || !listed.isFile() || listed.nlink !== 1) throw new Error('input is not a single-link regular file');
+  if (listed.size > maxBytes) throw new Error(`input exceeds ${maxBytes} bytes`);
   const NOFOLLOW = constants.O_NOFOLLOW || 0;
   const fd = openSync(path, constants.O_RDONLY | NOFOLLOW);
   try {
     const st = fstatSync(fd);
-    if (!st.isFile()) throw new Error('input is not a regular file');
+    if (!st.isFile() || st.nlink !== 1) throw new Error('input is not a single-link regular file');
+    if (st.dev !== listed.dev || st.ino !== listed.ino || st.nlink !== listed.nlink || st.size !== listed.size
+        || st.mtimeMs !== listed.mtimeMs || st.ctimeMs !== listed.ctimeMs) throw new Error('input changed before read');
     if (st.size > maxBytes) throw new Error(`input exceeds ${maxBytes} bytes`);
     const buf = Buffer.allocUnsafe(st.size);
     let read = 0;
     while (read < st.size) { const n = readSync(fd, buf, read, st.size - read, read); if (n <= 0) break; read += n; }
     if (read !== st.size) throw new Error(`short read ${read}/${st.size}`);
     const after = fstatSync(fd);
-    if (!after.isFile() || after.size !== st.size || after.mtimeMs !== st.mtimeMs) throw new Error('input changed during read');
+    if (!after.isFile() || after.dev !== st.dev || after.ino !== st.ino || after.nlink !== st.nlink || after.size !== st.size
+        || after.mtimeMs !== st.mtimeMs || after.ctimeMs !== st.ctimeMs) throw new Error('input changed during read');
     return buf.toString('utf8');
   } finally { closeSync(fd); }
 }

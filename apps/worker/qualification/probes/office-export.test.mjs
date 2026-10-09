@@ -27,6 +27,7 @@ import {
   encodeRecord, planExport, buildRecords, verifyArtifactsVerdict, validateGenerationFacts,
   inspectExpectedFiles, runArtifactsChild, streamRecords, discoverRunDir, chunkBuffer,
   isContained, sha256Hex, normalizeDeadlineMs, readRegularFileVerified, main,
+  defaultProbeGroup, defaultGroupKill,
 } from './office-export.mjs';
 import {
   collectRecords, parseRecordLine, extractRecordLines, validateCapture, reconstruct,
@@ -117,14 +118,22 @@ function materializeRun(base, sizes = SIZES) {
   for (const spec of EXPECTED_FILES) { const full = join(runDir, spec.path); mkdirSync(dirname(full), { recursive: true }); writeFileSync(full, makeBytes(sizes[spec.path], spec.index)); }
   return runDir;
 }
-function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, signal = null, materialize = true, sizes = SIZES, assertEnv, onSpawn } = {}) {
+function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, signal = null, materialize = true, sizes = SIZES, assertEnv, onSpawn, bindPaths = true } = {}) {
   return (cmd, args, opts) => {
     if (assertEnv) assertEnv(opts.env);
     if (onSpawn) onSpawn(opts);
     const base = opts.env.MERI_ARTIFACTS_OUTPUT_DIR;
-    if (materialize) materializeRun(base, sizes);
+    const runDir = materialize ? materializeRun(base, sizes) : null;
+    let emitted = payload;
+    if (bindPaths && runDir && payload && typeof payload === 'object' && typeof payload.evidencePaths?.[0] === 'string') {
+      const previousRoot = payload.evidencePaths[0];
+      const rebind = (value) => typeof value === 'string' ? value.replaceAll(previousRoot, runDir)
+        : Array.isArray(value) ? value.map(rebind)
+          : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, rebind(v)])) : value;
+      emitted = rebind(payload);
+    }
     const child = new EventEmitter(); child.stdout = new EventEmitter(); child.stderr = new EventEmitter(); child.kill = () => true;
-    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof payload === 'string' ? payload : JSON.stringify(payload))); child.emit('exit', code, signal); child.emit('close', code, signal); });
+    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof emitted === 'string' ? emitted : JSON.stringify(emitted))); child.emit('exit', code, signal); child.emit('close', code, signal); });
     return child;
   };
 }
@@ -473,7 +482,7 @@ test('readBoundedText enforces the size cap and rejects non-regular input', () =
   const big = join(dir, 'big.ndjson');
   writeFileSync(big, Buffer.alloc(64));
   assert.throws(() => readBoundedText(big, 32), /exceeds/);
-  assert.throws(() => readBoundedText(dir, 1024), /not a regular file/);
+  assert.throws(() => readBoundedText(dir, 1024), /not a single-link regular file/);
 });
 
 test('reconstruction failure writes no files and leaves a new destination absent', () => {
@@ -583,4 +592,88 @@ test('collectRecords ignores non-marker log lines but keeps every marker record'
   const { records } = makeCapture();
   const collected = collectRecords(['noise', ...records.map(encodeRecord), 'more noise'].join('\n'));
   assert.equal(collected.ok, true, collected.reasons.join('; ')); assert.equal(collected.records.length, records.length);
+});
+
+test('Codex owner correction: structure, cache and real recalc.file observations cannot be normalized into success', () => {
+  const mutations = [
+    (p) => { delete p.nativeFacts.generate.parsed.results[0].structure; },
+    (p) => { p.nativeFacts.generate.parsed.results[0].structure = {}; },
+    (p) => { p.nativeFacts.generate.parsed.results[0].hasDocumentXml = false; },
+    (p) => { delete p.nativeFacts.generate.parsed.results[1].structure; },
+    (p) => { delete p.nativeFacts.generate.parsed.results[1].reopened.a4GeneratedCachedValue; },
+    (p) => { p.nativeFacts.generate.parsed.results[1].reopened.a4GeneratedCachedValue = '6'; },
+    (p) => { p.nativeFacts.generate.parsed.results[1].reopened.a4GeneratedCachedValue = {}; },
+    (p) => { delete p.recalc.file; },
+    (p) => { p.recalc.file = null; },
+    (p) => { p.recalc.file = '/wrong.xlsx'; },
+    (p) => { p.recalc.child.parsed.results[0].file = '/wrong.xlsx'; },
+    (p) => { p.evidencePaths = [{}]; },
+  ];
+  assert.equal(verifyArtifactsVerdict(goodChild()).ok, true);
+  assert.equal(Object.hasOwn(realisticArtifactsPayload().recalc, 'newFile'), false);
+  for (const mutate of mutations) { const payload = realisticArtifactsPayload(); mutate(payload); assert.equal(verifyArtifactsVerdict(goodChild(payload)).ok, false); }
+});
+
+test('Codex owner correction: every retained PNG count is an exact integer and recalc file must agree', () => {
+  for (const value of [null, '1', 1.5, -1]) expectReject((records) => { records[0].generation.png.docx.count = value; return records; }, /png.docx count/);
+  expectReject((records) => { records[0].generation.recalc.newFile = null; return records; }, /recalc.file/);
+  expectReject((records) => { records[0].generation.recalc.child.file = '/wrong.xlsx'; return records; }, /inspected file disagrees/);
+});
+
+test('Codex owner correction: unsafe base ancestors are rejected before directory creation or spawn', async () => {
+  const scope = tempDir(); const real = join(scope, 'real'); mkdirSync(real);
+  const link = join(scope, 'linked'); symlinkSync(real, link, 'junction');
+  let spawned = 0; let mkdirCalls = 0; const stream = collectingStream();
+  const code = await main({ baseRoot: join(link, 'not-created'), writeStream: stream,
+    mkdir: () => { mkdirCalls++; }, spawnFn: () => { spawned++; throw new Error('must not spawn'); } });
+  assert.equal(code, 1); assert.equal(spawned, 0); assert.equal(mkdirCalls, 0);
+  assert.equal(existsSync(join(real, 'not-created')), false);
+  assert.deepEqual(stream.lines.map((line) => parseRecordLine(line).record.kind), ['error']);
+});
+
+test('Codex owner correction: main rejects a valid-looking payload from another generated run', async () => {
+  const stream = collectingStream();
+  const code = await main({ baseRoot: tempDir(), writeStream: stream, spawnFn: generatingSpawn({ bindPaths: false }) });
+  assert.equal(code, 1); assert.match(stream.lines.join('\n'), /newly generated run copy/);
+});
+
+test('Codex owner correction: malformed Linux PID is uncertain and EPERM never means absent', () => {
+  const descriptor = Object.getOwnPropertyDescriptor(process, 'platform'); const originalKill = process.kill;
+  let calls = 0; let directCalls = 0;
+  try {
+    Object.defineProperty(process, 'platform', { value: 'linux' });
+    process.kill = () => { calls++; const error = new Error('permission'); error.code = 'EPERM'; throw error; };
+    for (const pid of [undefined, 0, 1, -1, 2.5, '42']) {
+      const child = { pid, kill: () => { directCalls++; return true; } };
+      assert.equal(defaultProbeGroup(child), undefined); assert.equal(defaultGroupKill(child), false);
+    }
+    assert.equal(calls, 0); assert.equal(directCalls, 0);
+    assert.equal(defaultProbeGroup({ pid: 424242 }), undefined);
+    process.kill = () => { const error = new Error('absent'); error.code = 'ESRCH'; throw error; };
+    assert.equal(defaultProbeGroup({ pid: 424242 }), false);
+  } finally { Object.defineProperty(process, 'platform', descriptor); process.kill = originalKill; }
+});
+
+test('Codex owner correction: invalid cleanup grace fails before spawning', async () => {
+  for (const graceMs of [NaN, Infinity, -1, 0, 5001]) {
+    let spawned = false;
+    const result = await runArtifactsChild({ base: tempDir(), graceMs, spawnFn: () => { spawned = true; } });
+    assert.equal(spawned, false); assert.equal(result.cleanupConfirmed, false); assert.match(result.error, /grace/);
+  }
+});
+
+test('Codex owner correction: bounded CLI input rejects junction ancestors and hard-linked captures', () => {
+  const base = tempDir(); const real = join(base, 'real'); mkdirSync(real);
+  const file = join(real, 'capture.txt'); writeFileSync(file, 'synthetic');
+  const link = join(base, 'linked'); symlinkSync(real, link, 'junction');
+  assert.throws(() => readBoundedText(join(link, 'capture.txt')), /symlink\/junction/);
+  linkSync(file, join(base, 'hard.txt'));
+  assert.throws(() => readBoundedText(file), /single-link regular/);
+  for (const cap of [NaN, Infinity, 0, -1]) assert.throws(() => readBoundedText(file, cap), /byte cap/);
+});
+
+test('Codex owner correction: envelope line bounds stop before joining or splitting all messages', () => {
+  const input = JSON.stringify(Array.from({ length: 20001 }, () => ({ message: '' })));
+  const extracted = extractRecordLines(input);
+  assert.equal(extracted.lines.length, 0); assert.match(extracted.parseError, /more than 20000/);
 });
