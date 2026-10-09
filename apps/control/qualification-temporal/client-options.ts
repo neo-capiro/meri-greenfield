@@ -93,13 +93,54 @@ export function buildClientOptions(connection: Connection, namespace: string): C
   return { connection, namespace };
 }
 
+export interface ApplicationWorkerInputs {
+  readonly address: string;
+  readonly namespace: string;
+  /** Nonempty JWT audience required by the external frontend's default mapper/authorizer. */
+  readonly audience: string;
+  /** Dedicated workload issuer; must mint only bounded-expiry bearer tokens. */
+  readonly issuer: string;
+  /** Short-lived, task-bound bearer credential; becomes `Authorization: Bearer <jwt>`. */
+  readonly jwt: string;
+  readonly tls: TlsMaterial;
+}
+
+/**
+ * Build the NativeConnectionOptions for a real TypeScript APPLICATION WORKER
+ * connecting to the EXTERNAL authenticated frontend. Carries BOTH mTLS-capable
+ * TLS (with hostname verification) AND the short-lived task-bound bearer
+ * (`apiKey`). Fails closed on an empty audience, issuer or bearer.
+ */
+export function buildApplicationWorkerConnectionOptions(inputs: ApplicationWorkerInputs): NativeConnectionOptions {
+  if (inputs.audience.trim() === '') {
+    throw new Error('application worker requires a nonempty audience');
+  }
+  if (inputs.issuer.trim() === '') {
+    throw new Error('application worker requires a dedicated issuer');
+  }
+  if (inputs.jwt.trim() === '') {
+    throw new Error('application worker requires a short-lived bearer credential');
+  }
+  return {
+    address: inputs.address,
+    tls: buildTlsConfig(inputs.tls),
+    apiKey: inputs.jwt,
+  };
+}
+
 export interface InternodeInputs {
   readonly address: string;
   readonly namespace: string;
   readonly tls: TlsMaterial;
 }
 
-/** Internode/server role options: mutual TLS only, deliberately no external JWT. */
+/**
+ * SERVER / INTERNODE route only: mutual TLS with deliberately NO external JWT.
+ * This models the Go internode/server path (and cluster-internal clients). It is
+ * NOT the authentication used by SDK application workers, which must use
+ * {@link buildApplicationWorkerConnectionOptions} with a bearer token against the
+ * external authenticated frontend. Do not present this builder as app-worker auth.
+ */
 export function buildInternodeNativeConnectionOptions(inputs: InternodeInputs): NativeConnectionOptions {
   return {
     address: inputs.address,

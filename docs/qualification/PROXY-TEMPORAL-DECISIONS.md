@@ -15,6 +15,29 @@ or activity, or provisions any resource: it establishes compilation and static
 structure only. No live Temporal, proxy, database, recovery or Fargate gate is
 advanced or claimed by it, and it does not accept the proxy.
 
+**Repair disclosure.** The first W02-03 commit `e67f17e` was **rejected** by
+independent review: its five-role validator returned `ok:true` for accepted bad
+fixtures (trusted app worker `namespaceRole:"worker"` alone, an empty
+`frontend.authorizer`, `frontend`/`internal-frontend` `mtls.requireClientAuth:false`,
+a prohibited `publicClient` override, `database.multiAz:false`, and a top-level
+server digest that did not match the pinned component digests); the baseline
+itself set frontend `requireClientAuth:false`; the workflow's Continue-as-New
+boundary was unreachable; and the internode `NativeConnectionOptions` builder was
+presented as application-worker authentication. The repaired fixture now enforces
+an explicit default claim mapper **and** authorizer, `requireClientAuth:true` on
+all five roles, trusted-worker `namespaceRole` exactly `write`, no `publicClient`
+override, an independent new/encrypted/Multi-AZ database with bound
+plugin/schema/stores, a byte-exact top-level server pin against
+`component-pins.json`, and meaningful per-role ingress separation (frontend the
+only external role, the other four internode-only). It adds a real TS
+application-worker builder (TLS **and** short-lived bearer against the external
+frontend) and marks the internode helper server-only, and gives `workflow.ts` a
+finite three-stage loop with a bounded continuation counter (0 -> one
+Continue-as-New, 1 -> complete, other/negative/unsafe rejected) plus an isolated
+pure-decision unit test. `internal-worker` is the Fargate service mapped to the
+real Temporal server role `worker` (`temporalRole`). The repaired exact commit is
+the branch HEAD this document is committed in.
+
 ## Evidence boundary
 
 Verified here: current official documentation, public release metadata, and selected declarations from the exact SDK tarball, read in memory. Not verified: new AWS model availability, model calls, proxy behavior, Temporal deployment, database restore or TypeScript/server interoperability in Fargate. No private source rows, secret values or existing Capiro implementation were fetched. Only this document was written.

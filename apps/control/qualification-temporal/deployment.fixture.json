@@ -4,11 +4,14 @@
   "generatedAt": "2026-10-09",
   "notes": [
     "Inert five-role Temporal production-design fixture for W02-03. No server, database, Fargate task, namespace or network resource exists; nothing here is deployed or a measured capacity promise.",
+    "Frontend and every other role present mTLS with requireClientAuth=true; the external frontend additionally uses an explicit default claimMapper and default authorizer.",
+    "internal-worker is the Fargate service that maps to the real Temporal server role `worker` (temporalRole). internal-frontend is the system-internal frontend.",
+    "The internal frontend uses the stock internal claim mapper (system-admin boundary) and must never accept application/conversation ingress; only internode services with mTLS certificates may reach it. No publicClient override is present.",
+    "Trusted application workers require namespace:write (RoleWriter4); RoleWorker1 cannot perform poll/complete/heartbeat with the default authorizer, and RoleWriter4 grants broader namespace write authority than a tenant/client wall. Business authorization remains gateway-controlled.",
     "Provisional sizing values are explicit provisional choices for later independent review, not measured capacity.",
-    "History shard count is fixed after first boot and cannot be changed.",
-    "The internal frontend uses the stock internal claim mapper (system-admin boundary) and must never accept application/conversation ingress; only internode services with mTLS certificates may reach it.",
-    "Trusted application workers deliberately require namespace:write (RoleWriter4); RoleWorker1 cannot perform poll/complete/heartbeat with the default authorizer. Namespace/task-queue permissions are not a tenant/client-wall policy — business authorization stays gateway-controlled."
+    "History shard count is fixed after first boot and cannot be changed."
   ],
+  "publicClientOverride": false,
   "server": {
     "version": "1.32.1",
     "sourceCommit": "af08a5e5f2dd40f545f2afac7780daaa6987001e",
@@ -30,6 +33,8 @@
     "stores": ["temporal", "temporal_visibility"],
     "schemaPrimaryVersion": "1.19",
     "schemaVisibilityVersion": "1.14",
+    "newResources": true,
+    "encrypted": true,
     "multiAz": true,
     "tlsHostnameVerification": true,
     "separateRoles": true,
@@ -37,6 +42,7 @@
   },
   "roles": {
     "frontend": {
+      "temporalRole": "frontend",
       "replicas": 2,
       "ingress": "external",
       "claimMapper": "default",
@@ -46,15 +52,17 @@
       "keyRefreshSeconds": 300,
       "issuerMatchRequiredByStock": false,
       "tls": { "enabled": true, "hostnameVerification": true },
-      "mtls": { "enabled": true, "requireClientAuth": false },
+      "mtls": { "enabled": true, "requireClientAuth": true },
       "acceptsConversationIngress": false,
       "serverVersion": "1.32.1",
       "packageSet": { "client": "1.24.0", "worker": "1.24.0", "workflow": "1.24.0", "activity": "1.24.0", "common": "1.24.0" }
     },
     "history": {
+      "temporalRole": "history",
       "replicas": 2,
       "ingress": "internode",
       "claimMapper": "default",
+      "authorizer": "default",
       "tls": { "enabled": true, "hostnameVerification": true },
       "mtls": { "enabled": true, "requireClientAuth": true },
       "acceptsConversationIngress": false,
@@ -62,9 +70,11 @@
       "packageSet": { "client": "1.24.0", "worker": "1.24.0", "workflow": "1.24.0", "activity": "1.24.0", "common": "1.24.0" }
     },
     "matching": {
+      "temporalRole": "matching",
       "replicas": 2,
       "ingress": "internode",
       "claimMapper": "default",
+      "authorizer": "default",
       "tls": { "enabled": true, "hostnameVerification": true },
       "mtls": { "enabled": true, "requireClientAuth": true },
       "acceptsConversationIngress": false,
@@ -72,9 +82,11 @@
       "packageSet": { "client": "1.24.0", "worker": "1.24.0", "workflow": "1.24.0", "activity": "1.24.0", "common": "1.24.0" }
     },
     "internal-worker": {
+      "temporalRole": "worker",
       "replicas": 2,
       "ingress": "internode",
       "claimMapper": "default",
+      "authorizer": "default",
       "tls": { "enabled": true, "hostnameVerification": true },
       "mtls": { "enabled": true, "requireClientAuth": true },
       "acceptsConversationIngress": false,
@@ -82,9 +94,11 @@
       "packageSet": { "client": "1.24.0", "worker": "1.24.0", "workflow": "1.24.0", "activity": "1.24.0", "common": "1.24.0" }
     },
     "internal-frontend": {
+      "temporalRole": "internal-frontend",
       "replicas": 2,
       "ingress": "internode",
       "claimMapper": "internal",
+      "authorizer": "default",
       "stockInternalMapperGrantsSystemAdmin": true,
       "tls": { "enabled": true, "hostnameVerification": true },
       "mtls": { "enabled": true, "requireClientAuth": true },
@@ -96,6 +110,7 @@
   "trustedApplicationWorkers": {
     "replicas": 2,
     "namespaceRole": "write",
+    "grantsBroaderNamespaceWriteThanTenantWall": true,
     "defaultAuthorizerAllowed": false
   },
   "conversationExecutors": {
@@ -114,23 +129,44 @@
   "prohibitedCases": [
     { "id": "role_dropped", "rule": "R1", "description": "A required server role is removed", "removeRole": "matching" },
     { "id": "role_added", "rule": "R1", "description": "An extra server role is added", "patch": { "roles": { "sixth": { "replicas": 1, "ingress": "internode" } } } },
+    { "id": "worker_role_namespace_worker", "rule": "R6", "description": "Trusted app worker claims namespace:worker (RoleWorker1 false positive)", "patch": { "trustedApplicationWorkers": { "namespaceRole": "worker" } } },
     { "id": "worker_role_admin", "rule": "R6", "description": "Trusted app worker is granted namespace admin", "patch": { "trustedApplicationWorkers": { "namespaceRole": "admin" } } },
-    { "id": "worker_role_default_authorizer", "rule": "R6", "description": "RoleWorker1 default-authorizer write is claimed for a trusted app worker", "patch": { "trustedApplicationWorkers": { "namespaceRole": "default", "defaultAuthorizerAllowed": true } } },
+    { "id": "worker_role_default_authorizer", "rule": "R6", "description": "Default-authorizer write is claimed for a trusted app worker", "patch": { "trustedApplicationWorkers": { "defaultAuthorizerAllowed": true } } },
+    { "id": "trusted_workers_missing", "rule": "R6", "description": "Trusted app worker declaration is missing", "omit": ["trustedApplicationWorkers"] },
     { "id": "internal_frontend_external_ingress", "rule": "R4", "description": "Internal frontend is exposed on the external ingress", "patch": { "roles": { "internal-frontend": { "ingress": "external" } } } },
     { "id": "internal_frontend_duplicate_audience", "rule": "R4", "description": "Internal frontend declares an external audience", "patch": { "roles": { "internal-frontend": { "externalAudience": "meri-temporal" } } } },
     { "id": "internal_frontend_accepts_conversation", "rule": "R4", "description": "Internal frontend accepts conversation/application ingress", "patch": { "roles": { "internal-frontend": { "acceptsConversationIngress": true } } } },
     { "id": "frontend_missing_audience", "rule": "R3", "description": "External frontend has an empty audience", "patch": { "roles": { "frontend": { "externalAudience": "" } } } },
     { "id": "frontend_missing_jwks", "rule": "R3", "description": "External frontend has no dedicated HTTPS JWKS", "patch": { "roles": { "frontend": { "jwksUrl": "" } } } },
     { "id": "frontend_zero_key_refresh", "rule": "R3", "description": "External frontend key refresh is zero", "patch": { "roles": { "frontend": { "keyRefreshSeconds": 0 } } } },
-    { "id": "frontend_dual_ingress", "rule": "R5", "description": "A role mixes external and internode ingress", "patch": { "roles": { "frontend": { "ingress": "external+internode" } } } },
-    { "id": "frontend_tls_disabled", "rule": "R2", "description": "Frontend TLS is disabled", "patch": { "roles": { "frontend": { "tls": { "enabled": false } } } } },
-    { "id": "frontend_package_mismatch", "rule": "R2", "description": "Frontend worker package is a different version", "patch": { "roles": { "frontend": { "packageSet": { "worker": "1.23.0" } } } } },
+    { "id": "frontend_authorizer_empty", "rule": "R13", "description": "External frontend authorizer is not the explicit default", "patch": { "roles": { "frontend": { "authorizer": "" } } } },
+    { "id": "frontend_authorizer_missing", "rule": "R13", "description": "External frontend authorizer is absent", "omit": ["roles.frontend.authorizer"] },
+    { "id": "frontend_claim_mapper_empty", "rule": "R13", "description": "External frontend claim mapper is not the explicit default", "patch": { "roles": { "frontend": { "claimMapper": "" } } } },
+    { "id": "frontend_mtls_clientauth_false", "rule": "R10", "description": "Frontend mTLS does not require client auth", "patch": { "roles": { "frontend": { "mtls": { "requireClientAuth": false } } } } },
+    { "id": "internal_frontend_mtls_clientauth_false", "rule": "R10", "description": "Internal frontend mTLS does not require client auth", "patch": { "roles": { "internal-frontend": { "mtls": { "requireClientAuth": false } } } } },
+    { "id": "matching_mtls_missing", "rule": "R10", "description": "Matching role mTLS block is absent", "omit": ["roles.matching.mtls"] },
     { "id": "history_mtls_disabled", "rule": "R10", "description": "History internode mTLS is disabled", "patch": { "roles": { "history": { "mtls": { "enabled": false } } } } },
+    { "id": "public_client_override", "rule": "R11", "description": "A publicClient override forces system workers onto the external frontend", "patch": { "publicClientOverride": true } },
+    { "id": "frontend_dual_ingress", "rule": "R5", "description": "A role mixes external and internode ingress", "patch": { "roles": { "frontend": { "ingress": "external+internode" } } } },
+    { "id": "history_external_ingress", "rule": "R5", "description": "A non-frontend role is exposed on the external ingress", "patch": { "roles": { "history": { "ingress": "external" } } } },
+    { "id": "frontend_tls_disabled", "rule": "R2", "description": "Frontend TLS is disabled", "patch": { "roles": { "frontend": { "tls": { "enabled": false } } } } },
+    { "id": "frontend_tls_missing", "rule": "R2", "description": "Frontend TLS block is absent", "omit": ["roles.frontend.tls"] },
+    { "id": "frontend_package_mismatch", "rule": "R2", "description": "Frontend worker package is a different version", "patch": { "roles": { "frontend": { "packageSet": { "worker": "1.23.0" } } } } },
     { "id": "schema_visibility_mismatch", "rule": "R2", "description": "Visibility schema version is wrong", "patch": { "database": { "schemaVisibilityVersion": "1.13" } } },
     { "id": "schema_primary_mismatch", "rule": "R2", "description": "Primary schema version is wrong", "patch": { "database": { "schemaPrimaryVersion": "1.18" } } },
+    { "id": "schema_primary_missing", "rule": "R2", "description": "Primary schema version is absent", "omit": ["database.schemaPrimaryVersion"] },
+    { "id": "db_plugin_wrong", "rule": "R2", "description": "Database plugin is not postgres12", "patch": { "database": { "plugin": "mysql" } } },
+    { "id": "db_store_missing_visibility", "rule": "R2", "description": "Visibility store is missing from the store list", "patch": { "database": { "stores": ["temporal"] } } },
+    { "id": "internal_worker_role_missing", "rule": "R15", "description": "internal-worker does not declare its Temporal role as worker", "omit": ["roles.internal-worker.temporalRole"] },
+    { "id": "internal_worker_role_wrong", "rule": "R15", "description": "internal-worker declares a non-worker Temporal role", "patch": { "roles": { "internal-worker": { "temporalRole": "frontend" } } } },
+    { "id": "db_multi_az_false", "rule": "R14", "description": "Database is not Multi-AZ", "patch": { "database": { "multiAz": false } } },
+    { "id": "db_encrypted_false", "rule": "R14", "description": "Database is not encrypted", "patch": { "database": { "encrypted": false } } },
+    { "id": "db_not_new_resources", "rule": "R14", "description": "Database is not a new independent resource", "patch": { "database": { "newResources": false } } },
     { "id": "db_hostname_verification_off", "rule": "R9", "description": "Database TLS hostname verification is disabled", "patch": { "database": { "tlsHostnameVerification": false } } },
     { "id": "db_separate_roles_off", "rule": "R9", "description": "Database store roles are not separated", "patch": { "database": { "separateRoles": false } } },
     { "id": "conversation_ingress_enabled", "rule": "R7", "description": "Conversation/browser/artifact executor polls Temporal directly", "patch": { "conversationExecutors": { "temporalIngress": true } } },
-    { "id": "history_shards_zero", "rule": "R8", "description": "History shard count is not a positive integer", "patch": { "historyShards": 0 } }
+    { "id": "history_shards_zero", "rule": "R8", "description": "History shard count is not a positive integer", "patch": { "historyShards": 0 } },
+    { "id": "server_digest_mismatch", "rule": "R12", "description": "Top-level server amd64 digest does not match the pinned component digest", "patch": { "server": { "imageAmd64Digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000" } } },
+    { "id": "server_version_mismatch", "rule": "R12", "description": "Top-level server version does not match the pinned component version", "patch": { "server": { "version": "1.31.0" } } }
   ]
 }

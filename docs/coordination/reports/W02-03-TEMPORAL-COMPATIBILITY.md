@@ -1,35 +1,45 @@
-# W02-03 Temporal design and offline compatibility — implementation report
+# W02-03 Temporal design and offline compatibility — implementation report (repair B)
 
 Status: **READY FOR REVIEW**. Not an acceptance. Compilation and local fixtures only; every live gate below stays NOT RUN. Codex and a separate real Hermes session own acceptance.
 
 ## Authority and bounds
 
 - Task brief: `docs/coordination/tasks/W02-03-TEMPORAL-COMPATIBILITY.md`; repository rules: `AGENTS.md`.
-- Base/parent commit: `7af0a53a38cc8663441487e339cbc3c720c8ebf3` (branch `hermes/w02-temporal`, worktree `C:\dev\main\meri-greenfield-worktrees\w02-temporal`).
-- Implementation session: `20261009_171204_d65a88` (one bounded attempt; continuation of the same session after a clean 40-turn stop, within the 24-turn/1800 s continuation bound). No amend, no push, no recursive delegation, no self-resume.
-- Implementation commit: the HEAD this report is committed in, on `hermes/w02-temporal`. Exact SHA is recorded in the launcher handoff (a report cannot embed its own commit SHA without amend).
-- Scratch/cache limited to the owned nested `apps/control/qualification-temporal/.runtime` (ignored). Dependencies installed with scripts disabled (`npm install --ignore-scripts`); no native Temporal core executed.
+- Repair base: `e67f17e2df35b2d35e3bcb0899a95d57833fda63` (first W02-03 commit, **rejected**). Original base `7af0a53a38cc8663441487e339cbc3c720c8ebf3`. Branch `hermes/w02-temporal`, worktree `C:\dev\main\meri-greenfield-worktrees\w02-temporal`.
+- Implementation session: `20261009_171204_d65a88` (bounded repair continuation). No amend, no push, no recursive delegation, no self-resume, no dependency reinstall, no native core/server/cloud/model/browser/Office execution.
+- Implementation commit: the HEAD this report is committed in, on `hermes/w02-temporal` (exact SHA recorded in the launcher handoff; a report cannot embed its own commit SHA without amend).
+
+## What was rejected at e67f17e and how it is repaired
+
+Independent review reproduced the validator returning `ok:true` for accepted bad fixtures. Repairs:
+
+| Rejected defect | Repair |
+| --- | --- |
+| `trustedApplicationWorkers.namespaceRole:"worker"` alone accepted | R6 now requires exactly `"write"` (RoleWriter4) and documents the broader-than-tenant-wall authority |
+| empty `frontend.authorizer` accepted | R13 requires an explicit nonempty claimMapper **and** authorizer on every role; frontend must be exactly `default`/`default` |
+| `frontend`/`internal-frontend` `mtls.requireClientAuth:false` accepted | R10 requires `mtls.enabled:true` **and** `mtls.requireClientAuth:true` on all five roles; baseline frontend fixed to `true` |
+| prohibited `publicClient` override accepted | R11 rejects any `publicClientOverride` other than `false` |
+| `database.multiAz:false` accepted | R14 requires new independent + encrypted + Multi-AZ database |
+| top-level server digest not checked against pins | R12 compares `server.{version,sourceCommit,imageIndexDigest,imageAmd64Digest}` byte-for-byte to `component-pins.json`; a dedicated test also asserts fixture/pins equality; component-pins tests use exact string equality, not regex |
+| test used invalid role `"default"` instead of the real worker-only false positive | prohibited case `worker_role_namespace_worker` now uses `namespaceRole:"worker"` |
+| internode `NativeConnectionOptions` presented as app-worker auth | `client-options.ts` adds `buildApplicationWorkerConnectionOptions` (TLS **and** bearer against the external frontend); internode helper is documented server-only, not app-worker auth |
+| workflow Continue-as-New unreachable (init 0, one increment, `>=3`) | `workflow.ts` runs a finite three-stage loop with a checkpoint+increment per stage and a bounded continuation counter: 0 -> one Continue-as-New, 1 -> complete, other/negative/unsafe rejected |
+| signal could confer approval authority | approval authority now comes only from the trusted `collectApproval` activity; the note signal records an observation only |
+| cancellation after the first condition not observed | `cancelRequested` is re-checked at every stage boundary (>=4 references) |
+
+Prohibited coverage grew from 20 to **41** cases, each asserted to be rejected with its expected rule; a regression assertion requires cases for R6/R10/R11/R12/R13/R14. `internal-worker` now declares `temporalRole:"worker"` (R15), documenting the Fargate service -> real Temporal role mapping.
 
 ## Owned paths delivered (14)
 
 ```
-apps/control/qualification-temporal/package.json
-apps/control/qualification-temporal/package-lock.json
-apps/control/qualification-temporal/.gitignore
-apps/control/qualification-temporal/tsconfig.json
-apps/control/qualification-temporal/client-options.ts
-apps/control/qualification-temporal/workflow.ts
-apps/control/qualification-temporal/activities.ts
-apps/control/qualification-temporal/negative-types.ts
-apps/control/qualification-temporal/deployment.fixture.json
-apps/control/qualification-temporal/compatibility.test.mjs
-apps/control/qualification-temporal/component-pins.json
-apps/control/qualification-temporal/README.md
+apps/control/qualification-temporal/{package.json, package-lock.json, .gitignore, tsconfig.json,
+  client-options.ts, workflow.ts, activities.ts, negative-types.ts, deployment.fixture.json,
+  compatibility.test.mjs, component-pins.json, README.md}
 docs/qualification/PROXY-TEMPORAL-DECISIONS.md            (temporary exclusive documentation ownership)
 docs/coordination/reports/W02-03-TEMPORAL-COMPATIBILITY.md (this report)
 ```
 
-No root/shared lock, contract, infra, launcher, task-brief or other-worker path was touched. No migration ID was allocated.
+No root/shared lock, contract, infra, launcher, task-brief or other-worker path was touched. No migration ID allocated.
 
 ## Check results (actual, this session)
 
@@ -37,26 +47,42 @@ No root/shared lock, contract, infra, launcher, task-brief or other-worker path 
 | --- | --- | --- |
 | Root suite | `npm run check` | 15 tests, 15 pass, 0 fail (exit 0) |
 | Nested typecheck | `npm --prefix apps/control/qualification-temporal run typecheck` (`tsc --noEmit`) | exit 0 |
-| Nested offline tests | `npm --prefix apps/control/qualification-temporal test` (`node --test`) | 16 tests, 16 pass, 0 fail (exit 0) |
-| Whitespace | `git diff --check` (intent-to-add staged) | clean (exit 0) |
+| Nested offline tests | `npm --prefix apps/control/qualification-temporal test` (`node --test`) | 18 tests, 18 pass, 0 fail (exit 0) |
+| Whitespace | `git diff --check` | clean (exit 0) |
 
-The 16 nested tests cover: exact pin/lock/`component-pins.json` agreement; the installed 1.24.0 `.d.ts` really declaring `WorkerDeploymentOptions` (requiring `defaultVersioningBehavior` when `useWorkerVersioning:true`, `?: never` when false), `TLSConfig`, `apiKey`, `VersioningBehavior`, `WorkerDeploymentVersion` and the workflow API; the inert source fixtures referencing those real symbols and staying deterministic; the five-role fixture validating cleanly; all 20 prohibited boundary cases rejected with the expected rule; the fixture compiling cleanly (so every `@ts-expect-error` is used); and a real expected-diagnostic run proving a missing `defaultVersioningBehavior` fails while a correct one compiles.
+Nested tests include: exact pin/lock/component-pins agreement; a byte-exact
+fixture-vs-pins server comparison; the installed 1.24.0 `.d.ts` member
+assertions; source-fixture symbol/determinism checks; the base five-role fixture
+validating cleanly; all 41 prohibited boundary cases rejected with the expected
+rule (covering every previously-accepted false positive); the fixture compiling
+cleanly (all `@ts-expect-error` used); a real expected-diagnostic run; and an
+isolated pure-decision test that compiles `planContinuation` and asserts the
+bounded continuation table.
 
 ## Source and pin observations (recorded, not run)
 
-- Temporal server 1.32.1 (released 2026-10-08, branch `release/v1.32.x`), source commit `af08a5e5f2dd40f545f2afac7780daaa6987001e`; image index `sha256:acecbab5…029049`, linux/amd64 `sha256:2695f256…21b2de0e`, config `sha256:40cc19ca…3307b10`; image user `temporal`, license MIT. Admin-tools 1.32.1 same commit, CLI 1.9.1. Recorded in `component-pins.json`; not signature-verified or scan-dispositioned.
-- TypeScript SDK 1.24.0, source commit `1fd1c81a0383f5f5c7923dd735472c7d1ffdc867`; `@temporalio/{client,worker,workflow,activity,common,proto,nexus,core-bridge}` all exact `1.24.0` (MIT, sha512 integrity in the nested lock); Node floor >= 20.3.0, target `x86_64-unknown-linux-gnu`.
-- Compiler pinned to `typescript 5.9.3`, types to `@types/node 24.19.2` (SDK repo declares `typescript ^5.6.3`; the 7.x native port is not used). Exact integrities recorded.
-- Server postgres12 primary schema v1.19 / visibility v1.14; RDS PostgreSQL 16.15 is an owner candidate (read-only `DescribeDBEngineVersions` observed available/postgres16, us-east-1, 9 Oct 2026). No database created; no migration executed.
-
-## Design content and corrections (shared document)
-
-`docs/qualification/PROXY-TEMPORAL-DECISIONS.md` was updated to: (1) correct the role-authorization error — RoleWorker1 cannot poll/complete/heartbeat with the default authorizer, trusted app workers require `namespace:write` (RoleWriter4), documented as broader than a tenant wall; (2) add the fifth `internal-frontend` role (five private roles total) with its stock internal system-admin boundary, internode-only/mTLS reachability and the no-`publicClient`-override rule; (3) record the issuer/audience/JWKS and TLS limitations (default mapper does not independently enforce issuer matching or `exp` presence; live ingress must be verified later); (4) record the accepted Bedrock US-only Sonnet4.6 / $10 aggregate cap (D004) and the still-unaccepted exact LiteLLM release; (5) add the exact server/SDK/schema/RDS candidate pins; (6) add provisional sizing (explicit provisional ceilings, 10-run benchmark, 128 pre-boot shards); and (7) state the G1 design-acceptance-vs-later-runtime/HA/recovery scope split. The inert fixture (`client-options.ts`, `workflow.ts`, `negative-types.ts`, `deployment.fixture.json`) encodes the same five-role/authorization/TLS/JWT/versioning decisions.
+- Temporal server 1.32.1 (2026-10-08, `release/v1.32.x`), source commit `af08a5e5…87001e`; image index `sha256:acecbab5…029049`, linux/amd64 `sha256:2695f256…21b2de0e`, config `sha256:40cc19ca…3307b10`; license MIT. Admin-tools 1.32.1, CLI 1.9.1. Not signature-verified or scan-dispositioned.
+- TypeScript SDK 1.24.0, source commit `1fd1c81a…1ffdc867`; all `@temporalio/*` at 1.24.0 (MIT, sha512 in the nested lock); Node floor >= 20.3.0. Compiler `typescript 5.9.3`, types `@types/node 24.19.2`.
+- Server postgres12 schema v1.19 / visibility v1.14; RDS PostgreSQL 16.15 owner candidate (read-only observation 9 Oct 2026). No database created; no migration executed.
 
 ## NOT RUN live gates (none claimed)
 
-Server/admin-tools image pull, signature verification, scan disposition; any Temporal connection (client or native); `Worker.create`/`run`; workflow/activity/signal/timer/cancel/Continue-as-New execution; history replay; sequential minor upgrade drill; PostgreSQL/RDS provisioning, schema migration, restore/PITR/failover; namespace registration; live default JWT authorizer/issuer/audience/JWKS enforcement; internode mTLS and service discovery; replay/cancel/replacement/approval/schedule fixtures; measured startup/memory/disk/timings/cost; Fargate placement; model/provider calls (Bedrock spend remains $0); proxy acceptance; non-root browser sandbox; any Capiro source access or cutover. Local compilation cannot pass these gates.
+Server/admin-tools image pull, signature verification, scan disposition; any
+Temporal connection (client or native); `Worker.create`/`run`; workflow/activity/
+signal/timer/cancel/Continue-as-New execution; history replay; sequential minor
+upgrade drill; PostgreSQL/RDS provisioning, schema migration, restore/PITR/
+failover; namespace registration; live default JWT authorizer/issuer/audience/
+JWKS enforcement; internode mTLS and service discovery; replay/cancel/replacement/
+approval/schedule fixtures; measured startup/memory/disk/timings/cost; Fargate
+placement; model/provider calls (Bedrock spend remains $0); proxy acceptance;
+non-root browser sandbox; any Capiro source access or cutover. Local compilation
+and the isolated pure-decision test cannot pass these gates.
 
 ## Process / worktree state
 
-Clean process tree (no background processes started; `tsc`/`node --test` child processes exited within their checks). Ignored `node_modules/` and `.runtime/` only under the owned package; no servers, containers or native core. G1 remains IN PROGRESS; W03 remains queued; no gate promoted; no production, durability or proxy-acceptance claim.
+Clean process tree (only `tsc`/`node --test` children, exited within their
+checks; the pure-decision test's `tsc --outDir .runtime/out` output is removed
+after the run). Ignored `node_modules/` and `.runtime/` only under the owned
+package. No servers, containers, native core, AWS, model, browser or Office
+execution. G1 remains IN PROGRESS; W03 remains queued; no gate promoted; no
+production, durability or proxy-acceptance claim.
