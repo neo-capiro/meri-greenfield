@@ -16,6 +16,7 @@ import time
 import uuid
 
 from windows_job import CREATE_SUSPENDED, WindowsJob
+from hermes_session_id import is_valid_hermes_session_id, session_footer_ids
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--worktree', required=True, type=Path)
@@ -34,8 +35,8 @@ if not 1 <= args.timeout_seconds <= 3600 or not 1 <= args.max_turns <= 40:
     parser.error('Initial bounds are at most 3600 seconds and 40 turns')
 if not re.fullmatch(r'[a-f0-9]{40}', args.base):
     parser.error('A real pinned 40-character base commit is required')
-if args.resume and (args.resume == 'latest' or not re.fullmatch(r'[A-Za-z0-9_.:-]{1,160}',args.resume)):
-    parser.error('Resume requires an explicit valid session ID')
+if args.resume is not None and not is_valid_hermes_session_id(args.resume):
+    parser.error('Resume requires an explicit Hermes YYYYMMDD_HHMMSS_<6 lowercase hex> session ID')
 worktree = args.worktree.resolve(strict=True)
 query_file = args.query_file.resolve(strict=True)
 if not query_file.is_relative_to(worktree) or not (worktree/'AGENTS.md').is_file():
@@ -99,9 +100,10 @@ try:
         try:
             with (evidence/name).open('w',encoding='utf-8') as log:
                 for line in stream:
-                    match=re.search(r'\bsession_id:\s*([A-Za-z0-9_.:-]+)',line)
-                    if match and match[1] not in record['sessionIds']:
-                        record['sessionIds'].append(match[1])
+                    channel='stderr' if name=='stderr.scrubbed.txt' else 'stdout'
+                    for session_id in session_footer_ids((line,),stream=channel):
+                        if session_id not in record['sessionIds']:
+                            record['sessionIds'].append(session_id)
                     line=re.sub(r'(?i)(bearer\s+)[^\s"\']+',r'\1[REDACTED]',line)
                     line=re.sub(r'\b(?:sk-or-v1-|sk-ant-|ghp_|gho_)[A-Za-z0-9_-]+','[REDACTED]',line)
                     log.write(line); log.flush()
