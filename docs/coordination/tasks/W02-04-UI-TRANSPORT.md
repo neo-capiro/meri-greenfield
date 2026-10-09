@@ -1,6 +1,6 @@
 # W02-04 AI SDK custom transport compatibility
 
-Codex owns acceptance. One bounded real Hermes implementation session, exact launcher-supplied integration base containing this brief; branch `hermes/w02-ui`, worktree `C:\dev\main\meri-greenfield-worktrees\w02-ui`. Dependency: frozen contracts `7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3`, schema SHA256 `0bf7d88dcef83e139eb1788864249d6d5c9396497e192e547c8d87ec6cc2965a`, accepted H00. Independent G1 compatibility preparation only; no W03 promotion or website deployment.
+Codex owns acceptance. One bounded real Hermes implementation session, exact launcher-supplied integration base containing this brief; branch `hermes/w02-ui`, worktree `C:\dev\main\meri-greenfield-worktrees\w02-ui`. Dependency: frozen contracts `7a44d5750a68d4c2873d4d3b5b7c3e7f5e1a87b3`, LF Git-blob schema SHA256 `e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b`, accepted H00. Independent G1 compatibility preparation only; no W03 promotion or website deployment. The earlier0bf7d88 hash was the identical root checkout with CRLF line endings; the frozen Git blob has50043bytes/LF and is authoritative. No schema definition changed.
 
 Owned exact paths:
 
