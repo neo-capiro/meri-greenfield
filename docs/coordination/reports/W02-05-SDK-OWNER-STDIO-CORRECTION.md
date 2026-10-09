@@ -1,0 +1,9 @@
+# SDK repair4 and owner stdio correction
+
+Codex independently reran repair4 at74e5d0b47f157598e759b4a01793afb56a1b19f0:61owned tests and14 repinned adversarial fake cases passed. The actual bounded implementation session20261009_182329_21b4bc closed23:23:32.558386Z with exit0, no remaining descendants, readers finished and cleanup confirmed. This is preparation evidence only.
+
+Owner inspection found that realSpawner resolved stdioDone on stderr end, which can precede full child close, and its close path did not take a final stderr snapshot. The top-level fatal handler also retained an unbounded raw stdout write. Owner commit3b8eabf1e7f29a2a48f083c4d947c3cadff82e1e changes only sdk-capture.mjs and sdk-capture.test.mjs: require child close, capture final byte/hash facts, forward adapter violation callbacks, fail on stderr read errors, and route fatal output through the existing bounded writer. Attribution is Codex, separately from Hermes repair4. The earlier Hermes report's61test count describes its original repair4 source.
+
+Independent owner checks on the corrected candidate:65owned tests,81existing worker tests,15root checks and14repinned adversarial cases passed; whitespace check passed. Four new tests use the real adapter body with injected EventEmitter children and a fake fatal writer; no native SDK/process/socket/server/provider/cloud execution occurred. Positive wire fixtures retain the public required max_tokens field. Corrected sdk-capture.mjs SHA256724a281b87c6003644fa0b07fd0ee4529287192156faa7b01a279c416b52f994. Private historical harness results are preserved without promoting old rejected candidates.
+
+A separate actual Hermes reviewer is assigned exact candidate3b8eabf in review/w02-sdk-capture-5, report-only ownership,40turns/1800seconds, private evidenceW02-sdk-review-5. Native wire, image build, Fargate run, Bedrock and session/file recovery remain NOT RUN; acceptance is pending review and owner verification. G1 remains open.
