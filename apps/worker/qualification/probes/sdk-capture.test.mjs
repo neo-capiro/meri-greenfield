@@ -17,6 +17,7 @@ import { readFileSync, mkdtempSync, mkdirSync, symlinkSync, writeFileSync } from
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { Writable } from 'node:stream';
 import zlib from 'node:zlib';
 
 import {
@@ -30,6 +31,7 @@ import {
   WIRE_TOOL_TIMEOUT_MS,
   WIRE_DONE_MARKER,
   CAPTURE_USER_PROMPT,
+  CAPTURE_SYSTEM_PROMPT,
   CAPTURE_OPTION_FIELDS,
   CHILD_ENV_FLAGS,
   HARMLESS_PARENT_ENV_ALLOWLIST,
@@ -164,9 +166,9 @@ function expectAbortSeq(body2, matcher) {
 }
 
 test('wrong method / path / host / port / peer / model / stream fail and abort', () => {
-  expectAbort({ ...mkReq(req1Body()), method: 'GET' }, /method GET/);
-  expectAbort(mkReq(req1Body(), { path: '/v1/complete' }), /path/);
-  expectAbort(mkReq(req1Body(), { host: 'api.anthropic.com' }), /host/);
+  expectAbort({ ...mkReq(req1Body()), method: 'GET' }, /unexpected method/);
+  expectAbort(mkReq(req1Body(), { path: '/v1/complete' }), /unexpected path/);
+  expectAbort(mkReq(req1Body(), { host: 'api.anthropic.com' }), /host does not equal bound/);
   expectAbort(mkReq(req1Body(), { host: `${LOOPBACK_HOST}:9999` }), /host does not equal bound/);
   expectAbort(mkReq(req1Body(), { peer: '10.0.0.5' }), /non-loopback peer/);
   expectAbort(mkReq(req1Body((b) => (b.model = 'claude-sonnet-5'))), /wrong model/);
@@ -549,6 +551,8 @@ function makeFakeHost(mode = 'success', opts = {}) {
       calls.spawn += 1;
       const child = makeFakeChild({ cooperative: opts.cooperativeChild !== false });
       shared.child = child;
+      if (opts.stdioDone === 'hang') record.stdioDone = new Promise(() => {});
+      else if (opts.stdioDone === 'immediate') record.stdioDone = Promise.resolve();
       return child;
     },
     startServer: async (cfg) => {
@@ -772,7 +776,7 @@ test('writeOnce is bounded and surfaces error/close/timeout', async () => {
 
 test('writeLines refuses an oversized record', async () => {
   const out = { write: (s, cb) => (cb && cb(), true), once() {}, off() {} };
-  const r = await writeLines([{ record: 'x', pad: 'z'.repeat(MAX_RECORD_BYTES * 2) }], out);
+  const r = await writeLines([{ record: 'x', pad: 'z'.repeat(MAX_RECORD_BYTES * 2) }], out, { deadlineAt: Date.now() + 1000 });
   assert.equal(r.ok, false);
   assert.equal(r.error, 'record-too-large');
 });
@@ -813,4 +817,138 @@ test('errorType never returns an opaque message', () => {
   assert.equal(errorType(new Error('secret sk-ant-x')), 'Error');
   assert.equal(errorType({ name: 'TimeoutError' }), 'TimeoutError');
   assert.equal(errorType(null), 'Error');
+});
+
+// ---------------------------------------------------------------------------
+// 16. repair-3 audit regressions (reproduced, then flipped)
+// ---------------------------------------------------------------------------
+
+const AUDIT_SENTINEL = 'OPAQUE_SYNTHETIC_CREDENTIAL';
+const FULL_TOOLS = [{ name: WIRE_TOOL_FULLNAME, description: 'Synthetic echo', input_schema: { type: 'object', properties: { value: { type: 'string', const: WIRE_TOKEN } }, required: ['value'], additionalProperties: false } }];
+const fullFirst = (extra = {}) => ({ model: CAPTURE_MODEL, max_tokens: 256, stream: true, system: CAPTURE_SYSTEM_PROMPT, thinking: { type: 'disabled' }, metadata: { user_id: SESSION_UUID }, tools: FULL_TOOLS, messages: [{ role: 'user', content: [{ type: 'text', text: CAPTURE_USER_PROMPT }] }], ...extra });
+
+function fakeQueryTo(host_mode, opts) {
+  return makeFakeHost(host_mode, opts);
+}
+
+test('credential detection is semantic: accounting token fields are NOT credential keys', () => {
+  assert.equal(hasSensitiveBody(fullFirst()), false, 'a full pinned Messages request must not be hash-only');
+  assert.equal(hasSensitiveBody({ max_tokens: 256, input_tokens: 1, output_tokens: 2, cache_creation_input_tokens: 3, cache_read_input_tokens: 4 }), false);
+  assert.equal(hasSensitiveBody({ api_key: AUDIT_SENTINEL }), true);
+  assert.equal(hasSensitiveBody({ nested: { access_token: 'x' } }), true);
+  assert.equal(hasSensitiveBody({ a: [{ b: { authorization: 'x' } }] }), true);
+});
+
+test('an opaque error NAME is never exported', () => {
+  const e = new Error('ignored');
+  e.name = `sk-ant-${AUDIT_SENTINEL}`;
+  assert.equal(errorType(e), 'Error');
+  assert.equal(errorType({ name: AUDIT_SENTINEL }), 'Error');
+});
+
+test('full-pinned Messages positive: exactly two normal requests capture and reconstruct', async () => {
+  const { host } = makeFakeHost('success', {
+    rawQuery: ({ options, shared: sh }) =>
+      (async function* () {
+        const it = syntheticPromptStream(CAPTURE_USER_PROMPT, new Promise(() => {}))[Symbol.asyncIterator]();
+        await it.next();
+        if (typeof it.return === 'function') await it.return();
+        options.spawnClaudeCodeProcess({ command: 'never-executed', args: [], cwd: options.cwd, env: options.env, signal: options.abortController.signal });
+        const classify = (b) => classifyRequest(sh.state, { method: 'POST', path: '/v1/messages', host: `${LOOPBACK_HOST}:${PORT}`, peer: LOOPBACK_HOST, rawBytes: Buffer.from(JSON.stringify(b)), headers: {} });
+        assert.equal(classify(fullFirst()).ok, true);
+        await options.canUseTool(WIRE_TOOL_FULLNAME, { value: WIRE_TOKEN }, { mcpServer: { name: WIRE_SERVER_NAME, source: 'sdk' } });
+        await sh.toolHandler({ value: WIRE_TOKEN });
+        const second = { ...fullFirst(), messages: [...fullFirst().messages, { role: 'assistant', content: [{ type: 'tool_use', id: WIRE_TOOL_USE_ID, name: WIRE_TOOL_FULLNAME, input: { value: WIRE_TOKEN } }] }, { role: 'user', content: [{ type: 'tool_result', tool_use_id: WIRE_TOOL_USE_ID, content: [{ type: 'text', text: WIRE_TOOL_RESULT }] }] }] };
+        assert.equal(classify(second).ok, true);
+        yield { type: 'result', subtype: 'success', is_error: false, result: WIRE_DONE_MARKER, stop_reason: 'end_turn', session_id: SESSION_UUID, num_turns: 2 };
+      })(),
+  });
+  const report = await runCapture({ host, source: {} });
+  assert.equal(report.ok, true, JSON.stringify(report.reasons));
+  assert.deepEqual(report.requests.map((r) => r.hashOnly), [false, false]);
+  const lines = buildOutputLines(report);
+  assert.ok(lines.some((l) => l.record === 'sdk-capture-request-chunk'));
+  assert.equal(lines[0].ok, true);
+});
+
+test('a foreign/secret tool_use id never appears in reasons or output', async () => {
+  const { host } = makeFakeHost('success', {
+    rawQuery: ({ options, shared: sh }) =>
+      (async function* () {
+        const it = syntheticPromptStream(CAPTURE_USER_PROMPT, new Promise(() => {}))[Symbol.asyncIterator]();
+        await it.next();
+        if (typeof it.return === 'function') await it.return();
+        options.spawnClaudeCodeProcess({ command: 'node', args: [], cwd: options.cwd, env: options.env, signal: options.abortController.signal });
+        const classify = (b) => classifyRequest(sh.state, { method: 'POST', path: '/v1/messages', host: `${LOOPBACK_HOST}:${PORT}`, peer: LOOPBACK_HOST, rawBytes: Buffer.from(JSON.stringify(b)), headers: {} });
+        classify(req1Body());
+        classify(req2Body((b) => (b.messages[1].content[0].id = `sk-ant-${AUDIT_SENTINEL}`)));
+        yield { type: 'result', subtype: 'success', is_error: false, result: WIRE_DONE_MARKER, stop_reason: 'end_turn', session_id: SESSION_UUID };
+      })(),
+  });
+  const report = await runCapture({ host, source: {} });
+  assert.equal(report.ok, false);
+  assert.equal(JSON.stringify(report).includes(AUDIT_SENTINEL), false);
+  assert.equal(JSON.stringify(buildOutputLines(report)).includes(AUDIT_SENTINEL), false);
+});
+
+test('flag values (and value-bearing flags) are never exported; only sanitized names', () => {
+  const counters = { permissionCallbacks: 0, handlerExecutions: 0, spawns: 0 };
+  const record = { argvFlags: [] };
+  const hook = buildSpawnHook(counters, record, () => makeFakeChild(), () => {});
+  const args = [`--api-key=${AUDIT_SENTINEL}`, `--settings={"secret":"${AUDIT_SENTINEL}"}`, `--sk-ant-${AUDIT_SENTINEL}`];
+  hook({ command: 'node', args, cwd: '/workspace/conversation', env: {}, signal: undefined });
+  assert.equal(record.argvCount, 3, 'full argv count preserved');
+  assert.match(record.argvHash, /^[0-9a-f]{64}$/);
+  assert.equal(JSON.stringify(record).includes(AUDIT_SENTINEL), false);
+  assert.deepEqual(record.argvFlags.slice(0, 2), ['--api-key', '--settings']);
+  assert.match(record.argvFlags[2], /^--hashed-[0-9a-f]{12}$/);
+});
+
+test('main derives exit from emitted protocol + write outcome, not report.ok alone', async () => {
+  const src = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
+  const mainSrc = src.slice(src.indexOf('export async function main('), src.indexOf('const invokedDirectly')).replace('export async function', 'async function');
+  const badReport = { ok: true, reasons: [], captureId: SESSION_UUID, counters: {}, spawn: {}, result: null, requests: [{ index: 1, path: '/v1/messages', rawLength: 1, rawSha256: 'a'.repeat(64), decompressedLength: 1, decompressedSha256: 'b'.repeat(64), decoded: {}, base64: 'eA==', headers: [{ name: 'x-long', value: 'A'.repeat(MAX_RECORD_BYTES * 2) }] }] };
+  const main = new Function('buildRealHost', 'runCapture', 'buildOutputLines', 'writeLines', `${mainSrc};return main;`)(async () => ({}), async () => badReport, buildOutputLines, writeLines);
+  const written = [];
+  const stdout = { write: (s, cb) => (written.push(JSON.parse(s)), cb(), true), once() {}, off() {} };
+  const exit = await main({ platform: 'linux', source: {}, stdout });
+  assert.notEqual(exit, 0);
+  assert.deepEqual(written.map((w) => w.ok), [false, false]);
+});
+
+test('writeLines with an expired absolute deadline writes nothing and fails', async () => {
+  let time = 6000;
+  let writes = 0;
+  const stdout = { write: (_s, cb) => (++writes, time++, cb(), false), once() {}, off() {} };
+  const r = await writeLines(Array.from({ length: 100 }, () => ({ record: 'synthetic' })), stdout, { deadlineAt: 0, now: () => time });
+  assert.equal(r.ok, false);
+  assert.equal(writes, 0);
+  assert.equal((await writeLines([], stdout, { deadlineAt: NaN })).error, 'invalid-output-deadline');
+});
+
+test('a write callback error does not surface an uncaught error', async () => {
+  let unhandled;
+  const listener = (e) => (unhandled = e.name);
+  process.once('uncaughtException', listener);
+  const stdout = new Writable({
+    write(_c, _e, cb) {
+      cb(new Error('synthetic write failure'));
+    },
+  });
+  const r = await writeOnce('synthetic', stdout, Date.now() + 200);
+  await new Promise((res) => setTimeout(res, 20));
+  process.off('uncaughtException', listener);
+  assert.equal(r.ok, false);
+  assert.equal(unhandled ?? null, null);
+});
+
+test('runCapture requires child stdio EOF before a PASS', async () => {
+  const okHost = fakeQueryTo('success', { stdioDone: 'immediate' }).host;
+  const okReport = await runCapture({ host: okHost, source: {} });
+  assert.equal(okReport.ok, true, JSON.stringify(okReport.reasons));
+
+  const stuckHost = fakeQueryTo('success', { stdioDone: 'hang' }).host;
+  const stuckReport = await runCapture({ host: stuckHost, source: {} });
+  assert.equal(stuckReport.ok, false);
+  assert.match(stuckReport.reasons.join(' '), /child stdio not drained/);
 });

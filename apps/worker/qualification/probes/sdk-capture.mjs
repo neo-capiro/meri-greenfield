@@ -63,6 +63,7 @@ export const STDERR_PREVIEW_CHARS = 512;
 export const CLOSE_GRACE_MS = 2000;
 export const EXIT_GRACE_MS = 2000;
 export const WRITE_TIMEOUT_MS = 5000;
+export const WRITE_CALLBACK_GRACE_MS = 50;
 export const MAX_DEADLINE_MS = 60000;
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -76,10 +77,12 @@ export function hashSha256(buf) {
   return createHash('sha256').update(buf).digest('hex');
 }
 
-/** Error TYPES are data; opaque messages are never exported. */
+/** Error TYPES are data. Only fixed known tokens are ever exported; an unknown
+ * (potentially opaque/secret) name is mapped to 'Error'. */
+const KNOWN_ERROR_TYPES = new Set(['Error', 'TypeError', 'RangeError', 'ReferenceError', 'SyntaxError', 'EvalError', 'URIError', 'AbortError', 'TimeoutError', 'AggregateError']);
 export function errorType(error) {
-  const name = error && error.name ? String(error.name) : 'Error';
-  return name.replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 64) || 'Error';
+  const name = error && typeof error.name === 'string' ? error.name : '';
+  return KNOWN_ERROR_TYPES.has(name) ? name : 'Error';
 }
 
 /** Validate the FIXED deadline. Must be finite, positive and <= 60000 ms. */
@@ -117,7 +120,18 @@ export function looksLikeSecret(text) {
   });
 }
 
-const CREDENTIAL_KEY = /api[-_]?key|token|secret|password|passwd|credential|authorization|bearer|private[-_]?key|client[-_]?secret/i;
+// Credential detection is SEMANTIC: a key is credential-named only when one of
+// its non-alphanumeric-separated segments is a credential word. Accounting /
+// token-count fields such as `max_tokens`, `input_tokens`, `cache_creation_
+// input_tokens` and `output_tokens` split into `tokens` (plural) and are NOT
+// credential names.
+const CRED_KEY_SEGMENTS = new Set(['key', 'apikey', 'token', 'secret', 'password', 'passwd', 'passphrase', 'credential', 'credentials', 'authorization', 'bearer', 'cookie']);
+function isCredentialKey(k) {
+  return String(k)
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .some((seg) => seg && CRED_KEY_SEGMENTS.has(seg));
+}
 
 /**
  * Recursively detect credential-named keys/values in a decoded body. Bounded in
@@ -132,9 +146,7 @@ export function hasSensitiveBody(value, depth = 0, seen = new Set()) {
   seen.add(value);
   if (Array.isArray(value)) return value.some((v) => hasSensitiveBody(v, depth + 1, seen));
   for (const [k, v] of Object.entries(value)) {
-    if (CREDENTIAL_KEY.test(k) && !(typeof v === 'object' && v === null)) {
-      if (typeof v === 'string' ? v.length > 0 : v !== undefined && v !== null) return true;
-    }
+    if (isCredentialKey(k) && v !== null && v !== undefined) return true;
     if (hasSensitiveBody(v, depth + 1, seen)) return true;
   }
   return false;
@@ -298,8 +310,8 @@ export function validateToolRoundTrip(json, toolUseId) {
   if (!(promptIndex < assistantIndex && assistantIndex < resultIndex)) {
     return { ok: false, error: 'order must be user prompt, assistant tool_use, user tool_result' };
   }
-  if (tu.b.id !== toolUseId) return { ok: false, error: `foreign tool_use id ${tu.b.id}` };
-  if (tu.b.name !== WIRE_TOOL_FULLNAME) return { ok: false, error: `foreign tool name ${tu.b.name}` };
+  if (tu.b.id !== toolUseId) return { ok: false, error: 'foreign tool_use id' };
+  if (tu.b.name !== WIRE_TOOL_FULLNAME) return { ok: false, error: 'foreign tool name' };
   const keys = tu.b.input && typeof tu.b.input === 'object' ? Object.keys(tu.b.input) : [];
   if (keys.length !== 1 || tu.b.input.value !== WIRE_TOKEN) return { ok: false, error: 'tool_use input must be exactly {value:token}' };
   if (tr.b.tool_use_id !== toolUseId) return { ok: false, error: 'tool_result id does not match emitted id' };
@@ -317,10 +329,10 @@ export function classifyRequest(state, req = {}) {
     return { ok: false, action: 'abort', error: state.aborted };
   };
   if (state.aborted) return { ok: false, action: 'abort', error: state.aborted };
-  if (req.method !== 'POST') return abort(`method ${req.method}`);
-  if (!ACCEPTED_PATHS.includes(req.path)) return abort(`path ${req.path}`);
+  if (req.method !== 'POST') return abort('unexpected method');
+  if (!ACCEPTED_PATHS.includes(req.path)) return abort('unexpected path');
   const peer = String(req.peer || '');
-  if (peer !== LOOPBACK_HOST && peer !== `::ffff:${LOOPBACK_HOST}`) return abort(`non-loopback peer ${peer}`);
+  if (peer !== LOOPBACK_HOST && peer !== `::ffff:${LOOPBACK_HOST}`) return abort('non-loopback peer');
   if (String(req.host || '') !== `${LOOPBACK_HOST}:${state.port}`) return abort(`host does not equal bound ${LOOPBACK_HOST}:${state.port}`);
   const decoded = decodeRequestBody({ rawBytes: req.rawBytes, contentEncoding: req.contentEncoding, oversize: req.oversize });
   if (!decoded.ok) return abort(decoded.errorType);
@@ -597,6 +609,21 @@ export async function createLoopbackServer({ state, deadlineMs = CAPTURE_DEADLIN
 // Spawn hook (one spawn; argv hash + flag names only; bounded stderr drain)
 // ---------------------------------------------------------------------------
 
+const SAFE_FLAG_RE = /^--?[A-Za-z][A-Za-z0-9-]{0,40}$/;
+
+/**
+ * Export a flag NAME only: split at the first '=' (the pinned SDK argv builder
+ * emits `--flag=value`), keep a strict short flag-name form, and hash anything
+ * else. A secret smuggled into a value or an opaque name is never exported.
+ */
+export function sanitizeArgvFlag(arg) {
+  const s = String(arg);
+  const eq = s.indexOf('=');
+  const name = eq >= 0 ? s.slice(0, eq) : s;
+  if (SAFE_FLAG_RE.test(name) && name.length <= 42 && !looksLikeSecret(name)) return name;
+  return `--hashed-${hashSha256(Buffer.from(s)).slice(0, 12)}`;
+}
+
 /** Build the public spawnClaudeCodeProcess hook. Refuses a second spawn. */
 export function buildSpawnHook(counters, record, spawnImpl, onViolation) {
   return function spawnClaudeCodeProcess(spawnOptions) {
@@ -611,7 +638,7 @@ export function buildSpawnHook(counters, record, spawnImpl, onViolation) {
     record.argvCount = args.length;
     record.argvBytes = args.reduce((n, a) => n + Buffer.byteLength(a), 0);
     record.argvHash = hashSha256(Buffer.from(args.join('\u0000')));
-    record.argvFlags = args.filter((a) => a.startsWith('-')).map((a) => (a.length > 120 ? `${a.slice(0, 120)}<truncated>` : a));
+    record.argvFlags = args.filter((a) => a.startsWith('-')).map(sanitizeArgvFlag);
     record.cwd = spawnOptions.cwd;
     record.envNames = Object.keys(spawnOptions.env || {}).sort();
     record.spawned = true;
@@ -669,7 +696,10 @@ export async function confirmChildCleanup(record, { graceMs = EXIT_GRACE_MS, now
   return false;
 }
 
-/** Real spawner: SDK AbortSignal forwarded, stdio piped to SDK, bounded stderr. */
+/** Real spawner: SDK AbortSignal forwarded, stdio piped to SDK, bounded stderr.
+ * Exposes an INTERNAL completion contract (`record.stdioDone`) that resolves
+ * only after the child stdio is fully drained (stderr 'end' or child 'close'),
+ * so the orchestrator can require actual drain before a PASS. */
 export function realSpawner(spawnOptions, record, onViolation) {
   const child = nodeSpawn(spawnOptions.command, spawnOptions.args, {
     cwd: spawnOptions.cwd,
@@ -681,6 +711,17 @@ export function realSpawner(spawnOptions, record, onViolation) {
   let hashed = 0;
   let preview = '';
   const hash = createHash('sha256');
+  let resolveStdio;
+  record.stdioDone = new Promise((res) => {
+    resolveStdio = res;
+  });
+  const snapshot = () => {
+    record.stderrTotalBytes = total;
+    record.stderrHashedBytes = hashed;
+    record.stderrTruncated = total > MAX_STDERR_BYTES;
+    record.stderrSha256 = hash.copy().digest('hex');
+    record.stderrPreview = boundedPreview(preview);
+  };
   child.stderr.on('data', (b) => {
     total += b.length;
     if (hashed < MAX_STDERR_BYTES) {
@@ -696,12 +737,10 @@ export function realSpawner(spawnOptions, record, onViolation) {
     }
   });
   child.stderr.on('end', () => {
-    record.stderrTotalBytes = total;
-    record.stderrHashedBytes = hashed;
-    record.stderrTruncated = total > MAX_STDERR_BYTES;
-    record.stderrSha256 = hash.digest('hex');
-    record.stderrPreview = boundedPreview(preview);
+    snapshot();
+    resolveStdio();
   });
+  if (child.on) child.on('close', () => resolveStdio());
   return child;
 }
 
@@ -767,10 +806,10 @@ export function validateResolvedSettings(resolved) {
 
 export function validateResultMessage(msg) {
   if (!msg || msg.type !== 'result') return { ok: false, error: 'no SDK result message' };
-  if (msg.subtype !== 'success') return { ok: false, error: `result subtype ${msg.subtype}` };
+  if (msg.subtype !== 'success') return { ok: false, error: 'unexpected result subtype' };
   if (msg.is_error !== false) return { ok: false, error: 'result is_error !== false' };
   if (typeof msg.result !== 'string' || !msg.result.includes(WIRE_DONE_MARKER)) return { ok: false, error: 'result marker missing' };
-  if (msg.stop_reason !== 'end_turn') return { ok: false, error: `stop_reason ${msg.stop_reason}` };
+  if (msg.stop_reason !== 'end_turn') return { ok: false, error: 'unexpected stop_reason' };
   if (typeof msg.session_id !== 'string' || !UUID_RE.test(msg.session_id)) return { ok: false, error: 'invalid session_id' };
   const numTurns = Number.isInteger(msg.num_turns) && msg.num_turns >= 0 && msg.num_turns <= 1_000_000 ? msg.num_turns : null;
   const resultBuf = Buffer.from(msg.result);
@@ -935,8 +974,16 @@ export async function runCapture({
       const closed = await boundedWait(Promise.resolve().then(() => server.close()), now() + CLOSE_GRACE_MS, now);
       if (!closed.ok) reasons.push('server close did not complete within the grace window');
     }
-    if (constructed && !(await confirmChildCleanup(spawnRecord, { now }))) {
-      reasons.push('child cleanup not confirmed (no exit/signal observed)');
+    if (constructed) {
+      // Require the child's stdio to be fully drained (EOF) before a PASS, and
+      // take the final stderr accounting only after that drain.
+      if (spawnRecord.stdioDone) {
+        const sd = await boundedWait(spawnRecord.stdioDone, now() + CLOSE_GRACE_MS, now);
+        if (!sd.ok) reasons.push('child stdio not drained (no EOF)');
+      }
+      if (!(await confirmChildCleanup(spawnRecord, { now }))) {
+        reasons.push('child cleanup not confirmed (no exit/signal observed)');
+      }
     }
   }
 
@@ -1031,19 +1078,33 @@ export function buildOutputLines(report, { chunkBytes = OUT_CHUNK_BYTES } = {}) 
 // Bounded stdout writing
 // ---------------------------------------------------------------------------
 
-/** Write one chunk with a bounded callback/drain/error/close path. */
+/**
+ * Write one chunk with a bounded callback/drain/error/close path. On a callback
+ * error the error/close observers are KEPT for a short grace so a late Node
+ * stream 'error' (emitted after the write callback) is absorbed, not thrown;
+ * they are removed after the grace, so there is no unbounded listener leak.
+ */
 export function writeOnce(text, stdout, atMs, now = Date.now) {
   return new Promise((resolve) => {
     let done = false;
-    const finish = (ok, error) => {
-      if (done) return;
-      done = true;
+    let cleaned = false;
+    let graceTimer = null;
+    const cleanup = () => {
+      if (cleaned) return;
+      cleaned = true;
       clearTimeout(timer);
+      if (graceTimer) clearTimeout(graceTimer);
       if (stdout && typeof stdout.off === 'function') {
         stdout.off('error', onError);
         stdout.off('close', onClose);
       }
+    };
+    const finish = (ok, error) => {
+      if (done) return;
+      done = true;
       resolve({ ok, error });
+      graceTimer = setTimeout(cleanup, WRITE_CALLBACK_GRACE_MS);
+      if (graceTimer.unref) graceTimer.unref();
     };
     const onError = (e) => finish(false, errorType(e));
     const onClose = () => finish(false, 'output-closed');
@@ -1053,20 +1114,32 @@ export function writeOnce(text, stdout, atMs, now = Date.now) {
       stdout.once('close', onClose);
     }
     try {
-      stdout.write(text, (err) => (err ? finish(false, errorType(err)) : finish(true)));
+      stdout.write(text, (err) => {
+        if (err) return finish(false, errorType(err));
+        if (now() > atMs) return finish(false, 'write-late');
+        return finish(true);
+      });
     } catch (e) {
       finish(false, errorType(e));
     }
   });
 }
 
-/** Await-write all records with bounded pending + final writes. */
-export async function writeLines(lines, stdout, { deadlineAt = Date.now() + WRITE_TIMEOUT_MS + 1000, now = Date.now } = {}) {
+/**
+ * Await-write all records against ONE fixed absolute deadline (never silently
+ * extended per write). The deadline is checked before EACH write and after every
+ * callback, and must be a finite absolute time; an expired/already-expired
+ * deadline writes NOTHING and fails.
+ */
+export async function writeLines(lines, stdout, { deadlineAt, now = Date.now } = {}) {
+  if (typeof deadlineAt !== 'number' || !Number.isFinite(deadlineAt)) return { ok: false, error: 'invalid-output-deadline' };
   for (const line of lines) {
+    if (now() >= deadlineAt) return { ok: false, error: 'output-deadline-expired' };
     const chunk = `${JSON.stringify(line)}\n`;
     if (Buffer.byteLength(chunk) > MAX_RECORD_BYTES) return { ok: false, error: 'record-too-large' };
-    const w = await writeOnce(chunk, stdout, deadlineAt + WRITE_TIMEOUT_MS, now);
+    const w = await writeOnce(chunk, stdout, deadlineAt, now);
     if (!w.ok) return w;
+    if (now() >= deadlineAt) return { ok: false, error: 'output-deadline-expired' };
   }
   return { ok: true };
 }
@@ -1127,19 +1200,26 @@ async function buildRealHost() {
 }
 
 export async function main({ platform = process.platform, source = process.env, stdout = process.stdout } = {}) {
+  // Absolute write deadline is a literal so main's extracted body has no hidden
+  // module-scope dependency (it is also injected verbatim by the audit harness).
+  const writeDeadline = () => Date.now() + 5000;
   if (platform !== 'linux') {
-    await writeLines([{ record: 'sdk-capture-manifest', ok: false, skipped: true, reason: 'linux-only probe' }], stdout).catch(() => {});
+    await writeLines([{ record: 'sdk-capture-manifest', ok: false, skipped: true, reason: 'linux-only probe' }], stdout, { deadlineAt: writeDeadline() }).catch(() => {});
     return 2;
   }
   const host = await buildRealHost();
   const report = await runCapture({ host, source });
-  const written = await writeLines(buildOutputLines(report), stdout);
+  const lines = buildOutputLines(report);
+  const written = await writeLines(lines, stdout, { deadlineAt: writeDeadline() });
+  // Final exit is derived from the EMITTED protocol + write outcome, never from
+  // the in-memory report alone.
+  const emittedFailure = !Array.isArray(lines) || lines.length === 0 || lines.some((l) => !l || l.ok === false);
   if (!written.ok) {
-    // bounded failed-output path: best-effort single record, then fail.
-    await writeLines([{ record: 'sdk-capture-manifest', captureId: report.captureId, ok: false, reasons: [`output write failed: ${written.error}`] }], stdout).catch(() => {});
+    // bounded failed-output path (no unbounded raw stdout write).
+    await writeLines([{ record: 'sdk-capture-manifest', captureId: report.captureId, ok: false, reasons: ['output write failed'] }], stdout, { deadlineAt: writeDeadline() }).catch(() => {});
     return 1;
   }
-  return report.ok ? 0 : 1;
+  return emittedFailure ? 1 : report.ok ? 0 : 1;
 }
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
