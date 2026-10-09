@@ -8,9 +8,13 @@
 // type-correct registration therefore never runs at runtime. The guard below enforces
 // the frozen UIEvent contract explicitly and requires chunk.id equality.
 
+import { Chat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import type { ChatTransport, UIMessageChunk } from 'ai';
 import type { MeriUIMessage, UIEvent, UIEventValidator } from './types.ts';
 import { MERI_EVENT_DATA_PART } from './types.ts';
+import { ConversationProjection, acceptOrReject } from './projection.ts';
+import type { AuthorizedView } from './projection.ts';
 
 /** Frames that are part of the frozen custom-event path or the stream lifecycle. */
 const ALLOWED_FRAME_TYPES = new Set<string>([
@@ -171,4 +175,91 @@ export class MeriGuardedTransport implements ChatTransport<MeriUIMessage> {
   get isClosed(): boolean {
     return this.closed;
   }
+}
+
+export interface CreateMeriChatOptions {
+  /** Authorized conversation/view; also binds the external Chat id (reconnect identity). */
+  view: AuthorizedView;
+  /** Injected frozen-contract validator (the unchanged root validator in Node tests). */
+  validateEvent: UIEventValidator;
+  api?: string;
+  /** Test/mocked fetch. A production deployment injects its authenticated fetch here. */
+  fetchImpl?: typeof fetch;
+}
+
+export interface MeriChatHandle {
+  chat: Chat<MeriUIMessage>;
+  transport: MeriGuardedTransport;
+  projection: ConversationProjection;
+}
+
+function toHeaderRecord(headers: HeadersInit | undefined): Record<string, string> {
+  if (headers === undefined) return {};
+  if (headers instanceof Headers) {
+    const record: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      record[key] = value;
+    });
+    return record;
+  }
+  if (Array.isArray(headers)) return Object.fromEntries(headers);
+  return { ...(headers as Record<string, string>) };
+}
+
+/**
+ * Builds one externally managed `Chat` for a conversation/authorized view. The chat
+ * id is bound to `view.conversationId` so producer, consumer and reconnect all use the
+ * authorized conversation identity. The guarded transport validates every decoded
+ * chunk and calls `acceptOrReject` synchronously on the data path: an immutable-event
+ * or sequence conflict aborts the subscription before the offending chunk is forwarded
+ * or reaches `onData`, while the last accepted contiguous cursor is preserved.
+ *
+ * Reconnect sends the last accepted contiguous sequence in an authenticated header
+ * (`prepareReconnectToStreamRequest`), not the SSE `Last-Event-ID`; the cursor is server
+ * state, never a caller argument. No `dataPartSchemas` is registered: at this pin the
+ * runtime key (`data-meri-event`) differs from the typed key (`meri-event`), so schema
+ * registration does not validate frozen events — the guard is the enforcement boundary.
+ */
+export function createMeriChat(options: CreateMeriChatOptions): MeriChatHandle {
+  const projection = new ConversationProjection(options.view);
+  const api = options.api ?? '/api/chat';
+
+  const inner = new DefaultChatTransport<MeriUIMessage>({
+    api,
+    ...(options.fetchImpl ? { fetch: options.fetchImpl } : {}),
+    prepareSendMessagesRequest: ({ body, headers }) => ({
+      // The client-sent conversation id/messages are untrusted; send an intended command only.
+      body: { ...body, command: { conversationId: options.view.conversationId, intent: 'view.subscribe' } },
+      headers: toHeaderRecord(headers),
+    }),
+    prepareReconnectToStreamRequest: ({ headers }) => ({
+      headers: {
+        ...toHeaderRecord(headers),
+        'x-meri-resume-sequence': String(projection.currentCursor),
+      },
+    }),
+  });
+
+  const transport = new MeriGuardedTransport({
+    inner,
+    validateEvent: options.validateEvent,
+    // Synchronous admission boundary: throws before the chunk is forwarded/observed.
+    onEvent: (event) => {
+      acceptOrReject(projection, event);
+    },
+  });
+
+  const chat = new Chat<MeriUIMessage>({
+    id: options.view.conversationId,
+    transport,
+    sendAutomaticallyWhen: () => false,
+    onError: () => {
+      // Transport/admission error surfaces through chat state, never as a run result.
+    },
+    onData: () => {
+      // Unawaited, non-persisting observer only; never the admission authority.
+    },
+  });
+
+  return { chat, transport, projection };
 }

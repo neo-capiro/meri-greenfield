@@ -4,6 +4,11 @@
 // the durable browser storage layer is later work. The projection is the only place
 // that decides whether a validated event is accepted; transport/stream success never
 // implies a run completed.
+//
+// Immutability: every accepted/pending event is a deep-frozen snapshot taken at
+// `accept` time, so later mutation of the caller's input object cannot rewrite
+// accepted history. `accepted` returns a fresh frozen array; internal state is never
+// exposed as a mutable reference.
 
 import type { RunStatusState, UIEvent, RunBinding } from './types.ts';
 
@@ -30,6 +35,33 @@ export interface RunStatusProjection {
   reasonCode: string | null;
 }
 
+/**
+ * Raised by `acceptOrReject` on a conflict or out-of-scope outcome, so the guarded
+ * data path aborts the subscription before the offending chunk is forwarded.
+ */
+export class ProjectionRejectionError extends Error {
+  readonly result: ProjectionResult;
+
+  constructor(result: ProjectionResult) {
+    super(`projection rejected event: ${result.status} (${result.reason ?? 'no reason'})`);
+    this.name = 'ProjectionRejectionError';
+    this.result = result;
+  }
+}
+
+/**
+ * Synchronous acceptance for the guarded data path: throws `ProjectionRejectionError`
+ * on an immutable-event/sequence conflict or an out-of-scope binding. Duplicates
+ * (idempotent) and gaps (paused, cursor preserved) are allowed and returned.
+ */
+export function acceptOrReject(projection: ConversationProjection, event: UIEvent): ProjectionResult {
+  const result = projection.accept(event);
+  if (result.status === 'conflict' || result.status === 'out-of-scope') {
+    throw new ProjectionRejectionError(result);
+  }
+  return result;
+}
+
 /** Deterministic, key-sorted canonical string for immutable payload dedup. */
 function stableStringify(value: unknown): string {
   if (value === null || typeof value !== 'object') return JSON.stringify(value) ?? 'null';
@@ -39,6 +71,21 @@ function stableStringify(value: unknown): string {
     .sort()
     .map((key) => `${JSON.stringify(key)}:${stableStringify(record[key])}`)
     .join(',')}}`;
+}
+
+/** Recursively freezes a JSON-ish value and returns it. */
+function deepFreeze<T>(value: T): T {
+  if (value !== null && typeof value === 'object') {
+    for (const key of Object.keys(value)) {
+      deepFreeze((value as Record<string, unknown>)[key]);
+    }
+    Object.freeze(value);
+  }
+  return value;
+}
+
+function snapshotEvent(event: UIEvent): UIEvent {
+  return deepFreeze(structuredClone(event));
 }
 
 function sameView(binding: RunBinding, view: AuthorizedView): boolean {
@@ -61,7 +108,7 @@ export class ConversationProjection {
   private streamOutcome: 'unknown' | 'completed' | 'failed' | 'aborted' = 'unknown';
 
   constructor(view: AuthorizedView) {
-    this.view = view;
+    this.view = Object.freeze({ ...view });
   }
 
   /**
@@ -70,6 +117,8 @@ export class ConversationProjection {
    * detection, contiguous cursor advance, and gap pausing without advancing the
    * cursor. Legitimate historical prior-fence events are preserved by sequence;
    * stale publication is rejected upstream at the broker, not by discarding history.
+   *
+   * The stored value is a deep-frozen snapshot: the caller's object is never retained.
    */
   accept(event: UIEvent): ProjectionResult {
     if (!sameView(event.binding, this.view)) {
@@ -82,13 +131,15 @@ export class ConversationProjection {
       };
     }
 
-    const payloadKey = stableStringify(event);
-    const existing = this.byEventId.get(event.eventId);
+    const snapshot = snapshotEvent(event);
+    const payloadKey = stableStringify(snapshot);
+
+    const existing = this.byEventId.get(snapshot.eventId);
     if (existing) {
       return {
         status: existing.payloadKey === payloadKey ? 'duplicate' : 'conflict',
-        eventId: event.eventId,
-        sequence: event.sequence,
+        eventId: snapshot.eventId,
+        sequence: snapshot.sequence,
         cursor: this.cursor,
         reason:
           existing.payloadKey === payloadKey
@@ -97,41 +148,41 @@ export class ConversationProjection {
       };
     }
 
-    const sequenceOwner = this.bySequence.get(event.sequence);
-    if (sequenceOwner && sequenceOwner.eventId !== event.eventId) {
+    const sequenceOwner = this.bySequence.get(snapshot.sequence);
+    if (sequenceOwner && sequenceOwner.eventId !== snapshot.eventId) {
       return {
         status: 'conflict',
-        eventId: event.eventId,
-        sequence: event.sequence,
+        eventId: snapshot.eventId,
+        sequence: snapshot.sequence,
         cursor: this.cursor,
         reason: 'sequence already bound to a different eventId',
       };
     }
 
-    this.byEventId.set(event.eventId, { payloadKey, sequence: event.sequence });
-    this.bySequence.set(event.sequence, { eventId: event.eventId, payloadKey });
+    this.byEventId.set(snapshot.eventId, { payloadKey, sequence: snapshot.sequence });
+    this.bySequence.set(snapshot.sequence, { eventId: snapshot.eventId, payloadKey });
 
-    if (event.sequence <= this.cursor) {
+    if (snapshot.sequence <= this.cursor) {
       return {
         status: 'duplicate',
-        eventId: event.eventId,
-        sequence: event.sequence,
+        eventId: snapshot.eventId,
+        sequence: snapshot.sequence,
         cursor: this.cursor,
         reason: 'replay of an already-accepted sequence',
       };
     }
 
-    if (event.sequence === this.cursor + 1) {
-      this.commit(event);
+    if (snapshot.sequence === this.cursor + 1) {
+      this.commit(snapshot);
       this.drainPending();
-      return { status: 'accepted', eventId: event.eventId, sequence: event.sequence, cursor: this.cursor };
+      return { status: 'accepted', eventId: snapshot.eventId, sequence: snapshot.sequence, cursor: this.cursor };
     }
 
-    this.pending.set(event.sequence, event);
+    this.pending.set(snapshot.sequence, snapshot);
     return {
       status: 'gap',
-      eventId: event.eventId,
-      sequence: event.sequence,
+      eventId: snapshot.eventId,
+      sequence: snapshot.sequence,
       cursor: this.cursor,
       reason: 'out-of-order event paused until the missing sequence arrives',
     };
@@ -141,7 +192,7 @@ export class ConversationProjection {
     this.ordered.push(event);
     this.cursor = event.sequence;
     if (event.type === 'run.status') {
-      this.lastStatus = { state: event.data.state, reasonCode: event.data.reasonCode };
+      this.lastStatus = deepFreeze({ state: event.data.state, reasonCode: event.data.reasonCode });
     }
   }
 
@@ -159,8 +210,9 @@ export class ConversationProjection {
     this.streamOutcome = outcome;
   }
 
+  /** A fresh frozen snapshot array; mutating it never affects internal history. */
   get accepted(): readonly UIEvent[] {
-    return this.ordered;
+    return Object.freeze([...this.ordered]);
   }
 
   get currentCursor(): number {

@@ -21,10 +21,10 @@ Frozen inputs:
 | --- | --- |
 | `types.ts` | Local browser-safe types mirroring `$defs.UIEvent` (10 variants), `RunBinding`, `Scope`, `SourceEvidence`; schema-hash binding constants. Not a compiled validator. |
 | `producer.ts` | Emits `start`, one `data-meri-event` chunk per frozen event (`id = eventId`, `transient: true`), `finish` and an explicit stream outcome via `createUIMessageStream`/`createUIMessageStreamResponse`. |
-| `guarded-transport.ts` | `MeriGuardedTransport implements ChatTransport`: validates every decoded chunk (injected frozen-contract validator + `chunk.id` equality), rejects malformed/unexpected native frames, `resumeStreamIsReplay = false`, `close()` without durable cancellation. |
-| `projection.ts` | Synchronous conversation-wide projection: immutable `eventId`+payload dedup, duplicate-sequence conflict, contiguous cursor, gap pause/repair, run status kept separate from stream/HTTP outcome, safe `run.error` rendering. |
-| `client-facade.tsx` | Type-checked only: one external `Chat` per view + guarded transport, `useChat({ chat, resume: false })`. Not mounted. |
-| `qualification.test.mjs` | Offline composed fixtures (mock fetch + web `Response`/`ReadableStream`; global fetch throws). |
+| `guarded-transport.ts` | `MeriGuardedTransport implements ChatTransport` (validates every decoded chunk, rejects malformed/unexpected native frames, `resumeStreamIsReplay = false`, `close()` without durable cancellation) **and the runtime factory `createMeriChat`** that wires one external `Chat` (id bound to `view.conversationId`) + guarded transport + projection. |
+| `projection.ts` | Synchronous conversation-wide projection: deep-frozen input snapshots, immutable `eventId`+payload dedup, duplicate-sequence conflict, contiguous cursor, gap pause/repair, run status separate from stream/HTTP outcome, `acceptOrReject` for the data path, safe `run.error` rendering. |
+| `client-facade.tsx` | Type-checked only: React hook facade (`useChat({ chat, resume: false })`) + detach helper; re-exports the factory. Not mounted. |
+| `qualification.test.mjs` | 17 offline composed fixtures driving the real factory/external `Chat` (mock fetch + web `Response`/`ReadableStream`; global fetch throws). |
 
 `.runtime/` and `node_modules/` are gitignored scratch. No dependency is added to a
 root or shared lockfile.
@@ -38,25 +38,42 @@ npm test                         # node --test qualification.test.mjs
 npm run check                    # typecheck + test
 ```
 
+## Admission boundary (why this design)
+
+`createMeriChat` calls `acceptOrReject(projection, event)` **synchronously inside the
+guarded data path, before the chunk is forwarded** or reaches `onData`. An immutable
+`eventId`/payload conflict or a duplicate-sequence/different-`eventId` conflict aborts
+the subscription (the chat enters `error`) while the last accepted contiguous cursor is
+preserved. Duplicates are idempotent and gaps pause without advancing the cursor.
+`onData` is an unawaited, non-persisting observer and is never the admission authority.
+
+The chat id is bound to the authorized conversation, so reconnect uses the exact URL
+`/api/chat/<conversationId>/stream` and the last accepted sequence is sent in an
+authenticated header (never the SSE `Last-Event-ID`).
+
+Accepted/pending events are deep-frozen `structuredClone` snapshots; `accepted` returns
+a fresh frozen array, so mutating raw/nested input (or the returned array) cannot rewrite
+history.
+
 ## What the fixtures prove (offline only)
 
-- All ten frozen variants compose through the real upstream writer →
-  `DefaultChatTransport` → external `Chat` → guard → projection, accepted exactly
-  once in conversation-wide sequence order.
+- All ten frozen variants compose through the real factory + external `Chat` and are
+  projected exactly once in order.
 - Split SSE / UTF-8 byte boundaries do not corrupt frames.
-- Duplicate replay (same `eventId`+payload) is idempotent; changed content conflicts;
-  duplicate sequence with a different `eventId` conflicts.
+- Duplicate replay is idempotent; immutable `eventId` conflict and duplicate-sequence
+  conflict each abort the subscription and preserve the cursor.
 - A gap pauses the cursor and is repaired when the missing event arrives.
 - Multiple runs/attempts share one conversation sequence.
-- Malformed custom data is rejected by the guard. The exact-pin `dataPartSchemas`
-  runtime/type key mismatch is reproduced: a type-correct `{'meri-event': …}` schema is
-  never consulted at runtime, while `{'data-meri-event': …}` is — so the explicit guard,
-  not schema registration, is the enforcement boundary.
-- Unexpected native reasoning/tool/text frames are rejected.
+- Malformed custom data and unexpected native reasoning/tool/text frames are rejected
+  before admission; the exact-pin `dataPartSchemas` runtime/type key mismatch is
+  reproduced.
 - `run.error` renders only approved code/generic text.
-- HTTP 204 reconnect yields no stream; reconnect requests the last accepted contiguous
-  sequence via a header (not SSE `Last-Event-ID`).
-- abort/dispose detach the subscriber without issuing a durable run cancellation.
+- HTTP 204 and incremental reconnect both go through the actual `chat.resumeStream`, with
+  the authorized conversation URL and cursor header (no `Last-Event-ID`).
+- stop/dispose on a held-open pending stream admit nothing, issue no durable
+  cancellation, and leave durable run status unchanged.
+- Input/nested mutation after acceptance cannot rewrite accepted history; the returned
+  accepted array is frozen.
 - A completed stream outcome does not mark the run complete without an authoritative
   `run.status` event.
 
