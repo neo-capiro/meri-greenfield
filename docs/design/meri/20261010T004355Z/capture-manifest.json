@@ -1,0 +1,180 @@
+{
+  "schemaVersion": "figma-meri-capture-manifest/1",
+  "packagedUtc": "2026-10-10T01:00:19.403477+00:00",
+  "scope": {
+    "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+    "pageId": "411:40601",
+    "sectionId": "439:81406",
+    "homeFrameId": "442:81437",
+    "outOfScopeTraversal": false
+  },
+  "sourceInputs": [
+    {
+      "role": "updatedUserDeploymentPlan",
+      "path": "C:\\Users\\neoma\\Downloads\\Meri_Codex_Hermes_Deployment_Plan (1).md",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560"
+    },
+    {
+      "role": "figmaUseSkill",
+      "path": "C:\\Users\\neoma\\.codex\\plugins\\cache\\openai-curated-remote\\figma\\15.0.0\\skills\\figma-use\\SKILL.md",
+      "bytes": 33848,
+      "sha256": "ac385b80a05c850b5abc6bcae7c56625c4576318510545453a568aa5f21b8a95"
+    },
+    {
+      "role": "figmaDesignToCodeSkill",
+      "path": "C:\\Users\\neoma\\.codex\\plugins\\cache\\openai-curated-remote\\figma\\15.0.0\\skills\\figma-design-to-code\\SKILL.md",
+      "bytes": 4066,
+      "sha256": "a6e852421e4db72260b2ca641929b1f84684e5b067aead081e35111f5b5feee4"
+    }
+  ],
+  "captureUtcWindow": {
+    "earliestPreservedResponse": "2026-10-10T00:43:55.609Z",
+    "latestPreservedResponse": "2026-10-10T00:54:02.016Z",
+    "perResponseUtcLocation": "raw-connector-responses.json text payload captureUtc where supplied",
+    "screenshotTimestampsAvailable": false
+  },
+  "fileRevision": {
+    "value": null,
+    "status": "UNAVAILABLE_FROM_DOCUMENTED_CONNECTOR_PLUGIN_API",
+    "apiVersionIsRevision": false,
+    "atomicSnapshot": false
+  },
+  "rootFingerprint": {
+    "algorithm": "SHA256",
+    "encoding": "UTF-8 JSON ordered 8-column root tuples, ensure_ascii=False, separators=(',',':')",
+    "start": "546d9fe4a2acbd2c00d8ae8217dd5578b3ebfa4a6d6c6ef8aad912ebfd0b55b4",
+    "later": "546d9fe4a2acbd2c00d8ae8217dd5578b3ebfa4a6d6c6ef8aad912ebfd0b55b4",
+    "match": true,
+    "scope": "Only direct-root metadata; no full nested-content edit proof",
+    "startCaptureUtc": [
+      "2026-10-10T00:43:55.609Z",
+      "2026-10-10T00:44:32.138Z",
+      "2026-10-10T00:45:41.531Z"
+    ],
+    "laterCaptureUtc": "2026-10-10T00:48:37.034Z",
+    "finalAfterAllCaptures": false
+  },
+  "counts": {
+    "directRoots": 115,
+    "mainFrames": 85,
+    "overlayRoots": 29,
+    "reviewMapRoots": 1,
+    "stateBoards": 5,
+    "stateCards": 60,
+    "componentFamilies": 15,
+    "componentVariants": 70,
+    "walkthroughStarts": 11,
+    "referencedVariables": 38,
+    "referencedCollections": 5,
+    "referencedStyleIdsWithoutDefinitions": 18,
+    "homeReactionNodes": 30,
+    "homeAncestorVisibleReactionNodes": 27,
+    "ownedReactionNodesSummary": 2214,
+    "ownedUniqueReactionDefinitionsSummary": 118,
+    "prototypeTargetPointers": 116,
+    "fullReactionGraphExportComplete": false
+  },
+  "screenshots": [
+    {
+      "path": "home-442-81437.png",
+      "width": 1440,
+      "height": 1040,
+      "sha256": "6f15ecf712252124bfee60a0245e62ccd989a3359dd0510de572d98cabfae772",
+      "bytes": 97443,
+      "visuallyInspected": true,
+      "assetUrlPersisted": false,
+      "exactResponseCaptureUtc": null,
+      "captureUtcLimit": "Screenshot responses supplied no UTC field; bracketed by other connector captures."
+    },
+    {
+      "path": "tablet-448-90209.png",
+      "width": 1024,
+      "height": 1100,
+      "sha256": "d87d103ba89ec8da13577f75ca1841c15117464d456389c74770b4c65518aab4",
+      "bytes": 81631,
+      "visuallyInspected": true,
+      "assetUrlPersisted": false,
+      "exactResponseCaptureUtc": null,
+      "captureUtcLimit": "Screenshot responses supplied no UTC field; bracketed by other connector captures."
+    },
+    {
+      "path": "phone-449-88256.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "a57e744f7d07d73ac4350421eff46b6bd07004441bf57be868110dd91fe8e3bf",
+      "bytes": 41335,
+      "visuallyInspected": true,
+      "assetUrlPersisted": false,
+      "exactResponseCaptureUtc": null,
+      "captureUtcLimit": "Screenshot responses supplied no UTC field; bracketed by other connector captures."
+    }
+  ],
+  "darkScreenshot": {
+    "nodeId": "448:89992",
+    "toolReturnedMetadata": true,
+    "localPixelsSaved": false,
+    "visuallyInspected": false,
+    "downloadAttemptCount": 1,
+    "failure": "Unexpected MIME; fail-closed; body not saved; no retry",
+    "assetUrlPersisted": false
+  },
+  "files": [
+    {
+      "path": "capture-scripts.json",
+      "bytes": 33857,
+      "sha256": "3f032c2976b6dd143cd0eb902dfe617a76b4f2fe52f6f39748d1867a5607ee21"
+    },
+    {
+      "path": "home-442-81437.png",
+      "bytes": 97443,
+      "sha256": "6f15ecf712252124bfee60a0245e62ccd989a3359dd0510de572d98cabfae772"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 204220,
+      "sha256": "6b04fb2b28ed90c17247a4722d671f8af8b7890534b7c5f83dd309d49b29ec6a"
+    },
+    {
+      "path": "phone-449-88256.png",
+      "bytes": 41335,
+      "sha256": "a57e744f7d07d73ac4350421eff46b6bd07004441bf57be868110dd91fe8e3bf"
+    },
+    {
+      "path": "raw-connector-responses.json",
+      "bytes": 161938,
+      "sha256": "396ab1848390fede942b2bdcdd6ad0693b544f5903c85fa9e71cf1e18216c20e"
+    },
+    {
+      "path": "root-structure-later.json",
+      "bytes": 17913,
+      "sha256": "9aedc410d1e68d9ba6e0a0b60ab837a9aeea1312f039bffe2644281ce17c0e3d"
+    },
+    {
+      "path": "root-structure-start.json",
+      "bytes": 17987,
+      "sha256": "fa6430c0b6b1bc41d1136d866d44299fe1d53835d6dc725bbca22edb0da3c857"
+    },
+    {
+      "path": "SUMMARY.md",
+      "bytes": 5540,
+      "sha256": "4ad326dd7dc87ba6fdbfe3eb4763fdf1a172ecc203f9149ddeff4926dd1f0a32"
+    },
+    {
+      "path": "tablet-448-90209.png",
+      "bytes": 81631,
+      "sha256": "d87d103ba89ec8da13577f75ca1841c15117464d456389c74770b4c65518aab4"
+    }
+  ],
+  "manifestSelfHash": "Excluded; reported separately at handoff",
+  "integrityChecks": "JSON parse, expected counts, unique direct-root IDs, same ordered direct-root tuples, three PNG signatures/dimensions/exact hashes, absent failed dark download, ignored-path confirmation",
+  "operationLimits": {
+    "figmaWrites": false,
+    "trackedRepositoryWrites": false,
+    "applicationImplementation": false,
+    "cloudOrProviderCalls": false,
+    "prototypeExecution": false,
+    "gatePass": false,
+    "graphPaginationCancelledOnOwnerStop": true
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "scripts": [
+    {
+      "storeKey": "figmaInitialScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page = await figma.getNodeByIdAsync(\"411:40601\");\nif (!page || page.type !== \"PAGE\") throw new Error(\"Expected scoped page not found\");\nawait figma.setCurrentPageAsync(page);\nconst section = await figma.getNodeByIdAsync(\"439:81406\");\nif (!section || section.type !== \"SECTION\" || section.parent.id !== page.id) throw new Error(\"Expected owned section/page binding not found\");\nconst home = await figma.getNodeByIdAsync(\"442:81437\");\nlet p=home, homeInScope=false;\nwhile(p){if(p.id===section.id){homeInScope=true;break;}p=p.parent;}\nif(!homeInScope)throw new Error(\"Home not in owned section\");\nfunction meta(n){const m={id:n.id,name:n.name,type:n.type,parentId:n.parent?n.parent.id:null};if(\"visible\" in n)m.visible=n.visible;if(\"width\" in n){m.x=n.x;m.y=n.y;m.width=n.width;m.height=n.height;m.absoluteBoundingBox=n.absoluteBoundingBox;}if(\"children\" in n)m.childCount=n.children.length;return m;}\nconst nodes=[section,...section.findAll(()=>true)];\nconst ids=new Set(nodes.map(n=>n.id));\nconst byType={};for(const n of nodes)byType[n.type]=(byType[n.type]||0)+1;\nconst selected=nodes.filter(n=>[\"FRAME\",\"SECTION\",\"COMPONENT\",\"COMPONENT_SET\"].includes(n.type));\nconst flows=page.flowStartingPoints.filter(f=>ids.has(f.nodeId));\nreturn {scope:{fileKey:figma.fileKey||\"unavailable\",documentName:figma.root.name,page:{id:page.id,name:page.name},section:meta(section),home:meta(home)},captureUtc:new Date().toISOString(),fileRevision:{value:null,availability:\"No file revision/version field is documented in the inspected PluginAPI; apiVersion below is not a document version.\"},pluginApiVersion:figma.apiVersion,counts:{totalNodes:nodes.length,byType,directChildren:section.children.length,scopedFlowStartingPoints:flows.length},directChildren:section.children.map(meta),containerInventory:selected.map(meta),flowStartingPoints:flows,scopedNodeIds:nodes.map(n=>n.id),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaStructureScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");if(!page||page.type!==\"PAGE\")throw new Error(\"page binding missing\");await figma.setCurrentPageAsync(page);\nconst section=await figma.getNodeByIdAsync(\"439:81406\");if(!section||section.type!==\"SECTION\"||section.parent.id!==page.id)throw new Error(\"section binding missing\");\nconst nodes=[section,...section.findAll(()=>true)], ids=new Set(nodes.map(n=>n.id)), byType={};\nfor(const n of nodes)byType[n.type]=(byType[n.type]||0)+1;\nfunction meta(n){return {id:n.id,name:n.name,type:n.type,parentId:n.parent?n.parent.id:null,...(\"width\" in n?{x:n.x,y:n.y,w:n.width,h:n.height}:{}),...(\"children\" in n?{children:n.children.length}:{})};}\nconst direct=section.children.map(meta);\nfigma.io.write(\"meri-owned-structure.json\",JSON.stringify({captureUtc:new Date().toISOString(),fileKey:figma.fileKey||null,documentName:figma.root.name,page:{id:page.id,name:page.name},section:meta(section),counts:{totalNodes:nodes.length,byType,directChildren:direct.length},directChildren:direct,containers:nodes.filter(n=>[\"FRAME\",\"SECTION\",\"COMPONENT\",\"COMPONENT_SET\"].includes(n.type)).map(meta),flowStartingPoints:page.flowStartingPoints.filter(f=>ids.has(f.nodeId))},null,2));\nreturn {captureUtc:new Date().toISOString(),scope:{fileKey:figma.fileKey||null,pageId:page.id,section:meta(section)},counts:{totalNodes:nodes.length,byType,directChildren:direct.length},directChildrenFirst30:direct.slice(0,30),directChildrenRemaining:Math.max(0,direct.length-30),flowStartingPoints:page.flowStartingPoints.filter(f=>ids.has(f.nodeId)),fileRevision:{value:null,reason:\"PluginAPI has no documented file revision field. apiVersion is not a file revision.\"},createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaPart2Script",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const section=await figma.getNodeByIdAsync(\"439:81406\");if(section.type!==\"SECTION\"||section.parent.id!==page.id)throw new Error(\"scope\");\nconst nodes=[section,...section.findAll(()=>true)],ids=new Set(nodes.map(n=>n.id));\nfunction m(n){return {id:n.id,name:n.name,type:n.type,parentId:n.parent?n.parent.id:null,...(\"width\" in n?{x:n.x,y:n.y,w:n.width,h:n.height}:{}),...(\"children\" in n?{children:n.children.length}:{}),...(\"visible\" in n?{visible:n.visible}:{})};}\nconst reactionNodes=nodes.filter(n=>\"reactions\" in n&&n.reactions.length);const vars=new Set(),bindings=[];let styleIds=new Set();\nfunction collect(v){if(!v||typeof v!==\"object\")return;if(v.type===\"VARIABLE_ALIAS\"&&typeof v.id===\"string\")vars.add(v.id);if(Array.isArray(v)){v.forEach(collect);return;}Object.values(v).forEach(collect);}\nfor(const n of nodes){if(\"boundVariables\" in n&&n.boundVariables){collect(n.boundVariables);if(Object.keys(n.boundVariables).length)bindings.push(n.id);}for(const field of [\"fills\",\"strokes\",\"effects\"]){if(field in n&&Array.isArray(n[field]))collect(n[field]);}for(const field of [\"fillStyleId\",\"strokeStyleId\",\"effectStyleId\",\"textStyleId\",\"gridStyleId\"]){if(field in n&&typeof n[field]===\"string\"&&n[field])styleIds.add(n[field]);}}\nreturn {captureUtc:new Date().toISOString(),directChildren30to70:section.children.slice(30,70).map(m),reactionNodeCount:reactionNodes.length,reactionEntryCount:reactionNodes.reduce((a,n)=>a+n.reactions.length,0),reactionNodeIdsFirst20:reactionNodes.slice(0,20).map(n=>n.id),referencedVariableIds:[...vars],boundNodeCount:bindings.length,referencedStyleIds:[...styleIds],componentFamilies:section.findAllWithCriteria({types:[\"COMPONENT_SET\"]}).map(m),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaPart3Script",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.type!==\"SECTION\"||s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return {id:n.id,name:n.name,type:n.type,parentId:n.parent?n.parent.id:null,...(\"width\" in n?{x:n.x,y:n.y,w:n.width,h:n.height}:{}),...(\"children\" in n?{children:n.children.length}:{}),...(\"visible\" in n?{visible:n.visible}:{})};}return{captureUtc:new Date().toISOString(),directChildren70to115:s.children.slice(70).map(m),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeStateScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const section=await figma.getNodeByIdAsync(\"439:81406\"),home=await figma.getNodeByIdAsync(\"442:81437\");if(section.parent.id!==page.id||home.parent.id!==section.id)throw new Error(\"scope\");\nfunction m(n){const v={id:n.id,name:n.name,type:n.type,parentId:n.parent?n.parent.id:null};if(\"width\"in n){v.x=n.x;v.y=n.y;v.w=n.width;v.h=n.height;v.absoluteBoundingBox=n.absoluteBoundingBox;}return v;}\nconst boardRoots=section.children.filter(n=>/^11\\.0[1-5] /.test(n.name));\nconst boards=boardRoots.map(n=>({root:m(n),children:(\"children\"in n?n.children.map(c=>({node:m(c),children:\"children\"in c?c.children.map(m):[]})):[])}));\nconst hn=[home,...home.findAll(()=>true)],controls=hn.filter(n=>\"reactions\"in n&&n.reactions.length).map(n=>({node:m(n),reactions:n.reactions,visible:\"visible\"in n?n.visible:null,textHints:\"findAllWithCriteria\"in n?n.findAllWithCriteria({types:[\"TEXT\"]}).map(t=>({id:t.id,text:t.characters})):n.type===\"TEXT\"?[{id:n.id,text:n.characters}]:[]}));\nconst txt=home.findAllWithCriteria({types:[\"TEXT\"]}).map(n=>({id:n.id,text:n.characters,fontName:n.fontName,fontSize:n.fontSize,lineHeight:n.lineHeight,textStyleId:n.textStyleId,visible:n.visible,boundVariables:n.boundVariables}));\nreturn {captureUtc:new Date().toISOString(),home:{root:m(home),children:home.children.map(m),layout:{layoutMode:home.layoutMode,paddingTop:home.paddingTop,paddingBottom:home.paddingBottom,paddingLeft:home.paddingLeft,paddingRight:home.paddingRight,itemSpacing:home.itemSpacing},controls,text:txt},stateBoards:boards,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeCompactScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\"),h=await figma.getNodeByIdAsync(\"442:81437\");if(s.parent.id!==page.id||h.parent.id!==s.id)throw new Error(\"scope\");\nfunction m(n){return[id=n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}\nconst nodes=[h,...h.findAll(()=>true)],rs=nodes.filter(n=>\"reactions\"in n&&n.reactions.length).map(n=>({node:m(n),visible:\"visible\"in n?n.visible:null,reactions:n.reactions,labels:\"children\"in n?n.children.filter(c=>c.type===\"TEXT\").map(c=>({id:c.id,text:c.characters})):n.type===\"TEXT\"?[{id:n.id,text:n.characters}]:[]}));\nconst texts=h.findAllWithCriteria({types:[\"TEXT\"]}).map(n=>({id:n.id,text:n.characters,fontName:n.fontName,fontSize:n.fontSize,lineHeight:n.lineHeight,textStyleId:typeof n.textStyleId===\"string\"?n.textStyleId:\"MIXED\",boundVariables:n.boundVariables}));\nconst out={captureUtc:new Date().toISOString(),tupleColumns:[\"id\",\"name\",\"type\",\"parentId\",\"localX\",\"localY\",\"width\",\"height\"],home:m(h),children:h.children.map(m),reactionNodeCount:rs.length,controls:rs,texts,createdNodeIds:[],mutatedNodeIds:[]};\nconst size=JSON.stringify(out).length;if(size>17000)throw new Error(\"local capture preflight too large:\"+size);return out;"
+    },
+    {
+      "storeKey": "figmaBoardsScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");\nfunction m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}\nconst roots=s.children.filter(n=>/^11\\.0[1-5] /.test(n.name));return{captureUtc:new Date().toISOString(),tupleColumns:[\"id\",\"name\",\"type\",\"parentId\",\"localX\",\"localY\",\"width\",\"height\"],boards:roots.map(n=>({root:m(n),children:n.children.map(c=>({node:m(c),children:\"children\"in c?c.children.filter(x=>[\"FRAME\",\"INSTANCE\",\"COMPONENT\",\"COMPONENT_SET\"].includes(x.type)).map(m):[]}))})),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeActionsScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const h=await figma.getNodeByIdAsync(\"442:81437\");if(h.parent.id!==s.id)throw new Error(\"home scope\");const ns=[h,...h.findAll(()=>true)], all=ns.filter(n=>\"reactions\"in n&&n.reactions.length).map(n=>({node:m(n),visible:\"visible\"in n?n.visible:null,reactions:n.reactions,labels:\"children\"in n?n.children.filter(c=>c.type===\"TEXT\").map(c=>[c.id,c.characters]):n.type===\"TEXT\"?[[n.id,n.characters]]:[]}));const rows=[];for(const row of all){if(JSON.stringify(rows.concat([row])).length>12000)break;rows.push(row);}return{captureUtc:new Date().toISOString(),tupleColumns:[\"id\",\"name\",\"type\",\"parentId\",\"localX\",\"localY\",\"width\",\"height\"],root:m(h),children:h.children.map(m),total:all.length,offset:0,nextOffset:rows.length,rows,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeTextScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const h=await figma.getNodeByIdAsync(\"442:81437\");if(h.parent.id!==s.id)throw new Error(\"home scope\");const rows=h.findAllWithCriteria({types:[\"TEXT\"]}).map(n=>({node:m(n),text:n.characters,fontName:typeof n.fontName===\"symbol\"?\"MIXED\":n.fontName,fontSize:typeof n.fontSize===\"symbol\"?\"MIXED\":n.fontSize,lineHeight:typeof n.lineHeight===\"symbol\"?\"MIXED\":n.lineHeight,textStyleId:typeof n.textStyleId===\"string\"?n.textStyleId:\"MIXED\",visible:n.visible}));return{captureUtc:new Date().toISOString(),total:rows.length,rows,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaStateInspectScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const b=await figma.getNodeByIdAsync(\"450:88532\");if(b.parent.id!==s.id)throw new Error(\"board scope\");const frames=b.findAllWithCriteria({types:[\"FRAME\"]});return{captureUtc:new Date().toISOString(),board:m(b),frames:frames.map(n=>({node:m(n),children:n.children.length})),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaTopologyScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const direct=s.children.map(m);const main=s.children.filter(n=>n.type===\"FRAME\"&&/^\\d{2}\\.\\d{2} · /.test(n.name));const overlays=s.children.filter(n=>n.type===\"FRAME\"&&/^Overlay · /.test(n.name));const boards=main.filter(n=>/^11\\.0[1-5] · /.test(n.name));const states=boards.flatMap(b=>b.findAllWithCriteria({types:[\"FRAME\"]}).filter(n=>/^State · /.test(n.name)).map(n=>({node:m(n),boardId:b.id,visible:n.visible})));return{captureUtc:new Date().toISOString(),tupleColumns:[\"id\",\"name\",\"type\",\"parentId\",\"localX\",\"localY\",\"width\",\"height\"],direct,classification:{main:{count:main.length,rule:\"Direct FRAME children named NN.NN · ...\",confidence:\"HIGH_STRUCTURAL\"},overlays:{count:overlays.length,rule:\"Direct FRAME children named Overlay · ...\",confidence:\"HIGH_STRUCTURAL\"},stateBoards:{count:boards.length,rule:\"Direct main frames11.01–11.05; named state-board/lifecycle collections\",confidence:\"HIGH_STRUCTURAL\"},stateExamples:{count:states.length,rule:\"FRAME descendants named State · ... within exactly five scoped state boards\",confidence:\"HIGH_STRUCTURAL\"},componentFamilies:{count:s.findAllWithCriteria({types:[\"COMPONENT_SET\"]}).length,rule:\"Owned-section COMPONENT_SET descendants; does not count every nested FRAME as a component family\",confidence:\"HIGH_STRUCTURAL\"}},states,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeActionsContinuationScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const h=await figma.getNodeByIdAsync(\"442:81437\");if(h.parent.id!==s.id)throw new Error(\"home\");function effective(n){let p=n;while(p&&p.id!==h.parent.id){if(\"visible\"in p&&!p.visible)return false;p=p.parent;}return true;}const all=[h,...h.findAll(()=>true)].filter(n=>\"reactions\"in n&&n.reactions.length).map(n=>({node:m(n),effectiveVisible:effective(n),reactions:n.reactions,labels:\"children\"in n?n.children.filter(c=>c.type===\"TEXT\").map(c=>[c.id,c.characters]):n.type===\"TEXT\"?[[n.id,n.characters]]:[]}));const textVisibility=h.findAllWithCriteria({types:[\"TEXT\"]}).map(n=>[n.id,effective(n)]);return{captureUtc:new Date().toISOString(),total:all.length,offset:22,nextOffset:all.length,rows:all.slice(22),allControlVisibility:all.map(r=>[r.node[0],r.effectiveVisible]),textVisibility,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaTokenScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");const requested=[\"VariableID:11:341\",\"VariableID:11:343\",\"VariableID:11:373\",\"VariableID:11:340\",\"VariableID:11:345\",\"VariableID:11:342\",\"VariableID:11:372\",\"VariableID:11:347\",\"VariableID:256:27411\",\"VariableID:11:359\",\"VariableID:256:27419\",\"VariableID:11:358\",\"VariableID:11:355\",\"VariableID:11:354\",\"VariableID:11:348\",\"VariableID:11:349\",\"VariableID:2:47\",\"VariableID:11:353\",\"VariableID:2:82\",\"VariableID:2:81\",\"VariableID:2:78\",\"VariableID:2:80\",\"VariableID:2:79\",\"VariableID:11:375\",\"VariableID:11:367\",\"VariableID:11:344\",\"VariableID:11:366\",\"VariableID:11:339\",\"VariableID:256:27412\",\"VariableID:448:90061\",\"VariableID:448:90062\",\"VariableID:448:90063\",\"VariableID:448:90066\",\"VariableID:448:90060\",\"VariableID:448:90069\",\"VariableID:448:90070\",\"VariableID:448:90068\",\"VariableID:448:90064\"];const fetched=await Promise.all(requested.map(id=>figma.variables.getVariableByIdAsync(id)));const rows=fetched.map((v,i)=>v?{id:v.id,key:v.key,name:v.name,resolvedType:v.resolvedType,collectionId:v.variableCollectionId,remote:v.remote,scopes:v.scopes,codeSyntax:v.codeSyntax,valuesByMode:v.valuesByMode}:{id:requested[i],unavailable:true});const cids=[...new Set(fetched.filter(Boolean).map(v=>v.variableCollectionId))];const cs=await Promise.all(cids.map(id=>figma.variables.getVariableCollectionByIdAsync(id)));const collections=cs.map((c,i)=>c?{id:c.id,key:c.key,name:c.name,remote:c.remote,defaultModeId:c.defaultModeId,modes:c.modes}:{id:cids[i],unavailable:true});return{captureUtc:new Date().toISOString(),referenceBasis:\"Only variable IDs observed bound within owned Meri section in prior scoped capture\",total:rows.length,offset:0,nextOffset:20,rows:rows.slice(0,20),collections,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaToken2Script",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");const requested=[\"VariableID:11:341\",\"VariableID:11:343\",\"VariableID:11:373\",\"VariableID:11:340\",\"VariableID:11:345\",\"VariableID:11:342\",\"VariableID:11:372\",\"VariableID:11:347\",\"VariableID:256:27411\",\"VariableID:11:359\",\"VariableID:256:27419\",\"VariableID:11:358\",\"VariableID:11:355\",\"VariableID:11:354\",\"VariableID:11:348\",\"VariableID:11:349\",\"VariableID:2:47\",\"VariableID:11:353\",\"VariableID:2:82\",\"VariableID:2:81\",\"VariableID:2:78\",\"VariableID:2:80\",\"VariableID:2:79\",\"VariableID:11:375\",\"VariableID:11:367\",\"VariableID:11:344\",\"VariableID:11:366\",\"VariableID:11:339\",\"VariableID:256:27412\",\"VariableID:448:90061\",\"VariableID:448:90062\",\"VariableID:448:90063\",\"VariableID:448:90066\",\"VariableID:448:90060\",\"VariableID:448:90069\",\"VariableID:448:90070\",\"VariableID:448:90068\",\"VariableID:448:90064\"];const fetched=await Promise.all(requested.map(id=>figma.variables.getVariableByIdAsync(id)));const rows=fetched.map((v,i)=>v?{id:v.id,key:v.key,name:v.name,resolvedType:v.resolvedType,collectionId:v.variableCollectionId,remote:v.remote,scopes:v.scopes,codeSyntax:v.codeSyntax,valuesByMode:v.valuesByMode}:{id:requested[i],unavailable:true});const cids=[...new Set(fetched.filter(Boolean).map(v=>v.variableCollectionId))];const cs=await Promise.all(cids.map(id=>figma.variables.getVariableCollectionByIdAsync(id)));const collections=cs.map((c,i)=>c?{id:c.id,key:c.key,name:c.name,remote:c.remote,defaultModeId:c.defaultModeId,modes:c.modes}:{id:cids[i],unavailable:true});return{captureUtc:new Date().toISOString(),referenceBasis:\"Only variable IDs observed bound within owned Meri section in prior scoped capture\",total:rows.length,offset:20,nextOffset:rows.length,rows:rows.slice(20),collections,createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaComponentsScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const sets=s.findAllWithCriteria({types:[\"COMPONENT_SET\"]});const families=sets.map(n=>({node:m(n),propertyDefinitions:n.componentPropertyDefinitions,variants:n.children.map(m)}));const h=await figma.getNodeByIdAsync(\"442:81437\");function effective(n){let p=n;while(p&&p.id!==s.id){if(\"visible\"in p&&!p.visible)return false;p=p.parent;}return true;}const homeInstances=h.findAllWithCriteria({types:[\"INSTANCE\"]}).map(n=>({node:m(n),effectiveVisible:effective(n),mainComponentId:n.mainComponent?n.mainComponent.id:null,componentProperties:n.componentProperties}));return{captureUtc:new Date().toISOString(),families,homeInstances,referenceScopeLimit:\"Main component IDs are reference pointers only; out-of-section component definitions were not traversed.\",createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaComponentsFirstScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const sets=s.findAllWithCriteria({types:[\"COMPONENT_SET\"]});const families=sets.map(n=>({node:m(n),propertyDefinitions:n.componentPropertyDefinitions,variants:n.children.map(m)}));return{captureUtc:new Date().toISOString(),total:families.length,offset:0,nextOffset:8,families:families.slice(0,8),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaComponentsLastScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const sets=s.findAllWithCriteria({types:[\"COMPONENT_SET\"]});const families=sets.map(n=>({node:m(n),propertyDefinitions:n.componentPropertyDefinitions,variants:n.children.map(m)}));return{captureUtc:new Date().toISOString(),total:families.length,offset:8,nextOffset:families.length,families:families.slice(8),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeCandidatesScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const h=await figma.getNodeByIdAsync(\"442:81437\");if(h.parent.id!==s.id)throw new Error(\"scope\");function eff(n){let p=n;while(p&&p.id!==s.id){if(\"visible\"in p&&!p.visible)return false;p=p.parent;}return true;}const ns=[h,...h.findAll(()=>true)], candidates=ns.filter(n=>n.type===\"INSTANCE\"||/^(Action · |Mode · |Prompt)/.test(n.name));const rows=candidates.map(n=>({node:m(n),effectiveVisible:eff(n),reactionCount:\"reactions\"in n?n.reactions.length:0,mainComponentId:n.type===\"INSTANCE\"&&n.mainComponent?n.mainComponent.id:null,componentProperties:n.type===\"INSTANCE\"?n.componentProperties:undefined}));const viewNodes=[s,h,...s.children.filter(n=>n.name===\"10.01 · Dark workspace\"||n.name===\"10.02 · Tablet conversation\"||n.name===\"10.04 · Mobile home\")];return{captureUtc:new Date().toISOString(),homeInteractiveCandidates:rows,classificationLimit:\"Instances/action names are candidate controls, not proof of executable behavior; reactionCount0 explicitly preserved.\",themeModeRefs:viewNodes.map(n=>({node:m(n),explicitVariableModes:n.explicitVariableModes,resolvedVariableModes:n.resolvedVariableModes})),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaHomeCandidatesCompactScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}const h=await figma.getNodeByIdAsync(\"442:81437\");if(h.parent.id!==s.id)throw new Error(\"scope\");function eff(n){let p=n;while(p&&p.id!==s.id){if(\"visible\"in p&&!p.visible)return false;p=p.parent;}return true;}const ns=[h,...h.findAll(()=>true)], candidates=ns.filter(n=>n.type===\"INSTANCE\"||/^(Action · |Mode · |Prompt)/.test(n.name));const rows=candidates.map(n=>({node:m(n),effectiveVisible:eff(n),reactionCount:\"reactions\"in n?n.reactions.length:0,mainComponentId:n.type===\"INSTANCE\"&&n.mainComponent?n.mainComponent.id:null,componentPropertyKeys:n.type===\"INSTANCE\"?Object.keys(n.componentProperties):undefined}));const viewNodes=[s,h,...s.children.filter(n=>n.name===\"10.01 · Dark workspace\"||n.name===\"10.02 · Tablet conversation\"||n.name===\"10.04 · Mobile home\")];return{captureUtc:new Date().toISOString(),homeInteractiveCandidates:rows,classificationLimit:\"Instances/action names are candidate controls, not proof of executable behavior; reactionCount0 explicitly preserved.\",themeModeRefs:viewNodes.map(n=>({node:m(n),explicitVariableModes:n.explicitVariableModes,resolvedVariableModes:n.resolvedVariableModes})),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaReactionSummaryScript",
+      "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+      "pageId": "411:40601",
+      "sectionId": "439:81406",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}\nconst nodes=[s,...s.findAll(()=>true)], ids=new Set(nodes.map(n=>n.id)), byId=new Map(nodes.map(n=>[n.id,n]));\nconst defs=[],index=new Map(),rows=[],targets=new Set();\nfunction scanTargets(o){if(!o||typeof o!==\"object\")return;if(typeof o.destinationId===\"string\")targets.add(o.destinationId);if(Array.isArray(o)){for(const v of o)scanTargets(v);}else for(const v of Object.values(o))scanTargets(v);}\nfunction effAndRoot(n){let p=n,visible=true,root=null;while(p&&p.id!==s.id){if(\"visible\"in p&&!p.visible)visible=false;if(p.parent&&p.parent.id===s.id)root=p.id;p=p.parent;}return[visible,root];}\nfor(const n of nodes){if(!(\"reactions\"in n)||!n.reactions.length)continue;const key=JSON.stringify(n.reactions);let ri=index.get(key);if(ri===undefined){ri=defs.length;index.set(key,ri);defs.push(n.reactions);scanTargets(n.reactions);}const [visible,root]=effAndRoot(n);rows.push([n.id,n.name,n.parent?n.parent.id:null,root,visible,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[null,null,null,null]),ri]);}\nfunction bytes(str){let n=0;for(const c of str){const p=c.codePointAt(0);n+=p<128?1:p<2048?2:p<65536?3:4;}return n;}\nfunction pages(items){const pages=[];let page=[];for(const item of items){if(bytes(JSON.stringify(page.concat([item])))>12500){if(!page.length)throw new Error(\"single row exceeds bounded capture\");pages.push(page);page=[];}page.push(item);}if(page.length)pages.push(page);return pages;}\nconst rp=pages(rows),dp=pages(defs);return{captureUtc:new Date().toISOString(),columns:[\"nodeId\",\"name\",\"parentId\",\"directOwnedRootId\",\"ancestorVisible\",\"localX\",\"localY\",\"width\",\"height\",\"reactionDefinitionIndex\"],reactionNodeCount:rows.length,reactionDefinitionCount:defs.length,nodePages:rp.length,definitionPages:dp.length,definitionIndexRule:\"Definitions de-duplicated by exact JSON.stringify(reactions), in owned-subtree preorder first occurrence.\",targets:[...targets].map(id=>({id,inOwnedSection:ids.has(id),name:ids.has(id)?byId.get(id).name:null})),createdNodeIds:[],mutatedNodeIds:[]};"
+    },
+    {
+      "storeKey": "figmaScopedBaseScript",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}",
+      "purpose": "Referenced base for bounded scoped read calls."
+    },
+    {
+      "storeKey": "figmaReactionGraphBase",
+      "code": "const page=await figma.getNodeByIdAsync(\"411:40601\");await figma.setCurrentPageAsync(page);const s=await figma.getNodeByIdAsync(\"439:81406\");if(s.parent.id!==page.id)throw new Error(\"scope\");function m(n){return[n.id,n.name,n.type,n.parent?n.parent.id:null,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[])];}\nconst nodes=[s,...s.findAll(()=>true)], ids=new Set(nodes.map(n=>n.id)), byId=new Map(nodes.map(n=>[n.id,n]));\nconst defs=[],index=new Map(),rows=[],targets=new Set();\nfunction scanTargets(o){if(!o||typeof o!==\"object\")return;if(typeof o.destinationId===\"string\")targets.add(o.destinationId);if(Array.isArray(o)){for(const v of o)scanTargets(v);}else for(const v of Object.values(o))scanTargets(v);}\nfunction effAndRoot(n){let p=n,visible=true,root=null;while(p&&p.id!==s.id){if(\"visible\"in p&&!p.visible)visible=false;if(p.parent&&p.parent.id===s.id)root=p.id;p=p.parent;}return[visible,root];}\nfor(const n of nodes){if(!(\"reactions\"in n)||!n.reactions.length)continue;const key=JSON.stringify(n.reactions);let ri=index.get(key);if(ri===undefined){ri=defs.length;index.set(key,ri);defs.push(n.reactions);scanTargets(n.reactions);}const [visible,root]=effAndRoot(n);rows.push([n.id,n.name,n.parent?n.parent.id:null,root,visible,...(\"width\"in n?[n.x,n.y,n.width,n.height]:[null,null,null,null]),ri]);}\nfunction bytes(str){let n=0;for(const c of str){const p=c.codePointAt(0);n+=p<128?1:p<2048?2:p<65536?3:4;}return n;}\nfunction pages(items){const pages=[];let page=[];for(const item of items){if(bytes(JSON.stringify(page.concat([item])))>12500){if(!page.length)throw new Error(\"single row exceeds bounded capture\");pages.push(page);page=[];}page.push(item);}if(page.length)pages.push(page);return pages;}\nconst rp=pages(rows),dp=pages(defs);",
+      "purpose": "Summary traversal only; paginated export cancelled before results were retained."
+    }
+  ],
+  "scope": "Read only; no Figma setters except selection of the authorized page; no create/edit/delete operations.",
+  "toolInputs": {
+    "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+    "pageId": "411:40601",
+    "sectionId": "439:81406",
+    "homeDesignContextNodeId": "442:81437",
+    "screenshots": [
+      {
+        "nodeId": "442:81437",
+        "maxDimension": 1440
+      },
+      {
+        "nodeId": "448:90209",
+        "maxDimension": 1440
+      },
+      {
+        "nodeId": "449:88256",
+        "maxDimension": 1440
+      },
+      {
+        "nodeId": "448:89992",
+        "maxDimension": 1440
+      }
+    ]
+  }
+}
+
