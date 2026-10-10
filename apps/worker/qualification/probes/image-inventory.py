@@ -81,17 +81,48 @@ class Limits:
         if self.exceeded: raise _Bound(self.exceeded)
 
 
-def _safe_path(path, root):
+def _directory_chain(path, limits):
+    """Capture real ancestors, including the filesystem root; never follow links."""
+    chain = {}
+    while True:
+        limits.check()
+        st = os.lstat(path)
+        if _is_link(path): raise OSError("root link ancestor refused")
+        if not stat.S_ISDIR(st.st_mode): raise OSError("ancestor-not-a-directory")
+        chain[path] = _identity(st)
+        parent = os.path.dirname(path)
+        if parent == path: break
+        path = parent
+    _check_directories(chain, limits)
+    return chain
+
+
+def _check_directories(chain, limits):
+    for path, identity in chain.items():
+        limits.check()
+        if _is_link(path): raise OSError("link ancestor refused")
+        st = os.lstat(path)
+        if not stat.S_ISDIR(st.st_mode) or _identity(st) != identity:
+            raise OSError("directory/ancestor identity changed:" + path)
+
+
+def _safe_path(path, root, chain=None, limits=None):
     if not path_under(path, root): raise OSError("path outside declared root")
     parent = os.path.dirname(path)
-    while path_under(parent, root):
+    while True:
+        if limits: limits.check()
         if _is_link(parent): raise OSError("link ancestor refused")
-        if parent == root: break
-        parent = os.path.dirname(parent)
+        if chain is not None:
+            st = os.lstat(parent)
+            if not stat.S_ISDIR(st.st_mode) or _identity(st) != chain.get(parent):
+                raise OSError("directory/ancestor identity changed:" + parent)
+        above = os.path.dirname(parent)
+        if above == parent: break
+        parent = above
 
 
-def sha256_file(path, expected_stat, limits, hash_limit, root):
-    _safe_path(path, root)
+def sha256_file(path, expected_stat, limits, hash_limit, root, chain=None):
+    _safe_path(path, root, chain, limits)
     limits.check()
     fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
     try:
@@ -110,7 +141,7 @@ def sha256_file(path, expected_stat, limits, hash_limit, root):
             sha.update(chunk)
         if size != opened.st_size or _identity(os.fstat(fd)) != _identity(opened):
             raise OSError("file identity changed during hash")
-        _safe_path(path, root)
+        _safe_path(path, root, chain, limits)
         if _is_link(path) or _identity(os.lstat(path)) != _identity(opened):
             raise OSError("file path changed during hash")
         limits.check()
@@ -119,18 +150,34 @@ def sha256_file(path, expected_stat, limits, hash_limit, root):
         os.close(fd)
 
 
-def _record(path, root, limits, hash_limit):
+def _record(path, root, limits, hash_limit, chain, expected_identity=None):
     limits.check()
-    _safe_path(path, root)
+    _safe_path(path, root, chain, limits)
     st = os.lstat(path)
+    identity = _identity(st)
+    if expected_identity is not None and identity != expected_identity:
+        raise OSError("record identity changed")
     link = stat.S_ISLNK(st.st_mode) or _is_link(path)
     kind = "symlink" if link else "file" if stat.S_ISREG(st.st_mode) else "dir" if stat.S_ISDIR(st.st_mode) else "other"
     rec = {"path": path, "type": kind, "mode": format(stat.S_IMODE(st.st_mode), "04o"),
            "uid": st.st_uid, "gid": st.st_gid, "size": st.st_size}
     if link: rec["target"] = os.readlink(path)
-    elif kind == "file": rec["sha256"] = sha256_file(path, st, limits, hash_limit, root)
+    elif kind == "file": rec["sha256"] = sha256_file(path, st, limits, hash_limit, root, chain)
+    _safe_path(path, root, chain, limits)
+    if _identity(os.lstat(path)) != identity: raise OSError("record identity changed")
+    if link and os.readlink(path) != rec["target"]: raise OSError("link target changed")
     limits.check()
-    return rec
+    return rec, identity
+
+
+def _check_alias(alias, limits):
+    path, identity, target = alias
+    limits.check()
+    st = os.lstat(path)
+    if (not (stat.S_ISLNK(st.st_mode) or _is_link(path))
+            or _identity(st) != identity or os.readlink(path) != target):
+        raise OSError("root alias identity/target changed")
+    limits.check()
 
 
 def walk_root(root, excludes, limits, hash_limit, entries, errors, aliases):
@@ -144,40 +191,47 @@ def walk_root(root, excludes, limits, hash_limit, entries, errors, aliases):
     try:
         limits.check()
         if any(path_under(root, e) for e in excludes): raise OSError("declared root excluded")
-        parent = os.path.dirname(root)
-        while parent and parent != os.path.dirname(parent):
-            if _is_link(parent): raise OSError("root link ancestor refused")
-            parent = os.path.dirname(parent)
+        chain = _directory_chain(os.path.dirname(root), limits)
         initial = os.lstat(root)
         if not (stat.S_ISDIR(initial.st_mode) or stat.S_ISLNK(initial.st_mode) or _is_link(root)):
             raise OSError("root-not-a-directory")
-        rec = _record(root, root, limits, hash_limit)
+        rec, root_identity = _record(root, root, limits, hash_limit, chain, _identity(initial))
         append(rec)
         if rec["type"] == "symlink":
             target = os.path.normpath(os.path.join(os.path.dirname(root), rec["target"]))
-            if aliases.get(root) != target or _is_link(target) or not stat.S_ISDIR(os.lstat(target).st_mode):
+            if aliases.get(root) != target:
                 raise OSError("unreviewed/missing root alias target")
-            return
+            target_chain = _directory_chain(target, limits)
+            for path, identity in target_chain.items():
+                if path in chain and chain[path] != identity: raise OSError("alias ancestor changed")
+                chain[path] = identity
+            alias = (root, root_identity, rec["target"])
+            _check_alias(alias, limits)
+            _check_directories(chain, limits)
+            _check_alias(alias, limits)
+            return chain, alias
         if rec["type"] != "dir": raise OSError("root-not-a-directory")
-        root_identity = _identity(os.lstat(root))
+        chain[root] = root_identity
         def onerror(exc): error(getattr(exc, "filename", None) or root, exc)
         for dirpath, dirnames, filenames in os.walk(root, followlinks=False, onerror=onerror):
             limits.check()
-            _safe_path(os.path.join(dirpath, ".entry"), root)
-            before = _identity(os.lstat(dirpath))
+            _safe_path(os.path.join(dirpath, ".entry"), root, chain, limits)
             descend = []
             for name in sorted(dirnames + filenames):
                 limits.check()
                 path = os.path.join(dirpath, name)
                 if any(path_under(path, e) for e in excludes): continue
                 try:
-                    item = _record(path, root, limits, hash_limit)
+                    item, identity = _record(path, root, limits, hash_limit, chain)
                     append(item)
-                    if name in dirnames and item["type"] == "dir": descend.append(name)
+                    if name in dirnames and item["type"] == "dir":
+                        chain[path] = identity
+                        descend.append(name)
                 except OSError as exc: error(path, exc)
             dirnames[:] = descend
-            if _identity(os.lstat(dirpath)) != before: raise OSError("directory changed during traversal")
-        if _identity(os.lstat(root)) != root_identity: raise OSError("root changed during traversal")
+            _safe_path(os.path.join(dirpath, ".entry"), root, chain, limits)
+        _check_directories(chain, limits)
+        return chain, None
     except OSError as exc:
         error(root, exc)
 
@@ -208,7 +262,7 @@ def _inventory(args, *, platform, required_roots, pins, aliases=None, clock=time
     aliases = aliases or {}
     if any(a not in roots or not any(path_under(t, r) for r in roots if r not in aliases) for a, t in aliases.items()):
         return {**refused, "reason": "root alias target must have declared canonical coverage"}, 2
-    if not args.out or not output_path or os.path.abspath(args.out) != output_path:
+    if not args.out or not output_path or args.out != output_path:
         return {**refused, "reason": "output must use the dedicated inventory path"}, 2
     if (args.deadline_ms < 0 or args.max_entries < 1 or args.max_events < 1
             or args.max_manifest_bytes < 4096 or args.max_hash_bytes < 1):
@@ -228,9 +282,21 @@ def _inventory(args, *, platform, required_roots, pins, aliases=None, clock=time
             return {**refused, "reason": "exclusion would weaken declared static coverage"}, 2
         if e not in excludes: excludes.append(e)
     if args.out: excludes.append(os.path.abspath(args.out))
-    limits, entries, errors = Limits(args, clock), [], []
+    limits, entries, errors, snapshots = Limits(args, clock), [], [], []
     try:
-        for root in sorted(roots): walk_root(root, excludes, limits, args.max_hash_bytes, entries, errors, aliases)
+        for root in sorted(roots):
+            snapshot = walk_root(root, excludes, limits, args.max_hash_bytes, entries, errors, aliases)
+            if snapshot is not None: snapshots.append((root, snapshot))
+        # Observe all successful roots/aliases again before declaring coverage.
+        # This detects observed mutations; it is not an atomic filesystem snapshot.
+        for root, (chain, alias) in snapshots:
+            try:
+                _check_directories(chain, limits)
+                if alias: _check_alias(alias, limits)
+            except OSError as exc:
+                error = {"path": root, "error": type(exc).__name__ + ":" + str(exc)[:160]}
+                limits.add(error)
+                errors.append(error)
         limits.check()
     except _Bound:
         pass
@@ -292,7 +358,7 @@ def main(argv=None):
     args = parse_args(argv)
     manifest, code = _inventory(args, platform=sys.platform, required_roots=REQUIRED_ROOTS,
                                 pins=PINNED_FILES, aliases=ROOT_ALIASES)
-    emit(manifest, args.out if sys.platform == "linux" and args.out == OUTPUT_PATH else None)
+    emit(manifest, OUTPUT_PATH if sys.platform == "linux" and not manifest["refused"] else None)
     return code
 
 

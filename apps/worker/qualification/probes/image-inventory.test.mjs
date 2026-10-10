@@ -79,7 +79,8 @@ test('enumerates fabricated roots deterministically and retains candidate byte h
   const md5 = write(dir, 'opt/libdigestmd5.so.2', 'synthetic md5');
   write(dir, 'usr/lib/jvm/bin/java', 'java');
   const first = scan(dir), second = scan(dir);
-  assert.equal(first.status, 0, first.stderr); assert.equal(second.status, 0, second.stderr);
+  assert.equal(first.status, 0, first.stderr + JSON.stringify(first.manifest.errors));
+  assert.equal(second.status, 0, second.stderr + JSON.stringify(second.manifest.errors));
   assert.deepEqual(first.manifest.entries, second.manifest.entries);
   const by = Object.fromEntries(first.manifest.candidates.map((c) => [c.kind, c]));
   assert.equal(by.tiffcrop.sha256, sha256(readFileSync(tiff)));
@@ -242,4 +243,144 @@ for out in [None,'/usr/bin/java']:
 print(json.dumps(facts))
 `);
   assert.equal(r.status, 0, r.stderr); assert.deepEqual(JSON.parse(r.stdout), [true, true]);
+});
+
+// Complete fabricated POSIX ancestor facts; never traverse a Linux filesystem.
+const POSIX_FIXTURE = `
+import importlib.util,json,posixpath,stat,sys
+from contextlib import ExitStack
+from types import SimpleNamespace
+from unittest.mock import patch
+spec=importlib.util.spec_from_file_location('inventory_races',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+def st(ino,mode=stat.S_IFDIR|0o755,uid=0,ctime=1,size=0):
+    return SimpleNamespace(st_dev=1,st_ino=ino,st_mode=mode,st_uid=uid,st_gid=0,st_size=size,st_mtime_ns=1,st_ctime_ns=ctime)
+def run(roots,lstat,walk,islink=lambda p:False,readlink=lambda p:''):
+    args=m.parse_args([x for root in roots for x in ('--root',root)]+['--out','/inventory.json'])
+    with ExitStack() as stack:
+        for obj,name,value in [(m.os,'path',posixpath),(m.os,'sep','/')]: stack.enter_context(patch.object(obj,name,value))
+        for obj,name,fn in [(m.os,'lstat',lstat),(m.os,'walk',walk),(m,'_is_link',islink),(m.os,'readlink',readlink)]: stack.enter_context(patch.object(obj,name,side_effect=fn))
+        return m._inventory(args,platform='linux',required_roots=roots,pins={},aliases={'/bin':'/usr/bin'} if '/bin' in roots else {},output_path='/inventory.json')
+`;
+
+test('reviewed root alias identity and target remain bound through validation and final coverage', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for scenario in ['stable','replace-during-target-validation','same-inode-target-swap','replace-after-alias-validation','target-identity-after-validation']:
+    state={'target':'/usr/bin','aliasIno':10,'targetIno':3,'reads':0,'changed':False}
+    def lstat(path):
+        if path=='/':return st(1)
+        if path=='/bin':return st(state['aliasIno'],stat.S_IFLNK|0o777)
+        if path=='/usr':return st(2)
+        if path=='/usr/bin':
+            state['reads']+=1
+            if scenario in ['replace-during-target-validation','same-inode-target-swap'] and not state['changed']:
+                state.update(target='/outside',aliasIno=11 if scenario=='replace-during-target-validation' else 10,changed=True)
+            return st(state['targetIno'])
+        raise AssertionError(path)
+    def walk(root,**kwargs):
+        assert root=='/usr'
+        if scenario=='replace-after-alias-validation':state.update(target='/outside',aliasIno=11)
+        if scenario=='target-identity-after-validation':state['targetIno']=4
+        yield '/usr',['bin'],[]
+        yield '/usr/bin',[],[]
+    manifest,code=run(['/bin','/usr'],lstat,walk,lambda p:p=='/bin',lambda p:state['target'])
+    passed=code==0 and manifest['ok'] and manifest['coverage']['complete'] if scenario=='stable' else code==1 and not manifest['ok'] and not manifest['coverage']['complete'] and bool(manifest['errors'])
+    facts.append({'scenario':scenario,'passed':bool(passed),'code':code})
+print(json.dumps(facts));sys.exit(0 if all(f['passed'] for f in facts) else 1)
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout); assert.equal(JSON.parse(r.stdout).length, 5);
+});
+
+test('recorded child directory mode, inode and ownership are checked again before descent', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for scenario in ['stable','sgid-before-descent','inode-before-descent','owner-before-descent']:
+    state={'mode':0o755,'ino':21,'uid':0,'ctime':1}
+    def lstat(path):
+        if path=='/':return st(1)
+        if path=='/static':return st(20)
+        if path=='/static/child':return st(state['ino'],stat.S_IFDIR|state['mode'],state['uid'],state['ctime'])
+        raise AssertionError(path)
+    def walk(root,**kwargs):
+        yield '/static',['child'],[]
+        if scenario=='sgid-before-descent':state.update(mode=0o2755,ctime=2)
+        if scenario=='inode-before-descent':state.update(ino=22,ctime=2)
+        if scenario=='owner-before-descent':state.update(uid=10001,ctime=2)
+        yield '/static/child',[],[]
+    manifest,code=run(['/static'],lstat,walk)
+    passed=code==0 and manifest['ok'] if scenario=='stable' else code==1 and not manifest['ok'] and not manifest['coverage']['complete'] and any('identity changed' in e['error'] for e in manifest['errors'])
+    facts.append({'scenario':scenario,'passed':bool(passed),'code':code})
+print(json.dumps(facts));sys.exit(0 if all(f['passed'] for f in facts) else 1)
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout); assert.equal(JSON.parse(r.stdout).length, 4);
+});
+
+test('full ancestors above the declared root stay bound before, during and after traversal', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for scenario in ['stable','link-after-initial-root-stat','replace-before-walk','replace-after-walk']:
+    state={'link':False,'ino':30,'changed':False}
+    def lstat(path):
+        if path=='/':return st(1)
+        if path=='/safe':return st(state['ino'],stat.S_IFLNK|0o777 if state['link'] else stat.S_IFDIR|0o755)
+        if path=='/safe/inside':
+            if scenario=='link-after-initial-root-stat' and not state['changed']:state.update(link=True,changed=True)
+            return st(31)
+        raise AssertionError(path)
+    def walk(root,**kwargs):
+        if scenario=='replace-before-walk':state['ino']=32
+        yield '/safe/inside',[],[]
+        if scenario=='replace-after-walk':state['ino']=32
+    manifest,code=run(['/safe/inside'],lstat,walk,lambda p:p=='/safe' and state['link'])
+    passed=code==0 and manifest['ok'] if scenario=='stable' else code==1 and not manifest['ok'] and not manifest['coverage']['complete'] and bool(manifest['errors'])
+    facts.append({'scenario':scenario,'passed':bool(passed),'code':code})
+print(json.dumps(facts));sys.exit(0 if all(f['passed'] for f in facts) else 1)
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout); assert.equal(JSON.parse(r.stdout).length, 4);
+});
+
+test('file hashing rechecks the captured full ancestor chain after reading its FD', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for scenario in ['stable','ancestor-link-after-read','ancestor-inode-after-read']:
+    state={'link':False,'ino':30};file=st(40,stat.S_IFREG|0o644,size=1)
+    chain={'/':m._identity(st(1)),'/safe':m._identity(st(30)),'/safe/inside':m._identity(st(31))}
+    def lstat(path):
+        return {'/':st(1),'/safe':st(state['ino']),'/safe/inside':st(31),'/safe/inside/file':file}[path]
+    chunks=[b'x',b'']
+    def read(fd,n):
+        chunk=chunks.pop(0)
+        if not chunk and scenario=='ancestor-link-after-read':state['link']=True
+        if not chunk and scenario=='ancestor-inode-after-read':state['ino']=32
+        return chunk
+    with patch.object(m.os,'path',posixpath),patch.object(m.os,'sep','/'),patch.object(m.os,'lstat',side_effect=lstat),patch.object(m,'_is_link',side_effect=lambda p:p=='/safe' and state['link']),patch.object(m.os,'open',return_value=123),patch.object(m.os,'fstat',return_value=file),patch.object(m.os,'read',side_effect=read),patch.object(m.os,'close'):
+        try:m.sha256_file('/safe/inside/file',file,m.Limits(m.parse_args([])),512,'/safe/inside',chain);ok=True
+        except OSError:ok=False
+    facts.append(ok if scenario=='stable' else not ok)
+print(json.dumps(facts));sys.exit(0 if all(facts) else 1)
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout); assert.deepEqual(JSON.parse(r.stdout), [true, true, true]);
+});
+
+test('Linux main admits only the literal output and actually requests mandatory emission', () => {
+  const r = runPython(POSIX_FIXTURE + `
+facts=[]
+for platform,out in [('linux',m.OUTPUT_PATH),('linux','/opt//meri-worker/image-inventory.json'),('linux','/opt/meri-worker/./image-inventory.json'),('win32',m.OUTPUT_PATH)]:
+    emitted=[];walked=[]
+    def fake_walk(root,excludes,limits,hash_limit,entries,errors,aliases):
+        walked.append(root)
+        for path,pin in m.PINNED_FILES.items():
+            if path.startswith(root+'/'):
+                record={'path':path,'type':'file','mode':'0755','uid':0,'gid':0,'size':0,**pin}
+                limits.add(record,entry=True);entries.append(record)
+    cli=[x for root in m.REQUIRED_ROOTS for x in ('--root',root)]+[x for path,pin in m.PINNED_FILES.items() if pin.get('mode')=='4755' for x in ('--allow-suid',path)]+['--out',out]
+    with patch.object(m.os,'path',posixpath),patch.object(m.os,'sep','/'),patch.object(m.sys,'platform',platform),patch.object(m,'walk_root',side_effect=fake_walk),patch.object(m,'emit',side_effect=lambda manifest,target:emitted.append((manifest,target))):
+        code=m.main(cli)
+    if platform=='win32':passed=code==3 and not walked and emitted[0][1] is None
+    elif out!=m.OUTPUT_PATH:passed=code==2 and not walked and emitted[0][0]['refused'] and emitted[0][1] is None
+    else:passed=code==0 and emitted[0][0]['ok'] and emitted[0][1]==m.OUTPUT_PATH and set(walked)==set(m.REQUIRED_ROOTS)
+    facts.append({'platform':platform,'out':out,'passed':bool(passed),'code':code,'emitOut':emitted[0][1]})
+print(json.dumps(facts));sys.exit(0 if all(f['passed'] for f in facts) else 1)
+`);
+  assert.equal(r.status, 0, r.stderr + r.stdout); assert.equal(JSON.parse(r.stdout).length, 4);
 });
