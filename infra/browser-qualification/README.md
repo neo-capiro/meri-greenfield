@@ -1,4 +1,24 @@
-# W02-16 browser worker binding preparation
+# Browser qualification source preparation
+
+W02-17 extracts the frozen collector into focused modules. Status is **INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST**: the unchanged flat-three loader, owner context and support-image recipe do not bind or package the new modules. `component-pins.json` records their exact offline bytes and `sourceManifestCoverage=false`; it does not enable a build or host launch.
+
+| Module | Responsibility |
+| --- | --- |
+| `host_evidence/config.py` | Immutable pins, patterns and bounds |
+| `host_evidence/evidence_io.py` | Bounded evidence file primitives |
+| `host_evidence/classification.py` | Pure predicates and host classification |
+| `host_evidence/collection.py` | Collection, cancellation and executable-hash cache |
+| `host_evidence/poll.py` | Callback-based bounded polling |
+| `host_evidence/__init__.py` | Minimal package marker |
+
+The 39 frozen function/class segments retain their exact bytes. Ordinary imports compose them without wrappers or cycles. The entry sets bytecode suppression before package imports and aliases the collection module's single cancellation/cache dictionaries. Script execution finds the sibling package; source-file test imports explicitly add that directory only in test code.
+
+This is the first bounded extraction. The 49,064-byte entry still contains 24 deferred functions for browser capture, admission, export and CLI behavior. Those responsibilities, the remaining JavaScript organization and complete pre-import asset binding need separate owned tasks before runtime assembly. Existing runtime behavior is not newly qualified by this refactor.
+
+The focused canonical command is `node --test infra/browser-qualification/security.test.mjs`. Supply the three exact integration-owned ignored oracle inputs described below. On Windows select the installed Python through test-only `MERI_TEST_PYTHON` and Git Bash in the process-local PATH. The suite creates a fresh invocation directory, retains complete replay facts and asserts 23 direct codex, 23 embedded codex and 33 owner results separately. Embedded codex results duplicate the direct coverage. Seven new module cases and five harness-integrity cases remain distinct; no native host or cloud call is made. See the [implementation handoff](../../docs/coordination/reports/W02-17-COLLECTOR-EXTRACTION.md) for failure history and the owner completion check.
+
+## Existing worker-binding design and runtime limits
+
 
 This candidate prepares one disposable browser host in the new Meri qualification environment under D005/D006. It does not authorize a launch or establish a working Chromium sandbox. Application and control services remain on Fargate; current Meri/Capiro is untouched. W02-16 refreshes the candidate worker tuple to the W02-08 static-build-acceptance image `967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c`, configuration ID `sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471` and OCI source revision `0be04d0799c9c527e300b47c19176cddb0eaa231`. The previous digest `7327f045...` is retained only as historical provenance and is no longer an allowed candidate. The pinned image carries **4 CRITICAL / 18 HIGH** (22) unresolved findings; static build acceptance is not runtime/security admission. Image remediation/rebinding and individual probe admission belong to the integration owner.
 

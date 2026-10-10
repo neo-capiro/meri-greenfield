@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "w02-16-browser-worker-binding/1",
-  "generatedAt": "2026-10-10T06:28:00Z",
-  "task": "W02-16 browser worker binding PREPARATION (offline source candidate only)",
-  "status": "preparation-only-not-accepted",
+  "schemaVersion": "w02-17-browser-collector-extraction/1",
+  "generatedAt": "2026-10-10T07:55:59.708277+00:00",
+  "task": "W02-17 collector extraction, owner-completed offline source candidate",
+  "status": "INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST",
   "target": {
     "account": "967807252336",
     "region": "us-east-1",
@@ -47,8 +47,20 @@
       "derivedMinimalImage": "2023.12.20260930.0",
       "note": "AMI metadata alone does NOT imply deployment acceptance"
     },
-    "rootVolume": { "sizeGiB": 30, "type": "gp3", "encrypted": true, "kmsKey": "alias/meri-greenfield/qualification-browser-host", "deleteOnTermination": true },
-    "imds": { "httpTokens": "required", "putResponseHopLimit": 1, "httpProtocolIpv6": "disabled", "instanceMetadataTags": "disabled", "note": "hop limit is not worker metadata isolation" },
+    "rootVolume": {
+      "sizeGiB": 30,
+      "type": "gp3",
+      "encrypted": true,
+      "kmsKey": "alias/meri-greenfield/qualification-browser-host",
+      "deleteOnTermination": true
+    },
+    "imds": {
+      "httpTokens": "required",
+      "putResponseHopLimit": 1,
+      "httpProtocolIpv6": "disabled",
+      "instanceMetadataTags": "disabled",
+      "note": "hop limit is not worker metadata isolation"
+    },
     "instanceInitiatedShutdownBehavior": "terminate",
     "publicIp": false,
     "keyPair": null,
@@ -72,11 +84,94 @@
       "canonicalEncoding": "Python json.dumps(indent=2) + trailing LF; object key order names/action/args(if any)/includes; args index/value/op; includes arches:[amd64]",
       "preservedRuleSet": "all 31 default rules unchanged (clone3 -> ENOSYS 38, setns denied, baseline controls intact)",
       "appendedRules": [
-        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 268435473, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER|SIGCHLD" },
-        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 1879048209, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER|CLONE_NEWPID|CLONE_NEWNET|SIGCHLD" },
-        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 536870929, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWPID|SIGCHLD" },
-        { "names": ["unshare"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 268435456, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER" },
-        { "names": ["chroot"], "action": "SCMP_ACT_ALLOW", "includes": { "arches": ["amd64"] }, "meaning": "no arg restriction" }
+        {
+          "names": [
+            "clone"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": [
+            {
+              "index": 0,
+              "value": 268435473,
+              "op": "SCMP_CMP_EQ"
+            }
+          ],
+          "includes": {
+            "arches": [
+              "amd64"
+            ]
+          },
+          "meaning": "CLONE_NEWUSER|SIGCHLD"
+        },
+        {
+          "names": [
+            "clone"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": [
+            {
+              "index": 0,
+              "value": 1879048209,
+              "op": "SCMP_CMP_EQ"
+            }
+          ],
+          "includes": {
+            "arches": [
+              "amd64"
+            ]
+          },
+          "meaning": "CLONE_NEWUSER|CLONE_NEWPID|CLONE_NEWNET|SIGCHLD"
+        },
+        {
+          "names": [
+            "clone"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": [
+            {
+              "index": 0,
+              "value": 536870929,
+              "op": "SCMP_CMP_EQ"
+            }
+          ],
+          "includes": {
+            "arches": [
+              "amd64"
+            ]
+          },
+          "meaning": "CLONE_NEWPID|SIGCHLD"
+        },
+        {
+          "names": [
+            "unshare"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "args": [
+            {
+              "index": 0,
+              "value": 268435456,
+              "op": "SCMP_CMP_EQ"
+            }
+          ],
+          "includes": {
+            "arches": [
+              "amd64"
+            ]
+          },
+          "meaning": "CLONE_NEWUSER"
+        },
+        {
+          "names": [
+            "chroot"
+          ],
+          "action": "SCMP_ACT_ALLOW",
+          "includes": {
+            "arches": [
+              "amd64"
+            ]
+          },
+          "meaning": "no arg restriction"
+        }
       ],
       "tested": false,
       "note": "source-derived rules are UNTESTED; source/API evidence is distinct from runtime acceptance. Fail closed rather than broadening on failure."
@@ -104,18 +199,35 @@
     "rawOverride": "ENTRYPOINT node, command /opt/meri-worker/probes/browser.mjs",
     "user": "10001:10001",
     "readonlyRootFilesystem": true,
-    "capDrop": ["ALL"],
+    "capDrop": [
+      "ALL"
+    ],
     "noNewPrivileges": true,
     "network": "none",
-    "bounded": { "pidsLimit": 512, "memory": "4g", "cpus": 2, "shmSize": "1g" },
+    "bounded": {
+      "pidsLimit": 512,
+      "memory": "4g",
+      "cpus": 2,
+      "shmSize": "1g"
+    },
     "workspaceTmp": "fresh UID-owned writable workspace + noexec tmpfs",
     "deadlineSeconds": 120,
     "runs": 1,
     "fullRuntimeProbe": "NOT run: its AWS positive control deliberately cannot work under network none"
   },
   "hostIam": {
-    "allowed": ["ecr:GetAuthorizationToken (*, unavoidable)", "ecr:BatchCheckLayerAvailability/BatchGetImage/GetDownloadUrlForLayer on the single qualification repository", "logs:CreateLogStream/PutLogEvents on the browser-host log group", "kms log actions via logs service context only"],
-    "denied": ["S3 input/source", "provider/STS/EC2/SSM/ECS/admin", "wildcard data resources", "broad host kms:Decrypt"],
+    "allowed": [
+      "ecr:GetAuthorizationToken (*, unavoidable)",
+      "ecr:BatchCheckLayerAvailability/BatchGetImage/GetDownloadUrlForLayer on the single qualification repository",
+      "logs:CreateLogStream/PutLogEvents on the browser-host log group",
+      "kms log actions via logs service context only"
+    ],
+    "denied": [
+      "S3 input/source",
+      "provider/STS/EC2/SSM/ECS/admin",
+      "wildcard data resources",
+      "broad host kms:Decrypt"
+    ],
     "workerCredentials": "worker container receives no host profile, no docker socket/config, no host paths beyond the disposable workspace/tmp"
   },
   "upstreamLicenses": {
@@ -143,6 +255,66 @@
     "guestRuntime entries describe expected bootstrap requirements, not observed native versions. The libseccomp check records ABI 2 from libseccomp.so.2; its full package version still requires native inventory.",
     "Absolute termination deadline and terminated/root-volume-deletion verification are owner-side and not proven here.",
     "The W02-16 candidate binds the W02-08 tuple by immutable reference, configuration ID and OCI source revision. Changed source bytes require fresh full-source hashes, a separate actual review and a future immutable support build before any browser-host admission; static build success is not runtime/security admission.",
-    "The pinned image's 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) remain open; the security disposition is unchanged and G1 stays OPEN."
-  ]
+    "The pinned image's 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) remain open; the security disposition is unchanged and G1 stays OPEN.",
+    "W02-17 is a staged source extraction. The entry and six focused package files preserve the 39 frozen definitions; the 24 deferred entry functions remain for a later bounded extraction. The entry is still 49,064 bytes and is not the final small composition entry.",
+    "sourceManifestCoverage=false: current flat-three source validation, loader and support recipe do not cover the new package. INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST applies regardless of offline test results."
+  ],
+  "collectorExtraction": {
+    "baseCommit": "32401bca6104c7a1c6c877d48a7a5dc0d94e9362",
+    "frozenReferenceEntrySha256": "cf27ce1d1c5cf0c45ba2a1fc2a6cf6d48bd0506728202645ecb4d4f68411679f",
+    "frozenBodyMapCanonicalSha256": "ca0739e1504be61e819789af646dbad0950b6e67e141016a94969dba0ba65ea7",
+    "frozenBodies": 39,
+    "deferredEntryFunctions": 24,
+    "sourceManifestCoverage": false,
+    "sourceInventory": [
+      {
+        "path": "infra/browser-qualification/host-evidence.py",
+        "bytes": 49064,
+        "sha256": "b9325f77a2528c3370f1a719eda909b3303826fcb028eb5b008ed12eba78b5dc"
+      },
+      {
+        "path": "infra/browser-qualification/module-regressions.py",
+        "bytes": 12281,
+        "sha256": "000d62ac0f36a077b1539592c8da8ab6c33cb16887efe786f8784a633dd4a708"
+      },
+      {
+        "path": "infra/browser-qualification/security.test.mjs",
+        "bytes": 40891,
+        "sha256": "27c85cf8a612259a0476c043ddbeee27921f03baecb558382df34f8df557f899"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/__init__.py",
+        "bytes": 432,
+        "sha256": "d1f277344c9e72675e21e7c288dde1e0225c8c5e9eeb69ad700f353671dfb184"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/config.py",
+        "bytes": 2033,
+        "sha256": "32d74d6c8cc10f0ed744231f2d8edd09a96742057adb5d3f5db5e7c8ce202d59"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/evidence_io.py",
+        "bytes": 703,
+        "sha256": "918b894be309999f061ad0e1cfae25a43e2a6dedb599958b5de18fe5442f76ce"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/classification.py",
+        "bytes": 16753,
+        "sha256": "a9b05cc2caed38c8d4b74a9cac816fe5fd189f31d48a1f4e707272d37190c17a"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/collection.py",
+        "bytes": 19858,
+        "sha256": "bbcd697aaca5cbcaadaae052629d82ceb02c3cd36512057780984b648411dbce"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/poll.py",
+        "bytes": 4284,
+        "sha256": "8868ff3145083848b7524a4e91914ddfb122075c63ce462df4afc61ebaa9d336"
+      }
+    ],
+    "inventoryMeaning": "Exact offline source bytes only; this list is not a runtime loader, owner context, immutable support-image manifest or admission.",
+    "runtimeAssembly": "The unchanged flat-three loader/context/support recipe does not bind or package the six modules. Block builds and host launches until a separately allocated complete pre-import source-binding and packaging change passes independent review.",
+    "remainingOrganization": "Deferred browser/admission/export/CLI responsibilities remain in the entry; JavaScript extraction is separately pending. No unallocated module or protocol change is introduced."
+  }
 }

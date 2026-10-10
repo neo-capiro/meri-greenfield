@@ -11,13 +11,13 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { gunzipSync } from 'node:zlib';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '..', '..');
 const INFRA = join(REPO, 'infra', 'browser-qualification');
 const OBS = join(INFRA, 'host-evidence.py');
-const TMP = join(REPO, '.task-inputs', 'observer-audit', 'tmp');
+const TMP = join(REPO, '.task-inputs', 'observer-audit', 'tmp-' + randomUUID());
 const RUN = 'b0ae553a-a4c1-44c8-93b4-45afc6ed0139';
 const BOOT = 'd7895c58-cc4e-44ef-88d8-887a82b56e1e';
 const CID = 'c'.repeat(64);
@@ -248,11 +248,27 @@ test('worker provenance guard fails closed before the sole browser create', () =
   }
 });
 
-test('codex and owner observer replays remain truthful', () => {
-  const a = spawnSync(PYTHON, ['-B', join(REPO, '.task-inputs', 'codex-observer-checkpoint-audit.py')], { cwd: REPO, encoding: 'utf8' });
-  assert.equal(a.status, 0, a.stderr); assert.match(a.stdout, /"failed": 0/);
-  const o = spawnSync(PYTHON, ['-B', join(REPO, '.task-inputs', 'owner-regressions-adapted.py')], { cwd: REPO, encoding: 'utf8' });
-  assert.equal(o.status, 0, o.stderr); assert.match(o.stdout, /"passed": 33/);
+test('codex and owner observer replays remain truthful (module-aware)', () => {
+  // After extraction the moved collector/classifier/poll bodies resolve their
+  // DEFINING module globals, so the raw fixtures (which patch the entry alias `m`)
+  // must be replayed through the reviewed module-aware harness. It keeps the exact
+  // fixture bytes and all 23 + 33 case names/results, verifies the fixture hashes
+  // before use and adds explicit state-identity / effective-patch-routing cases.
+  const r = spawnSync(PYTHON, ['-B', join(INFRA, 'module-regressions.py')], { cwd: REPO, encoding: 'utf8' });
+  // Preserve complete replay facts once per fresh invocation, including failures.
+  writeFileSync(join(TMP, 'module-regressions.stdout.json'), r.stdout, { flag: 'wx' });
+  writeFileSync(join(TMP, 'module-regressions.stderr.txt'), r.stderr, { flag: 'wx' });
+  assert.equal(r.status, 0, r.stderr);
+  const s = JSON.parse(r.stdout);
+  assert.equal(s.ok, true, r.stdout);
+  // Two codex executions (direct + embedded inside owner) and one owner summary.
+  assert.equal(s.codexDirect.count, 23); assert.equal(s.codexDirect.failed, 0);
+  assert.equal(s.codexEmbedded.count, 23); assert.equal(s.codexEmbedded.failed, 0);
+  assert.equal(s.owner.count, 33); assert.equal(s.owner.failed, 0);
+  assert.equal(s.newCases.failed, 0, JSON.stringify(s.newCases));
+  assert.equal(s.integrity.failed, 0, JSON.stringify(s.integrity));
+  assert.deepEqual(s.errors, {});
+  assert.ok(Object.values(s.fixtures).every((v) => v === 'verified'));
 });
 
 test('run record accepts only a complete honest run', () => {
@@ -343,28 +359,49 @@ test('PutLogEvents classifier rejects errors and any rejected index (even zero)'
 
 test('python sources compile without bytecode side effects', () => {
   const code=String.raw`import ast,pathlib,re,sys
-p=pathlib.Path(sys.argv[1]);ast.parse(p.read_text(),feature_version=(3,9))
-b=p.with_name('bootstrap.sh').read_text()
+root=pathlib.Path(sys.argv[1]);ast.parse((root/'host-evidence.py').read_text(),feature_version=(3,9))
+names=('__init__','config','evidence_io','classification','collection','poll')
+mods=[root/'host_evidence'/(n+'.py') for n in names]
+assert {p.name for p in (root/'host_evidence').iterdir()}=={p.name for p in mods}
+for f in mods:ast.parse(f.read_text(),feature_version=(3,9))
+b=(root/'bootstrap.sh').read_text()
 parts=re.findall(r"<<'(__[A-Z]+__)'.*?\n(.*?)\n\1",b,re.S)
 assert len(parts)==4,len(parts)
 for _,source in parts:ast.parse(source,feature_version=(3,9))
 print('Python3.9 grammar: observer +4 embedded Python blocks; author '+sys.version)`;
-  const r = spawnSync(PYTHON, ['-B', '-c', code, OBS], { cwd: REPO, encoding: 'utf8' });
+  const r = spawnSync(PYTHON, ['-B', '-c', code, INFRA], { cwd: REPO, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr);
   assert.ok(!existsSync(join(INFRA, '__pycache__')));
+  assert.ok(!existsSync(join(INFRA, 'host_evidence', '__pycache__')));
 });
 
 test('Codex owner: frozen collector/classifier/poll/version bodies remain byte-identical to4fd85f7', () => {
   const code=String.raw`import ast,pathlib,subprocess,sys
-p=pathlib.Path(sys.argv[1]);base=subprocess.check_output(['git','show','4fd85f7:infra/browser-qualification/host-evidence.py'],text=True);now=p.read_text()
+root=pathlib.Path(sys.argv[1]);base=subprocess.check_output(['git','show','4fd85f7:infra/browser-qualification/host-evidence.py'],text=True)
+files=[root/'host-evidence.py']+[root/'host_evidence'/(n+'.py') for n in ('__init__','config','evidence_io','classification','collection','poll')]
+def bodies(t):
+ d={}
+ for n in ast.parse(t).body:
+  if isinstance(n,(ast.FunctionDef,ast.ClassDef)):d.setdefault(n.name,[]).append(ast.get_source_segment(t,n))
+ return d
+b=bodies(base)
 exclude={'verify_run_record','build_export_plan','classify_put_response','_load_json','_dump','main','_install_signals'}
-def bodies(t):return {n.name:ast.get_source_segment(t,n) for n in ast.parse(t).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
-b,n=bodies(base),bodies(now);f={k:v for k,v in b.items() if k not in exclude};assert len(f)==39;assert all(n[k]==v for k,v in f.items());print('39 frozen bodies identical')`;
-  const r=spawnSync(PYTHON,['-B','-c',code,OBS],{cwd:REPO,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/39 frozen bodies identical/);
+frozen={k:v[0] for k,v in b.items() if k not in exclude};assert len(frozen)==39,len(frozen)
+seen={}
+for fl in files:
+ for name,segs in bodies(fl.read_text()).items():seen.setdefault(name,[]).extend(segs)
+for name,text in frozen.items():
+ assert name in seen,'missing '+name
+ assert len(seen[name])==1,'duplicate definition '+name+' x'+str(len(seen[name]))
+ assert seen[name][0]==text,'body changed '+name
+dups=[n for n,s in seen.items() if len(s)>1];assert not dups,dups
+print('39 frozen bodies present exactly once across entry +6 modules')`;
+  const r=spawnSync(PYTHON,['-B','-c',code,INFRA],{cwd:REPO,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/exactly once across entry/);
 });
 
 test('Codex owner: original timer window accepts raw/formatted systemd values and rejects ambiguous or insufficient schedules', () => {
-  const code=String.raw`import importlib.util,json,sys
+  const code=String.raw`import importlib.util,json,sys,pathlib
+sys.path.insert(0,str(pathlib.Path(sys.argv[1]).resolve().parent))
 s=importlib.util.spec_from_file_location('m',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 run=sys.argv[2];target='meri-browser-assets-poweroff-'+run+'.service'
 good=[('900000000',10,890),('15min',10,890),('14min 59s',10,889),('8min 10s',10,480),('900s',0,900)]
@@ -418,7 +455,7 @@ test('Codex owner: strict export fields/counts/context/bounds and reconstruction
   for(const[name,mutate] of Object.entries(variants)){
     const docs=parsed();mutate(docs);docs.at(-1).manifestSha256=createHash('sha256').update(JSON.stringify(docs.at(-2),Object.keys(docs.at(-2)).sort())).digest('hex');
     // Wrong hashes are NOT the only guard: recompute canonical hash in Python below.
-    const code='import importlib.util,json,hashlib,sys;s=importlib.util.spec_from_file_location("m",sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);d=json.load(open(sys.argv[2]));d[-1]["manifestSha256"]=hashlib.sha256(m._finite_json(d[-2]).encode()).hexdigest();print(json.dumps(m.validate_export([{"timestamp":1,"message":m._finite_json(x)} for x in d])))';
+    const code='import importlib.util,json,hashlib,sys,os;sys.path.insert(0,os.path.dirname(os.path.abspath(sys.argv[1])));s=importlib.util.spec_from_file_location("m",sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);d=json.load(open(sys.argv[2]));d[-1]["manifestSha256"]=hashlib.sha256(m._finite_json(d[-2]).encode()).hexdigest();print(json.dumps(m.validate_export([{"timestamp":1,"message":m._finite_json(x)} for x in d])))';
     const r=spawnSync(PYTHON,['-B','-c',code,OBS,write('owner-mutated.json',docs)],{cwd:REPO,encoding:'utf8'});
     assert.equal(r.status,0,r.stderr);assert.equal(JSON.parse(r.stdout).ok,false,name);
   }
@@ -435,6 +472,7 @@ test('Codex owner: bounded capture and assembly use injected pipes/processes onl
 import copy,importlib.util,json,os,pathlib,sys,tempfile
 from types import SimpleNamespace
 from unittest.mock import patch
+sys.path.insert(0,str(pathlib.Path(sys.argv[1]).resolve().parent))
 s=importlib.util.spec_from_file_location('m',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 root=pathlib.Path(sys.argv[2]).parent
 checks=[]
