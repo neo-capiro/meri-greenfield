@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "meri-qualification-state-dependencies/1",
+  "scope": "Windows local qualification only; not a Linux image lock or security acceptance",
+  "python": "3.11.15",
+  "upstreamLock": {
+    "repository": "BerriAI/litellm",
+    "commit": "fc3920bf403124ad075bc04990f999f7e0612e12",
+    "sha256": "1ac0d01bfc5e7b8674edf1f97ebe4fdc9e401d204b010ef0adf797e1ea08af18"
+  },
+  "packages": [
+    {
+      "name": "psycopg",
+      "version": "3.3.3",
+      "url": "https://files.pythonhosted.org/packages/c8/5b/181e2e3becb7672b502f0ed7f16ed7352aca7c109cfb94cf3878a9186db9/psycopg-3.3.3-py3-none-any.whl",
+      "bytes": 212768,
+      "sha256": "f96525a72bcfade6584ab17e89de415ff360748c766f0106959144dcbb38c698"
+    },
+    {
+      "name": "psycopg-binary",
+      "version": "3.3.3",
+      "url": "https://files.pythonhosted.org/packages/b4/3b/0d8d2c5e8e29ccc07d28c8af38445d9d9abcd238d590186cac82ee71fc84/psycopg_binary-3.3.3-cp311-cp311-win_amd64.whl",
+      "bytes": 3558915,
+      "sha256": "19f93235ece6dbfc4036b5e4f6d8b13f0b8f2b3eeb8b0bd2936d406991bcdd40"
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.15.0",
+      "url": "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl",
+      "bytes": 44614,
+      "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.2",
+      "url": "https://files.pythonhosted.org/packages/ce/e4/dccd7f47c4b64213ac01ef921a1337ee6e30e8c6466046018326977efd95/tzdata-2026.2-py2.py3-none-any.whl",
+      "bytes": 349321,
+      "sha256": "bbe9af844f658da81a5f95019480da3a89415801f6cc966806612cc7169bffe7"
+    }
+  ],
+  "localPostgres": {
+    "url": "https://get.enterprisedb.com/postgresql/postgresql-17.11-3-windows-x64-binaries.zip",
+    "bytes": 341325378,
+    "sha256": "4b8db0930c38f6ef845db919551dedda3b6b845aeb0927b3d79a6e8e9e4537cf",
+    "checksumEvidenceUrl": "https://github.com/EnterpriseDB/edb-installers/issues/682",
+    "checksumEvidenceSha256": "0ef0b93aa587a14ea62aa213a011a1d9bbad72d6ea7ad2ed9656ef5c713ef503"
+  },
+  "transportDependency": {
+    "commit": "72eb252a50f309d875d407ca229c01585fa8d4f6",
+    "paths": {
+      "runtime/bedrock_body.py": "8102362fc7c3daecf2f34d54b4a47cf5c5affc9eda7d24067688b86ee592a149",
+      "runtime/bedrock_transport.py": "7f520696e609a4054e2c17e2d60971880cfb1d8ab69e5974a3021ff5fd17ff1a"
+    }
+  },
+  "limits": [
+    "Existing transport imports require its separately recorded upstream dependencies; this file does not replace or extend that image lock.",
+    "No PostgreSQL service/global install, Linux runtime, TLS/IAM, real counting/usage, vulnerability disposition or deployment acceptance."
+  ]
+}
