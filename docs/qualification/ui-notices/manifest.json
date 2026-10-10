@@ -1,0 +1,408 @@
+{
+  "schemaVersion": "meri-ui-notice-supplement/1",
+  "status": "PARTIAL_SIX_PACKAGE_NOTICES_BOUND_ONE_UNRESOLVED_NOT_RELEASE_CLEARANCE",
+  "authorship": "Codex source/evidence completion, no Hermes invocation",
+  "capturedDateUTC": "2026-10-10",
+  "baseCommit": "651ec8ce136a9ed3b22f911ea0dac90f33de40c7",
+  "originalInventory": {
+    "path": "apps/ui/elements-qualification/component-pins.json",
+    "bytes": 241775,
+    "sha256": "935f00ddbbb8fde72d9a0288b6f833f87dbb08245d95aaca9f02a18c4c28fd8b",
+    "recordCount": 367,
+    "unchanged": true
+  },
+  "counts": {
+    "packages": 7,
+    "fullNoticePackages": 6,
+    "unresolvedPackages": 1,
+    "noticeFiles": 5
+  },
+  "files": [
+    {
+      "path": "fastdom.LICENSE",
+      "bytes": 1094,
+      "sha256": "50c0de64f5cd5e39859b43f7eca7f5843fb3c3d5ac7e34a453e27419ad51e08c"
+    },
+    {
+      "path": "khroma.LICENSE",
+      "bytes": 1105,
+      "sha256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49"
+    },
+    {
+      "path": "provider-utils.LICENSE",
+      "bytes": 12690,
+      "sha256": "453dfadab99f01572dff71fbec9d520ddab135a2e3c34170760f46f35c2600f0"
+    },
+    {
+      "path": "remark-math.LICENSE",
+      "bytes": 1098,
+      "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9"
+    },
+    {
+      "path": "strictdom.LICENSE",
+      "bytes": 1094,
+      "sha256": "2c0cd14e6202a458ca4831c68bbd5c6f22458fb95e9edce3c48a25db8cbb9273"
+    }
+  ],
+  "packages": [
+    {
+      "name": "@ai-sdk/provider-utils",
+      "version": "5.0.58",
+      "declaredLicense": "Apache-2.0",
+      "resolvedNoticeLicense": "Apache-2.0",
+      "installedPackageJSONSHA256": "6bc1b6e69444f4e05ae10ebcbb2e941cdfca9144b7c0559a0314f79b188c14b7",
+      "npm": {
+        "url": "https://registry.npmjs.org/@ai-sdk%2fprovider-utils/5.0.58",
+        "metadataSHA256": "a72456492829cc032719025d67b4aa6a3db15baf6d337fc748ae917b77fd5e78",
+        "tarballURL": "https://registry.npmjs.org/@ai-sdk/provider-utils/-/provider-utils-5.0.58.tgz",
+        "tarballBytes": 353022,
+        "tarballSHA256": "1a6d1ee915f0db6061be90c6c6e93ba98488b3e7d582717f4d59a045967c6d44",
+        "integrity": "sha512-iXSwKR/7LpHzAlyrUl+bTinwzmZ3Nmup1viwPisM5Gn5cogRdIG4rV9w1ZDuKFcrXyu/AeVs42E1CX/0aNwrfQ==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/vercel/ai",
+      "claimedGitHead": null,
+      "verifiedSourceCommit": "50203a81019c2117c413b959398443ec7f84f325",
+      "noticeFile": "provider-utils.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "npm published provenance subject digest equals downloaded tarball SHA512; version tag and provenance record name the same commit; signatures NOT independently cryptographically verified.",
+        "Source package declares exact name/version/Apache-2.0; source package.json uses development workspace representation and differs from published bytes.",
+        "Root LICENSE Git blob matches captured tree; bundled ISC text matches installed, tarball and exact source commit bytes."
+      ],
+      "unknowns": [
+        "No complete transitive, file-by-file bundled-source or release artifact license clearance."
+      ],
+      "copyright": [
+        "Copyright 2023 Vercel, Inc.",
+        "Copyright (c) 2020, Stefan Terdell",
+        "Copyright (c) 2025, Vercel Inc."
+      ],
+      "additionalBundledLicense": "ISC",
+      "sourcePackage": {
+        "url": "https://raw.githubusercontent.com/vercel/ai/50203a81019c2117c413b959398443ec7f84f325/packages/provider-utils/package.json",
+        "sha256": "d41a5c6584475b463c89647eb7f0a25e9d91ed3b26850419ba28be998b1ac805",
+        "nameAndVersionEqualInstalled": true,
+        "rawEqualsInstalled": false
+      },
+      "noticeParts": [
+        {
+          "kind": "repository Apache copyright/notice",
+          "url": "https://raw.githubusercontent.com/vercel/ai/50203a81019c2117c413b959398443ec7f84f325/LICENSE",
+          "gitBlobSHA1": "6c16c29f41168411dbf6e3ba3a063ce789c27334",
+          "bytes": 552,
+          "sha256": "b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
+          "outputByteStart": 0,
+          "outputByteEndExclusive": 552
+        },
+        {
+          "kind": "full Apache License Version 2.0 terms",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+          "gitBlobSHA1": null,
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "outputByteStart": 554,
+          "outputByteEndExclusive": 11912
+        },
+        {
+          "kind": "published bundled ISC license",
+          "url": "https://raw.githubusercontent.com/vercel/ai/50203a81019c2117c413b959398443ec7f84f325/packages/provider-utils/src/to-json-schema/zod3-to-json-schema/LICENSE",
+          "gitBlobSHA1": "b3b48f8f4534527adca8cd26cd424ae94e69b983",
+          "bytes": 777,
+          "sha256": "6dd0d97acd4d13f4608a0f530f0487e0ff20812888bd1803aecfaaa17ff0f849",
+          "outputByteStart": 11913,
+          "outputByteEndExclusive": 12690
+        }
+      ],
+      "composition": "Three exact raw parts, joined by two LF bytes after part1 and one LF byte after part2; no copyright guessed or terms rewritten."
+    },
+    {
+      "name": "fastdom",
+      "version": "1.0.12",
+      "declaredLicense": "MIT",
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "59d7cb811e170491bac1d4bc3c881a2fa3f23f50691ed60e6bd9bb9a1e197858",
+      "npm": {
+        "url": "https://registry.npmjs.org/fastdom/1.0.12",
+        "metadataSHA256": "5a2cee4f117bc194bb923afd460dec3e86967c38cc65f939efc8c9c966d215a1",
+        "tarballURL": "https://registry.npmjs.org/fastdom/-/fastdom-1.0.12.tgz",
+        "tarballBytes": 13150,
+        "tarballSHA256": "15e452be64ae3661c3cc9d736524ebb689c23f162765d60741dcc518ec182265",
+        "integrity": "sha512-LB+xjSTEbjHE1cWsxu+tN2Xqr1kpi+V9aADI7sVM5ZMaXyYGPHULQMzpJMYqOTULK/73pUkWVzzObFRBkPr+hg==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/wilsonpage/fastdom",
+      "claimedGitHead": "a7b9044d58952b970c8b918dcf0e7c8824ba0ff5",
+      "verifiedSourceCommit": null,
+      "noticeFile": "fastdom.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "Full MIT text extracted byte-exact from exact integrity-verified published README; no author/year inferred from package author."
+      ],
+      "unknowns": [
+        "Registry GitHead tree/README/package HTTP404; no observed v1.0.12 tag. Git source commit/blob is unverified; notice provenance is the exact published version tarball, not a substituted Git release."
+      ],
+      "noticeExtraction": {
+        "sourceFile": "fastdom.npm-README.md",
+        "sourceBytes": 7525,
+        "sourceSHA256": "cc5669ab6f7741bb061c8a7244addc8e3af1f84ec7d2445744b59d0169a87d11",
+        "sourceBlobSHA1Computed": "aabcae0629b6e77b59d0d0db472ffd8d19c9328e",
+        "byteStart": 6431,
+        "byteEndExclusive": 7525,
+        "bytes": 1094,
+        "sha256": "50c0de64f5cd5e39859b43f7eca7f5843fb3c3d5ac7e34a453e27419ad51e08c"
+      },
+      "copyright": [
+        "Copyright (c) 2016 Wilson Page <wilsonpage@me.com>"
+      ],
+      "noticeSource": {
+        "url": "https://registry.npmjs.org/fastdom/-/fastdom-1.0.12.tgz",
+        "member": "package/README.md",
+        "gitBlobSHA1": null,
+        "rawSHA256": "cc5669ab6f7741bb061c8a7244addc8e3af1f84ec7d2445744b59d0169a87d11"
+      }
+    },
+    {
+      "name": "khroma",
+      "version": "2.1.0",
+      "declaredLicense": null,
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "0d2145738d3cab828da4c5724b45e0dd2577c0ce84503c956d76897e93fa7de2",
+      "npm": {
+        "url": "https://registry.npmjs.org/khroma/2.1.0",
+        "metadataSHA256": "523d6298a1a0dffc7196c57571bfb27e77809ab19391af7092c46f59c559e044",
+        "tarballURL": "https://registry.npmjs.org/khroma/-/khroma-2.1.0.tgz",
+        "tarballBytes": 32965,
+        "tarballSHA256": "8963d209f3a682374d7f7e45e5fa361a58fc060c8528df6656fae0fc7c508110",
+        "integrity": "sha512-Ls993zuzfayK269Svk9hzpeGUKob/sIgZzyHYdjQoAdQetRKpOLj+k/QQQ/6Qi0Yz65mlROrfd+Ev+1+7dz9Kw==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/fabiospampinato/khroma",
+      "claimedGitHead": "4968165afb0d3d09be66497e7985a34f7bfe6d42",
+      "verifiedSourceCommit": "4968165afb0d3d09be66497e7985a34f7bfe6d42",
+      "noticeFile": "khroma.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "Exact source package.json equals installed/published bytes; exact source notice/README computed Git blob equals captured tree entry.",
+        "Full actual installed MIT license equals published archive and exact source license; missing metadata is disclosed and unchanged."
+      ],
+      "unknowns": [],
+      "noticeExtraction": {
+        "sourceFile": "khroma.source-license.bin",
+        "sourceBytes": 1105,
+        "sourceSHA256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49",
+        "sourceBlobSHA1Computed": "433a5ecd4cb7c687f6a6ec968da740d490b1f776",
+        "byteStart": 0,
+        "byteEndExclusive": 1105,
+        "bytes": 1105,
+        "sha256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49"
+      },
+      "copyright": [
+        "Copyright (c) 2019-present Fabio Spampinato, Andrew Maney"
+      ],
+      "noticeSource": {
+        "url": "https://raw.githubusercontent.com/fabiospampinato/khroma/4968165afb0d3d09be66497e7985a34f7bfe6d42/license",
+        "gitBlobSHA1": "433a5ecd4cb7c687f6a6ec968da740d490b1f776",
+        "rawSHA256": "66b333b0f66759a0b710459e03f7029abe17f4358114a128d2c972e642961b49"
+      },
+      "sourcePackage": {
+        "url": "https://raw.githubusercontent.com/fabiospampinato/khroma/4968165afb0d3d09be66497e7985a34f7bfe6d42/package.json",
+        "rawEqualsInstalled": true
+      }
+    },
+    {
+      "name": "react-remove-scroll-bar",
+      "version": "2.3.8",
+      "declaredLicense": "MIT",
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "e372f857ce05f266137c65293436b5380fec42ac311e6acb9378ed78b98d75d0",
+      "npm": {
+        "url": "https://registry.npmjs.org/react-remove-scroll-bar/2.3.8",
+        "metadataSHA256": "826c618ece09367334160c1ab3a272fd54f8f12e3b0a45f75b0f2660d285855a",
+        "tarballURL": "https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.8.tgz",
+        "tarballBytes": 4937,
+        "tarballSHA256": "ccc872d7a2dc007cbf9d755f30d56b8d80eabdbe22c44c95a709129bfdc46f01",
+        "integrity": "sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/theKashey/react-remove-scroll-bar",
+      "claimedGitHead": "b3b1287aad81def2e2ae707274b74531b61ddbaf",
+      "verifiedSourceCommit": null,
+      "noticeFile": null,
+      "fullNoticeAvailable": false,
+      "verification": [
+        "Exact installed/published package declares MIT; all27 tar members contain no license/notice member and no copyright or permission-grant text.",
+        "Published README states only MIT; claimed GitHead tree/package/LICENSE HTTP404; observed tag list stops at v2.3.7; inspected v2.3.7 root tree also has no LICENSE."
+      ],
+      "unknowns": [
+        "Full exact-version MIT copyright/permission text and source-commit binding are unresolved. No older/latest or generic copyright substitute is supplied.",
+        "Allocated react-remove-scroll-bar.LICENSE deliberately not created; release notice assembly remains blocked for this package."
+      ],
+      "status": "UNRESOLVED_FULL_NOTICE_AND_COPYRIGHT",
+      "copyright": null,
+      "upstreamLicenseBlobSHA1": null
+    },
+    {
+      "name": "rehype-katex",
+      "version": "7.0.1",
+      "declaredLicense": "MIT",
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "c8a2a4b5fafa4145ef6c073806608967187be300c523685273fb188bc8d398bc",
+      "npm": {
+        "url": "https://registry.npmjs.org/rehype-katex/7.0.1",
+        "metadataSHA256": "12c6ea72642a8d79eaa0e4b77a8e4a59f01c8c4c7a787720161ebdbfa3fd3cc9",
+        "tarballURL": "https://registry.npmjs.org/rehype-katex/-/rehype-katex-7.0.1.tgz",
+        "tarballBytes": 5863,
+        "tarballSHA256": "b76022624276e22d83bc214e998c7a744504ac1b837f9233d0e0c0ef2c0c5e7d",
+        "integrity": "sha512-OiM2wrZ/wuhKkigASodFoo8wimG3H12LWQaH8qSPVJn9apWKFSH3YOCtbKpBorTVw/eI7cuT21XBbvwEswbIOA==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/remarkjs/remark-math",
+      "claimedGitHead": "88a9497e1ede93b958237c85edbf5651faeca7af",
+      "verifiedSourceCommit": "88a9497e1ede93b958237c85edbf5651faeca7af",
+      "noticeFile": "remark-math.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "Exact source package.json equals installed/published bytes; exact source notice/README computed Git blob equals captured tree entry.",
+        "Both distinct exact-version source commits carry the identical license blob ea3803784aa58da6fa7cd6e196948608def87bf9; one full notice file is shared."
+      ],
+      "unknowns": [],
+      "noticeExtraction": {
+        "sourceFile": "remark-math.source-license.bin",
+        "sourceBytes": 1098,
+        "sourceSHA256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
+        "sourceBlobSHA1Computed": "ea3803784aa58da6fa7cd6e196948608def87bf9",
+        "byteStart": 0,
+        "byteEndExclusive": 1098,
+        "bytes": 1098,
+        "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9"
+      },
+      "copyright": [
+        "Copyright (c) 2017 Junyoung Choi <fluke8259@gmail.com>"
+      ],
+      "noticeSource": {
+        "url": "https://raw.githubusercontent.com/remarkjs/remark-math/88a9497e1ede93b958237c85edbf5651faeca7af/license",
+        "gitBlobSHA1": "ea3803784aa58da6fa7cd6e196948608def87bf9",
+        "rawSHA256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9"
+      },
+      "sourcePackage": {
+        "url": "https://raw.githubusercontent.com/remarkjs/remark-math/88a9497e1ede93b958237c85edbf5651faeca7af/packages/rehype-katex/package.json",
+        "rawEqualsInstalled": true
+      }
+    },
+    {
+      "name": "remark-math",
+      "version": "6.0.0",
+      "declaredLicense": "MIT",
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "936d400d2c2a3f121c4d2b6b84b8a891af02852032b0dcb31f0407d2d6a4364f",
+      "npm": {
+        "url": "https://registry.npmjs.org/remark-math/6.0.0",
+        "metadataSHA256": "33bf5639ec9fd728efbe86317aae6844e794e91689c1f71d8b61d403a1028f62",
+        "tarballURL": "https://registry.npmjs.org/remark-math/-/remark-math-6.0.0.tgz",
+        "tarballBytes": 4741,
+        "tarballSHA256": "33d1b07c723a1167e0e4360437d98dedc1ef95cc9f0da1122147f26efb345417",
+        "integrity": "sha512-MMqgnP74Igy+S3WwnhQ7kqGlEerTETXMvJhrUzDikVZ2/uogJCb+WHUg97hK9/jcfc0dkD73s3LN8zU49cTEtA==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/remarkjs/remark-math",
+      "claimedGitHead": "d5d0660b150810a535bbb07eac6cc96a4510aa24",
+      "verifiedSourceCommit": "d5d0660b150810a535bbb07eac6cc96a4510aa24",
+      "noticeFile": "remark-math.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "Exact source package.json equals installed/published bytes; exact source notice/README computed Git blob equals captured tree entry.",
+        "Both distinct exact-version source commits carry the identical license blob ea3803784aa58da6fa7cd6e196948608def87bf9; one full notice file is shared."
+      ],
+      "unknowns": [],
+      "noticeExtraction": {
+        "sourceFile": "remark-math.source-license.bin",
+        "sourceBytes": 1098,
+        "sourceSHA256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
+        "sourceBlobSHA1Computed": "ea3803784aa58da6fa7cd6e196948608def87bf9",
+        "byteStart": 0,
+        "byteEndExclusive": 1098,
+        "bytes": 1098,
+        "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9"
+      },
+      "copyright": [
+        "Copyright (c) 2017 Junyoung Choi <fluke8259@gmail.com>"
+      ],
+      "noticeSource": {
+        "url": "https://raw.githubusercontent.com/remarkjs/remark-math/d5d0660b150810a535bbb07eac6cc96a4510aa24/license",
+        "gitBlobSHA1": "ea3803784aa58da6fa7cd6e196948608def87bf9",
+        "rawSHA256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9"
+      },
+      "sourcePackage": {
+        "url": "https://raw.githubusercontent.com/remarkjs/remark-math/d5d0660b150810a535bbb07eac6cc96a4510aa24/packages/remark-math/package.json",
+        "rawEqualsInstalled": true
+      }
+    },
+    {
+      "name": "strictdom",
+      "version": "1.0.1",
+      "declaredLicense": "MIT",
+      "resolvedNoticeLicense": "MIT",
+      "installedPackageJSONSHA256": "41768059f064f33500a89c2777f6231bf69a8d32664d09ba675006ae0ed8f282",
+      "npm": {
+        "url": "https://registry.npmjs.org/strictdom/1.0.1",
+        "metadataSHA256": "9b8386e4e6f5d8b1accd028fa75f4812cdbd16d82d842f08203f62cc0f5bf4b7",
+        "tarballURL": "https://registry.npmjs.org/strictdom/-/strictdom-1.0.1.tgz",
+        "tarballBytes": 6503,
+        "tarballSHA256": "824b654d671c79365e96c87687dba8ce7bf36c45f2214365313c0a2d3e3ffbbb",
+        "integrity": "sha512-cEmp9QeXXRmjj/rVp9oyiqcvyocWab/HaoN4+bwFeZ7QzykJD6L3yD4v12K1x0tHpqRqVpJevN3gW7kyM39Bqg==",
+        "integrityVerified": true,
+        "installedPackageJSONEqualsPublished": true
+      },
+      "repository": "https://github.com/wilsonpage/strictdom",
+      "claimedGitHead": "a3bbf19013ecc9c9d165dd4ed89e94757161443e",
+      "verifiedSourceCommit": "a3bbf19013ecc9c9d165dd4ed89e94757161443e",
+      "noticeFile": "strictdom.LICENSE",
+      "fullNoticeAvailable": true,
+      "verification": [
+        "Exact source package.json equals installed/published bytes; exact source notice/README computed Git blob equals captured tree entry."
+      ],
+      "unknowns": [],
+      "noticeExtraction": {
+        "sourceFile": "strictdom.source-README.md.bin",
+        "sourceBytes": 4146,
+        "sourceSHA256": "9280accadb9c4d0aa2de2b304da7f477eacb0823504964b71370eb7ab99c202d",
+        "sourceBlobSHA1Computed": "12ca64a82a6676ccd5ad8c02486df6cd16630193",
+        "byteStart": 3052,
+        "byteEndExclusive": 4146,
+        "bytes": 1094,
+        "sha256": "2c0cd14e6202a458ca4831c68bbd5c6f22458fb95e9edce3c48a25db8cbb9273"
+      },
+      "copyright": [
+        "Copyright (c) 2013 Wilson Page <wilsonpage@me.com>"
+      ],
+      "noticeSource": {
+        "url": "https://raw.githubusercontent.com/wilsonpage/strictdom/a3bbf19013ecc9c9d165dd4ed89e94757161443e/README.md",
+        "gitBlobSHA1": "12ca64a82a6676ccd5ad8c02486df6cd16630193",
+        "rawSHA256": "9280accadb9c4d0aa2de2b304da7f477eacb0823504964b71370eb7ab99c202d"
+      },
+      "sourcePackage": {
+        "url": "https://raw.githubusercontent.com/wilsonpage/strictdom/a3bbf19013ecc9c9d165dd4ed89e94757161443e/package.json",
+        "rawEqualsInstalled": true
+      }
+    }
+  ],
+  "evidence": {
+    "path": ".task-inputs/CODEX-G1-ui-notices-1/capture-manifest.json",
+    "bytes": 14186,
+    "sha256": "f9fc2f0bb7a820322144fe7550a288daaa14edd0bded8975d7aaa01e4cacf301",
+    "payloads": 82,
+    "atomic": false
+  },
+  "limits": [
+    "No UI check, runtime/service/SSR acceptance, dependency edit, full release/legal or transitive license clearance.",
+    "npm signatures and Git tags are not cryptographically verified; hash/integrity matching is not a signature verification.",
+    "Public records captured at separate times; no claim atomic upstream snapshot."
+  ]
+}
