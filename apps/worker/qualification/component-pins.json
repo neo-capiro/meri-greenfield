@@ -240,20 +240,21 @@
     "dependencyEdgesNote": "16 direct dependency edges were verified available in the retained Packages indexes without a direct-pin conflict (e.g. python3 -> libpython3-stdlib; python3-venv -> python3; libreoffice-impress -> libreoffice-core/libreoffice-draw; poppler-utils -> libpoppler147). Resolved binary versions are the highest appropriate candidates in the snapshot.",
     "securityFindings": {
       "source": "Debian security tracker (https://security-tracker.debian.org/tracker/<CVE-ID>) plus Debian source packages; public metadata only, read during the disposition review",
-      "fixedInThisRefresh": {
-        "libreoffice (CVE-2026-63277)": "4:7.4.7-1+deb12u14 (bookworm) -> 4:25.2.3-2+deb13u8 (trixie-security); document-controlled JDBC driver remote code load now has the vendor-fixed line",
-        "tiff libtiff6 (CVE-2026-52490, CVE-2026-12912)": "4.5.0-6+deb12u4 (bookworm) -> 4.7.0-3+deb13u3 (trixie); tiffcrop and PixarLog decoding fixes",
+      "vendorFixedPackageCandidates": {
+        "libreoffice (CVE-2026-63277)": "4:7.4.7-1+deb12u14 (bookworm) -> 4:25.2.3-2+deb13u8 (trixie-security); vendor fixed-package candidate, actual installed image verification NOT RUN",
+        "tiff libtiff6 (CVE-2026-12912)": "4.5.0-6+deb12u4 (bookworm) -> 4.7.0-3+deb13u3 (trixie); PixarLog fixed-package candidate only. CRITICAL52490 remains vulnerable below",
         "util-linux (CVE-2026-53615)": "2.38.1 (bookworm) -> 2.41.5-0+deb13u1 (trixie) fixes 53615; other util-linux CVEs remain (below)"
       },
       "remainingOpen": {
         "gnutls28 (CVE-2026-95210 CRITICAL; CVE-2026-95184, CVE-2026-95209 HIGH)": "libgnutls30t64 3.8.9-3+deb13u4 (trixie); Debian marks trixie vulnerable and unfixed",
-        "gcc (CVE-2026-95619 HIGH)": "libstdc++6 14.2.0-19 (gcc-14, trixie); vendor fix recorded only in Debian GCC14 14.4.0-3 / GCC13 13.5.0-3 (different branches)",
+        "tiff (CVE-2026-52490 CRITICAL)": "libtiff6 4.7.0-3+deb13u3 is still vendor-vulnerable; the TIFF12912 fix does not fix52490. Actual image/package/feature facts remain unmeasured",
+        "gcc (CVE-2026-95619 HIGH)": "libstdc++6 14.2.0-19 (gcc-14, trixie) remains vendor-vulnerable. The gcc-12 source status from the old image does not transfer automatically to the gcc-14 provider; actual installed source/version must be measured",
         "krb5 (CVE-2026-107778 HIGH)": "1.21.3-5+deb13u1 (trixie); Debian unfixed",
         "zlib (CVE-2026-85091 HIGH)": "zlib1g 1:1.3.dfsg+really1.3.1-1+b1 (trixie); Debian unfixed",
         "cyrus-sasl2 (CVE-2026-107161 HIGH)": "libsasl2-2 / libsasl2-modules-db 2.1.28+dfsg1-9 (trixie); Debian unfixed",
         "util-linux (CVE-2026-78410, CVE-2026-78408, CVE-2026-78409, CVE-2026-76642 HIGH)": "2.41.5-0+deb13u1 (trixie) does not cover these; vendor fixes recorded only in Debian Sid 2.42.3-1 / 2.42.4-1"
       },
-      "note": "This candidate resolves the Office/TIFF parsing findings that motivated the refresh, but it is NOT zero-CVE and introduces no waiver. GnuTLS, GCC, Kerberos, Cyrus, zlib and several util-linux findings remain open. Package metadata is NOT a completed security audit; installed-binary/use verification requires the real build and a fresh COMPLETE ECR scan."
+      "note": "Fresh official Debian tracker readback2026-10-10 identifies3 fixed-package candidates among the old15 findings: TIFF12912, util-linux53615 and LibreOffice63277 (security packageu8). The other12 remain vendor-vulnerable, including CRITICAL TIFF52490 and GnuTLS95210. This is package-status evidence only, not a built-image fix, reachability finding or waiver. Actual installed bytes and a fresh complete scan are required."
     },
     "expectedInheritedVersions": {
       "note": "Inherited installed packages refreshed by `apt-get -y --no-remove dist-upgrade` from snapshot 20261009T000000Z; the real build records the actual inventory. Not exact-pinned (they are not direct dependencies we select).",
@@ -285,7 +286,7 @@
   "unresolvedPins": [
     "Assembled image digest for THIS trixie candidate (assembledImageDigest null; the prior bookworm 7327 is a separate, bookworm build)",
     "LibreOffice/TIFF fix verification against installed bytes (requires the real build; NOT RUN locally)",
-    "Remaining vendor findings CVE-2026-95210/-95184/-95209 (GnuTLS), CVE-2026-95619 (GCC), CVE-2026-107778 (krb5), CVE-2026-85091 (zlib), CVE-2026-107161 (Cyrus SASL), CVE-2026-78408/-78409/-78410/-76642 (util-linux) have no coherent trixie fix in this snapshot",
+    "Remaining vendor findings CVE-2026-95210/-95184/-95209 (GnuTLS), CVE-2026-52490 (TIFF), CVE-2026-95619 (GCC), CVE-2026-107778 (krb5), CVE-2026-85091 (zlib), CVE-2026-107161 (Cyrus SASL), CVE-2026-78408/-78409/-78410/-76642 (util-linux) have no coherent trixie fix in this snapshot",
     "Release/InRelease signature verification is prospective via the retained signed Debian keyring and the real apt build; no local signature proof was produced",
     "Actual apt dependency resolution, native build, ECR rescan and the final image-inventory filesystem facts are all NOT RUN in this preparation session"
   ]

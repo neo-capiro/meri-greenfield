@@ -142,9 +142,20 @@ GnuTLS CRITICAL CVE-2026-95210 + HIGH CVE-2026-95184/-95209 (`libgnutls30t64 3.8
 GCC HIGH CVE-2026-95619 (`libstdc++6 14.2.0-19`); krb5 HIGH CVE-2026-107778 (`1.21.3-5+deb13u1`);
 zlib HIGH CVE-2026-85091 (`zlib1g 1:1.3.dfsg+really1.3.1-1+b1`); Cyrus SASL HIGH CVE-2026-107161
 (`libsasl2-2 2.1.28+dfsg1-9`); util-linux HIGH CVE-2026-78408/-78409/-78410/-76642 (`2.41.5-0+deb13u1`;
-only 53615 is fixed on trixie). The Office CVE-2026-63277 (libreoffice `4:25.2.3-2+deb13u8`) and TIFF
-CVE-2026-52490/-12912 (`libtiff6 4.7.0-3+deb13u3`) are the findings this refresh targets. This is
-NOT a zero-CVE recipe.
+only 53615 has a fixed-package candidate on trixie). The Office CVE-2026-63277 (libreoffice
+`4:25.2.3-2+deb13u8`) and TIFF CVE-2026-12912 (`libtiff6 4.7.0-3+deb13u3`) likewise have vendor
+fixed-package candidates; installed-image verification is unrun. **TIFF CVE-2026-52490 remains
+vendor-vulnerable at that version.** This is NOT a zero-CVE recipe or a completed disposition.
+
+## Codex owner corrections after Hermes completion2
+
+Hermes completion2 closed cleanly at2026-10-10T00:28:17.828951Z and returned the five-file commit `8e0379d192e12bfa57340c52283e435f79cdc814`. The initial inventory SHA/counts above are historical, not acceptance: the independent four-case audit rejectedc769, and the separately attributed Codex inventory correction must pass its own review. Nothing here transfers an old image admission.
+
+Codex then corrected this recipe/manifest/report. Fresh official Debian tracker readbacks at2026-10-10T00:22:37Z show only three fixed-package candidates among the old15 findings: TIFF12912 at4.7.0-3+deb13u3, util-linux53615 at2.41.5-0+deb13u1, and LibreOffice63277 in SECURITY4:25.2.3-2+deb13u8 (mainu6 remains vulnerable). **TIFF52490 is still vendor-vulnerable**; the prior broad Office/TIFF wording and its omission from remainingOpen were incorrect. All other12 vendor-vulnerable statuses remain open, including both old critical findings. These are package-status candidates, not proof of actual installed bytes or reachability. Version-range/source conflicts for util-linux78408/78409 and changing gcc source providers remain explicit. The proposed Cyrus PR892 is closed and unmerged and is not a released fix. Primary tracker links are https://security-tracker.debian.org/tracker/CVE-2026-52490 , https://security-tracker.debian.org/tracker/CVE-2026-12912 , https://security-tracker.debian.org/tracker/CVE-2026-53615 and https://security-tracker.debian.org/tracker/CVE-2026-63277 . Full fifteen-record evidence is retained in the integration owner's ignored IMAGE-SECURITY-CANDIDATE-STATUS outputs.
+
+The Docker inventory invocation now uses the existing declared120second/300000entry/2000000event/32MiBmanifest limits, matching the prospective worker-build copy/verifier. The prior300second/500000entry/64MiB invocation could produce a complete manifest refused by that verifier. This correction keeps the established tighter boundary; an actual build that exceeds it must fail rather than silently expand it. The permission-bit step now separately checks stat and final find status so failures inside printf/test command substitutions cannot be masked. It still uses path-based chmod in the isolated build and makes no globally atomic filesystem claim; final inventory checks observed races and forbidden privilege entries. No package, library, feature or version was removed to alter findings. The existing static metadata assertion now uses vendorFixedPackageCandidates and explicitly retains52490 in remainingOpen; its intermediate old-field TypeError is corrected, not hidden.
+
+Codex inventory owner commit `16bc2e5fcf25c22045a26d382968e025fa353a22` changes exactly the two inventory files. Current source SHA256 `f7f08d86a91f9cf6589deabb1304679b11bb8a2d80005a9bd1e5a49c7ea511e3`; test SHA256 `84614714771a5b14b19dde81da3628f001340586fc9011adb90270f4413d547d`. It carries recorded directory identities through descent, rechecks full ancestors and aliases through coverage, and requires literal output admission plus mandatory main emission. Original roots/pins/default limits are unchanged. The owner disclosed an initial24/25 Windows ancestor-change positive failure of unproven cause, improved the exact-path diagnostic and retained strict identity semantics. An explicitly bounded8iteration diagnostic replay and later25/25 passed; no identity normalization, skip or Linux mtime/ctime relaxation occurred. Codex integration independently reran the final exact25inventory tests with bundled Python3.12.14 and the corrected86worker static tests:25/25 and86/86, zero skipped. The earlier19/20 and85/86 results above are preserved historical failures. No native/Linux/image facts or security acceptance follow from these pure Windows fixtures.
 
 ## NOT RUN (explicit)
 
@@ -158,7 +169,7 @@ refuses to fabricate them. OFFICE DEBS WERE NOT DOWNLOADED and no apt was run lo
 
 - Only the base manifest/config bytes and the 7 wheels were byte-verified; the ~35 Debian
   `.deb` bytes and their installed-build facts are unverified until the real build.
-- GnuTLS/GCC/krb5/zlib/Cyrus/util-linux findings remain unfixed in this snapshot; a fresh COMPLETE
+- GnuTLS/TIFF52490/GCC/krb5/zlib/Cyrus/util-linux findings remain unfixed in this snapshot; a fresh COMPLETE
   scan is required before any disposition.
-- One owner inventory test is red on Windows for the documented POSIX-semantics reason.
+- Historical Windows inventory failures and the unproven initial ancestor-change failure remain disclosed; current exact25/25 pass with explicitly bundledPython3.12.14. Actual Linux traversal and image-build timing remain unrun.
 - No owner acceptance; separate actual Hermes review + Codex acceptance precede any build/admission.

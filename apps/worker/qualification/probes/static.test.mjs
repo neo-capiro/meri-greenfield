@@ -537,7 +537,10 @@ test('component-pins.json distinguishes the prior built candidate from the unbui
   assert.equal(pins.priorBuiltCandidate.integrationCommit, '8785118bff574e2cf3f520a542f6a7b56e075f9e');
   const open = pins.osPackages.securityFindings.remainingOpen;
   assert.ok(Object.keys(open).some((k) => k.includes('CVE-2026-95210')));
-  assert.ok(pins.osPackages.securityFindings.fixedInThisRefresh['libreoffice (CVE-2026-63277)'].includes('deb13u8'));
+  const fixedCandidates = pins.osPackages.securityFindings.vendorFixedPackageCandidates;
+  assert.ok(fixedCandidates['libreoffice (CVE-2026-63277)'].includes('deb13u8'));
+  assert.ok(Object.keys(open).some((k) => k.includes('CVE-2026-52490')));
+  assert.ok(Object.keys(fixedCandidates).every((k) => !k.includes('CVE-2026-52490')));
   assert.ok(pins.osPackages.expectedInheritedVersions['libgnutls30t64']);
 });
 

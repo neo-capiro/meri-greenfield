@@ -239,8 +239,10 @@ RUN set -eux; \
 # from unintended static REGULAR files via chmod and logs each affected path+mode.
 # NO library/utility/package removal and NO package-version change. This is
 # visibly separate from CVE disposition: it reduces the SUID/SGID surface and does
-# NOT fix package CVEs or waive findings. It fails closed on any find/stat error
-# or race. The two pinned Chrome helpers keep their exact bytes and root:root 4755
+# NOT fix package CVEs or waive findings. It checks find/stat/chmod outcomes;
+# the final inventory rejects observed filesystem races or forbidden modes.
+# These path-based chmod operations do not prove a globally atomic snapshot.
+# The two pinned Chrome helpers keep their exact bytes and root:root 4755
 # identity (required by the existing qualification contract).
 RUN set -eux; \
     helper_sb=/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox; \
@@ -252,9 +254,12 @@ RUN set -eux; \
     while IFS= read -r f; do \
       [ -n "$f" ] || continue; \
       if [ "$f" = "$helper_sb" ] || [ "$f" = "$helper_hyphen" ]; then continue; fi; \
-      printf '%s mode=%s\n' "$f" "$(stat -c '%a' "$f")" >> /opt/meri-worker/suid-sgid-reduced.txt; \
+      test -f "$f"; test ! -L "$f"; \
+      old_mode=$(stat -c '%a' -- "$f"); \
+      printf '%s mode=%s\n' "$f" "$old_mode" >> /opt/meri-worker/suid-sgid-reduced.txt; \
       chmod u-s,g-s "$f"; \
-      test -z "$(find "$f" -perm /6000 -print)"; \
+      remaining=$(find "$f" -perm /6000 -print); \
+      test -z "$remaining"; \
     done < /tmp/suid-files.list; \
     rm -f /tmp/suid-files.list; \
     echo "=== SUID/SGID bits reduced (two Chrome helpers preserved) ==="; \
@@ -267,7 +272,7 @@ RUN set -eux; \
 
 # END-OF-RECIPE STATIC INVENTORY (W02-08). Runs ONLY in the real linux/amd64
 # build, AFTER all installs/COPYs/chowns and after the privilege-bit reduction,
-# via the owner-closed stdlib probe probes/image-inventory.py (SHA 01b673c0...).
+# via the separately reviewed stdlib probe probes/image-inventory.py.
 # Its roots/pins/allow-list/output are COMPILED into the probe; the CLI supplies
 # only the exact declared absolute roots, the exact two pinned Chrome helper
 # allow-suid paths, bounds and the fixed output path. It never follows links into
@@ -282,8 +287,8 @@ RUN set -eux; \
       --root /usr --root /etc --root /var/lib/dpkg \
       --root /bin --root /sbin --root /lib --root /lib64 \
       --root /root --root /home \
-      --deadline-ms 300000 --max-entries 500000 --max-events 4000000 \
-      --max-manifest-bytes 67108864 --max-hash-bytes 536870912 \
+      --deadline-ms 120000 --max-entries 300000 --max-events 2000000 \
+      --max-manifest-bytes 33554432 --max-hash-bytes 536870912 \
       --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox \
       --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox \
       --out /opt/meri-worker/image-inventory.json; \
