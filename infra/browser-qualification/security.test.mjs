@@ -360,7 +360,7 @@ test('PutLogEvents classifier rejects errors and any rejected index (even zero)'
 test('python sources compile without bytecode side effects', () => {
   const code=String.raw`import ast,pathlib,re,sys
 root=pathlib.Path(sys.argv[1]);ast.parse((root/'host-evidence.py').read_text(),feature_version=(3,9))
-names=('__init__','config','evidence_io','classification','collection','poll')
+names=('__init__','config','evidence_io','classification','collection','poll','source_binding','admission','browser_capture','export_protocol','cli')
 mods=[root/'host_evidence'/(n+'.py') for n in names]
 assert {p.name for p in (root/'host_evidence').iterdir()}=={p.name for p in mods}
 for f in mods:ast.parse(f.read_text(),feature_version=(3,9))
@@ -378,7 +378,7 @@ print('Python3.9 grammar: observer +4 embedded Python blocks; author '+sys.versi
 test('Codex owner: frozen collector/classifier/poll/version bodies remain byte-identical to4fd85f7', () => {
   const code=String.raw`import ast,pathlib,subprocess,sys
 root=pathlib.Path(sys.argv[1]);base=subprocess.check_output(['git','show','4fd85f7:infra/browser-qualification/host-evidence.py'],text=True)
-files=[root/'host-evidence.py']+[root/'host_evidence'/(n+'.py') for n in ('__init__','config','evidence_io','classification','collection','poll')]
+files=[root/'host-evidence.py']+[root/'host_evidence'/(n+'.py') for n in ('__init__','config','evidence_io','classification','collection','poll','source_binding','admission','browser_capture','export_protocol','cli')]
 def bodies(t):
  d={}
  for n in ast.parse(t).body:
@@ -474,6 +474,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 sys.path.insert(0,str(pathlib.Path(sys.argv[1]).resolve().parent))
 s=importlib.util.spec_from_file_location('m',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+bc=sys.modules['host_evidence.browser_capture']
 root=pathlib.Path(sys.argv[2]).parent
 checks=[]
 def check(name,yes):checks.append(dict(name=name,passed=bool(yes)))
@@ -498,7 +499,7 @@ for mode in ('good','timeout','overflow','late'):
  def read(fd,n):return b'x'*(m.CAPTURE_FILE_MAX+1) if mode=='overflow' else parts[fd].pop(0)
  launched=[]
  def popen(argv,**kwargs):launched.append((argv,kwargs));return p
- with patch.object(m.os,'read',side_effect=read),patch.object(m,'process_platform_linux',return_value=False):
+ with patch.object(m.os,'read',side_effect=read),patch.object(bc,'process_platform_linux',return_value=False):
   r=m.capture_browser('c'*64,str(out),1 if mode=='timeout' else 120,popen,Selector,clock)
  check(mode+'-verdict',r['ok']==(mode=='good'));check(mode+'-reaped',r['clientReaped'] and p.waits==1)
  check(mode+'-one-owned-start',len(launched)==1 and launched[0][0]==['docker','start','--attach','c'*64] and launched[0][1]['start_new_session'] is True)

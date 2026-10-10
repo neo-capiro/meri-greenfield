@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "w02-17-browser-collector-extraction/1",
-  "generatedAt": "2026-10-10T07:55:59.708277+00:00",
-  "task": "W02-17 collector extraction, owner-completed offline source candidate",
+  "schemaVersion": "w02-20-browser-python-completion/1",
+  "generatedAt": "2026-10-10T09:10:00+00:00",
+  "task": "W02-20 focused Python completion, actual-Hermes author-prepared source candidate",
   "status": "INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST",
   "target": {
     "account": "967807252336",
@@ -256,31 +256,39 @@
     "Absolute termination deadline and terminated/root-volume-deletion verification are owner-side and not proven here.",
     "The W02-16 candidate binds the W02-08 tuple by immutable reference, configuration ID and OCI source revision. Changed source bytes require fresh full-source hashes, a separate actual review and a future immutable support build before any browser-host admission; static build success is not runtime/security admission.",
     "The pinned image's 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) remain open; the security disposition is unchanged and G1 stays OPEN.",
-    "W02-17 is a staged source extraction. The entry and six focused package files preserve the 39 frozen definitions; the 24 deferred entry functions remain for a later bounded extraction. The entry is still 49,064 bytes and is not the final small composition entry.",
+    "W02-20 completes the staged source extraction: the entry (3,265 bytes) is a small composition entry and the eleven package files preserve the 39 frozen + 24 moved definitions (plus one private helper). This is source organization only; it is not runtime/security/G1 admission.",
     "sourceManifestCoverage=false: current flat-three source validation, loader and support recipe do not cover the new package. INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST applies regardless of offline test results."
   ],
   "collectorExtraction": {
-    "baseCommit": "32401bca6104c7a1c6c877d48a7a5dc0d94e9362",
+    "integrationBase": "77dcd1644221c14dbdb19aa9574a456b9df4b21a",
+    "previousBaseCommit": "32401bca6104c7a1c6c877d48a7a5dc0d94e9362",
     "frozenReferenceEntrySha256": "cf27ce1d1c5cf0c45ba2a1fc2a6cf6d48bd0506728202645ecb4d4f68411679f",
+    "w17EntrySha256": "b9325f77a2528c3370f1a719eda909b3303826fcb028eb5b008ed12eba78b5dc",
     "frozenBodyMapCanonicalSha256": "ca0739e1504be61e819789af646dbad0950b6e67e141016a94969dba0ba65ea7",
     "frozenBodies": 39,
-    "deferredEntryFunctions": 24,
+    "movedBodies": 24,
+    "newPrivateHelpers": 1,
+    "deferredEntryFunctions": 0,
+    "configurationAssignments": 38,
+    "namedConfigStateBindings": 48,
+    "legacyEntryAliases": 63,
+    "pathValueNodeExceptions": 2,
     "sourceManifestCoverage": false,
     "sourceInventory": [
       {
         "path": "infra/browser-qualification/host-evidence.py",
-        "bytes": 49064,
-        "sha256": "b9325f77a2528c3370f1a719eda909b3303826fcb028eb5b008ed12eba78b5dc"
+        "bytes": 3265,
+        "sha256": "66a50dc6c99341af8b9d82277cde2de2a53e0af3dd4da76d6eeb1696721a880f"
       },
       {
         "path": "infra/browser-qualification/module-regressions.py",
-        "bytes": 12281,
-        "sha256": "000d62ac0f36a077b1539592c8da8ab6c33cb16887efe786f8784a633dd4a708"
+        "bytes": 30059,
+        "sha256": "6a5d82a6473af1ce503e9650e0a9dee82d0942dd786f34f15131b02e77971296"
       },
       {
         "path": "infra/browser-qualification/security.test.mjs",
-        "bytes": 40891,
-        "sha256": "27c85cf8a612259a0476c043ddbeee27921f03baecb558382df34f8df557f899"
+        "bytes": 41082,
+        "sha256": "4f64008c3f1e26cf288f1cfe88f641f9a2f268c2e9a5cde4507b747ff353d559"
       },
       {
         "path": "infra/browser-qualification/host_evidence/__init__.py",
@@ -289,13 +297,13 @@
       },
       {
         "path": "infra/browser-qualification/host_evidence/config.py",
-        "bytes": 2033,
-        "sha256": "32d74d6c8cc10f0ed744231f2d8edd09a96742057adb5d3f5db5e7c8ce202d59"
+        "bytes": 3728,
+        "sha256": "0c555429ad443440059969a0c806338a61429ae38d97de953f2606a99db0ff2e"
       },
       {
         "path": "infra/browser-qualification/host_evidence/evidence_io.py",
-        "bytes": 703,
-        "sha256": "918b894be309999f061ad0e1cfae25a43e2a6dedb599958b5de18fe5442f76ce"
+        "bytes": 3577,
+        "sha256": "c9cf64b93422d9d7b89ac413233d33e802fd3f68957f1e4e9b3d3f6e99ca03aa"
       },
       {
         "path": "infra/browser-qualification/host_evidence/classification.py",
@@ -311,10 +319,35 @@
         "path": "infra/browser-qualification/host_evidence/poll.py",
         "bytes": 4284,
         "sha256": "8868ff3145083848b7524a4e91914ddfb122075c63ce462df4afc61ebaa9d336"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/source_binding.py",
+        "bytes": 2002,
+        "sha256": "5ebb52c8f88dc5128c96aafc95f9048b1fadce8a16a053e3ef158dbac66b4e7c"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/admission.py",
+        "bytes": 19842,
+        "sha256": "6bac77ee984940d933f8bd121b52ca8030f456298cdfec97f5fcab8fd449a988"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/browser_capture.py",
+        "bytes": 5179,
+        "sha256": "1b7d7e5e3ec3bde295435125bbed9ccb155bbf68be1a716241aee1e140590f74"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/export_protocol.py",
+        "bytes": 11050,
+        "sha256": "df036706c05d8243f125c6a0734b06222d0b1997626f820a1f609aff2e64c284"
+      },
+      {
+        "path": "infra/browser-qualification/host_evidence/cli.py",
+        "bytes": 8707,
+        "sha256": "1fbf9a5918f03c4431f25de0825c541ba485977386b59f89b75c3cfff5c8210c"
       }
     ],
     "inventoryMeaning": "Exact offline source bytes only; this list is not a runtime loader, owner context, immutable support-image manifest or admission.",
-    "runtimeAssembly": "The unchanged flat-three loader/context/support recipe does not bind or package the six modules. Block builds and host launches until a separately allocated complete pre-import source-binding and packaging change passes independent review.",
-    "remainingOrganization": "Deferred browser/admission/export/CLI responsibilities remain in the entry; JavaScript extraction is separately pending. No unallocated module or protocol change is introduced."
+    "runtimeAssembly": "The unchanged flat-three loader/context/support recipe does not bind or package the eleven package files. Block builds and host launches until a separately allocated complete pre-import source-binding and packaging change passes independent review.",
+    "remainingOrganization": "W02-20 completed the deferred browser/admission/export/CLI extraction into focused modules; the entry is now a small composition entry. JavaScript organization and the future 14-asset pre-import protocol remain separately allocated."
   }
 }

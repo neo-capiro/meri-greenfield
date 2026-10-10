@@ -1,4 +1,4 @@
-"""W02-17 collector extraction: immutable pins, compiled patterns and bounds.
+"""W02-17/20 config: immutable pins, compiled patterns and bounds.
 
 Extracted verbatim from the reviewed host-evidence.py candidate; every value is
 unchanged. Import is inert: no mutable lifecycle state and no host IO live here.
@@ -32,3 +32,27 @@ MAX_OBSERVATION_BYTES = 2 * 1024 * 1024
 MAX_POLL_SECONDS = 300
 MAX_EXPORT_BYTES, MAX_EXPORT_EVENTS, MAX_EXPORT_CALLS = 8192, 40, 12
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+BROWSER_VERSION = "155.0.8059.12"
+PROBE_CMD = "/opt/meri-worker/probes/browser.mjs"
+EXPECTED_SECCOMP_PATH = "/opt/meri-browser-host/seccomp.json"
+EXPECTED_SECCOMP_SHA256 = "e62f4c3e3e7ce6de099ba7a0e3df0881b7b407b74dc664aef70f76f6316385c6"
+WORKSPACE_SOURCE = "/workspace/browser-host"
+RESOURCE_CAPS = {"PidsLimit": 512, "Memory": 4 * 1024 ** 3, "NanoCpus": 2 * 10 ** 9, "ShmSize": 1 * 1024 ** 3}
+EXPORT_CHUNK_RAW_MAX, EXPORT_CHUNK_B64_MAX, EXPORT_EVENT_MAX = 6144, 8192, 12 * 1024
+EXPORT_TOTAL_RAW_MAX, EXPORT_MAX_EVENTS, EXPORT_MAX_CALLS = 8 * 1024 * 1024, 1500, 32
+EXPORT_BATCH_BYTES, EXPORT_BATCH_EVENTS, EXPORT_EVENT_OVERHEAD = 900 * 1024, 100, 26
+CAPTURE_FILE_MAX = 2 * 1024 * 1024
+REQUIRED_SUBSTEPS = ("get_config", "nav-fixture", "snapshot", "download-nav", "download-bytes",
+                     "version-nav", "version-eval", "sandbox-nav", "sandbox-eval")
+SHA256_PREFIXED = re.compile(r"^sha256:[0-9a-f]{64}$")
+SUPPORT_PATTERN = re.compile(r"^" + re.escape(PINNED_IMAGE.split("@")[0]) + r"@sha256:[0-9a-f]{64}$")
+SAFE_IMAGE_ENV = {
+    "PATH": "/opt/meri-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "NODE_VERSION": "24.21.0", "YARN_VERSION": "1.22.22",
+    "HOME": "/workspace/home", "TMPDIR": "/tmp", "CLAUDE_CONFIG_DIR": "/workspace/config",
+    "PLAYWRIGHT_BROWSERS_PATH": "/opt/meri-browsers", "NODE_ENV": "production",
+    "MERI_QUALIFICATION_ONLY": "true", "MERI_SOURCES_ENABLED": "false", "CHROMIUM_SANDBOX_REQUIRED": "true",
+}
+CONTEXT_KEYS = {"run", "supportImage", "workerImage", "profileSha", "source"}
+RECORD_NAMES = {"run-record", "observer", "browser", "inspect", "versions", "preflight", "browserStdout", "browserStderr", "capture", "exit", "timer"}

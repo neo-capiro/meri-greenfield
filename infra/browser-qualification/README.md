@@ -1,21 +1,26 @@
 # Browser qualification source preparation
 
-W02-17 extracts the frozen collector into focused modules. Status is **INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST**: the unchanged flat-three loader, owner context and support-image recipe do not bind or package the new modules. `component-pins.json` records their exact offline bytes and `sourceManifestCoverage=false`; it does not enable a build or host launch.
+W02-20 completes the frozen collector extraction into focused modules. Status is **INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST**: the unchanged flat-three loader, owner context and support-image recipe do not bind or package the eleven package files. `component-pins.json` records their exact offline bytes and `sourceManifestCoverage=false`; it does not enable a build or host launch.
 
 | Module | Responsibility |
 | --- | --- |
 | `host_evidence/config.py` | Immutable pins, patterns and bounds |
-| `host_evidence/evidence_io.py` | Bounded evidence file primitives |
+| `host_evidence/evidence_io.py` | Bounded evidence file primitives and strict/bounded JSON helpers |
 | `host_evidence/classification.py` | Pure predicates and host classification |
 | `host_evidence/collection.py` | Collection, cancellation and executable-hash cache |
 | `host_evidence/poll.py` | Callback-based bounded polling |
+| `host_evidence/source_binding.py` | Canonical source root, source manifest and context binding |
+| `host_evidence/admission.py` | Sandbox/timer/browser/inspect admission reasons and run-record verification |
+| `host_evidence/browser_capture.py` | One bounded attach/start capture and run-record assembly |
+| `host_evidence/export_protocol.py` | Export build, strict validation, Put classification and batch rendering |
+| `host_evidence/cli.py` | Stdout dump, invocation-only signals and the CLI `main` |
 | `host_evidence/__init__.py` | Minimal package marker |
 
-The 39 frozen function/class segments retain their exact bytes. Ordinary imports compose them without wrappers or cycles. The entry sets bytecode suppression before package imports and aliases the collection module's single cancellation/cache dictionaries. Script execution finds the sibling package; source-file test imports explicitly add that directory only in test code.
+The 39 frozen function/class segments retain their exact bytes, and W02-20 moved the 24 deferred definitions into their focused modules (22 raw byte-identical; `source_manifest` and `_inspect_reasons` carry the only two permitted `__file__` value-node changes to the new `_source_root()` helper). Ordinary imports compose them without wrappers or cycles (config → evidence_io/classification → collection/source_binding → admission/browser_capture/export_protocol → cli → entry). The entry sets bytecode suppression before package imports and aliases the collection module's single cancellation/cache dictionaries. Script execution finds the sibling package; source-file test imports explicitly add that directory only in test code.
 
-This is the first bounded extraction. The 49,064-byte entry still contains 24 deferred functions for browser capture, admission, export and CLI behavior. Those responsibilities, the remaining JavaScript organization and complete pre-import asset binding need separate owned tasks before runtime assembly. Existing runtime behavior is not newly qualified by this refactor.
+W02-20 completes the deferred extraction. The entry is now a 3,265-byte composition entry (imports plus the `sys.exit(main())` guard). The remaining JavaScript organization and complete pre-import asset binding need separate owned tasks before runtime assembly. Existing runtime behavior is not newly qualified by this refactor.
 
-The focused canonical command is `node --test infra/browser-qualification/security.test.mjs`. Supply the three exact integration-owned ignored oracle inputs described below. On Windows select the installed Python through test-only `MERI_TEST_PYTHON` and Git Bash in the process-local PATH. The suite creates a fresh invocation directory, retains complete replay facts and asserts 23 direct codex, 23 embedded codex and 33 owner results separately. Embedded codex results duplicate the direct coverage. Seven new module cases and five harness-integrity cases remain distinct; no native host or cloud call is made. See the [implementation handoff](../../docs/coordination/reports/W02-17-COLLECTOR-EXTRACTION.md) for failure history and the owner completion check.
+The focused canonical command is `node --test infra/browser-qualification/security.test.mjs`. Supply the three exact integration-owned ignored oracle inputs described below. On Windows select the installed Python through test-only `MERI_TEST_PYTHON` and Git Bash in the process-local PATH. The suite creates a fresh invocation directory, retains complete replay facts and asserts 23 direct codex, 23 embedded codex and 33 owner results separately. Embedded codex results duplicate the direct coverage. Twenty-six new module cases and ten harness-integrity cases remain distinct; no native host or cloud call is made. See the [W02-20 completion handoff](../../docs/coordination/reports/W02-20-PYTHON-COMPLETION.md) for the current source completion and evidence, and the [W02-17 extraction handoff](../../docs/coordination/reports/W02-17-COLLECTOR-EXTRACTION.md) for earlier history.
 
 ## Existing worker-binding design and runtime limits
 
@@ -36,7 +41,7 @@ Export uses current positive millisecond timestamps and complete UTF-8 records. 
 
 After owner retrieval, validate the actual complete events with `python3 -B infra/browser-qualification/host-evidence.py --validate-export EVENTS.json --run-id UUID --stream host-UUID --context-file OWNER-CONTEXT.json`. The owner context must come from the reviewed template/build, independently of the retrieved stream. This checks reconstruction; the owner still must compare reconstructed run/source facts and run admission and independently apply the classifier. A final end line alone is insufficient.
 
-The target host interpreter is `/usr/bin/python3` **3.9**, which AWS states remains3.9 for the life of [Amazon Linux2023](https://docs.aws.amazon.com/linux/al2023/ug/python.html). The bootstrap rejects another major/minor and the run record exports the actual patch version. This authoring host uses Python3.14.7 and Node24.19.0 on Windows. Observer and four embedded Python blocks parse with Python3.9 grammar; source inspection found no3.10+ APIs. This is not an actual Python3.9 or AL2023 execution result. The native interpreter patch must be measured before acceptance. Windows fixtures use consistent birthtime comparison for evidence descriptors; Linux retains inode/size/mtime/ctime checks. Windows worktrees provide no OS isolation claim.
+The target host interpreter is `/usr/bin/python3` **3.9**, which AWS states remains3.9 for the life of [Amazon Linux2023](https://docs.aws.amazon.com/linux/al2023/ug/python.html). The bootstrap rejects another major/minor and the run record exports the actual patch version. This authoring host uses the bundled Python3.12.14 and Node24.19.0 on Windows. Observer and four embedded Python blocks parse with Python3.9 grammar; source inspection found no3.10+ APIs. This is not an actual Python3.9 or AL2023 execution result. The native interpreter patch must be measured before acceptance. Windows fixtures use consistent birthtime comparison for evidence descriptors; Linux retains inode/size/mtime/ctime checks. Windows worktrees provide no OS isolation claim.
 
 Run the canonical offline checks from the repository root:
 
