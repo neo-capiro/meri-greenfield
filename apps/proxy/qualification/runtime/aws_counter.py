@@ -107,7 +107,11 @@ class AwsNativeCounter:
         metadata = response["ResponseMetadata"]
         if (type(tokens) is not int or not 1 <= tokens <= self.limits.max_input_tokens
                 or type(metadata) is not dict
-                or set(metadata) != {"RequestId", "HTTPStatusCode", "HTTPHeaders", "RetryAttempts"}
+                or not {"RequestId", "HTTPStatusCode", "HTTPHeaders", "RetryAttempts"} <= set(metadata)
+                or set(metadata) - {"RequestId", "HTTPStatusCode", "HTTPHeaders", "RetryAttempts", "MaxAttemptsReached"}
+                # Pinned standard retry checker adds this even to HTTP200 when
+                # total_max_attempts=1. It is not evidence that a retry occurred.
+                or ("MaxAttemptsReached" in metadata and metadata["MaxAttemptsReached"] is not True)
                 or type(metadata["HTTPStatusCode"]) is not int or metadata["HTTPStatusCode"] != 200
                 or type(metadata["RetryAttempts"]) is not int or metadata["RetryAttempts"] != 0
                 or type(metadata["RequestId"]) is not str or not 1 <= len(metadata["RequestId"]) <= 256

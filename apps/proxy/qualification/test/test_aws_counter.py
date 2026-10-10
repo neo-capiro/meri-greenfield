@@ -1,4 +1,4 @@
-"""Offline real pinned client configuration + fake count function. Never sends."""
+"""Offline pinned SDK checks. All HTTP sends are forbidden or synthetic fakes."""
 import asyncio
 import copy
 import hashlib
@@ -18,6 +18,7 @@ with patch("socket.getaddrinfo",side_effect=AssertionError("NETWORK_FORBIDDEN"))
     from botocore.session import Session
     from botocore.config import Config
     from botocore.serialize import create_serializer
+    from botocore.awsrequest import AWSResponse
     from runtime.aws_counter import AwsNativeCounter
     from runtime.bedrock_body import AdmissionDenied, COUNT_MODEL_ID
 
@@ -34,16 +35,17 @@ class CounterTests(unittest.IsolatedAsyncioTestCase):
     def tearDown(self):
         for client in self.clients:client.close()
 
-    def client(self,**changes):
+    def client(self,*,real_operation=False,**changes):
         values=dict(region_name="us-east-1",signature_version="v4",connect_timeout=.01,read_timeout=.02,
                     retries={"mode":"standard","total_max_attempts":1},proxies={},ignore_configured_endpoint_urls=True)
         endpoint=changes.pop("endpoint_url",None);values.update(changes)
         client=Session().create_client("bedrock-runtime",region_name="us-east-1",endpoint_url=endpoint,aws_access_key_id="SYNTHETIC-NOT-CREDENTIAL",aws_secret_access_key="SYNTHETIC-NOT-SECRET",config=Config(**values))
         self.clients.append(client)
-        client._endpoint.make_request=lambda *a,**k:(_ for _ in ()).throw(AssertionError("SEND_FORBIDDEN"))
         self.calls=[]
-        def fake(**kwargs):self.calls.append(kwargs);return response()
-        client.count_tokens=fake
+        if not real_operation:
+            client._endpoint.make_request=lambda *a,**k:(_ for _ in ()).throw(AssertionError("SEND_FORBIDDEN"))
+            def fake(**kwargs):self.calls.append(kwargs);return response()
+            client.count_tokens=fake
         return client
 
     async def test_exact_final_bytes_and_foundation_count_observation(self):
@@ -66,6 +68,41 @@ class CounterTests(unittest.IsolatedAsyncioTestCase):
             client=self.client();counter=AwsNativeCounter(client,deadline=time.monotonic()+2)
             with self.assertRaises(AdmissionDenied):await counter.count(item)
             self.assertEqual(self.calls,[])
+
+    async def test_real_sdk_serializes_signs_parses_one_fake_http_200(self):
+        # Keep count_tokens, serializer, signer, endpoint and retry checker REAL.
+        # Replace only the lowest HTTP send boundary; no socket/network operation.
+        client=self.client(real_operation=True);sent=[]
+        class SyntheticRaw:
+            def stream(self):yield b'{"inputTokens":7}'
+        def send(request):
+            sent.append(request)
+            return AWSResponse(request.url,200,{"content-type":"application/json","x-amzn-requestid":"synthetic-operation"},SyntheticRaw())
+        client._endpoint.http_session.send=send
+        client.meta.events.register("after-call.bedrock-runtime.CountTokens",lambda parsed,**kwargs:observed.append(copy.deepcopy(parsed)))
+        observed=[]
+        counter=AwsNativeCounter(client,deadline=time.monotonic()+5)
+        value=await counter.count(params())
+        self.assertEqual((value.input_tokens,value.model_id,value.origin),(7,COUNT_MODEL_ID,"aws-counttokens"))
+        self.assertEqual(value.native_body_sha256,hashlib.sha256(RAW).hexdigest())
+        self.assertEqual(len(sent),1);self.assertEqual(len(observed),1)
+        metadata=observed[0]["ResponseMetadata"]
+        self.assertEqual(set(metadata),{"RequestId","HTTPStatusCode","HTTPHeaders","MaxAttemptsReached","RetryAttempts"})
+        self.assertIs(metadata["MaxAttemptsReached"],True);self.assertEqual(metadata["RetryAttempts"],0)
+        request=sent[0];self.assertEqual(request.method,"POST")
+        self.assertEqual(request.url,"https://bedrock-runtime.us-east-1.amazonaws.com/model/anthropic.claude-sonnet-4-6/count-tokens")
+        import base64
+        serialized=json.loads(request.body)
+        self.assertEqual(set(serialized),{"input"});self.assertEqual(set(serialized["input"]),{"invokeModel"})
+        self.assertEqual(set(serialized["input"]["invokeModel"]),{"body"})
+        self.assertEqual(base64.b64decode(serialized["input"]["invokeModel"]["body"],validate=True),RAW)
+        auth=request.headers["Authorization"]
+        if type(auth) is bytes:auth=auth.decode("ascii")
+        self.assertTrue(auth.startswith("AWS4-HMAC-SHA256 "))
+        self.assertIn("/us-east-1/bedrock/aws4_request",auth)
+        # Never print or retain the synthetic Authorization value.
+        with self.assertRaisesRegex(AdmissionDenied,"SECOND_COUNT"):await counter.count(params())
+        self.assertEqual(len(sent),1)
 
     async def test_client_policy_and_endpoint_refuse(self):
         for options in ({"retries":{"mode":"standard","total_max_attempts":2}}, {"proxies":None},
@@ -100,6 +137,9 @@ class CounterTests(unittest.IsolatedAsyncioTestCase):
         for n in (True,-1,0,8193,7.0):bad.append({**response(),"inputTokens":n})
         for key,value in (("HTTPStatusCode",500),("HTTPStatusCode",True),("RetryAttempts",1),("RetryAttempts",False),("RequestId",None)):
             r=response();r["ResponseMetadata"][key]=value;bad.append(r)
+        for value in (False,"true",1,None,[]):
+            r=response();r["ResponseMetadata"]["MaxAttemptsReached"]=value;bad.append(r)
+        r=response();r["ResponseMetadata"]["UnknownRetryField"]=True;bad.append(r)
         for r in bad:
             client=self.client();calls=[]
             def bad_response(**kwargs):calls.append(kwargs);return r
