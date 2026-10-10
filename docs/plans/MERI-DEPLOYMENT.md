@@ -1,6 +1,6 @@
 # Meri deployment plan for Codex and Hermes
 
-Prepared 9 October 2026. Save this file in the new repository as `docs/plans/MERI-DEPLOYMENT.md`. The final section contains the prompt to start Codex.
+Prepared 9 October 2026; updated 9 October 2026 with the standalone Meri Figma design and UI acceptance contract. Save this file in the new repository as `docs/plans/MERI-DEPLOYMENT.md`. The final section contains the prompt to start Codex.
 
 Build a new, independently deployed Meri workspace with the Claude Agent SDK, AI Elements, governed Capiro data and memory access, browser work, downloadable artifacts, and durable execution. Codex coordinates implementation, delegates bounded work sessions to Hermes, verifies the resulting commits, and owns integration and deployment. Hermes is a development worker; it is not part of Meri's production agent runtime.
 
@@ -13,7 +13,7 @@ Create a new repository and independent infrastructure. Read the existing Capiro
 | Area | Adopt | Build only the Capiro-specific part |
 | --- | --- | --- |
 | Agent runtime | Claude Agent SDK, its supported Claude Code runtime, built-in tools, hooks, subagents, skills, compaction, and session APIs | Tool contracts, tenant context, permission rules, and the adapter to the UI |
-| Interface | Next.js, React, AI Elements and AI SDK UI transport | Conversation workspace, approvals, source views, artifact versions, and schedule controls |
+| Interface | Next.js, React, AI Elements and AI SDK UI transport; the linked Meri Figma section as the design reference | Implement the approved screens, interactions and states; connect them to real conversations, approvals, evidence, artifact versions and schedules |
 | Browser work | One supported Playwright integration and its matching browser build | Tenant-bound browser ownership, authenticated access, action approval, and receipts |
 | Durable execution | Temporal server and TypeScript SDK | Workflows for runs, approvals, schedules, execution activities, and verified checkpoints |
 | Identity | Clerk's official backend SDK for the existing identity integration | Current membership, client walls, mailbox access, and resource authorization |
@@ -28,6 +28,36 @@ Create a new repository and independent infrastructure. Read the existing Capiro
 Pin adopted versions, licenses, image digests, and compatibility evidence in `docs/COMPONENTS.md`. Check licenses before copying code or bundling skills. In particular, write original Office skills rather than assuming third-party Office skill text is freely redistributable. A custom replacement requires an observed upstream limitation and a recorded decision. Do not add another agent loop, swarm scheduler, browser framework, or workflow engine by default.
 
 The AI SDK is the UI transport layer, not a second model orchestration loop. Use the Claude Agent SDK for Meri's agent behavior. Public search uses supported SDK tools or a qualified search provider; institutional retrieval always goes through the new authorized gateway.
+
+### Figma design and UI implementation contract
+
+Use the [standalone Meri section in Capiro 3.0 — UI Redesign](https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=439-81406) as the design and interaction reference. [Meri Home](https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=442-81437) is the primary entry. File key: `Zc2dEN5aLU47dVdsewDmiJ`; page: `411:40601`; owned Meri section: `439:81406`. Other sections of the file belong to separate Capiro frontend work.
+
+The inspected design baseline contains 85 main frames, including five state boards; 29 overlays; 60 state examples; 15 reusable component families; and 11 named walkthrough entry points. It covers the defined standalone v1 UI capability families. Those counts describe designs, not implemented features or full parity with current Meri. The file remains editable: at W00, record the actual Figma revision or available version identifier, capture date, frame IDs and reference screenshots. Keep that snapshot in the repository so later design edits cannot silently change an active ticket's acceptance criteria.
+
+Figma specifies layout, typography, component appearance, navigation, dialogs and representative states. Next.js/React and AI Elements provide the executable UI. Backend/event contracts specify real state transitions, authorization and outcomes. Prototype navigation is an example, not an API specification or evidence that the SDK implements the corresponding behavior. Generated Figma snippets may accelerate layout work after review; do not ship a screenshot-based UI or generated code without adopted components, real events and acceptance checks.
+
+Create `docs/UI-SPEC.md`, `docs/UI-COVERAGE.md` and a versioned reference snapshot under `docs/design/meri/`. Record:
+
+- Each frame, overlay, state and reusable component with its Figma node ID, release classification, implementation owner and route or component.
+- Each distinct visible control with a stable UI identifier, expected transition, real API/event or local UI behavior, authorization rule, disabled/pending/error/success states, and Playwright coverage. Repeated shell controls may reference one shared contract.
+- The selected conversation, tenant/client scope, run, artifact and exact artifact version carried through every action. Define close/cancel/back behavior, focus restoration and scroll position explicitly.
+- Responsive behavior, light/dark tokens, keyboard interactions, labels, long-content behavior, and reference screenshots at the design's desktop, tablet and phone sizes. Use the 1440px desktop and 390px phone frames as initial baselines; record exact tablet sizes and additional breakpoints during discovery.
+- Every discrepancy between the design, supported component APIs and real product behavior. Resolve it through a recorded decision; never silently omit an agreed v1 capability or represent an unavailable operation as working.
+
+Implement the generic patterns with AI Elements and shadcn/ui primitives before writing custom UI. Map Conversation/Message/PromptInput to streaming chat; Plan/Task/Queue/Tool to run activity; Sources/InlineCitation to authorized evidence; Confirmation to governed approval; Artifact/Attachments/FileTree to files; and Context/Checkpoint/WebPreview/CodeBlock/Terminal to their applicable workspace views. Use one application event adapter to the SDK. Adopt existing preview and authoring libraries from this plan rather than building Office editors. Keep component/version/license records current; add Code Connect only if maintaining design-to-code mappings would materially help this team.
+
+Implement the Meri / Portfolio / Modules mode switch in the Meri view, with Meri active. Do not build Portfolio or Modules content in this workstream. Keep the header, design tokens and mode-handoff contract aligned with the separate new Capiro frontend. At W00 choose and record whether the shared shell hosts a versioned Meri UI package or routes to its independent authenticated entry point. Separate UI, agent and Capiro backend repositories/deployments are compatible with that contract. Test preservation of tenant/client scope and authorized navigation when destinations exist; otherwise render explicit disabled placeholders. Do not create guessed destinations or dead links.
+
+The UI contract preserves these v1 boundaries:
+
+- Initial source mutations remain governed memory proposals/review, task creation and artifact filing. Approvals stay inside Meri.
+- Artifact previews are read-only. Natural-language revisions produce immutable new versions; full Office WYSIWYG editing is separate scope.
+- Browser access includes public browsing and individually qualified authenticated workflows. Show only the actions and upload/download permissions actually enabled for that connection; the design does not imply access to a user's whole desktop.
+- Progress views show supported activity summaries, evidence and tool receipts. Do not expose private model reasoning or invent internal SDK events.
+- Data coverage, current-Meri business-workflow parity, runtime isolation and durable recovery still require their own implementation and evidence. The design cannot satisfy those gates.
+
+Keep the existing quantitative release targets and runtime architecture. This update adds design traceability and UI acceptance; it does not rebuild Capiro's backend, replace AI Elements, expand source mutations or treat a prototype as a deployed agent.
 
 ### Production boundaries
 
@@ -54,8 +84,8 @@ Use at most three concurrent implementation sessions and one independent review 
 | --- | --- | --- |
 | A | Hermes implementer | Runtime qualification, worker image, execution broker, checkpoints, infrastructure, Temporal |
 | B | Hermes implementer | Source inventory, gateway authorization, governed memory, selected commands |
-| C | Hermes implementer | AI Elements workspace, artifact records, native file generation, previews, original skills |
-| D | Separate Hermes reviewer/session | Independent policy, browser, UI, artifact, recovery, and load verification |
+| C | Hermes implementer | Figma-mapped AI Elements workspace, UI coverage ledger, shell integration, artifact records, native file generation, previews, original skills |
+| D | Separate Hermes reviewer/session | Independent policy, browser, UI behavior/visual/accessibility, artifact, recovery, and load verification |
 | Integration and release | Codex | Shared contracts, dependency order, migration allocation, conflict resolution, final checks, deployments |
 
 A worker may propose an interface change, but Codex approves and integrates it before dependent work begins. Give each task a base commit and owned paths. One session owns a shared file, lockfile, migration, or contract at a time. Reserve migration identifiers centrally.
@@ -101,10 +131,11 @@ apps/gateway/             Current authorization, source tools and model/data pro
 packages/contracts/       Events, tools, proposals, artifacts and checkpoints
 packages/skills/          Original skills and templates
 infra/                    New CDK stacks and environment configuration
-evals/                    Promptfoo, policy fixtures, Playwright and recovery checks
+evals/                    Promptfoo, policy fixtures, Playwright UI/visual and recovery checks
 docs/plans/               Architecture and this deployment plan
+docs/design/meri/         Pinned Figma references, frame IDs, screenshots and UI decisions
 docs/coordination/        Status, decisions, task briefs and worker reports
-docs/                     Components, source inventory and capability parity
+docs/                     Components, UI spec/coverage, source inventory and capability parity
 ```
 
 Use the installed Hermes board as the task-status authority when qualified; `STATUS.md` is Codex's dated projection and handoff. Git task briefs are the authoritative task contracts. If Kanban is unavailable, use one Git-backed task ledger and the CLI fallback rather than inventing a replacement scheduler.
@@ -115,16 +146,16 @@ Each row is a work package split into one- to two-hour Hermes tickets. Those are
 
 | Package | Owner | Depends on | Required output |
 | --- | --- | --- | --- |
-| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision |
-| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned events, tools, proposals, artifact/checkpoint schemas; fixture conventions |
+| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision |
+| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned events, tools, proposals, artifact/checkpoint schemas; fixture conventions; screen/control/state mappings in UI-SPEC and UI-COVERAGE |
 | W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike and Temporal production-topology decision |
 | W03 Isolated foundation | A | W02 | New CDK stacks, OIDC CI roles, persistence, networking, secrets, deployment/runbooks |
 | W04 Authorization and reads | B | W01; W03 for live integration | Two-tenant and within-tenant fixtures; memory read; full agreed source coverage |
 | W05 Durable runs | A | W02–W03 | Broker ownership/fencing, SDK SessionStore, file checkpoints, events, approvals and schedules |
-| W06 Workspace interface | C | W01; W05 for integration | Streaming, history, stop/steer/resume/fork, approvals, files, sources and schedule controls |
+| W06 Workspace interface | C | W01; W05 for integration | Figma-mapped AI Elements screens and responsive states; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons with shell handoff |
 | W07 Artifacts and browser | C, sequential scoped tickets | W02; W04–W06 for authorized integration | Native files, render/revise/download workflow; public browsing, then qualified authenticated work |
 | W08 Selected mutations | B | W04 passes; W05 | Memory proposals, tasks and artifact filing with approval, idempotency and receipts |
-| W09 Independent verification | D | Starts with W01; expands as packages land | Adversarial policy suite, UI/browser tests, artifact benchmark, recovery/load evidence |
+| W09 Independent verification | D | Starts with W01; expands as packages land | Adversarial policy suite, UI coverage audit and behavior/visual/accessibility tests, browser tests, artifact benchmark, recovery/load evidence |
 | W10 Staging candidate | Codex; D verifies | W03–W09 accepted | Immutable candidate deployed and complete release evidence |
 | W11 Controlled release | Codex | W10; release authorization | Internal allowlist, bounded tenant canary, production rollout and rollback evidence |
 
@@ -181,13 +212,13 @@ Advance environments only when the evidence passes. Work on independent packages
 
 | Gate | Required evidence |
 | --- | --- |
-| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability and data inventory; no guessed production target |
+| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability and data inventory; pinned Meri Figma reference, UI inventory and shared-shell integration decision; no guessed production target |
 | G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, interrupt/resume, checkpoint and egress spike; production Temporal persistence, authentication/TLS, backup and upgrade design |
 | G2 Isolated development | New stack deployed with source connections disabled; seeded identity/policy fixtures; task capabilities, restricted IAM/network paths, encryption, and conversation ownership pass |
 | G3 Read-only data | One client and governed memory first, then all agreed domains; pagination/count/history/citations/freshness verified; tenant and within-tenant policy fixtures, including the measured revocation deadline, pass |
-| G4 Execution workspace | SDK plus UI/artifact/browser integration; worker loss, approval-wait restart, session/files recovery, cancellation and single-writer fencing pass |
+| G4 Execution workspace | SDK plus Figma-mapped UI/artifact/browser integration; core walkthroughs pass against real contracts, not mock success; worker loss, approval-wait restart, session/files recovery, cancellation and single-writer fencing pass |
 | G5 Selected commands | Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations |
-| G6 Staging | Exact immutable candidate passes full task/policy/artifact/UI/browser/recovery/load suite, retention/deletion, deployment rollback, database restore and workflow compatibility |
+| G6 Staging | Exact immutable candidate passes full task/policy/artifact/UI/browser/recovery/load suite, Figma visual/responsive/accessibility checks and UI coverage audit, retention/deletion, deployment rollback, database restore and workflow compatibility |
 | G7 Controlled release | Internal users, then bounded tenant allowlist; observable task quality/cost/error evidence; release owner authorizes the candidate before broader production rollout |
 
 Authenticated browser actions qualify individually after public browsing. OAuth/connector secrets remain in the trusted layer. Browser profiles, cookies, downloads and uploads are conversation-bound. External side effects follow the same proposal/current-authority/idempotency rules as other commands.
@@ -219,7 +250,11 @@ A release passes only when every applicable criterion has evidence against the s
 | Current Meri scope | Every selected capability has a new implementation and passing behavior/policy fixture; deferred items explicitly recorded |
 | Native artifacts | 100% benchmark files open; supported formulas and reference totals correct; at least 95% meet the agreed human quality rubric; zero critical clipping/corruption; originals preserved |
 | Recovery and side effects | 100% restart/retry suite passes; recovery within two minutes on healthy infrastructure; zero duplicate mutations after repeated delivery or worker termination |
-| User interface | 100% visible controls pass end-to-end checks, including stop, steer, resume, fork, approve/reject, preview, versions, download and schedules |
+| User interface | 100% distinct visible controls for the accepted scope have mapped behavior and passing checks, including stop, steer, resume, fork, approve/reject, citations, upload, preview, versions, revision, exact-version download, filing and schedules; disabled controls cannot execute |
+| Design traceability | 100% Figma baseline frames, overlays and state examples are classified and mapped to implementation/fixtures or an explicit existing scope deferral; zero silently omitted agreed v1 screens or states |
+| Visual and responsive behavior | Approved desktop/tablet/phone and light/dark references reviewed against the staging build; zero critical clipping, overlaps, unreadable content or missing actions; all accepted visual differences recorded |
+| Interaction and accessibility | Keyboard navigation, accessible names, visible focus, dialog focus/return, contrast, long content/scrolling and reduced-motion behavior pass; selected scope and exact artifact/version are preserved through actions |
+| Mode switch | Meri active; Portfolio/Modules content absent from this workstream; configured shared-shell handoffs preserve authorized tenant/client context, or unavailable destinations are explicitly disabled and tested |
 | Browser operation | Authentication, cancellation, uploads/downloads, restart, isolation and revocation pass for each enabled browser workflow |
 | Performance and cost | At 10 concurrent runs, p95 UI acknowledgement at most two seconds and p95 fresh-task readiness at most 90 seconds; tenant budgets, concurrency and runtime limits enforced; 100% runs/attempts have measured usage, including failed/cancelled/retried work |
 | Data lifecycle | Retention/deletion fixtures pass across transcripts, events, uploads, browser state, snapshots, previews and artifacts; documented backup/restore rules prevent renewed access |
@@ -229,6 +264,10 @@ A release passes only when every applicable criterion has evidence against the s
 Define UI acknowledgement as the request being accepted, not model completion. Measure fresh-task readiness separately from a warm worker. Set numeric per-task and tenant spend caps after the qualification benchmark; do not invent a universal dollar target.
 
 Artifact validation includes rendering the generated document/slides, opening the native format, checking referenced inputs and formulas, and comparing revisions. LibreOffice recalculation is not universal Excel equivalence. Unsupported features must be rejected or disclosed rather than silently lost.
+
+Run the 11 named Figma walkthrough entry points as implementation review paths, translating relevant paths into Playwright scenarios with real fixture-backed services. A linked Figma button or screenshot match does not count as a passing behavior test. Cover stream reconnection, background completion after browser closure, authorization changes, stale/expired proposals, stop/retry/fork, upload/extraction failures, selected-version revisions/downloads, filing receipts and schedule lifecycle. Exercise empty, loading, partial, error, revoked and recovery states from the 60-state catalog.
+
+Use Playwright's screenshot and interaction capabilities rather than inventing a separate UI QA platform. Fix and record viewports, fonts, fixture data, clock and dynamic-content handling for reproducible comparisons. Set reviewed visual thresholds during qualification; preserve evidence of intended differences instead of blindly updating snapshots. Independent reviewer D verifies the exact candidate against the pinned design and UI coverage ledger. All existing data, artifact, recovery, isolation and performance criteria remain mandatory.
 
 ## 8. Rollback and recovery
 
@@ -264,6 +303,8 @@ Dependency commits:
 Owned paths:
 Paths/interfaces requiring Codex approval:
 Adopted components and pinned versions:
+Figma frame/component IDs and pinned design reference:
+UI controls/states, API/event contracts and Playwright coverage owned:
 Required behavior and authorization boundaries:
 Acceptance checks and expected evidence:
 Runtime/turn budget:
@@ -309,6 +350,16 @@ for the UI, Playwright for browser work, Temporal for durable execution, and
 the adopted open-source artifact/testing components. Use existing Capiro
 code only to discover data schemas, current policies and capability scope.
 
+Use the standalone Meri Figma section as the UI design and interaction reference:
+https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=439-81406
+Inspect and pin the current reference before UI implementation. Write
+docs/UI-SPEC.md and docs/UI-COVERAGE.md, mapping frames, controls and states
+to AI Elements/shadcn components, real routes/events/APIs, authorization and
+Playwright checks. Figma supplies designs; React and AI Elements supply the
+working interface. Keep Meri/Portfolio/Modules buttons in the Meri view and
+implement Meri content only. Discover and document the separate new frontend's
+shared-shell handoff; do not invent Portfolio/Modules destinations or content.
+
 Orchestrate real Hermes working sessions on the available execution host.
 Discover its executable, help, profiles and working directories first.
 Qualify installed Kanban; use one existing/approved dispatcher when suitable.
@@ -331,6 +382,10 @@ until the defined scope and release gates pass. Checkpoint partial work and
 resume explicit sessions instead of discarding changes or restarting blindly.
 Keep status, component/license records, source inventory, selected/deferred
 capability scope, evidence and release manifests current.
+Give UI workers exact Figma node IDs and a pinned reference. Adopt existing
+components before custom code. Independently review behavior, visual fidelity,
+responsive/accessibility states and every visible control; do not accept a
+clickable mockup or static success message as implemented backend behavior.
 
 Deploy isolated development and staging to authorized targets and complete
 all qualification, data-policy, artifact, recovery, browser and load gates.
@@ -356,7 +411,10 @@ Verify installed versions and current API support before executing examples.
 
 - [Claude Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview)
 - [AI Elements](https://elements.ai-sdk.dev/)
+- [Standalone Meri Figma design](https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=439-81406)
+- [Figma Code Connect — optional design/component mapping](https://developers.figma.com/docs/code-connect/)
 - [Playwright](https://playwright.dev/docs/intro)
+- [Playwright visual comparisons](https://playwright.dev/docs/test-snapshots)
 - [Temporal TypeScript](https://docs.temporal.io/develop/typescript)
 - [Hermes CLI](https://hermes-agent.nousresearch.com/docs/reference/cli-commands)
 - [Hermes Kanban](https://hermes-agent.nousresearch.com/docs/user-guide/features/kanban)
