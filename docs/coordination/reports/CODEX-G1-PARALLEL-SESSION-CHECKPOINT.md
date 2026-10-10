@@ -1,6 +1,51 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,10 October2026,21:12UTC. **G0 accepted; G1 active; G2–G7
+Current continuation,10 October2026,22:10UTC. **Eight deployment gates:
+G0 accepted; G1 active/OPEN; G2–G7 not entered.** Three bounded Codex
+implementation workstreams plus the integration owner use dedicated worktrees;
+no Hermes runs. Later-gate preparation does not establish environment promotion.
+
+- SDK immutable`:1` is [independently reconciled and owner accepted with NO
+  Start authority](CODEX-G1-SDK-INITIAL-PUBLICATION-OWNER.md). Original update
+  UNKNOWN and publisherexit1/consumed reservations remain unchanged. The actual
+ 45-read capture completed; [independent inspection](CODEX-G1-SDK-FRESH-AUTHORITY-INDEPENDENT.md)
+  found strict UTF-8 parsing refuses a real CP1252 scan byte. Canonical output
+  encoding repair is underway; the old raw response remains intact. Authority
+  is now stale and must be recaptured after accepted repair. No native Start.
+- The proxy's [exact88 dependency plan](CODEX-G1-PROXY-NATIVE-DEPENDENCY-CLOSURE.md)
+  passed owner DATA/raw-Git verification:516 payloads/371 external records.
+  Isolated offline installation succeeded after a retained Windows path-length
+  failure and explicit new shorter venv. The installed freeze and guarded real
+  LiteLLM import session is closing; it reports actual missing`httpx2`, not native
+  app/auth acceptance. No DB/listener/provider/engine was started. Final evidence
+  and independent installation/import review remain required.
+- Browser SOURCE3 strict-shape repair is accepted offline. The [Windows reader
+  preparation](CODEX-G1-BROWSER-WINDOWS-READER-PREPARATION.md) and [distinct
+  review](CODEX-G1-BROWSER-WINDOWS-READER-INDEPENDENT.md) are now owner accepted
+  narrowly:81/119 sealed record occurrences/raw Git verified. Full identity
+  remains checked within lstat/fstat, with the reviewed Windows cross-API rule.
+  No lifecycle dispatch follows. SOURCE5 is preparing strict retained-probe
+  provenance and truthful recovered-create integration; live wire/host proof
+  remains open. The earlier rejected owned-junction cleanup remains disclosed;
+  no alternate deletion was attempted.
+- The separate frontend remains accepted offline at28c3000: Home presentation
+  and responsive checks pass; remaining screens and backend interactions are
+  unfinished. Current Meri/Capiro remain untouched, sources disabled and model
+  spending$0/$10. All49 current plus five older findings remain OPEN;
+  Office DEFERRED. The75 real-request approved source location/owner remains
+  pending the human's promised follow-up.
+
+G1 still requires the real SDK loopback and qualified trusted proxy path,
+interrupt/replacement/checkpoint/resume/stale-fence tests, actual browser/renderer
+sandbox and managed physical cleanup, Office/security disposition,
+operation-specific REL-02 contracts, actual-proxy RG-08 and frozen measured
+cohorts. Full application deployment/data/workspace/commands/staging/release
+remain G2–G7. No cutover is authorized. Historical checkpoints below retain
+the facts and limitations that applied at their recorded times.
+
+## Historical checkpoint,21:12UTC
+
+10 October2026,21:12UTC. **G0 accepted; G1 active; G2–G7
 not started.** Four bounded Codex sessions include the integration owner,
 implementation and distinct review in dedicated worktrees. No Hermes is used.
 Only reviewed source is accepted; prepared fixtures and cloud registrations do

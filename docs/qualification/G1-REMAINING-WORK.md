@@ -1,6 +1,25 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 21:12Z: see the [current eight-gate status
+Current continuation,10 October2026 22:10Z: [current eight-gate status](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+records G0 accepted/G1 OPEN/G2–G7 unentered. Exact SDK immutableversion:1 is
+owner accepted with no Start authority; original failed operations remain.
+The45-read authority capture completed but its real scan encoding is refused by
+canonical UTF-8 parsing, and the600-second authority window is stale. Complete
+the narrow encoding source repair/distinct review, recapture fresh authority,
+then resolve prior cleanup/one-run residual risk before one native SDK launch.
+Browser Windows reader SOURCE is accepted; retained-probe strict provenance and
+truthful recovered-create integration remain under repair. Actual browser host/
+renderer sandbox/managed physical cleanup are open. Exact88 proxy dependencies
+installed in a new shorter isolated venv; the first real guarded LiteLLM import
+failed missinghttpx2. Final installation/import evidence and supported dependency
+repair are next, then native auth/lifespan, trusted TLS/ECS, counting/usage,
+revocation and durable aggregate$10 controls. SDK interruption/resume, separate
+Office/security disposition, operation-specific REL-02/actual-proxy RG-08 and
+frozen measured cohorts still close G1. The75 real-request approved source
+location/owner awaits the human's promised follow-up. Inference$0/$10;
+source connections disabled/current Meri untouched/no cutover.
+
+Historical continuation,10 October2026 21:12Z: see the [eight-gate status
 and six G1 work groups](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md).
 Proxy self-cancellation SOURCE is independently accepted, retaining the original
 40ms test failure and full-channel disconnect limit. Actual trusted LiteLLM/TLS/

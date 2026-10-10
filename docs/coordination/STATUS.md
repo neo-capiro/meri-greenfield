@@ -1,6 +1,23 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 21:12Z: **eight deployment gates total;
+Current continuation,10 October2026 22:10Z: **eight deployment gates total;
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+records owner-accepted exact SDK immutableversion:1 with no Start authority;
+the original publisherexit1/consumed reservations remain. All45 actual readonly
+authority captures completed, but canonical UTF-8 parsing refuses the real scan
+encoding; a narrow source repair and subsequent fresh capture are required.
+Browser Windows reader SOURCE is independently accepted; strict retained-probe/
+recovered-create integration remains under preparation. Exact88 proxy packages
+installed after a preserved Windows path-length failure; the first guarded REAL
+LiteLLM import reports missinghttpx2 and remains FAILED, with final evidence under
+closure. Three bounded Codex workstreams plus integration continue; no Hermes.
+No native SDK Start/browser host/provider/source/cutover action follows. All49
+current/five older security findings remain OPEN, Office DEFERRED, inference$0/$10.
+Separate frontend Home is accepted offline; complete UI integration is later work.
+The75 real-request approved location/owner remains pending the human's follow-up.
+Dated observations below are historical, including superseded source holds.
+
+Historical continuation,10 October2026 21:12Z: **eight deployment gates total;
 G0 accepted, G1 active, G2–G7 not started.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records independently accepted proxy cancellation SOURCE and exact SDK name/helper
 reviews. The actual revision update returned no revisionId; its attempt is consumed
