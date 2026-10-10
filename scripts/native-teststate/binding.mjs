@@ -40,15 +40,20 @@ function deepFreeze(value) {
   return value;
 }
 
-// Accepted fixed W14 source pins (candidate 3da63e67…, integrated fcc666fb). Byte
-// length AND sha256 are checked before and after the fixed import. Recursively frozen.
+// Accepted fixed W19 source pins (exact raw Git9f bytes of the accepted eight-file
+// compiler closure). Byte length AND sha256 are checked before and after the fixed
+// import. Recursively frozen. The first six positions preserve the original W14/W18
+// record order; the two appended members (probe-profiles, canary-task-definition)
+// complete the eight-file closure.
 export const FIXED_SOURCE_PINS = deepFreeze([
-  { path: APP_RELATIVE_PATH, bytes: 422, sha256: '813a912999253b147d3d88ac50d24fbe7dd063aa98c3453a9e5e825d3fe7f70c' },
-  { path: 'infra/native-enforcement/lib/binding.mjs', bytes: 7772, sha256: 'a14cea09763f44cd727857b2031700b4cadc9f9b53ba049e3b0ba237207db007' },
-  { path: 'infra/native-enforcement/lib/expressions.mjs', bytes: 12917, sha256: 'e5a1931f3058e02e20bff10faf837b65eac11c226077e9a66d0501d323b4b648' },
-  { path: 'infra/native-enforcement/lib/workflow.mjs', bytes: 23805, sha256: '4dfca118e7ea7c5f59ff684f9a9301fbd8e96cccb9eaf6b187403fb7b5ecdc19' },
-  { path: 'infra/native-enforcement/lib/infrastructure.mjs', bytes: 3625, sha256: '6e57537dfbb675a8bc7673e26185cd4df0f769637ac3b783c4cca02681b95ae0' },
-  { path: 'infra/native-enforcement/lib/task-definition.mjs', bytes: 7965, sha256: 'fbe770912afaa119c50a9e1681a691a605b94c8a6f9ebd686e3555ab9e9a36ad' },
+  { path: APP_RELATIVE_PATH, bytes: 618, sha256: 'e03076acb2ccda59bd38c2e2763f94af0d057f6c6c1bd3e699e25c72314ab1ed' },
+  { path: 'infra/native-enforcement/lib/binding.mjs', bytes: 16458, sha256: '8df3f2f02e23a4f3587a342dcb882404c7c0f70be6e57b84b9d1b0af0eaea35a' },
+  { path: 'infra/native-enforcement/lib/expressions.mjs', bytes: 13776, sha256: '933dcca53027688be2e6373bed818890882f239bc5da5af1af827277213b87aa' },
+  { path: 'infra/native-enforcement/lib/workflow.mjs', bytes: 25002, sha256: '09171cbc66ce0efbd643969d92c92c742f89d0b41804eefd65064f2175aa39ca' },
+  { path: 'infra/native-enforcement/lib/infrastructure.mjs', bytes: 4780, sha256: 'c0ddb78cbfb28ed0fd3360b0dec86d12371240fb7d87c0452dec0408454a53af' },
+  { path: 'infra/native-enforcement/lib/task-definition.mjs', bytes: 8996, sha256: '3d45d054150c5e7706253694a725761afb96abe5a39d1a3ecc0bfb1adb686436' },
+  { path: 'infra/native-enforcement/lib/probe-profiles.mjs', bytes: 4920, sha256: '67dff6ffb4025e1767226a5bb330998ad78bd9d76083319adb910a22e3397660' },
+  { path: 'infra/native-enforcement/canary-task-definition.mjs', bytes: 2612, sha256: '524135d00aec413a6393e69a7d22974160109b01cc4ced71d35f26440d3e4df5' },
 ]);
 
 const FORBIDDEN_JSON_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
@@ -74,7 +79,7 @@ export function validateSourceRecord(record, pin) {
   return { ok: true };
 }
 
-/** Verify all six source records; returns the first drift. */
+/** Verify all fixed source records; returns the first drift. */
 export function verifySourceRecords(records, pins = FIXED_SOURCE_PINS) {
   if (!Array.isArray(records) || records.length !== pins.length) return { ok: false, reason: 'source record set size mismatch' };
   for (let i = 0; i < pins.length; i += 1) {
@@ -169,7 +174,7 @@ async function importFixedApp() {
  * Compose the inert, branded initial-TestState binding.
  *
  * Order is deliberate: snapshot the caller buffers synchronously, check their raw byte
- * identity and parse them, read+verify the six fixed source records, THEN dynamically
+ * identity and parse them, read+verify the eight fixed source records, THEN dynamically
  * import the accepted compiler, compile, reproduce the graph, and re-verify the source
  * records. No caller-supplied reader, import path or import function is accepted: the
  * production source reads are fixed and internal, so a caller cannot synthesize passing
@@ -197,7 +202,7 @@ export async function composeFixedBinding(input = {}) {
   const parsedGraph = parseStrictJson(graphSnapshot, { maxBytes: BOUNDS.graph });
   if (!parsedGraph.ok) return { ok: false, reason: `graph json: ${parsedGraph.reason}` };
 
-  // Six fixed source records, verified BEFORE the dynamic import (internal reads).
+  // Eight fixed source records, verified BEFORE the dynamic import (internal reads).
   const preSource = readAndVerifyFixedSources();
   if (!preSource.ok) return { ok: false, reason: preSource.reason };
 

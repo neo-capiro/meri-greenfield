@@ -14,7 +14,7 @@
 
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdtempSync, mkdirSync, cpSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
@@ -34,6 +34,19 @@ const PINS_PATH = join(INPUT_DIR, 'static-pins.json');
 const GRAPH_PATH = join(INPUT_DIR, 'definition.json');
 const hasInputs = existsSync(PINS_PATH) && existsSync(GRAPH_PATH);
 const SUBPROCESS_TIMEOUT_MS = 60000;
+
+// Sanitized child environment: strip NODE_OPTIONS/NODE_PATH and provider/AWS credential
+// variables (the removed NAMES are recorded, never values). Children also get a confined
+// TMP/TEMP/TMPDIR. The pinned Node is process.execPath (same executable as the suite).
+const STRIP_EXACT = new Set(['NODE_OPTIONS', 'NODE_PATH']);
+const isProviderVar = (k) => /^AWS_/i.test(k) || /^OPENROUTER/i.test(k) || /^OPENAI/i.test(k)
+  || /^ANTHROPIC/i.test(k) || /^GEMINI/i.test(k) || /^CLOUDFLARE/i.test(k) || /^AZURE/i.test(k);
+const baseChildEnv = { ...process.env };
+const removedEnvNames = [];
+for (const key of Object.keys(baseChildEnv)) {
+  if (STRIP_EXACT.has(key) || isProviderVar(key)) { removedEnvNames.push(key); delete baseChildEnv[key]; }
+}
+const childEnv = (extra = {}) => ({ ...baseChildEnv, ...extra });
 
 const RUN_UUID = '87890e41-3f88-4b4d-b1d3-aaa9b85aaa9b';
 const OTHER_UUID = '22222222-2222-4222-8222-222222222222';
@@ -61,9 +74,9 @@ after(() => { try { rmSync(TMP, { recursive: true, force: true }); } catch { /* 
 test('owner input data is present', () => {
   assert.ok(hasInputs, `owner input data absent under ${INPUT_DIR}`);
 });
-test('six fixed source records verify', { skip: !hasInputs }, () => {
+test('eight fixed source records verify', { skip: !hasInputs }, () => {
   assert.deepEqual(verifySourceRecords(binding.sourceRecords), { ok: true });
-  assert.equal(binding.sourceRecords.length, 6);
+  assert.equal(binding.sourceRecords.length, 8);
 });
 test('compile reproduces the exact inert graph once', { skip: !hasInputs }, () => {
   assert.equal(binding.runtimeEnabled, false);
@@ -118,7 +131,7 @@ test('caller input mutation across composition cannot substitute bytes', { skip:
 test('a caller-supplied source reader cannot bypass production source checks', { skip: !hasInputs }, async () => {
   const result = await composeFixedBinding({ staticPinsBytes: pinsBytes, graphBytes, sourceReader: () => { throw new Error('ignored'); } });
   assert.equal(result.ok, true);
-  assert.equal(result.binding.sourceRecords.length, 6);
+  assert.equal(result.binding.sourceRecords.length, 8);
 });
 
 // ---------------------------------------------------------------------------
@@ -364,7 +377,7 @@ test('bounded read touches the filesystem only on invocation', () => {
 test('modules are importable with no input files or repo cwd (no IO instrumented)', () => {
   const url = (rel) => pathToFileURL(join(HERE, 'native-teststate', rel)).href;
   const code = `await import(${JSON.stringify(url('binding.mjs'))});await import(${JSON.stringify(url('requests.mjs'))});await import(${JSON.stringify(url('files.mjs'))});process.stdout.write('ok');`;
-  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { cwd: TMP, encoding: 'utf8', timeout: SUBPROCESS_TIMEOUT_MS });
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { cwd: TMP, encoding: 'utf8', shell: false, env: childEnv(), timeout: SUBPROCESS_TIMEOUT_MS });
   assert.equal(r.status, 0, r.stderr);
   assert.equal(r.stdout, 'ok');
 });
@@ -381,7 +394,7 @@ test('parseArgs enforces exactly three absolute flags', () => {
   assert.equal(parseArgs(['/positional', '--graph', '/y', '--seed', '/z']).ok, false);
   assert.equal(parseArgs(['--static-pins', '/a', '--graph', '/y', '--seed', '/z']).ok, true);
 });
-const runCli = (args) => spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8', shell: false, timeout: SUBPROCESS_TIMEOUT_MS });
+const runCli = (args) => spawnSync(process.execPath, [CLI, ...args], { encoding: 'utf8', shell: false, env: childEnv(), timeout: SUBPROCESS_TIMEOUT_MS });
 test('CLI emits one plan to stdout and does not alter inputs', { skip: !hasInputs }, () => {
   const seedPath = join(TMP, 'seed.json');
   writeFileSync(seedPath, seedBytes());
@@ -414,3 +427,230 @@ test('CLI source validation stays real: drifted graph is refused', { skip: !hasI
   writeFileSync(seedPath, seedBytes());
   assert.notEqual(runCli(['--static-pins', PINS_PATH, '--graph', badGraph, '--seed', seedPath]).status, 0);
 });
+
+// ---------------------------------------------------------------------------
+// G. Real-loader source closure matrix (fresh confined clones, same pinned Node)
+//
+// Each case builds a fresh confined clone of the accepted W18 five files (four
+// production plus the existing test, which is never imported as an oracle), the
+// scanner two and the complete eight-file compiler, then runs a small production-only
+// runner in a fresh same-Node shell:false process. Positive pristine provenance is
+// asserted before every negative.
+// ---------------------------------------------------------------------------
+const PACK = join(ROOT, '.task-inputs', 'W02-22-owner-inputs');
+const PACK_NEW = join(PACK, 'source-new');
+const PACK_OLD6 = join(PACK, 'source-old-six');
+const PACK_W18 = join(PACK, 'source-w18-accepted');
+const hasPack = existsSync(join(PACK, 'inputs.json')) && existsSync(join(PACK, 'four-request-baseline', 'identity.request.json'));
+
+const W18_FIVE = [
+  'scripts/prepare-native-teststate.mjs',
+  'scripts/native-teststate/binding.mjs',
+  'scripts/native-teststate/files.mjs',
+  'scripts/native-teststate/requests.mjs',
+  'scripts/test-native-teststate.mjs',
+];
+const SCANNER_TWO = ['scripts/sdk-capture/json-records.mjs', 'scripts/sdk-capture/protocol.mjs'];
+const COMPILER_RELS = FIXED_SOURCE_PINS.map((p) => p.path);
+const OLD_SIX_RELS = [
+  'infra/native-enforcement/app.mjs',
+  'infra/native-enforcement/lib/binding.mjs',
+  'infra/native-enforcement/lib/expressions.mjs',
+  'infra/native-enforcement/lib/workflow.mjs',
+  'infra/native-enforcement/lib/infrastructure.mjs',
+  'infra/native-enforcement/lib/task-definition.mjs',
+];
+const INPUT_RELS = ['.task-inputs/W02-18-owner-inputs/static-pins.json', '.task-inputs/W02-18-owner-inputs/definition.json'];
+
+const CLONES = join(TMP, 'clones');
+const CHILD_SCRATCH = join(TMP, 'child-scratch');
+mkdirSync(CLONES, { recursive: true });
+mkdirSync(CHILD_SCRATCH, { recursive: true });
+
+const LOADER_RUNNER = `import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { composeFixedBinding } from './scripts/native-teststate/binding.mjs';
+const root = process.cwd();
+const pins = readFileSync(join(root, '.task-inputs', 'W02-18-owner-inputs', 'static-pins.json'));
+const graph = readFileSync(join(root, '.task-inputs', 'W02-18-owner-inputs', 'definition.json'));
+const r = await composeFixedBinding({ staticPinsBytes: pins, graphBytes: graph });
+const out = r.ok
+  ? { ok: true, records: r.binding.sourceRecords.map((x) => x.path), graphSha256: r.binding.graphSha256, graphBytesLength: r.binding.graphBytesLength, bindingId: r.binding.staticBindingId }
+  : { ok: false, reason: r.reason };
+process.stdout.write(JSON.stringify(out));
+`;
+
+const POST_AWAIT_RUNNER = `import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { composeFixedBinding } from './scripts/native-teststate/binding.mjs';
+const root = process.cwd();
+const target = process.argv[2];
+const pins = readFileSync(join(root, '.task-inputs', 'W02-18-owner-inputs', 'static-pins.json'));
+const graph = readFileSync(join(root, '.task-inputs', 'W02-18-owner-inputs', 'definition.json'));
+const seq = ['call'];
+const pending = composeFixedBinding({ staticPinsBytes: pins, graphBytes: graph });
+seq.push('pending');
+{
+  const buf = readFileSync(join(root, target));
+  const i = buf.indexOf(0x20);
+  if (i < 0) throw new Error('no space byte to mutate');
+  buf[i] = 0x09;
+  writeFileSync(join(root, target), buf);
+}
+seq.push('mutated');
+const r = await pending;
+seq.push('awaited');
+process.stdout.write(JSON.stringify({ ok: r.ok, reason: r.reason ?? null, seq, target }));
+`;
+
+const copyExact = (srcRoot, rel, dstRoot) => {
+  const bytes = readFileSync(join(srcRoot, rel));
+  const dst = join(dstRoot, rel);
+  mkdirSync(dirname(dst), { recursive: true });
+  writeFileSync(dst, bytes);
+  return bytes;
+};
+
+// A length-preserving, syntax-valid raw drift: flip the first space byte to a tab. The
+// file stays a valid module (and its header comment stays a comment) so only the raw
+// byte identity check can catch it.
+const driftInPlace = (target) => {
+  const buf = readFileSync(target);
+  const i = buf.indexOf(0x20);
+  assert.ok(i >= 0, `no space byte to mutate in ${target}`);
+  buf[i] = 0x09;
+  writeFileSync(target, buf);
+};
+
+const makeClone = (name, loaderRoot, compilerRoot, compilerRels) => {
+  const dir = join(CLONES, name);
+  mkdirSync(dir, { recursive: true });
+  for (const rel of W18_FIVE) copyExact(loaderRoot, rel, dir);
+  for (const rel of SCANNER_TWO) copyExact(ROOT, rel, dir);
+  for (const rel of compilerRels) copyExact(compilerRoot, rel, dir);
+  for (const rel of INPUT_RELS) copyExact(ROOT, rel, dir);
+  writeFileSync(join(dir, 'runner.mjs'), LOADER_RUNNER);
+  writeFileSync(join(dir, 'post-await-runner.mjs'), POST_AWAIT_RUNNER);
+  return dir;
+};
+
+const pristineBase = hasPack ? makeClone('base', ROOT, ROOT, COMPILER_RELS) : null;
+const freshClone = (name) => {
+  const dir = join(CLONES, name);
+  cpSync(pristineBase, dir, { recursive: true });
+  return dir;
+};
+const runClone = (dir, script = 'runner.mjs', args = []) => {
+  const r = spawnSync(process.execPath, [join(dir, script), ...args], {
+    cwd: dir, encoding: 'utf8', shell: false, timeout: SUBPROCESS_TIMEOUT_MS,
+    env: childEnv({ TMP: CHILD_SCRATCH, TEMP: CHILD_SCRATCH, TMPDIR: CHILD_SCRATCH }),
+  });
+  let json = null;
+  try { json = JSON.parse(r.stdout); } catch { /* leave null: the raw capture stays in r.stdout */ }
+  return { r, json };
+};
+
+test('real-loader pristine control loads the accepted eight-file closure', { skip: !hasPack }, () => {
+  const dir = freshClone('pristine');
+  const { r, json } = runClone(dir);
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(json, r.stdout);
+  assert.equal(json.ok, true, JSON.stringify(json));
+  assert.deepEqual(json.records, COMPILER_RELS);
+  assert.equal(json.graphSha256, GRAPH_RAW.sha256);
+  assert.equal(json.graphBytesLength, GRAPH_RAW.bytes);
+  assert.equal(json.bindingId, EXPECTED_STATIC_BINDING_ID);
+  for (const rel of [...W18_FIVE, ...SCANNER_TWO, ...COMPILER_RELS]) {
+    assert.ok(readFileSync(join(dir, rel)).equals(readFileSync(join(ROOT, rel))), rel);
+  }
+});
+
+for (const rel of COMPILER_RELS) {
+  const slug = rel.replace(/[^a-z0-9]+/gi, '-');
+  test(`real-loader genuinely-missing clone refuses before import: ${rel}`, { skip: !hasPack }, () => {
+    const dir = freshClone(`missing-${slug}`);
+    rmSync(join(dir, rel));
+    const { r, json } = runClone(dir);
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(json, r.stdout);
+    assert.equal(json.ok, false);
+    assert.equal(json.reason, `source unreadable: ${rel}`);
+    for (const other of COMPILER_RELS) {
+      if (other === rel) continue;
+      assert.ok(readFileSync(join(dir, other)).equals(readFileSync(join(ROOT, other))), other);
+    }
+  });
+  test(`real-loader syntax-valid raw-drift clone refuses before import: ${rel}`, { skip: !hasPack }, () => {
+    const dir = freshClone(`drift-${slug}`);
+    driftInPlace(join(dir, rel));
+    const { r, json } = runClone(dir);
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(json, r.stdout);
+    assert.equal(json.ok, false);
+    assert.ok(json.reason.startsWith(`source drift: ${rel}`) || json.reason.startsWith(`source unreadable: ${rel}`), json.reason);
+    for (const other of COMPILER_RELS) {
+      if (other === rel) continue;
+      assert.ok(readFileSync(join(dir, other)).equals(readFileSync(join(ROOT, other))), other);
+    }
+  });
+}
+
+for (const rel of ['infra/native-enforcement/lib/probe-profiles.mjs', 'infra/native-enforcement/canary-task-definition.mjs']) {
+  test(`real-loader post-await mutation is refused after the precheck: ${rel}`, { skip: !hasPack }, () => {
+    const dir = freshClone(`postawait-${rel.includes('canary') ? 'canary' : 'probe'}`);
+    const { r, json } = runClone(dir, 'post-await-runner.mjs', [rel]);
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(json, r.stdout);
+    assert.equal(json.ok, false);
+    assert.ok(json.reason.startsWith(`source drift: ${rel}`), json.reason);
+    assert.deepEqual(json.seq, ['call', 'pending', 'mutated', 'awaited']);
+    assert.equal(json.target, rel);
+  });
+}
+
+test('old-six loader with the new eight-file compiler refuses (no fallback)', { skip: !hasPack }, () => {
+  const dir = makeClone('mismatch-old-loader', PACK_W18, PACK_NEW, COMPILER_RELS);
+  const { r, json } = runClone(dir);
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(json, r.stdout);
+  assert.equal(json.ok, false);
+  assert.ok(json.reason.startsWith('source drift: infra/native-enforcement/app.mjs') || json.reason.startsWith('source unreadable: infra/native-enforcement/app.mjs'), json.reason);
+});
+test('new eight-file loader with the old-six compiler refuses (no fallback)', { skip: !hasPack }, () => {
+  const dir = makeClone('mismatch-old-compiler', ROOT, PACK_OLD6, OLD_SIX_RELS);
+  const { r, json } = runClone(dir);
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(json, r.stdout);
+  assert.equal(json.ok, false);
+  assert.ok(json.reason.startsWith('source drift: infra/native-enforcement/app.mjs') || json.reason.startsWith('source unreadable: infra/native-enforcement/app.mjs'), json.reason);
+});
+
+// ---------------------------------------------------------------------------
+// H. Retained raw requests and whole old plan facts (only plan.source six->eight)
+// ---------------------------------------------------------------------------
+const packInputs = hasPack ? JSON.parse(readFileSync(join(PACK, 'inputs.json'), 'utf8')) : null;
+const STRICT_SOURCE_KEYS = ['path', 'bytes', 'sha256'];
+
+for (const caseName of (packInputs ? packInputs.fourRequestBaselines.map((b) => b.case) : [])) {
+  test(`retained raw request reproduces byte-exactly and old plan facts hold: ${caseName}`, { skip: !hasInputs || !hasPack }, () => {
+    const base = packInputs.fourRequestBaselines.find((b) => b.case === caseName);
+    const rawSeed = readFileSync(join(PACK, base.seed.path));
+    const rawRequest = readFileSync(join(PACK, base.request.path));
+    assert.equal(createHash('sha256').update(rawSeed).digest('hex'), base.seed.sha256);
+    assert.equal(createHash('sha256').update(rawRequest).digest('hex'), base.request.sha256);
+    assert.equal(rawRequest.length, base.request.bytes);
+    const built = buildRequestPlan({ binding, seedBytes: rawSeed });
+    assert.equal(built.ok, true, built.reason);
+    const plan = built.plan;
+    assert.equal(Object.keys(plan).join(','), base.completePlanBaselineSelector.topLevelPlanKeys.join(','));
+    assert.equal(plan.requestBytes, rawRequest.toString('utf8'));
+    assert.equal(JSON.stringify(plan.request), plan.requestBytes);
+    assert.equal(plan.requestSha256, base.request.sha256);
+    const { request, requestBytes, source, ...rest } = plan;
+    assert.deepEqual(rest, base.oldPlanFactsOtherThanRequestBytesAndSource);
+    assert.deepEqual(Object.keys(plan.source), base.sourceObjectKeys);
+    assert.equal(plan.source.records.length, 8);
+    for (const rec of plan.source.records) assert.deepEqual(Object.keys(rec), STRICT_SOURCE_KEYS);
+    assert.deepEqual(plan.source.records, packInputs.newCompilerPins.map((p) => ({ path: p.path, bytes: p.bytes, sha256: p.sha256 })));
+  });
+}

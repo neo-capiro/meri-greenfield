@@ -1,4 +1,5 @@
 import { LIMITS, prefix } from './binding.mjs';
+import { PROFILE_NATIVE, PROFILE_CANARY } from './probe-profiles.mjs';
 
 // JSONata expression helper. All values are inert data; nothing here performs IO.
 export const J = e => `{% ${e} %}`;
@@ -31,10 +32,18 @@ export const taskCore = e => `{'arn':${e}.taskArn,'clusterArn':${e}.clusterArn,'
 // identity (arn/definition) plus an explicit truncation marker so containment survives.
 export const retainTask = e => `($f:=${taskFacts(e)};${byteBound('$f', LIMITS.ledgerBytes)}?$f:$merge([${taskCore(e)},{'truncated':true}]))`;
 
-export function buildPredicates(p) {
+// Fixed public native predicate helper: exactly one argument, no caller-supplied profile data.
+export function buildPredicates(p) { return buildPredicateSet(p, PROFILE_NATIVE); }
+// Fixed canary predicate helper: the closed mode is selected internally; the caller can pass
+// no profile/fragment object. Not re-exported by app.mjs and grants no authority by itself.
+export function buildCanaryPredicates(p) { return buildPredicateSet(p, PROFILE_CANARY); }
+function buildPredicateSet(p, profile) {
  const taskPrefix = `${prefix}task/${p.clusterArn.split('/')[1]}/`;
  const taskArnTest = e => `($type(${e})='string'?$count($match(${e},/^${taskPrefix.replaceAll('/','\\/')}[a-f0-9]{32}$/))=1:false)`;
- const selected = `($ctx.run.probeKind='sdk'?${lit(p.taskDefinitionArns.sdk)}:${lit(p.taskDefinitionArns.office)})`;
+ // Native keeps the reviewed sdk/office ternary byte-for-byte; canary selects its single
+ // compiled revision literal. Replacing the native ternary with a generic expression would
+ // change the native expression bytes, so the native branch is retained literally.
+ const selected = profile.mode==='canary' ? lit(p.taskDefinitionArns.canary) : `($ctx.run.probeKind='sdk'?${lit(p.taskDefinitionArns.sdk)}:${lit(p.taskDefinitionArns.office)})`;
  const group = `'meri-greenfield-qualification:' & $ctx.run.probeKind`;
  const worker = '$ctx.current.worker';
  const tags = `[{'key':'QualificationRun','value':$ctx.run.uuid},{'key':'QualificationProbe','value':$ctx.run.probeKind},{'key':'MeriComponent','value':'native-enforcement'}]`;

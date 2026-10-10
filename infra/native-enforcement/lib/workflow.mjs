@@ -1,10 +1,17 @@
-import { buildNativeEnforcementAdmission,isCompiledBinding,LIMITS,PLATFORM,rolePrefix } from './binding.mjs';
-import { J,lit,now,array,currentOwned,buildPredicates,byteBound,pushIssue,issue,errSummary,retainTask,taskFacts,taskCore,workerOf,commitCtx,boundedExpr } from './expressions.mjs';
+import { buildNativeEnforcementAdmission,buildCanaryEnforcementAdmission,isCompiledBinding,isCanaryBinding,assertCanaryBoundary,LIMITS,PLATFORM,rolePrefix } from './binding.mjs';
+import { J,lit,now,array,currentOwned,buildPredicates,buildCanaryPredicates,byteBound,pushIssue,issue,errSummary,retainTask,taskFacts,taskCore,workerOf,commitCtx,boundedExpr } from './expressions.mjs';
+import { PROFILE_NATIVE,PROFILE_CANARY } from './probe-profiles.mjs';
 
-export function buildNativeEnforcementStateMachine(binding=buildNativeEnforcementAdmission()){
- if(!isCompiledBinding(binding))return {QueryLanguage:'JSONata',StartAt:'AdmissionRefused',States:{AdmissionRefused:{Type:'Fail',Error:'AdmissionRefused',Cause:'missing complete static preparation'}}};
+// Shared inert graph builder. The native and canary entry points select a closed mode via
+// private provenance: native accepts only native-compiled bindings (and rejects canary), and
+// canary accepts only canary-registered bindings. Native graph/policy bytes are preserved
+// because the native profile carries the exact reviewed fragments.
+function buildStateMachine(binding,profile){
+ const ok=profile.mode==='canary'?isCanaryBinding(binding):(isCompiledBinding(binding)&&!isCanaryBinding(binding));
+ if(!ok)return {QueryLanguage:'JSONata',StartAt:'AdmissionRefused',States:{AdmissionRefused:{Type:'Fail',Error:'AdmissionRefused',Cause:'missing complete static preparation'}}};
+ if(profile.mode==='canary')assertCanaryBoundary();
  const p=binding.pins, machineArn=`arn:aws:states:${p.region}:${p.account}:stateMachine:${p.stateMachineName}`, managedRoleArn=rolePrefix+p.managedRoleName;
- const {taskArnTest,selected,group,worker,coverage,ownership,terminal,mismatch,ready,safeRaw,attachmentsCompatible,attachmentsContradictory,eniIdExpr,eniIpExpr,eniGood}=buildPredicates(p);
+ const {taskArnTest,selected,group,worker,coverage,ownership,terminal,mismatch,ready,safeRaw,attachmentsCompatible,attachmentsContradictory,eniIdExpr,eniIpExpr,eniGood}=profile.mode==='canary'?buildCanaryPredicates(p):buildPredicates(p);
  const states={};
  // ---- graph primitives -----------------------------------------------------------------
  const choice=(name,cs,otherwise)=>states[name]={Type:'Choice',Choices:cs.map(([condition,next])=>({Condition:J(condition),Next:next})),Default:otherwise};
@@ -34,7 +41,7 @@ export function buildNativeEnforcementStateMachine(binding=buildNativeEnforcemen
  // ---- admission ------------------------------------------------------------------------
  const stsPrefix=`arn:aws:sts::${p.account}:assumed-role/${p.managedRoleName}/`;
  const identity=`$type($raw)='object' and $raw.Account=${lit(p.account)} and ($type($raw.Arn)='string'?$count($match($raw.Arn,/^${stsPrefix.replaceAll('/','\\/')}[A-Za-z0-9+=,.@_-]{2,64}$/))=1:false) and $states.context.Execution.RoleArn=${lit(managedRoleArn)}`;
- const guard=`${binding.runtimeEnabled} and $type($states.input)='object' and $count($keys($states.input))=5 and $states.input.runUuid=${lit(p.runUuid)} and ($states.input.probeKind='sdk' or $states.input.probeKind='office') and $states.input.executionName=('meri-native-' & $states.input.probeKind & '-' & $states.input.runUuid) and $states.context.Execution.Name=$states.input.executionName and $states.context.StateMachine.Id=${lit(machineArn)} and $states.input.staticBindingId=${lit(binding.staticBindingId)} and ($type($states.input.t0Ms)='number'?$states.input.t0Ms=$floor($states.input.t0Ms) and $states.input.t0Ms<=$toMillis($states.context.Execution.StartTime) and $toMillis($states.context.Execution.StartTime)-$states.input.t0Ms<=30000:false)`;
+ const guard=`${binding.runtimeEnabled} and $type($states.input)='object' and $count($keys($states.input))=5 and $states.input.runUuid=${lit(p.runUuid)} and ${profile.probeKindTest} and $states.input.executionName=${profile.executionNameExpr} and $states.context.Execution.Name=$states.input.executionName and $states.context.StateMachine.Id=${lit(machineArn)} and $states.input.staticBindingId=${lit(binding.staticBindingId)} and ($type($states.input.t0Ms)='number'?$states.input.t0Ms=$floor($states.input.t0Ms) and $states.input.t0Ms<=$toMillis($states.context.Execution.StartTime) and $toMillis($states.context.Execution.StartTime)-$states.input.t0Ms<=30000:false)`;
  choice('GuardInput',[[guard,'Initialize']],'AdmissionRefused');states.AdmissionRefused={Type:'Fail',Error:'AdmissionRefused',Cause:'inert/missing/mismatched original owner binding'};
  states.Initialize={Type:'Pass',Assign:{ctx:J("{'run':{'uuid':$states.input.runUuid,'probeKind':$states.input.probeKind,'executionName':$states.input.executionName,'t0Ms':$states.input.t0Ms},'D':$states.input.t0Ms+720000,'C':$states.input.t0Ms+900000,'attemptConsumed':false,'attemptStart':0,'attemptEnd':0,'launchCertain':false,'direct':[],'allArns':[],'queue':[],'owned':[],'overflow':[],'overflowExhausted':false,'currentArn':null,'current':null,'eni':null,'taskReady':false,'mode':0,'pages':0,'nextToken':null,'tokens':[],'completeModes':[],'polls':0,'calls':0,'issues':[],'qualificationFailed':false,'hold':false,'finalMode':false,'stopMode':false,'finalQueue':[],'operation':'init'}"),raw:null,callError:null,callOk:false,createdMs:null,observedMs:0},Output:{},Next:'AdmissionRecord'};
  record('AdmissionRecord','ADMISSION','DispatchGate',{input:J('$states.context.Execution.Input'),execution:J('$states.context.Execution.Id'),managedRoleArn});
@@ -138,4 +145,16 @@ export function buildNativeEnforcementStateMachine(binding=buildNativeEnforcemen
  states.FinalConfirmed={Type:'Succeed',Output:{cleanup:'STOPPED_CONFIRMED',qualification:J("$ctx.qualificationFailed?'FAILED':'RUNTIME_CHECKS_ONLY_NOT_NATIVE_ACCEPTED'"),run:J('$ctx.run'),D:J('$ctx.D'),C:J('$ctx.C'),ledger:J('$ctx.owned'),overflowLedger:J('$ctx.overflow'),staticBindingId:binding.staticBindingId}};
  states.FinalUnknown={Type:'Succeed',Output:{cleanup:'CLEANUP_UNKNOWN',qualification:'NOT_ACCEPTED',run:J('$ctx.run'),D:J('$ctx.D'),C:J('$ctx.C'),ledger:J('$ctx.owned'),overflowLedger:J('$ctx.overflow'),overflowExhausted:J('$ctx.overflowExhausted'),issues:J('$ctx.issues'),staticBindingId:binding.staticBindingId}};
  return {Comment:'INERT preparation; explicit evidence verdict required, no universal finally',QueryLanguage:'JSONata',StartAt:'GuardInput',States:states};
+}
+
+// Native entry point: unchanged behavior. A canary-registered or unregistered binding is
+// refused by the shared validity check before any graph is produced.
+export function buildNativeEnforcementStateMachine(binding=buildNativeEnforcementAdmission()){
+ return buildStateMachine(binding,PROFILE_NATIVE);
+}
+
+// Canary entry point: only a canary-registered binding produces the canary graph. No
+// automatic canary acceptance field is added; the generic verdict semantics are unchanged.
+export function buildCanaryEnforcementStateMachine(binding=buildCanaryEnforcementAdmission()){
+ return buildStateMachine(binding,PROFILE_CANARY);
 }

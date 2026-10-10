@@ -42,20 +42,23 @@ Whitespace, truncation, equal-length changes and malformed inputs refuse. A call
 mutation of the input buffers across the import await cannot substitute bytes (the
 snapshot is taken synchronously and the raw hashes are retained in the binding and plan).
 
-Accepted fixed W14 source pins (candidate `3da63e67…`, integrated `fcc666fb`); byte length
-AND sha256 are checked before and after the fixed import, by internal fixed reads only:
+Accepted fixed W19 source pins (exact raw `Git9f` bytes of `9f51fd3e45f1ddf33c7bb83d5c76720d12cea83c`, the closed eight-file compiler
+closure); byte length AND sha256 are checked before and after the fixed import, by internal fixed reads only. The first six positions preserve
+the original W14/W18 record order and the two appended members complete the closure:
 
 | path | bytes | sha256 |
 | --- | ---: | --- |
-| infra/native-enforcement/app.mjs | 422 | 813a912999253b147d3d88ac50d24fbe7dd063aa98c3453a9e5e825d3fe7f70c |
-| infra/native-enforcement/lib/binding.mjs | 7772 | a14cea09763f44cd727857b2031700b4cadc9f9b53ba049e3b0ba237207db007 |
-| infra/native-enforcement/lib/expressions.mjs | 12917 | e5a1931f3058e02e20bff10faf837b65eac11c226077e9a66d0501d323b4b648 |
-| infra/native-enforcement/lib/workflow.mjs | 23805 | 4dfca118e7ea7c5f59ff684f9a9301fbd8e96cccb9eaf6b187403fb7b5ecdc19 |
-| infra/native-enforcement/lib/infrastructure.mjs | 3625 | 6e57537dfbb675a8bc7673e26185cd4df0f769637ac3b783c4cca02681b95ae0 |
-| infra/native-enforcement/lib/task-definition.mjs | 7965 | fbe770912afaa119c50a9e1681a691a605b94c8a6f9ebd686e3555ab9e9a36ad |
+| infra/native-enforcement/app.mjs | 618 | e03076acb2ccda59bd38c2e2763f94af0d057f6c6c1bd3e699e25c72314ab1ed |
+| infra/native-enforcement/lib/binding.mjs | 16458 | 8df3f2f02e23a4f3587a342dcb882404c7c0f70be6e57b84b9d1b0af0eaea35a |
+| infra/native-enforcement/lib/expressions.mjs | 13776 | 933dcca53027688be2e6373bed818890882f239bc5da5af1af827277213b87aa |
+| infra/native-enforcement/lib/workflow.mjs | 25002 | 09171cbc66ce0efbd643969d92c92c742f89d0b41804eefd65064f2175aa39ca |
+| infra/native-enforcement/lib/infrastructure.mjs | 4780 | c0ddb78cbfb28ed0fd3360b0dec86d12371240fb7d87c0452dec0408454a53af |
+| infra/native-enforcement/lib/task-definition.mjs | 8996 | 3d45d054150c5e7706253694a725761afb96abe5a39d1a3ecc0bfb1adb686436 |
+| infra/native-enforcement/lib/probe-profiles.mjs | 4920 | 67dff6ffb4025e1767226a5bb330998ad78bd9d76083319adb910a22e3397660 |
+| infra/native-enforcement/canary-task-definition.mjs | 2612 | 524135d00aec413a6393e69a7d22974160109b01cc4ced71d35f26440d3e4df5 |
 
 There is NO caller-supplied reader, import path or import function: production composition
-reads the actual six fixed repository files internally, before and after compilation. Pure
+reads the actual eight fixed repository files internally, before and after compilation. Pure
 record validators (`validateSourceRecord` / `verifySourceRecords`) remain exported as the
 negative-test seam; a caller cannot synthesize passing records while different code is
 imported. The compiler is imported only from the fixed repository path and compiled once as
@@ -64,6 +67,19 @@ only via `buildNativeEnforcementStateMachine(binding)`; its `JSON.stringify` byt
 equal the supplied graph bytes, the pinned hash and the pinned length, and `GuardInput`
 must be an inert `{% false and … %}` choice. The pre/post source re-read is an offline
 trusted-checkout integrity check — not an atomic hostile-filesystem execution boundary.
+
+### Complete eight-file closure and exact edges (W02-22 source-pin advancement)
+
+The accepted W19 source `9f51fd3e45f1ddf33c7bb83d5c76720d12cea83c` closes the compiler to
+eight exact raw files. The planner's plan manifest `source.records` therefore advances from
+six to eight records, in the fixed order above — the ONLY intentional value delta of this
+task — while the graph identity (112210 bytes / `2c962d23…`), the static-pins input (10904
+bytes / `fc9f1beb…`), the `staticBindingId` `0599b1c8ed11af66130c08a54db950cac3cc79ba6e4941fa00ba2493fe907548`
+and the selected-member hashes are unchanged. Literal inventory: 16 repository import edges
+plus one `node:crypto` builtin edge (`lib/binding.mjs`); the eight-file graph is reachable and
+acyclic; there is no dynamic `import`/`require` in these exact compiler bytes. This is a
+finite DATA/literal inventory, not a general JavaScript grammar parser or an import-time-IO
+proof; import-time effects are assessed separately by source inspection.
 
 ## Immutable authority
 

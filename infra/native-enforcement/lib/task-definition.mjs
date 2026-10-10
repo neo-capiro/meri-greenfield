@@ -38,10 +38,14 @@ const CONTAINER_KEYS=['name','image','cpu','links','portMappings','essential','e
 const TASK_KEYS=['taskDefinitionArn','containerDefinitions','family','taskRoleArn','executionRoleArn','networkMode','revision','volumes','status','requiresAttributes','placementConstraints','compatibilities','runtimePlatform','requiresCompatibilities','cpu','memory','registeredAt','registeredBy','ephemeralStorage'];
 const EMPTY_ARRAY_FIELDS=['links','portMappings','environmentFiles','secrets','volumesFrom','dnsServers','dnsSearchDomains','extraHosts','dockerSecurityOptions','ulimits','credentialSpecs','systemControls'];
 
-// Validate one actual task-definition record against the exact expected binding.
-// Throws on any mismatch. Retained metadata (requiresAttributes/registeredAt/By/status/
-// compatibilities) is type-checked but is not treated as authority.
-export function validateTaskDefinition(t,expect){
+// Shared fail-closed validation of one actual task-definition record against the exact
+// expected binding. Throws on any mismatch. Retained metadata (requiresAttributes/
+// registeredAt/By/status/compatibilities) is type-checked but is not treated as authority.
+// The closed invocation mode is supplied by the fixed wrapper: native reads `expect.command`
+// ONLY at the original command-check position below; canary uses fixed literals and never
+// reads `expect.command`.
+const INVOCATION_NATIVE='native',INVOCATION_CANARY='canary';
+function validateDefinition(t,expect,mode){
  check(t&&typeof t==='object'&&!Array.isArray(t),'definition object');
  keysOnly(t,TASK_KEYS,'task-definition');
  check(t.taskDefinitionArn===expect.arn&&t.family===expect.family&&Number.isInteger(t.revision)&&t.revision===expect.revision,'definition binding/revision');
@@ -67,8 +71,8 @@ export function validateTaskDefinition(t,expect){
  check(c.name==='worker'&&c.image===expect.image,'worker name/image');
  check(c.user==='10001:10001'&&c.essential===true&&c.readonlyRootFilesystem===true&&c.privileged===false&&c.stopTimeout===60,'worker security');
  check(c.cpu===undefined||c.cpu===0,'container cpu');
- ordered(c.entryPoint,['node'],'entryPoint');
- ordered(c.command,[expect.command],'command');
+ ordered(c.entryPoint,mode===INVOCATION_CANARY?['/usr/bin/sleep']:['node'],'entryPoint');
+ ordered(c.command,mode===INVOCATION_CANARY?['1200']:[expect.command],'command');
  keyedSet(c.environment,'name',[['HOME','/workspace/home'],['TMPDIR','/tmp'],['CLAUDE_CONFIG_DIR','/workspace/config'],['PLAYWRIGHT_BROWSERS_PATH','/opt/meri-browsers'],['MERI_QUALIFICATION_ONLY','true'],['MERI_SOURCES_ENABLED','false'],['CHROMIUM_SANDBOX_REQUIRED','true']].map(([name,value])=>({name,value})),'environment');
  keyedSet(c.mountPoints,'sourceVolume',[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}],'mountPoints');
  keysOnly(c.linuxParameters,['capabilities','devices','tmpfs'],'linuxParameters');
@@ -85,4 +89,17 @@ export function validateTaskDefinition(t,expect){
  check(canonical(c.logConfiguration.options)===canonical({'awslogs-group':expect.logGroup,'awslogs-region':expect.region,'awslogs-stream-prefix':`qualification-${expect.probeKind}`,'mode':'blocking'}),'logConfiguration.options values');
  emptyOr(c.logConfiguration.secretOptions,'[]','logConfiguration.secretOptions');
  return true;
+}
+
+// Native wrapper: unchanged public arity/signature. `expect.command` is read only inside the
+// shared validator at the original command-check position, preserving the original failure
+// order (definition/schema/security/entryPoint guards first).
+export function validateTaskDefinition(t,expect){
+ return validateDefinition(t,expect,INVOCATION_NATIVE);
+}
+
+// Canary wrapper: fixed direct `/usr/bin/sleep 1200` invocation only; `expect.command` is never
+// read. No Node, shell, arbitrary argument or caller-selected entryPoint is accepted here.
+export function validateCanaryTaskDefinition(t,expect){
+ return validateDefinition(t,expect,INVOCATION_CANARY);
 }
