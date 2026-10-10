@@ -17,7 +17,13 @@ PINNED_BROWSER_SHA256 = "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055b
 BROWSER_EXE_PATTERN = re.compile(r"^/opt/meri-browsers/chromium-[0-9]+/chrome-linux64/chrome$")
 NODE_EXE = re.compile(r"(^|[\\/])node(\.exe)?$", re.IGNORECASE)
 PINNED_IMAGE = ("967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/"
-                "qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75")
+                "qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c")
+# W02-16: the new accepted worker tuple also binds the image configuration ID and
+# the OCI source revision. All are pinned literals; none is caller-supplied. The
+# previous digest sha256:7327f045... is retained only as historical provenance.
+PINNED_WORKER_CONFIG_ID = "sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471"
+PINNED_WORKER_REVISION = "0be04d0799c9c527e300b47c19176cddb0eaa231"
+PINNED_WORKER_KIND = "worker-inventory-only"
 DISABLING_FLAGS = ("--no-sandbox", "--disable-setuid-sandbox", "--disable-seccomp-filter-sandbox",
                    "--disable-namespace-sandbox", "--no-zygote", "--disable-gpu-sandbox", "--disable-sandbox")
 CHROMIUM_SAFE_KINDS = ("browser", "renderer")
@@ -621,8 +627,17 @@ def _inspect_reasons(insp, run_id, image, image_id, profile_path, profile_sha):
         reasons.append("docker container id/name mismatch")
     if not isinstance(cfg.get("Labels"),dict) or cfg["Labels"].get("meri.qualification.run") != run_id:
         reasons.append("docker label run mismatch")
-    if image != PINNED_IMAGE or cfg.get("Image") != PINNED_IMAGE or not isinstance(image_id,str) or not SHA256_PREFIXED.fullmatch(image_id) or insp.get("Image") != image_id:
-        reasons.append("immutable worker image/config imageID mismatch")
+    elif cfg["Labels"].get("org.opencontainers.image.revision") != PINNED_WORKER_REVISION:
+        reasons.append("worker OCI source revision label mismatch")
+    elif cfg["Labels"].get("meri.qualification.kind") != PINNED_WORKER_KIND:
+        reasons.append("worker qualification kind label mismatch")
+    if image != PINNED_IMAGE or cfg.get("Image") != PINNED_IMAGE:
+        reasons.append("immutable worker image reference mismatch")
+    # record.imageID (the assembled record) and inspect.Image (the daemon's image
+    # config ID) must EACH independently equal the accepted configuration ID. A
+    # record and inspect that agree on the same substituted IID are still rejected.
+    if image_id != PINNED_WORKER_CONFIG_ID or insp.get("Image") != PINNED_WORKER_CONFIG_ID:
+        reasons.append("worker image configuration IID mismatch")
     if cfg.get("User") != "10001:10001" or cfg.get("Entrypoint") != ["node"] or cfg.get("Cmd") != [PROBE_CMD] or cfg.get("WorkingDir") != "/workspace/conversation":
         reasons.append("container user/entrypoint/command/cwd mismatch")
     env = cfg.get("Env")

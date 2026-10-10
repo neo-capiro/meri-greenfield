@@ -23,14 +23,25 @@ const BOOT = 'd7895c58-cc4e-44ef-88d8-887a82b56e1e';
 const CID = 'c'.repeat(64);
 const EXE = '/opt/meri-browsers/chromium-1247/chrome-linux64/chrome';
 const PIN = 'adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0';
-const IMAGE = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75';
+// W02-16: the statically accepted worker tuple (W02-08-BUILD-3-STATIC-ACCEPTANCE.md).
+// The previous digest 7327... is retained only as OLD_IMAGE (historical provenance).
+const IMAGE = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c';
+const OLD_IMAGE = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75';
+const CONFIG_ID = 'sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471';
+const REVISION = '0be04d0799c9c527e300b47c19176cddb0eaa231';
+const KIND = 'worker-inventory-only';
+const SUBSTITUTE = 'sha256:' + 'f'.repeat(64);
 const SUPPORT = '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:' + 'a'.repeat(64);
 const CGROUP = '0::/system.slice/docker-' + CID + '.scope';
 const NS = (n) => Object.fromEntries(['user', 'mnt', 'pid', 'net', 'ipc', 'uts', 'cgroup'].map((k) => [k, `${k}:[${n + 1}]`]));
 const CAPS0 = Object.fromEntries(['capInhHex', 'capPrmHex', 'capEffHex', 'capBndHex', 'capAmbHex'].map((k) => [k, '0000000000000000']));
 
 mkdirSync(TMP, { recursive: true });
-const py = (args) => spawnSync('python3', ['-B', OBS, ...args], { encoding: 'utf8', cwd: REPO });
+// Test-only Python selection (defaults to python3). The guest/product code never
+// reads this; it only lets an offline run select an existing interpreter without
+// touching machine PATH.
+const PYTHON = process.env.MERI_TEST_PYTHON || 'python3';
+const py = (args) => spawnSync(PYTHON, ['-B', OBS, ...args], { encoding: 'utf8', cwd: REPO });
 const pyJson = (args) => { const r = py(args); assert.ok(r.status === 0 || r.status === 3, r.stderr + r.stdout); return JSON.parse(r.stdout); };
 const write = (name, value) => { const p = join(TMP, name); writeFileSync(p, typeof value === 'string' ? value : JSON.stringify(value, null, 2)); return p; };
 
@@ -74,14 +85,14 @@ function browserPayload() {
 }
 const SAFE_ENV={PATH:'/opt/meri-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',NODE_VERSION:'24.21.0',YARN_VERSION:'1.22.22',HOME:'/workspace/home',TMPDIR:'/tmp',CLAUDE_CONFIG_DIR:'/workspace/config',PLAYWRIGHT_BROWSERS_PATH:'/opt/meri-browsers',NODE_ENV:'production',MERI_QUALIFICATION_ONLY:'true',MERI_SOURCES_ENABLED:'false',CHROMIUM_SANDBOX_REQUIRED:'true'};
 function inspect() {
-  return {Id:CID,Name:'/meri-browser-probe-'+RUN,Image:'sha256:'+'e'.repeat(64),Config:{Image:IMAGE,User:'10001:10001',Entrypoint:['node'],Cmd:['/opt/meri-worker/probes/browser.mjs'],WorkingDir:'/workspace/conversation',Labels:{'meri.qualification.run':RUN},Env:Object.entries(SAFE_ENV).map(([k,v])=>k+'='+v)},
+  return {Id:CID,Name:'/meri-browser-probe-'+RUN,Image:CONFIG_ID,Config:{Image:IMAGE,User:'10001:10001',Entrypoint:['node'],Cmd:['/opt/meri-worker/probes/browser.mjs'],WorkingDir:'/workspace/conversation',Labels:{'meri.qualification.run':RUN,'org.opencontainers.image.revision':REVISION,'meri.qualification.kind':KIND},Env:Object.entries(SAFE_ENV).map(([k,v])=>k+'='+v)},
     HostConfig:{NetworkMode:'none',CapDrop:['ALL'],CapAdd:null,SecurityOpt:['no-new-privileges','seccomp=/opt/meri-browser-host/seccomp.json'],ReadonlyRootfs:true,Privileged:false,PidMode:'',IpcMode:'private',PidsLimit:512,Memory:4*1024**3,NanoCpus:2*10**9,ShmSize:1024**3,Devices:[],DeviceRequests:[],VolumesFrom:null,Binds:['/workspace/browser-host:/workspace:rw'],Tmpfs:{'/tmp':'rw,noexec,nosuid,size=512m'}},
     Mounts:[{Destination:'/workspace',Source:'/workspace/browser-host',RW:true,Type:'bind'}],State:{Status:'exited',Running:false,ExitCode:0,OOMKilled:false,Error:''}};
 }
 function runRecord() {
   const browser=browserPayload();
   return {runId:RUN,status:0,supportImage:SUPPORT,workerImage:IMAGE,profile:{path:'/opt/meri-browser-host/seccomp.json',sha256:context().profileSha},source:sourceManifest(),
-    observer:{ok:true,runId:RUN,bestOk:true,bestClassification:{ok:true},bestObservation:observation(),unsafeClassification:null},browser,inspect:inspect(),imageID:'sha256:'+'e'.repeat(64),
+    observer:{ok:true,runId:RUN,bestOk:true,bestClassification:{ok:true},bestObservation:observation(),unsafeClassification:null},browser,inspect:inspect(),imageID:CONFIG_ID,
     versions:{aws:'2.30.0',docker:'25.0.16',runc:'1.3.0',containerd:'1.7.0',libseccomp:'2'},pythonVersion:'3.9.25',preflight:{ok:true,checks:{}},exit:'0',
     browserStdout:JSON.stringify(browser),browserStderr:'',capture:{ok:true,status:0,timedOut:false,overflow:false,error:null,clientReaped:true},observerJoin:{reaped:true,status:0,forced:false},timer:{ok:true,active:'active',target:'meri-browser-assets-poweroff-'+RUN+'.service',next:'15min',uptime:10,remainingSeconds:890}};
 }
@@ -145,6 +156,9 @@ test('synthesized browser-host stack has the exact pinned identities', () => {
   const ud = gunzipSync(Buffer.from(inst.UserData, 'base64')).toString('utf8');
   assert.match(ud, /BROWSER_HOST_ASSETS_IMAGE/); assert.match(ud, /meri-never-execute-assets/);
   assert.match(ud, /create --pull never/); assert.ok(ud.includes(RUN));
+  assert.match(ud, /BROWSER_HOST_WORKER_CONFIG_ID/); assert.match(ud, /BROWSER_HOST_WORKER_REVISION/);
+  assert.ok(ud.includes(CONFIG_ID)); assert.ok(ud.includes(REVISION)); assert.ok(ud.includes(KIND));
+  assert.ok(ud.includes(IMAGE));
 });
 
 test('bootstrap uses verified seccomp directly and the existing bounded timer', () => {
@@ -178,12 +192,66 @@ test('bootstrap uses verified seccomp directly and the existing bounded timer', 
   assert.match(b, /put-log-events/); assert.match(b, /--put-response/);
   assert.match(b, /AWS_MAX_ATTEMPTS=1/); assert.match(b, /AWS_PAGER=''/);
   assert.match(b, /enableKeyRotation|chown -R 10001:10001/);
+  // W02-16 provenance guard: pinned ref + config ID + OCI revision + kind before create.
+  assert.match(b, /# >>> WORKER-PROVENANCE-GUARD/);
+  assert.match(b, /# <<< WORKER-PROVENANCE-GUARD <<</);
+  assert.ok(b.indexOf('WORKER-PROVENANCE-GUARD (offline-extractable') < b.indexOf('docker create'));
+  assert.match(b, /BROWSER_HOST_WORKER_CONFIG_ID/);
+  assert.match(b, /BROWSER_HOST_WORKER_REVISION/);
+  assert.match(b, /org\.opencontainers\.image\.revision/);
+  assert.match(b, /docker inspect/);
+});
+
+test('worker provenance guard fails closed before the sole browser create', () => {
+  const b = readFileSync(join(INFRA, 'bootstrap.sh'), 'utf8');
+  const start = b.indexOf('# >>> WORKER-PROVENANCE-GUARD');
+  const end = b.indexOf('# <<< WORKER-PROVENANCE-GUARD');
+  assert.ok(start >= 0 && end > start, 'guard markers present');
+  const guard = b.slice(b.indexOf('\n', start) + 1, b.lastIndexOf('\n', end));
+  assert.match(guard, /docker inspect/);
+  assert.match(guard, /org\.opencontainers\.image\.revision/);
+  // Extract and EXECUTE the actual guard with an injected fake docker; every
+  // provenance failure must make zero browser creates/starts, the honest tuple
+  // reaches the one-create boundary exactly once. This exercises the candidate
+  // guard rather than asserting string order or a duplicated predicate.
+  const harness = [
+    'FAKE_META="$1"',
+    'set -euo pipefail',
+    'CREATES=0 STARTS=0',
+    'bounded(){ local b="$1"; shift; "$@"; }',
+    'fail(){ printf "FAIL: %s\\n" "$1" >&2; exit 1; }',
+    'docker(){ case "$1" in inspect) printf "%s\\n" "$FAKE_META";; create) CREATES=$((CREATES+1));; start) STARTS=$((STARTS+1));; esac; }',
+    `IMAGE=${JSON.stringify(IMAGE)}`,
+    `WORKER_CONFIG_ID=${JSON.stringify(CONFIG_ID)}`,
+    `WORKER_REVISION=${JSON.stringify(REVISION)}`,
+    `WORKER_KIND=${JSON.stringify(KIND)}`,
+    guard,
+    'docker create --pull never "$IMAGE"',
+    'docker start "$IMAGE"',
+    'printf "creates=%s starts=%s\\n" "$CREATES" "$STARTS"',
+  ].join('\n');
+  const run = (meta) => spawnSync('bash', ['-c', harness, 'meri', meta], { encoding: 'utf8' });
+  const good = run([CONFIG_ID, IMAGE, REVISION, KIND].join('|'));
+  assert.equal(good.status, 0, good.stderr);
+  assert.match(good.stdout, /creates=1 starts=1/);
+  const bad = [
+    ['missing-provenance', ''],
+    ['wrong-config-iid', [SUBSTITUTE, IMAGE, REVISION, KIND].join('|')],
+    ['wrong-immutable-ref', [CONFIG_ID, OLD_IMAGE, REVISION, KIND].join('|')],
+    ['wrong-revision', [CONFIG_ID, IMAGE, 'a'.repeat(40), KIND].join('|')],
+    ['wrong-kind', [CONFIG_ID, IMAGE, REVISION, 'worker-full'].join('|')],
+  ];
+  for (const [name, meta] of bad) {
+    const r = run(meta);
+    assert.notEqual(r.status, 0, name);
+    assert.equal(r.stdout.trim(), '', `${name}: no create/start boundary reached`);
+  }
 });
 
 test('codex and owner observer replays remain truthful', () => {
-  const a = spawnSync('python3', ['-B', join(REPO, '.task-inputs', 'codex-observer-checkpoint-audit.py')], { cwd: REPO, encoding: 'utf8' });
+  const a = spawnSync(PYTHON, ['-B', join(REPO, '.task-inputs', 'codex-observer-checkpoint-audit.py')], { cwd: REPO, encoding: 'utf8' });
   assert.equal(a.status, 0, a.stderr); assert.match(a.stdout, /"failed": 0/);
-  const o = spawnSync('python3', ['-B', join(REPO, '.task-inputs', 'owner-regressions-adapted.py')], { cwd: REPO, encoding: 'utf8' });
+  const o = spawnSync(PYTHON, ['-B', join(REPO, '.task-inputs', 'owner-regressions-adapted.py')], { cwd: REPO, encoding: 'utf8' });
   assert.equal(o.status, 0, o.stderr); assert.match(o.stdout, /"passed": 33/);
 });
 
@@ -199,6 +267,17 @@ test('run record accepts only a complete honest run', () => {
     'missing-inspect-id': (r) => { r.inspect.Id = ''; },
     'wrong-run': (r) => { r.observer.runId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'; },
     'wrong-image': (r) => { r.inspect.Config.Image = 'other'; },
+    'old-worker-digest': (r) => { r.workerImage = OLD_IMAGE; r.inspect.Config.Image = OLD_IMAGE; },
+    'joint-iid-substitution': (r) => { r.imageID = SUBSTITUTE; r.inspect.Image = SUBSTITUTE; },
+    'record-iid-differs': (r) => { r.imageID = SUBSTITUTE; },
+    'inspect-iid-differs': (r) => { r.inspect.Image = SUBSTITUTE; },
+    'missing-record-iid': (r) => { r.imageID = ''; },
+    'malformed-record-iid': (r) => { r.imageID = 'sha256:XYZ'; },
+    'missing-inspect-image': (r) => { r.inspect.Image = ''; },
+    'wrong-revision-label': (r) => { r.inspect.Config.Labels['org.opencontainers.image.revision'] = 'a'.repeat(40); },
+    'missing-revision-label': (r) => { delete r.inspect.Config.Labels['org.opencontainers.image.revision']; },
+    'wrong-kind-label': (r) => { r.inspect.Config.Labels['meri.qualification.kind'] = 'worker-full'; },
+    'missing-kind-label': (r) => { delete r.inspect.Config.Labels['meri.qualification.kind']; },
     'observer-not-best': (r) => { r.observer.bestOk = false; },
     'unsafe-classification': (r) => { r.observer.unsafeClassification = { ok: false }; },
     'unqualified-observation': (r) => { r.observer.bestObservation.processes[2].capEffHex = '1'; },
@@ -270,7 +349,7 @@ parts=re.findall(r"<<'(__[A-Z]+__)'.*?\n(.*?)\n\1",b,re.S)
 assert len(parts)==4,len(parts)
 for _,source in parts:ast.parse(source,feature_version=(3,9))
 print('Python3.9 grammar: observer +4 embedded Python blocks; author '+sys.version)`;
-  const r = spawnSync('python3', ['-B', '-c', code, OBS], { cwd: REPO, encoding: 'utf8' });
+  const r = spawnSync(PYTHON, ['-B', '-c', code, OBS], { cwd: REPO, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr);
   assert.ok(!existsSync(join(INFRA, '__pycache__')));
 });
@@ -281,7 +360,7 @@ p=pathlib.Path(sys.argv[1]);base=subprocess.check_output(['git','show','4fd85f7:
 exclude={'verify_run_record','build_export_plan','classify_put_response','_load_json','_dump','main','_install_signals'}
 def bodies(t):return {n.name:ast.get_source_segment(t,n) for n in ast.parse(t).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
 b,n=bodies(base),bodies(now);f={k:v for k,v in b.items() if k not in exclude};assert len(f)==39;assert all(n[k]==v for k,v in f.items());print('39 frozen bodies identical')`;
-  const r=spawnSync('python3',['-B','-c',code,OBS],{cwd:REPO,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/39 frozen bodies identical/);
+  const r=spawnSync(PYTHON,['-B','-c',code,OBS],{cwd:REPO,encoding:'utf8'});assert.equal(r.status,0,r.stderr);assert.match(r.stdout,/39 frozen bodies identical/);
 });
 
 test('Codex owner: original timer window accepts raw/formatted systemd values and rejects ambiguous or insufficient schedules', () => {
@@ -298,7 +377,7 @@ assert not m.timer_record('inactive',target,'15min',run,10)['ok']
 assert not m.timer_record('active','foreign.service','15min',run,10)['ok']
 assert not m.timer_record('active',target,'15min','INVALID',10)['ok']
 print(json.dumps({'positive':len(good),'negative':len(bad)+3}))`;
-  const r=spawnSync('python3',['-B','-c',code,OBS,RUN],{cwd:REPO,encoding:'utf8'});
+  const r=spawnSync(PYTHON,['-B','-c',code,OBS,RUN],{cwd:REPO,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);assert.deepEqual(JSON.parse(r.stdout),{positive:5,negative:16});
 });
 
@@ -340,7 +419,7 @@ test('Codex owner: strict export fields/counts/context/bounds and reconstruction
     const docs=parsed();mutate(docs);docs.at(-1).manifestSha256=createHash('sha256').update(JSON.stringify(docs.at(-2),Object.keys(docs.at(-2)).sort())).digest('hex');
     // Wrong hashes are NOT the only guard: recompute canonical hash in Python below.
     const code='import importlib.util,json,hashlib,sys;s=importlib.util.spec_from_file_location("m",sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);d=json.load(open(sys.argv[2]));d[-1]["manifestSha256"]=hashlib.sha256(m._finite_json(d[-2]).encode()).hexdigest();print(json.dumps(m.validate_export([{"timestamp":1,"message":m._finite_json(x)} for x in d])))';
-    const r=spawnSync('python3',['-B','-c',code,OBS,write('owner-mutated.json',docs)],{cwd:REPO,encoding:'utf8'});
+    const r=spawnSync(PYTHON,['-B','-c',code,OBS,write('owner-mutated.json',docs)],{cwd:REPO,encoding:'utf8'});
     assert.equal(r.status,0,r.stderr);assert.equal(JSON.parse(r.stdout).ok,false,name);
   }
   assert.equal(pyJson(['--validate-export',write('one-event.json',[{timestamp:1,message:JSON.stringify({kind:'end',run:RUN,stream:'host-'+RUN})}])]).ok,false);
@@ -406,7 +485,7 @@ check('tampered-batches-before-write',rejected and not(out/'bad-batches').exists
 check('epoch-timestamp-denied',not m.build_export_protocol({'a':'x'},r['runId'],spec['context'],0)['ok'])
 print(json.dumps(dict(passed=sum(c['passed'] for c in checks),failed=sum(not c['passed'] for c in checks),checks=checks)))
 `;
-  const r=spawnSync('python3',['-B','-c',code,OBS,fixture],{cwd:REPO,encoding:'utf8'});
+  const r=spawnSync(PYTHON,['-B','-c',code,OBS,fixture],{cwd:REPO,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);const result=JSON.parse(r.stdout);assert.equal(result.failed,0,JSON.stringify(result));
   write('owner-capture-results.json',result);
 });

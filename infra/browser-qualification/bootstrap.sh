@@ -75,6 +75,9 @@ IMAGE="${BROWSER_HOST_IMAGE:?worker image required}"
 ASSETS="${BROWSER_HOST_ASSETS_IMAGE:?support image required}"
 LOG_GROUP="${BROWSER_HOST_LOG_GROUP:?log group required}"
 SECCOMP_SHA="${BROWSER_HOST_SECCOMP_SHA256:?profile hash required}"
+WORKER_CONFIG_ID="${BROWSER_HOST_WORKER_CONFIG_ID:?worker image configuration id required}"
+WORKER_REVISION="${BROWSER_HOST_WORKER_REVISION:?worker OCI source revision required}"
+WORKER_KIND="${BROWSER_HOST_WORKER_KIND:?worker qualification kind required}"
 REGION=us-east-1
 CONTAINER_NAME="meri-browser-probe-$RUN"
 OBSERVER="$HOST_DIR/host-evidence.py"
@@ -148,6 +151,14 @@ bounded 3 rm -f -- "$AUTH_DIR/config.json"
 bounded 3 rmdir -- "$AUTH_DIR" || fail 'credential purge failed'
 LOGIN_DONE=0
 [ ! -e "$AUTH_DIR" ] && [ ! -L "$AUTH_DIR" ] || fail 'pull credentials remain'
+# >>> WORKER-PROVENANCE-GUARD (offline-extractable; the sole browser create follows) >>>
+# Bind the exact pulled image configuration ID and OCI source revision BEFORE the
+# single browser create, using the existing bounded mechanism and the still-empty
+# control Docker config. Any missing/malformed/differing identity fails closed, so
+# zero browser create/start calls are made.
+meta="$(bounded 10 docker inspect --format '{{.Id}}|{{index .RepoDigests 0}}|{{index .Config.Labels "org.opencontainers.image.revision"}}|{{index .Config.Labels "meri.qualification.kind"}}' "$IMAGE")" || fail 'worker image provenance unavailable'
+[ "$meta" = "$WORKER_CONFIG_ID|$IMAGE|$WORKER_REVISION|$WORKER_KIND" ] || fail 'worker image provenance mismatch'
+# <<< WORKER-PROVENANCE-GUARD <<<
 bounded 3 mkdir -p -- /workspace
 bounded 3 mkdir --mode=0700 -- "$WORK_DIR"
 bounded 3 mkdir --mode=0700 -- "$WORK_DIR/conversation" "$WORK_DIR/config" "$WORK_DIR/home"

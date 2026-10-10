@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "w02-06-browser-host/1",
-  "generatedAt": "2026-10-09T22:28:49Z",
-  "task": "W02-06 dedicated browser-host qualification PREPARATION",
+  "schemaVersion": "w02-16-browser-worker-binding/1",
+  "generatedAt": "2026-10-10T06:28:00Z",
+  "task": "W02-16 browser worker binding PREPARATION (offline source candidate only)",
   "status": "preparation-only-not-accepted",
   "target": {
     "account": "967807252336",
@@ -17,9 +17,14 @@
     "existingWorkerSecurityGroup": "unchanged-not-referenced"
   },
   "image": {
-    "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+    "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
     "repository": "meri-greenfield/qualification-worker",
-    "unresolved": "image carries 2 CRITICAL / 13 HIGH findings from a prior review; owner must separately disposition ONE closed-network synthetic probe"
+    "configurationId": "sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471",
+    "revision": "0be04d0799c9c527e300b47c19176cddb0eaa231",
+    "kind": "worker-inventory-only",
+    "previousUri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+    "note": "W02-16 refreshes the candidate to the W02-08 static-build-acceptance tuple. The image reference, configuration ID and OCI source revision are all required identities and are pinned literals; the previousUri is retained only as historical provenance and is no longer an allowed candidate.",
+    "unresolved": "image carries 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) from the W02-08 static build; static acceptance is not runtime/security admission and the owner must separately disposition a closed-network synthetic probe"
   },
   "host": {
     "instanceType": "t3.large",
@@ -137,6 +142,7 @@
     "Guest Python target is 3.9; actual patch, Bash/systemd timer output, Docker inspect/attach behavior and complete CloudWatch reconstruction remain native gates. Author Python 3.14.7 fixtures are not Linux measurements.",
     "guestRuntime entries describe expected bootstrap requirements, not observed native versions. The libseccomp check records ABI 2 from libseccomp.so.2; its full package version still requires native inventory.",
     "Absolute termination deadline and terminated/root-volume-deletion verification are owner-side and not proven here.",
-    "The pinned image's 2 CRITICAL / 13 HIGH findings remain unresolved."
+    "The W02-16 candidate binds the W02-08 tuple by immutable reference, configuration ID and OCI source revision. Changed source bytes require fresh full-source hashes, a separate actual review and a future immutable support build before any browser-host admission; static build success is not runtime/security admission.",
+    "The pinned image's 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) remain open; the security disposition is unchanged and G1 stays OPEN."
   ]
 }

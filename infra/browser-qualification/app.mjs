@@ -33,8 +33,16 @@ export const QUALIFICATION_NETWORK = Object.freeze({
 });
 
 export const PINS = Object.freeze({
-  image: '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75',
+  // W02-16: refreshed to the statically accepted worker image
+  // (W02-08-BUILD-3-STATIC-ACCEPTANCE.md). The previous digest
+  // sha256:7327f045... is retained only as historical provenance and is no
+  // longer an allowed candidate. All three identities below are required and
+  // are pinned literals, never caller-supplied.
+  image: '967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c',
   imageRepository: 'meri-greenfield/qualification-worker',
+  imageConfigId: 'sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471',
+  imageRevision: '0be04d0799c9c527e300b47c19176cddb0eaa231',
+  imageKind: 'worker-inventory-only',
   ami: 'ami-0fb0f484b75566814',
   amiOwner: '591542846629',
   amiArch: 'x86_64',
@@ -161,6 +169,9 @@ export AWS_MAX_ATTEMPTS=1 AWS_RETRY_MODE=standard AWS_PAGER=''
 export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null
 export BROWSER_HOST_RUN=${shellQuote(runUUID)}
 export BROWSER_HOST_IMAGE=${shellQuote(PINS.image)}
+export BROWSER_HOST_WORKER_CONFIG_ID=${shellQuote(PINS.imageConfigId)}
+export BROWSER_HOST_WORKER_REVISION=${shellQuote(PINS.imageRevision)}
+export BROWSER_HOST_WORKER_KIND=${shellQuote(PINS.imageKind)}
 export BROWSER_HOST_LOG_GROUP=${shellQuote(PINS.logGroupName)}
 export BROWSER_HOST_SECCOMP_SHA256=${shellQuote(PINS.seccompDerivedSha256)}
 export BROWSER_HOST_ASSETS_IMAGE=${shellQuote(assetsImage)}
