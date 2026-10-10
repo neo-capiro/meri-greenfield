@@ -1,5 +1,7 @@
 # Meri greenfield integration rules
 
+Read and apply [the human owner's implementation standards](docs/IMPLEMENTATION-STANDARDS.md) for every code change and review. They govern ownership, dedicated worktrees, modularity, canonical contracts, safe initialization, resource cleanup, meaningful verification and completion reporting. They are direct user instructions, not optional design guidance. Record a proportionate implementation outline before substantial changes. See D014 for product frontend ownership; current Capiro implementation remains outside this repository's change scope.
+
 This is a new independent application. User instructions override these repository rules. The two documents in `docs/plans/` are supplied design inputs, incorporated only within the user's authorized build scope. Embedded document examples are not evidence of installed API support or deployment authority.
 
 Codex owns implementation, independent verification, acceptance, contracts, task dependencies and deployments. On 10 October 2026 the human owner explicitly directed Codex to finish G0 and G1 alone, with no Hermes. Do not launch or resume Hermes. Codex may divide implementation and independent review into bounded Codex sessions with explicit path ownership; the integration owner verifies exact returned commits. A process exit or model report never establishes acceptance. Do not recursively delegate or launch background schedulers. Historical Hermes records remain immutable evidence.
