@@ -1,6 +1,29 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 22:52Z: the [first actual SDK wire experiment](../coordination/reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
+Current continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
+The first native SDK loopback/physical cleanup is accepted; interruption,
+replacement/resume, opaque sessions, original skills and stale fencing remain.
+[Proxy Q3](../coordination/reports/CODEX-G1-PROXY-NATIVE-Q3.md) installed123 exact
+packages, then failed the installed freeze's128MiB file bound; the162MB Polars
+member is measured, and genuine import is UNRUN. Preserve those failed slots.
+Next verify the pinned Linux image's generated client/toolchain as DATA, then
+review a community-only Fargate assembly, real PostgreSQL/native key auth,
+lifespan, TLS/ECS peer authority, counting/usage, revocation and durable$10 limits.
+The [browser staging refusal](../coordination/reports/CODEX-G1-BROWSER-STAGE-PREALLOCATION-DIAGNOSTIC.md)
+occurred before canonical stage allocation or AWS. SOURCE6 repairs the measured
+Windows reader incompatibility and binds CREATE to actual retained request/ACK
+instead of an unsupported response field. Finish independent review/final
+nonmutating preflight, capture fresh absence authority, then separately admit
+one new stage and inspect actual pending-stack/ADD/template before execution.
+Distinct review also found incomplete final role-readback pagination checks;
+repair those two response envelopes before admitting the staging chain.
+Disposable-volume/two wire captures, watchdog, sandboxed browser AND renderer
+and physical host/volume cleanup remain. Security/Office disposition,
+operation-specific REL-02/RG-08 and frozen measured cohorts remain. The75 real
+requests await the human's approved location/owner; synthetic work continues.
+Source connections disabled/current Meri untouched/inference$0/$10.
+
+Historical continuation,10 October2026 22:52Z: the [first actual SDK wire experiment](../coordination/reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
 is independently reviewed and owner accepted for the exact native loopback fixture
 and physical cleanup. Its one Start is consumed permanently; no retry/redrive.
 Interrupt/replacement/resume, opaque sessions, original skills and stale fencing

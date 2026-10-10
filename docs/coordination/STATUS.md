@@ -1,6 +1,30 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 22:52Z: **eight deployment gates total;
+Current continuation,10 October2026 23:20Z: **eight deployment gates total;
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native
+loopback fixture and physical cleanup remain independently accepted; interruption,
+replacement and resume remain open. The [123-package proxy install](reports/CODEX-G1-PROXY-NATIVE-Q3.md)
+passed offline, but its installed-byte freeze failed on the unchanged128MiB file
+limit; a measured162MB Polars binary exceeds it. Genuine app import is UNRUN.
+No failed slot was reset. [Linux prerequisite discovery](reports/CODEX-G1-PROXY-PRISMA-PREREQUISITES.md)
+found the pinned upstream image already generates Prisma; actual bundle inventory
+and community assembly are next, before native PostgreSQL auth/Fargate tests.
+Whole-image enterprise licensing and native compatibility are unaccepted.
+The browser's one [actual staging supervisor failed before allocation](reports/CODEX-G1-BROWSER-STAGE-PREALLOCATION-DIAGNOSTIC.md)
+on Windows executable mode metadata. No canonical stage request/ACK or role was
+created. Its consumed supervisor and failed evidence remain immutable. The
+[SOURCE6 repair](reports/CODEX-G1-BROWSER-CFN-READBACK-PREPARATION.md) has37 reported
+inert checks across two versions. Distinct review found final role-readback
+pagination handling still accepts malformed/incomplete envelopes; a narrow
+repair and final nonmutating preflight precede fresh authority and one stage.
+Playwright remains the automation integration, controlling sandboxed Chromium
+on the approved dedicated host; no browser host has launched. Root verified
+260 sealed record occurrences across these three new reports, their raw Git and
+complete source closures. Codex-only work continues. All49+five security findings
+remain OPEN, Office DEFERRED, sources disabled, current Meri untouched and model
+spending$0/$10. The75 approved real requests await the promised location/owner.
+
+Historical continuation,10 October2026 22:52Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [first actual SDK experiment](reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
 is now [independently reviewed](reports/CODEX-G1-SDK-NATIVE-WIRE-INDEPENDENT.md)
 and owner accepted for the exact native loopback fixture and physical cleanup:

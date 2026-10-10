@@ -1,6 +1,31 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,10 October2026,22:52UTC. **G0 accepted/G1 active; eight
+Current continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
+eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup
+remains accepted, with its single Start consumed and interruption/resume open.
+The [complete proxy proposal](CODEX-G1-PROXY-FULL-DEPENDENCY-INDEPENDENT.md) and
+Q3 preparation passed distinct/root review. Actual123-wheel install passed;
+[the installed freeze failed and import stopped UNRUN](CODEX-G1-PROXY-NATIVE-Q3.md).
+The128MiB file cap remains, and the162MB Polars binary is recorded. Linux bundle
+inventory/community assembly takes priority over another Windows install chain.
+[Prisma discovery](CODEX-G1-PROXY-PRISMA-PREREQUISITES.md) found a pre-generated
+client/toolchain in the pinned upstream recipe, but its actual bytes/ABI/notices
+and enterprise separation still need review before native auth/Fargate testing.
+The browser's [single actual stage supervisor refused preallocation](CODEX-G1-BROWSER-STAGE-PREALLOCATION-DIAGNOSTIC.md)
+on Windows synthesized execute bits; no canonical stage request or AWS ACK exists.
+Old consumed supervision stays preserved. [SOURCE6](CODEX-G1-BROWSER-CFN-READBACK-PREPARATION.md)
+has23 initial inert controls and14 final targeted controls, complete ten/full14
+closures and retained CREATE provenance. Root checked165 author,40 Q3 and55
+Prisma sealed record occurrences/raw Git without replaying candidate behavior.
+Distinct SOURCE6 review found final role-readback pagination gaps; two response
+envelopes need a narrow repair before final nonmutating preflight, renewed fresh
+authority and one separately admitted stage. Three bounded Codex workstreams
+continue alongside integration; no Hermes, browser host, provider or cutover.
+All49+five security findings OPEN, Office DEFERRED, sources disabled, spend$0/$10.
+The75 approved real requests await the promised location/owner. Older entries
+retain dated failures and the narrower acceptance that applied then.
+
+Historical continuation,10 October2026,22:52UTC. **G0 accepted/G1 active; eight
 deployment gates total.** The [first actual native SDK wire experiment](CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
 has [distinct actual-evidence acceptance](CODEX-G1-SDK-NATIVE-WIRE-INDEPENDENT.md)
 and root acceptance for the exact loopback fixture/physical cleanup: exit0,
