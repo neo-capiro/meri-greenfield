@@ -215,3 +215,75 @@ class ServerTests(unittest.IsolatedAsyncioTestCase):
         wrong = True
         await asyncio.wait_for(task, .3)
         self.assertEqual(sends[0]["status"], 403)
+
+    async def test_composed_mandatory_cancellation_and_ordinary_error_deny(self):
+        for mode, expected in (("observer-cancel", "FRESH_ADMISSION_CANCELLED"),
+                               ("state-cancel", "FRESH_ADMISSION_CANCELLED"),
+                               ("receive-cancel", "REQUEST_RECEIVE_CANCELLED"),
+                               ("observer-error", "FRESH_ADMISSION_DENIED")):
+            with self.subTest(mode=mode):
+                entered, finished = asyncio.Event(), asyncio.Event()
+                lives, observations = [], []
+                async def observe():
+                    observations.append(1)
+                    if len(observations) > 1:
+                        await entered.wait()  # Failure is strictly after initial admission/caller entry.
+                        if mode == "observer-cancel":
+                            raise asyncio.CancelledError()
+                        if mode == "observer-error":
+                            raise RuntimeError("synthetic private observer failure")
+                    return PeerLease("10.77.0.9", time.monotonic(), BINDING, GRANT)
+                async def upstream(scope, receive, send):
+                    lives.append(_current_lifetime_check().__self__)
+                    entered.set()
+                    try:
+                        await asyncio.Event().wait()
+                    finally:
+                        finished.set()
+                store, scope, app, queue, sends, send = self.make(upstream, observer=observe)
+                original_transact = store.transact
+                def transact(operation):
+                    if mode == "state-cancel" and store.calls >= 1:
+                        raise asyncio.CancelledError()
+                    return original_transact(operation)
+                store.transact = transact
+                async def receive():
+                    if mode == "receive-cancel":
+                        await entered.wait()
+                        raise asyncio.CancelledError()
+                    return await queue.get()
+                task = asyncio.create_task(app(scope, receive, send))
+                try:
+                    await asyncio.wait_for(entered.wait(), .3)
+                    await asyncio.wait_for(task, .3)
+                    self.assertTrue(finished.is_set())
+                    self.assertEqual(lives[0].reason, expected)
+                    self.assertTrue(lives[0].denied.is_set())
+                    self.assertEqual(lives[0].tasks, set())
+                    self.assertTrue(app.ready)
+                    self.assertEqual(sends[0]["status"], 403)
+                finally:
+                    if not task.done():
+                        task.cancel()
+                    await asyncio.gather(task, return_exceptions=True)
+
+    async def test_whole_request_cancellation_propagates_without_reason_replacement(self):
+        entered, finished = asyncio.Event(), asyncio.Event()
+        lives = []
+        async def upstream(scope, receive, send):
+            lives.append(_current_lifetime_check().__self__)
+            entered.set()
+            try:
+                await asyncio.Event().wait()
+            finally:
+                finished.set()
+        _, scope, app, queue, _, send = self.make(upstream)
+        task = asyncio.create_task(app(scope, queue.get, send))
+        await asyncio.wait_for(entered.wait(), .3)
+        task.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await task
+        self.assertTrue(finished.is_set())
+        self.assertEqual(lives[0].reason, "REQUEST_CANCELLED")
+        self.assertEqual(lives[0].tasks, set())
+        self.assertTrue(app.ready)

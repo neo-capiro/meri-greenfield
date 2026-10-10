@@ -82,6 +82,7 @@ class InferenceApp:
                         ended = not event.get("more_body", False)
                         await channel.put(event)
                 except asyncio.CancelledError:
+                    life.deny("REQUEST_RECEIVE_CANCELLED")
                     raise
                 except Exception:
                     life.deny("REQUEST_RECEIVE_DENIED")
@@ -134,7 +135,7 @@ class InferenceApp:
                 finally:
                     _request_lifetime.reset(token)
 
-            life.spawn(pump())
+            life.spawn(pump(), mandatory="REQUEST_RECEIVE_STOPPED")
             app_task = life.spawn(invoke())
             denied = life.spawn(life.denied.wait())
             done, _ = await asyncio.wait({app_task, denied}, timeout=max(0, life.deadline-time.monotonic()),

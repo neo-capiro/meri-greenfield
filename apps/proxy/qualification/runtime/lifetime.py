@@ -83,12 +83,16 @@ class RequestLifetime:
         if self.reason is not None:
             raise StateDenied(self.reason)
 
-    def spawn(self, coroutine, *, thread=False):
+    def spawn(self, coroutine, *, thread=False, mandatory=None):
         task = asyncio.create_task(coroutine)
         self.tasks.add(task)
         if thread:
             self.threads.add(task)
         def done(value):
+            # A mandatory owner must not disappear, even if canceled before its
+            # coroutine starts. Intentional close/request cancellation denies first.
+            if mandatory is not None:
+                self.deny(mandatory)
             self.tasks.discard(value)
             self.threads.discard(value)
             if not value.cancelled():
@@ -103,6 +107,9 @@ class RequestLifetime:
         if not done:
             self.deny("ORIGINAL_DEADLINE_EXPIRED" if time.monotonic() >= self.deadline
                       else "FRESH_OBSERVATION_TIMEOUT")
+            raise StateDenied(self.reason)
+        if task.cancelled():
+            self.deny("FRESH_ADMISSION_CANCELLED")
             raise StateDenied(self.reason)
         return task.result()
 
@@ -128,7 +135,7 @@ class RequestLifetime:
     async def start(self, scope):
         self.admission.validate_scope(scope)
         await self.refresh()
-        self.spawn(self._watch())
+        self.spawn(self._watch(), mandatory="ADMISSION_WATCH_STOPPED")
 
     async def _watch(self):
         try:
