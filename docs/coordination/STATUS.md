@@ -12,6 +12,8 @@ Refreshed worker attempt2 from6176ce1 ran CodeBuildc30be2bc to FAILED at02:23:17
 
 Both initial actual Hermes sessions closed at their40-turn caps with process-tree/readers cleanup confirmed. W02-11 returned28b569f; Codex source inspection found15 defects and keeps it UNACCEPTED, including inaccurate ECS shapes, incomplete authority, cleanup/log evidence and decoder validation. W02-12 returned six draft files and no commit; its unfinished tests/docs are explicit. Codex now owns completion of its eight allocated paths. A separate bounded [W02-13 decoder repair](tasks/W02-13-SDK-CAPTURE-DECODER.md) starts from clean6176ce1 and owns only two decoder files and its report. Separate actual review and independent owner verification are still required before source acceptance; no live execution is authorized.
 
+[W02-14](tasks/W02-14-NATIVE-ENFORCEMENT.md)/D009 allocates four new offline files for finite Standard ASL/JSONata deadline preparation fromd8ea2ce. This is a proposed qualification launcher/containment mechanism; app/control stay Fargate and production Temporal is unchanged. Trusted-owner serial/no-redrive assumptions and AWS fatal-error/outage limits are explicit. No Lambda, new global ledger, role deployment or live admission follows from this allocation.
+
 ## User decisions and design reference
 
 The user's final model choice is Bedrock, synthetic data only, US-only us.anthropic.claude-sonnet-4-6 with east1/east2/west2 routing allowed, aggregate paid-test cap$10. Application resources remain east1. **Paid inference$0/$10**; one free CountTokens request returned31. No existing Capiro provider key is reused. Tooling-phase notification was delivered.

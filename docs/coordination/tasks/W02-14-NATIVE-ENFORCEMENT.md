@@ -1,0 +1,18 @@
+# W02-14 native qualification enforcement preparation
+
+Codex allocates one actual Hermes implementation from clean accepted based8ea2ce8d9e943533ae9f1e3e2ae6967fc88ff77, branch task/w02-native-enforcement, dedicated worktree C:\dev\main\meri-greenfield-worktrees\w02-native-enforcement. Maximum40turns/3600seconds through the accepted installed-Hermes launcher, one session/no automatic retry or continuation. Exact query is copied privately before launch; actual session/footer/closure and honest partial outcomes are required. D009 records the owner architecture choice; it is source preparation only.
+
+Only four NEW owned paths:
+
+- infra/native-enforcement/app.mjs
+- infra/native-enforcement/README.md
+- scripts/test-native-enforcement.mjs
+- docs/coordination/reports/W02-14-NATIVE-ENFORCEMENT.md
+
+Prepare an inert finite Step Functions Standard ASL/CloudFormation proposal, using existing pinned Node/CDK dependencies. No Lambda/extra resources, dependency/lock changes, accepted probe/controller edits or production orchestration move. Complete owner preflight stays outside the workflow; exact reviewed identities are definition-compiled, not fabricated input authority summaries. Full closed support brief SHA2568e5ac106137b8d4e7f8659abbb96f81cae8be87c6e9b6fa56d4200bd38ed5f9e supplies required source/API references and counterexamples; the actual assigned query replaces its draft allocation explicitly.
+
+Preserve the original720s plus180s cleanup bound from t0 before managed dispatch. One RunTask state/no Retry or alternate launch, deterministic execution version/name/input, consumed local admission, read-only uncertain-start reconciliation. Under the explicit trusted-owner assumption, no out-of-band redrive/start/IAM changes; no claim of a global permanent lock. Finite actual-shaped paginated startedBy/RUNNING/STOPPED discovery, direct returned/bound ARN descriptions in batches<=100, real lowercase tags/attachments/ENI reconciliation, explicit1.4.0/platform patch limitation, complete bound provenance and task AND container terminal evidence. A positive ownership binding authorizes containing an own task even when acceptance/security properties fail. Missing/foreign/ambiguous ownership remains UNKNOWN.
+
+Use short budget-clipped calls and absolute waits; preserve predicates through catch/error paths. Catch/Parallel/top-level/States.Runtime/payload/history/outage limitations are explicit; no successful JavaScript model or static check may be presented as executing JSONata or proving AWS cleanup timing. No local disk/thread dependency after managed acceptance. A physical stop unproved by C is CLEANUP_UNKNOWN and blocks the next run. This source does not fix W02-11 log/decoder defects or admit any image/native task.
+
+Meaningful built-in Node fake traces/static policy/definition checks may run with confined worktree scratch and retained failure history. No AWS/network/provider/native/Docker/server/install/deploy/role mutation/push/amend, recursive delegation, self-resume or background scheduler. Separate actual exact-commit review, owner replay/source/policy verification and actual service validation precede any later deployment admission; final image/security and controlled surviving-enforcement exercise precede SDK/Office work. Return a scoped reviewable commit or concrete design blocker.
