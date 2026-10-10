@@ -1,0 +1,39 @@
+{
+  "name": "@meri/elements-qualification",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Meri W02-09 AI Elements source adoption: immutable vendored conversation/message/prompt-input display source with pinned dependency closure. Preparation only; not a product package, no model/provider/browser execution.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test qualification.test.mjs",
+    "check": "npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "@streamdown/cjk": "1.0.4",
+    "@streamdown/code": "1.1.1",
+    "@streamdown/math": "1.0.3",
+    "@streamdown/mermaid": "1.0.3",
+    "ai": "7.0.137",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "cmdk": "1.1.1",
+    "lucide-react": "0.577.0",
+    "nanoid": "5.1.16",
+    "radix-ui": "1.7.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "streamdown": "2.7.0",
+    "tailwind-merge": "3.7.0",
+    "use-stick-to-bottom": "1.1.6",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

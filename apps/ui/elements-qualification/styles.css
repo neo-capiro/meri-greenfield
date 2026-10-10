@@ -1,0 +1,20 @@
+/* QUALIFICATION BUILD INPUT ONLY; no CSS processor/browser build was run.
+ * A consuming build must provide pinned Tailwind4 and reviewed shadcn theme
+ * tokens (background/foreground, primary, muted, accent, border, input, ring,
+ * destructive, radius and dark-mode variants). Those are not supplied here.
+ * Plain-text SSR does not enable MessageResponse/Markdown or plugin rendering.
+ */
+@import "tailwindcss";
+@import "streamdown/styles.css";
+
+@source "./fixture.tsx";
+@source "./vendor/**/*.{ts,tsx}";
+@source "./node_modules/streamdown/dist/*.js";
+@source "./node_modules/@streamdown/code/dist/*.js";
+@source "./node_modules/@streamdown/cjk/dist/*.js";
+@source "./node_modules/@streamdown/math/dist/*.js";
+@source "./node_modules/@streamdown/mermaid/dist/*.js";
+
+/* Future math rendering also needs KaTeX CSS/fonts. CSS generation, plugin
+ * activation, font assets, theme, hydration, accessibility and E2E are UNRUN.
+ */
