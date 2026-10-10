@@ -45,11 +45,19 @@ const EMPTY_ARRAY_FIELDS=['links','portMappings','environmentFiles','secrets','v
 // ONLY at the original command-check position below; canary uses fixed literals and never
 // reads `expect.command`.
 const INVOCATION_NATIVE='native',INVOCATION_CANARY='canary';
+// Preserve the original actual-then-expected role read order and one read each.
+// Only native explicit-null expectations select absence, never a null-valued or
+// inherited role field. Canary remains on the original equality contract.
+function workerRoleMatches(t,expect,mode){
+ const actual=t.taskRoleArn;
+ const expected=expect.workerRoleArn;
+ return mode===INVOCATION_NATIVE&&expected===null?!('taskRoleArn' in t):actual===expected;
+}
 function validateDefinition(t,expect,mode){
  check(t&&typeof t==='object'&&!Array.isArray(t),'definition object');
  keysOnly(t,TASK_KEYS,'task-definition');
  check(t.taskDefinitionArn===expect.arn&&t.family===expect.family&&Number.isInteger(t.revision)&&t.revision===expect.revision,'definition binding/revision');
- check(t.executionRoleArn===expect.executionRoleArn&&t.taskRoleArn===expect.workerRoleArn&&t.networkMode==='awsvpc','definition roles/networkMode');
+ check(t.executionRoleArn===expect.executionRoleArn&&workerRoleMatches(t,expect,mode)&&t.networkMode==='awsvpc','definition roles/networkMode');
  check(t.cpu==='2048'&&t.memory==='8192','definition resources');
  ordered(t.requiresCompatibilities,['FARGATE'],'requiresCompatibilities');
  check(canonical(t.runtimePlatform)===canonical({cpuArchitecture:'X86_64',operatingSystemFamily:'LINUX'}),'runtimePlatform');

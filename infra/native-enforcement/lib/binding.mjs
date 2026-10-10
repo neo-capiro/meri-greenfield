@@ -29,7 +29,10 @@ export function buildNativeEnforcementAdmission(input={}){
  check(new RegExp(`^${prefix}cluster/meri-greenfield-[A-Za-z0-9-]{1,180}$`).test(p.clusterArn),'exact cluster ARN');
  check(exact(p.taskDefinitionArns,['sdk','office']),'two definitions');
  for(const k of ['sdk','office'])check(new RegExp(`^${prefix}task-definition/meri-greenfield-qualification-${k}:[1-9][0-9]*$`).test(p.taskDefinitionArns[k]),'exact account/region/family/revision');
- check(p.executionRoleArn===ROLE_PINS.execution&&p.workerRoleArn===ROLE_PINS.worker,'exact retained worker/execution roles');
+ // Explicit null selects the reviewed role-free native definition shape. Missing,
+ // undefined and arbitrary role ARNs still refuse; every full SDK/Office readback
+ // below must actually omit taskRoleArn. Legacy role-bearing inputs stay valid.
+ check(p.executionRoleArn===ROLE_PINS.execution&&(p.workerRoleArn===ROLE_PINS.worker||p.workerRoleArn===null),'exact retained worker/execution roles or explicit role-free native worker');
  check(new RegExp(`^${TARGET.account}\\.dkr\\.ecr\\.${TARGET.region}\\.amazonaws\\.com/meri-greenfield/qualification-worker@sha256:[a-f0-9]{64}$`).test(p.image),'immutable new image');
  check(!['7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75','527e6d80d0e0cb9b3369f7f75d22475b96615bee171fb6fb6d57f31ce925d74e'].some(d=>p.image.endsWith(d)),'unadmitted historical image');
  check(/^[a-f0-9]{64}$/.test(p.imageConfigSha256)&&/^[a-f0-9]{40}$/.test(p.sourceCommit),'config/source pins');

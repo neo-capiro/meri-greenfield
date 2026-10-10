@@ -3,13 +3,14 @@ import { buildNativeEnforcementStateMachine,buildCanaryEnforcementStateMachine }
 import { PROFILE_NATIVE,PROFILE_CANARY } from './probe-profiles.mjs';
 // Shared inert template builder. The closed mode is selected by private provenance, so a
 // canary binding never produces the native two-definition policy and vice versa. The native
-// profile reproduces the reviewed two-definition policy bytes exactly.
+// profile preserves legacy role-bearing policy bytes; explicit role-free native
+// bindings pass only the execution role.
 function buildEnforcementTemplate(binding,profile){
  const ok=profile.mode==='canary'?isCanaryBinding(binding):(isCompiledBinding(binding)&&!isCanaryBinding(binding));
  check(ok,'complete static preparation required');if(profile.mode==='canary')assertCanaryBoundary();const p=binding.pins, taskResource=`${prefix}task/${p.clusterArn.split('/')[1]}/*`;
  const machineArn=`arn:aws:states:${p.region}:${p.account}:stateMachine:${p.stateMachineName}`;
  // StopTask stays conditioned on the CURRENT resource tags (no permission broadening).
- // Owner decision: the empty worker cannot mutate tags; the trusted owner must preserve
+ // Owner decision: the role-free/empty-policy worker cannot mutate tags; the trusted owner must preserve
  // the required tags/authority until the stop request. A required tag deleted before
  // containment (or out-of-band administrator mutation) leaves the retained positive
  // ledger unable to satisfy this condition and MUST stay CLEANUP_UNKNOWN, blocking the
@@ -21,7 +22,7 @@ function buildEnforcementTemplate(binding,profile){
  const policy={Version:'2012-10-17',Statement:[
   {Effect:'Allow',Action:'ecs:RunTask',Resource:runTaskResource,Condition:{ArnEquals:{'ecs:cluster':p.clusterArn},StringEquals:requestTags,Bool:{'ecs:enable-execute-command':'false'},'ForAllValues:StringEquals':{'aws:TagKeys':['QualificationRun','QualificationProbe','MeriComponent']}}},
   {Effect:'Allow',Action:'ecs:TagResource',Resource:taskResource,Condition:{StringEquals:{'ecs:CreateAction':'RunTask',...requestTags}}},
-  {Effect:'Allow',Action:'iam:PassRole',Resource:[p.executionRoleArn,p.workerRoleArn],Condition:{StringEquals:{'iam:PassedToService':'ecs-tasks.amazonaws.com'}}},
+  {Effect:'Allow',Action:'iam:PassRole',Resource:p.workerRoleArn===null?[p.executionRoleArn]:[p.executionRoleArn,p.workerRoleArn],Condition:{StringEquals:{'iam:PassedToService':'ecs-tasks.amazonaws.com'}}},
   {Effect:'Allow',Action:'ecs:StopTask',Resource:taskResource,Condition:{ArnEquals:{'ecs:cluster':p.clusterArn},StringEquals:{'aws:ResourceTag/QualificationRun':p.runUuid,'aws:ResourceTag/MeriComponent':'native-enforcement'}}},
   {Effect:'Allow',Action:'ecs:DescribeTasks',Resource:taskResource,Condition:{ArnEquals:{'ecs:cluster':p.clusterArn}}},
   {Effect:'Allow',Action:'ecs:ListTasks',Resource:'*',Condition:{ArnEquals:{'ecs:cluster':p.clusterArn}}},

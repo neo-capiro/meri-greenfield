@@ -1,13 +1,14 @@
 {
   "schema": "meri.qualification.component-pins/1",
-  "generatedAt": "2026-10-09",
+  "generatedAt": "2026-10-10",
   "status": "preparation-only",
   "notes": [
     "W02-10 native Fargate probe DEFINITIONS. Preparation only: nothing here is an admitted image, a running task, a live qualification or an accepted runtime.",
-    "The worker image is NOT built and NOT admitted. The WorkerImage CloudFormation parameter has NO default; its all-a value below is a prominently fake synthetic placeholder used only for offline synthesis/tests and is never a deployable image.",
+    "This source does not admit a worker image. The WorkerImage CloudFormation parameter has NO default; its all-a value below is a prominently fake synthetic placeholder used only for offline synthesis/tests and is never a deployable image.",
     "Synthesis is offline and deterministic: no AWS call, no context lookup, no asset, no socket/server. The template hash below is the synthetic determinism anchor, not deployment evidence.",
     "CDK package versions/integrities were read from the frozen root package-lock.json and the shared read-only node_modules; they were used READ ONLY and were not installed or modified.",
-    "Role ARNs are immutable string references only. No IAM role/policy resource is declared, so no imported role can gain a policy."
+    "Only the execution role is an immutable string reference. SDK/Office definitions omit TaskRoleArn entirely: an empty-policy task role still vends worker credentials. No IAM role/policy resource is declared.",
+    "The earlier role-bearing template and registered revision-1 definitions are historical evidence; this role-free source requires separate owner review, new definition registration/readbacks and one-run admission."
   ],
   "syntheticStack": {
     "name": "MeriGreenfield-NativeQualification",
@@ -15,8 +16,8 @@
     "region": "us-east-1",
     "synthesizer": "BootstraplessSynthesizer",
     "templatePath": ".task-inputs/cdk.out/native-qualification/MeriGreenfield-NativeQualification.template.json",
-    "templateSha256": "7895fa997a8521fe7adc03cb7c468b1987de8875518ae0d8ab6f284496b13080",
-    "templateBytes": 6082,
+    "templateSha256": "fa390ba774065cc382099984f69621bbd1b3a31e9c43c3b9be60431dfc5efa4d",
+    "templateBytes": 5846,
     "resourceTypes": { "AWS::ECS::TaskDefinition": 2 },
     "outputs": ["SdkTaskDefinitionArn", "OfficeTaskDefinitionArn"],
     "validationReport": "no findings (empty pluginReports)"
@@ -47,10 +48,12 @@
     }
   },
   "roles": {
-    "provenance": "docs/coordination/private-evidence/W02-fargate-baseline-3-run/task-definition.json (read-only; both strings reconcile EXACTLY)",
-    "mode": "immutable string references only - no IAM resource declared",
+    "provenance": "Execution-role and historical task-role strings retain docs/coordination/private-evidence/W02-fargate-baseline-3-run/task-definition.json provenance. Task-role omission is the prospective Codex role-free source correction, not a fresh AWS readback.",
+    "mode": "immutable execution-role reference; worker task role omitted; no IAM resource declared",
     "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
-    "workerRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD"
+    "workerRoleArn": null,
+    "taskRoleArnOmitted": true,
+    "legacyWorkerRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD"
   },
   "taskDefinitions": [
     {
@@ -95,9 +98,9 @@
     "logging": { "logDriver": "awslogs", "group": "/meri-greenfield/qualification/runtime", "region": "us-east-1", "mode": "blocking" }
   },
   "unresolvedPins": [
-    "Assembled/admitted worker image digest (image still unbuilt and unaccepted)",
+    "Separate owner admission of the final immutable worker image/source/digest for the specific synthetic run",
     "Independent review of the refreshed image, its ECR scan disposition and security decision",
-    "Reviewed all-ADD CloudFormation template/change set and fresh STS/live empty-role/network/DNS checks before any launch",
+    "Reviewed task-definition-only update/change set, new SDK/Office revision readbacks with absent taskRoleArn, and fresh STS/execution-role/network/DNS checks before any launch",
     "Separate one-run admission, original launch deadline/watchdog, complete paginated/stable-token logs and SDK/Office reconstruction/hash/visual evidence with confirmed task/child cleanup"
   ]
 }

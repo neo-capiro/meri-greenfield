@@ -9,6 +9,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { App } from 'aws-cdk-lib';
@@ -109,15 +110,26 @@ test('both task definitions use the same exact image parameter', () => {
   assert.deepEqual(images[0], images[1]);
 });
 
-test('roles are the exact retained ARNs by immutable reference', () => {
+test('execution role is retained and SDK/Office omit the task role entirely', () => {
   assert.equal(text.includes('AWS::IAM::Role'), false);
   assert.equal(text.includes('AWS::IAM::Policy'), false);
   for (const t of TASK_DEFS) {
     assert.equal(typeof t.props.ExecutionRoleArn, 'string');
-    assert.equal(typeof t.props.TaskRoleArn, 'string');
     assert.equal(t.props.ExecutionRoleArn, EXECUTION_ROLE_ARN);
-    assert.equal(t.props.TaskRoleArn, WORKER_ROLE_ARN);
+    assert.equal(Object.hasOwn(t.props, 'TaskRoleArn'), false);
   }
+  assert.equal(text.includes(WORKER_ROLE_ARN), false, 'historical empty role must not enter future definitions');
+});
+
+test('component pins bind the actual role-free synthetic template and execution role', () => {
+  const pins = JSON.parse(readFileSync(new URL('./component-pins.json', import.meta.url), 'utf8'));
+  const raw = readFileSync(join(OUTDIR, TEMPLATE_FILE));
+  assert.equal(pins.syntheticStack.templateBytes, raw.length);
+  assert.equal(pins.syntheticStack.templateSha256, createHash('sha256').update(raw).digest('hex'));
+  assert.equal(pins.roles.executionRoleArn, EXECUTION_ROLE_ARN);
+  assert.equal(pins.roles.workerRoleArn, null);
+  assert.equal(pins.roles.taskRoleArnOmitted, true);
+  assert.equal(pins.roles.legacyWorkerRoleArn, WORKER_ROLE_ARN);
 });
 
 test('platform, sizing, networking and fresh empty volumes', () => {

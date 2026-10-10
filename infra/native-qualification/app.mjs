@@ -9,12 +9,13 @@
 //
 // It creates NO services, schedulers, IAM roles/policies, networking, log
 // groups, secrets, assets, lookups or changes to any existing Meri/Capiro
-// resource. It pins the two retained, externally-created role ARNs by immutable
-// reference (plain strings) so no synthesized role can gain a policy. This
+// resource. It pins the retained execution role by immutable reference and
+// deliberately OMITS the task role: an empty-policy role still vends credentials.
+// No synthesized role can gain a policy. This
 // module makes no AWS request, no context lookup and no network/socket/server
 // call: synthesis is pure and offline.
 //
-// The worker image is NOT built and NOT admitted. `WorkerImage` is a required
+// This source does not admit a worker image. `WorkerImage` is a required
 // CloudFormation parameter (no default, immutable-digest pattern only); the
 // all-a value below is a prominently fake placeholder used for synthetic
 // validation only and is never a deployable image.
@@ -38,6 +39,9 @@ export const IMAGE_REPOSITORY =
 // strings only — no IAM resource is declared, so nothing can attach a policy.
 export const EXECUTION_ROLE_ARN =
   'arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3';
+// Historical public export only; future SDK/Office definitions never use it.
+// Preserve source compatibility for callers inspecting the earlier role-bearing
+// definitions. This value is NOT a role-free definition's task role.
 export const WORKER_ROLE_ARN =
   'arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD';
 
@@ -153,7 +157,8 @@ export function buildNativeQualificationStack(scope, id = STACK_NAME) {
     const task = new ecs.CfnTaskDefinition(stack, `${probe.id}TaskDefinition`, {
       family: probe.family,
       executionRoleArn: EXECUTION_ROLE_ARN,
-      taskRoleArn: WORKER_ROLE_ARN,
+      // Omit TaskRoleArn entirely, including null/empty-string representations.
+      // ECR pull and awslogs use the execution role outside the worker process.
       networkMode: 'awsvpc',
       requiresCompatibilities: ['FARGATE'],
       cpu: '2048',

@@ -28,8 +28,12 @@ assets or lookups, imports nothing, and changes no existing Meri/Capiro resource
 - `awslogs` logging with `mode=blocking`, group `/meri-greenfield/qualification/runtime`,
   region `us-east-1`, and distinct deterministic prefixes `qualification-sdk` /
   `qualification-office`.
-- Two immutable string role references (execution + empty worker). No IAM resource is
-  declared, so no imported role can gain a policy.
+- One immutable execution-role reference for ECR pulls and logs. `TaskRoleArn` is
+  entirely absent from both definitions, including null/empty-string representations.
+  An empty-policy task role still causes ECS to vend worker credentials; it is unsuitable
+  for the SDK capture's credential-free parent preflight. No IAM resource is declared.
+  The old `WORKER_ROLE_ARN` export remains a historical compatibility constant and is
+  never used in these future definitions.
 
 ## Image parameter
 
@@ -49,7 +53,8 @@ only under the explicit CLI guard when the file is executed directly.
 
 ```
 node infra/native-qualification/app.mjs                                   # deterministic synth
-node --test infra/native-qualification/security.test.mjs                  # 14 offline shape/security tests
+node --test infra/native-qualification/security.test.mjs                  # 15 offline shape/security tests
+node --test scripts/test-native-roleless.mjs                              # role-free/legacy compiler and IAM regressions
 ```
 
 Synthetic output is written only to the ignored `.task-inputs/` scratch directory. These
@@ -64,10 +69,14 @@ Definition synthesis proves none of the following live facts. Before any launch 
 must, separately and with independent review:
 
 1. Finalize the reviewed image/source/digest and the security disposition.
-2. Review the full all-ADD CloudFormation template and a change set; confirm only the two
-   named task definitions are created.
-3. Re-check current live IAM (execution role can pull the image and write logs only; worker
-   role empty), network/DNS controls and a fresh exact STS identity.
+2. Review a new task-definition-only change set for the already isolated qualification
+   stack; confirm only the two named definitions change and independently inspect the
+   registered revision-qualified readbacks. Both must omit `taskRoleArn` entirely.
+   The earlier revision-1 role-bearing registrations remain historical evidence.
+3. Re-check current live IAM (execution role can pull the image and write logs only),
+   network/DNS controls and a fresh exact STS identity. Role omission does not itself prove
+   every runtime credential source absent: verify the actual SDK/Office parent environment
+   without printing values. The ordinary ECS metadata URI is not a credential URI.
 4. Obtain a separate one-run admission and set the original launch deadline/watchdog
    **before** launch.
 5. Run one task at a time in the existing isolated new cluster/subnet/SG with public IP
@@ -75,4 +84,14 @@ must, separately and with independent review:
 6. Capture complete paginated logs with stable tokens plus SDK/Office reconstruction,
    hash and visual evidence, and confirm task/child cleanup.
 
-The image is not built and not admitted; no image, probe or G1 acceptance is claimed here.
+The native enforcement compiler explicitly accepts `workerRoleArn:null` only with complete
+SDK/Office records that omit the actual field. Missing selectors, present null/undefined/empty
+fields and unexpected roles refuse. The corresponding proposed `iam:PassRole` statement
+contains only the execution role. Legacy role-bearing native records and the fixed canary
+mode retain their original behavior. Full static pins, wire/authority admission, network,
+deadline, cleanup and every other gate remain required.
+
+The changed compiler source must separately advance any source-pinned request planner before
+integration; original W18 inputs and historical source pins are not rewritten by this fix.
+No AWS registration, task launch, native probe, image security waiver or G1 acceptance is
+claimed here. See `docs/coordination/reports/CODEX-G1-ROLELESS-WORKER.md` for source checks.
