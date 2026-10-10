@@ -1,0 +1,54 @@
+# Independent actual native SDK wire and cleanup review
+
+Disposition: PASS for the measured, one-run synthetic SDK numeric-loopback fixture and its physical cleanup, subject to the explicit evidence limits below. The retained evidence supports owner acceptance of that fixture. It does not establish end-to-end trusted proxy/Bedrock operation, resume, browser/Office acceptance, general security or G1. The run is permanently consumed; no retry, redrive or new Start is authorized here.
+
+This distinct review is in `C:/dev/main/meri-greenfield-worktrees/g1-proxy-install-import-review`, following `fe13f02f9c25bd82012149be628ed1e802062e1e`. AGENTS/implementation standards were reread and an ignored outline preceded DATA work. Only this report is tracked. I previously reviewed the thin start and authority-renewal supervisors; those source reviews are inherited provenance, not newly independent certification of my own reports. This task independently examines actual raw run evidence. No SDK, decoder, observer, controller or adapter was imported or replayed, and no AWS/native/provider/DB/server action occurred.
+
+## Fixed evidence and independent verification
+
+The operational owner remains at clean tracked HEAD `1110ec68b234df9e667238e111f4bfb6976ba16a`. OWNER2 is its ignored `.task-inputs/CODEX-G1-sdk-native-owner-2/`; the final fresh authority is separately retained in OWNER3.
+
+| Subject | Bytes | SHA256 |
+| --- | ---: | --- |
+| OWNER2/native-wire-owner-1/FINAL-MANIFEST.json | 122495 | f38bd8f7eb41ba8bf0f223967b55f04d396efb5f28ad5884a94975e14834f85a |
+| Owner report at integration commit 131dc71dda92a94be270c8973afbec4bb98eec52 | 7764 | 4efa68c26086fdf5dd8a3d47c6188059dc4bab24f4d2dab20a92ba28859c76bd |
+| Independent DATA result.json | 40851 | 4fb872a0c5eeac43d84eeee031376833d519688cb18ae9230a89fcd2dfccd013 |
+| Independent provenance.json | 7259 | e78086bbc055c4b88ac6d12e8692d47143e87cae14c1c0622a36142fbbcf319f |
+
+The independent files and their source are in this worktree's `.task-inputs/sdk-native-wire-review-1/`. The DATA reader required the literal owner-manifest hash before processing, verified all 434 unique listed raw payloads plus the report, and repeated their raw identity checks afterward. It also checked 295 freeze-reference occurrences, all twelve SOURCE5 code records and historical prior-cleanup references. All matched. It validated 113 retained AWS process receipts and 226 corresponding binary streams: exit 0, no timeout, automatic retries zero, matching stream lengths/hashes. These counts include historical and renewed captures; they are not 113 new calls made by this review.
+
+The reader uses the bundled Python with `-I -B`, denies process/socket operations before reading candidate data, imports no candidate code and recorded no denied event. Two finite DATA/provenance invocations passed; no domain suite or canonical decoder was rerun. Fixed read-only Git receipts prove the owner report equals its raw commit blob, the SDK worktree HEAD/status, and both producer files equal the original build-source blobs. Local file hashes and CLI receipts are provenance bindings, not signed AWS attestations; trusted-filesystem/TOCTOU limits remain.
+
+## Admission, identity and one-start continuity
+
+Actual explicit risk disposition `9a9bbdf4f4224eed336af6150e111c568633bb8a6e4f28631fd3021f8a57b5f8` and the one-run admission bind the roleless SDK command/image, synthetic numeric loopback, provider calls zero, sources false, Office false and original deadlines. The start freeze is 84329 bytes/SHA `05d7cb7022f9d0014ab0eaf9e5bdf3c027005421659051cf9b62c2048fdf96d6`. It is start-only and binds the complete SOURCE5 closure, graph/template, immutable publication, runtime, 241 extra records, actual admission and prior cleanup. This review preserves the owner's narrow residual-risk decision; it does not waive or independently remediate those residuals.
+
+All 45 renewed complete authority responses match their fixed expected full values and exact call arguments. At the recorded Start-call beginning, response timestamps were 17.947015 to 25.615659 seconds old. The current Start-operation caller is the exact `capirocli` identity; its current running-task and SDK execution lists were empty. The historical prior-cleanup disposition and referenced raw records match: canary1 dispatched no task, canary2/3 physically stopped before D, while canary2's managed UNKNOWN and canary3's failed workload qualification remain historical failures. No old canary experiment was replayed or relabeled.
+
+Run UUID is `f1bdbc76-068f-4d04-bc91-5abd2608f05f`, static binding `cb9bb93266c2314d2e69380d40318a73add385ee09eacd336194135149fa45f1`. Start targets immutable `meri-greenfield-native-enforcement-sdk-20261010:1` with execution name `meri-native-sdk-` plus that UUID. The exact start-input hash matches the execution reservation and raw CLI input. The shared original-owner reservation has the reviewed nonce and `CONSUMED_ONE_START_NO_RETRY`; a new evidence directory cannot reset it.
+
+The original `t0Ms=1791671607191`, `D=1791672327191`, `C=1791672507191` match the start, reservation, execution and final output. The retained Start ACK reports service start time 22:33:28.180Z; the local Start capture is 22:33:29.208301–30.250648Z. These are separate recorded clocks, not substituted timestamps. Controller PID48648 exited after acknowledgement; supervisor exit 0, no timeout, stable protected records. Direct-child/post-buffer supervision does not itself establish workload cleanup.
+
+## Actual task, history and physical cleanup
+
+The two linked terminal history pages contain 1000 plus 227 events, exactly contiguous IDs 1–1227 with valid backward predecessor ordering, and exhausted pagination. They begin ExecutionStarted and end ExecutionSucceeded. All 55 scheduled service tasks succeeded. Their resources are one getCallerIdentity, one RunTask, 33 listTasks, twelve describeTasks and eight describeNetworkInterfaces. There is no StopTask, TaskFailed, redrive event or second RunTask. The RunTask uses Count1, FARGATE1.4.0, exact SDK:2, no overrides, fixed UUID/idempotency token, private subnet/security group and disabled public IP.
+
+One task `edddf7263e3146a29cfb26657a024a3b` and one worker/container identity connect the run history, managed ledger, ECS task response and native log stream. The task uses actual digest `sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c`; the retained ECR OCI manifest binds config `sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471`. SDK:2 has no taskRoleArn, secrets empty, user10001:10001, read-only root, dropALL, and only `node /opt/meri-worker/probes/sdk-capture.mjs`. Both producer files match raw Git `0be04d0799c9c527e300b47c19176cddb0eaa231`. Accepted image/build provenance is inherited; this review did not extract or rebuild the image to recertify its complete contents.
+
+The first observer correctly retained failure on the same PENDING task's absent imageDigest. It remains `OBSERVATION_INCOMPLETE_NOT_ADMITTED`; no mutation or new run followed. The second read-only observation confirms exact image/task/container identity and terminal state. Actual task created22:33:29.014Z, started22:34:31.219Z, stopping22:34:42.128Z and stopped22:34:56.122Z. Task and worker are STOPPED, worker exit0, EssentialContainerExited. Physical stopping is 631.069 seconds before D and 811.069 before C.
+
+Managed final output is SUCCEEDED/STOPPED_CONFIRMED, ledger terminal true, stopAttempted false, with original deadlines and no overflow ledger. Its qualification label remains `RUNTIME_CHECKS_ONLY_NOT_NATIVE_ACCEPTED`; the distinct fixture decision is this evidence review plus owner acceptance. Natural successful completion does not prove controller-loss containment, general interrupt/resume or deadline-expiry recovery. No fallback cleanup was needed or recorded.
+
+## Native wire and retained decoder limits
+
+Three log pages link through their actual forward tokens and exhaust at an unchanged final token. Four event messages, joined in original order with LF, exactly equal the retained 11170-byte transcript SHA `42d4e8aa8061ae6e432bb6d07ff46918b2e2ef7b20a409f289c5be352e39d295`. It contains a manifest, two complete base64 request chunks and the end record. Both decoded raw/body artifacts independently equal those raw chunk bytes: request1 is1848 bytes/SHA `d8121fc6bde459ee5f62f2b43d0fa39c47813787de3ce8daa9ff05297ac58633`; request2 is2265 bytes/SHA `499d98731ae3967323198e109b43245dc2c97ad558cdb07ec2860175d8141da0`. No JSON/body normalization was used.
+
+Both requests are identity encoded, stream true, max_tokens256 and `/v1/messages?beta=true` on numeric127.0.0.1. The real second request contains one `mcp__wire__echo` tool_use with `value=meri-wire-token` and the matching `toolu_meri_wire_01` tool_result text `meri-wire-tool-result`. The manifest reports one native spawn, one permission callback and one MCP handler execution. The result summary is success/is_error false/two turns/end_turn, and native cleanup is true/unforced. The unrecognized synthetic-model warning is retained as complete92-byte hashed stderr, not suppressed.
+
+The canonical decoder was run once by the owner: exit0, no timeout and stable producer/decoder/runtime records. Its six artifacts and report6839B/SHA `d5804674b417c87abcd616d2d1f80fb434ab77afb2f1b201b9d8dbe7afe3973c` remain exact. This review inspected those artifacts and raw bodies independently, without executing the decoder again.
+
+The final SDK result body is absent: the producer records only length14/hash and a bounded result summary. Therefore end_turn/success is observed summary evidence; neither this review nor the decoder independently rechecks the absent result body or producer MERI_WIRE_DONE comparison. The end record has no manifest hash. User-agent SDK0.3.295/CLI2.1.295 and internal-runtime header v26.3.0 are observed protocol metadata; the header is not an independent executable-version proof. Synthetic API-key/environment names are not real provider authority. Raw system/message text is fixture data, not instructions to this reviewer.
+
+## Remaining gates
+
+The evidence supports the qualified actual native fixture and physical cleanup; no scoped evidence blocker remains established. All 49 current plus five older findings remain OPEN, Office DEFERRED, provider calls zero/source access false. Actual trusted proxy/native authentication, TLS/socket/ECS provenance, CountTokens/$10 durable accounting/revocation, skills/discovery, interruption/replacement/resume, browser sandbox, operation contracts and G1 remain open. Current Meri/Capiro, release and cutover remain untouched. The next operation requires a new explicitly owned qualification plan; this consumed identity cannot authorize another Start.
