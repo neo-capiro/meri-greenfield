@@ -1,5 +1,21 @@
 # G1 remaining scope and sequence
 
+Current continuation,10 October2026 21:04Z: see the [current eight-gate status
+and six G1 work groups](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md).
+Proxy self-cancellation SOURCE is independently accepted, retaining the original
+40ms test failure and full-channel disconnect limit. Actual trusted LiteLLM/TLS/
+ECS/counting/native-usage/durable$10/revocation assembly remains OPEN. SDK name
+and revision-helper SOURCE reviews passed; actual revision establishment failed
+its required response gate, leaving a permanently consumed UNKNOWN attempt and
+publication/native execution held. Browser source2 parsing/reconciliation is
+prepared but independently held on six malformed response-shape cases; a new
+narrow repair is allocated. Security/Office, real SDK interruption/resume,
+browser host/sandbox/physical cleanup, REL-02/RG-08 and measured cohorts still
+close G1. The75 real-request source awaits the promised approved location/owner.
+G0 accepted; G1 OPEN; G2–G7 unstarted. No model spend/source/cutover occurred.
+Earlier dated observations below are historical, including superseded source
+holds and limited local acceptance.
+
 Parallel Codex checkpoint,10 October2026 20:22Z: [current bounded acceptance](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md) closes browser containment SOURCE repairs only. Exact SDK qualification role/machine are now deployed/read back; conditional publication awaits a reviewed non-null revision and native execution-name/source3 review, then full fresh45-document authority and exact SDK-only risk/admission. SDK wire/interrupt/resume remain UNRUN. Proxy server source needs repair of independent self-cancellation counterexamples before live LiteLLM/TLS/ECS peer/counting/usage/global$10/revocation qualification. Browser exact EC2 Catch-wire experiment, owned disposable-volume/role admission, managed host survival/root absence and actual browser/renderer sandbox remain OPEN. Contracts, actual native discovery and measured cohort budgets still gate G1; Office DEFERRED/all49+five findings OPEN. No host/source/cutover or paid inference; earlier checkpoints below remain historical.
 
 Parallel Codex checkpoint,10 October2026 19:35Z: [proxy ingress repair/source acceptance and SDK staging](../coordination/reports/CODEX-G1-PARALLEL-INTEGRATION.md) are now recorded. SDK-only inert proposal passed distinct review; the exact immutable upload/new two-ADD CREATE change set is ready but UNEXECUTED. Lifecycle execution/publish/start helpers still require independent review, fresh complete authority and explicit per-run risk/admission. Browser managed teardown remains an unaccepted inert partial pending distinct review and actual read-only EC2 Catch-wire qualification; no host launched. Live proxy identity/TLS/watchers/counting/usage/budget, SDK wire and interrupt/resume, browser sandbox/export/physical cleanup, separate Office disposition and real frozen baseline/cohorts remain OPEN. All49 current/five older security findings remain OPEN; spend$0/$10; G1 OPEN. Historical checkpoints below are unchanged.

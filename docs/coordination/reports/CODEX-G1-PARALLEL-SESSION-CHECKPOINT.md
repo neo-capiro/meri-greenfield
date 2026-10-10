@@ -1,5 +1,108 @@
 # Parallel Codex integration checkpoint
 
+Current continuation,10 October2026,21:04UTC. **G0 accepted; G1 active; G2–G7
+not started.** Four bounded Codex sessions include the integration owner,
+implementation and distinct review in dedicated worktrees. No Hermes is used.
+Only reviewed source is accepted; prepared fixtures and cloud registrations do
+not establish a deployment-gate pass.
+
+| Gate | Scope | Status |
+|---|---|---|
+| G0 | Discovery and agreed v1 scope | Accepted planning/discovery |
+| G1 | Runtime, security, integration and reliability qualification | Active / OPEN |
+| G2 | Isolated development deployment | Not started |
+| G3 | Read-only Capiro data integration | Not started |
+| G4 | Execution workspace and complete UI integration | Not started |
+| G5 | Selected commands and approved writes | Not started |
+| G6 | Full staging, security, recovery and release testing | Not started |
+| G7 | Controlled release and authorized cutover | Not started |
+
+There are **eight deployment gates**. RG-01–RG-12 are reliability checks used
+inside these gates, not twelve additional deployment stages. Gate counts are not
+a weighted completion percentage. Independent source packages may progress
+before an environment promotion; this does not mean that later gates passed.
+
+## New accepted and measured work
+
+- The separate shared frontend repository remains accepted at
+  `neo-capiro/capiro-frontend@28c300093c0886018c49df8764a8e6fac44819eb`:
+  modular application/UI/client foundations and the finalized Figma Meri Home
+  presentation/responsive checks pass offline. Full UI/backend behavior and the
+  future Portfolio, Settings and Modules implementation remain later work.
+  Forty-four obsolete UI qualification files were removed from this new backend;
+  current Capiro/Meri was not modified.
+- Proxy cancellation repair `dd7c6dd9e9a94b719aad5d23dfe4c1ecf3747ed2`
+  passed distinct source review
+  `25ad150e2b93fad41f94ebf34bd4a57dddcf46b7`: original six controls,
+  five focused new methods and four reviewer controls pass once in their stated
+  scopes. Root read the complete report/source delta, verified295 sealed record
+  occurrences and eight exact candidate raw Git paths. Source is integrated
+  byte-exact. The author's original40ms deadline-test failure and saturated
+  receive-channel disconnect limitation remain recorded. No live TLS, provider
+  cancellation, accounting or physical-stop acceptance follows.
+- SDK controller/observer name repair and revision-only helper passed their
+  distinct source reviews; root verified193/1754 sealed record occurrences.
+  The new SDK IAM role/state machine remain deployed and fully read back. The
+  sole same-definition UpdateStateMachine at20:48UTC returned the original
+  updateDate without revisionId. Its reservation is permanently
+  **CONSUMED / UNKNOWN / NO RETRY**. A separate read-only reconciliation finds
+  the entire machine response unchanged. Root sealed114 new DATA payloads,
+  29 successful AWS receipts and three supervisors. Publication and native
+  SDK launch remain held. A same-definition no-op is an inference, not proved
+  service behavior. Subsequent primary-document discovery found AWS's explicit
+  [INITIAL revision comparison](https://docs.aws.amazon.com/step-functions/latest/apireference/API_PublishStateMachineVersion.html)
+  for a state machine with no assigned revision. A separately allocated
+  INITIAL-publication source candidate is preferred for review before a proposed
+  generated Comment change, which would require new graph/CFN bindings. Neither
+  path is operationally accepted; the actual guard still holds. No existing
+  graph, consumed attempt or publication comparison is bypassed.
+- Browser wire source2 repairs finite-number parsing and adds a pure read-only
+  uncertain-create reconciler. Root verified150 sealed record occurrences,
+  qualifying two historical count-label records against exact preserved FIRST
+  copies; the initial DATA readback refusal is retained without behavior replay.
+  Distinct review `f7c0ffc5c48fdb317cbf5e6a5249cc2c83b00480` ran36 new
+  controls once:30 PASS/six malformed response-envelope/token failures. Root
+  read its complete report; the six failure observations are preserved and
+  SOURCE2 remains **HOLD**. One planner refusal occurred before numeric-parser
+  reach, which is explicitly qualified. A separately owned narrow repair is in
+  progress. No role/volume/TestState/host action has occurred from it.
+- The concrete proxy Fargate assembly proposal has been read and verified:
+  136 sealed record occurrences plus13 commit-readback records. It specifies
+  actual LiteLLM lifespan/native auth, private guarded-client injection, direct
+  TLS/socket-to-ECS identity and the single durable aggregate budget. This is
+  preparation only. Native dependency/license closure, response-byte accounting,
+  image/entrypoint and live composition are not implemented or accepted.
+
+## Work that still closes G1
+
+1. Resolve the SDK revision/publication binding and review the exact fresh
+   runtime admission; run the real bounded SDK/native loopback qualification.
+2. Assemble and qualify the actual trusted LiteLLM/Bedrock path on isolated
+   Fargate: native task keys/auth, TLS/current socket-to-ECS provenance, native
+   CountTokens, exact usage/EOF, one durable aggregate$10 cap and revocation.
+3. Complete real SDK tool/discovery behavior, interruption, replacement,
+   checkpoint/resume and stale-worker rejection through that qualified path.
+4. Close browser response/recovery/first-cleanup source holds; qualify exact
+   AWS error wire/IAM, managed host survival/termination/root absence, network
+   controls and the real non-root Chromium AND renderer sandbox on the approved
+   new isolated browser host.
+5. Resolve applicable security findings and the separate Office disposition.
+   All49 current worker findings plus five older vendor findings remain OPEN;
+   Office is DEFERRED, not passed or silently removed from the plan.
+6. Finish the operation-specific REL-02 contracts, actual-proxy RG-08 discovery
+   and measured cohort/budget freeze. The approved location/owner for75 real
+   requests/redacted traces is still promised by the human; synthetic examples
+   cannot replace that measured baseline. G1 Temporal design/offline compatibility
+   is accepted; its live deployment/HA/PITR belongs to G2 and later.
+
+Current Meri/Capiro remain untouched; source connectivity is disabled. Application
+and control placement stays in the separate Fargate environment; only the approved
+new browser-host exception applies. No cutover or model inference occurred;
+paid inference remains$0 of the approved aggregate$10. Earlier dated evidence
+below is historical and remains unchanged.
+
+## Historical checkpoint,20:22UTC
+
 10 October2026,20:22UTC. Four bounded Codex sessions use separate worktrees,
 explicit paths and independent implementation/review ownership. No Hermes,
 recursive delegation or background scheduler is used. Root owns integration and

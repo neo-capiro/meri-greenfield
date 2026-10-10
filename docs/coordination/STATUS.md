@@ -1,5 +1,17 @@
 # Meri kickoff status
 
+Current continuation,10 October2026 21:04Z: **eight deployment gates total;
+G0 accepted, G1 active, G2–G7 not started.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+records independently accepted proxy cancellation SOURCE and exact SDK name/helper
+reviews. The actual revision update returned no revisionId; its attempt is consumed
+UNKNOWN/no retry and publication/native launch remain held. Browser source2 has
+six independent response-shape counterexamples under narrow repair. The actual
+proxy/Fargate assembly remains preparation only. Live proxy/SDK/browser, security,
+operation-contract and measured-cohort gates remain OPEN. Separate frontend Home
+is accepted offline; complete UI integration is later work. Current Meri/Capiro
+untouched, source connections disabled, no cutover and inference$0/$10. Dated
+entries below are historical.
+
 Parallel Codex checkpoint,10 October2026 20:22Z: [four-session integration](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md) independently accepts repaired browser containment SOURCE (25 canonical/eight unchanged controls), with the literal admission guard and root-absence block intact. Exact new SDK role/state-machine deployment is CREATE_COMPLETE/full readback; publication/native launch are HELD on initial null revision and a separately repaired execution-name mismatch. Proxy ASGI lifetime candidate is blocked by independent cancellation witnesses; author tests do not grant acceptance. Actual SDK/proxy/browser/runtime/contract/cohort gates remain OPEN. G0 planning accepted, G1 active, G2–G7 unrun; source connectivity disabled, inference$0/$10 and current Meri/Capiro untouched. Earlier dated checkpoints below are historical.
 
 Parallel Codex checkpoint,10 October2026 19:35Z: repaired proxy ingress is independently accepted for source behavior (22 canonical/14 independent controls); trusted live ingress and continuous revocation remain OPEN. SDK-only inert proposal and staging executor are separately reviewed; one immutable definition upload and one pending CREATE change set are reconciled, with exactly two ADDs and stack REVIEW_IN_PROGRESS. No execute, publication, SDK task or browser host has occurred from this staging. Browser managed teardown is an unaccepted partial candidate under independent review. All49 current/five older security findings remain OPEN, Office DEFERRED, inference$0/$10 and G1 OPEN. See the [owner integration checkpoint](reports/CODEX-G1-PARALLEL-INTEGRATION.md); dated observations below are retained.
