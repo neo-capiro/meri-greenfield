@@ -9,6 +9,7 @@
   "scripts": {
     "check": "node --test packages/contracts/test/*.test.mjs evals/qualification/hermes-session.test.mjs",
     "check:contracts": "node --test packages/contracts/test/*.test.mjs",
+    "check:contracts:distribution": "npm run check --prefix packages/contracts",
     "synth:qualification": "node infra/qualification/app.mjs",
     "check:infra": "npm run synth:qualification && node --test infra/qualification/security.test.mjs"
   },

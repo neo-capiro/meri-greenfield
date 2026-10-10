@@ -1,0 +1,26 @@
+{
+  "name": "@capiro/meri-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "description": "Public distribution of frozen Meri wire shapes; validation grants no authorization",
+  "files": ["meri.schema.json", "validate.mjs", "dist", "README.md", "THIRD-PARTY-NOTICES.md"],
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/browser.mjs" },
+    "./browser": { "types": "./dist/browser.d.ts", "default": "./dist/browser.mjs" },
+    "./node": "./validate.mjs",
+    "./metadata": { "types": "./dist/metadata.d.ts", "default": "./dist/metadata.mjs" },
+    "./schema": "./meri.schema.json"
+  },
+  "scripts": {
+    "build": "node generate.mjs",
+    "check:generated": "node generate.mjs --check",
+    "typecheck": "tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext test/public-types.ts",
+    "test:public": "node --test test/public-package.test.mjs",
+    "check": "npm run check:generated && npm run typecheck && npm run test:public"
+  },
+  "dependencies": { "ajv": "8.20.0", "ajv-formats": "3.0.1", "canonicalize": "5.1.0" },
+  "devDependencies": { "esbuild": "0.28.2", "json-schema-to-typescript": "16.0.0", "typescript": "5.9.3" },
+  "engines": { "node": ">=24 <25" }
+}
