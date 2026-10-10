@@ -22,7 +22,48 @@ const ownerHeader = '// Meri Codex owner adaptation: preserve strict exactOption
 const omitChecked = '{...(checked === undefined ? {} : { checked })}';
 const forbidden = /^(?:@ai-sdk\/|@vercel\/oidc(?:\/|$))|^(?:ai|openai|@anthropic-ai\/sdk)(?:\/|$)/;
 
+const SSR_PHASES = new Set(['child-enter', 'guards-installed', 'module-load', 'source-transpile', 'deadline-armed', 'deadline', 'fixture-import', 'fixture-ready', 'renderer-import', 'renderer-ready', 'render', 'result-ready', 'result-written', 'cleanup-complete']);
+const SSR_DIAGNOSTIC_BYTES = 8192;
+const SSR_DIAGNOSTIC_LINES = 64;
+
+function safeSSRDiagnostics(stderr) {
+  const rows = [];
+  let bytes = 0;
+  for (const line of String(stderr ?? '').slice(0, SSR_DIAGNOSTIC_BYTES).split('\n')) {
+    let row;
+    try { row = JSON.parse(line); } catch { continue; }
+    if (!row || typeof row !== 'object' || Object.keys(row).sort().join(',') !== 'elapsedMs,loaded,ssrPhase'
+        || !SSR_PHASES.has(row.ssrPhase) || !Number.isInteger(row.elapsedMs) || row.elapsedMs < 0 || row.elapsedMs > 1e9
+        || !Number.isInteger(row.loaded) || row.loaded < 0 || row.loaded > 1e6) continue;
+    const safe = JSON.stringify({ ssrPhase: row.ssrPhase, elapsedMs: row.elapsedMs, loaded: row.loaded });
+    if (rows.length >= SSR_DIAGNOSTIC_LINES || bytes + Buffer.byteLength(safe) + 1 > SSR_DIAGNOSTIC_BYTES) break;
+    rows.push(safe); bytes += Buffer.byteLength(safe) + 1;
+  }
+  return rows.join('\n');
+}
+
+function onceSSROutcome(run) {
+  let started = false, outcome;
+  return () => {
+    if (!started) {
+      started = true;
+      try { outcome = { ok: true, value: run() }; } catch (error) { outcome = { ok: false, error }; }
+    }
+    if (!outcome.ok) throw outcome.error;
+    return outcome.value;
+  };
+}
+
 async function renderChild() {
+  let diagnosticLines = 0, diagnosticBytes = 0, loadCount = 0;
+  const phaseStart = process.hrtime.bigint();
+  const phase = name => {
+    if (!SSR_PHASES.has(name)) return;
+    const row = JSON.stringify({ ssrPhase: name, elapsedMs: Math.floor(Number(process.hrtime.bigint() - phaseStart) / 1e6), loaded: loadCount }) + '\n';
+    if (diagnosticLines >= SSR_DIAGNOSTIC_LINES || diagnosticBytes + Buffer.byteLength(row) > SSR_DIAGNOSTIC_BYTES) return;
+    diagnosticLines++; diagnosticBytes += Buffer.byteLength(row); process.stderr.write(row);
+  };
+  phase('child-enter');
   const attempts = [];
   const deny = name => (..._args) => { attempts.push(name); throw new Error(`qualification denies ${name}`); };
   globalThis.fetch = deny('fetch');
@@ -36,6 +77,7 @@ async function renderChild() {
   process.dlopen = deny('native addon');
   for (const name of ['compile', 'compileStreaming', 'instantiate', 'instantiateStreaming']) WebAssembly[name] = deny(`WebAssembly.${name}`);
   syncBuiltinESMExports();
+  phase('guards-installed');
   assert.equal(typeof globalThis.window, 'undefined');
   assert.equal(typeof globalThis.document, 'undefined');
   const loaded = new Set();
@@ -54,8 +96,10 @@ async function renderChild() {
       return next(specifier, context);
     },
     load(url, context, next) {
-      loaded.add(url);
+      loaded.add(url); loadCount++;
+      if (loadCount % 100 === 0) phase('module-load');
       if (url.startsWith(pkgURL) && /\.tsx?$/.test(url) && !url.includes('/node_modules/')) {
+        phase('source-transpile');
         return { format: 'module', shortCircuit: true, source: ts.transpileModule(readFileSync(fileURLToPath(url), 'utf8'), {
           fileName: fileURLToPath(url), compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
         }).outputText };
@@ -63,22 +107,29 @@ async function renderChild() {
       return next(url, context);
     },
   });
-  const deadline = setTimeout(() => { process.stderr.write('SSR deadline exceeded\n'); process.exit(124); }, 20000);
+  const deadline = setTimeout(() => { phase('deadline'); process.stderr.write('SSR deadline exceeded\n'); process.exit(124); }, 20000);
+  phase('deadline-armed');
   try {
+    phase('fixture-import');
     const { ElementsFixture } = await import('./fixture.tsx');
+    phase('fixture-ready');
+    phase('renderer-import');
     const { renderToStaticMarkup } = await import('react-dom/server');
+    phase('renderer-ready');
     const inputs = [
       { userText: 'Synthetic user message', assistantText: 'Synthetic assistant response', promptText: 'Qualification fixture: sending is disabled' },
       { userText: '<script>alert("user")</script>', assistantText: '<img src=x onerror=alert(1)>', promptText: '</textarea><script>prompt()</script>' },
       { userText: '[click](javascript:alert(1))', assistantText: 'https://example.invalid/?q=<b>&x="y"', promptText: '<svg onload=alert(1)>' },
       { userText: '```mermaid\ngraph TD; A-->B\n```', assistantText: '# plain Markdown **stays text**', promptText: 'Quotes \' " & < > and Unicode π 你好' },
     ];
-    const html = inputs.map(input => renderToStaticMarkup(ElementsFixture(input)));
+    const html = inputs.map(input => { phase('render'); return renderToStaticMarkup(ElementsFixture(input)); });
     const deterministic = renderToStaticMarkup(ElementsFixture(inputs[0])) === html[0];
     const exports = {};
     for (const name of ['conversation', 'message', 'prompt-input']) exports[name] = Object.keys(await import(`./vendor/ai-elements/${name}.tsx`)).sort();
+    phase('result-ready');
     process.stdout.write(JSON.stringify({ inputs, html, deterministic, attempts, exports, loaded: [...loaded].sort(), dom: false }));
-  } finally { hooks.deregister(); clearTimeout(deadline); }
+    phase('result-written');
+  } finally { hooks.deregister(); clearTimeout(deadline); phase('cleanup-complete'); }
 }
 
 function vendorFiles(dir = join(HERE, 'vendor')) {
@@ -116,16 +167,43 @@ function inspectClosure(sourceMap) {
 if (process.argv.includes('--ssr-child')) {
   await renderChild();
 } else {
-  let rendered;
-  const ssr = () => {
-    if (rendered) return rendered;
+  const ssr = onceSSROutcome(() => {
     const env = { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '', NODE_ENV: 'production', TZ: 'UTC' };
     const result = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--ssr-child'], { cwd: HERE, env, encoding: 'utf8', timeout: 25000, maxBuffer: 512 * 1024 });
-    assert.equal(result.error, undefined, String(result.error));
-    assert.equal(result.signal, null, result.stderr);
-    assert.equal(result.status, 0, result.stderr);
-    rendered = JSON.parse(result.stdout); return rendered;
-  };
+    const code = /^[A-Z0-9_]{1,32}$/.test(result.error?.code ?? '') ? result.error.code : 'UNKNOWN';
+    const diagnostics = safeSSRDiagnostics(result.stderr);
+    assert.equal(result.error === undefined, true, `SSR spawn failed (${code}); bounded phases:\n${diagnostics}`);
+    assert.equal(result.signal === null, true, `SSR signalled; bounded phases:\n${diagnostics}`);
+    assert.equal(result.status === 0, true, `SSR child failed; bounded phases:\n${diagnostics}`);
+    try { return JSON.parse(result.stdout); } catch { throw new Error(`SSR result JSON malformed; bounded phases:\n${diagnostics}`); }
+  });
+
+  test('SSR harness caches its first success or failure without launching again', () => {
+    let calls = 0;
+    const failure = new Error('synthetic first child failure');
+    const failed = onceSSROutcome(() => { calls++; throw failure; });
+    for (let i = 0; i < 3; i++) assert.throws(failed, error => error === failure);
+    assert.equal(calls, 1);
+    const value = { synthetic: true };
+    const passed = onceSSROutcome(() => { calls++; return value; });
+    assert.equal(passed(), value); assert.equal(passed(), value); assert.equal(calls, 2);
+    let parses = 0;
+    const malformed = onceSSROutcome(() => { parses++; return JSON.parse('not-json'); });
+    assert.throws(malformed, SyntaxError); assert.throws(malformed, SyntaxError); assert.equal(parses, 1);
+  });
+
+  test('SSR harness diagnostics retain only bounded phase counts and no raw payloads', () => {
+    const safe = JSON.stringify({ ssrPhase: 'fixture-import', elapsedMs: 20, loaded: 100 });
+    const hostile = ['<script>secret payload</script>', 'C:\\private\\module.js',
+      JSON.stringify({ ssrPhase: 'secret payload', elapsedMs: 1, loaded: 1 }),
+      JSON.stringify({ ssrPhase: 'render', elapsedMs: 1, loaded: 1, secret: 'payload' }),
+      JSON.stringify({ ssrPhase: 'render', elapsedMs: -1, loaded: 1 }),
+      JSON.stringify({ ssrPhase: 'render', elapsedMs: 1, loaded: 'C:/secret/module.js' })];
+    assert.equal(safeSSRDiagnostics([...hostile, safe].join('\n')), safe);
+    assert.equal(safeSSRDiagnostics('x'.repeat(SSR_DIAGNOSTIC_BYTES) + '\n' + safe), '');
+    const many = safeSSRDiagnostics(Array(200).fill(safe).join('\n'));
+    assert.equal(many.split('\n').length, SSR_DIAGNOSTIC_LINES); assert.ok(Buffer.byteLength(many) <= SSR_DIAGNOSTIC_BYTES);
+  });
 
   test('immutable vendor blob identities and one exact owner adaptation', () => {
     const pins = json('component-pins.json');
