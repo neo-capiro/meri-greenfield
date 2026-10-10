@@ -1,6 +1,8 @@
-# Proposed Meri v1 capability scope
+# Meri v1 capability scope
 
-**PROVISIONAL pending integration/release-owner scope acceptance. No capability is implemented, tested, or accepted by this document.** This is a reviewable proposal derived from both user plans, with metadata from the current Capiro registry. The integration owner must record selected scope, owner, behavior and policy fixtures before implementation tickets depend on it. The existing Meri remains available until a separately authorized cutover.
+**Scope accepted by the human owner on 10 October 2026: 96 selected and 43 deferred legacy-registry capabilities across the 22-domain inventory.** Scope acceptance establishes intended v1 work, not implementation, live access, policy correctness or release acceptance. Every selected capability still needs behavior/policy fixtures and independent verification. The existing Meri remains available until a separately authorized cutover.
+
+The human selected **Capiro-internal** as the pilot tenant, **Neo Martinez** as the first internal user, and confirmed **Neo Martinez** as the technical source-access owner. Initial discovery uses tenant-wide internal context. Canonical tenant/user IDs, current membership and actual grants remain unqueried; no client is implicitly selected. Client-bound operations stay disabled until an explicit authorized client, canonical IDs and wall fixtures exist before G3. The accepted independent repository/AWS target is recorded in [the integration boundary](INTEGRATION-BOUNDARY.md); it is not an outstanding scope question. Future G0/G1 work is Codex-only under D010; historical lane/session records remain unchanged.
 
 Registry snapshot: `neo-capiro/capirov2` commit `fd8765ec01d292013758606204f2c9d886cd31c1`, `packages/shared/src/index.ts`, export `MERI_CAPABILITY_REGISTRY`, read through GitHub on 9 October 2026. [Pinned source](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts). `CAPABILITIES.json` records only name, readOnly, backend and surfaces from each source entry. No current implementation was imported.
 
@@ -8,9 +10,9 @@ Registry snapshot: `neo-capiro/capirov2` commit `fd8765ec01d292013758606204f2c9d
 
 The defined v1 requires a new Claude Agent SDK workspace, authorized agreed data and canonical memory, native artifacts and revisions, public Playwright browsing, recovery, schedules and selected commands. Initial source mutations are memory proposals, tasks and artifact filing. A current registry label marked write may instead correspond to a new application-local artifact or schedule operation; those do not authorize any additional Capiro mutation. Existing source semantics remain a behavior reference, with new independent contracts.
 
-The proposal selects basic governed source reads and new local artifact/schedule intents. It defers specialized business workflows and broad source mutations whose precise behavior or policy has not been accepted. Proposed source reads are conditional on source-inventory agreement, restricted roles, connectivity and passing fixtures. These rows do not silently add a source provider or grant to v1.
+The accepted scope selects basic governed source reads and new local artifact/schedule intents. It defers specialized business workflows and broad source mutations. Selected source reads remain conditional on restricted roles, connectivity, current entitlements and passing fixtures. These rows do not silently add a source provider or grant to v1.
 
-`proposed selected` means an intended independently built tool/workflow, not accepted parity. `proposed deferred` means no release claim or hidden implementation dependency. Every deferred row must appear in release notes until explicitly selected. A source dataset being readable does not make its associated business workflows complete.
+The table retains its original `proposed selected` / `proposed deferred` labels as proposal provenance; the human accepted all 139 classifications on 10 October 2026. Selected means an intended independently built tool/workflow, not accepted parity. Deferred means no release claim or hidden implementation dependency. Every deferred row must appear in release notes until explicitly selected. A source dataset being readable does not make its associated business workflows complete.
 
 Owners are planned lanes: A runtime/durability/infrastructure, B source gateway and commands, C workspace/artifacts, and D independent verification. Codex owns scope and integration. For each selected row the initial fixture key below reserves a place in the behavior/policy suite; no fixture exists or passes merely because it is named here. Each implementation brief must define exact inputs, expected outputs, policy denials and independent evidence before acceptance.
 
@@ -180,9 +182,9 @@ Registry totals: 139 unique entries, 104 read-only and 35 writes; 134 meri and 5
 
 ## Decisions and gates still outstanding
 
-- Accept or revise this provisional ledger, especially the additional Research Portfolio/BizDev reads and specialized analytical deferrals; record the selected capability task benchmark before scoring.
+- Scope is accepted, including the additional Research Portfolio/BizDev reads and specialized analytical deferrals. Record the selected capability task benchmark before scoring.
 - Approve the full source inventory and per-adapter exact lookup/search/filter/count/pagination/history/freshness behavior, including unavailable encrypted fields and object links.
-- Identify the new repository owner/name and authorized isolated AWS account/region/roles; use independent Fargate stacks, VPC, cluster, roles, database, storage, keys and budgets. Discovery files confer no deployment authorization.
+- Preserve the accepted independent repository and AWS account/region boundary. Actual application roles, deployment and connectivity remain separately verified G2/G3 work; discovery files confer no deployment authorization.
 - Provision restricted source views/roles and approved connectivity. The new role has not been identified or tested; existing application-role RLS bypass is documented in SOURCE-INVENTORY.md.
 - Query actual tenant entitlements/feature flags through authorized read access; only code defaults are known. No source rows, user data, secret values or live flag values were queried here.
 - Define numeric revocation propagation deadline before G3, retention/backup rules, internal pilot users and representative tasks, and measured run/tenant spend caps after qualification.

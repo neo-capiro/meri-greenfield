@@ -10,7 +10,13 @@ Historical Hermes turn caps, launcher preparation and once-only local-test alloc
 
 Accepted 10 October 2026 by the human owner in this chat: finalize the documented v1 capability ledger with 96 selected and 43 explicitly deferred capabilities across the 22 inventoried dataset domains. This includes basic Research Portfolio/Business Development reads while specialized analytics and broad writes remain deferred. Selection is intended new implementation scope, not accepted parity or a source permission grant. Each selected capability still needs a newly implemented behavior/policy fixture and every deferred capability remains visible.
 
-The owner selected providing the first pilot tenant, client and internal users rather than substituting synthetic-only enrollment. Their actual names/IDs and the authorized Capiro source-access owner are pending. Synthetic G1 preparation proceeds independently; live source connections stay disabled. Scope acceptance does not establish source endpoints, restricted principals, identity mapping, current membership/grants or live-source G0 closure.
+The owner named Capiro-internal as the pilot tenant and Neo Martinez as the first internal user, and explicitly confirmed Neo as technical source-access owner. Initial discovery is tenant-wide internal context; no client or canonical IDs are inferred. Client-bound operations stay disabled until an authorized client/IDs/wall fixtures are selected before G3. Synthetic G1 preparation proceeds independently and live source connections stay disabled. Scope selection does not establish deployed restricted principals, current membership/grants or live-source access.
+
+## D012 G0 discovery acceptance
+
+Codex integration owner accepted G0 on 10 October 2026 after independently reading the discovery changes/metadata and verifying all eleven retained metadata-file length/hashes and the complete 139-capability ledger (96 selected, 43 deferred). The accepted decisions cover the existing verified Aurora resource boundary and Clerk issuer, a newly implemented restricted nonowner tenant-aware gateway/identity boundary, Capiro-internal/Neo pilot ownership, independent Fargate destination, pinned Figma inventory and independent authenticated Meri entry with unavailable mode destinations disabled.
+
+This applies the deployment plan's G0 discovery criterion. The complete frame/overlay/state/component inventory and initial Home control contract are discovery evidence; complete semantic control-to-service/fixture mapping remains required W01/W06/G6 work. No screen/control is removed and no product/UI check passes by this decision. Actual tenant/user IDs, new principal/grants/transport, source schema/coverage, client walls and authorized-source behavior remain explicit G2/G3 activation gates. No credential, source connection, current Capiro change or release is authorized by accepting discovery. See reports/CODEX-G0-DISCOVERY.md.
 
 ## D001 Repository and AWS destination
 

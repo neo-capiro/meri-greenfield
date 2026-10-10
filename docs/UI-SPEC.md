@@ -2,6 +2,8 @@
 
 Status: **initial contract specification; implementation and acceptance PENDING**. This document preserves the agreed standalone v1 capabilities. It records proposed UI behavior and unresolved service contracts; it does not establish a working application, authorize an API, accept a component candidate, advance a deployment gate or authorize cutover. The [coverage ledger](UI-COVERAGE.md) classifies all captured frame, overlay, state and component-family IDs. Full distinct-control mapping remains OPEN beyond the initial Home table.
 
+10 October 2026 discovery update: the human accepted the documented v1 scope, selected Capiro-internal / Neo Martinez for tenant-wide internal discovery, and confirmed Neo as technical source-access owner. Canonical IDs, actual membership/grants and client activation remain unverified; client-bound controls stay disabled until explicit client/ID/wall fixtures before G3. D008's independent authenticated entry and disabled Portfolio/Modules remain the selected shared-shell decision. G0 discovery has a complete pinned frame/overlay/state/family inventory and initial control contract; complete semantic distinct-control/service/fixture mapping and every UI behavior remain open implementation/verification work. Neither node/reaction counts nor that discovery distinction establish a full control audit or UI pass. Future G0/G1 work is Codex-only under D010; historical reviewer evidence is preserved.
+
 ## Baseline, provenance and limitations
 
 Follow [the deployment plan](plans/MERI-DEPLOYMENT.md#figma-design-and-ui-implementation-contract) and [D008](coordination/DECISIONS.md#d008-figma-baseline-and-independent-ui-entry). The owned reference is standalone Meri section `439:81406`, page `411:40601`, file `Zc2dEN5aLU47dVdsewDmiJ`; Home is `442:81437`. References to another section are recorded only as prototype pointers. They do not authorize traversing that section, adopting its behavior, guessing a route or copying private current-Capiro UI logic.
@@ -207,7 +209,7 @@ Required future checks include semantic roles/names; keyboard-only navigation an
 
 | Work | Gate/package / proposed owner | Status and evidence required |
 | --- | --- | --- |
-| Finish semantic distinct-control inventory, full graph, all overlay children and exact fixture links | G0/W00–W01; Codex+C, D checks | OPEN. Existing exact frame/state/component IDs are complete; full control mapping is partial |
+| Finish semantic distinct-control inventory, full graph, all overlay children and exact fixture links | W01/W06/G6; Codex+C, D checks | OPEN. D012 accepts the complete pinned frame/state/component inventory and initial Home contract for G0 discovery; complete semantic service/fixture mapping remains required |
 | Independent session/identity bridge and versioned shared-shell navigation; owned behavior for outside-section Home header pointers | G0/W04/W06; Codex+B+separate new frontend owner | OPEN. No guessed routes, outside traversal, provider/source credentials or private Capiro logic |
 | Accept exact AI Elements/shadcn source, APIs, versions/licenses and meaningful compatibility evidence | G1/W02/W06; Codex+Hermes+D | Source preparation accepted OFFLINE8d2cd17/d442885 after review2 and parent12; cold performance, consuming browser/CSS and complete release notice/security checks OPEN |
 | Version missing admission, run lifecycle, schedule, upload/revision/download and other service contracts without loosening frozen authorization | W01/W04/W08; Codex+A+B+C | OPEN. Shapes alone cannot enable controls |

@@ -2,6 +2,18 @@
 
 Recorded 9 October 2026. This is read-only source discovery for a new independent Meri deployment. It establishes source metadata and policy evidence, not live source access, complete coverage, accepted capability parity or a passed deployment gate. No current Capiro implementation is imported. Existing Meri must remain available until the new build is finished, tested and explicitly cut over.
 
+## 10 October 2026 discovery decisions and metadata refresh
+
+The human owner accepted the documented 22-domain v1 source scope and 96-selected/43-deferred capability ledger. The pilot tenant is **Capiro-internal**, the first internal user is **Neo Martinez**, and Neo confirmed technical source-access ownership. Initial discovery is tenant-wide; client-bound operations remain disabled until explicit client/ID/wall fixtures are supplied before G3. No canonical tenant/user ID, membership, entitlement or source row was queried.
+
+Fresh read-only STS/RDS/ECS metadata confirms account967807252336/us-east-1 and caller `arn:aws:iam::967807252336:user/capirocli`; the existing encrypted Aurora PostgreSQL16.11 cluster `capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv`, its writer/reader endpoint descriptors and IAM database authentication remain as recorded in [the integration boundary](INTEGRATION-BOUNDARY.md). Active API:650 and strategy:57 remain on the existing private service network. API:650 explicitly points `ANALYTICS_DB_HOST` to that cluster's reader and sets `CLERK_JWT_ISSUER=https://clerk.app.capiro.ai`. The primary `DB_HOST` remains secret-referenced and its effective value was not retrieved. These are verified configuration resources, not a tested new connection or proof of deployed source schema/grants. GitHub main still resolves to the pinned `fd8765ec01d292013758606204f2c9d886cd31c1` snapshot.
+
+The pinned [global analytics role migration](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/prisma/migrations/20280210010000_meri_analytics_ro_role/migration.sql) declares `capiro_analytics_ro`, explicitly restricted to global no-tenant datasets and excluding tenant-scoped tables. Source SHA256 `1732bd9779662584544a170e6533e5f9a7cb38acb61823a7e979b0040922fab9` / Git blob `031ab5850158d02db66620c05e3032c2ad45461d`. This does not prove that role is deployed, or make it suitable for tenant/client/private-memory or membership reads. Select a dedicated nonowner tenant-aware source/identity principal behind the new trusted gateway; do not reuse either existing application credentials or infer grants from IAM authentication being enabled. Actual roles, inheritance, RLS/views, approved fields and connectivity are activation evidence for G2/G3, not accomplished by this decision.
+
+Canonical identity remains server-bound: verify the pinned Clerk issuer/subject, resolve `users.clerk_user_id` to the local actor UUID and organization to the canonical tenant, cross-check claims and require current active `tenant_memberships`; fail closed for missing, removed or suspended membership. Do not call provisioning-capable existing middleware as a passive read, and do not provision existing identities through this discovery. New trusted-service credentials, origin/redirect/authorized-party settings and the exact restricted membership lookup remain unconfigured activation prerequisites. Workers receive no source/Clerk credentials.
+
+Codex retained bounded metadata calls/excerpts under ignored `.task-inputs/G0-codex-discovery-20261010-1/`; no secret values, source rows, database connections, paid inference or external writes occurred. These decisions support G0 discovery review only; live coverage and later gates remain open.
+
 ## Verified repository snapshot
 
 The actual local Capiro checkout is `C:\dev\main\git`, origin `https://github.com/neo-capiro/capirov2.git`. Its local `main` HEAD is `75fb394938144b5a78c9e9c74165a5399d69d3f3`; the initial status reported it 810 commits behind its cached tracking branch. No fetch, checkout, reset or edits were performed. `C:\dev\main\capirov2-main` contains only `node_modules` and is not a Git checkout.
@@ -20,7 +32,7 @@ Each new adapter must independently declare and test exact lookup, search, filte
 
 ## Current catalog datasets
 
-The following IDs, scope labels and source descriptions were read from [the pinned dataset catalog](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/retrieval/meri-data-catalog.ts). All inclusion is **provisional pending source-inventory agreement**; all live connectivity, restricted-role authorization and coverage tests remain unproven.
+The following IDs, scope labels and source descriptions were read from [the pinned dataset catalog](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/retrieval/meri-data-catalog.ts). Inclusion was **accepted by the human owner on 10 October 2026**; all live connectivity, restricted-role authorization, current entitlements and coverage tests remain unproven.
 
 | Dataset | Declared source scope | Authoritative content and qualification focus |
 | --- | --- | --- |
@@ -88,8 +100,8 @@ The main [Prisma schema](https://github.com/neo-capiro/capirov2/blob/fd8765ec01d
 
 ## Decisions and access missing before live integration
 
-- Accept the source and capability scope, including additional private/workflow domains. Assign owners and expected policy/behavior fixtures before claiming full data access.
-- Identify exact authorized source endpoints, databases/views, private connectivity, restricted principals, document/object stores, encrypted-field access/decryption boundary, provider connections and graph/embedding stores. Current production endpoints and DNS were not discovered in this source-only task.
+- Source/capability scope is accepted; assign expected policy/behavior fixtures and implementation ownership before claiming full data access.
+- Before activation, qualify exact source databases/views, private connectivity, restricted principals, document/object stores, encrypted-field access/decryption boundary, provider connections and graph/embedding stores. Existing RDS/API/Clerk metadata is recorded above and in INTEGRATION-BOUNDARY.md; the effective secret-referenced primary host and new connector authority remain unproven.
 - Resolve canonical identity/membership integration and whether any read-only upstream identity endpoint has provisioning side effects; no existing auth change is authorized here.
 - Obtain authorized current tenant flags/entitlements and mailbox/client/grant matrices. Build two-tenant and within-tenant fixtures under the actual new restricted principal.
 - Agree a numeric maximum revocation-propagation deadline before G3, targeting at most 30 seconds as the deployment plan proposes; measure live cancellation, publication denial and old thread/file/preview/artifact access.
