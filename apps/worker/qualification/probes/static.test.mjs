@@ -401,7 +401,7 @@ test('summarize/computeExitCode treat a required skipped or failed check as not-
 // ---------------------------------------------------------------------------
 
 test('Dockerfile pins an immutable base digest and non-root UID/GID 10001', () => {
-  assert.match(dockerfile, /^FROM node:24\.21\.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20$/m);
+  assert.match(dockerfile, /^FROM node:24\.21\.0-trixie-slim@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66$/m);
   assert.match(dockerfile, /^USER 10001:10001$/m);
   assert.match(dockerfile, /groupadd --gid 10001 meri/);
   assert.match(dockerfile, /useradd --uid 10001 --gid 10001/);
@@ -426,7 +426,8 @@ test('Dockerfile pins Debian repositories to the snapshot with signature verific
 test('Dockerfile bootstraps ca-certificates over HTTP then switches to HTTPS with a pinned CA version', () => {
   assert.match(dockerfile, /URIs: http:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
   assert.match(dockerfile, /URIs: https:\/\/snapshot\.debian\.org\/archive\/debian\/20261009T000000Z/);
-  assert.match(dockerfile, /ca-certificates=20250419~deb12u1/);
+  assert.match(dockerfile, /ca-certificates=20250419\b/);
+  assert.doesNotMatch(dockerfile, /20250419~deb12u1/);
 });
 
 test('Dockerfile keeps the browser tree root-owned and asserts the setuid helper after ownership ops', () => {
@@ -490,25 +491,32 @@ test('component-pins.json records base license source and the prior runtime-prob
   assert.match(pins.runtimeProbeEvidence.failed['browser-sandbox'], /No usable sandbox/);
 });
 
-test('component-pins.json records resolved OS/snapshot versions and unresolved pins none remain for base', () => {
-  assert.equal(pins.baseImage.reference, 'node:24.21.0-bookworm-slim');
+test('component-pins.json records the trixie snapshot, python 3.13 and coherent direct pins', () => {
+  assert.equal(pins.baseImage.reference, 'node:24.21.0-trixie-slim');
   assert.equal(pins.baseImage.nodeVersion, '24.21.0');
   assert.match(pins.baseImage.indexDigest, /^sha256:[a-f0-9]{64}$/);
+  assert.match(pins.baseImage.pythonSeries, /^3\.13 /);
   assert.equal(pins.osPackages.snapshotTimestamp, '20261009T000000Z');
-  assert.ok(pins.osPackages.resolved['libreoffice-core']);
-  assert.ok(pins.osPackages.resolved['libnss3']);
-  assert.equal(pins.osPackages.resolved['ca-certificates'], '20250419~deb12u1');
-  assert.equal(pins.osPackages.resolved['libnss3'], '2:3.87.1-1+deb12u4');
-  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT-REFRESHED-UNBUILT');
+  assert.deepEqual(Object.keys(pins.osPackages.repositories).sort(), ['main', 'security']);
+  assert.ok(pins.osPackages.repositories.security.includes('trixie-security'));
+  assert.equal(pins.osPackages.resolved['libreoffice-core'], '4:25.2.3-2+deb13u8');
+  assert.equal(pins.osPackages.resolved['libtiff6'], '4.7.0-3+deb13u3');
+  assert.equal(pins.osPackages.resolved['ca-certificates'], '20250419');
+  assert.equal(pins.osPackages.resolved['libnss3'], '2:3.110-1+deb13u4');
+  assert.equal(pins.osPackages.directPinCount, 35);
+  assert.equal(Object.keys(pins.osPackages.resolved).length, 35);
+  assert.equal(pins.osPackages.status, 'RESOLVED-FROM-SNAPSHOT-TRIXIE-REFRESHED-UNBUILT');
 });
 
 test('Dockerfile OS package pins match the component-pins resolved versions (no drift)', () => {
   for (const p of ['ca-certificates', 'poppler-utils', 'libnss3', 'libexpat1', 'libreoffice-core', 'python3']) {
     assert.ok(dockerfile.includes(`${p}=${pins.osPackages.resolved[p]}`), `Dockerfile pin for ${p}`);
   }
-  // The security-updated poppler set is the coherent fix for the first build failure.
-  assert.equal(pins.osPackages.resolved['poppler-utils'], '22.12.0-2+deb12u3');
-  assert.ok(pins.osPackages.firstBuildFailure);
+  // Coherent trixie poppler set and the t64 rename: no legacy non-t64 pin may remain.
+  assert.equal(pins.osPackages.resolved['poppler-utils'], '25.03.0-5+deb13u4');
+  for (const legacy of ['libasound2', 'libatk1.0-0', 'libatk-bridge2.0-0', 'libcups2', 'libatspi2.0-0', 'libglib2.0-0']) {
+    assert.equal(pins.osPackages.resolved[legacy], undefined, `legacy non-t64 pin ${legacy}`);
+  }
 });
 
 test('Dockerfile refreshes inherited packages and records build-time evidence', () => {
@@ -523,13 +531,17 @@ test('Dockerfile refreshes inherited packages and records build-time evidence', 
 test('component-pins.json distinguishes the prior built candidate from the unbuilt refresh', () => {
   assert.equal(pins.assembledImageDigest, null);
   assert.match(pins.priorBuiltCandidate.digest, /^sha256:[a-f0-9]{64}$/);
-  assert.equal(pins.priorBuiltCandidate.ecrScan.critical, 12);
-  assert.ok(pins.priorBuiltCandidate.buildId);
-  assert.ok(pins.priorBuiltCandidate.sourceRecipeCommit);
-  assert.ok(pins.osPackages.securityFindings.scan.includes('12 CRITICAL'));
-  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-95210']);
-  assert.ok(pins.osPackages.securityFindings.remainingOpen['CVE-2026-52490']);
-  assert.ok(pins.osPackages.expectedInheritedVersions['libgnutls30']);
+  assert.equal(pins.priorBuiltCandidate.ecrScan.critical, 2);
+  assert.equal(pins.priorBuiltCandidate.ecrScan.high, 13);
+  assert.equal(pins.priorBuiltCandidate.buildId, '55c89c64-547f-41ff-8a8b-3120e25d8b39');
+  assert.equal(pins.priorBuiltCandidate.integrationCommit, '8785118bff574e2cf3f520a542f6a7b56e075f9e');
+  const open = pins.osPackages.securityFindings.remainingOpen;
+  assert.ok(Object.keys(open).some((k) => k.includes('CVE-2026-95210')));
+  const fixedCandidates = pins.osPackages.securityFindings.vendorFixedPackageCandidates;
+  assert.ok(fixedCandidates['libreoffice (CVE-2026-63277)'].includes('deb13u8'));
+  assert.ok(Object.keys(open).some((k) => k.includes('CVE-2026-52490')));
+  assert.ok(Object.keys(fixedCandidates).every((k) => !k.includes('CVE-2026-52490')));
+  assert.ok(pins.osPackages.expectedInheritedVersions['libgnutls30t64']);
 });
 
 // ---------------------------------------------------------------------------
@@ -820,4 +832,71 @@ test('native generation never accepts successful-looking JSON from a signalled o
   assert.equal(decideNative({ gen, pptxOk: true }).status, 'pass');
   assert.equal(decideNative({ gen: { ...gen, error: { code: 'ETIMEDOUT' } }, pptxOk: true }).status, 'fail');
   assert.equal(decideNative({ gen: { ...gen, signal: 'SIGKILL' }, pptxOk: true }).status, 'fail');
+});
+
+// ---------------------------------------------------------------------------
+// W02-08 trixie base manifest / retained provenance / wheels
+// ---------------------------------------------------------------------------
+
+test('component-pins.json records the trixie base manifest digests and retained public-source hashes', () => {
+  assert.equal(pins.baseImage.platformManifestDigestAmd64, 'sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63');
+  assert.equal(pins.baseImage.platformConfigDigest, 'sha256:04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f');
+  assert.equal(pins.baseImage.debianBaseDigest, 'sha256:918311b7b6c4c6f68b232ba516584925f6c78ad82b6fd534b98979df6438e483');
+  const s = pins.publicSourcesRetained;
+  assert.ok(s.dockerIndex.includes('173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66 bytes=5177'));
+  assert.ok(s.dockerAmd64Manifest.includes('c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63 bytes=1923'));
+  assert.ok(s.dockerAmd64Config.includes('04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f bytes=6769'));
+  assert.ok(s.debianMainRelease.includes('ed56aac47e7911e65ee63aae8d67e29f20e023f840e49f8ed037043a33de138a bytes=138612'));
+  assert.ok(s.debianSecurityRelease.includes('29d373d5d74320b73e0a464f1dae402bbe88ca28bd6f3cf04b14982afd77ddb6 bytes=41759'));
+  assert.ok(s.debianMainPackagesXz.includes('7778d3e3f303b7ddb8ce0fe7c8d57473a076c6bf2e8f241f75421d2396352498 bytes=9678380'));
+  assert.ok(s.debianSecurityPackagesXz.includes('5cf72f9c534b27dd9fb350b7d4c31b05a82dea2abcfed19a08097bf8d7e8f847 bytes=264900'));
+});
+
+test('component-pins.json records the cp313 lxml wheel and real downloaded-byte verification', () => {
+  const lxml = pins.pypiTransitive.find((p) => p.name === 'lxml');
+  assert.match(lxml.wheel, /^lxml-6\.1\.3-cp313-cp313-manylinux_2_26_x86_64\.manylinux_2_28_x86_64\.whl$/);
+  assert.equal(lxml.sha256, 'd85dfab42dd672f87a7f76e9de7172962aee69fa12044f0d6e1a23cbd53fb80e');
+  assert.equal(pins.wheelHashVerification.verified, true);
+  // requirements.lock must carry the cp313 lxml hash, never the W02-01 cp311 one.
+  assert.match(requirements, /^lxml==6\.1\.3 --hash=sha256:d85dfab42dd672f87a7f76e9de7172962aee69fa12044f0d6e1a23cbd53fb80e$/m);
+  assert.doesNotMatch(requirements, /527195c188d7d0af748cd48d220ab8cdc5cb99be3d49ac4d9be7324d8abf9bc0/);
+});
+
+// ---------------------------------------------------------------------------
+// W02-08 end-of-recipe inventory interface + privilege-bit reduction
+// ---------------------------------------------------------------------------
+
+test('Dockerfile ends with the owner-closed inventory over the exact declared roots and helpers', () => {
+  assert.ok(dockerfile.includes('image-inventory.py'), 'owner inventory probe invoked');
+  for (const r of ['/opt/meri-worker', '/opt/meri-venv', '/opt/meri-browsers', '/usr', '/etc', '/var/lib/dpkg', '/bin', '/sbin', '/lib', '/lib64', '/root', '/home']) {
+    assert.ok(dockerfile.includes(`--root ${r}`), `declared root ${r}`);
+  }
+  assert.ok(dockerfile.includes('--allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox'));
+  assert.ok(dockerfile.includes('--allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox'));
+  assert.ok(dockerfile.includes('--out /opt/meri-worker/image-inventory.json'));
+  // The owner CLI compiles roots/pins/allow-list and exposes no escape hatch.
+  assert.ok(!dockerfile.includes('--expect-file'), 'no invented expectation flag');
+  assert.ok(!dockerfile.includes('--platform-override'), 'no platform escape hatch');
+});
+
+test('Dockerfile reduces SUID/SGID via chmod only, before the inventory, before USER', () => {
+  assert.ok(dockerfile.includes('chmod u-s,g-s'));
+  assert.doesNotMatch(dockerfile, /\bapt-get\s+(remove|purge)\b/);
+  assert.doesNotMatch(dockerfile, /\brm\s+-rf\s+\/usr\b/);
+  const reduceAt = dockerfile.indexOf('chmod u-s,g-s');
+  const invAt = dockerfile.indexOf('image-inventory.py');
+  const userAt = dockerfile.indexOf('USER 10001:10001');
+  assert.ok(reduceAt > 0 && invAt > reduceAt && userAt > invAt, 'order: reduce -> inventory -> USER');
+});
+
+test('Dockerfile preserves SDK/CFT hashes, non-root identity, strict env and no bypass', () => {
+  assert.ok(dockerfile.includes('4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358'));
+  assert.ok(dockerfile.includes('adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0'));
+  assert.ok(dockerfile.includes('be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314'));
+  assert.match(dockerfile, /^USER 10001:10001$/m);
+  assert.ok(dockerfile.includes('python3.13/site-packages/pip'), 'pip removal tracks trixie 3.13');
+  assert.doesNotMatch(dockerfile, /python3\.11\/site-packages\/pip/);
+  assert.ok(dockerfile.includes('CHROMIUM_SANDBOX_REQUIRED=true'));
+  assert.doesNotMatch(dockerfile, /trusted=yes|allow-unauthenticated|AllowUnauthenticated/i);
+  assert.doesNotMatch(dockerfile, /--no-sandbox|--privileged|docker\.sock/);
 });
