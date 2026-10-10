@@ -141,3 +141,13 @@ resume, immutable publication, fresh admission, physical STOPPED and deadline
 cleanup remain separate unrun gates. All49 worker findings plus five older
 vendor-open findings remain OPEN; paid inference$0/$10 and G1 OPEN. This review
 grants no execution, residual-risk, production, Office/browser or cutover approval.
+
+Final sealing initially failed closed on one concurrent metadata change: the live
+owner report advanced from the reviewed be33 raw Git bytes8170/SHA256
+`f7830010a4956432b4dfe57afea12f49096406e21743903105f17c582a6054c7`
+to9111/SHA256 `af0ddc45dff35f08264875157889a1ddf6dc773f42f4ae26cf3012d08413bdb3`.
+The new revision-continuation outline is outside this review and grants no action.
+All other117 copied source/evidence occurrences remain exact. The failed seal
+and diagnostic are retained; a new seal binds the historical report copy to raw
+Git be33 and records the later report separately. It does not silently substitute
+the advancing report or certify the new revision helper.
