@@ -1,5 +1,7 @@
 # W02-14 native qualification enforcement preparation
 
+Current status: [accepted OFFLINE source3da63e6](../reports/W02-14-OFFLINE-ACCEPTANCE.md), integrated11files atfcc666f with actualreview4/report481e7ce. Native/service/IAM/survival/physical-cleanup gates remain open. Allocations below are historical; no deployment admission follows.
+
 Codex allocates one actual Hermes implementation from clean accepted based8ea2ce8d9e943533ae9f1e3e2ae6967fc88ff77, branch task/w02-native-enforcement, dedicated worktree C:\dev\main\meri-greenfield-worktrees\w02-native-enforcement. Maximum40turns/3600seconds through the accepted installed-Hermes launcher, one session/no automatic retry or continuation. Exact query is copied privately before launch; actual session/footer/closure and honest partial outcomes are required. D009 records the owner architecture choice; it is source preparation only.
 
 Only four NEW owned paths:
@@ -51,4 +53,16 @@ Read-only syntax validation05:42:23-05:42:26Z returned OK/zero diagnostics for91
 
 ## Explicit inspected phase6 resume
 
-Primary preserved the closed partial source/evidence, snapshot SHA2564c69cc914d265f363448e9b4ee964146307f6233358fcc9bf492fbbf0666b5ad. Owner explicitly resumed actual session20261010_013708_8bdb8f at05:53:23.543559Z/PID29116 from c062327 plus the inspected three dirty modules, same nine paths, max20turns/1200seconds. New query SHA25616dcd82a70c7bddadee5d17410b1617d592d5591eaef40eeb8ab2b67908f8ca3. Phase6 is RUNNING/UNACCEPTED. The bounded repair includes the documented Attribute-character compatibility defect, unresolved new network-ID/IP bounds and classifier overlap, meaningful two-task regressions, honest report and scoped commit. All earlier failures remain; no source acceptance or runtime/gate admission follows, and a new exact-commit distinct actual review plus independent owner verification remains required.
+Primary preserved the closed partial source/evidence, snapshot SHA2564c69cc914d265f363448e9b4ee964146307f6233358fcc9bf492fbbf0666b5ad. Owner explicitly resumed actual session20261010_013708_8bdb8f at05:53:23.543559Z/PID29116 from c062327 plus the inspected three dirty modules, same nine paths, max20turns/1200seconds. New query SHA25616dcd82a70c7bddadee5d17410b1617d592d5591eaef40eeb8ab2b67908f8ca3. Phase6 CLOSED PARTIAL05:59:19.819218Z at20turns, c062HEAD/no commit/three modules; empty tree/readers finished/cleanup confirmed. Primary preserved partial6 manifest SHA2561b7090120eb60012226fb663e46accd0e4b7aa3b6277b4b2c476b6e12271cb4a. The partial remained UNACCEPTED. The bounded repair includes the documented Attribute-character compatibility defect, unresolved new network-ID/IP bounds and classifier overlap, meaningful two-task regressions, honest report and scoped commit. All earlier failures remain; no source acceptance or runtime/gate admission follows, and a new exact-commit distinct actual review plus independent owner verification remains required.
+
+## Codex packaging checkpoint and distinct review3
+
+Checkpoint280a2a2 remains historically UNACCEPTED. [Candidate6 owner findings](../reports/W02-14-PRIMARY-CANDIDATE-6-FINDINGS.md) preserve phases5/6 closure/snapshots, corrected45network coverage as44main+1wait,32classifier,47canonical/108matrix/47metadata, closed actualreview3/reportcc79 and owner77-pass qualification. Original not-iterable, unvisited-wait, output restoration and newline/index failures remain. Complete finite bounds were subsequently reviewed conditionally, then an independent malformed singleton taskArn-array witness found a blocking certainty defect.
+
+## Phase7 repair and exact review4
+
+Actual20261010_023359_6413e7 phase7 closed06:38:32.675983Z at14turns900seconds, two-file partial. Inspected/preserved explicit8turn600second closeout closed06:44:58.438608Z with five staged paths/no commit. Codex preserved and packaged that unchanged actual implementation at3da63e67ba94c361070e5997c9bd21a816546610. The scope added a focused qualification file; the implementation-mirroring test was removed, original47canonical cases preserved. No automatic resume or source rewrite for packaging.
+
+Distinct actualreview4/session20261010_025632_d8b0ff closed07:01:54.267628Z atreport70824f9, clean; report-only scope/exact11pins verified. Primary47canonical,16focused,10independent cases/three syntax checks passed once. Owner qualifications preserve the reviewer's broken raw-semantics subprobe, narrower assertion coverage and unchanged private probe repeat. Conditional proof remains historical280a plus an independently reviewed phase7 source delta; its service/transient/availability exclusions remain.
+
+Final read-only AWSsyntax validation returnedOK/zero diagnostics/nottruncated for91states/112210bytes, SHA2562c962d23a3ab42317e9b9d9ecd80c9d8eab7af6a7e9c59f46359de106f51eac3. Source11files and unchanged actualreport are integrated byte-exact; [owner offline acceptance](../reports/W02-14-OFFLINE-ACCEPTANCE.md) supersedes historical candidate-status wording only. Native wire/TestState/IAM/timing, separate managed deployment and controller-loss/STOPPED/physicalcleanup remain required. No native/runtime/security/G1 admission.
