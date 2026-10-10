@@ -1,6 +1,6 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,10 October2026,21:04UTC. **G0 accepted; G1 active; G2–G7
+Current continuation,10 October2026,21:12UTC. **G0 accepted; G1 active; G2–G7
 not started.** Four bounded Codex sessions include the integration owner,
 implementation and distinct review in dedicated worktrees. No Hermes is used.
 Only reviewed source is accepted; prepared fixtures and cloud registrations do
@@ -52,8 +52,12 @@ before an environment promotion; this does not mean that later gates passed.
   service behavior. Subsequent primary-document discovery found AWS's explicit
   [INITIAL revision comparison](https://docs.aws.amazon.com/step-functions/latest/apireference/API_PublishStateMachineVersion.html)
   for a state machine with no assigned revision. A separately allocated
-  INITIAL-publication source candidate is preferred for review before a proposed
-  generated Comment change, which would require new graph/CFN bindings. Neither
+  INITIAL-publication source candidate is preferred for review before the
+  separately preserved generated Comment proposal
+  `efebcacde38d92d5d765b417d89ac1f6f4734e43`, which would require new graph/CFN
+  bindings. Root read that proposal and verified all186 final payloads/raw Git;
+  an initial DATA verifier refused relative paths, corrected only by binding the
+  manifest's explicit evidence root without a behavior replay. Neither
   path is operationally accepted; the actual guard still holds. No existing
   graph, consumed attempt or publication comparison is bypassed.
 - Browser wire source2 repairs finite-number parsing and adds a pure read-only
@@ -64,8 +68,13 @@ before an environment promotion; this does not mean that later gates passed.
   controls once:30 PASS/six malformed response-envelope/token failures. Root
   read its complete report; the six failure observations are preserved and
   SOURCE2 remains **HOLD**. One planner refusal occurred before numeric-parser
-  reach, which is explicitly qualified. A separately owned narrow repair is in
-  progress. No role/volume/TestState/host action has occurred from it.
+  reach, which is explicitly qualified. Root verified99 sealed review records
+  plus10 commit-readback records. New narrow repair
+  `c91e067a0ac6cbb8e977c17a202a99ca16ef6ddb` is prepared, with nine targeted
+  author checks passing once and219 sealed record occurrences/14 commit-readback
+  records verified by root. It remains pending distinct source review. Its
+  retained probe caller also needs a separate response-shape review before
+  dispatch. No role/volume/TestState/host action has occurred from either subject.
 - The concrete proxy Fargate assembly proposal has been read and verified:
   136 sealed record occurrences plus13 commit-readback records. It specifies
   actual LiteLLM lifespan/native auth, private guarded-client injection, direct

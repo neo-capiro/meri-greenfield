@@ -1,11 +1,13 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 21:04Z: **eight deployment gates total;
+Current continuation,10 October2026 21:12Z: **eight deployment gates total;
 G0 accepted, G1 active, G2–G7 not started.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records independently accepted proxy cancellation SOURCE and exact SDK name/helper
 reviews. The actual revision update returned no revisionId; its attempt is consumed
 UNKNOWN/no retry and publication/native launch remain held. Browser source2 has
-six independent response-shape counterexamples under narrow repair. The actual
+six independent response-shape counterexamples; source3 repair is prepared and
+pending distinct review. A separately allocated documented INITIAL-publication
+candidate is in preparation, without changing the deployed graph. The actual
 proxy/Fargate assembly remains preparation only. Live proxy/SDK/browser, security,
 operation-contract and measured-cohort gates remain OPEN. Separate frontend Home
 is accepted offline; complete UI integration is later work. Current Meri/Capiro

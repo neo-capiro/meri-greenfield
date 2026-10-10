@@ -1,6 +1,6 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 21:04Z: see the [current eight-gate status
+Current continuation,10 October2026 21:12Z: see the [current eight-gate status
 and six G1 work groups](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md).
 Proxy self-cancellation SOURCE is independently accepted, retaining the original
 40ms test failure and full-channel disconnect limit. Actual trusted LiteLLM/TLS/
@@ -9,7 +9,9 @@ and revision-helper SOURCE reviews passed; actual revision establishment failed
 its required response gate, leaving a permanently consumed UNKNOWN attempt and
 publication/native execution held. Browser source2 parsing/reconciliation is
 prepared but independently held on six malformed response-shape cases; a new
-narrow repair is allocated. Security/Office, real SDK interruption/resume,
+narrow source3 repair is prepared/pending distinct review. AWS's documented
+INITIAL publication comparison is under separate source preparation; the
+existing operational publication hold remains. Security/Office, real SDK interruption/resume,
 browser host/sandbox/physical cleanup, REL-02/RG-08 and measured cohorts still
 close G1. The75 real-request source awaits the promised approved location/owner.
 G0 accepted; G1 OPEN; G2–G7 unstarted. No model spend/source/cutover occurred.
