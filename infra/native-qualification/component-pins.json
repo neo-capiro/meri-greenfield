@@ -1,0 +1,103 @@
+{
+  "schema": "meri.qualification.component-pins/1",
+  "generatedAt": "2026-10-09",
+  "status": "preparation-only",
+  "notes": [
+    "W02-10 native Fargate probe DEFINITIONS. Preparation only: nothing here is an admitted image, a running task, a live qualification or an accepted runtime.",
+    "The worker image is NOT built and NOT admitted. The WorkerImage CloudFormation parameter has NO default; its all-a value below is a prominently fake synthetic placeholder used only for offline synthesis/tests and is never a deployable image.",
+    "Synthesis is offline and deterministic: no AWS call, no context lookup, no asset, no socket/server. The template hash below is the synthetic determinism anchor, not deployment evidence.",
+    "CDK package versions/integrities were read from the frozen root package-lock.json and the shared read-only node_modules; they were used READ ONLY and were not installed or modified.",
+    "Role ARNs are immutable string references only. No IAM role/policy resource is declared, so no imported role can gain a policy."
+  ],
+  "syntheticStack": {
+    "name": "MeriGreenfield-NativeQualification",
+    "account": "967807252336",
+    "region": "us-east-1",
+    "synthesizer": "BootstraplessSynthesizer",
+    "templatePath": ".task-inputs/cdk.out/native-qualification/MeriGreenfield-NativeQualification.template.json",
+    "templateSha256": "7895fa997a8521fe7adc03cb7c468b1987de8875518ae0d8ab6f284496b13080",
+    "templateBytes": 6082,
+    "resourceTypes": { "AWS::ECS::TaskDefinition": 2 },
+    "outputs": ["SdkTaskDefinitionArn", "OfficeTaskDefinitionArn"],
+    "validationReport": "no findings (empty pluginReports)"
+  },
+  "cdk": {
+    "usedReadOnly": true,
+    "installedFrom": "C:/dev/main/meri-greenfield-kickoff-20261009/node_modules (ignored local junction; root package.json/package-lock.json reconcile identical to that checkout after line-ending normalization only)",
+    "libraries": [
+      { "name": "aws-cdk-lib", "version": "2.273.0", "integrity": "sha512-H7hBQHnKn0ZBbpnWRL1Hn0GunSQUsYaLqOk2xIqV0HWr3qbYMwTEZT0HbJBUSxeUdzp1nz0AE2LN3K6qvYr4Zg==" },
+      { "name": "aws-cdk", "version": "2.1145.0", "integrity": "sha512-kV3vJCQX5XvlyVvmRHH79Nn2kOmDicN1WSFGkSaZXsNaDdNj2Re25yehsp+L2ixv0VCm0/HLLmYSoehmVPDkJg==" },
+      { "name": "constructs", "version": "10.8.1", "integrity": "sha512-98yGXYyhePqPYh3cYu8nzBERmAhC0DONe3UD03okK0nehZ7hYP4wgZuf02a04+uOWxnTJ5Rpp5m0GRNpwyLGGA==" }
+    ]
+  },
+  "image": {
+    "parameter": "WorkerImage",
+    "type": "String",
+    "hasDefault": false,
+    "admission": "none - the parameter value is supplied by the owner at deploy time and is never an accepted candidate here",
+    "repository": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker",
+    "allowedPattern": "^967807252336\\.dkr\\.ecr\\.us-east-1\\.amazonaws\\.com/meri-greenfield/qualification-worker@sha256:[a-f0-9]{64}$",
+    "syntheticPlaceholder": {
+      "value": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "label": "SYNTHETIC-ONLY all-a fake digest; never deployable; carries no admission"
+    },
+    "rejectedSupersededDigest": {
+      "value": "sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+      "reason": "the old7327 baseline image digest was never accepted for this refreshed recipe and is refused by parseWorkerImage; it is not an accepted candidate"
+    }
+  },
+  "roles": {
+    "provenance": "docs/coordination/private-evidence/W02-fargate-baseline-3-run/task-definition.json (read-only; both strings reconcile EXACTLY)",
+    "mode": "immutable string references only - no IAM resource declared",
+    "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+    "workerRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD"
+  },
+  "taskDefinitions": [
+    {
+      "family": "meri-greenfield-qualification-sdk",
+      "command": ["/opt/meri-worker/probes/sdk-capture.mjs"],
+      "streamPrefix": "qualification-sdk",
+      "sourceProbeCommit": "85ca1ef"
+    },
+    {
+      "family": "meri-greenfield-qualification-office",
+      "command": ["/opt/meri-worker/probes/office-export.mjs"],
+      "streamPrefix": "qualification-office",
+      "sourceProbeCommit": "8eacd0f"
+    }
+  ],
+  "sharedContainer": {
+    "name": "worker",
+    "entryPoint": ["node"],
+    "runtimeNote": "explicit EntryPoint overrides the image entrypoint so the image's runtime.mjs entrypoint cannot run accidentally",
+    "user": "10001:10001",
+    "readonlyRootFilesystem": true,
+    "privileged": false,
+    "stopTimeout": 60,
+    "capabilities": { "drop": ["ALL"], "add": [] },
+    "platform": { "requiresCompatibilities": ["FARGATE"], "networkMode": "awsvpc", "cpuArchitecture": "X86_64", "operatingSystemFamily": "LINUX" },
+    "cpu": "2048",
+    "memory": "8192",
+    "ephemeralStorageGiB": 50,
+    "volumes": [
+      { "name": "workspace", "containerPath": "/workspace", "readOnly": false },
+      { "name": "tmp", "containerPath": "/tmp", "readOnly": false }
+    ],
+    "environment": {
+      "HOME": "/workspace/home",
+      "TMPDIR": "/tmp",
+      "CLAUDE_CONFIG_DIR": "/workspace/config",
+      "PLAYWRIGHT_BROWSERS_PATH": "/opt/meri-browsers",
+      "MERI_QUALIFICATION_ONLY": "true",
+      "MERI_SOURCES_ENABLED": "false",
+      "CHROMIUM_SANDBOX_REQUIRED": "true"
+    },
+    "logging": { "logDriver": "awslogs", "group": "/meri-greenfield/qualification/runtime", "region": "us-east-1", "mode": "blocking" }
+  },
+  "unresolvedPins": [
+    "Assembled/admitted worker image digest (image still unbuilt and unaccepted)",
+    "Independent review of the refreshed image, its ECR scan disposition and security decision",
+    "Reviewed all-ADD CloudFormation template/change set and fresh STS/live empty-role/network/DNS checks before any launch",
+    "Separate one-run admission, original launch deadline/watchdog, complete paginated/stable-token logs and SDK/Office reconstruction/hash/visual evidence with confirmed task/child cleanup"
+  ]
+}
