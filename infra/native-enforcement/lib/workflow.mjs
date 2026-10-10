@@ -112,10 +112,15 @@ function buildStateMachine(binding,profile){
  pass('ENIContradiction',`{'qualificationFailed':true,'eni':{'status':'CONTRADICTORY'},'issues':${pushIssue(issue('eni-contradictory',`{'arn':$ctx.currentArn}`))}}`,'ObservedRecord');
  pass('NetworkUnknown',`{'eni':{'status':'UNAVAILABLE'},'issues':${pushIssue(issue('eni-unavailable',`{'arn':$ctx.currentArn}`))}}`,'ObservedRecord');
  record('ObservedRecord','TASK_AND_ENI','AfterObservation',{task:J('$ctx.current'),eni:J('$ctx.eni'),qualificationFailed:J('$ctx.qualificationFailed')});
- choice('AfterObservation',[['$ctx.stopMode','PrepareStopIdentity'],[terminal,'RetainTerminal'],[`${containment}`,'SelectOwned']],'LoopGate');
+ // SDK v2 must distinguish pending stop work from an already attempted stop.
+ // Otherwise the next observation selects an empty pending set, preserves a stale
+ // ARN through JSONata's omitted-value merge, and exits before terminal polling.
+ const containmentRoutes=isSdkWire(p)?[[`${containment} and ${pendingCount}>0`,'SelectOwned'],[`${containment} and ${unconfirmedCount}>0`,'SelectConfirm']]:[[`${containment}`,'SelectOwned']];
+ choice('AfterObservation',[['$ctx.stopMode','PrepareStopIdentity'],[terminal,'RetainTerminal'],...containmentRoutes],'LoopGate');
  // ---- bounded stop dispatch: every positive identity gets one scoped attempt -------------
- pass('SelectOwned',`{'currentArn':${pendingAll}[0].arn,'current':null,'eni':null,'stopMode':true,'finalMode':false}`,'StopBudget');
- choice('StopBudget',[[`${now}<$ctx.C-2000 and $exists($ctx.currentArn)`,'PreparePreStopDescribe']],'FinalUnknown');
+ pass('SelectOwned',`{'currentArn':${isSdkWire(p)?`(${pendingCount}>0?${pendingAll}[0].arn:null)`:`${pendingAll}[0].arn`},'current':null,'eni':null,'stopMode':true,'finalMode':false}`,'StopBudget');
+ const stopBudgetRoutes=isSdkWire(p)?[[`${now}<$ctx.C-2000 and ${pendingCount}>0 and $count(${pendingAll}[arn=$ctx.currentArn])=1`,'PreparePreStopDescribe'],[`${now}<$ctx.C-2000 and ${pendingCount}=0 and ${unconfirmedCount}>0`,'SelectConfirm']]:[[`${now}<$ctx.C-2000 and $exists($ctx.currentArn)`,'PreparePreStopDescribe']];
+ choice('StopBudget',stopBudgetRoutes,'FinalUnknown');
  prepare('PreparePreStopDescribe','prestop-describe','PreStopDescribe');task('PreStopDescribe','ecs:describeTasks',describeArgs,'PreStopCoverage','PreStopReadUnknown','$ctx.C',true);
  choice('PreStopCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainPreStop']],'PreStopReadUnknown');pass('RetainPreStop',`{'current':${retainTask(`${tasks}[0]`,p)}}`,'PreStopTerminal');
  choice('PreStopTerminal',[[terminal,'RetainTerminal']],'EvaluateTask');
