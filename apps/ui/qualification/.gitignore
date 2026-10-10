@@ -1,3 +1,0 @@
-# Qualification-scope ignores only. Never ignore source in this directory.
-node_modules/
-.runtime/
