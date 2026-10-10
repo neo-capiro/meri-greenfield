@@ -1,0 +1,9 @@
+# Read-only third-canary observation preparation
+
+Base caecef082ccb8f4f1c39f37703451b495a2207f1; branch task/g1-canary3-observer. Owned paths: this outline, scripts/qualification/canary3_observer.py and reports/CODEX-G1-CANARY3-OBSERVER.md. No cloud invocation is allocated to the author.
+
+The helper owns one observation of the fixed third execution: validate externally hash-pinned reservation, original start input and owner admission; capture DescribeExecution, every raw GetExecutionHistory service page, a singleton exact-owned DescribeTasks with TAGS when a task is proved, and a final DescribeExecution. Decode ownership and physical terminal facts separately from managed qualification. Keep the CLI thin and the domain-specific validation/capture functions in this focused observer; no scheduler, cleanup controller or generic evidence framework.
+
+Reuse the canonical aws_evidence fixed binary/profile/environment, one-attempt and bounded binary-envelope conventions. Its current option allowlist cannot request --no-paginate, so a narrow read-only adapter explicitly captures service pages without changing that shared helper. Operations are fixed; no operation, execution, task or AWS endpoint argument is accepted from the caller. Each observation writes a new exclusive directory, preserves partial failures and never retries, stops, starts or redrives a task.
+
+Inputs are explicit absolute paths with external SHA256 pins. D=t0+720000 and C=t0+900000 come only from the consumed reservation and must match execution input/output. Bounds: 300 seconds for this observer, each call at most45 seconds, at most32 history pages/32000 events and128MiB raw history, each response at most32MiB checked after capture. These limits fail closed; they are not service-liveness or descendant cleanup guarantees. No local timer supplies managed enforcement. Prepare source and pure checks only; owner independently reviews before invoking against AWS.
