@@ -40,7 +40,7 @@ ALLOWED = {
     "iam": {"get-role", "list-role-policies", "get-role-policy", "list-attached-role-policies",
             "simulate-principal-policy"},
     "stepfunctions": {"test-state", "validate-state-machine-definition", "describe-state-machine",
-                      "publish-state-machine-version", "start-execution", "describe-execution",
+                      "publish-state-machine-version", "update-state-machine", "start-execution", "describe-execution",
                       "get-execution-history", "list-executions"},
     "ecs": {"describe-task-definition", "list-tasks", "describe-tasks", "describe-clusters"},
     "ec2": {"describe-network-interfaces", "describe-subnets", "describe-security-groups",
