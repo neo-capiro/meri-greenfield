@@ -1,6 +1,6 @@
 # V2 repair provenance and offline limits
 
-Status: **Codex owner repair; candidate/unaccepted**. Packaging is distinct from independent acceptance. No operational replacement, build-helper preparation/execution, cloud action, installation, provider call, native application test or Hermes launch occurred.
+Historical status at packaging: **Codex owner repair; candidate/unaccepted**. Packaging is distinct from independent acceptance. Packaging performed no operational replacement, build-helper preparation/execution, cloud action, installation, provider call, native application test or Hermes launch. Subsequent separate review4, [Codex source acceptance](../../coordination/reports/W02-08-BUILD-TOOLING-OFFLINE-ACCEPTANCE-4.md) and exact operational adoption are recorded separately.
 
 ## Changes preserved
 
