@@ -131,6 +131,9 @@ class IngressAdmission:
                         return
                     pending = None
                     yield item
+                    # Downstream may suspend us past revocation or peer-lease expiry.
+                    # Authorize again before any further provider iterator side effect.
+                    await self.recheck()
                     pending = asyncio.create_task(anext(iterator))
         finally:
             if pending is not None:

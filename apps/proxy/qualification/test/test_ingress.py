@@ -192,6 +192,32 @@ class IngressTests(unittest.IsolatedAsyncioTestCase):
         self.assertGreaterEqual(elapsed, 5)
         self.assertLess(elapsed, 8); self.assertEqual(closed, [True])
 
+    async def test_downstream_resume_rechecks_revocation_before_next_pull(self):
+        store, ingress, scope = fixture(); pulls = []; closed = []
+        async def source():
+            try:
+                pulls.append("first"); yield "one"
+                pulls.append("second"); yield "must-not-pull"
+            finally: closed.append(True)
+        stream = ingress.stream(scope, source())
+        self.assertEqual(await anext(stream), "one")
+        store.grant["state"] = "REVOKED"
+        with self.assertRaises(StateDenied): await anext(stream)
+        self.assertEqual(pulls, ["first"]); self.assertEqual(closed, [True])
+
+    async def test_downstream_resume_rechecks_peer_expiry_before_next_pull(self):
+        _, ingress, scope = fixture(); pulls = []; closed = []
+        async def source():
+            try:
+                pulls.append("first"); yield "one"
+                pulls.append("second"); yield "must-not-pull"
+            finally: closed.append(True)
+        stream = ingress.stream(scope, source())
+        self.assertEqual(await anext(stream), "one")
+        ingress.peer = PeerLease("10.77.0.9", time.monotonic() - 30, BINDING, GRANT)
+        with self.assertRaisesRegex(StateDenied, "PEER_OBSERVATION_EXPIRED"): await anext(stream)
+        self.assertEqual(pulls, ["first"]); self.assertEqual(closed, [True])
+
     async def test_normal_eof_and_cancel_close_owned_iterator(self):
         _, ingress, scope = fixture()
         async def finite(): yield "one"
