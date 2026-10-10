@@ -63,7 +63,6 @@ export const STDERR_PREVIEW_CHARS = 512;
 export const CLOSE_GRACE_MS = 2000;
 export const EXIT_GRACE_MS = 2000;
 export const WRITE_TIMEOUT_MS = 5000;
-export const WRITE_CALLBACK_GRACE_MS = 50;
 export const MAX_DEADLINE_MS = 60000;
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -121,13 +120,15 @@ export function looksLikeSecret(text) {
 }
 
 // Credential detection is SEMANTIC: a key is credential-named only when one of
-// its non-alphanumeric-separated segments is a credential word. Accounting /
+// its delimiter/camelCase/acronym-separated segments is a credential word. Accounting /
 // token-count fields such as `max_tokens`, `input_tokens`, `cache_creation_
 // input_tokens` and `output_tokens` split into `tokens` (plural) and are NOT
 // credential names.
 const CRED_KEY_SEGMENTS = new Set(['key', 'apikey', 'token', 'secret', 'password', 'passwd', 'passphrase', 'credential', 'credentials', 'authorization', 'bearer', 'cookie']);
 function isCredentialKey(k) {
   return String(k)
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
     .toLowerCase()
     .split(/[^a-z0-9]+/)
     .some((seg) => seg && CRED_KEY_SEGMENTS.has(seg));
@@ -278,12 +279,14 @@ export function validateToolRoundTrip(json, toolUseId) {
   const toolUses = [];
   const toolResults = [];
   const userTexts = [];
+  const assistantBlocks = [];
   let promptIndex = -1;
   let assistantIndex = -1;
   let resultIndex = -1;
   json.messages.forEach((m, i) => {
     if (!m || (m.role !== 'user' && m.role !== 'assistant')) return;
     for (const b of blocksOf(m.content)) {
+      if (m.role === 'assistant') assistantBlocks.push(b);
       if (!b) continue;
       if (b.type === 'text' && m.role === 'user') {
         userTexts.push(String(b.text || ''));
@@ -317,6 +320,9 @@ export function validateToolRoundTrip(json, toolUseId) {
   if (tr.b.tool_use_id !== toolUseId) return { ok: false, error: 'tool_result id does not match emitted id' };
   if (tr.b.is_error === true) return { ok: false, error: 'tool_result is_error:true' };
   if (textOfBlock(tr.b) !== WIRE_TOOL_RESULT) return { ok: false, error: 'tool_result content mismatch' };
+  if (assistantBlocks.length !== 1 || assistantBlocks[0]?.type !== 'tool_use') {
+    return { ok: false, error: 'assistant content must be exactly the emitted tool_use block' };
+  }
   return { ok: true };
 }
 
@@ -1085,49 +1091,63 @@ export function buildOutputLines(report, { chunkBytes = OUT_CHUNK_BYTES } = {}) 
 // Bounded stdout writing
 // ---------------------------------------------------------------------------
 
-/**
- * Write one chunk with a bounded callback/drain/error/close path. On a callback
- * error the error/close observers are KEPT for a short grace so a late Node
- * stream 'error' (emitted after the write callback) is absorbed, not thrown;
- * they are removed after the grace, so there is no unbounded listener leak.
- */
+// One guard per stream, held weakly: settled writes retain no subscribers or
+// grace timers. The shared error observer lives until close, including after a
+// successful callback. A real stdout failure must also fail the direct CLI.
+const OUTPUT_GUARDS = new WeakMap();
+function outputGuard(stdout) {
+  if (OUTPUT_GUARDS.has(stdout)) return OUTPUT_GUARDS.get(stdout);
+  const guard = { failed: stdout.errored ? errorType(stdout.errored) : null,
+    closed: stdout.destroyed === true || stdout.closed === true, subscribers: new Set() };
+  const onError = (error) => {
+    guard.failed ||= errorType(error);
+    if (stdout === process.stdout) process.exitCode = 1;
+    for (const settle of [...guard.subscribers]) settle(false, guard.failed);
+  };
+  const onClose = () => {
+    guard.closed = true;
+    for (const settle of [...guard.subscribers]) settle(false, 'output-closed');
+    stdout.off?.('error', onError);
+    stdout.off?.('close', onClose);
+  };
+  OUTPUT_GUARDS.set(stdout, guard);
+  if (typeof stdout.on === 'function') stdout.on('error', onError);
+  else stdout.once?.('error', onError); // minimal injected writer fixtures
+  stdout.once?.('close', onClose);
+  if (guard.failed && stdout === process.stdout) process.exitCode = 1;
+  return guard;
+}
+
+/** Write one chunk with one deadline timer and a shared stream error guard. */
 export function writeOnce(text, stdout, atMs, now = Date.now) {
   return new Promise((resolve) => {
+    const guard = outputGuard(stdout);
+    if (guard.failed || guard.closed) return resolve({ ok: false, error: guard.failed || 'output-closed' });
     let done = false;
-    let cleaned = false;
-    let graceTimer = null;
-    const cleanup = () => {
-      if (cleaned) return;
-      cleaned = true;
-      clearTimeout(timer);
-      if (graceTimer) clearTimeout(graceTimer);
-      if (stdout && typeof stdout.off === 'function') {
-        stdout.off('error', onError);
-        stdout.off('close', onClose);
-      }
-    };
     const finish = (ok, error) => {
       if (done) return;
       done = true;
+      if (!ok) guard.failed ||= error;
+      clearTimeout(timer);
+      guard.subscribers.delete(finish);
       resolve({ ok, error });
-      graceTimer = setTimeout(cleanup, WRITE_CALLBACK_GRACE_MS);
-      if (graceTimer.unref) graceTimer.unref();
     };
-    const onError = (e) => finish(false, errorType(e));
-    const onClose = () => finish(false, 'output-closed');
     const timer = setTimeout(() => finish(false, 'write-timeout'), Math.max(1, atMs - now()));
-    if (stdout && typeof stdout.once === 'function') {
-      stdout.once('error', onError);
-      stdout.once('close', onClose);
-    }
+    guard.subscribers.add(finish);
     try {
       stdout.write(text, (err) => {
-        if (err) return finish(false, errorType(err));
+        if (err) {
+          guard.failed ||= errorType(err);
+          if (stdout === process.stdout) process.exitCode = 1;
+          return finish(false, guard.failed);
+        }
+        if (guard.failed || guard.closed) return finish(false, guard.failed || 'output-closed');
         if (now() > atMs) return finish(false, 'write-late');
         return finish(true);
       });
     } catch (e) {
-      finish(false, errorType(e));
+      guard.failed ||= errorType(e);
+      finish(false, guard.failed);
     }
   });
 }
@@ -1146,6 +1166,8 @@ export async function writeLines(lines, stdout, { deadlineAt, now = Date.now } =
     if (Buffer.byteLength(chunk) > MAX_RECORD_BYTES) return { ok: false, error: 'record-too-large' };
     const w = await writeOnce(chunk, stdout, deadlineAt, now);
     if (!w.ok) return w;
+    const guard = outputGuard(stdout);
+    if (guard.failed || guard.closed) return { ok: false, error: guard.failed || 'output-closed' };
     if (now() >= deadlineAt) return { ok: false, error: 'output-deadline-expired' };
   }
   return { ok: true };
@@ -1233,7 +1255,7 @@ const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === pr
 if (invokedDirectly) {
   main()
     .then((code) => {
-      process.exitCode = code; // never process.exit(): stdout must drain.
+      process.exitCode = code || process.exitCode || 0; // preserve late stdout failure; allow drain.
     })
     .catch(async (error) => {
       process.exitCode = 1;

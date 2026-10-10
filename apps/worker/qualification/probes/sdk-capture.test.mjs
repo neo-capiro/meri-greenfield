@@ -944,6 +944,126 @@ test('a write callback error does not surface an uncaught error', async () => {
   assert.equal(unhandled ?? null, null);
 });
 
+// Codex owner corrections for independent Hermes review-5 findings. Pure
+// streams and exact source bodies only; no process, SDK, socket or server starts.
+test('late Writable error after timeout is handled beyond the former 50ms grace', async () => {
+  const stdout = new Writable({ write(_chunk, _encoding, _callback) {} });
+  const result = await writeOnce('synthetic', stdout, Date.now() + 20);
+  assert.equal(result.error, 'write-timeout');
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  assert.equal(stdout.listenerCount('error'), 1);
+  const closed = new Promise((resolve) => stdout.once('close', resolve));
+  stdout.destroy(new Error('synthetic late error'));
+  await closed;
+  assert.equal(stdout.listenerCount('error'), 0);
+  assert.equal((await writeOnce('future', stdout, Date.now() + 100)).ok, false);
+});
+
+test('late error after successful Writable callback is sticky and rejects future writes', async () => {
+  let writes = 0;
+  const stdout = new Writable({ write(_chunk, _encoding, callback) { writes++; callback(); } });
+  assert.equal((await writeOnce('synthetic', stdout, Date.now() + 200)).ok, true);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  stdout.emit('error', new Error('synthetic late error'));
+  assert.equal((await writeOnce('future', stdout, Date.now() + 200)).ok, false);
+  assert.equal(writes, 1);
+  const closed = new Promise((resolve) => stdout.once('close', resolve));
+  stdout.destroy(); await closed;
+  assert.equal(stdout.listenerCount('error'), 0);
+});
+
+test('error emitted just after successful callback cannot make writeLines pass', async () => {
+  const stdout = new EventEmitter();
+  stdout.write = (_chunk, callback) => { callback(); stdout.emit('error', new Error('synthetic')); };
+  const result = await writeLines([{ record: 'synthetic' }], stdout, { deadlineAt: Date.now() + 1000 });
+  assert.equal(result.ok, false);
+  stdout.emit('close');
+  assert.equal(stdout.listenerCount('error'), 0);
+});
+
+function isolatedOutput(fakeProcess) {
+  const source = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
+  const begin = source.indexOf('const OUTPUT_GUARDS =');
+  const end = source.indexOf('// Workspace preparation', begin);
+  const body = source.slice(begin, end).replace(/export (async )?function/g, '$1function');
+  return new Function('process', 'errorType', 'MAX_RECORD_BYTES', `${body};return { outputGuard, writeOnce, writeLines };`)(fakeProcess, errorType, MAX_RECORD_BYTES);
+}
+
+test('shared output guard has constant listeners and removes every settled subscriber', async () => {
+  const stdout = new Writable({ write(_chunk, _encoding, callback) { callback(); } });
+  const output = isolatedOutput({ stdout: {} });
+  for (let i = 0; i < 1000; i++) {
+    assert.equal((await output.writeOnce('synthetic', stdout, Date.now() + 1000)).ok, true);
+    assert.equal(output.outputGuard(stdout).subscribers.size, 0);
+    assert.equal(stdout.listenerCount('error'), 1);
+    assert.equal(stdout.listenerCount('close'), 1);
+  }
+  const closed = new Promise((resolve) => stdout.once('close', resolve));
+  stdout.destroy(); await closed;
+  assert.equal(stdout.listenerCount('error'), 0);
+  assert.equal(stdout.listenerCount('close'), 0);
+  assert.equal((await output.writeOnce('after close', stdout, Date.now() + 1000)).ok, false);
+});
+
+test('timeout removes subscriber immediately and blocks further output on that stream', async () => {
+  let writes = 0;
+  const stdout = new Writable({ write(_chunk, _encoding, _callback) { writes++; } });
+  const output = isolatedOutput({ stdout: {} });
+  assert.equal((await output.writeOnce('synthetic', stdout, Date.now() + 20)).error, 'write-timeout');
+  assert.equal(output.outputGuard(stdout).subscribers.size, 0);
+  assert.equal((await output.writeOnce('future', stdout, Date.now() + 1000)).error, 'write-timeout');
+  assert.equal(writes, 1);
+  const closed = new Promise((resolve) => stdout.once('close', resolve));
+  stdout.destroy(); await closed;
+});
+
+test('actual CLI footer preserves stdout failure before and after successful main resolution', async () => {
+  const source = readFileSync(join(HERE, 'sdk-capture.mjs'), 'utf8');
+  const footer = source.slice(source.indexOf('if (invokedDirectly) {'));
+  for (const failBeforeResolution of [true, false]) {
+    const stdout = new Writable({ write(_chunk, _encoding, callback) { callback(); } });
+    const fakeProcess = { stdout, exitCode: 0 };
+    const output = isolatedOutput(fakeProcess);
+    assert.equal((await output.writeOnce('synthetic', stdout, Date.now() + 1000)).ok, true);
+    let resolveMain;
+    const pendingMain = new Promise((resolve) => { resolveMain = resolve; });
+    new Function('invokedDirectly', 'main', 'process', 'writeLines', 'errorType', footer)(true, () => pendingMain, fakeProcess, output.writeLines, errorType);
+    if (failBeforeResolution) stdout.emit('error', new Error('synthetic late error'));
+    resolveMain(0);
+    await new Promise((resolve) => setImmediate(resolve));
+    if (!failBeforeResolution) {
+      assert.equal(fakeProcess.exitCode, 0);
+      stdout.emit('error', new Error('synthetic later error'));
+    }
+    assert.equal(fakeProcess.exitCode, 1);
+    const closed = new Promise((resolve) => stdout.once('close', resolve));
+    stdout.destroy(); await closed;
+  }
+});
+
+test('second request contains only the fixed emitted assistant tool_use content', () => {
+  const events = buildToolUseSse().split('\n\n').filter(Boolean).map((record) => JSON.parse(record.split('\ndata: ')[1]));
+  assert.deepEqual(events.filter((event) => event.type === 'content_block_start').map((event) => event.content_block.type), ['tool_use']);
+  const positive = req2Body();
+  Object.assign(positive.messages[1].content[0], { caller: { type: 'direct' }, toolset_name: null });
+  assert.equal(validateToolRoundTrip(positive, WIRE_TOOL_USE_ID).ok, true);
+  for (const block of [{ type: 'text', text: 'synthetic' }, { type: 'thinking', thinking: 'synthetic', signature: 'synthetic' }, { type: 'image', source: {} }, { type: 'unknown-synthetic' }, null]) {
+    const body = req2Body(); body.messages[1].content.unshift(block);
+    assert.equal(validateToolRoundTrip(body, WIRE_TOOL_USE_ID).ok, false);
+  }
+  const extra = req2Body(); extra.messages.splice(2, 0, { role: 'assistant', content: [{ type: 'text', text: 'synthetic' }] });
+  assert.equal(validateToolRoundTrip(extra, WIRE_TOOL_USE_ID).ok, false);
+});
+
+test('camelCase and acronym credential segments fail while plural token accounting stays valid', () => {
+  for (const key of ['clientSecret', 'clientPassword', 'accessToken', 'refreshToken', 'awsAccessKeyId', 'APIKey', 'HTTPAuthorization', 'api_key', 'access_token']) {
+    assert.equal(hasSensitiveBody({ [key]: AUDIT_SENTINEL }), true, key);
+  }
+  for (const key of ['max_tokens', 'input_tokens', 'output_tokens', 'cache_creation_input_tokens', 'cache_read_input_tokens', 'maxTokens', 'inputTokens', 'outputTokens', 'cacheCreationInputTokens', 'keyframes', 'monkey', 'tokenizer']) {
+    assert.equal(hasSensitiveBody({ [key]: 256 }), false, key);
+  }
+});
+
 test('runCapture requires child stdio EOF before a PASS', async () => {
   const okHost = fakeQueryTo('success', { stdioDone: 'immediate' }).host;
   const okReport = await runCapture({ host: okHost, source: {} });

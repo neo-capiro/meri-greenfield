@@ -1,13 +1,15 @@
 # W02-05 SDK wire-capture preparation — implementation report
 
-Status: **PREPARATION COMPLETE — runtime proof NOT RUN.** Bounded authoring
-session (owner-authorized repair of session `20261009_182329_21b4bc`) that
-flips the independent repair-3 audit from 6/14 to 14/14 without weakening any
-privacy or deadline control. A separate actual Hermes review and independent
+Status: **PREPARATION COMPLETE — runtime proof NOT RUN.** Latest changes are an
+explicit **Codex owner correction**, based on `3b8eabf1e7f29a2a48f083c4d947c3cadff82e1e`,
+of separate actual Hermes review-5 findings F1–F4. The earlier Hermes repair-4
+session and its 61-test results are retained below as historical evidence.
+A new separate actual Hermes review of this exact owner delta and independent
 Codex acceptance precede any build/native qualification. This does NOT establish
 Bedrock/proxy translation, auth, budget, cancel, recovery or G1 acceptance.
 
-- Base (pinned): `fdf2035600a35a10974813aac787a0e091b51e74`
+- Latest owner-correction base (pinned): `3b8eabf1e7f29a2a48f083c4d947c3cadff82e1e`
+- Historical repair-4 base: `fdf2035600a35a10974813aac787a0e091b51e74`
 - Branch: `hermes/w02-sdk-capture`
 - Worktree: `C:\dev\main\meri-greenfield-worktrees\w02-sdk-capture`
 - Contract/schema: **UNCHANGED** — no shard, contract, lockfile, Dockerfile,
@@ -16,16 +18,61 @@ Bedrock/proxy translation, auth, budget, cancel, recovery or G1 acceptance.
   cloud/AWS/model/provider/credential/private-source/network execution by this
   session: **NONE**. All host effects are injected pure fakes.
 
-## Owned paths (exactly four) and content hashes
+## Current source content hashes / latest owner scope
+
+The latest Codex correction owns only capture source, capture tests and this
+report. The options file is listed for provenance and is byte-unchanged.
 
 | Path | sha256 |
 | --- | --- |
 | `apps/worker/qualification/probes/sdk-capture-options.mjs` | `964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e` (unchanged) |
-| `apps/worker/qualification/probes/sdk-capture.mjs` | `fc912e242924f0b58ce293292ad4d181ca500f77de5dfd35185e6f532f0f9776` |
-| `apps/worker/qualification/probes/sdk-capture.test.mjs` | `93eb4e948700910185aa41b698a66eb3821ff607b38b66f28ce2dce4b80a78b5` |
+| `apps/worker/qualification/probes/sdk-capture.mjs` | `4b71228ed0ce49f4bc39c2abcc497d7b76fea30ffd115ca796a13dff7edd6840` |
+| `apps/worker/qualification/probes/sdk-capture.test.mjs` | `38a3018af9702affe042bb8a2bf8f9078c5353446c2599f16d933f163c751c72` |
 | `docs/coordination/reports/W02-05-SDK-WIRE-CAPTURE.md` | this file |
 
-## Independent audit (reproduced, then flipped)
+## 2026-10-09 Codex owner correction following separate Hermes review 5
+
+Separate reviewer report commit `8689125132f571bf7190d11d5c748ab6f4dc5800`
+reviewed candidate `3b8eabf`; its F1–F4 are addressed here by Codex, not Hermes.
+The prior `3b8eabf` owner correction added four tests to historical Hermes's 61,
+giving 65. This correction adds eight more, giving **73**.
+
+- **F1 — exact hashes and attribution:** current source/test hashes above now
+  match the final LF-normalized bytes. Historical counts and hashes below refer
+  only to their named earlier candidate. No Hermes authorship is claimed for
+  either Codex correction.
+- **F2 — stream lifetime and CLI failure:** one WeakMap guard per stream retains
+  one error observer and one close observer until actual close. Per-write
+  subscribers and their deadline timers are removed immediately on settlement;
+  there are no per-record grace timers. A sticky failure rejects future writes,
+  and `writeLines` checks for an error immediately after a successful callback.
+  An error on actual `process.stdout` sets nonzero CLI status even after an
+  otherwise successful main; the direct footer preserves that status if the
+  error races main resolution. Closing removes the shared observers. Pure
+  Writable tests cover errors beyond the former 50ms grace after timeout and
+  success, 1,000 writes with constant listeners and zero settled subscribers,
+  callback/error ordering, and exact source-extracted guard/footer with fake
+  process state. No real stdout error or native process is induced.
+- **F3 — fixed assistant content:** across assistant messages in request two,
+  the only content block may be the one emitted `tool_use`. Its existing id,
+  name/input, ordering and result checks stay enforced. Extra text, thinking,
+  image, unknown/null blocks or an extra assistant text message fail. Optional
+  real tool-use metadata (`caller`, `toolset_name`) remains accepted. The fixed
+  SSE emits exactly one tool-use block; this does not invent a production-wide
+  Messages content restriction.
+- **F4 — semantic credential names:** camelCase and acronym word boundaries
+  are split before applying the existing credential-segment set. `clientSecret`,
+  `accessToken`, `awsAccessKeyId` and `HTTPAuthorization` are detected, while
+  `max_tokens`, other plural `*_tokens` accounting fields and their camelCase
+  equivalents remain valid. Full pinned Messages positive capture still passes.
+
+Latest checks (owner-run, pure fakes only): owned **73/73**, existing worker
+**81/81**, root **15/15**, and the previous 14-case adversarial audit re-pinned
+only to the current source SHA **14/14**. Whitespace check is clean. These are
+regressions run by the current author, not the required separate review of this
+new delta. Runtime proof and all deployment gates remain open.
+
+## Historical Hermes repair-4 audit (reproduced, then flipped)
 
 - Original audit `.task-inputs/codex-sdk-repair3-audit.mjs` against base
   `fdf2035`: **6 pass / 8 fail → REJECT** (reproduced before editing).
@@ -34,7 +81,7 @@ Bedrock/proxy translation, auth, budget, cancel, recovery or G1 acceptance.
   copy in ignored `.task-inputs/_reaudit.mjs`): **14 pass / 0 fail →
   NO_REPRODUCED_BLOCKER**. Effects: fake host/process/stdio only.
 
-## Repairs (each genuine failure flipped)
+## Historical Hermes repair-4 changes (superseded where owner corrections say so)
 
 1. **Credential detection is now semantic.** A key is credential-named only
    when one of its non-alphanumeric-separated segments is a credential word, so
@@ -75,7 +122,7 @@ Bedrock/proxy translation, auth, budget, cancel, recovery or G1 acceptance.
    and fails. The fatal-output fallback is itself bounded and non-raw; no forced
    `process.exit`.
 
-## Checks actually run (this session, exit-0 evidence)
+## Historical Hermes repair-4 checks (61-test candidate only)
 
 - `node --test apps/worker/qualification/probes/sdk-capture.test.mjs` → **61 tests, 61 pass, 0 fail** (was 52).
 - Independent repair-3 audit (scratch re-pin) → **14 pass, 0 fail**.
