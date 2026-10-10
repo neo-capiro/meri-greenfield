@@ -2,6 +2,8 @@
 
 Updated 10 October 2026 UTC, Codex integration owner. Current Meri/Capiro remain untouched. No cutover, application service, live source connection, native browser host or paid Bedrock inference has been created by this checkpoint.
 
+Latest Codex checkpoint: G0 ACCEPTED / G1 OPEN. Role-free SDK/Office and complete browser v2 sources are independently accepted OFFLINE. A fourth new stack creates only the read-only TestState role; six actual read-only probes are retained. Actual ECS casing and terminal container-ARN incompatibilities hold worker launches while their versioned correction is implemented. V2 support packaging and trusted proxy qualification are in progress. See [owner checkpoint](reports/CODEX-G1-OWNER-CHECKPOINT.md). Historical paragraphs below retain earlier checkpoints rather than current runtime admission.
+
 ## Current outcome
 
 The original plans and updated Figma plan are adopted as design inputs within the user's authorized independent build. Private repository neo-capiro/meri-greenfield and three separate AWS qualification stacks exist in account967807252336/us-east-1; the newest registers only two native task definitions. Contracts0.1.0 and bounded actual-Hermes development are accepted. Application/control placement remains Fargate; D005 permits a new dedicated isolated browser host after measured Fargate Chromium namespace EPERM. Future Capiro connectivity uses newly written trusted connectors, with sources disabled initially.

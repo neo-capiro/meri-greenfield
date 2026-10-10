@@ -1,5 +1,9 @@
 # Integration decisions
 
+## D013 Codex G1 source acceptance and measured wire hold
+
+Role-free native source d9f31ca and browser14-asset v2 source e23667a (integrated9a93de7) are accepted OFFLINE with independent evidence and qualifications in CODEX-G1-OWNER-CHECKPOINT.md. New read-only TestState role creation is reconciled complete; six metadata-only probes are retained. Actual ECS PascalCase and the previously measured task/container ARN shape require a separately reviewed versioned enforcement correction before worker launches. No legacy fixture is relabelled actual. No image security waiver, native admission, G1 pass or cutover follows. Codex alone continues under D010.
+
 ## D010 Codex-only G0/G1 completion
 
 Accepted 10 October 2026 by the human owner in this chat: finish G0 and G1 with Codex alone and no Hermes. This supersedes D002 and historical task requirements to use an actual Hermes implementation/review session for future work. Codex owns focused implementation, separate independent Codex review and exact-candidate integration verification. No Hermes launch or resume is permitted. Preserve all prior sessions, failures, partials and acceptance records.
@@ -14,7 +18,7 @@ The owner named Capiro-internal as the pilot tenant and Neo Martinez as the firs
 
 ## D012 G0 discovery acceptance
 
-Codex integration owner accepted G0 on 10 October 2026 after independently reading the discovery changes/metadata and verifying all eleven retained metadata-file length/hashes and the complete 139-capability ledger (96 selected, 43 deferred). The accepted decisions cover the existing verified Aurora resource boundary and Clerk issuer, a newly implemented restricted nonowner tenant-aware gateway/identity boundary, Capiro-internal/Neo pilot ownership, independent Fargate destination, pinned Figma inventory and independent authenticated Meri entry with unavailable mode destinations disabled.
+Codex integration owner accepted G0 on 10 October 2026 after independently reading the discovery changes/metadata and verifying all eleven retained metadata-file length/hashes and the complete 139-capability ledger (96 selected, 43 deferred). The accepted decisions cover the existing verified Aurora resource boundary and Clerk issuer, the decision to independently implement a restricted nonowner tenant-aware gateway/identity boundary, Capiro-internal/Neo pilot ownership, independent Fargate destination, pinned Figma inventory and independent authenticated Meri entry with unavailable mode destinations disabled.
 
 This applies the deployment plan's G0 discovery criterion. The complete frame/overlay/state/component inventory and initial Home control contract are discovery evidence; complete semantic control-to-service/fixture mapping remains required W01/W06/G6 work. No screen/control is removed and no product/UI check passes by this decision. Actual tenant/user IDs, new principal/grants/transport, source schema/coverage, client walls and authorized-source behavior remain explicit G2/G3 activation gates. No credential, source connection, current Capiro change or release is authorized by accepting discovery. See reports/CODEX-G0-DISCOVERY.md.
 
