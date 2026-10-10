@@ -1,6 +1,8 @@
 # Meri kickoff status
 
-Updated 9 October 2026, America/New_York. Owner: Codex integration.
+Updated 9 October 2026 evening, America/New_York (10 October UTC). Owner: Codex integration.
+
+Latest checkpoint: SDK85ca1ef is accepted OFFLINE and integrated9b05edf after separate actual reviewer20261009_201418_ab097e closed clean; parent73owned+14prior+55reviewer cases and post-integration73+15 checks pass. Browser-host Codex completiond09740b closed with parent13passing; separate actual Hermes review5 is active. Image Hermes completion2 returned8e0379d clean; Codex is repairing the independently rejected inventory and correcting recipe/metadata. Fresh official vendor comparison shows3fixed-package candidates among the old15findings and12still-vulnerable, including TIFF52490; no assembled-image fixes or waiver. AI Elements real session closed at40turns with partial/no commit; a bounded Codex owner completion retains strict compilation and records source adaptation. These supersede the older active-session wording below. Native SDK/Office/browser, new image/build/security admission, G1 and cutover remain open. Bedrock spend$0/$10.
 
 ## Current outcome
 

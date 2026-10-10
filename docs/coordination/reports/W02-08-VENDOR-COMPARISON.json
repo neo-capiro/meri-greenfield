@@ -1,0 +1,1013 @@
+{
+  "kind": "MeriQualificationImageSecurityCandidateStatus",
+  "version": 1,
+  "preparedBy": "Codex integration-owner independent research",
+  "researchStartedAtUtc": "2026-10-10T00:21:38Z",
+  "trackerRetrievedAtUtc": "2026-10-10T00:22:37Z",
+  "scope": "Read-only official Debian trixie status comparison for all15 CRITICAL/HIGH findings in old image7327. No active Docker/pins/static/report sources inspected. No image, Linux/Docker, cloud or provider execution.",
+  "oldImage": {
+    "digest": "sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+    "scanCompletedAtUtc": "2026-10-09T21:49:22Z",
+    "scanSha256": "547049894f404d7c8781580ff7c2d036d756656af419f221b7f74a80c87e58c8",
+    "critical": 2,
+    "high": 13,
+    "report": {
+      "path": "C:\\dev\\main\\meri-greenfield-kickoff-20261009\\docs\\coordination\\reports\\W02-IMAGE-SECURITY-DISPOSITION-PREP.md",
+      "sha256": "db08868603e5eaed12004c32f952086dfa48636e69127b16ee1058cb59a15a2a"
+    }
+  },
+  "summary": {
+    "findings": 15,
+    "trixieVendorFixedPackageAvailable": 3,
+    "trixieVendorVulnerable": 12,
+    "newImageEvidence": "NONE",
+    "waiver": "NONE",
+    "nextProbeAdmission": "NONE",
+    "G1Acceptance": "NONE"
+  },
+  "records": [
+    {
+      "cve": "CVE-2026-95210",
+      "severityFromOldEcrScan": "CRITICAL",
+      "oldImage": {
+        "sourcePackage": "gnutls28",
+        "binaryPackages": [
+          "libgnutls30"
+        ],
+        "version": "3.7.9-2+deb12u7",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "3.8.9-3+deb13u4",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-95210",
+        "trackerResponseSha256": "4a6f1cce81574903d4c25cce44d168192e9ea8c23fb1849f8216b9d26e3a01a0",
+        "retrievedAtUtc": "2026-10-10T00:22:37.550884+00:00"
+      },
+      "affectedFeature": {
+        "description": "Certificate-extension validation/acceptance. This is a tracker description; no precise upstream vulnerable source or accepted repair was verified.",
+        "verificationBasis": "TRACKER_DESCRIPTION_ONLY",
+        "sourceUrls": []
+      },
+      "unresolvedOrConflictingEvidence": "Debian explicitly questions report validity and whether upstream received it. The description mentions3.8.13, while Debian also flags trixie3.8.9. Preserve the unresolved discrepancy.",
+      "actualCandidateImageEvidenceNeeded": "Record all actual GnuTLS copies and Debian source versions, then obtain vendor-confirmed affected-source/fix information and effective TLS call-path evidence. A version bump alone is insufficient.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-95184",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "gnutls28",
+        "binaryPackages": [
+          "libgnutls30"
+        ],
+        "version": "3.7.9-2+deb12u7",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "3.8.9-3+deb13u4",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-95184",
+        "trackerResponseSha256": "d3886d41196a1676f1d9f4f0c696acea32c4e6c310ff13579bcfc9d13548d212",
+        "retrievedAtUtc": "2026-10-10T00:22:37.540861+00:00"
+      },
+      "affectedFeature": {
+        "description": "Certificate validation may reject legitimate leaf/user certificates and cause denial of service; precise source is unverified.",
+        "verificationBasis": "TRACKER_DESCRIPTION_ONLY",
+        "sourceUrls": []
+      },
+      "unresolvedOrConflictingEvidence": "Debian questions validity/upstream reporting;3.8.13-only description conflicts with broader vulnerable package rows.",
+      "actualCandidateImageEvidenceNeeded": "Inventory every GnuTLS copy/source version and obtain vendor-validated affected-source/fix analysis before disposition.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-95209",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "gnutls28",
+        "binaryPackages": [
+          "libgnutls30"
+        ],
+        "version": "3.7.9-2+deb12u7",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "3.8.9-3+deb13u4",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-95209",
+        "trackerResponseSha256": "e8c6793ef8b34c0c030cb7acb02939c88e0732b9804eb284cab1322d5f0600d8",
+        "retrievedAtUtc": "2026-10-10T00:22:37.542860+00:00"
+      },
+      "affectedFeature": {
+        "description": "Certificate validation may reject legitimate CA certificates; precise source is unverified.",
+        "verificationBasis": "TRACKER_DESCRIPTION_ONLY",
+        "sourceUrls": []
+      },
+      "unresolvedOrConflictingEvidence": "Debian questions validity/upstream reporting; do not interpret that uncertainty as a false-positive finding.",
+      "actualCandidateImageEvidenceNeeded": "Inventory every GnuTLS copy/source version and obtain vendor-validated affected-source/fix analysis before disposition.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-52490",
+      "severityFromOldEcrScan": "CRITICAL",
+      "oldImage": {
+        "sourcePackage": "tiff",
+        "binaryPackages": [
+          "libtiff6"
+        ],
+        "version": "4.5.0-6+deb12u4",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "4.7.0-3+deb13u3",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "tiff",
+            "suite": "unstable",
+            "firstFixedVersion": "4.7.2-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-52490",
+        "trackerResponseSha256": "8eb09df54b017b580fe40796ca45e6696f79b67b65987d346da2c4901957b81b",
+        "retrievedAtUtc": "2026-10-10T00:22:37.534833+00:00"
+      },
+      "affectedFeature": {
+        "description": "Tracker locates the issue in tools/tiffcrop.c process_command_opts. Its linked broad upstream hardening patch changes that function, including checked memory-limit parsing and command-option bounds. The precise full exploit condition was not independently established.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_READ",
+        "sourceUrls": [
+          "https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e.patch"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie remains vulnerable with no-dsa/minor-issue note, despite fixing12912 at the same package version. Sid first fixed4.7.2-1; upstream linked patch is in4.7.2rc2.",
+      "actualCandidateImageEvidenceNeeded": "Complete fail-closed filesystem search for tiffcrop and alternate copies, source-package mapping and exact artifact hashes; if present, verify this specific fix. libtiff-tools dpkg absence alone is insufficient.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-12912",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "tiff",
+        "binaryPackages": [
+          "libtiff6"
+        ],
+        "version": "4.5.0-6+deb12u4",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "FIXED_PACKAGE_AVAILABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "4.7.0-3+deb13u3",
+            "status": "fixed"
+          }
+        ],
+        "firstFixedVersion": "4.7.0-3+deb13u3",
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "tiff",
+            "suite": "unstable",
+            "firstFixedVersion": "4.7.2-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-12912",
+        "trackerResponseSha256": "f85bac8d81b5252a34395cf7aad2d3ef21be885b653321f1e4566f1761e61cb6",
+        "retrievedAtUtc": "2026-10-10T00:22:37.538860+00:00"
+      },
+      "affectedFeature": {
+        "description": "PixarLog TIFF decode with PIXARLOGDATAFMT_8BITABGR and stride3. The inspected fix adds output-size checks and corrects output-buffer advancement in libtiff/tif_pixarlog.c.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_READ",
+        "sourceUrls": [
+          "https://gitlab.com/libtiff/libtiff/-/commit/ba2b04b114c5dd945107ccc613cedfcca3af73bb.patch"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Debian lists multiple related PixarLog fixes; one inspected upstream diff is not proof that a built artifact includes every required vendor backport.",
+      "actualCandidateImageEvidenceNeeded": "Actual dpkg source/version and all libtiff copies/hashes from the final image; signed trixie vendor build at the fixed version or verified equivalent, plus a fresh scan and reviewed parsing qualification.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-95619",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "gcc-12",
+        "binaryPackages": [
+          "libstdc++6"
+        ],
+        "version": "12.2.0-14+deb12u1",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie",
+            "version": "12.4.0-5",
+            "status": "vulnerable"
+          },
+          {
+            "sourceLabel": "gcc-13 (PTS)",
+            "suite": "trixie",
+            "version": "13.3.0-16",
+            "status": "vulnerable"
+          },
+          {
+            "sourceLabel": "gcc-14 (PTS)",
+            "suite": "trixie",
+            "version": "14.2.0-19",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "gcc-13",
+            "suite": "unstable",
+            "firstFixedVersion": "13.5.0-3"
+          },
+          {
+            "sourcePackage": "gcc-14",
+            "suite": "unstable",
+            "firstFixedVersion": "14.4.0-3"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-95619",
+        "trackerResponseSha256": "9b4828c1d50de75e5a0030818b451ac0d94b033b3bb99947855beeea0c1f4d2f",
+        "retrievedAtUtc": "2026-10-10T00:22:37.536862+00:00"
+      },
+      "affectedFeature": {
+        "description": "libstdc++ aligned operator new size arithmetic overflow. Inspected GCC14 fix adds overflow checks before aligned allocation in libsupc++/new_opa.cc.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_READ",
+        "sourceUrls": [
+          "https://github.com/gcc-mirror/gcc/commit/200183d4ab5d57575f3dfebc6af3baf649910b9e.patch"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "All three trixie source branches are vulnerable/no-dsa. Sid first fixed GCC13:13.5.0-3 and GCC14:14.4.0-3; GCC12 remains unfixed. Changing provider branch to default GCC14 is not itself a fix.",
+      "actualCandidateImageEvidenceNeeded": "Obtain actual libstdc++6 source mapping, SONAME/symbol compatibility and all bundled copies/hashes; verify exact vendor backport or separately reviewed compatible rebuild. Do not infer the source from the old gcc12 package name.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-107778",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "krb5",
+        "binaryPackages": [
+          "libgssapi-krb5-2",
+          "libkrb5-3",
+          "libk5crypto3"
+        ],
+        "version": "1.20.1-2+deb12u5",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "1.21.3-5+deb13u1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-107778",
+        "trackerResponseSha256": "fc23fc657462d43eb80bf74f204fff7c495dc4a7185731d6aa79069c952e9d58",
+        "retrievedAtUtc": "2026-10-10T00:22:37.672466+00:00"
+      },
+      "affectedFeature": {
+        "description": "make_cred_list in src/lib/krb5/krb/rd_cred.c dereferences a missing encrypted ticket-info entry when KRB-CRED tickets outnumber it. Inspected fix returns an error when that entry is null.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_READ",
+        "sourceUrls": [
+          "https://github.com/krb5/krb5/commit/48afa9abb89ab2176bb20624d87d010b9984fc08.patch"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie and unstable are unfixed despite upstream master and1.22-branch fixes. Tracker describes an authenticated GSS acceptor denial of service; intended feature reachability was not tested.",
+      "actualCandidateImageEvidenceNeeded": "Final image Kerberos/GSS libraries and copies/source versions; verify the check in a reviewed package/backport and actual acceptor/forwarded-credential exposure before any applicability decision.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-53615",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "util-linux",
+        "binaryPackages": [
+          "util-linux",
+          "mount",
+          "libmount1",
+          "libblkid1"
+        ],
+        "version": "2.38.1-5+deb12u3",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "FIXED_PACKAGE_AVAILABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "2.41.5-0+deb13u1",
+            "status": "fixed"
+          }
+        ],
+        "firstFixedVersion": "2.41.5-0+deb13u1",
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "util-linux",
+            "suite": "unstable",
+            "firstFixedVersion": "2.42-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-53615",
+        "trackerResponseSha256": "3638247baca5efbf20560706babbd0538d0f34fa59528269dce8d4613eedc1f4",
+        "retrievedAtUtc": "2026-10-10T00:22:37.677465+00:00"
+      },
+      "affectedFeature": {
+        "description": "DOS extended-partition sector arithmetic in libblkid/src/partitions/dos.c. Inspected vendor fix hardens overflow/bounds checks during partition probing.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_READ",
+        "sourceUrls": [
+          "https://github.com/util-linux/util-linux/commit/05c2dbadf34cc74192287f377904afaaf4061623.patch"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Upstream first fixed2.41.4/2.42; Debian trixie first fixed2.41.5-0+deb13u1. This does not fix the other four util-linux findings.",
+      "actualCandidateImageEvidenceNeeded": "Record actual libblkid copies/source versions and artifact hashes, verify fixed vendor package content, and collect fresh scanner results. Disabling mount SUID does not address a library parser.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-78410",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "util-linux",
+        "binaryPackages": [
+          "util-linux",
+          "mount",
+          "libmount1",
+          "libblkid1"
+        ],
+        "version": "2.38.1-5+deb12u3",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "2.41.5-0+deb13u1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "util-linux",
+            "suite": "unstable",
+            "firstFixedVersion": "2.42.3-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-78410",
+        "trackerResponseSha256": "370b52136365d440004d915421bd2b2529393511c802bdc04f3e3a873241621b",
+        "retrievedAtUtc": "2026-10-10T00:22:37.682465+00:00"
+      },
+      "affectedFeature": {
+        "description": "fstab-authorized restricted bind mounts can re-resolve an unpinned source/ancestor; X-mount.owner/group/mode can then apply privileged metadata changes to the wrong inode.",
+        "verificationBasis": "UPSTREAM_ADVISORY_ONLY",
+        "sourceUrls": [
+          "https://github.com/util-linux/util-linux/security/advisories/GHSA-rh77-686x-2f2m"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie vulnerable/no-dsa. Sid first fixed2.42.3-1; upstream advisory says affected<=2.42.2 and patched2.41.6/2.42.3.",
+      "actualCandidateImageEvidenceNeeded": "Final mount/libmount files, source versions and hashes plus actual UID/modes/capabilities/fstab/helper configuration; separately verify patch presence or a complete narrowly scoped applicability argument.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-78408",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "util-linux",
+        "binaryPackages": [
+          "util-linux",
+          "mount",
+          "libmount1",
+          "libblkid1"
+        ],
+        "version": "2.38.1-5+deb12u3",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "2.41.5-0+deb13u1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "util-linux",
+            "suite": "unstable",
+            "firstFixedVersion": "2.42.4-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-78408",
+        "trackerResponseSha256": "176ee66ad84e9fdad225f5e0a60fe5cd7bf8a5aa54bd0fd63d07beb795aba5d3",
+        "retrievedAtUtc": "2026-10-10T00:22:37.687529+00:00"
+      },
+      "affectedFeature": {
+        "description": "nsenter --join-cgroup leaves a root-opened cgroup.procs descriptor across later credentials/exec. Inspected trixie nsenter.c opens without O_CLOEXEC at line399, joins at819-820 without closing there; the upstream fix adds closure and O_CLOEXEC.",
+        "verificationBasis": "DEBIAN_TRIXIE_SOURCE_AND_UPSTREAM_FIX_READ",
+        "sourceUrls": [
+          "https://github.com/util-linux/util-linux/commit/286dd3ff41526b582ef48830de239dffbaa61f90.patch",
+          "https://github.com/util-linux/util-linux/security/advisories/GHSA-55fx-f4gg-cfhj",
+          "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/sys-utils/nsenter.c"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Upstream affected>=2.40, patched2.41.6/2.42.3; Debian first fixed Sid2.42.4-1. Old Bookworm2.38 predates the upstream feature but was flagged. Trixie2.41.5 is within the advisory range and the inspected source retains the sequence.",
+      "actualCandidateImageEvidenceNeeded": "Final actual nsenter copies/source hashes and compiled --join-cgroup feature; verify fix and effective privileged-operator invocation paths. SUID reduction does not by itself remove authority retained by an ordinary0755 nsenter invoked as root.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-76642",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "util-linux",
+        "binaryPackages": [
+          "util-linux",
+          "mount",
+          "libmount1",
+          "libblkid1"
+        ],
+        "version": "2.38.1-5+deb12u3",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "2.41.5-0+deb13u1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "util-linux",
+            "suite": "unstable",
+            "firstFixedVersion": "2.42.3-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-76642",
+        "trackerResponseSha256": "243d0dcce2b7e8a9446611151a404ced874c0c45f912bca021c03061334d197b",
+        "retrievedAtUtc": "2026-10-10T00:22:37.679466+00:00"
+      },
+      "affectedFeature": {
+        "description": "libmount may run privileged X-mount.idmap/owner/group/mode post-hooks after an external mount helper fails, affecting a pre-existing filesystem.",
+        "verificationBasis": "UPSTREAM_ADVISORY_ONLY",
+        "sourceUrls": [
+          "https://github.com/util-linux/util-linux/security/advisories/GHSA-m25x-3hj9-m26f"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie vulnerable/no-dsa. Sid first fixed2.42.3-1; upstream advisory says patched2.41.6/2.42.3 and affected<=2.42.2.",
+      "actualCandidateImageEvidenceNeeded": "Inventory actual mount/helpers/libmount copies and compiled hooks, source fixes and hashes; collect effective privilege/fstab/runtime evidence. No helper or utility absence may be inferred from package names alone.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-78409",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "util-linux",
+        "binaryPackages": [
+          "util-linux",
+          "mount",
+          "libmount1",
+          "libblkid1"
+        ],
+        "version": "2.38.1-5+deb12u3",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security), trixie",
+            "version": "2.41.5-0+deb13u1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "util-linux",
+            "suite": "unstable",
+            "firstFixedVersion": "2.42.3-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-78409",
+        "trackerResponseSha256": "55bb3527e79127500681d1309f174a4e010dd14b8de0e8c20dac634deb59f67b",
+        "retrievedAtUtc": "2026-10-10T00:22:37.683991+00:00"
+      },
+      "affectedFeature": {
+        "description": "Upstream describes restricted X-mount.subdir detached-tree resolution on Linux>=6.15 escaping through intermediate symlinks/procfs paths. Inspected Debian trixie hook_subdir.c matches upstreamv2.41.5 byte-for-byte and refuses target-fd-required users at291-294; it lacks the described api->subdir fast-path assignment.",
+        "verificationBasis": "DEBIAN_TRIXIE_SOURCE_READ_PLUS_ADVISORY",
+        "sourceUrls": [
+          "https://github.com/util-linux/util-linux/security/advisories/GHSA-8f2p-47x3-43mv",
+          "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/libmount/src/hook_subdir.c"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Upstream affected>=2.42, patched2.41.6/2.42.3, versus Debian trixie2.41.5 vulnerable/no-dsa and Sid first fixed2.42.3-1. This is a material source/range conflict requiring vendor clarification, not a waiver.",
+      "actualCandidateImageEvidenceNeeded": "Bind the actual image libmount binary to exact Debian source/backports/build flags and record host kernel plus effective feature/privilege behavior. The inspected source alone does not establish whole-image or runtime non-applicability.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-63277",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "libreoffice",
+        "binaryPackages": [
+          "libreoffice-core"
+        ],
+        "version": "4:7.4.7-1+deb12u14",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "FIXED_PACKAGE_AVAILABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie",
+            "version": "4:25.2.3-2+deb13u6",
+            "status": "vulnerable"
+          },
+          {
+            "sourceLabel": null,
+            "suite": "trixie (security)",
+            "version": "4:25.2.3-2+deb13u8",
+            "status": "fixed"
+          }
+        ],
+        "firstFixedVersion": "4:25.2.3-2+deb13u8",
+        "otherSuiteFirstFixed": [
+          {
+            "sourcePackage": "libreoffice",
+            "suite": "unstable",
+            "firstFixedVersion": "4:26.2.5.2-1"
+          }
+        ],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-63277",
+        "trackerResponseSha256": "65dddf9bdc4f476d99026136d0bcb0f5268dcc7cbc5e3af3a80354760c4031f5",
+        "retrievedAtUtc": "2026-10-10T00:22:37.781833+00:00"
+      },
+      "affectedFeature": {
+        "description": "Calc external data mappings can select a Java JDBC driver class from a remote class path. Vendor says fixed class-path entries require file URLs. Actual implementation source was not inspected.",
+        "verificationBasis": "UPSTREAM_VENDOR_ADVISORY_ONLY",
+        "sourceUrls": [
+          "https://www.libreoffice.org/security/#cve-2026-63277"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie mainu6 remains vulnerable; the fixedu8 comes from trixie-security. Preserve epoch4. Upstream releases fixed26.2.5/26.8.0; these are distinct from Debian's backport version.",
+      "actualCandidateImageEvidenceNeeded": "Final source versions and hashes for all Office components, exact fixed vendor package/dependency set, Java/JDBC/class-loader libraries and alternate copies, plus reviewed synthetic document parsing evidence and fresh scan.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-85091",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "zlib",
+        "binaryPackages": [
+          "zlib1g"
+        ],
+        "version": "1:1.2.13.dfsg-1",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie",
+            "version": "1:1.3.dfsg+really1.3.1-1",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-85091",
+        "trackerResponseSha256": "fcc8219f50ad516fbc2b5a6b065ab27f1fbc1f85665f17ec9a6cee425654f146",
+        "retrievedAtUtc": "2026-10-10T00:22:37.815069+00:00"
+      },
+      "affectedFeature": {
+        "description": "Nonblocking gzip writer error leaves external input-buffer state stale. Inspected fix resets avail_in/next_in on gz_write error. Trixie gzwrite.c lacks the named gz_vacate routine but contains older gzprintf writer/memmove paths; those paths were not fully proven safe.",
+        "verificationBasis": "UPSTREAM_FIX_DIFF_AND_DEBIAN_TRIXIE_SOURCE_READ",
+        "sourceUrls": [
+          "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148.patch",
+          "https://github.com/madler/zlib/issues/1310",
+          "https://sources.debian.org/data/main/z/zlib/1%3A1.3.dfsg%2Breally1.3.1-1/gzwrite.c"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Tracker flags trixie1.3.1 and Sid1.3.2 as vulnerable/unfixed, despite description1.3.1.2..1.3.2 and introduction of nonblocking support at1.3.1.2. Tracker links maintainer discussion on uncertain affected range.",
+      "actualCandidateImageEvidenceNeeded": "Actual zlib/embedded copies/source hashes and writer-path/build-feature analysis or reviewed vendor backport. A version-range comparison or missing function name alone cannot settle earlier writer-path applicability.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    },
+    {
+      "cve": "CVE-2026-107161",
+      "severityFromOldEcrScan": "HIGH",
+      "oldImage": {
+        "sourcePackage": "cyrus-sasl2",
+        "binaryPackages": [
+          "libsasl2-2",
+          "libsasl2-modules-db"
+        ],
+        "version": "2.1.28+dfsg-10",
+        "evidenceBasis": "Retained Codex disposition report of actual old build inventory; not re-observed during this task."
+      },
+      "trixie": {
+        "status": "VULNERABLE",
+        "packageRows": [
+          {
+            "sourceLabel": null,
+            "suite": "trixie",
+            "version": "2.1.28+dfsg1-9",
+            "status": "vulnerable"
+          }
+        ],
+        "firstFixedVersion": null,
+        "otherSuiteFirstFixed": [],
+        "trackerUrl": "https://security-tracker.debian.org/tracker/CVE-2026-107161",
+        "trackerResponseSha256": "d794f7afdbaeabffbf5997ce5a66a47ace8730ade5f32f0702881c3eaab74d73",
+        "retrievedAtUtc": "2026-10-10T00:22:37.812069+00:00"
+      },
+      "affectedFeature": {
+        "description": "DIGEST-MD5 plugins/digestmd5.c add_to_challenge allocates from unquoted length; escaping realm/nonce expands the value before strcat. Inspected proposed diff recalculates allocation after quoting.",
+        "verificationBasis": "PROPOSED_UPSTREAM_DIFF_READ_NOT_MERGED",
+        "sourceUrls": [
+          "https://github.com/cyrusimap/cyrus-sasl/pull/892.patch",
+          "https://api.github.com/repos/cyrusimap/cyrus-sasl/pulls/892"
+        ]
+      },
+      "unresolvedOrConflictingEvidence": "Trixie and unstable remain unfixed. Linked PR892 is closed and merged=false in fresh GitHub API readback; its patch is not an accepted/released fix proof. A different accepted upstream fix was not established here.",
+      "actualCandidateImageEvidenceNeeded": "Complete final-image search for libdigestmd5 and alternate plugin/embedded copies with source/hash mapping; if present, verify an accepted vendor fix and actual client-mechanism exposure. libsasl2-modules dpkg absence alone is insufficient.",
+      "candidateImageDisposition": "NOT_BUILT_OR_INSPECTED_BY_THIS_REVIEW",
+      "waiver": "NONE"
+    }
+  ],
+  "primaryResponseMetadata": [
+    {
+      "url": "https://github.com/gcc-mirror/gcc/commit/200183d4ab5d57575f3dfebc6af3baf649910b9e.patch",
+      "resolvedUrl": "https://github.com/gcc-mirror/gcc/commit/200183d4ab5d57575f3dfebc6af3baf649910b9e.patch",
+      "status": 200,
+      "sha256": "73676696abae0eb9b7383e6e40d4f628b822b8f4ef826bd97775d942925dc5d2",
+      "bytes": 6964,
+      "retrievedAtUtc": "2026-10-10T00:25:49.610691+00:00",
+      "files": [
+        "libstdc++-v3/libsupc++/new_opa.cc",
+        "libstdc++-v3/testsuite/18_support/new_aligned_wrap.cc"
+      ]
+    },
+    {
+      "url": "https://github.com/krb5/krb5/commit/48afa9abb89ab2176bb20624d87d010b9984fc08.patch",
+      "resolvedUrl": "https://github.com/krb5/krb5/commit/48afa9abb89ab2176bb20624d87d010b9984fc08.patch",
+      "status": 200,
+      "sha256": "955de54b130bc76b07d4d6ca8117eda441cbfc0daa83d93c6d05d776889bc5d0",
+      "bytes": 1275,
+      "retrievedAtUtc": "2026-10-10T00:25:49.585322+00:00",
+      "files": [
+        "src/lib/krb5/krb/rd_cred.c"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e.patch",
+      "resolvedUrl": "https://gitlab.com/libtiff/libtiff/-/commit/b04e935cb6242f22cc8b63c99a372cf3ea825e4e.patch",
+      "status": 200,
+      "sha256": "6fbb1062494b45f66b694a3bb5c19d60ef3074c335cd66e8bdd0ab67cb8980ff",
+      "bytes": 388645,
+      "retrievedAtUtc": "2026-10-10T00:25:49.818941+00:00",
+      "files": [
+        "contrib/addtiffo/tif_overview.c",
+        "contrib/addtiffo/tif_ovrcache.c",
+        "contrib/iptcutil/iptcutil.c",
+        "libtiff/tif_aux.c",
+        "libtiff/tif_dir.c",
+        "libtiff/tif_dirwrite.c",
+        "libtiff/tif_print.c",
+        "libtiff/tif_read.c",
+        "libtiff/tif_strip.c",
+        "libtiff/tif_tile.c",
+        "libtiff/tif_write.c",
+        "libtiff/tiffiop.h",
+        "tools/CMakeLists.txt",
+        "tools/Makefile.am",
+        "tools/ppm2tiff.c",
+        "tools/raw2tiff.c",
+        "tools/rgb2ycbcr.c",
+        "tools/thumbnail.c",
+        "tools/tiff2bw.c",
+        "tools/tiff2pdf.c",
+        "tools/tiff2ps.c",
+        "tools/tiff2rgba.c",
+        "tools/tiff_tools.c",
+        "tools/tiff_tools.h",
+        "tools/tiffcmp.c",
+        "tools/tiffcp.c",
+        "tools/tiffcrop.c",
+        "tools/tiffdump.c",
+        "tools/tiffgt.c",
+        "tools/tiffinfo.c",
+        "tools/tiffmedian.c",
+        "tools/tiffset.c",
+        "tools/tiffsplit.c"
+      ]
+    },
+    {
+      "url": "https://gitlab.com/libtiff/libtiff/-/commit/ba2b04b114c5dd945107ccc613cedfcca3af73bb.patch",
+      "resolvedUrl": "https://gitlab.com/libtiff/libtiff/-/commit/ba2b04b114c5dd945107ccc613cedfcca3af73bb.patch",
+      "status": 200,
+      "sha256": "a24aa5036ab13728567ae06745869928d2ee354c8958598c2d6112b238949313",
+      "bytes": 1854,
+      "retrievedAtUtc": "2026-10-10T00:25:49.796980+00:00",
+      "files": [
+        "libtiff/tif_pixarlog.c"
+      ]
+    },
+    {
+      "url": "https://github.com/util-linux/util-linux/commit/05c2dbadf34cc74192287f377904afaaf4061623.patch",
+      "resolvedUrl": "https://github.com/util-linux/util-linux/commit/05c2dbadf34cc74192287f377904afaaf4061623.patch",
+      "status": 200,
+      "sha256": "63aeb1b85eecbf470d218d33bdffe420cfc07915c84d770ad24ce2723457601c",
+      "bytes": 3646,
+      "retrievedAtUtc": "2026-10-10T00:25:49.583301+00:00",
+      "files": [
+        "libblkid/src/partitions/dos.c"
+      ]
+    },
+    {
+      "url": "https://github.com/util-linux/util-linux/commit/286dd3ff41526b582ef48830de239dffbaa61f90.patch",
+      "resolvedUrl": "https://github.com/util-linux/util-linux/commit/286dd3ff41526b582ef48830de239dffbaa61f90.patch",
+      "status": 200,
+      "sha256": "bd5b45db9dbfb340622250e92a9f35dbfd9a3574045c4e89e3d034e2391f7697",
+      "bytes": 2975,
+      "retrievedAtUtc": "2026-10-10T00:25:49.677031+00:00",
+      "files": [
+        "sys-utils/nsenter.c"
+      ]
+    },
+    {
+      "url": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148.patch",
+      "resolvedUrl": "https://github.com/madler/zlib/commit/df84af25dc1942490e1d1c899a07619152a46148.patch",
+      "status": 200,
+      "sha256": "110ff14375733173d8aa54574473424fbd7dfe4b81f1ca34a759c6fe14b15b14",
+      "bytes": 854,
+      "retrievedAtUtc": "2026-10-10T00:25:49.693701+00:00",
+      "files": [
+        "gzwrite.c"
+      ]
+    },
+    {
+      "url": "https://github.com/cyrusimap/cyrus-sasl/pull/892.patch",
+      "resolvedUrl": "https://patch-diff.githubusercontent.com/raw/cyrusimap/cyrus-sasl/pull/892.patch",
+      "status": 200,
+      "sha256": "4c2faa55b1c634d5254900c3e0c42bbd7dff430e74d9b78d5b57b13154ec3330",
+      "bytes": 2000,
+      "retrievedAtUtc": "2026-10-10T00:25:49.991993+00:00",
+      "files": [
+        "plugins/digestmd5.c"
+      ]
+    },
+    {
+      "url": "https://sources.debian.org/api/src/util-linux/2.41.5-0%2Bdeb13u1/",
+      "resolvedUrl": "https://sources.debian.org/api/src/util-linux/2.41.5-0%2Bdeb13u1/",
+      "status": 200,
+      "sha256": "e54d540b55e8dbee7ea12a6a97c3dbe9ab25abaf32dc50835d1fef8e206debd1",
+      "bytes": 7996,
+      "retrievedAtUtc": "2026-10-10T00:25:49.897819+00:00",
+      "files": []
+    },
+    {
+      "url": "https://raw.githubusercontent.com/util-linux/util-linux/v2.41.5/libmount/src/hook_subdir.c",
+      "resolvedUrl": "https://raw.githubusercontent.com/util-linux/util-linux/v2.41.5/libmount/src/hook_subdir.c",
+      "status": 200,
+      "sha256": "5a832d08ed196100f1f53f4badb2b9c09fe79f371c9b1bcf5ee273d852c302bc",
+      "bytes": 9533,
+      "retrievedAtUtc": "2026-10-10T00:25:49.754929+00:00",
+      "files": []
+    },
+    {
+      "url": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/libmount/src/hook_subdir.c",
+      "resolvedUrl": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/libmount/src/hook_subdir.c",
+      "status": 200,
+      "sha256": "5a832d08ed196100f1f53f4badb2b9c09fe79f371c9b1bcf5ee273d852c302bc",
+      "bytes": 9533,
+      "retrievedAtUtc": "2026-10-10T00:26:09.127348+00:00"
+    },
+    {
+      "url": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/sys-utils/nsenter.c",
+      "resolvedUrl": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/sys-utils/nsenter.c",
+      "status": 200,
+      "sha256": "f4a8e083b556c90ce1f9b2b5f4678b6036558b12d0bd62a6fcd194ed9c6b647b",
+      "bytes": 21966,
+      "retrievedAtUtc": "2026-10-10T00:26:09.221824+00:00"
+    },
+    {
+      "url": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/debian/patches/series",
+      "resolvedUrl": "https://sources.debian.org/data/main/u/util-linux/2.41.5-0%2Bdeb13u1/debian/patches/series",
+      "status": 200,
+      "sha256": "5b1df14f3d86dedc98174065a1ea5a5e05fa6e64ac85a3023f49b26bb3e41c88",
+      "bytes": 476,
+      "retrievedAtUtc": "2026-10-10T00:26:09.125338+00:00"
+    },
+    {
+      "url": "https://sources.debian.org/data/main/z/zlib/1%3A1.3.dfsg%2Breally1.3.1-1/gzwrite.c",
+      "resolvedUrl": "https://sources.debian.org/data/main/z/zlib/1%3A1.3.dfsg%2Breally1.3.1-1/gzwrite.c",
+      "status": 200,
+      "sha256": "469b1e58932ea11bdda2a153f6655f7b3c13254240fae157181b49ed1bc93b47",
+      "bytes": 19237,
+      "retrievedAtUtc": "2026-10-10T00:26:09.225730+00:00"
+    },
+    {
+      "url": "https://api.github.com/repos/cyrusimap/cyrus-sasl/pulls/892",
+      "resolvedUrl": "https://api.github.com/repos/cyrusimap/cyrus-sasl/pulls/892",
+      "status": 200,
+      "sha256": "43a0680b8f7df1591668778de9bc84e3c4351a4601aaf344cac08bae4dbb2e45",
+      "bytes": 12511,
+      "retrievedAtUtc": "2026-10-10T00:26:09.516734+00:00",
+      "pullRequest": {
+        "state": "closed",
+        "merged": false,
+        "merged_at": null,
+        "merge_commit_sha": "38c598aa22ada307a25919f1cf8568a1a32e96a5",
+        "updated_at": "2026-10-08T02:02:42Z",
+        "html_url": "https://github.com/cyrusimap/cyrus-sasl/pull/892"
+      }
+    }
+  ],
+  "retainedVersionListMetadata": [
+    {
+      "sourcePackage": "gnutls28",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-gnutls28.json",
+      "sha256": "da8a8e92c34148788a0b1b88698ff2cc38f03c8b06bbdeae8d42fa5e691bb2b2",
+      "bytes": 9551,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "3.8.9-3+deb13u4"
+      ],
+      "listedVersionCount": 396
+    },
+    {
+      "sourcePackage": "tiff",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-tiff.json",
+      "sha256": "8ecc0779485f8744fa2a06c3ea2385ed1c6abaed1c8a9ff6ceeb404c82bad1e2",
+      "bytes": 6816,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "4.7.0-3+deb13u3"
+      ],
+      "listedVersionCount": 259
+    },
+    {
+      "sourcePackage": "gcc-12",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-gcc-12.json",
+      "sha256": "60644a79b9c480db7fd2dec2bb9fdfcadcfb91feebc7efea5b5f0a25aff3b8b6",
+      "bytes": 2241,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "12.4.0-5"
+      ],
+      "listedVersionCount": 88
+    },
+    {
+      "sourcePackage": "krb5",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-krb5.json",
+      "sha256": "44af98366a7b5adb8bb36dc12119b63e151fbea7977b2b77b4f1a15176b509d3",
+      "bytes": 7838,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "1.21.3-5+deb13u1"
+      ],
+      "listedVersionCount": 275
+    },
+    {
+      "sourcePackage": "util-linux",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-util-linux.json",
+      "sha256": "bffd2cf8c204f8765e5b3be6c2aa99fc6cc65b1337015109fcd773a60f832965",
+      "bytes": 9641,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "2.41.5-0+deb13u1"
+      ],
+      "listedVersionCount": 403
+    },
+    {
+      "sourcePackage": "libreoffice",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-libreoffice.json",
+      "sha256": "bee89c15ec46b41899f9c2afbb555c5572caf3d5782a551c3e0efb04b2bb97b5",
+      "bytes": 30434,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "4:25.2.3-2+deb13u8"
+      ],
+      "listedVersionCount": 1060
+    },
+    {
+      "sourcePackage": "zlib",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-zlib.json",
+      "sha256": "8e75321f94b4390adf6f460fe8be6f27653d97b7ae3d9425310f42fdc0f7a1a7",
+      "bytes": 3068,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "1:1.3.dfsg+really1.3.1-1"
+      ],
+      "listedVersionCount": 102
+    },
+    {
+      "sourcePackage": "cyrus-sasl2",
+      "retainedPath": "C:\\dev\\main\\meri-greenfield-worktrees\\w02-image-refresh\\.task-inputs\\scratch\\mr-cyrus-sasl2.json",
+      "sha256": "ac27008cdb63cc79ca44e78a1896d126aacc73d7376a32648e137838d243c454",
+      "bytes": 4498,
+      "proofLimit": "Retained version-list response only; no authenticated index, architecture resolution, retrieval date, or installed image proof.",
+      "candidateVersionPresence": [
+        "2.1.28+dfsg1-9"
+      ],
+      "listedVersionCount": 141
+    }
+  ],
+  "limitations": [
+    "Official current tracker package status and upstream diffs are source-level research, not authenticated apt resolution for a chosen immutable snapshot or evidence of final image contents.",
+    "Retained version-list JSON confirms a string occurred in local metadata. Its original retrieval time and authenticated provenance are not established. No candidate snapshot/package/index signatures or binary hashes were resolved here.",
+    "All old-image binary versions/severities are attributed to the retained disposition report; no new image, filesystem or compiled feature was inspected.",
+    "Source range conflicts require vendor clarification and exact source-to-binary/build-feature binding. SUID reduction, local utility absence and closed networking are not waivers or general non-reachability proof.",
+    "No accepted fix was verified for the three disputed GnuTLS reports. No accepted Cyrus replacement fix was established beyond its closed/unmerged proposed PR.",
+    "Only CRITICAL/HIGH findings from the old scan are compared; new scans, medium findings, Node/npm/Python/CLI/Chromium/kernel and new transitive package vulnerabilities remain separate reviews.",
+    "No exploit, native package install, AWS/build/container/provider/private-source calls, tracked edits, commits or shared recipe changes were performed."
+  ],
+  "nextBoundedStep": [
+    "Keep a coherent immutable trixie main/security candidate; prove signed-index availability and exact dependency-coherent binary/source versions including TIFF4.7.0-3+deb13u3, util-linux2.41.5-0+deb13u1 and LibreOffice4:25.2.3-2+deb13u8. This supplies three fix candidates only.",
+    "Independently review the final commit/archive and repaired fail-closed filesystem inventory, then obtain the immutable image digest, final installed source mapping/file hashes/privileges, full scan and exact fixed-version evidence.",
+    "Reconcile the remaining12 findings and range conflicts with vendor/actual-source/compiled-feature evidence. Any unaccepted risk needs explicit owner disposition; this document grants none."
+  ],
+  "preparedAtUtc": "2026-10-10T00:29:58Z",
+  "integrationOwnerReportedCandidateMetadataCorrection": {
+    "candidateCommit": "8e0379d192e12bfa57340c52283e435f79cdc814",
+    "basis": "Parent integration owner reported this exact immutable metadata finding; this task did not independently inspect those image source files.",
+    "requiredCorrections": [
+      "Replace the broad claim that the refresh resolves the Office/TIFF parsing findings with the precise claim that trixie fixed-package candidates exist for CVE-2026-12912 and CVE-2026-63277 only; actual built-image remediation remains unverified.",
+      "Add CVE-2026-52490 to both remainingOpen and unresolvedPins (or their precise existing equivalents). Trixie tiff4.7.0-3+deb13u3 remains vendor-vulnerable for52490; record the tiffcrop source locus, vendor fixed Sid4.7.2-1, and pending whole-image feature/copy evidence. Do not waive it from a package list or utility/SUID reduction.",
+      "Keep all12 trixie-vulnerable findings and the explicit source/range conflicts in candidate metadata. Do not assert full scan resolution, absence, reachability exclusion or acceptance before independently reviewed built inventory and fresh scan."
+    ]
+  }
+}
