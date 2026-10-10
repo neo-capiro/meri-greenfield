@@ -1,8 +1,8 @@
-"""Owner-only v2 support packaging: local preparation, one reviewed dispatch, read-only reconciliation.
+"""Owner-only v3 support packaging: local preparation, one reviewed dispatch, read-only reconciliation.
 
 Default is prepare. Execute never polls, retries a mutation, runs assets or admits an image.
 Review JSON must bind request/helper/archive/recipe hashes with decision
-APPROVE_ONE_HOST_ASSETS_BUILD_V2. Unknown outcomes consume the reservation permanently.
+APPROVE_ONE_HOST_ASSETS_BUILD_V3. Unknown outcomes consume the reservation permanently.
 """
 import argparse
 import base64
@@ -82,13 +82,13 @@ def evidence_path(path, create=False):
 
 def request_for(commit, content, archive, token, created):
     digest = sha(archive)
-    return {'schema': 'meri-host-assets-build-review/2', 'sourceCommit': commit,
+    return {'schema': 'meri-host-assets-build-review/3', 'sourceCommit': commit,
             'createdAt': created, 'idempotencyToken': token,
             'content': content, 'helperFiles': helper_records(),
             'builderProject': reviewed_project(), 'builderEvidenceSha256': PROJECT_SHA,
             'legacyConfiguredBuildspecSha256': LEGACY_SPEC_SHA,
-            'legacyConfiguredBuildspecExecution': 'FORBIDDEN: exact v2 buildspec override only',
-            'archive': {'name': 'source.zip', 'bytes': len(archive), 'entries': 27,
+            'legacyConfiguredBuildspecExecution': 'FORBIDDEN: exact v3 buildspec override only',
+            'archive': {'name': 'source.zip', 'bytes': len(archive), 'entries': 28,
                         'sha256': digest, 'key': 'inputs/host-assets-' + commit + '/' + digest + '.zip'},
             'imageTag': 'host-assets-' + commit,
             'resultKey': 'results/host-assets-' + commit + '/manifest.json',
@@ -112,7 +112,7 @@ def prepare(commit, path):
 def load_prepared(evidence, remeasure=True):
     raw = (evidence / 'review-request.json').read_bytes()
     request = parse_json(raw)
-    require(request.get('schema') == 'meri-host-assets-build-review/2', 'review schema')
+    require(request.get('schema') == 'meri-host-assets-build-review/3', 'review schema')
     token = request.get('idempotencyToken')
     require(isinstance(token, str) and str(uuid.UUID(token)) == token and uuid.UUID(token).version == 4, 'UUID v4 token required')
     if remeasure:
@@ -131,7 +131,7 @@ def check_review(request, raw, review, digest):
     require(re.fullmatch('[a-f0-9]{64}', digest or '') and sha(review) == digest, 'review raw SHA256 mismatch')
     value = parse_json(review)
     fields = {'decision', 'requestSha256', 'sourceCommit', 'archiveSha256', 'buildspecSha256', 'helperFilesSha256', 'reviewer', 'notes'}
-    require(isinstance(value, dict) and set(value) == fields and value['decision'] == 'APPROVE_ONE_HOST_ASSETS_BUILD_V2', 'exact independent review decision required')
+    require(isinstance(value, dict) and set(value) == fields and value['decision'] == 'APPROVE_ONE_HOST_ASSETS_BUILD_V3', 'exact independent review decision required')
     for key, expected in {'requestSha256': sha(raw), 'sourceCommit': request['sourceCommit'],
                           'archiveSha256': request['archive']['sha256'], 'buildspecSha256': request['content']['buildspec']['sha256'],
                           'helperFilesSha256': sha(json_bytes(request['helperFiles']))}.items():

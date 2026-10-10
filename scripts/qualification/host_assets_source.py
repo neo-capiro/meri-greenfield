@@ -10,9 +10,9 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 GIT = r'C:\Program Files\Git\cmd\git.exe'
-SOURCE_REFERENCE = 'e23667a351ed3daaac9b2f95219e9c06f0510027'
+SOURCE_REFERENCE = 'b0d92dbe19d281e099cc6573ec4d7d410b390aba'
 # Literal independently frozen records from the reviewed source reference. A later
-# integration commit is eligible only when all 27 public blobs remain identical.
+# integration commit is eligible only when all 28 public blobs remain identical.
 PINS = (
     ('infra/browser-qualification/bootstrap.sh', 13205, 'e7034a9a40824b5af02ac898bb68b66d3c1dcc54af670418319d4636e806fb2a'),
     ('infra/browser-qualification/host-evidence.py', 8933, 'e5210fb57fde6a9083285c285bf9915ba0f63d3e80bda330e2d675ec62c92396'),
@@ -39,8 +39,9 @@ PINS = (
     ('infra/browser-qualification/js/user-data.mjs', 1834, '62dbe0128791eab734d405abee177db2212afd2fc2bc9fd282056eb4d031864e'),
     ('infra/browser-qualification/component-pins.json', 18623, '07836ed02f8f23f72b9c70ea01d13286bb42ac3c9b1a11f2026b814a6c4d4af0'),
     ('infra/qualification/host-assets.Dockerfile', 1992, '112a3f9a1e9596e07a3487811765f7cbc9981bd3ab07d46d1d34fea5d7f84428'),
-    ('infra/qualification/host-assets.buildspec.json', 13650, '227f20e6111656d748a3b69e470110fc1aaf346e0f87ca4a1552d2a1a46a32c2'),
+    ('infra/qualification/host-assets.buildspec.json', 14943, 'dc453d5636f4894285bf92b0eb1eeaa79e45a84360a92f8081d262068b4040df'),
     ('infra/qualification/app.mjs', 13676, 'a866b68fda76cf3bf09636909d62d7dbee646ed396a7879052be63ee60a0442f'),
+    ('scripts/clear-qualification-docker-config.py', 13489, 'fbf5e0c23ac13fe75342f1488d84fdc446cb3d7b36a098adaf8dc5c0aefb191f'),
 )
 ASSET_PATHS = ('bootstrap.sh', 'host-evidence.py', 'host_evidence/__init__.py',
                'host_evidence/admission.py', 'host_evidence/browser_capture.py',
@@ -151,7 +152,7 @@ def snapshot(repo, commit, capture_dir=None):
 def content_for(commit):
     require(isinstance(commit, str) and re.fullmatch('[a-f0-9]{40}', commit), 'exact 40-hex commit required')
     records = [{'path': path, 'bytes': size, 'sha256': digest} for path, size, digest in PINS]
-    return {'schema': 'meri-host-assets-build-input/2', 'sourceCommit': commit,
+    return {'schema': 'meri-host-assets-build-input/3', 'sourceCommit': commit,
             'sourceFiles': [dict(record, assetPath=ASSET_PATHS[i]) for i, record in enumerate(records[:14])],
             'ownerFiles': records[14:24], 'dockerfile': records[24], 'buildspec': records[25],
-            'builderAuthority': records[26]}
+            'builderAuthority': records[26], 'cleanup': records[27]}

@@ -2,6 +2,8 @@
 import base64
 import copy
 import io
+import json
+import re
 import os
 from pathlib import Path
 import shutil
@@ -143,7 +145,7 @@ class HostAssetsTests(unittest.TestCase):
     def ready(self):
         build.prepare(self.commit, self.evidence)
         request = source.parse_json((self.evidence / 'review-request.json').read_bytes())
-        review = {'decision': 'APPROVE_ONE_HOST_ASSETS_BUILD_V2',
+        review = {'decision': 'APPROVE_ONE_HOST_ASSETS_BUILD_V3',
                   'requestSha256': source.sha((self.evidence / 'review-request.json').read_bytes()),
                   'sourceCommit': self.commit, 'archiveSha256': request['archive']['sha256'],
                   'buildspecSha256': request['content']['buildspec']['sha256'],
@@ -153,21 +155,50 @@ class HostAssetsTests(unittest.TestCase):
         review_path.write_bytes(source.json_bytes(review))
         return request, review_path, source.sha(review_path.read_bytes()), FakeAWS(self.evidence)
 
-    def test_exact_27_public_files_only_and_deterministic_zip(self):
+    def test_exact_28_public_files_only_and_deterministic_zip(self):
         private = self.repo / '.task-inputs/do-not-package.txt'
         private.parent.mkdir(); private.write_text('SYNTHETIC_NOT_A_SECRET')
         content, archive, _ = source.snapshot(self.repo, self.commit)
         self.assertEqual(archive, source.snapshot(self.repo, self.commit)[1])
         self.assertEqual(len(content['sourceFiles']), 14)
         self.assertEqual(len(content['ownerFiles']), 10)
-        self.assertEqual(content['schema'], 'meri-host-assets-build-input/2')
+        self.assertEqual(content['schema'], 'meri-host-assets-build-input/3')
         with zipfile.ZipFile(io.BytesIO(archive)) as packed:
             self.assertEqual(packed.namelist(), [p[0] for p in source.PINS])
-            self.assertEqual(len(packed.namelist()), 27)
+            self.assertEqual(len(packed.namelist()), 28)
             for path, size, digest in source.PINS:
                 self.assertEqual(source.sha(packed.read(path)), digest)
                 self.assertEqual(len(packed.read(path)), size)
                 self.assertNotIn('.task-inputs', path)
+
+    def test_actual_recipe_requires_positive_bound_cleanup_receipt(self):
+        recipe = source.parse_json(self.files['infra/qualification/host-assets.buildspec.json'])
+        command = recipe['phases']['build']['commands'][0]
+        matched = re.search(r"<<'__CLEANED__'\n(.*?)\n__CLEANED__", command, re.S)
+        self.assertIsNotNone(matched)
+        check = compile(matched.group(1), '<actual-reviewed-cleanup-receipt-check>', 'exec')
+        root = '/tmp/meri-worker-auth.Abcd1234'
+        good = {'schema': 'meri-worker-auth-cleanup/1', 'status': 'CLEANED',
+                'verifiedAbsent': True, 'rootObserved': True, 'parent': '/tmp',
+                'directoryName': 'meri-worker-auth.Abcd1234',
+                'policy': 'fd-relative-nofollow-root-owned-bounded/1', 'boundIdentity': [1, 2]}
+        def verify(receipt, remains=False):
+            with patch.dict(os.environ, {'AUTH_DIR': root, 'AUTH_IDENTITY': '1:2'}), \
+                 patch('builtins.open', return_value=io.StringIO(json.dumps(receipt))), \
+                 patch('os.lstat', side_effect=None if remains else FileNotFoundError, return_value=object()):
+                exec(check, {})
+        verify(good)
+        for field, bad in [('verifiedAbsent', False), ('rootObserved', False),
+                           ('status', 'UNKNOWN'), ('boundIdentity', [1, 3]),
+                           ('directoryName', 'meri-worker-auth.Foreign1'), ('policy', 'unreviewed')]:
+            receipt = dict(good, **{field: bad})
+            with self.assertRaises(AssertionError):
+                verify(receipt)
+        with self.assertRaises(AssertionError):
+            verify(good, remains=True)
+        self.assertEqual(self.accepted_content['cleanup']['path'], 'scripts/clear-qualification-docker-config.py')
+        self.assertEqual(command.count('python3 -I -B scripts/clear-qualification-docker-config.py'), 2)
+        self.assertNotIn('rm -f -- "$AUTH_DIR/config.json"', command)
 
     def test_dirty_worktree_is_not_source_authority(self):
         (self.repo / source.PINS[0][0]).write_bytes(b'dirty uncommitted replacement')
@@ -225,7 +256,7 @@ class HostAssetsTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'duplicate JSON key'):
             source.parse_json(b'{"decision":"x","decision":"y"}')
 
-    def test_successful_fake_transaction_has_exact_v2_override_and_two_mutations(self):
+    def test_successful_fake_transaction_has_exact_v3_override_and_two_mutations(self):
         request, path, digest, fake = self.ready()
         result = build.execute(self.evidence, path, digest, fake)
         self.assertEqual(result['status'], 'DISPATCHED_NOT_ACCEPTED')
