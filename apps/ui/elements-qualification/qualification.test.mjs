@@ -2,15 +2,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, mkdtempSync, copyFileSync, mkdirSync, writeFileSync, unlinkSync, symlinkSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { registerHooks, syncBuiltinESMExports } from 'node:module';
-import childProcess, { spawnSync } from 'node:child_process';
-import net from 'node:net';
-import tls from 'node:tls';
-import http from 'node:http';
-import https from 'node:https';
+import { spawnSync } from 'node:child_process';
+import { verifySSRReceipt } from './ssr-build.mjs';
+import { checkSSRDeadline } from './ssr-runtime.mjs';
 import ts from 'typescript';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -54,82 +51,20 @@ function onceSSROutcome(run) {
   };
 }
 
-async function renderChild() {
-  let diagnosticLines = 0, diagnosticBytes = 0, loadCount = 0;
-  const phaseStart = process.hrtime.bigint();
-  const phase = name => {
-    if (!SSR_PHASES.has(name)) return;
-    const row = JSON.stringify({ ssrPhase: name, elapsedMs: Math.floor(Number(process.hrtime.bigint() - phaseStart) / 1e6), loaded: loadCount }) + '\n';
-    if (diagnosticLines >= SSR_DIAGNOSTIC_LINES || diagnosticBytes + Buffer.byteLength(row) > SSR_DIAGNOSTIC_BYTES) return;
-    diagnosticLines++; diagnosticBytes += Buffer.byteLength(row); process.stderr.write(row);
-  };
-  phase('child-enter');
-  const attempts = [];
-  const deny = name => (..._args) => { attempts.push(name); throw new Error(`qualification denies ${name}`); };
-  globalThis.fetch = deny('fetch');
-  globalThis.WebSocket = deny('WebSocket');
-  globalThis.EventSource = deny('EventSource');
-  net.connect = deny('net.connect'); net.createConnection = deny('net.createConnection');
-  net.Socket.prototype.connect = deny('Socket.connect'); net.Server.prototype.listen = deny('Server.listen');
-  tls.connect = deny('tls.connect');
-  for (const module of [http, https]) { module.request = deny('http.request'); module.get = deny('http.get'); }
-  for (const name of ['spawn', 'spawnSync', 'exec', 'execSync', 'execFile', 'execFileSync', 'fork']) childProcess[name] = deny(`child_process.${name}`);
-  process.dlopen = deny('native addon');
-  for (const name of ['compile', 'compileStreaming', 'instantiate', 'instantiateStreaming']) WebAssembly[name] = deny(`WebAssembly.${name}`);
-  syncBuiltinESMExports();
-  phase('guards-installed');
-  assert.equal(typeof globalThis.window, 'undefined');
-  assert.equal(typeof globalThis.document, 'undefined');
-  const loaded = new Set();
-  const pkgURL = pathToFileURL(HERE + sep).href;
-  const hooks = registerHooks({
-    resolve(specifier, context, next) {
-      if (specifier.startsWith('@repo/shadcn-ui/')) {
-        const stem = specifier.slice('@repo/shadcn-ui/'.length);
-        const path = join(HERE, 'vendor/shadcn-ui', stem + (stem === 'lib/utils' ? '.ts' : '.tsx'));
-        assert.ok(path.startsWith(join(HERE, 'vendor/shadcn-ui') + sep));
-        return { url: pathToFileURL(path).href, shortCircuit: true };
-      }
-      if (specifier.startsWith('.') && context.parentURL?.startsWith(pkgURL) && /\.tsx?$/.test(context.parentURL)) {
-        return { url: new URL(specifier + (/\.[a-z]+$/.test(specifier) ? '' : '.tsx'), context.parentURL).href, shortCircuit: true };
-      }
-      return next(specifier, context);
-    },
-    load(url, context, next) {
-      loaded.add(url); loadCount++;
-      if (loadCount % 100 === 0) phase('module-load');
-      if (url.startsWith(pkgURL) && /\.tsx?$/.test(url) && !url.includes('/node_modules/')) {
-        phase('source-transpile');
-        return { format: 'module', shortCircuit: true, source: ts.transpileModule(readFileSync(fileURLToPath(url), 'utf8'), {
-          fileName: fileURLToPath(url), compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
-        }).outputText };
-      }
-      return next(url, context);
-    },
-  });
-  const deadline = setTimeout(() => { phase('deadline'); process.stderr.write('SSR deadline exceeded\n'); process.exit(124); }, 20000);
-  phase('deadline-armed');
-  try {
-    phase('fixture-import');
-    const { ElementsFixture } = await import('./fixture.tsx');
-    phase('fixture-ready');
-    phase('renderer-import');
-    const { renderToStaticMarkup } = await import('react-dom/server');
-    phase('renderer-ready');
-    const inputs = [
-      { userText: 'Synthetic user message', assistantText: 'Synthetic assistant response', promptText: 'Qualification fixture: sending is disabled' },
-      { userText: '<script>alert("user")</script>', assistantText: '<img src=x onerror=alert(1)>', promptText: '</textarea><script>prompt()</script>' },
-      { userText: '[click](javascript:alert(1))', assistantText: 'https://example.invalid/?q=<b>&x="y"', promptText: '<svg onload=alert(1)>' },
-      { userText: '```mermaid\ngraph TD; A-->B\n```', assistantText: '# plain Markdown **stays text**', promptText: 'Quotes \' " & < > and Unicode π 你好' },
-    ];
-    const html = inputs.map(input => { phase('render'); return renderToStaticMarkup(ElementsFixture(input)); });
-    const deterministic = renderToStaticMarkup(ElementsFixture(inputs[0])) === html[0];
-    const exports = {};
-    for (const name of ['conversation', 'message', 'prompt-input']) exports[name] = Object.keys(await import(`./vendor/ai-elements/${name}.tsx`)).sort();
-    phase('result-ready');
-    process.stdout.write(JSON.stringify({ inputs, html, deterministic, attempts, exports, loaded: [...loaded].sort(), dom: false }));
-    phase('result-written');
-  } finally { hooks.deregister(); clearTimeout(deadline); phase('cleanup-complete'); }
+function sourceExportInventory(source) {
+  const file = ts.createSourceFile('adopted.tsx', source, ts.ScriptTarget.ES2022, true, ts.ScriptKind.TSX);
+  const names = [];
+  for (const node of file.statements) {
+    if (ts.isExportDeclaration(node)) {
+      assert.equal(node.isTypeOnly, false); assert.ok(node.exportClause && ts.isNamedExports(node.exportClause), 'unqualified wildcard export');
+      for (const item of node.exportClause.elements) if (!item.isTypeOnly) names.push(item.name.text);
+    } else if (node.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)) {
+      if (ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node)) continue;
+      if (ts.isVariableStatement(node)) for (const declaration of node.declarationList.declarations) { assert.ok(ts.isIdentifier(declaration.name)); names.push(declaration.name.text); }
+      else { assert.ok(node.name && ts.isIdentifier(node.name), 'unqualified export'); names.push(node.name.text); }
+    }
+  }
+  assert.equal(new Set(names).size, names.length); return names.sort();
 }
 
 function vendorFiles(dir = join(HERE, 'vendor')) {
@@ -164,12 +99,22 @@ function inspectClosure(sourceMap) {
   return { files: [...visited].sort(), external: [...external].sort() };
 }
 
-if (process.argv.includes('--ssr-child')) {
-  await renderChild();
-} else {
+{
   const ssr = onceSSROutcome(() => {
-    const env = { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '', NODE_ENV: 'production', TZ: 'UTC' };
-    const result = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--ssr-child'], { cwd: HERE, env, encoding: 'utf8', timeout: 25000, maxBuffer: 512 * 1024 });
+    const env = { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '', NODE_ENV: 'production', TZ: 'UTC', NODE_DISABLE_COMPILE_CACHE: '1' };
+    const receiptPath = process.env.MERI_ELEMENTS_SSR_RECEIPT;
+    const expectedSha256 = process.env.MERI_ELEMENTS_SSR_RECEIPT_SHA256;
+    assert.equal(typeof receiptPath, 'string', 'prepare an exclusive SSR artifact first');
+    verifySSRReceipt({ receiptPath, expectedSha256 });
+    const argv = [join(HERE, 'ssr-runtime.mjs'), receiptPath, expectedSha256], start = new Date().toISOString(), clock = performance.now();
+    const result = spawnSync(process.execPath, argv, { cwd: HERE, env, timeout: 25000, maxBuffer: 512 * 1024 });
+    if (process.env.MERI_ELEMENTS_SSR_CAPTURE_ROOT) {
+      const out = resolve(process.env.MERI_ELEMENTS_SSR_CAPTURE_ROOT);
+      assert.ok(out !== HERE && !out.startsWith(HERE + sep), 'SSR evidence must be outside source package'); mkdirSync(out);
+      for (const name of ['stdout', 'stderr']) writeFileSync(join(out, name + '.bin'), result[name] ?? Buffer.alloc(0), { flag: 'wx' });
+      const streams = Object.fromEntries(['stdout', 'stderr'].map(name => [name, { bytes: result[name]?.length ?? 0, sha256: sha(result[name] ?? Buffer.alloc(0)) }]));
+      writeFileSync(join(out, 'process.json'), JSON.stringify({ argv: [process.execPath, ...argv], cwd: HERE, environment: env, startUtc: start, endUtc: new Date().toISOString(), durationMs: performance.now() - clock, timeoutMs: 25000, maxBuffer: 512 * 1024, status: result.status, signal: result.signal, error: result.error?.code ?? null, shell: false, streams }, null, 2) + '\n', { flag: 'wx' });
+    }
     const code = /^[A-Z0-9_]{1,32}$/.test(result.error?.code ?? '') ? result.error.code : 'UNKNOWN';
     const diagnostics = safeSSRDiagnostics(result.stderr);
     assert.equal(result.error === undefined, true, `SSR spawn failed (${code}); bounded phases:\n${diagnostics}`);
@@ -205,6 +150,59 @@ if (process.argv.includes('--ssr-child')) {
     assert.equal(many.split('\n').length, SSR_DIAGNOSTIC_LINES); assert.ok(Buffer.byteLength(many) <= SSR_DIAGNOSTIC_BYTES);
   });
 
+  test('all adopted value exports remain present in the frozen static inventory', () => {
+    const expected = json('component-pins.json').sourceExportInventory;
+    for (const name of ['conversation', 'message', 'prompt-input']) {
+      const source = read(`vendor/ai-elements/${name}.tsx`).toString('utf8');
+      assert.deepEqual(sourceExportInventory(source), expected[name]);
+      assert.notDeepEqual(sourceExportInventory(source + '\nexport const OWNER_NEGATIVE_EXTRA = 1;'), expected[name]);
+    }
+    assert.ok(expected.message.includes('MessageResponse'));
+    assert.ok(expected['prompt-input'].includes('PromptInputActionAddScreenshot'));
+  });
+
+  test('elapsed deadline refuses a starved timer and real guards refuse restricted operations', () => {
+    checkSSRDeadline(10, 20009); assert.throws(() => checkSSRDeadline(10, 20010), /20-second/);
+    assert.throws(() => checkSSRDeadline(10, 20011)); assert.throws(() => checkSSRDeadline(10, 9));
+    const run = spawnSync(process.execPath, [join(HERE, 'ssr-runtime.mjs'), '--guard-probe'], {
+      cwd: HERE, env: { SystemRoot: process.env.SystemRoot ?? '', NODE_DISABLE_COMPILE_CACHE: '1' }, timeout: 25000, maxBuffer: 512 * 1024, encoding: 'utf8', shell: false,
+    });
+    assert.equal(run.error, undefined); assert.equal(run.status, 0);
+    assert.deepEqual(JSON.parse(run.stdout).attempts, ['fetch', 'net.connect', 'Server.listen', 'child_process.spawn', 'native addon', 'WebAssembly.compile', 'WebAssembly.Module']);
+    assert.equal(JSON.parse(run.stdout).unboundImportRefused, true);
+  });
+
+  test('real receipt rejects wrong identity, missing or changed source and changed output before execution', () => {
+    const receiptPath = process.env.MERI_ELEMENTS_SSR_RECEIPT;
+    const expectedSha256 = process.env.MERI_ELEMENTS_SSR_RECEIPT_SHA256;
+    assert.equal(typeof receiptPath, 'string');
+    const { receipt } = verifySSRReceipt({ receiptPath, expectedSha256 });
+    assert.throws(() => verifySSRReceipt({ receiptPath, expectedSha256: '0'.repeat(64) }), /receipt digest/);
+    const temp = mkdtempSync(join(dirname(receiptPath), 'negative-'));
+    const tryReceipt = (name, change) => {
+      const modified = structuredClone(receipt); change(modified);
+      const raw = Buffer.from(JSON.stringify(modified)); const path = join(temp, name + '.json'); writeFileSync(path, raw, { flag: 'wx' });
+      // Place the negative receipt beside copies of the real bound outputs.
+      for (const item of receipt.outputs) if (!existsSync(join(temp, item.path))) copyFileSync(join(dirname(receiptPath), item.path), join(temp, item.path));
+      return () => verifySSRReceipt({ receiptPath: path, expectedSha256: sha(raw) });
+    };
+    assert.throws(tryReceipt('tool', r => { r.tool.binarySha256 = '0'.repeat(64); }), /tool receipt/);
+    assert.throws(tryReceipt('output', r => { r.outputs[0].sha256 = '0'.repeat(64); }));
+    const usedJS = receipt.dependencies.find(x => x.path.endsWith('/react.production.js')); assert.ok(usedJS);
+    assert.throws(tryReceipt('omitted-input', r => { r.dependencies = r.dependencies.filter(x => x.path !== usedJS.path); }), /unbound dependency input/);
+    const clone = join(temp, 'package'); mkdirSync(clone);
+    for (const name of json('component-pins.json').ownedPackageFiles) { const path = join(clone, name); mkdirSync(dirname(path), { recursive: true }); copyFileSync(join(HERE, name), path); }
+    symlinkSync(join(HERE, 'node_modules'), join(clone, 'node_modules'), 'junction');
+    writeFileSync(join(clone, 'fixture.tsx'), Buffer.concat([read('fixture.tsx'), Buffer.from(' ')]));
+    assert.throws(() => verifySSRReceipt({ receiptPath, expectedSha256, packageRoot: clone }));
+    unlinkSync(join(clone, 'fixture.tsx'));
+    assert.throws(() => verifySSRReceipt({ receiptPath, expectedSha256, packageRoot: clone }), /ENOENT/);
+    const child = spawnSync(process.execPath, [join(HERE, 'ssr-runtime.mjs'), receiptPath, '0'.repeat(64)], {
+      cwd: HERE, env: { SystemRoot: process.env.SystemRoot ?? '', NODE_DISABLE_COMPILE_CACHE: '1' }, timeout: 25000, maxBuffer: 512 * 1024, encoding: 'utf8', shell: false,
+    });
+    assert.equal(child.error, undefined); assert.notEqual(child.status, 0); assert.doesNotMatch(child.stderr, /"ssrPhase":"fixture-import"/);
+  });
+
   test('immutable vendor blob identities and one exact owner adaptation', () => {
     const pins = json('component-pins.json');
     assert.equal(pins.upstream.commit, 'bc871264341cf54a7ea1fee36d951688ed2a1ff7');
@@ -236,9 +234,9 @@ if (process.argv.includes('--ssr-child')) {
   });
 
   test('allocated package closure and every non-self artifact hash match actual files', () => {
-    const pins = json('component-pins.json'); assert.equal(pins.ownedPackageFiles.length, 29);
+    const pins = json('component-pins.json'); assert.equal(pins.ownedPackageFiles.length, 32);
     assert.deepEqual(packageFiles(), pins.ownedPackageFiles);
-    assert.equal(pins.artifacts.length, 28);
+    assert.equal(pins.artifacts.length, 31);
     for (const artifact of pins.artifacts) { const raw = read(artifact.path); assert.equal(raw.length, artifact.bytes); assert.equal(sha(raw), artifact.sha256, artifact.path); }
   });
 
@@ -293,7 +291,7 @@ if (process.argv.includes('--ssr-child')) {
     const khroma = pins.licenseInventory.find(e => e.name === 'khroma'); assert.equal(khroma.declaredLicense, null); assert.ok(khroma.unknowns.length); assert.ok(khroma.files.some(f => f.name === 'license'));
   });
 
-  test('real Conversation, Message and PromptInput server-render deterministically without network/DOM/provider/native calls', () => {
+  test('real Conversation, Message and PromptInput server-render deterministically without network/DOM/provider/native calls', t => {
     const r = ssr(); assert.equal(r.dom, false); assert.equal(r.deterministic, true); assert.deepEqual(r.attempts, []);
     for (const html of r.html) {
       assert.match(html, /role="log"/); assert.match(html, /is-user/); assert.match(html, /is-assistant/); assert.match(html, /data-slot="input-group"/);
@@ -302,11 +300,12 @@ if (process.argv.includes('--ssr-child')) {
       const actualTags = (html.match(/<[^>]*>/g) ?? []).join('');
       assert.doesNotMatch(actualTags, /\s(?:href|src|action|onerror|onclick)=/i);
     }
-    assert.ok(r.loaded.some(u => u.endsWith('/vendor/ai-elements/conversation.tsx')));
-    assert.ok(r.loaded.some(u => u.endsWith('/vendor/ai-elements/message.tsx')));
-    assert.ok(r.loaded.some(u => u.endsWith('/vendor/ai-elements/prompt-input.tsx')));
-    assert.ok(!r.loaded.some(u => /\/node_modules\/(?:ai\/|@ai-sdk\/|@vercel\/oidc\/)/.test(u)), 'type-only AI imports must not load gateway/provider code');
-    assert.ok(r.exports.message.includes('MessageResponse')); assert.ok(r.exports['prompt-input'].includes('PromptInputActionAddScreenshot'));
+    assert.ok(r.buildInputs.includes('vendor/ai-elements/conversation.tsx'));
+    assert.ok(r.buildInputs.includes('vendor/ai-elements/message.tsx'));
+    assert.ok(r.buildInputs.includes('vendor/ai-elements/prompt-input.tsx'));
+    assert.ok(!r.buildInputs.some(u => /(?:^|\/)node_modules\/(?:ai\/|@ai-sdk\/|@vercel\/oidc\/)/.test(u)), 'type-only AI imports must not load gateway/provider code');
+    assert.ok(r.loaded.some(u => u.endsWith('/fixture.cjs'))); assert.ok(r.elapsedMs < 20000);
+    t.diagnostic(JSON.stringify({ elapsedMs: r.elapsedMs, loadedModules: r.loaded.length, buildInputs: r.buildInputs.length, deniedAttempts: r.attempts.length }));
   });
 
   test('hostile HTML, URLs, Markdown and diagram syntax remain escaped plain text in all display slots', () => {

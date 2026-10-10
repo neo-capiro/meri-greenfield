@@ -6658,7 +6658,10 @@
     "package-lock.json",
     "package.json",
     "qualification.test.mjs",
+    "ssr-build.mjs",
+    "ssr-runtime.mjs",
     "styles.css",
+    "toolchain-pins.json",
     "tsconfig.json",
     "vendor/ai-elements/conversation.tsx",
     "vendor/ai-elements/message.tsx",
@@ -6696,8 +6699,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4429,
-      "sha256": "9c62f288c34a47da6670e2c6bab969a5d9487e00795ca441107371ea990325bb"
+      "bytes": 6904,
+      "sha256": "3f8945c86343aaf004f31af76ce2302b172c733427aac29623fd6ebe99fa5364"
     },
     {
       "path": "THIRD-PARTY-NOTICES.md",
@@ -6721,13 +6724,28 @@
     },
     {
       "path": "qualification.test.mjs",
-      "bytes": 22889,
-      "sha256": "b03757c004a76bc33761aaab9efc7e2c664022fd760b7cf3d339011a6f778c07"
+      "bytes": 24719,
+      "sha256": "6807320c734c9b5c311523b5bc744a57a32fe1e6b2577a2124eecac777791e6d"
+    },
+    {
+      "path": "ssr-build.mjs",
+      "bytes": 12283,
+      "sha256": "ed52e38b553afde37e260b41f01f190990a44aa92b857c6df2ae0020fb681547"
+    },
+    {
+      "path": "ssr-runtime.mjs",
+      "bytes": 6454,
+      "sha256": "b5349b6eb805aee8ff34742b1d0459386d182ac5d85c6b82d7fd393a1ad4f19d"
     },
     {
       "path": "styles.css",
       "bytes": 929,
       "sha256": "ba917a42781a462a81809ad94b8321138290b94215c36c5951c87b869fba4f72"
+    },
+    {
+      "path": "toolchain-pins.json",
+      "bytes": 2096,
+      "sha256": "35e4b042ad178964b7f6afbd08b45a473de22bcbe21741de80e06363b79f80ca"
     },
     {
       "path": "tsconfig.json",
@@ -6827,5 +6845,72 @@
     "Provider/model/gateway/transport/durable command execution",
     "Full nested/package asset license and security release audit",
     "Cloud deployment or G1 acceptance"
-  ]
+  ],
+  "sourceExportInventory": {
+    "conversation": [
+      "Conversation",
+      "ConversationContent",
+      "ConversationDownload",
+      "ConversationEmptyState",
+      "ConversationScrollButton",
+      "messagesToMarkdown"
+    ],
+    "message": [
+      "Message",
+      "MessageAction",
+      "MessageActions",
+      "MessageBranch",
+      "MessageBranchContent",
+      "MessageBranchNext",
+      "MessageBranchPage",
+      "MessageBranchPrevious",
+      "MessageBranchSelector",
+      "MessageContent",
+      "MessageResponse",
+      "MessageToolbar"
+    ],
+    "prompt-input": [
+      "LocalReferencedSourcesContext",
+      "PromptInput",
+      "PromptInputActionAddAttachments",
+      "PromptInputActionAddScreenshot",
+      "PromptInputActionMenu",
+      "PromptInputActionMenuContent",
+      "PromptInputActionMenuItem",
+      "PromptInputActionMenuTrigger",
+      "PromptInputBody",
+      "PromptInputButton",
+      "PromptInputCommand",
+      "PromptInputCommandEmpty",
+      "PromptInputCommandGroup",
+      "PromptInputCommandInput",
+      "PromptInputCommandItem",
+      "PromptInputCommandList",
+      "PromptInputCommandSeparator",
+      "PromptInputFooter",
+      "PromptInputHeader",
+      "PromptInputHoverCard",
+      "PromptInputHoverCardContent",
+      "PromptInputHoverCardTrigger",
+      "PromptInputProvider",
+      "PromptInputSelect",
+      "PromptInputSelectContent",
+      "PromptInputSelectItem",
+      "PromptInputSelectTrigger",
+      "PromptInputSelectValue",
+      "PromptInputSubmit",
+      "PromptInputTab",
+      "PromptInputTabBody",
+      "PromptInputTabItem",
+      "PromptInputTabLabel",
+      "PromptInputTabsList",
+      "PromptInputTextarea",
+      "PromptInputTools",
+      "usePromptInputAttachments",
+      "usePromptInputController",
+      "usePromptInputReferencedSources",
+      "useProviderAttachments"
+    ]
+  },
+  "ssrArtifactSchema": "meri-elements-ssr-artifact/1"
 }

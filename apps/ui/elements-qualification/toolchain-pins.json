@@ -1,0 +1,40 @@
+{
+  "schema": "meri-elements-ssr-toolchain/1",
+  "version": "0.28.2",
+  "officialRelease": "https://github.com/evanw/esbuild/releases/tag/v0.28.2",
+  "scope": "Build-only tool; separate from unchanged 367-package runtime lock. Windows executed locally; Linux pinned but unexecuted.",
+  "tools": [
+    {
+      "platform": "win32-x64",
+      "package": "@esbuild/win32-x64",
+      "version": "0.28.2",
+      "metadataUrl": "https://registry.npmjs.org/@esbuild%2fwin32-x64/0.28.2",
+      "metadataBytes": 1772,
+      "metadataSha256": "2989be0abdb22dfcf143fbb5cd6355c90fb502d7bd5c97e4e95d5da44baa98e8",
+      "archiveUrl": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.28.2.tgz",
+      "archiveBytes": 4829680,
+      "archiveSha256": "7286c3611b6f1f4c4d9ec90adcbc478407ff0d28ead96567f361d53e67613e19",
+      "archiveIntegrity": "sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g==",
+      "packageJsonSha256": "89382df45735edcd917c492a810ab514920fa07d36c653cdc122bdfd8f526964",
+      "binaryName": "esbuild.exe",
+      "binaryBytes": 11694592,
+      "binarySha256": "c7bee37877d0aa6a046e52783fa0a2cf1a9ce5579d68bb3083bda99d4bff18ef"
+    },
+    {
+      "platform": "linux-x64",
+      "package": "@esbuild/linux-x64",
+      "version": "0.28.2",
+      "metadataUrl": "https://registry.npmjs.org/@esbuild%2flinux-x64/0.28.2",
+      "metadataBytes": 1770,
+      "metadataSha256": "b6b0f9925ee7be3147e3dba80c26248c2af19ad11c796bd262497af43e99c679",
+      "archiveUrl": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.28.2.tgz",
+      "archiveBytes": 4741809,
+      "archiveSha256": "9573bb2233aab0f9ea7647d5cca9726113cc1768de61d66b17267f4db84488f6",
+      "archiveIntegrity": "sha512-4xTZr1FUmSoQW4XIWmit3tzQrUTZM+N3P0XV8xROKYF50XfI7xeO90+1bZvNwxIufQ9hDQVRJH5YhgPVF8A/HQ==",
+      "packageJsonSha256": "a3924c1835c7849adeb3d82ac24525da0d4190607b60d05265dc6746bde2ddb8",
+      "binaryName": "esbuild",
+      "binaryBytes": 11427952,
+      "binarySha256": "e1698a3d5c6c0798fee4fd3b5cc816651f460c63d390a7a26ea4beb0b1884100"
+    }
+  ]
+}
