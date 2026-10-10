@@ -287,8 +287,8 @@
       },
       {
         "path": "infra/browser-qualification/security.test.mjs",
-        "bytes": 42614,
-        "sha256": "eb3b2c03930f45bd20d0a4314d4428eb21e558c1216c750ce3611397431cd535"
+        "bytes": 43446,
+        "sha256": "2ac4e9e7b3d710ce8bd2c107b56bbceb70c7aa3fa1a972c7ad5a979bd8f4fc38"
       },
       {
         "path": "infra/browser-qualification/host_evidence/__init__.py",

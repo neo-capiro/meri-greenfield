@@ -135,7 +135,7 @@ test('synthesized browser-host stack has the exact pinned identities', () => {
   assert.equal(of('AWS::EC2::Instance').length, 1);
   assert.equal(of('AWS::EC2::SecurityGroup').length, 1);
   assert.equal(of('AWS::EC2::SecurityGroupIngress').length, 1);
-  assert.equal(of('AWS::EC2::SecurityGroupEgress').length, 2);
+  assert.equal(of('AWS::EC2::SecurityGroupEgress').length, 0, 'restrictive rules belong to group creation');
   assert.equal(of('AWS::IAM::Role').length, 1); assert.equal(of('AWS::IAM::Policy').length, 1);
   assert.equal(of('AWS::IAM::InstanceProfile').length, 1); assert.equal(of('AWS::KMS::Key').length, 1);
   assert.equal(of('AWS::Logs::LogGroup').length, 1);
@@ -163,8 +163,15 @@ test('synthesized browser-host stack has the exact pinned identities', () => {
   assert.ok(!/s3:|sts:|ec2:|ssm:|ecs:/.test(policy));
   const ingress = of('AWS::EC2::SecurityGroupIngress')[0].Properties;
   assert.equal(ingress.GroupId, 'sg-030c8a7ce5adea043'); assert.equal(ingress.FromPort, 443);
-  const egress = of('AWS::EC2::SecurityGroupEgress').map((e) => e.Properties);
-  assert.ok(egress.some((e) => e.DestinationPrefixListId === 'pl-63a5400a'));
+  const [sgId, sg] = Object.entries(R).find(([, resource]) => resource.Type === 'AWS::EC2::SecurityGroup');
+  assert.equal(sg.Properties.SecurityGroupIngress, undefined);
+  assert.deepEqual(sg.Properties.SecurityGroupEgress, [
+    { Description: 'Only the new qualification endpoints', DestinationSecurityGroupId: 'sg-030c8a7ce5adea043', FromPort: 443, IpProtocol: 'tcp', ToPort: 443 },
+    { Description: 'ECR regional image-layer S3 gateway endpoint', DestinationPrefixListId: 'pl-63a5400a', FromPort: 443, IpProtocol: 'tcp', ToPort: 443 },
+  ], 'no default/all-protocol/CIDR/extra destination or port can survive this exact creation-time rule set');
+  const instanceResource = of('AWS::EC2::Instance')[0];
+  assert.ok(instanceResource.DependsOn.includes(sgId), 'instance waits for its fully restricted host group');
+  assert.ok(instanceResource.DependsOn.includes('HostToEndpointIngress'), 'private endpoint ingress is ready before boot');
   assert.ok(!JSON.stringify(t).includes('Fn::ImportValue') && !JSON.stringify(t).includes('BootstrapVersion'));
   const ud = gunzipSync(Buffer.from(inst.UserData, 'base64')).toString('utf8');
   assert.match(ud, /BROWSER_HOST_ASSETS_IMAGE/); assert.match(ud, /meri-never-execute-assets/);

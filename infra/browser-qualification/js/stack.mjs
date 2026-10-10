@@ -32,7 +32,6 @@ export class BrowserQualificationStack extends Stack {
     const vpc = ec2.Vpc.fromVpcAttributes(this, 'QualificationVpc', {
       vpcId: QUALIFICATION_NETWORK.vpcId, availabilityZones: [TARGET.az],
     });
-    const endpointSg = ec2.SecurityGroup.fromSecurityGroupId(this, 'QualificationEndpointSg', QUALIFICATION_NETWORK.endpointSecurityGroupId);
 
     const key = new kms.Key(this, 'HostKey', {
       alias: 'alias/meri-greenfield/qualification-browser-host',
@@ -77,8 +76,18 @@ export class BrowserQualificationStack extends Stack {
       ipProtocol: 'tcp', fromPort: 443, toPort: 443,
       description: 'New browser host to new private endpoints',
     });
-    hostSg.addEgressRule(endpointSg, ec2.Port.tcp(443), 'Only the new qualification endpoints');
-    hostSg.addEgressRule(ec2.Peer.prefixList(QUALIFICATION_NETWORK.s3PrefixListId), ec2.Port.tcp(443), 'ECR regional image-layer S3 gateway endpoint');
+    // Restrict at GROUP CREATION. Standalone egress resources would leave the
+    // initial group/default-rule state and instance readiness independent.
+    // Both destinations are fixed existing IDs, so inline rules create no cycle.
+    const hostSgResource = hostSg.node.defaultChild;
+    hostSgResource.securityGroupEgress = [
+      { ipProtocol: 'tcp', fromPort: 443, toPort: 443,
+        destinationSecurityGroupId: QUALIFICATION_NETWORK.endpointSecurityGroupId,
+        description: 'Only the new qualification endpoints' },
+      { ipProtocol: 'tcp', fromPort: 443, toPort: 443,
+        destinationPrefixListId: QUALIFICATION_NETWORK.s3PrefixListId,
+        description: 'ECR regional image-layer S3 gateway endpoint' },
+    ];
 
     const subnet = ec2.Subnet.fromSubnetAttributes(this, 'QualificationSubnet', {
       subnetId: QUALIFICATION_NETWORK.subnetId, availabilityZone: TARGET.az,
@@ -103,6 +112,7 @@ export class BrowserQualificationStack extends Stack {
     instance.instance.userData = userData.base64;
     // Explicit readiness dependencies (not only the IAM policy reference).
     instance.node.addDependency(endpointIngress);
+    instance.node.addDependency(hostSg);
     instance.node.addDependency(logGroup);
     instance.node.addDependency(key);
     Tags.of(instance).add('QualificationRun', run.valueAsString);
