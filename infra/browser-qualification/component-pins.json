@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "w02-06-browser-host/1",
+  "generatedAt": "2026-10-09T22:28:49Z",
+  "task": "W02-06 dedicated browser-host qualification PREPARATION",
+  "status": "preparation-only-not-accepted",
+  "target": {
+    "account": "967807252336",
+    "region": "us-east-1",
+    "availabilityZone": "us-east-1a"
+  },
+  "qualificationNetwork": {
+    "vpcId": "vpc-06e1941747e798f0a",
+    "subnetId": "subnet-0864c000b771df32c",
+    "endpointSecurityGroupId": "sg-030c8a7ce5adea043",
+    "s3PrefixListId": "pl-63a5400a",
+    "ownedBy": "reviewed runtime qualification stack (new, isolated)",
+    "existingWorkerSecurityGroup": "unchanged-not-referenced"
+  },
+  "image": {
+    "uri": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+    "repository": "meri-greenfield/qualification-worker",
+    "unresolved": "image carries 2 CRITICAL / 13 HIGH findings from a prior review; owner must separately disposition ONE closed-network synthetic probe"
+  },
+  "host": {
+    "instanceType": "t3.large",
+    "vcpu": 2,
+    "memoryGiB": 8,
+    "cpuCredits": "STANDARD (unlimited burst disabled)",
+    "ami": {
+      "id": "ami-0fb0f484b75566814",
+      "ownerAccount": "591542846629",
+      "architecture": "x86_64",
+      "ssmRecommendedVersion": 153,
+      "source": "official read-only owner discovery, pinned by ID (no moving SSM parameter at launch)"
+    },
+    "ecsOptimizedRecipe": {
+      "commit": "ef941b7278cfd81d9c4bb76d2add25f2480060e3",
+      "ecsAl2023Version": "2023.0.20261001",
+      "kernel": "6.1",
+      "docker": "25.0.16",
+      "ecsAgent": "1.107.0",
+      "derivedMinimalImage": "2023.12.20260930.0",
+      "note": "AMI metadata alone does NOT imply deployment acceptance"
+    },
+    "rootVolume": { "sizeGiB": 30, "type": "gp3", "encrypted": true, "kmsKey": "alias/meri-greenfield/qualification-browser-host", "deleteOnTermination": true },
+    "imds": { "httpTokens": "required", "putResponseHopLimit": 1, "httpProtocolIpv6": "disabled", "instanceMetadataTags": "disabled", "note": "hop limit is not worker metadata isolation" },
+    "instanceInitiatedShutdownBehavior": "terminate",
+    "publicIp": false,
+    "keyPair": null,
+    "ssh": "not opened (port 22 never exposed; sshd masked in guest)"
+  },
+  "seccomp": {
+    "preserved": {
+      "path": "infra/browser-qualification/seccomp.default.docker-25.0.16.json",
+      "bytes": 12828,
+      "sha256": "9c1025c88ccaa517b648da571961838744ea2137f176bfe6a48b21294cae9c76",
+      "rules": 31,
+      "source": "https://raw.githubusercontent.com/moby/moby/6fdf0a663f15d71b6944cb0b2bc3abac221ff15c/profiles/seccomp/default.json",
+      "commit": "6fdf0a663f15d71b6944cb0b2bc3abac221ff15c",
+      "toolchain": "Docker 25.0.16 / Moby"
+    },
+    "derived": {
+      "path": "infra/browser-qualification/seccomp.chromium-155-amd64.json",
+      "bytes": 17188,
+      "sha256": "e62f4c3e3e7ce6de099ba7a0e3df0881b7b407b74dc664aef70f76f6316385c6",
+      "rules": 36,
+      "canonicalEncoding": "Python json.dumps(indent=2) + trailing LF; object key order names/action/args(if any)/includes; args index/value/op; includes arches:[amd64]",
+      "preservedRuleSet": "all 31 default rules unchanged (clone3 -> ENOSYS 38, setns denied, baseline controls intact)",
+      "appendedRules": [
+        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 268435473, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER|SIGCHLD" },
+        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 1879048209, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER|CLONE_NEWPID|CLONE_NEWNET|SIGCHLD" },
+        { "names": ["clone"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 536870929, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWPID|SIGCHLD" },
+        { "names": ["unshare"], "action": "SCMP_ACT_ALLOW", "args": [{ "index": 0, "value": 268435456, "op": "SCMP_CMP_EQ" }], "includes": { "arches": ["amd64"] }, "meaning": "CLONE_NEWUSER" },
+        { "names": ["chroot"], "action": "SCMP_ACT_ALLOW", "includes": { "arches": ["amd64"] }, "meaning": "no arg restriction" }
+      ],
+      "tested": false,
+      "note": "source-derived rules are UNTESTED; source/API evidence is distinct from runtime acceptance. Fail closed rather than broadening on failure."
+    }
+  },
+  "chromium": {
+    "version": "155.0.8059.12",
+    "channel": "Chrome-for-Testing",
+    "commit": "384c82079f60e0b79cdca6e49efd5cfceefa5b74",
+    "primarySources": [
+      "sandbox/linux/services/namespace_sandbox.cc",
+      "sandbox/linux/services/credentials.cc",
+      "chrome/browser/ui/webui/sandbox/sandbox_internals_ui.cc"
+    ]
+  },
+  "guestRuntime": {
+    "awsCli": "AWS CLI v2 (expected present in the minimal ECS AL2023 image per the official package table; bootstrap verifies and fails closed, never installs)",
+    "docker": "25.0.16",
+    "containerd": "verified present, version recorded",
+    "runc": "verified present, version recorded",
+    "libseccomp": "verified present, version recorded",
+    "kernel": "6.1"
+  },
+  "probe": {
+    "rawOverride": "ENTRYPOINT node, command /opt/meri-worker/probes/browser.mjs",
+    "user": "10001:10001",
+    "readonlyRootFilesystem": true,
+    "capDrop": ["ALL"],
+    "noNewPrivileges": true,
+    "network": "none",
+    "bounded": { "pidsLimit": 512, "memory": "4g", "cpus": 2, "shmSize": "1g" },
+    "workspaceTmp": "fresh UID-owned writable workspace + noexec tmpfs",
+    "deadlineSeconds": 120,
+    "runs": 1,
+    "fullRuntimeProbe": "NOT run: its AWS positive control deliberately cannot work under network none"
+  },
+  "hostIam": {
+    "allowed": ["ecr:GetAuthorizationToken (*, unavoidable)", "ecr:BatchCheckLayerAvailability/BatchGetImage/GetDownloadUrlForLayer on the single qualification repository", "logs:CreateLogStream/PutLogEvents on the browser-host log group", "kms log actions via logs service context only"],
+    "denied": ["S3 input/source", "provider/STS/EC2/SSM/ECS/admin", "wildcard data resources", "broad host kms:Decrypt"],
+    "workerCredentials": "worker container receives no host profile, no docker socket/config, no host paths beyond the disposable workspace/tmp"
+  },
+  "upstreamLicenses": {
+    "mobySeccompProfile": {
+      "component": "Moby / moby (profiles/seccomp/default.json)",
+      "license": "Apache-2.0",
+      "copyright": "Copyright The Moby Project",
+      "source": "https://github.com/moby/moby/blob/6fdf0a663f15d71b6944cb0b2bc3abac221ff15c/profiles/seccomp/default.json",
+      "notice": "Vendored unchanged as seccomp.default.docker-25.0.16.json and, with five additional documented amd64 rules, as seccomp.chromium-155-amd64.json. Redistributed under the Apache License, Version 2.0; a copy is available at https://www.apache.org/licenses/LICENSE-2.0. These data files are metadata only; no upstream code is linked into the product."
+    },
+    "chromium": {
+      "component": "Chromium (sandbox services)",
+      "license": "BSD-3-Clause",
+      "copyright": "Copyright 2015 The Chromium Authors",
+      "source": "https://chromium.googlesource.com/chromium/src/+/384c82079f60e0b79cdca6e49efd5cfceefa5b74",
+      "notice": "Referenced as a primary source for the appended sandbox rules only; no Chromium source is vendored in this repository."
+    }
+  },
+  "knownGaps": [
+    "No AWS/cloud/native/Linux/container/browser/SDK/source/credential execution or deployment occurred; deployment is NOT RUN.",
+    "Source-derived seccomp rules, the guest bootstrap and the host observer are UNTESTED at runtime and are not deployment/security/G1 acceptance.",
+    "host-evidence.py is the authoritative collector/classifier exercised by offline fixtures. The frozen legacy classifyHostEvidence export in app.mjs is UNQUALIFIED and is not used for admission.",
+    "D006 packages exact bootstrap/observer/profile bytes in a separate immutable same-repository FROMscratch support image. The loader only creates/copies/removes its NEVER-STARTED container; source hashes, sizes, support digest and run UUID require later exact build/template review.",
+    "Guest Python target is 3.9; actual patch, Bash/systemd timer output, Docker inspect/attach behavior and complete CloudWatch reconstruction remain native gates. Author Python 3.14.7 fixtures are not Linux measurements.",
+    "guestRuntime entries describe expected bootstrap requirements, not observed native versions. The libseccomp check records ABI 2 from libseccomp.so.2; its full package version still requires native inventory.",
+    "Absolute termination deadline and terminated/root-volume-deletion verification are owner-side and not proven here.",
+    "The pinned image's 2 CRITICAL / 13 HIGH findings remain unresolved."
+  ]
+}
