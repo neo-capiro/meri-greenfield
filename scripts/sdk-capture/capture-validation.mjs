@@ -8,6 +8,7 @@
 // request-validation; performs no filesystem or network work on import.
 
 import zlib from 'node:zlib';
+import { TextDecoder } from 'node:util';
 import {
   EXPECTED, KEYS, MAX_INPUT_BYTES, MAX_REASONS, MAX_TOTAL_RAW_BYTES,
   MAX_CHUNKS_PER_REQUEST, MAX_DECOMPRESSED_BYTES, UUID_RE, ISO_MS_RE,

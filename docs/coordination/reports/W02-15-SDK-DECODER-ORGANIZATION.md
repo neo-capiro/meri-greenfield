@@ -32,20 +32,26 @@ source/log and the final footer before authorizing this closeout.
 
 Only the allocated paths changed. The canonical test file is READ ONLY and was
 not modified. No producer/options/native/provider/network/cloud execution and no
-install, broad `npm run check`/`npm test`, or scratch/evidence deletion.
+install or broad `npm run check`/`npm test`. The confined mistaken report
+directory cleanup is disclosed below; original check evidence is preserved.
 
 | Path | lines | sha256 (this commit) |
 | --- | --- | --- |
-| `scripts/reconstruct-sdk-capture.mjs` | entry (64) | `631ed9b94f26788aee09082e1d910f1415453a149490040560606247dc7f05e4` |
-| `scripts/sdk-capture/protocol.mjs` | 133 | `c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e` |
-| `scripts/sdk-capture/json-records.mjs` | 165 | `8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d` |
-| `scripts/sdk-capture/privacy.mjs` | 73 | `1e894550429d84cd40e257c1c6914bf8d361f6aceff1884b4d84b048a1e98061` |
-| `scripts/sdk-capture/request-validation.mjs` | 206 | `cf2824f190f1d89e28b3aaf88a3031ff8d622b05a0fc91b1835c9200339df52f` |
-| `scripts/sdk-capture/capture-validation.mjs` | 254 | `c1692bb528a515bd7d6fb13caeb6c0f72bb74448bdef03b528fdebc567d040e1` |
-| `scripts/sdk-capture/filesystem.mjs` | 141 | `135e014dfac18c7861d5082a9721fcba6fd96a0aba5e74b8037784a78eea36b2` |
-| `scripts/sdk-capture/artifacts.mjs` | 75 | `8efae11eb5e4566cd05e495aa85aa1b64686577842ef74e6425bd6bfcfb2dd26` |
-| `scripts/sdk-capture/cli.mjs` | 45 | `0c3e57994739b57302b031bdab7d6ff5bac533eb71d2aebc44fa5408fad2b246` |
+| `scripts/reconstruct-sdk-capture.mjs` | entry (46) | `631ed9b94f26788aee09082e1d910f1415453a149490040560606247dc7f05e4` |
+| `scripts/sdk-capture/protocol.mjs` | 111 | `c20499a3a9e29069f6a59b58c7262fda6dfddd03068d7a49d6d73003f07e4a9e` |
+| `scripts/sdk-capture/json-records.mjs` | 153 | `8b889617a9565b7f1b5d29863b772b71f2c880a5fd1606b8a8b68ac2163be02d` |
+| `scripts/sdk-capture/privacy.mjs` | 62 | `1e894550429d84cd40e257c1c6914bf8d361f6aceff1884b4d84b048a1e98061` |
+| `scripts/sdk-capture/request-validation.mjs` | 208 | `cf2824f190f1d89e28b3aaf88a3031ff8d622b05a0fc91b1835c9200339df52f` |
+| `scripts/sdk-capture/capture-validation.mjs` | 253 | `742e38c75abf46f26b3e73520307670932c2ac171799fd4b9084e235aebfc611` |
+| `scripts/sdk-capture/filesystem.mjs` | 107 | `135e014dfac18c7861d5082a9721fcba6fd96a0aba5e74b8037784a78eea36b2` |
+| `scripts/sdk-capture/artifacts.mjs` | 70 | `8efae11eb5e4566cd05e495aa85aa1b64686577842ef74e6425bd6bfcfb2dd26` |
+| `scripts/sdk-capture/cli.mjs` | 46 | `0c3e57994739b57302b031bdab7d6ff5bac533eb71d2aebc44fa5408fad2b246` |
 | `docs/coordination/reports/W02-15-SDK-DECODER-ORGANIZATION.md` | this file | — |
+
+Codex corrected the author's inaccurate line estimates and updated the one
+repaired source hash. Original returned capture-validation was252 lines,
+SHA256c1692bb528a515bd7d6fb13caeb6c0f72bb74448bdef03b528fdebc567d040e1,
+preserved in bdcf817. The closure repair/check evidence follows below.
 
 Baseline verified BEFORE extraction (unchanged inputs):
 
@@ -170,8 +176,9 @@ All scratch/evidence is exclusively NEW and lives under the ignored
 `equivalence-check.mjs` `c56ae77fddf5ae9c50fc2376e129a92caa0a655069c40d622e67225890c9c52f`,
 `equivalence-check.log` `7f451bb14e7457ace906ef96d84b54f77e9c6b5010e59f872c1522ab37107dc0`,
 `original-decoder.mjs` `6e1500272262842d0679426d6bdcca0829c824610d393cdbd531267c23eb1111`
-(git `HEAD` snapshot imported by the check with its CLI inert). No recursive
-cleanup was performed; logs are preserved as evidence; nothing outside the new
+(git `HEAD` snapshot imported by the check with its CLI inert). The session
+recursively removed its mistakenly created confined scratch report directory,
+as disclosed above; original check logs remain preserved. Nothing outside the new
 confined scratch was touched. `.task-inputs` and unknown existing files were
 never deleted.
 
@@ -197,3 +204,37 @@ development-model use inherent in this session is the only external
 interaction. No acceptance or self-review is claimed. Reviewable commit contains
 ONLY the ten allocated paths, added explicitly. Distinct actual Hermes review
 plus primary verification are still required.
+
+## Codex owner closure repair after actual return
+
+Actual same-session closeout returned bdcf817a0f5e4c5950344d83264c103106ecc3f0
+at04:16:01.999255Z, clean, zero remaining processes/readers and cleanup confirmed.
+The independent Codex source organization audit found one free-variable binding
+change despite all40 functions/23 constants/two classes matching their original
+text: capture-validation omitted the original node:util TextDecoder import and
+resolved the mutable global. Its report SHA256 is
+babe9ea0d91f936bfa70eb404572bae9737082420bad2b02154c0d17dd141f25;
+manifest SHA2569dd1d0fd646b69ab62b068a06381323644a489f6f318212ab567599450ae9c38.
+No source behavior equivalence is inferred solely from function.toString.
+
+Primary reproduced this with a private synthetic positive capture under a
+temporarily replaced global TextDecoder: original accepted, returned extraction
+rejected. This failed witness remains in root ignored
+.task-inputs/W02-15-primary-witness-before-1. Codex then restored the single
+explicit builtin import. No other source logic or canonical test changed.
+An initial atomic patch failed its report context match and made no edits;
+that local editing failure is distinct from the measured lexical regression.
+
+After the real code correction, primary ran the unchanged canonical61 tests
+once (61PASS/0FAIL,205.6647ms), the identical lexical witness once (both original
+and repaired accepted), public26-export/function-body/value/acyclic comparison
+once (PASS) and changed-module syntax once (PASS). Each process had60second
+outer bound and captured stdout/stderr; all exits0, no native/provider/network/
+producer/cloud operation. Captures are root ignored
+.task-inputs/W02-15-primary-checks-1; suite stdout SHA256
+7baab7b6108be0789a0f435427e3bdba7a6431316f21bdcdab94d6a39479b6a7;
+lexical witness stdout SHA256e0c7984f5ac1859902a1381aebd98f35af524d1268a0937e40ce8873002dff49.
+Final capture-validation SHA256 is742e38c75abf46f26b3e73520307670932c2ac171799fd4b9084e235aebfc611.
+Original author records and incomplete phase1 remain immutable in history.
+This is an attributed owner correction, still requiring distinct actual Hermes
+review and explicit primary source acceptance; no runtime/G1 claim follows.
