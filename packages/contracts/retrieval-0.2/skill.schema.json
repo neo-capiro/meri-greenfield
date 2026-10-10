@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:skill:0.2.0",
+  "title": "Meri R2 skill contract foundation 0.2.0",
+  "$defs": {
+    "SkillInvocation": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "invocationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "skillId": {
+          "type": "string",
+          "enum": [
+            "quick_skill.research_company",
+            "quick_skill.relationship_brief",
+            "quick_skill.client_changes",
+            "quick_skill.portfolio_changes",
+            "quick_skill.portfolio_overlap",
+            "quick_skill.mail_history",
+            "quick_skill.meeting_prep",
+            "quick_skill.commitments_audit",
+            "quick_skill.funding_opportunity_match",
+            "quick_skill.pe_deep_dive",
+            "quick_skill.bill_watch",
+            "quick_skill.hearing_watch",
+            "quick_skill.representation_lookup",
+            "quick_skill.regulatory_docket_brief"
+          ]
+        },
+        "skillVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "selection": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "resolved"
+          ]
+        },
+        "scopeRequest": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SubjectRequest"
+        },
+        "windowRequest": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/WindowRequest"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100000
+        }
+      },
+      "required": [
+        "contractVersion",
+        "invocationId",
+        "skillId",
+        "skillVersion",
+        "selection",
+        "scopeRequest",
+        "windowRequest",
+        "prompt"
+      ],
+      "additionalProperties": false
+    },
+    "SkillManifest": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "skillId": {
+          "type": "string",
+          "enum": [
+            "quick_skill.research_company",
+            "quick_skill.relationship_brief",
+            "quick_skill.client_changes",
+            "quick_skill.portfolio_changes",
+            "quick_skill.portfolio_overlap",
+            "quick_skill.mail_history",
+            "quick_skill.meeting_prep",
+            "quick_skill.commitments_audit",
+            "quick_skill.funding_opportunity_match",
+            "quick_skill.pe_deep_dive",
+            "quick_skill.bill_watch",
+            "quick_skill.hearing_watch",
+            "quick_skill.representation_lookup",
+            "quick_skill.regulatory_docket_brief"
+          ]
+        },
+        "skillVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "prose": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SchemaRef"
+        },
+        "requiredSources": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SourceRequirement"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "allowedOperations": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/OperationRef"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "subjectKinds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "client",
+              "portfolio",
+              "personal",
+              "entity"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "windowBases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "calendar-week",
+              "calendar-month",
+              "calendar-year",
+              "relative-duration",
+              "explicit",
+              "fiscal-year",
+              "unbounded"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "completion": {
+          "type": "object",
+          "properties": {
+            "requireAllSources": {
+              "const": true
+            },
+            "allowDisclosedPartial": {
+              "type": "boolean"
+            },
+            "negativeClaims": {
+              "const": "complete-covered-only"
+            },
+            "rubric": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z][a-z0-9_.-]*$"
+                  },
+                  "requirement": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4000
+                  },
+                  "evidenceRequired": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "requirement",
+                  "evidenceRequired"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "requireAllSources",
+            "allowDisclosedPartial",
+            "negativeClaims",
+            "rubric"
+          ],
+          "additionalProperties": false
+        },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "mutations": {
+              "const": "separate-immutable-proposal"
+            },
+            "autoCreateTasks": {
+              "const": false
+            }
+          },
+          "required": [
+            "mutations",
+            "autoCreateTasks"
+          ],
+          "additionalProperties": false
+        },
+        "budgets": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/Budgets"
+        },
+        "versionPolicy": {
+          "type": "object",
+          "properties": {
+            "existingRuns": {
+              "const": "pin-immutable"
+            },
+            "resume": {
+              "const": "exact-or-explicit-migration"
+            },
+            "fork": {
+              "const": "preserve-unless-explicit-reselection"
+            }
+          },
+          "required": [
+            "existingRuns",
+            "resume",
+            "fork"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "contractVersion",
+        "skillId",
+        "skillVersion",
+        "prose",
+        "requiredSources",
+        "allowedOperations",
+        "subjectKinds",
+        "windowBases",
+        "completion",
+        "approval",
+        "budgets",
+        "versionPolicy"
+      ],
+      "additionalProperties": false
+    },
+    "PinnedSkill": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "invocationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "skillId": {
+          "type": "string",
+          "enum": [
+            "quick_skill.research_company",
+            "quick_skill.relationship_brief",
+            "quick_skill.client_changes",
+            "quick_skill.portfolio_changes",
+            "quick_skill.portfolio_overlap",
+            "quick_skill.mail_history",
+            "quick_skill.meeting_prep",
+            "quick_skill.commitments_audit",
+            "quick_skill.funding_opportunity_match",
+            "quick_skill.pe_deep_dive",
+            "quick_skill.bill_watch",
+            "quick_skill.hearing_watch",
+            "quick_skill.representation_lookup",
+            "quick_skill.regulatory_docket_brief"
+          ]
+        },
+        "skillVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "catalogSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "window": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/NormalizedWindow"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "invocationId",
+        "skillId",
+        "skillVersion",
+        "manifestSha256",
+        "catalogSha256",
+        "subject",
+        "window"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

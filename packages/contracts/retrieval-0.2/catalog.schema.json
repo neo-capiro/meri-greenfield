@@ -1,0 +1,582 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:catalog:0.2.0",
+  "title": "Meri R2 catalog contract foundation 0.2.0",
+  "$defs": {
+    "NativeMapping": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "enum": [
+                "get_research_portfolio",
+                "get_research_portfolio_changes",
+                "get_research_evidence",
+                "read_chat_attachments",
+                "read_monday_client_boards",
+                "search_capiro_data",
+                "get_client_context",
+                "search_research_sources",
+                "run_analysis",
+                "search_client_knowledge",
+                "query_intelligence",
+                "query_knowledge_graph",
+                "search_memory",
+                "list_memory_proposals",
+                "search_congress_bills",
+                "get_bill_status",
+                "read_bill_text",
+                "get_certification_status",
+                "search_floor_votes",
+                "search_cbo_cost_estimates",
+                "resolve_entity",
+                "search_lda_filings",
+                "list_global_datasets",
+                "query_global_data",
+                "search_sec_filings",
+                "search_fara_registrations",
+                "search_federal_grants",
+                "search_federal_awards",
+                "search_gao_reports",
+                "search_state_bills",
+                "get_state_bill_status",
+                "search_state_floor_votes",
+                "get_state_legislator",
+                "get_committee_roster",
+                "get_representation",
+                "list_members",
+                "get_state_rule_status",
+                "search_intel_articles",
+                "search_committee_hearings",
+                "search_legiwatch_news",
+                "get_florida_budget_project",
+                "search_legislative_research",
+                "get_legal_reference",
+                "search_crs_reports",
+                "query_economic_data",
+                "get_district_nexus_context",
+                "get_district_nexus_changes",
+                "search_public_web",
+                "scrape_web_page",
+                "save_chat_attachments",
+                "list_emails",
+                "search_emails",
+                "get_email_thread",
+                "list_upcoming_meetings",
+                "save_memory",
+                "search_program_elements",
+                "get_program_element",
+                "get_pe_budget_timeline",
+                "get_pe_contractors",
+                "get_pe_bills",
+                "get_pe_report_language",
+                "search_acquisition_personnel",
+                "get_acquisition_person",
+                "create_word",
+                "create_excel",
+                "create_powerpoint",
+                "schedule_task",
+                "list_scheduled_tasks",
+                "cancel_scheduled_task",
+                "update_scheduled_task",
+                "query_tasks",
+                "query_action_items",
+                "search_tracked_bills",
+                "query_regulatory_dockets",
+                "search_sam_opportunities",
+                "query_debriefs",
+                "read_client_meetings",
+                "query_outreach",
+                "read_client_documents",
+                "lookup_client_registry",
+                "create_task",
+                "update_task",
+                "find_contacts",
+                "search_funding_opportunities",
+                "get_funding_opportunity_requirements",
+                "get_funding_opportunity",
+                "get_opportunity_client_context",
+                "get_opportunity_government_landscape",
+                "search_federal_contract_awards",
+                "search_federal_subawards",
+                "search_contract_vehicles",
+                "search_procurement_forecasts",
+                "get_business_development_context",
+                "get_business_development_evidence",
+                "get_business_development_recent_changes",
+                "get_district_federal_market"
+              ]
+            },
+            "disposition": {
+              "const": "selected"
+            },
+            "boundary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "replacement": {
+              "anyOf": [
+                {
+                  "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/OperationRef"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "mapped"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "disposition",
+            "boundary",
+            "replacement",
+            "state"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "enum": [
+                "manage_research_portfolio",
+                "get_research_portfolio_analytics",
+                "create_research_portfolio_snapshot",
+                "request_research_portfolio_output",
+                "save_research_portfolio_output_to_client",
+                "watch_research_portfolio",
+                "update_research_portfolio_change_state",
+                "get_research_portfolio_bookmarks",
+                "create_research_portfolio_bookmark",
+                "get_research_portfolio_fit",
+                "get_research_portfolio_reviews",
+                "add_research_portfolio_review_note",
+                "get_research_portfolio_rules",
+                "get_research_portfolio_imports",
+                "get_research_portfolio_operations",
+                "prepare_research_portfolio_brief",
+                "prepare_research_portfolio_meeting",
+                "find_path_to",
+                "get_legiwatch_review",
+                "compare_florida_budget_amounts",
+                "prepare_legiwatch_briefing",
+                "compare_legislative_versions",
+                "save_legislative_research",
+                "preview_legiwatch_relevance",
+                "save_legiwatch_relevance",
+                "apply_legiwatch_suggestion",
+                "create_meeting_brief",
+                "draft_policy_memo",
+                "save_note",
+                "send_email",
+                "reply_email",
+                "confirm_memory",
+                "correct_memory",
+                "forget_memory",
+                "get_pe_buyer_workspace",
+                "create_client",
+                "update_client_profile",
+                "explain_opportunity_match",
+                "compare_funding_opportunities",
+                "build_opportunity_action_plan",
+                "get_business_development_brief",
+                "resolve_business_development_source",
+                "save_business_development_brief"
+              ]
+            },
+            "disposition": {
+              "const": "deferred"
+            },
+            "boundary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            "replacement": {
+              "anyOf": [
+                {
+                  "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/OperationRef"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "state": {
+              "const": "deferred"
+            }
+          },
+          "required": [
+            "id",
+            "disposition",
+            "boundary",
+            "replacement",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "OperationDescriptor": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/OperationRef"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "whenToUse": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "positiveExamples": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "negativeExamples": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "sourceRequirements": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SourceRequirement"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "inputSchema": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SchemaRef"
+        },
+        "outputSchema": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SchemaRef"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "sideEffect": {
+          "type": "string",
+          "enum": [
+            "none",
+            "proposal",
+            "local-artifact",
+            "schedule",
+            "source-command"
+          ]
+        },
+        "requiredGrants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "approvalBoundary": {
+          "type": "string",
+          "enum": [
+            "none",
+            "immutable-proposal",
+            "qualified-source-review"
+          ]
+        },
+        "handler": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "module": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "export": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z][a-z0-9_.-]*$"
+                },
+                "sourceSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "module",
+                "export",
+                "sourceSha256"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "unimplemented",
+            "disabled",
+            "enabled"
+          ]
+        },
+        "qualification": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "qualified"
+          ]
+        },
+        "retry": {
+          "type": "object",
+          "properties": {
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "retryableCodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "unavailable",
+                  "rate-limited",
+                  "timeout"
+                ]
+              },
+              "minItems": 0,
+              "maxItems": 4096,
+              "uniqueItems": true
+            },
+            "unknownOutcome": {
+              "const": "reconcile-before-retry"
+            }
+          },
+          "required": [
+            "maxRetries",
+            "retryableCodes",
+            "unknownOutcome"
+          ],
+          "additionalProperties": false
+        },
+        "replacement": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/OperationRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "R-01",
+              "R-02",
+              "R-03",
+              "R-04",
+              "R-05",
+              "R-06",
+              "R-07",
+              "R-08",
+              "R-09",
+              "R-10",
+              "R-11",
+              "R-12"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "ticketIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "REL-01",
+              "REL-02",
+              "REL-03",
+              "REL-04",
+              "REL-05",
+              "REL-06",
+              "REL-07",
+              "REL-08",
+              "REL-09"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "gateIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "RG-01",
+              "RG-02",
+              "RG-03",
+              "RG-04",
+              "RG-05",
+              "RG-06",
+              "RG-07",
+              "RG-08",
+              "RG-09",
+              "RG-10",
+              "RG-11",
+              "RG-12"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "fixtureIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9_.-]*$"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "operation",
+        "displayName",
+        "whenToUse",
+        "limitations",
+        "positiveExamples",
+        "negativeExamples",
+        "sourceRequirements",
+        "inputSchema",
+        "outputSchema",
+        "aliases",
+        "sideEffect",
+        "requiredGrants",
+        "approvalBoundary",
+        "handler",
+        "availability",
+        "qualification",
+        "retry",
+        "replacement",
+        "requirementIds",
+        "ticketIds",
+        "gateIds",
+        "fixtureIds"
+      ],
+      "additionalProperties": false
+    },
+    "Catalog": {
+      "type": "object",
+      "properties": {
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "catalogId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "catalogVersion": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "sourceRegistryCommit": {
+          "const": "fd8765ec01d292013758606204f2c9d886cd31c1"
+        },
+        "originals": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
+          },
+          "minItems": 139,
+          "maxItems": 139,
+          "uniqueItems": true
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/OperationDescriptor"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "contractVersion",
+        "catalogId",
+        "catalogVersion",
+        "sourceRegistryCommit",
+        "originals",
+        "operations"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
