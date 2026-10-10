@@ -1,5 +1,6 @@
 // Codex owner completion of REJECTED e6207d7. Pure data; no AWS/network/process/deploy.
 import { createHash } from 'node:crypto';
+import { SDK_WIRE_PROFILE,isSdkWire,parseWireEvidence } from './ecs-wire.mjs';
 import { validateTaskDefinition,validateCanaryTaskDefinition } from './task-definition.mjs';
 import { CANARY_EVIDENCE_KINDS,CANARY_EVIDENCE_PINS,CANARY_EXECUTABLE,CANARY_FAMILY,CANARY_IMAGE,CANARY_IMAGE_CONFIG_SHA256,CANARY_KIND,CANARY_LIMITS,CANARY_LOG_GROUP,CANARY_MACHINE_NAME,CANARY_MANAGED_ROLE_NAME,CANARY_NETWORK,CANARY_PROFILE,CANARY_ROLE_PINS,CANARY_SOURCE_COMMIT,CANARY_TARGET } from './probe-profiles.mjs';
 export const TARGET={account:'967807252336',region:'us-east-1'};
@@ -38,7 +39,7 @@ export function buildNativeEnforcementAdmission(input={}){
  check(/^[a-f0-9]{64}$/.test(p.imageConfigSha256)&&/^[a-f0-9]{40}$/.test(p.sourceCommit),'config/source pins');
  check(p.platformVersion===PLATFORM&&canonical(p.network)===canonical(NETWORK),'exact network/platform');
  check(p.logGroup==='/meri-greenfield/qualification/runtime'&&new RegExp(`^arn:aws:kms:${p.region}:${p.account}:key/[a-f0-9-]{36}$`).test(p.kmsKeyArn),'exact logs/KMS');
- check(p.wireProfile===WIRE_PROFILE&&['iso8601','epoch-seconds'].includes(p.timestampEncoding),'explicit wire profile');
+ check([WIRE_PROFILE,SDK_WIRE_PROFILE].includes(p.wireProfile)&&['iso8601','epoch-seconds'].includes(p.timestampEncoding),'explicit wire profile');
  check(exact(p.taskDefinitionPins,['sdk','office']),'full task-definition records');
  // Full raw task-definition readbacks are retained in the binding; fail-closed structural
  // validation is delegated to the focused task-definition module.
@@ -54,8 +55,9 @@ export function buildNativeEnforcementAdmission(input={}){
  // into every workflow record, independent of the per-field character limits above.
  check(Buffer.byteLength(canonical(refs),'utf8')<=LIMITS.refBytes,'authority reference aggregate bytes');
  check(Buffer.byteLength(canonical({origin:w.origin,reference:w.reference,version:w.version,sha256:w.sha256}),'utf8')<=LIMITS.refBytes,'wire reference aggregate bytes');
- const wr=JSON.parse(w.body);check(wr.profile===WIRE_PROFILE&&wr.timestampEncoding===p.timestampEncoding&&Array.isArray(wr.listResult?.taskArns)&&Array.isArray(wr.describeResult?.tasks)&&Array.isArray(wr.eniResult?.NetworkInterfaces)&&wr.identityResult?.Account===p.account,'wire profile evidence shape');
- const runtimeEnabled=input.executeAdmitted===true&&w.origin==='OWNER_REVIEWED_ACTUAL_READ_ONLY_INTEGRATION';
+ const wr=parseWireEvidence(w.body,p);check(wr.profile===p.wireProfile&&wr.timestampEncoding===p.timestampEncoding&&(isSdkWire(p)?Array.isArray(wr.listResult?.TaskArns)&&Array.isArray(wr.describeResult?.Tasks):Array.isArray(wr.listResult?.taskArns)&&Array.isArray(wr.describeResult?.tasks))&&Array.isArray(wr.eniResult?.NetworkInterfaces)&&wr.identityResult?.Account===p.account,'wire profile evidence shape');
+ // Legacy camel-case evidence is static-only; its runtime serialization was disproved.
+ const runtimeEnabled=isSdkWire(p)&&input.executeAdmitted===true&&w.origin==='OWNER_REVIEWED_ACTUAL_READ_ONLY_INTEGRATION';
  delete p.authorityDocuments;delete p.wireEvidence;p.authorityReferences=refs;p.wireReference={origin:w.origin,reference:w.reference,version:w.version,sha256:w.sha256,bytes:Buffer.byteLength(w.body)};
  const binding=freeze({runtimeEnabled,staticBindingId:sha256(canonical(p)),pins:p,reasons:['STRUCTURAL_PREPARATION_NOT_OWNER_ACCEPTANCE']});compiled.add(binding);return binding;
 }
@@ -107,7 +109,7 @@ export function buildCanaryEnforcementAdmission(input={}){
  check(p.sourceCommit===CANARY_SOURCE_COMMIT,'exact compiled canary build source');
  check(p.platformVersion===PLATFORM&&canonical(p.network)===canonical(CANARY_NETWORK),'exact network/platform');
  check(p.logGroup===CANARY_LOG_GROUP&&new RegExp(`^arn:aws:kms:${p.region}:${p.account}:key/[a-f0-9-]{36}$`).test(p.kmsKeyArn),'exact logs/KMS');
- check(p.wireProfile===WIRE_PROFILE&&['iso8601','epoch-seconds'].includes(p.timestampEncoding),'explicit wire profile');
+ check([WIRE_PROFILE,SDK_WIRE_PROFILE].includes(p.wireProfile)&&['iso8601','epoch-seconds'].includes(p.timestampEncoding),'explicit wire profile');
  check(exact(p.taskDefinitionPins,['canary']),'one canary task-definition record');
  validateCanaryTaskDefinition(p.taskDefinitionPins.canary,{arn:p.taskDefinitionArns.canary,family:CANARY_FAMILY,revision:Number(p.taskDefinitionArns.canary.split(':').at(-1)),image:p.image,logGroup:CANARY_LOG_GROUP,region:p.region,executionRoleArn:CANARY_ROLE_PINS.execution,workerRoleArn:CANARY_ROLE_PINS.worker,probeKind:CANARY_KIND});
  const ce=p.canaryEvidencePins;
@@ -127,8 +129,9 @@ export function buildCanaryEnforcementAdmission(input={}){
  const w=p.wireEvidence;check(exact(w,['origin','reference','version','body','sha256'])&&typeof w.body==='string'&&Buffer.byteLength(w.body)<=65536&&sha256(w.body)===w.sha256&&typeof w.reference==='string'&&w.reference.length>0&&w.reference.length<=CANARY_LIMITS.refChars&&typeof w.version==='string'&&w.version.length>0&&w.version.length<=CANARY_LIMITS.refChars,'full wire evidence');
  check(Buffer.byteLength(canonical(refs),'utf8')<=CANARY_LIMITS.refBytes,'authority reference aggregate bytes');
  check(Buffer.byteLength(canonical({origin:w.origin,reference:w.reference,version:w.version,sha256:w.sha256}),'utf8')<=CANARY_LIMITS.refBytes,'wire reference aggregate bytes');
- const wr=JSON.parse(w.body);check(wr.profile===WIRE_PROFILE&&wr.timestampEncoding===p.timestampEncoding&&Array.isArray(wr.listResult?.taskArns)&&Array.isArray(wr.describeResult?.tasks)&&Array.isArray(wr.eniResult?.NetworkInterfaces)&&wr.identityResult?.Account===p.account,'wire profile evidence shape');
- const runtimeEnabled=input.executeAdmitted===true&&w.origin==='OWNER_REVIEWED_ACTUAL_READ_ONLY_INTEGRATION';
+ const wr=parseWireEvidence(w.body,p);check(wr.profile===p.wireProfile&&wr.timestampEncoding===p.timestampEncoding&&(isSdkWire(p)?Array.isArray(wr.listResult?.TaskArns)&&Array.isArray(wr.describeResult?.Tasks):Array.isArray(wr.listResult?.taskArns)&&Array.isArray(wr.describeResult?.tasks))&&Array.isArray(wr.eniResult?.NetworkInterfaces)&&wr.identityResult?.Account===p.account,'wire profile evidence shape');
+ // Legacy camel-case evidence is static-only; its runtime serialization was disproved.
+ const runtimeEnabled=isSdkWire(p)&&input.executeAdmitted===true&&w.origin==='OWNER_REVIEWED_ACTUAL_READ_ONLY_INTEGRATION';
  delete p.authorityDocuments;delete p.wireEvidence;p.authorityReferences=refs;p.wireReference={origin:w.origin,reference:w.reference,version:w.version,sha256:w.sha256,bytes:Buffer.byteLength(w.body)};
  p.canaryProfile=CANARY_PROFILE;
  const binding=freeze({runtimeEnabled,staticBindingId:sha256(canonical(p)),pins:p,reasons:['STRUCTURAL_PREPARATION_NOT_OWNER_ACCEPTANCE']});

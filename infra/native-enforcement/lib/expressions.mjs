@@ -1,4 +1,5 @@
 import { LIMITS, prefix } from './binding.mjs';
+import { isSdkWire,sdkResultGuard,sdkTaskFacts } from './ecs-wire.mjs';
 import { PROFILE_NATIVE, PROFILE_CANARY } from './probe-profiles.mjs';
 
 // JSONata expression helper. All values are inert data; nothing here performs IO.
@@ -30,7 +31,7 @@ export const taskFacts = e => `$merge([{},{'arn':${e}.taskArn,'clusterArn':${e}.
 export const taskCore = e => `{'arn':${e}.taskArn,'clusterArn':${e}.clusterArn,'definition':${e}.taskDefinitionArn}`;
 // Retain the compact projection when it fits the byte cap, else keep only the stop
 // identity (arn/definition) plus an explicit truncation marker so containment survives.
-export const retainTask = e => `($f:=${taskFacts(e)};${byteBound('$f', LIMITS.ledgerBytes)}?$f:$merge([${taskCore(e)},{'truncated':true}]))`;
+export const retainTask = (e,p) => `($f:=${p&&isSdkWire(p)?sdkTaskFacts(e):taskFacts(e)};${byteBound('$f', LIMITS.ledgerBytes)}?$f:$merge([${p&&isSdkWire(p)?`{'arn':${e}.TaskArn,'clusterArn':${e}.ClusterArn,'definition':${e}.TaskDefinitionArn}`:taskCore(e)},{'truncated':true}]))`;
 
 // Fixed public native predicate helper: exactly one argument, no caller-supplied profile data.
 export function buildPredicates(p) { return buildPredicateSet(p, PROFILE_NATIVE); }
@@ -48,10 +49,12 @@ function buildPredicateSet(p, profile) {
  const worker = '$ctx.current.worker';
  const tags = `[{'key':'QualificationRun','value':$ctx.run.uuid},{'key':'QualificationProbe','value':$ctx.run.probeKind},{'key':'MeriComponent','value':'native-enforcement'}]`;
  const exactTags = `$type($ctx.current.tags)='array' and $count($ctx.current.tags)=$count($distinct($ctx.current.tags.key)) and $count($filter(${tags},function($e){$count($filter($ctx.current.tags,function($t){$t.key=$e.key and $t.value=$e.value}))=1}))=3`;
- const coverage = `$type($raw)='object' and $type($raw.tasks)='array' and $count($raw.tasks)=1 and $raw.tasks[0].taskArn=$ctx.currentArn and ($not($exists($raw.failures)) or ($type($raw.failures)='array' and $count($raw.failures)=0))`;
+ const coverage = isSdkWire(p)?`(${sdkResultGuard('$raw','tasks')}) and $count($raw.Tasks)=1 and $raw.Tasks[0].TaskArn=$ctx.currentArn and $count($raw.Failures)=0`:`$type($raw)='object' and $type($raw.tasks)='array' and $count($raw.tasks)=1 and $raw.tasks[0].taskArn=$ctx.currentArn and ($not($exists($raw.failures)) or ($type($raw.failures)='array' and $count($raw.failures)=0))`;
  const ownership = `${taskArnTest('$ctx.current.arn')} and $ctx.current.clusterArn=${lit(p.clusterArn)} and $ctx.current.definition=${selected} and $ctx.current.startedBy=$ctx.run.uuid and $ctx.current.group=(${group}) and (${exactTags}) and $type($createdMs)='number' and $createdMs>=$ctx.attemptStart-1000 and $createdMs<=$ctx.attemptEnd+1000 and $createdMs<=$observedMs+1000`;
  const containerPrefix = `arn:aws:ecs:${p.region}:${p.account}:container/${p.clusterArn.split('/')[1]}/`;
- const terminal = `$ctx.current.arn=$ctx.currentArn and $ctx.current.clusterArn=${lit(p.clusterArn)} and $ctx.current.definition=${currentOwned}.definition and $ctx.current.lastStatus='STOPPED' and $ctx.current.containerCount=1 and $count($keys(${worker}))>0 and ${worker}.lastStatus='STOPPED' and ($type(${worker}.containerArn)='string'?$count($match(${worker}.containerArn,/^${containerPrefix.replaceAll('/','\\/')}[a-f0-9]{32}$/))=1:false) and ($type(${worker}.exitCode)='number'?${worker}.exitCode=$floor(${worker}.exitCode):false) and (${currentOwned}.containerArn=null or ${worker}.containerArn=${currentOwned}.containerArn)`;
+ const legacyContainerIdentity = `($type(${worker}.containerArn)='string'?$count($match(${worker}.containerArn,/^${containerPrefix.replaceAll('/','\\/')}[a-f0-9]{32}$/))=1:false)`;
+ const containerIdentity = isSdkWire(p)?`($type(${worker}.containerArn)='string' and ${taskArnTest('$ctx.currentArn')} and $substring(${worker}.containerArn,0,${containerPrefix.length})=${lit(containerPrefix)} and $count($split(${worker}.containerArn,'/'))=4 and $split(${worker}.containerArn,'/')[2]=$substringAfter($ctx.currentArn,${lit(taskPrefix)}) and $count($match($split(${worker}.containerArn,'/')[3],/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/))=1 and ($not($exists(${worker}.taskArn)) or ${worker}.taskArn=$ctx.currentArn))`:legacyContainerIdentity;
+ const terminal = `$ctx.current.arn=$ctx.currentArn and $ctx.current.clusterArn=${lit(p.clusterArn)} and $ctx.current.definition=${currentOwned}.definition and $ctx.current.lastStatus='STOPPED' and $ctx.current.containerCount=1 and $count($keys(${worker}))>0 and ${worker}.lastStatus='STOPPED' and ${containerIdentity} and ($type(${worker}.exitCode)='number'?${worker}.exitCode=$floor(${worker}.exitCode):false) and (${currentOwned}.containerArn=null or ${worker}.containerArn=${currentOwned}.containerArn)`;
  const emptyOverrides = `($o:=$ctx.current.overrides; $not($exists($o)) or ($type($o)='object' and $count($keys($o)[$not($ in ['containerOverrides','inferenceAcceleratorOverrides'])]) =0 and ($not($exists($o.containerOverrides)) or $string($o.containerOverrides) in ['[]','[{\\"name\\":\\"worker\\"}]']) and ($not($exists($o.inferenceAcceleratorOverrides)) or ($type($o.inferenceAcceleratorOverrides)='array' and $count($o.inferenceAcceleratorOverrides)=0))))`;
  // Explicit three-way attachment classification. Compatible and genuinely pending /
  // legitimate teardown are distinct from present malformed/contradictory facts.

@@ -1,6 +1,7 @@
 import { buildNativeEnforcementAdmission,buildCanaryEnforcementAdmission,isCompiledBinding,isCanaryBinding,assertCanaryBoundary,LIMITS,PLATFORM,rolePrefix } from './binding.mjs';
 import { J,lit,now,array,currentOwned,buildPredicates,buildCanaryPredicates,byteBound,pushIssue,issue,errSummary,retainTask,taskFacts,taskCore,workerOf,commitCtx,boundedExpr } from './expressions.mjs';
 import { PROFILE_NATIVE,PROFILE_CANARY } from './probe-profiles.mjs';
+import { isSdkWire,wireField,sdkResultGuard,sdkCreatedMs } from './ecs-wire.mjs';
 
 // Shared inert graph builder. The native and canary entry points select a closed mode via
 // private provenance: native accepts only native-compiled bindings (and rejects canary), and
@@ -11,6 +12,9 @@ function buildStateMachine(binding,profile){
  if(!ok)return {QueryLanguage:'JSONata',StartAt:'AdmissionRefused',States:{AdmissionRefused:{Type:'Fail',Error:'AdmissionRefused',Cause:'missing complete static preparation'}}};
  if(profile.mode==='canary')assertCanaryBoundary();
  const p=binding.pins, machineArn=`arn:aws:states:${p.region}:${p.account}:stateMachine:${p.stateMachineName}`, managedRoleArn=rolePrefix+p.managedRoleName;
+ const tasks='$raw.'+wireField(p,'tasks'),failures='$raw.'+wireField(p,'failures'),arns='$raw.'+wireField(p,'taskArns'),token='$raw.'+wireField(p,'nextToken');
+ const taskArn='$t.'+wireField(p,'taskArn');
+ const resultGuard=kind=>isSdkWire(p)?`(${sdkResultGuard('$raw',kind)}) and `:'';
  const {taskArnTest,selected,group,worker,coverage,ownership,terminal,mismatch,ready,safeRaw,attachmentsCompatible,attachmentsContradictory,eniIdExpr,eniIpExpr,eniGood}=profile.mode==='canary'?buildCanaryPredicates(p):buildPredicates(p);
  const states={};
  // ---- graph primitives -----------------------------------------------------------------
@@ -21,10 +25,10 @@ function buildStateMachine(binding,profile){
  const boundedExtra=v=>typeof v==='string'&&v.startsWith('{% ')&&v.endsWith(' %}')?J(boundedExpr(v.slice(3,-3),LIMITS.recordBytes,"{'truncated':true}")):v;
  const record=(name,kind,next,extra={})=>states[name]={Type:'Pass',Output:{kind,sequence:J('$ctx.calls'),run:J('$ctx.run'),staticBindingId:binding.staticBindingId,D:J('$ctx.D'),C:J('$ctx.C'),at:J(now),authorityReferences:p.authorityReferences,...Object.fromEntries(Object.entries(extra).map(([k,v])=>[k,boundedExtra(v)]))},Next:next};
  const timeout=limit=>J(`($r:=$floor((${limit}-${now})/1000);$r>=1?$min([30,$r]):$error('DeadlineInsufficient'))`);
- const created=p.timestampEncoding==='epoch-seconds'?"($type($states.result.tasks[0].createdAt)='number'?$states.result.tasks[0].createdAt*1000:null)":"($type($states.result.tasks[0].createdAt)='string'?$toMillis($states.result.tasks[0].createdAt):null)";
+ const created=isSdkWire(p)?sdkCreatedMs(p.timestampEncoding):p.timestampEncoding==='epoch-seconds'?"($type($states.result.tasks[0].createdAt)='number'?$states.result.tasks[0].createdAt*1000:null)":"($type($states.result.tasks[0].createdAt)='string'?$toMillis($states.result.tasks[0].createdAt):null)";
  // Every Task captures only a byte-bounded result; oversized responses are dropped to
  // null so the following shape check fails closed to a bounded UNKNOWN path.
- function task(name,action,args,next,errorNext,limit='$ctx.C',parseCreated=false){states[name]={Type:'Task',Resource:`arn:aws:states:::aws-sdk:${action}`,Arguments:args,TimeoutSeconds:timeout(limit),Assign:{raw:J(`($s:=$string($states.result);$length($s)*6<=${LIMITS.recordBytes}?$states.result:null)`),rawOver:J(`($s:=$string($states.result);$length($s)*6>${LIMITS.recordBytes})`),callOk:true,callError:null,observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)'),createdMs:parseCreated?J(created):null},Output:{},Catch:[{ErrorEquals:['States.DataLimitExceeded','States.QueryEvaluationError','States.Timeout'],Assign:{raw:null,rawOver:false,callOk:false,createdMs:null,callError:J(`($s:=$string($states.errorOutput);$length($s)*6<=${LIMITS.issueBytes}?$states.errorOutput:{'truncated':true})`),observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)')},Output:{},Next:errorNext},{ErrorEquals:['States.ALL'],Assign:{raw:null,rawOver:false,callOk:false,createdMs:null,callError:J(`($s:=$string($states.errorOutput);$length($s)*6<=${LIMITS.issueBytes}?$states.errorOutput:{'truncated':true})`),observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)')},Output:{},Next:errorNext}],Next:next};}
+ function task(name,action,args,next,errorNext,limit='$ctx.C',parseCreated=false){states[name]={Type:'Task',Resource:`arn:aws:states:::aws-sdk:${action}`,Arguments:args,TimeoutSeconds:timeout(limit),Assign:{raw:J(`($s:=$string($states.result);$length($s)*6<=${LIMITS.recordBytes}?$states.result:null)`),rawOver:J(`($s:=$string($states.result);$length($s)*6>${LIMITS.recordBytes})`),callOk:true,callError:null,observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)'),createdMs:parseCreated?J(created):null},Output:{},Catch:[{ErrorEquals:['States.DataLimitExceeded','States.QueryEvaluationError','States.Timeout'],Assign:{raw:null,rawOver:false,callOk:false,createdMs:null,callError:J(`($s:=$string($states.errorOutput);$length($s)*6<=${LIMITS.issueBytes}?$states.errorOutput:{'truncated':true})`),observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)')},Output:{},Next:errorNext},{ErrorEquals:['States.ALL'],Assign:{raw:null,rawOver:false,callOk:false,createdMs:null,callError:J(`($s:=$string($states.errorOutput);$length($s)*6<=${LIMITS.issueBytes}?$states.errorOutput:{'truncated':true})`),observedMs:J(now),enteredMs:J('$toMillis($states.context.State.EnteredTime)')},Output:{},Next:errorNext}],Next:next};if(isSdkWire(p)&&action==='ecs:describeTasks'){const wireName=name+'Wire';states[name].Next=wireName;record(wireName,'ECS_WIRE',next,{raw:J('$raw'),operation:J('$ctx.operation')});}}
  function prepare(name,operation,next){pass(name,`{'calls':$ctx.calls+1,'operation':${lit(operation)}}`,next);}
  // ---- shared ledger expressions --------------------------------------------------------
  const ownedArns='$map($ctx.owned,function($o){$o.arn})', overflowArns='$map($ctx.overflow,function($o){$o.arn})';
@@ -61,10 +65,10 @@ function buildStateMachine(binding,profile){
  // a success and never retried or re-launched here). An EMPTY tasks array may still pass RunShape
  // (count 0 equals immediate 0), but RetainRun then keeps launchCertain:false / qualificationFailed:true,
  // so emptiness is never turned into launch certainty by this guard.
- const immediateTaskArns=`$filter($raw.tasks,function($t){$type($t)='object' and ${taskArnTest('$t.taskArn')}})`;
- choice('RunShape',[[`$type($raw)='object' and $type($raw.tasks)='array' and $count($raw.tasks)<=4 and ($not($exists($raw.failures)) or $type($raw.failures)='array') and $count(${immediateTaskArns})=$count($raw.tasks) and (${safeRaw})`,'RetainRun']],'LaunchUncertain');
- const direct=`$map(${immediateTaskArns},function($t){$t.taskArn})`;
- pass('RetainRun',`{'attemptEnd':${now},'direct':${array(`$distinct(${direct})`)},'launchCertain':$count($raw.tasks)=1 and $count(${direct})=1 and $count($raw.failures)=0,'qualificationFailed':$ctx.qualificationFailed or $count($raw.tasks)!=1 or $count(${direct})!=1 or $count($raw.failures)>0}`,'RunResultRecord');record('RunResultRecord','RUN_RESULT','StartScan',{raw:J('$raw'),launchCertain:J('$ctx.launchCertain')});
+ const immediateTaskArns=`$filter(${tasks},function($t){$type($t)='object' and ${taskArnTest(taskArn)}})`;
+ choice('RunShape',[[`${resultGuard('tasks')}$type($raw)='object' and $type(${tasks})='array' and $count(${tasks})<=4 and ($not($exists(${failures})) or $type(${failures})='array') and $count(${immediateTaskArns})=$count(${tasks}) and (${safeRaw})`,'RetainRun']],'LaunchUncertain');
+ const direct=`$map(${immediateTaskArns},function($t){${taskArn}})`;
+ pass('RetainRun',`{'attemptEnd':${now},'direct':${array(`$distinct(${direct})`)},'launchCertain':$count(${tasks})=1 and $count(${direct})=1 and $count(${failures})=0,'qualificationFailed':$ctx.qualificationFailed or $count(${tasks})!=1 or $count(${direct})!=1 or $count(${failures})>0}`,'RunResultRecord');record('RunResultRecord','RUN_RESULT','StartScan',{raw:J('$raw'),launchCertain:J('$ctx.launchCertain')});
  pass('LaunchUncertain',`{'attemptEnd':$ctx.C,'launchObservedEnd':${now},'launchCertain':false,'qualificationFailed':true,'issues':${pushIssue(issue('launch-uncertain',`{'error':${errSummary('$callError')}}`))}}`,'StartScan');
  // ---- bounded discovery + containment dispatcher ---------------------------------------
  pass('StartScan',`{'mode':0,'pages':0,'nextToken':null,'tokens':[],'completeModes':[],'queue':${array(`$distinct($append($append($ctx.direct,${ownedArns}),${overflowArns}))`)},'polls':$ctx.polls+1}`,'LoopGate');
@@ -81,15 +85,15 @@ function buildStateMachine(binding,profile){
  prepare('PrepareListFirst','list','ListFirst');prepare('PrepareListNext','list','ListNext');
  const listArgs=`$merge([{'Cluster':${lit(p.clusterArn)},'MaxResults':10},$ctx.mode=0?{'StartedBy':$ctx.run.uuid}:{'DesiredStatus':$ctx.mode=1?'RUNNING':'STOPPED'}])`;
  task('ListFirst','ecs:listTasks',J(listArgs),'ListShape','DiscoveryError');task('ListNext','ecs:listTasks',J(`$merge([${listArgs},{'NextToken':$ctx.nextToken}])`),'ListShape','DiscoveryError');
- const validArns=`$count($filter($raw.taskArns,function($a){${taskArnTest('$a')}}))=$count($raw.taskArns)`;
- choice('ListShape',[[`$type($raw)='object' and $type($raw.taskArns)='array' and $count($raw.taskArns)<=10 and (${validArns}) and ($not($exists($raw.nextToken)) or ($type($raw.nextToken)='string' and $length($raw.nextToken)>0 and $length($raw.nextToken)<=${LIMITS.tokenChars} and $not($raw.nextToken in $ctx.tokens))) and $count($distinct($append($ctx.allArns,$raw.taskArns)))<=${LIMITS.candidates}`,'RetainPage']],'DiscoveryError');
- pass('RetainPage',`{'queue':${array('$distinct($append($ctx.queue,$raw.taskArns))')},'allArns':${array('$distinct($append($ctx.allArns,$raw.taskArns))')},'pages':$ctx.pages+1,'nextToken':$exists($raw.nextToken)?$raw.nextToken:null,'tokens':$exists($raw.nextToken)?$append($ctx.tokens,$raw.nextToken):$ctx.tokens}`,'PageRecord');record('PageRecord','DISCOVERY_PAGE','PageComplete',{mode:J('$ctx.mode'),page:J('$ctx.pages'),raw:J('$raw')});
+ const validArns=`$count($filter(${arns},function($a){${taskArnTest('$a')}}))=$count(${arns})`;
+ choice('ListShape',[[`${resultGuard('list')}$type($raw)='object' and $type(${arns})='array' and $count(${arns})<=10 and (${validArns}) and ($not($exists(${token})) or ($type(${token})='string' and $length(${token})>0 and $length(${token})<=${LIMITS.tokenChars} and $not(${token} in $ctx.tokens))) and $count($distinct($append($ctx.allArns,${arns})))<=${LIMITS.candidates}`,'RetainPage']],'DiscoveryError');
+ pass('RetainPage',`{'queue':${array(`$distinct($append($ctx.queue,${arns}))`)},'allArns':${array(`$distinct($append($ctx.allArns,${arns}))`)},'pages':$ctx.pages+1,'nextToken':$exists(${token})?${token}:null,'tokens':$exists(${token})?$append($ctx.tokens,${token}):$ctx.tokens}`,'PageRecord');record('PageRecord','DISCOVERY_PAGE','PageComplete',{mode:J('$ctx.mode'),page:J('$ctx.pages'),raw:J('$raw')});
  choice('PageComplete',[['$ctx.nextToken=null','NextInventory']],'LoopGate');pass('NextInventory',"{'completeModes':$append($ctx.completeModes,$ctx.mode),'mode':$ctx.mode+1,'pages':0,'tokens':[],'nextToken':null}",'LoopGate');
  pass('DiscoveryError',`{'hold':true,'qualificationFailed':true,'mode':3,'issues':${pushIssue(issue('discovery-incomplete',`{'operation':$ctx.operation,'error':${errSummary('$callError')}}`))}}`,'LoopGate');
  pass('PickCandidate',"{'currentArn':$ctx.queue[0],'queue':$append([],$filter($ctx.queue,function($a,$i){$i>0})),'current':null,'eni':null,'taskReady':false,'stopMode':false,'calls':$ctx.calls+1,'operation':'describe-candidate'}",'DescribeCandidate');
  const describeArgs={Cluster:p.clusterArn,Tasks:J('[$ctx.currentArn]'),Include:['TAGS']};
  task('DescribeCandidate','ecs:describeTasks',describeArgs,'CandidateCoverage','CandidateError','$ctx.C',true);
- choice('CandidateCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainCandidate']],'CandidateError');pass('RetainCandidate',`{'current':${retainTask('$raw.tasks[0]')}}`,'OwnershipGate');
+ choice('CandidateCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainCandidate']],'CandidateError');pass('RetainCandidate',`{'current':${retainTask(`${tasks}[0]`,p)}}`,'OwnershipGate');
  choice('OwnershipGate',[[`$count($filter($append(${ownedArns},${overflowArns}),function($a){$a=$ctx.currentArn}))>0`,'EvaluateTask'],[ownership,'OwnedCapacity']],'ForeignOrAmbiguous');
  choice('OwnedCapacity',[[`$count($ctx.owned)<${LIMITS.owned}`,'BindOwned'],[`$count($ctx.overflow)<${LIMITS.overflow}`,'BindOverflow']],'OverflowExhausted');
  pass('BindOwned',`{'owned':$append($ctx.owned,${ownedRecord()}),'qualificationFailed':$ctx.qualificationFailed or $count($ctx.owned)>0}`,'OwnershipRecord');
@@ -113,7 +117,7 @@ function buildStateMachine(binding,profile){
  pass('SelectOwned',`{'currentArn':${pendingAll}[0].arn,'current':null,'eni':null,'stopMode':true,'finalMode':false}`,'StopBudget');
  choice('StopBudget',[[`${now}<$ctx.C-2000 and $exists($ctx.currentArn)`,'PreparePreStopDescribe']],'FinalUnknown');
  prepare('PreparePreStopDescribe','prestop-describe','PreStopDescribe');task('PreStopDescribe','ecs:describeTasks',describeArgs,'PreStopCoverage','PreStopReadUnknown','$ctx.C',true);
- choice('PreStopCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainPreStop']],'PreStopReadUnknown');pass('RetainPreStop',`{'current':${retainTask('$raw.tasks[0]')}}`,'PreStopTerminal');
+ choice('PreStopCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainPreStop']],'PreStopReadUnknown');pass('RetainPreStop',`{'current':${retainTask(`${tasks}[0]`,p)}}`,'PreStopTerminal');
  choice('PreStopTerminal',[[terminal,'RetainTerminal']],'EvaluateTask');
  pass('PreStopReadUnknown',`{'current':${currentOwned},'eni':{'status':'FRESH_READ_UNAVAILABLE'},'qualificationFailed':true,'hold':true,'issues':${pushIssue(issue('prestop-read',`{'arn':$ctx.currentArn,'error':${errSummary('$callError')}}`))}}`,'PrepareStopIdentity');
  prepare('PrepareStopIdentity','stop-identity','StopIdentity');task('StopIdentity','sts:getCallerIdentity',{},'CheckStopIdentity','FinalUnknown');
@@ -128,7 +132,7 @@ function buildStateMachine(binding,profile){
  pass('PickConfirm',`($u:=${unconfirmedAll};$m:=$min($u.probeSeq);{'currentArn':$u[probeSeq=$m][0].arn,'current':null,'eni':null,'stopMode':false,'finalMode':false})`,'PrepareTerminal');
  choice('PrepareTerminal',[[`${now}<$ctx.C-1000 and $ctx.calls<${LIMITS.terminalCalls}`,'CountTerminal']],'FinalUnknown');prepare('CountTerminal','terminal-describe','TerminalDescribe');
  task('TerminalDescribe','ecs:describeTasks',describeArgs,'TerminalCoverage','TerminalReadUnknown','$ctx.C',true);
- choice('TerminalCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainFreshTerminal']],'TerminalReadUnknown');pass('RetainFreshTerminal',`{'current':${retainTask('$raw.tasks[0]')}}`,'TerminalGate');
+ choice('TerminalCoverage',[[`(${coverage}) and (${safeRaw})`,'RetainFreshTerminal']],'TerminalReadUnknown');pass('RetainFreshTerminal',`{'current':${retainTask(`${tasks}[0]`,p)}}`,'TerminalGate');
  choice('TerminalGate',[[`(${terminal}) and $observedMs<$ctx.C`,'RetainTerminal']],'TerminalWaitRoute');
  pass('TerminalReadUnknown',`{'hold':true,'issues':${pushIssue(issue('terminal-read',`{'arn':$ctx.currentArn,'error':${errSummary('$callError')}}`))}}`,'TerminalWaitRoute');
  pass('RetainTerminal',`{${mapLedger("{'terminal':true,'terminalAt':$observedMs}")},'qualificationFailed':$ctx.qualificationFailed or ${worker}.exitCode!=0 or $not(${currentOwned}.qualifiedSeen) or (${mismatch})}`,'TerminalRecord');
