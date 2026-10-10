@@ -1,56 +1,86 @@
-# Browser qualification source preparation
+# Browser qualification source and support closure
 
-W02-20 completes the frozen collector extraction into focused modules. Status is **INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST**: the unchanged flat-three loader, owner context and support-image recipe do not bind or package the eleven package files. `component-pins.json` records their exact offline bytes and `sourceManifestCoverage=false`; it does not enable a build or host launch.
+This source candidate implements D006 v2 for all **fourteen raw payloads**.
+It is **NO-BUILD / NO-HOST** pending independent owner review. Offline source
+coverage is distinct from native/security/G1 admission; current Meri is untouched.
 
-| Module | Responsibility |
-| --- | --- |
-| `host_evidence/config.py` | Immutable pins, patterns and bounds |
-| `host_evidence/evidence_io.py` | Bounded evidence file primitives and strict/bounded JSON helpers |
-| `host_evidence/classification.py` | Pure predicates and host classification |
-| `host_evidence/collection.py` | Collection, cancellation and executable-hash cache |
-| `host_evidence/poll.py` | Callback-based bounded polling |
-| `host_evidence/source_binding.py` | Canonical source root, source manifest and context binding |
-| `host_evidence/admission.py` | Sandbox/timer/browser/inspect admission reasons and run-record verification |
-| `host_evidence/browser_capture.py` | One bounded attach/start capture and run-record assembly |
-| `host_evidence/export_protocol.py` | Export build, strict validation, Put classification and batch rendering |
-| `host_evidence/cli.py` | Stdout dump, invocation-only signals and the CLI `main` |
-| `host_evidence/__init__.py` | Minimal package marker |
+`app.mjs` remains a small direct-export entry. The JS modules separate pinned
+configuration, raw source reads, loader assembly, the finite installation verifier,
+compression/metadata, CDK stack and CLI. The legacy JS classifier is UNQUALIFIED.
+Python keeps collection, classification, admission, export, source binding and CLI
+in their focused modules. The executable entry contains only the stdlib pre-import
+gate, direct aliases and CLI guard; named fixture imports stay inert.
 
-The 39 frozen function/class segments retain their exact bytes, and W02-20 moved the 24 deferred definitions into their focused modules (22 raw byte-identical; `source_manifest` and `_inspect_reasons` carry the only two permitted `__file__` value-node changes to the new `_source_root()` helper). Ordinary imports compose them without wrappers or cycles (config → evidence_io/classification → collection/source_binding → admission/browser_capture/export_protocol → cli → entry). The entry sets bytecode suppression before package imports and aliases the collection module's single cancellation/cache dictionaries. Script execution finds the sibling package; source-file test imports explicitly add that directory only in test code.
+The source payload is bootstrap, observer entry, eleven literal `host_evidence`
+modules and the derived profile mapped to `seccomp.json`. There are no globs or
+basename collapse. The support image contains only those fourteen source files;
+`source-manifest.v2.json` is separately generated DATA. The loader checks the exact
+finite layout, root ownership/modes, regular files/no links, full raw lengths and
+hashes with descriptor/path identity checks. It installs directories0700/files0600,
+creates manifest DATA exclusively, reopens it and rechecks every payload. The real
+entry gates before any package import under `python3 -I -B`; all bootstrap and
+loader Python calls use those flags. The source API also requires the finalized
+tree, and context validation rejects malformed/v1/mixed data.
 
-W02-20 completes the deferred extraction. The entry is now a 3,265-byte composition entry (imports plus the `sys.exit(main())` guard). The remaining JavaScript organization and complete pre-import asset binding need separate owned tasks before runtime assembly. Existing runtime behavior is not newly qualified by this refactor.
+The manifest is duplicate-free canonical ASCII JSON (sorted keys, compact, one LF)
+with `{schema:"meri-browser-source/2",assets:[{path,bytes,sha256},...14]}`. Limits:
+manifest32768B, each asset2097152B, total29360128B; actual reads use each reviewed
+record's exact size. Commit/image/config/template/run identities remain external.
+The outer context still has exactly run/supportImage/workerImage/profileSha/source.
+An uncompromised privileged loader and protected installation are prerequisites;
+root0600 is not an immutable mount or hostile-root defense. Self-checks cannot
+authenticate a replaced owner's expectation.
 
-The focused canonical command is `node --test infra/browser-qualification/security.test.mjs`. Supply the three exact integration-owned ignored oracle inputs described below. On Windows select the installed Python through test-only `MERI_TEST_PYTHON` and Git Bash in the process-local PATH. The suite creates a fresh invocation directory, retains complete replay facts and asserts 23 direct codex, 23 embedded codex and 33 owner results separately. Embedded codex results duplicate the direct coverage. Twenty-six new module cases and ten harness-integrity cases remain distinct; no native host or cloud call is made. See the [W02-20 completion handoff](../../docs/coordination/reports/W02-20-PYTHON-COMPLETION.md) for the current source completion and evidence, and the [W02-17 extraction handoff](../../docs/coordination/reports/W02-17-COLLECTOR-EXTRACTION.md) for earlier history.
-
-## Existing worker-binding design and runtime limits
-
-
-This candidate prepares one disposable browser host in the new Meri qualification environment under D005/D006. It does not authorize a launch or establish a working Chromium sandbox. Application and control services remain on Fargate; current Meri/Capiro is untouched. W02-16 refreshes the candidate worker tuple to the W02-08 static-build-acceptance image `967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c`, configuration ID `sha256:6f313883ad219ebd5cc3d0dbd1df5cdf80f0f035eab5ab02c3cead4db568f471` and OCI source revision `0be04d0799c9c527e300b47c19176cddb0eaa231`. The previous digest `7327f045...` is retained only as historical provenance and is no longer an allowed candidate. The pinned image carries **4 CRITICAL / 18 HIGH** (22) unresolved findings; static build acceptance is not runtime/security admission. Image remediation/rebinding and individual probe admission belong to the integration owner.
-
-The fixed source manifest is [component-pins.json](component-pins.json). Preserve the two seccomp files exactly: Docker/Moby default has31rules, and the derived profile adds only the five documented amd64 rules. Neither profile has been executed here. Upstream attribution and license links are retained in the manifest.
-
-`app.mjs` is based on the frozen owner implementation at4fd85f7, with this task's scoped worker-tuple update (image reference/config ID/OCI revision/kind and the matching user-data exports). Its D006 loader binds a canonical run UUID, a distinct immutable support-image digest, the pinned worker image reference/config ID/OCI source revision/kind and the exact three source sizes/hashes into the reviewed template. It never accepts a caller-supplied expected config or revision. The support image is FROMscratch. Its separate container is created, inspected, copied and removed **without being started**. The loader verifies copied regular-file identities/bytes and purges its ECR login before executing the bootstrap. No S3 grant, route or new provider/source authority is introduced.
-
-`host-evidence.py` is the authoritative collector/classifier. Its39 reviewed collector/classifier/poll/version/helper bodies remain byte-identical to4fd85f7/be1e7a7. The older JavaScript `classifyHostEvidence` export in the frozen app is **UNQUALIFIED** and is never the admission oracle. The deferred Python helpers now bind complete browser output, stopped Docker inspect, the accepted image configuration ID and OCI source revision, current run/support/source/profile identities, observer checkpoint and clean joins. The final-config guard requires `record.imageID` and `inspect.Image` to EACH independently equal the accepted configuration ID (a record and inspect that agree on the same substituted IID still reject), `inspect.Config.Image` to be the accepted worker digest and `inspect.Config.Labels['org.opencontainers.image.revision']` to equal the accepted source. They reject boolean exit values, unsafe or unknown image ENV/mounts, conflicting sandbox rows, partial capture and later complete unsafe host observations. The positive browser sequence follows the unchanged actual browser probe's pure `buildBrowserSteps`/`runBoundedSequence` flow, including its supported absent `browser_get_config` case.
-
-The bootstrap traps cleanup before work. It verifies the existing900second loader timer, its service target and monotonic deadline; it never resets the timer. After the immutable worker pull and credential purge, and before the sole browser `docker create`, it inspects the locally pulled image with the same bounded mechanism and fails closed unless the immutable reference, image configuration ID, OCI source revision and `worker-inventory-only` kind all equal the pinned tuple (a failed guard makes zero browser create/start calls). Work stops at420seconds, whole bootstrap cleanup is bounded by480seconds, and the loader's300second bound plus5second timeout overrun fits within the original timer. Browser execution is one create and one attach/start, at most120seconds, as10001:10001 with network none, read-only root, all capabilities dropped, no-new-privileges, private PID/IPC, pids512/memory4GiB/cpu2/shm1GiB, and the exact reviewed seccomp profile. Fresh conversation/home/config directories belong to10001; only the disposable workspace and tmpfs enter the container. No host environment, ECR login, socket or credential directory is passed. The exact image ENV allowlist must be reviewed again if a future image changes it.
-
-The observer is a direct owned child, joined with bounded Bash builtins after TERM; an uncertain or forced join cannot qualify. Capture drains both pipes under a combined2MiB cap and absolute deadline, preserves complete bytes and reaps its owned client. Final Docker inspect and exit are captured before removal. The guest trap stops/removes only its owned container and powers off. These static controls do not prove actual termination, descendant cleanup or root-volume deletion. The separately reviewed owner controller/watchdog must independently verify EC2 termination and disappearance of observed root EBS volumes.
-
-Export uses current positive millisecond timestamps and complete UTF-8 records. Limits are6144raw bytes/8192base64 bytes per chunk,12KiB per JSON event,8MiB aggregate raw bytes,1500events,32Put calls,100events and900KiB including26bytes/event overhead per batch. Indexed chunks, record byte counts/SHA256, a context-bound manifest and final end record are mandatory. Loss, duplicates, reordering, unknown fields, nonfinite numbers, incomplete UTF-8 and count/hash/context discrepancies fail. Any rejected Put event index, including0, fails. Complete diagnostic export of a failed run remains a failed run. Logs contain full synthetic browser/checkpoint/inspect facts, not credentials or private content; no byte truncation can claim success.
-
-After owner retrieval, validate the actual complete events with `python3 -B infra/browser-qualification/host-evidence.py --validate-export EVENTS.json --run-id UUID --stream host-UUID --context-file OWNER-CONTEXT.json`. The owner context must come from the reviewed template/build, independently of the retrieved stream. This checks reconstruction; the owner still must compare reconstructed run/source facts and run admission and independently apply the classifier. A final end line alone is insufficient.
-
-The target host interpreter is `/usr/bin/python3` **3.9**, which AWS states remains3.9 for the life of [Amazon Linux2023](https://docs.aws.amazon.com/linux/al2023/ug/python.html). The bootstrap rejects another major/minor and the run record exports the actual patch version. This authoring host uses the bundled Python3.12.14 and Node24.19.0 on Windows. Observer and four embedded Python blocks parse with Python3.9 grammar; source inspection found no3.10+ APIs. This is not an actual Python3.9 or AL2023 execution result. The native interpreter patch must be measured before acceptance. Windows fixtures use consistent birthtime comparison for evidence descriptors; Linux retains inode/size/mtime/ctime checks. Windows worktrees provide no OS isolation claim.
-
-Run the canonical offline checks from the repository root:
+Run these source-only checks from the repository root using the existing runtimes:
 
 ```text
+python -I -B infra/browser-qualification/asset-binding-regressions.py
+node --test infra/browser-qualification/asset-protocol.test.mjs
 node --test infra/browser-qualification/security.test.mjs
-npm run check
-npm run check:infra
 ```
 
-The host suite drives the actual Python helpers, frozen observer regression harnesses and injected fake capture pipes/processes; it synthesizes11resources using a visibly synthetic same-repository support digest and run UUID. Synthesis neither builds an image nor admits that digest. The frozen observer replay harnesses (`codex-observer-checkpoint-audit.py`, `owner-regressions-adapted.py`) and the `observer-before-4863878.py` baseline they compare against are integration-supplied ignored `.task-inputs` fixtures in this task worktree; another clean checkout must receive those exact owner fixtures before running this suite. A test-only `MERI_TEST_PYTHON` selection (defaulting to `python3`) routes every Python spawn; it is never read by guest/product code. No dependency installation is needed here.
+On Windows set test-only `MERI_TEST_PYTHON` to the bundled Python3.12.14 and
+`MERI_TEST_BASH` to `C:/Program Files/Git/bin/bash.exe`; no machine PATH/install
+change is needed. Python3.9 grammar is checked; actual AL2023 Python3.9 is unrun.
+Windows raw files and main-path import sentinels are real fixtures; uid/mode facts
+in the main/loader checks are explicitly FAKE. Windows readers compare consistent
+birthtime; Linux compares ctime. No Windows result proves Linux/root permissions.
 
-Native AL2023/kernel/user-namespace/seccomp behavior, real browser/renderer observations, Bash/systemd/Docker output compatibility, ECR support packaging/pull, CloudWatch transport/reconstruction, network/metadata denial and host/root cleanup are **NOT RUN**. Public browsing, paid inference, source access, production isolation/recovery/capacity and G1 remain open. Separate real Hermes review, owner independent acceptance and exact source/build/template/change-set reviews are still required.
+The canonical suite needs the three immutable owner-supplied ignored fixtures in
+`.task-inputs`: codex-observer-checkpoint-audit.py (`d1900a59…275e2`),
+owner-regressions-adapted.py (`383360dd…1c528`) and observer-before-4863878.py
+(`cbfd952e…7f471`). The harness verifies their full hashes before adapting test
+loading/routing. The fixed W20 maps also remain unchanged. Results retain23 direct
++23 repeated embedded codex cases and33 owner cases separately. V2 test names
+explicitly replace the historical fallback positive with refusal; old raw oracle
+bytes are preserved. No original observation is relabelled as native qualification.
+W21's historical frozen-W17 focused suite is not a current-v2 suite.
+
+`component-pins.json` binds all fourteen current raw source bytes. The worker tuple
+is unchanged: immutable bf55… image/config6f313…/source0be04…. The original39 bodies
+and21 other deferred bodies stay raw-identical; only source_manifest/_context_ok
+and the adopted inspect source/fallback portion change. Original38 assignment ASTs
+and per-module order,48 names,63 direct aliases and shared cancellation/cache
+identity are preserved. New gate/source helpers/constants are inventoried separately.
+
+The scratch support recipe never starts its container. The buildspec requires NEW
+`meri-host-assets-build-input/2`, not the legacy flat-three archive helper. Owner
+must freeze exact sourceCommit plus sourceFiles14 (path/assetPath/bytes/sha256),
+ownerFiles10 (app, eight JS modules including asset-verifier, component pins), and
+Dockerfile/buildspec/builderAuthority records. Source order follows runtime-path
+lexicographic order; owner order is the explicit buildspec list. Packaging verifies
+all inputs before Docker, copies/compares the entire finite payload tree, proves
+owned container removal, pushes/reads back ECR and purges its private auth directory
+before publishing the result. Failure after push leaves an UNADMITTED image.
+This buildspec has not run; an independently reviewed archive/helper, IAM authority,
+immutable image/config/source readback and cleanup evidence remain owner gates.
+
+The original900s timer, bootstrap deadlines, worker provenance guard, browser
+sandbox settings and cleanup responsibilities remain. Loader poweroff is still an
+unbounded native limitation; offline syntax/success-path fixtures do not prove every
+failure cleanup path or process descendants. Owner controller must independently
+prove termination and root-volume deletion. Native AL2023/Docker/systemd/browser
+and renderer sandbox, network/metadata denial, complete log transport/reconstruction,
+source walls, durable recovery and G1 remain open.49 findings/22 severe remain OPEN,
+Office DEFERRED, paid Bedrock0, sources disabled. No cutover or cloud launch occurs
+in this source task.

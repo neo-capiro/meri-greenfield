@@ -95,10 +95,10 @@ target="$(bounded 5 systemctl show "$TIMER_UNIT.timer" --property=Unit --value)"
 next="$(bounded 5 systemctl show "$TIMER_UNIT.timer" --property=NextElapseUSecMonotonic --value)" || fail 'timer schedule unreadable'
 [ "$active" = active ] && [ "$target" = "$TIMER_UNIT.service" ] || fail 'timer state/target mismatch'
 [[ -n "$next" && "$next" != 0 && "$next" != n/a && "$next" != infinity ]] || fail 'timer next deadline missing'
-bounded 5 python3 "$OBSERVER" --timer-state "$active" "$target" "$next" --run-id "$RUN" --out "$EVIDENCE_DIR/timer.json" >/dev/null || fail 'existing timer leaves insufficient bootstrap budget'
+bounded 5 python3 -I -B "$OBSERVER" --timer-state "$active" "$target" "$next" --run-id "$RUN" --out "$EVIDENCE_DIR/timer.json" >/dev/null || fail 'existing timer leaves insufficient bootstrap budget'
 for command in python3 aws docker runc containerd ldconfig systemctl sha256sum chown; do command -v "$command" >/dev/null || fail 'prerequisite absent'; done
 [ "$(bounded 5 sha256sum "$SECCOMP")" = "$SECCOMP_SHA  $SECCOMP" ] || fail 'profile hash mismatch'
-bounded 5 python3 - "$HOST_DIR" "$WORK_DIR" <<'__PARENTS__'
+bounded 5 python3 -I -B - "$HOST_DIR" "$WORK_DIR" <<'__PARENTS__'
 import os,stat,sys
 for path in ('/opt','/run','/var/log',sys.argv[1]):
  s=os.lstat(path);assert stat.S_ISDIR(s.st_mode) and s.st_uid==0 and not(s.st_mode&0o022),'unsafe host parent'
@@ -113,14 +113,14 @@ bounded 3 mkdir --mode=0700 -- "$CONTROL_DIR" || fail 'exclusive empty Docker co
 CONTROL_CREATED=1
 export DOCKER_CONFIG="$CONTROL_DIR"
 version() {
-  bounded 5 python3 "$OBSERVER" --parse-version "$1" "$2" --out "$EVIDENCE_DIR/version-$1.json" >/dev/null || fail 'version rejected'
+  bounded 5 python3 -I -B "$OBSERVER" --parse-version "$1" "$2" --out "$EVIDENCE_DIR/version-$1.json" >/dev/null || fail 'version rejected'
 }
 version aws "$(bounded 10 aws --version 2>&1)"
 version docker "$(bounded 10 docker version --format '{{.Server.Version}}')"
 version runc "$(bounded 10 runc --version 2>&1)"
 version containerd "$(bounded 10 containerd --version 2>&1)"
 version libseccomp "$(bounded 10 ldconfig -p)"
-bounded 5 python3 - "$EVIDENCE_DIR" <<'__VERSIONS__' >"$EVIDENCE_DIR/versions.json"
+bounded 5 python3 -I -B - "$EVIDENCE_DIR" <<'__VERSIONS__' >"$EVIDENCE_DIR/versions.json"
 import json,os,sys
 assert sys.version_info[:2]==(3,9), 'unreviewed guest Python major/minor'
 out={}
@@ -129,7 +129,7 @@ for k in ('aws','docker','runc','containerd','libseccomp'):
  assert r['ok'] is True;out[k]=r['normalized']
 print(json.dumps(out))
 __VERSIONS__
-bounded 20 python3 "$OBSERVER" --preflight-only --out "$EVIDENCE_DIR/preflight.json" >/dev/null || fail 'host preflight failed'
+bounded 20 python3 -I -B "$OBSERVER" --preflight-only --out "$EVIDENCE_DIR/preflight.json" >/dev/null || fail 'host preflight failed'
 for unit in ecs ecs-volume-plugin amazon-ssm-agent snap.amazon-ssm-agent.amazon-ssm-agent.service sshd ssh; do
   [ "$(bounded 5 systemctl is-enabled "$unit" 2>/dev/null || true)" = masked ] || fail 'agent is not masked'
   state="$(bounded 5 systemctl is-active "$unit" 2>/dev/null || true)"
@@ -173,19 +173,19 @@ CID="$(bounded 15 docker create --pull never --name "$CONTAINER_NAME" --cidfile 
   --log-driver local --log-opt max-size=4m --log-opt max-file=1 \
   --entrypoint node "$IMAGE" /opt/meri-worker/probes/browser.mjs)" || fail 'browser create failed'
 [[ "$CID" =~ ^[0-9a-f]{64}$ ]] && [ "$(<"$EVIDENCE_DIR/browser.cid")" = "$CID" ] || fail 'owned ID mismatch'
-python3 "$OBSERVER" --watch --container-name "$CONTAINER_NAME" --run-id "$RUN" --out "$EVIDENCE_DIR/host-evidence.json" >"$EVIDENCE_DIR/observer.log" 2>&1 &
+python3 -I -B "$OBSERVER" --watch --container-name "$CONTAINER_NAME" --run-id "$RUN" --out "$EVIDENCE_DIR/host-evidence.json" >"$EVIDENCE_DIR/observer.log" 2>&1 &
 OBSERVER_PID=$!
 bounded 1 sleep 0.5
 left="$(remaining)" || fail 'whole work deadline reached'
 [ "$left" -gt 4 ] || fail 'no remaining capture budget'
 capture_budget=$((left-3)); [ "$capture_budget" -le 120 ] || capture_budget=120
 set +e
-bounded $((capture_budget+3)) python3 "$OBSERVER" --capture-browser "$CID" --deadline "$capture_budget" --out-dir "$EVIDENCE_DIR" --out "$EVIDENCE_DIR/capture.json" >"$EVIDENCE_DIR/capture-cli.json" 2>&1
+bounded $((capture_budget+3)) python3 -I -B "$OBSERVER" --capture-browser "$CID" --deadline "$capture_budget" --out-dir "$EVIDENCE_DIR" --out "$EVIDENCE_DIR/capture.json" >"$EVIDENCE_DIR/capture-cli.json" 2>&1
 CAPTURE_RC=$?
 set -e
 bounded 10 docker stop -t 3 "$CID" >/dev/null 2>&1 || fail 'owned container stop uncertain'
 bounded 8 docker inspect "$CID" >"$EVIDENCE_DIR/container-inspect.json" || fail 'final inspect unavailable'
-RUN_RC="$(bounded 5 python3 - "$EVIDENCE_DIR/container-inspect.json" <<'__EXIT__'
+RUN_RC="$(bounded 5 python3 -I -B - "$EVIDENCE_DIR/container-inspect.json" <<'__EXIT__'
 import json,sys
 with open(sys.argv[1]) as f:r=json.load(f)
 assert len(r)==1 and r[0]['State']['Running'] is False
@@ -197,19 +197,19 @@ kill -TERM "$OBSERVER_PID" 2>/dev/null || true
 OBSERVER_RC=0
 join_observer 12 || OBSERVER_RC=$?
 [ -z "$OBSERVER_PID" ] || fail 'observer join uncertain'
-bounded 3 python3 - "$OBSERVER_RC" <<'__JOIN__' >"$EVIDENCE_DIR/observer-join.json"
+bounded 3 python3 -I -B - "$OBSERVER_RC" <<'__JOIN__' >"$EVIDENCE_DIR/observer-join.json"
 import json,sys
 print(json.dumps(dict(reaped=True,status=int(sys.argv[1]),forced=False)))
 __JOIN__
-bounded 15 python3 "$OBSERVER" --assemble-run-record "$EVIDENCE_DIR" --run-id "$RUN" --status "$RUN_RC" --assets-image "$ASSETS" --worker-image "$IMAGE" --out "$EVIDENCE_DIR/assemble.json" >/dev/null || fail 'complete assembly failed'
+bounded 15 python3 -I -B "$OBSERVER" --assemble-run-record "$EVIDENCE_DIR" --run-id "$RUN" --status "$RUN_RC" --assets-image "$ASSETS" --worker-image "$IMAGE" --out "$EVIDENCE_DIR/assemble.json" >/dev/null || fail 'complete assembly failed'
 QUALIFIED=0
-bounded 10 python3 "$OBSERVER" --fixture-run "$EVIDENCE_DIR/run-record.json" --run-id "$RUN" --out "$EVIDENCE_DIR/verification.json" >/dev/null && QUALIFIED=1
-bounded 15 python3 "$OBSERVER" --export-protocol "$EVIDENCE_DIR/export-spec.json" --out "$EVIDENCE_DIR/export-plan.json" >/dev/null || fail 'complete plan failed'
-bounded 10 python3 "$OBSERVER" --export-batches "$EVIDENCE_DIR/export-plan.json" --out-dir "$EVIDENCE_DIR/batches" >/dev/null || fail 'complete batches failed'
+bounded 10 python3 -I -B "$OBSERVER" --fixture-run "$EVIDENCE_DIR/run-record.json" --run-id "$RUN" --out "$EVIDENCE_DIR/verification.json" >/dev/null && QUALIFIED=1
+bounded 15 python3 -I -B "$OBSERVER" --export-protocol "$EVIDENCE_DIR/export-spec.json" --out "$EVIDENCE_DIR/export-plan.json" >/dev/null || fail 'complete plan failed'
+bounded 10 python3 -I -B "$OBSERVER" --export-batches "$EVIDENCE_DIR/export-plan.json" --out-dir "$EVIDENCE_DIR/batches" >/dev/null || fail 'complete batches failed'
 bounded 10 aws logs create-log-stream --log-group-name "$LOG_GROUP" --log-stream-name "$STREAM" --region "$REGION" --cli-connect-timeout 3 --cli-read-timeout 6 >/dev/null 2>&1 || fail 'fresh stream creation failed'
 for batch in "$EVIDENCE_DIR"/batches/batch-*.json; do
   bounded 15 aws logs put-log-events --log-group-name "$LOG_GROUP" --log-stream-name "$STREAM" --region "$REGION" --cli-connect-timeout 3 --cli-read-timeout 10 --log-events "file://$batch" >"$batch.response" 2>&1 || fail 'PutLogEvents failed'
-  bounded 3 python3 "$OBSERVER" --put-response "$batch.response" >/dev/null || fail 'PutLogEvents rejected/malformed'
+  bounded 3 python3 -I -B "$OBSERVER" --put-response "$batch.response" >/dev/null || fail 'PutLogEvents rejected/malformed'
 done
 [ "$CAPTURE_RC" = 0 ] && [ "$QUALIFIED" = 1 ] && [ "$OBSERVER_RC" = 0 ] && [ "$RUN_RC" = 0 ] || fail 'diagnostic export complete; run NOT qualified'
 printf 'complete evidence candidate; external owner gates pending run=%s\n' "$RUN" >>"$EVIDENCE_DIR/verdict.txt"

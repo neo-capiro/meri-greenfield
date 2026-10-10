@@ -41,7 +41,14 @@ mkdirSync(TMP, { recursive: true });
 // reads this; it only lets an offline run select an existing interpreter without
 // touching machine PATH.
 const PYTHON = process.env.MERI_TEST_PYTHON || 'python3';
-const py = (args) => spawnSync(PYTHON, ['-B', OBS, ...args], { encoding: 'utf8', cwd: REPO });
+// Named fixture adapter: production main-path admission is tested separately.
+const ADAPTER = String.raw`import importlib.util,sys
+from unittest.mock import patch
+sys.path.insert(0,sys.argv[1]);s=importlib.util.spec_from_file_location('fixture_entry',sys.argv[1]+'/host-evidence.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+import host_evidence.source_binding as sb
+import host_evidence.admission as adm
+with patch.object(sb,'_source_root',return_value=sys.argv[2]),patch.object(adm,'_source_root',return_value=sys.argv[2]):sys.exit(m.main(sys.argv[3:]))`;
+const py = (args) => spawnSync(PYTHON, ['-I','-B','-c',ADAPTER,INFRA,INSTALL,...args], { encoding: 'utf8', cwd: REPO, timeout: 10000 });
 const pyJson = (args) => { const r = py(args); assert.ok(r.status === 0 || r.status === 3, r.stderr + r.stdout); return JSON.parse(r.stdout); };
 const write = (name, value) => { const p = join(TMP, name); writeFileSync(p, typeof value === 'string' ? value : JSON.stringify(value, null, 2)); return p; };
 
@@ -57,11 +64,17 @@ function observation() {
     runningContainers: [{ id: CID, name: 'meri-browser-probe-' + RUN, image: IMAGE, labels: { 'meri.qualification.run': RUN } }],
     processes: [proc(100, 1, 'main', 1, 1), proc(110, 100, 'browser', 1, 1), proc(120, 110, 'renderer', 2, 2)] };
 }
+const INSTALL = join(TMP,'v2-install');
+const SOURCE_PATHS=['bootstrap.sh','host-evidence.py','host_evidence/__init__.py','host_evidence/admission.py','host_evidence/browser_capture.py','host_evidence/classification.py','host_evidence/cli.py','host_evidence/collection.py','host_evidence/config.py','host_evidence/evidence_io.py','host_evidence/export_protocol.py','host_evidence/poll.py','host_evidence/source_binding.py','seccomp.json'];
 function sourceManifest() {
-  return Object.fromEntries([['observer','host-evidence.py'],['bootstrap','bootstrap.sh'],['seccomp','seccomp.chromium-155-amd64.json']].map(([key,name])=>{
-    const raw=readFileSync(join(INFRA,name));return [key,{bytes:raw.length,sha256:createHash('sha256').update(raw).digest('hex')}];
-  }));
+  return {schema:'meri-browser-source/2',assets:SOURCE_PATHS.map((path)=>{
+    const raw=readFileSync(join(INFRA,path==='seccomp.json'?'seccomp.chromium-155-amd64.json':path));
+    return {bytes:raw.length,path,sha256:createHash('sha256').update(raw).digest('hex')};
+  })};
 }
+mkdirSync(join(INSTALL,'host_evidence'),{recursive:true});
+for(const path of SOURCE_PATHS)writeFileSync(join(INSTALL,path),readFileSync(join(INFRA,path==='seccomp.json'?'seccomp.chromium-155-amd64.json':path)));
+writeFileSync(join(INSTALL,'source-manifest.v2.json'),JSON.stringify({assets:sourceManifest().assets,schema:'meri-browser-source/2'})+'\n');
 function context() { return {run:RUN,supportImage:SUPPORT,workerImage:IMAGE,profileSha:'e62f4c3e3e7ce6de099ba7a0e3df0881b7b407b74dc664aef70f76f6316385c6',source:sourceManifest()}; }
 function browserPayload() {
   // Source oracle: actual buildBrowserSteps/runBoundedSequence with injected
@@ -230,7 +243,7 @@ test('worker provenance guard fails closed before the sole browser create', () =
     'docker start "$IMAGE"',
     'printf "creates=%s starts=%s\\n" "$CREATES" "$STARTS"',
   ].join('\n');
-  const run = (meta) => spawnSync('bash', ['-c', harness, 'meri', meta], { encoding: 'utf8' });
+  const run = (meta) => spawnSync(process.env.MERI_TEST_BASH || 'bash', ['-s','--',meta], { input:harness, encoding:'utf8', timeout:10000 });
   const good = run([CONFIG_ID, IMAGE, REVISION, KIND].join('|'));
   assert.equal(good.status, 0, good.stderr);
   assert.match(good.stdout, /creates=1 starts=1/);
@@ -429,7 +442,7 @@ test('Codex owner: actual-flow facts, image environment/mounts and full output c
     duplicateSandbox:r=>r.browser.sandbox.rows.unshift(['Layer 1 Sandbox','None']),
     substringNNP:r=>r.inspect.HostConfig.SecurityOpt[0]='prefix-no-new-privileges',missingPrivilege:r=>delete r.inspect.HostConfig.Privileged,
     wrongProfile:r=>{r.profile.path='/tmp/other';r.inspect.HostConfig.SecurityOpt[1]='seccomp=/tmp/other';},
-    wrongSource:r=>r.source.observer.sha256='b'.repeat(64),missingObserverOK:r=>delete r.observer.ok,
+    wrongSource:r=>r.source.assets[1].sha256='b'.repeat(64),missingObserverOK:r=>delete r.observer.ok,
     missingJoin:r=>delete r.observerJoin,forcedJoin:r=>r.observerJoin.forced=true,unreapedCapture:r=>r.capture.clientReaped=false,
     missingTimer:r=>delete r.timer,noSchedule:r=>r.timer.next='0',wrongStepDetail:r=>r.browser.stepSequence.details.snapshot='missing marker',
     missingGuestVersion:r=>delete r.pythonVersion,wrongGuestVersion:r=>r.pythonVersion='3.14.7',
@@ -451,7 +464,7 @@ test('Codex owner: strict export fields/counts/context/bounds and reconstruction
     countWrong:d=>{d.at(-2).count=99;d.at(-1).records=99;},chunkCount:d=>d[0].count=999,
     duplicateManifest:d=>d.at(-2).records.push(structuredClone(d.at(-2).records[0])),negativeIndex:d=>d[0].index=-1,
     booleanBytes:d=>d[0].bytes=true,contextRun:d=>d.at(-2).context.run='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-    sourceHash:d=>d.at(-2).context.source.seccomp.sha256='b'.repeat(64),nan:d=>d.at(-2).totalRawBytes=null};
+    sourceHash:d=>d.at(-2).context.source.assets[13].sha256='b'.repeat(64),nan:d=>d.at(-2).totalRawBytes=null};
   for(const[name,mutate] of Object.entries(variants)){
     const docs=parsed();mutate(docs);docs.at(-1).manifestSha256=createHash('sha256').update(JSON.stringify(docs.at(-2),Object.keys(docs.at(-2)).sort())).digest('hex');
     // Wrong hashes are NOT the only guard: recompute canonical hash in Python below.
@@ -475,6 +488,7 @@ from unittest.mock import patch
 sys.path.insert(0,str(pathlib.Path(sys.argv[1]).resolve().parent))
 s=importlib.util.spec_from_file_location('m',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 bc=sys.modules['host_evidence.browser_capture']
+sb=sys.modules['host_evidence.source_binding'];sb._source_root=lambda:sys.argv[3]
 root=pathlib.Path(sys.argv[2]).parent
 checks=[]
 def check(name,yes):checks.append(dict(name=name,passed=bool(yes)))
@@ -524,7 +538,7 @@ check('tampered-batches-before-write',rejected and not(out/'bad-batches').exists
 check('epoch-timestamp-denied',not m.build_export_protocol({'a':'x'},r['runId'],spec['context'],0)['ok'])
 print(json.dumps(dict(passed=sum(c['passed'] for c in checks),failed=sum(not c['passed'] for c in checks),checks=checks)))
 `;
-  const r=spawnSync(PYTHON,['-B','-c',code,OBS,fixture],{cwd:REPO,encoding:'utf8'});
+  const r=spawnSync(PYTHON,['-B','-c',code,OBS,fixture,INSTALL],{cwd:REPO,encoding:'utf8'});
   assert.equal(r.status,0,r.stderr);const result=JSON.parse(r.stdout);assert.equal(result.failed,0,JSON.stringify(result));
   write('owner-capture-results.json',result);
 });

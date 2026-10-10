@@ -2,7 +2,7 @@
 // exact metadata/source relationships. Preserved verbatim; import is inert.
 import { gzipSync } from 'node:zlib';
 import { PINS } from './config.mjs';
-import { exactSources, sha256 } from './asset-sources.mjs';
+import { exactSources, sha256, sourceObject, sourceManifestBytes } from './asset-sources.mjs';
 import { fullUserData } from './asset-loader.mjs';
 
 export function buildUserData(runUUID, assetsImage) {
@@ -23,6 +23,9 @@ export function buildUserDataPayload(runUUID, assetsImage) {
       assetsImage, workerImage: PINS.image, assetContainerExecution: 'NEVER STARTED; create/cp/remove only',
       rawPayload: { bytes: raw.length, sha256: sha256(raw) },
       compressedPayload: { bytes: compressed.length, sha256: sha256(compressed), limitBytes: PINS.userDataLimitBytes },
+      source: sourceObject(sources),
+      sourceManifest: { path: 'source-manifest.v2.json', bytes: sourceManifestBytes(sources).length, sha256: sha256(sourceManifestBytes(sources)) },
+      sourceManifestCoverage: true,
       sources: Object.fromEntries(sources.map(({ name, bytes }) => [name, { bytes: bytes.length, sha256: sha256(bytes) }])),
       nativeCloudInitExecution: 'NOT RUN',
     },

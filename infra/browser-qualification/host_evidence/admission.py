@@ -178,7 +178,6 @@ def _inspect_reasons(insp, run_id, image, image_id, profile_path, profile_sha):
             try:
                 folder=_source_root()
                 path=os.path.join(folder,"seccomp.json")
-                if not os.path.exists(path):path=os.path.join(folder,"seccomp.chromium-155-amd64.json")
                 profile_ok = json.loads(profiles[0]) == json.loads(_bounded_text(path))
             except (OSError,ValueError):profile_ok=False
         if not profile_ok:reasons.append("container seccomp option differs from reviewed profile")

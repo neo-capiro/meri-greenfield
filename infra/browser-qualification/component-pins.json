@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "w02-20-browser-python-completion/1",
-  "generatedAt": "2026-10-10T09:10:00+00:00",
-  "task": "W02-20 focused Python completion, actual-Hermes author-prepared source candidate",
-  "status": "INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST",
+  "schemaVersion": "codex-g1-browser-source/2",
+  "generatedAt": "2026-10-10",
+  "task": "Codex browser source/support closure",
+  "status": "SOURCE_CANDIDATE / NO-BUILD / NO-HOST",
   "target": {
     "account": "967807252336",
     "region": "us-east-1",
@@ -256,8 +256,9 @@
     "Absolute termination deadline and terminated/root-volume-deletion verification are owner-side and not proven here.",
     "The W02-16 candidate binds the W02-08 tuple by immutable reference, configuration ID and OCI source revision. Changed source bytes require fresh full-source hashes, a separate actual review and a future immutable support build before any browser-host admission; static build success is not runtime/security admission.",
     "The pinned image's 22 unresolved CRITICAL/HIGH findings (4 CRITICAL + 18 HIGH) remain open; the security disposition is unchanged and G1 stays OPEN.",
-    "W02-20 completes the staged source extraction: the entry (3,265 bytes) is a small composition entry and the eleven package files preserve the 39 frozen + 24 moved definitions (plus one private helper). This is source organization only; it is not runtime/security/G1 admission.",
-    "sourceManifestCoverage=false: current flat-three source validation, loader and support recipe do not cover the new package. INCOMPLETE RUNTIME ASSEMBLY / NO-BUILD / NO-HOST applies regardless of offline test results."
+    "V2 source coverage includes all14 payloads; no build, native guest, sandbox, network/metadata denial or G1 admission is established by offline fixtures. Legacy build helpers requiring flat-three input are incompatible and must not run.",
+    "V2 source coverage includes all14 payloads; no build, native guest, sandbox, network/metadata denial or G1 admission is established by offline fixtures. Legacy build helpers requiring flat-three input are incompatible and must not run.",
+    "V2 source coverage includes all14 payloads; no build, native guest, sandbox, network/metadata denial or G1 admission is established by offline fixtures. Legacy build helpers requiring flat-three input are incompatible and must not run."
   ],
   "collectorExtraction": {
     "integrationBase": "77dcd1644221c14dbdb19aa9574a456b9df4b21a",
@@ -272,23 +273,22 @@
     "configurationAssignments": 38,
     "namedConfigStateBindings": 48,
     "legacyEntryAliases": 63,
-    "pathValueNodeExceptions": 2,
-    "sourceManifestCoverage": false,
+    "sourceManifestCoverage": true,
     "sourceInventory": [
       {
         "path": "infra/browser-qualification/host-evidence.py",
-        "bytes": 3265,
-        "sha256": "66a50dc6c99341af8b9d82277cde2de2a53e0af3dd4da76d6eeb1696721a880f"
+        "bytes": 8933,
+        "sha256": "e5210fb57fde6a9083285c285bf9915ba0f63d3e80bda330e2d675ec62c92396"
       },
       {
         "path": "infra/browser-qualification/module-regressions.py",
-        "bytes": 30059,
-        "sha256": "6a5d82a6473af1ce503e9650e0a9dee82d0942dd786f34f15131b02e77971296"
+        "bytes": 29491,
+        "sha256": "5f3f6898067ab03f9148044313a0c87de0131f3de8daa0270286bb4f4efee2cc"
       },
       {
         "path": "infra/browser-qualification/security.test.mjs",
-        "bytes": 41082,
-        "sha256": "4f64008c3f1e26cf288f1cfe88f641f9a2f268c2e9a5cde4507b747ff353d559"
+        "bytes": 42614,
+        "sha256": "eb3b2c03930f45bd20d0a4314d4428eb21e558c1216c750ce3611397431cd535"
       },
       {
         "path": "infra/browser-qualification/host_evidence/__init__.py",
@@ -297,8 +297,8 @@
       },
       {
         "path": "infra/browser-qualification/host_evidence/config.py",
-        "bytes": 3728,
-        "sha256": "0c555429ad443440059969a0c806338a61429ae38d97de953f2606a99db0ff2e"
+        "bytes": 4708,
+        "sha256": "1f6724c3b0b4037cd674ce89b25ec5b859a228c767fbb659ec992a4795e21c54"
       },
       {
         "path": "infra/browser-qualification/host_evidence/evidence_io.py",
@@ -322,13 +322,13 @@
       },
       {
         "path": "infra/browser-qualification/host_evidence/source_binding.py",
-        "bytes": 2002,
-        "sha256": "5ebb52c8f88dc5128c96aafc95f9048b1fadce8a16a053e3ef158dbac66b4e7c"
+        "bytes": 6116,
+        "sha256": "6190d3ee9c34fbfe61ca6aa5ad0e945cc202ad5d73bbb9601a98db1f16cae3c7"
       },
       {
         "path": "infra/browser-qualification/host_evidence/admission.py",
-        "bytes": 19842,
-        "sha256": "6bac77ee984940d933f8bd121b52ca8030f456298cdfec97f5fcab8fd449a988"
+        "bytes": 19738,
+        "sha256": "a9c1b7f53185c62760a468ee04c59eff120a11d884b912ebf518b4d55a6d5aa2"
       },
       {
         "path": "infra/browser-qualification/host_evidence/browser_capture.py",
@@ -346,8 +346,90 @@
         "sha256": "1fbf9a5918f03c4431f25de0825c541ba485977386b59f89b75c3cfff5c8210c"
       }
     ],
-    "inventoryMeaning": "Exact offline source bytes only; this list is not a runtime loader, owner context, immutable support-image manifest or admission.",
-    "runtimeAssembly": "The unchanged flat-three loader/context/support recipe does not bind or package the eleven package files. Block builds and host launches until a separately allocated complete pre-import source-binding and packaging change passes independent review.",
-    "remainingOrganization": "W02-20 completed the deferred browser/admission/export/CLI extraction into focused modules; the entry is now a small composition entry. JavaScript organization and the future 14-asset pre-import protocol remain separately allocated."
+    "inventoryMeaning": "Exact offline Python entry/test/package bytes; browserAssets separately binds all14 runtime payloads. Neither list is native or deployment admission.",
+    "runtimeAssembly": "Fourteen source assets are bound by the v2 loader and support recipe. Source candidate only: independent owner review, archive/input freeze, immutable build/digest readback and native admission remain required.",
+    "remainingOrganization": "Focused Python and JavaScript modules; v2 verification remains source-only.",
+    "protocolPrivateHelpers": 12,
+    "historicalW20PathValueNodeExceptions": 2,
+    "protocolLegacyBodyChanges": [
+      "source_manifest",
+      "_context_ok",
+      "_inspect_reasons selected source/fallback block"
+    ]
+  },
+  "browserAssets": {
+    "schema": "meri-browser-source/2",
+    "assets": [
+      {
+        "bytes": 13205,
+        "path": "bootstrap.sh",
+        "sha256": "e7034a9a40824b5af02ac898bb68b66d3c1dcc54af670418319d4636e806fb2a"
+      },
+      {
+        "bytes": 8933,
+        "path": "host-evidence.py",
+        "sha256": "e5210fb57fde6a9083285c285bf9915ba0f63d3e80bda330e2d675ec62c92396"
+      },
+      {
+        "bytes": 432,
+        "path": "host_evidence/__init__.py",
+        "sha256": "d1f277344c9e72675e21e7c288dde1e0225c8c5e9eeb69ad700f353671dfb184"
+      },
+      {
+        "bytes": 19738,
+        "path": "host_evidence/admission.py",
+        "sha256": "a9c1b7f53185c62760a468ee04c59eff120a11d884b912ebf518b4d55a6d5aa2"
+      },
+      {
+        "bytes": 5179,
+        "path": "host_evidence/browser_capture.py",
+        "sha256": "1b7d7e5e3ec3bde295435125bbed9ccb155bbf68be1a716241aee1e140590f74"
+      },
+      {
+        "bytes": 16753,
+        "path": "host_evidence/classification.py",
+        "sha256": "a9b05cc2caed38c8d4b74a9cac816fe5fd189f31d48a1f4e707272d37190c17a"
+      },
+      {
+        "bytes": 8707,
+        "path": "host_evidence/cli.py",
+        "sha256": "1fbf9a5918f03c4431f25de0825c541ba485977386b59f89b75c3cfff5c8210c"
+      },
+      {
+        "bytes": 19858,
+        "path": "host_evidence/collection.py",
+        "sha256": "bbcd697aaca5cbcaadaae052629d82ceb02c3cd36512057780984b648411dbce"
+      },
+      {
+        "bytes": 4708,
+        "path": "host_evidence/config.py",
+        "sha256": "1f6724c3b0b4037cd674ce89b25ec5b859a228c767fbb659ec992a4795e21c54"
+      },
+      {
+        "bytes": 3577,
+        "path": "host_evidence/evidence_io.py",
+        "sha256": "c9cf64b93422d9d7b89ac413233d33e802fd3f68957f1e4e9b3d3f6e99ca03aa"
+      },
+      {
+        "bytes": 11050,
+        "path": "host_evidence/export_protocol.py",
+        "sha256": "df036706c05d8243f125c6a0734b06222d0b1997626f820a1f609aff2e64c284"
+      },
+      {
+        "bytes": 4284,
+        "path": "host_evidence/poll.py",
+        "sha256": "8868ff3145083848b7524a4e91914ddfb122075c63ce462df4afc61ebaa9d336"
+      },
+      {
+        "bytes": 6116,
+        "path": "host_evidence/source_binding.py",
+        "sha256": "6190d3ee9c34fbfe61ca6aa5ad0e945cc202ad5d73bbb9601a98db1f16cae3c7"
+      },
+      {
+        "bytes": 17188,
+        "path": "seccomp.json",
+        "sha256": "e62f4c3e3e7ce6de099ba7a0e3df0881b7b407b74dc664aef70f76f6316385c6"
+      }
+    ]
   }
 }

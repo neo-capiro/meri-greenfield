@@ -34,6 +34,8 @@ import io
 import json
 import os
 import pathlib
+import shutil
+from collections import Counter
 import sys
 import tempfile
 import uuid
@@ -354,79 +356,48 @@ with _patch.object(entry, "run_bounded_poll", side_effect=lambda *a, **k: _entry
     entry.main(_watch_args)
 xcheck("fake-effect-entry-run-bounded-poll-not-used-by-cli", not _entry_polls)
 
-# (e) canonical source root and cwd independence
-_obs_sha = hashlib.sha256(ENTRY.read_bytes()).hexdigest()
-xcheck("source-root-canonical", sb._source_root() == str(INFRA), got=sb._source_root())
-m1 = entry.source_manifest()
-_cwd0 = os.getcwd()
-with tempfile.TemporaryDirectory(dir=str(_HARNESS_SCRATCH)) as _tmpd:
-    try:
-        os.chdir(_tmpd)
-        m2 = entry.source_manifest()
-    finally:
-        os.chdir(_cwd0)
-xcheck("source-manifest-canonical-root-and-cwd-independent",
-       m1 == m2 and m1["observer"]["sha256"] == _obs_sha and m1["seccomp"]["bytes"] == 17188)
-
-# (f) source_manifest locator/reader mapped-IO fixtures. _source_root is faked as
-#     an explicit TEST SEAM for guest pathname simulation (not a production root
-#     override); _bounded_text and path-exists are intercepted before the caller.
-_guest = "/guest/browser-host"
-_guest_reads = []
-
-
-def _guest_reader(path, limit=None):
-    _guest_reads.append(path)
-    if path.endswith("host-evidence.py"):
-        return "OBS"
-    if path.endswith("bootstrap.sh"):
-        return "BOOT"
-    if path.endswith("seccomp.json"):
-        return "SEC"
-    if path.endswith("seccomp.chromium-155-amd64.json"):
-        return "SECFALL"
-    raise AssertionError("unexpected source read " + path)
-
-
+# (e/f) v2 finalized fixture: source root is patched only in this test.
 _orig_locator = sb._source_root
-_orig_bounded = sb._bounded_text
-with _patch.object(sb, "_source_root", return_value=_guest) as _loc, \
-        _patch.object(sb.os.path, "exists", return_value=True), \
-        _patch.object(sb, "_bounded_text", side_effect=_guest_reader):
-    _present = sb.source_manifest()
-xcheck("source-manifest-guest-present-seccomp-json",
-       _loc.called and set(_present) == {"observer", "bootstrap", "seccomp"}
-       and _guest_reads == [os.path.join(_guest, "host-evidence.py"),
-                            os.path.join(_guest, "bootstrap.sh"),
-                            os.path.join(_guest, "seccomp.json")],
-       reads=_guest_reads)
-
-_guest_reads.clear()
-with _patch.object(sb, "_source_root", return_value=_guest), \
-        _patch.object(sb.os.path, "exists", return_value=False), \
-        _patch.object(sb, "_bounded_text", side_effect=_guest_reader):
-    _fallback = sb.source_manifest()
-xcheck("source-manifest-guest-fallback-profile-name",
-       set(_fallback) == {"observer", "bootstrap", "seccomp"}
-       and _guest_reads[-1] == os.path.join(_guest, "seccomp.chromium-155-amd64.json"),
-       reads=_guest_reads)
-
-
-def _refusing_reader(path, limit=None):
-    raise OSError("missing layout: " + path)
-
-
+_fixture = _HARNESS_SCRATCH / "v2-install"
+_paths = sys.modules["host_evidence.config"].SOURCE_ASSET_PATHS
+for _path in _paths:
+    _src = INFRA / ("seccomp.chromium-155-amd64.json" if _path == "seccomp.json" else _path)
+    _dest = _fixture / _path
+    _dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(_src, _dest)
+_data = {"schema": "meri-browser-source/2", "assets": [
+    {"path": p, "bytes": (_fixture/p).stat().st_size, "sha256": hashlib.sha256((_fixture/p).read_bytes()).hexdigest()} for p in _paths]}
+_raw_manifest = (json.dumps(_data, sort_keys=True, separators=(",", ":")) + "\n").encode("ascii")
+(_fixture/"source-manifest.v2.json").write_bytes(_raw_manifest)
+xcheck("source-root-canonical", sb._source_root() == str(INFRA), got=sb._source_root())
+with _patch.object(sb, "_source_root", return_value=str(_fixture)):
+    m1 = entry.source_manifest()
+    with tempfile.TemporaryDirectory(dir=str(_HARNESS_SCRATCH)) as _td:
+        _cwd = os.getcwd()
+        try:
+            os.chdir(_td)
+            m2 = entry.source_manifest()
+        finally:
+            os.chdir(_cwd)
+xcheck("v2-source-manifest-cwd-independent", m1 == m2 == _data)
+xcheck("v2-source-manifest-fixed-fourteen", [r["path"] for r in m1["assets"]] == list(_paths))
+(_fixture/"seccomp.json").rename(_fixture/"seccomp.chromium-155-amd64.json")
 _refused = False
 try:
-    with _patch.object(sb, "_source_root", return_value="/absent/layout"), \
-            _patch.object(sb.os.path, "exists", return_value=True), \
-            _patch.object(sb, "_bounded_text", side_effect=_refusing_reader):
+    with _patch.object(sb, "_source_root", return_value=str(_fixture)):
         sb.source_manifest()
-except OSError:
+except (OSError, ValueError):
+    _refused = True
+xcheck("v2-historical-profile-fallback-refused", _refused)
+(_fixture/"seccomp.chromium-155-amd64.json").rename(_fixture/"seccomp.json")
+_refused = False
+try:
+    with _patch.object(sb, "_source_root", return_value="/absent/layout"):
+        sb.source_manifest()
+except (OSError, ValueError):
     _refused = True
 xcheck("source-manifest-wrong-layout-refuses-from-source-reads", _refused)
-xcheck("source-manifest-locator-and-reader-restored",
-       sb._source_root is _orig_locator and sb._bounded_text is _orig_bounded)
+xcheck("source-manifest-locator-restored", sb._source_root is _orig_locator)
 
 # (g) missing/wrong layout refuses through the admission source read
 with _patch.object(adm, "source_manifest", side_effect=OSError("missing layout")):
@@ -644,34 +615,28 @@ _defs = _top_defs()
 icheck("no-duplicate-source-definitions", all(v == 1 for v in _defs.values()),
        duplicates={k: v for k, v in _defs.items() if v > 1})
 # 39 earlier + 24 deferred + 1 new private helper = 64 unique top-level definitions
-icheck("source-definition-count-64", len(_defs) == 64, got=len(_defs))
+icheck("v2-source-definition-count-76", len(_defs) == 76, got=len(_defs))
 _entry_defs = [n.name for n in ast.parse(ENTRY.read_text(encoding="utf-8")).body
                if isinstance(n, (ast.FunctionDef, ast.ClassDef))]
-icheck("entry-is-small-composition", _entry_defs == [], got=_entry_defs)
-_assigns = 0
-for _f in (INFRA / "host_evidence" / "config.py", INFRA / "host_evidence" / "collection.py"):
-    for _n in ast.parse(_f.read_text(encoding="utf-8")).body:
-        if isinstance(_n, ast.Assign) and all(isinstance(t, (ast.Name, ast.Tuple)) for t in _n.targets):
-            _assigns += 1
-icheck("configuration-assignments-38", _assigns == 38, got=_assigns)
-
-_PEX = json.loads((TASK / "W02-20-owner-inputs" / "precise-path-exceptions.json").read_text(encoding="utf-8"))
-
-
-def _value_dump(func_name, rel_path, src):
-    node = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == func_name)
-    for part in rel_path:
-        node = node[part] if isinstance(part, int) else getattr(node, part)
-    return ast.dump(node)
-
-
-_expected_value = ast.dump(ast.parse("_source_root()", mode="eval").body)
-_path_ok = True
-for _e in _PEX["exceptions"]:
-    _src = (INFRA / "host_evidence" / (_e["targetModule"] + ".py")).read_text(encoding="utf-8")
-    if _value_dump(_e["name"], _PEX["functionRelativeAstPaths"][_e["name"]], _src) != _expected_value:
-        _path_ok = False
-icheck("exactly-two-path-value-node-changes", _path_ok)
+icheck("entry-only-finite-gate-helpers", _entry_defs == ["_asset_gate_identity", "_asset_gate_read", "_asset_gate_manifest", "_asset_gate_tree", "_asset_gate_check"], got=_entry_defs)
+# Preserve all original38 assignment ASTs and their per-module order. New
+# SOURCE_* constants are additive and excluded by name, never used to repin.
+_ref = json.loads((TASK/"W02-20-owner-inputs"/"frozen-source.json").read_text())
+_actual_assignments = []
+for _module in ("config", "collection"):
+    _nodes = ast.parse((INFRA/"host_evidence"/(_module+".py")).read_text()).body
+    for _n in _nodes:
+        if isinstance(_n, ast.Assign) and all(isinstance(t,(ast.Name,ast.Tuple)) for t in _n.targets):
+            if any(isinstance(t, ast.Name) and t.id.startswith("SOURCE_") for t in _n.targets):
+                continue
+            _actual_assignments.append(ast.dump(_n))
+_expected_assignments = [r["ast"] for r in _ref["originalAssignments38"]]
+icheck("original-configuration-38-ASTs", Counter(_actual_assignments) == Counter(_expected_assignments) and len(_actual_assignments)==38)
+# source_manifest/_context_ok and the selected inspect source block are v2
+# protocol changes, so the historical two-value-node proof is no longer claimed.
+_node = ast.parse((INFRA/"host_evidence"/"admission.py").read_text()).body
+_inspect = next(n for n in _node if isinstance(n,ast.FunctionDef) and n.name=="_inspect_reasons")
+icheck("inspect-source-root-expression-preserved", any(isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=="_source_root" for n in ast.walk(_inspect)))
 
 
 def _counts(cases):

@@ -1,8 +1,7 @@
-// W02-21 run/digest support-image loader: shell quoting and the whole
-// contiguous loader/embedded-verifier text. Moved unchanged; its native
-// behavior is not qualified here. Importing is inert.
+// D006 v2 finite fourteen-file loader. Import is inert; native admission is separate.
 import { PINS, TARGET, validateRunUUID, validateAssetsImage } from './config.mjs';
-import { sha256 } from './asset-sources.mjs';
+import { sha256, sourceObject } from './asset-sources.mjs';
+import { ASSET_VERIFIER } from './asset-verifier.mjs';
 
 export function shellQuote(value) {
   if (typeof value !== 'string' || value.includes('\0')) throw new Error('Invalid shell literal');
@@ -11,27 +10,9 @@ export function shellQuote(value) {
 function fullUserData(runUUID, assetsImage, sources) {
   validateRunUUID(runUUID);
   validateAssetsImage(assetsImage);
+  sourceObject(sources); // validate the complete finite set before generating commands.
   const expected = Object.fromEntries(sources.map(({ target, bytes }) => [target, { bytes: bytes.length, sha256: sha256(bytes) }]));
-  const verifier = `import hashlib,json,os,stat,sys
-directory,expected=sys.argv[1],json.loads(sys.argv[2])
-d=os.lstat(directory)
-assert stat.S_ISDIR(d.st_mode) and d.st_uid==0 and stat.S_IMODE(d.st_mode)==0o700, 'unsafe asset directory'
-assert set(os.listdir(directory))==set(expected), 'unexpected/missing assets'
-for name,want in expected.items():
-    path=os.path.join(directory,name)
-    before=os.lstat(path)
-    assert stat.S_ISREG(before.st_mode) and before.st_nlink==1 and before.st_uid==0, 'nonregular/link/nonroot asset'
-    assert before.st_size==want['bytes'], 'asset size mismatch'
-    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
-    with os.fdopen(fd,'rb') as stream:
-        opened=os.fstat(stream.fileno())
-        assert (before.st_dev,before.st_ino)==(opened.st_dev,opened.st_ino), 'asset changed before open'
-        content=stream.read(want['bytes']+1)
-        after=os.fstat(stream.fileno())
-    assert (opened.st_size,opened.st_mtime_ns,opened.st_ctime_ns)==(after.st_size,after.st_mtime_ns,after.st_ctime_ns), 'asset changed during read'
-    assert len(content)==want['bytes'] and hashlib.sha256(content).hexdigest()==want['sha256'], 'asset hash mismatch'
-    os.chmod(path,0o600,follow_symlinks=False)
-`;
+  const verifier = ASSET_VERIFIER;
   const delimiter = `__MERI_ASSET_VERIFY_${sha256(Buffer.from(verifier))}__`;
   if (verifier.split('\n').includes(delimiter)) throw new Error('Verifier HEREDOC delimiter collision');
   return `#!/bin/bash
@@ -98,7 +79,7 @@ for unit in ecs ecs-volume-plugin amazon-ssm-agent snap.amazon-ssm-agent.amazon-
   [[ "$state" = inactive || "$state" = failed ]] || fail 'agent inactivity unconfirmed'
 done
 for command in python3 aws docker mkdir rm rmdir; do command -v "$command" >/dev/null 2>&1 || fail 'loader prerequisite missing'; done
-bounded 5 python3 - <<'__MERI_ASSET_PARENTS__'
+bounded 5 python3 -I -B - <<'__MERI_ASSET_PARENTS__'
 import os,stat
 for path in ('/opt','/run'):
     s=os.lstat(path)
@@ -107,6 +88,7 @@ __MERI_ASSET_PARENTS__
 bounded 5 mkdir --mode=0700 -- "$HOST_DIR" || fail 'exclusive host directory unavailable'
 bounded 5 mkdir --mode=0700 -- "$AUTH_DIR" || fail 'exclusive Docker credential directory unavailable'
 AUTH_CREATED=1
+bounded 5 mkdir --mode=0700 -- "$HOST_DIR/host_evidence" || fail 'exclusive package directory unavailable'
 ready=0
 for attempt in {1..15}; do
   if bounded 5 docker --config "$AUTH_DIR" info >/dev/null 2>&1; then ready=1; break; fi
@@ -127,7 +109,7 @@ ASSET_ID="$(bounded 20 docker --config "$AUTH_DIR" create --pull never --name "$
 inspect="$(bounded 10 docker --config "$AUTH_DIR" inspect --format '{{.Id}} {{.State.Status}} {{.State.Running}} {{.Config.Image}} {{.HostConfig.NetworkMode}} {{.HostConfig.ReadonlyRootfs}} {{.HostConfig.Privileged}} {{len .Mounts}}' "$ASSET_ID")" || fail 'asset identity unavailable'
 [ "$inspect" = "$ASSET_ID created false $BROWSER_HOST_ASSETS_IMAGE none true false 0" ] || fail 'asset identity/state/config mismatch'
 ${sources.map(({ target }) => `bounded 30 docker --config "$AUTH_DIR" cp "$ASSET_ID:/meri-host-assets/${target}" "$HOST_DIR/${target}" >/dev/null 2>&1 || fail 'asset copy failed'`).join('\n')}
-bounded 15 python3 - "$HOST_DIR" ${shellQuote(JSON.stringify(expected))} <<'${delimiter}'
+bounded 15 python3 -I -B - "$HOST_DIR" ${shellQuote(JSON.stringify(expected))} <<'${delimiter}'
 ${verifier}${delimiter}
 # Prove removal BEFORE the browser observer can see any container.
 bounded 15 docker --config "$AUTH_DIR" rm "$ASSET_ID" >/dev/null 2>&1 || fail 'asset removal failed'

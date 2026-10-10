@@ -56,3 +56,31 @@ SAFE_IMAGE_ENV = {
 }
 CONTEXT_KEYS = {"run", "supportImage", "workerImage", "profileSha", "source"}
 RECORD_NAMES = {"run-record", "observer", "browser", "inspect", "versions", "preflight", "browserStdout", "browserStderr", "capture", "exit", "timer"}
+
+# W02-23A v2 source protocol: NEW separately inventoried finite constants only.
+# No existing binding above is overwritten; these are additive rows/names.
+SOURCE_SCHEMA_V2 = "meri-browser-source/2"
+SOURCE_MANIFEST_NAME = "source-manifest.v2.json"
+SOURCE_MANIFEST_MAX = 32768
+SOURCE_ASSET_MAX = 2097152
+SOURCE_AGGREGATE_MAX = 14 * 2097152
+SOURCE_PACKAGE_DIR = "host_evidence"
+SOURCE_MANIFEST_KEYS = ("assets", "schema")
+SOURCE_RECORD_KEYS = ("bytes", "path", "sha256")
+SOURCE_ASSET_PATHS = (
+    "bootstrap.sh",
+    "host-evidence.py",
+    "host_evidence/__init__.py",
+    "host_evidence/admission.py",
+    "host_evidence/browser_capture.py",
+    "host_evidence/classification.py",
+    "host_evidence/cli.py",
+    "host_evidence/collection.py",
+    "host_evidence/config.py",
+    "host_evidence/evidence_io.py",
+    "host_evidence/export_protocol.py",
+    "host_evidence/poll.py",
+    "host_evidence/source_binding.py",
+    "seccomp.json",
+)
+SOURCE_PROFILE_ASSET = "seccomp.json"
