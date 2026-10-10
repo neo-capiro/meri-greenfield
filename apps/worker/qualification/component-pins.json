@@ -1,44 +1,53 @@
 {
   "schema": "meri.qualification.component-pins/1",
-  "generatedAt": "2026-10-09T20:45:00Z",
+  "generatedAt": "2026-10-09T23:40:00Z",
   "status": "preparation-only",
   "notes": [
-    "W02-01 worker image recipe candidates. Preparation only: nothing here is an accepted runtime or live qualification.",
-    "The PRIOR probe-only candidate was built and ECR-scanned by Codex; THIS refreshed recipe is NOT YET BUILT and has no assembled digest.",
-    "Versions and integrity values were read from upstream npm/PyPI registry metadata and from downloaded package files in this session.",
-    "Registry license labels are not a completed license audit, and package metadata is not a security audit; retain upstream notice files and installed-binary verification before bundling. See licenseFiles with per-file SHA-256."
+    "W02-08 Debian 13 / trixie worker image recipe candidate. Preparation only: nothing here is an accepted runtime, live qualification, waiver or proven fix.",
+    "RECONCILIATION: the earlier W02-01 refreshed bookworm recipe WAS actually built (integration 8785118 -> image sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75, ECR basic scan 2 CRITICAL / 13 HIGH UNRESOLVED). The old 'NOT YET BUILT' wording was stale historical candidate wording and is corrected here. THIS trixie candidate is NOT built and has NO image digest; the 7327 digest/evidence/single-probe admission does NOT transfer to it.",
+    "Exact version/integrity values were read from upstream npm/PyPI registry metadata, official Docker Hub registry manifest/config bytes, and downloaded package files retained in this session (see publicSourcesRetained).",
+    "Registry license labels are not a completed license audit, and package metadata is not a security audit; retain upstream notice files and installed-binary verification before bundling. Office debs were NOT downloaded and apt resolution was NOT run locally."
   ],
   "assembledImageDigest": null,
-  "assembledImageDigestNote": "null = the refreshed recipe below is NOT YET BUILT. Do NOT reuse the prior candidate digest for this recipe.",
+  "assembledImageDigestNote": "null = this trixie candidate is NOT YET BUILT. Do NOT reuse the prior bookworm candidate digest (7327) for this recipe.",
   "priorBuiltCandidate": {
-    "digest": "sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837",
-    "buildId": "aaec4b57-0bb1-4a80-a464-21d364be6465",
-    "builtAt": "2026-10-09T20:28:02Z..20:31:17Z",
-    "integratedCommit": "f4f008f6afaf0517ea64822d008a39823e0b0032",
-    "sourceRecipeCommit": "4f69d68f78052c6509f8441a02433fd15d87e8cc",
-    "ecrScan": { "critical": 12, "high": 64, "medium": 70, "low": 16, "undefined": 3, "scanner": "ECR basic scan, COMPLETE" },
-    "scanStatus": "UNRESOLVED: the 12 CRITICAL / 64 HIGH findings on the prior candidate remain outstanding; the refreshed candidate is UNBUILT and must be rebuilt and rescanned (targeted pending real build/rescan, not a claim of fixes applied)",
+    "distro": "Debian 12 bookworm",
+    "digest": "sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+    "integrationCommit": "8785118bff574e2cf3f520a542f6a7b56e075f9e",
+    "sourceArchiveSha256": "8b2f9480f2ec026452466aa570755f2dead79b3d1b2f21b7663087cc37bb1fbc",
+    "codeBuildId": "55c89c64-547f-41ff-8a8b-3120e25d8b39",
+    "buildId": "55c89c64-547f-41ff-8a8b-3120e25d8b39",
+    "ecrScan": { "critical": 2, "high": 13, "medium": 23, "low": 7, "undefined": 3, "scanner": "ECR basic scan, COMPLETE, source updated 2026-10-09T21:49:22Z", "scanFileSha256": "547049894f404d7c8781580ff7c2d036d756656af419f221b7f74a80c87e58c8" },
+    "scanStatus": "UNRESOLVED: 2 CRITICAL / 13 HIGH on 7327 remain outstanding; see docs/coordination/reports/W02-IMAGE-SECURITY-DISPOSITION-PREP.md",
     "admittedProbe": "one synthetic closed-network baseline kernel/tool probe only; no source/provider/external-content access",
-    "status": "probe-only candidate; NOT application/G1 accepted; superseded by the refreshed unbuilt recipe"
+    "status": "probe-only candidate; NOT application/G1 accepted; does NOT transfer admission or evidence to the trixie candidate"
   },
   "runtimeProbeEvidence": {
-    "note": "Prior f669 probe task run in isolated Fargate. These are FAILED G1 probes under the OLD recipe, not proof of universal Fargate incompatibility; independent diagnosis and a separate runtime-probe repair follow (runtime code unchanged this stage).",
+    "note": "Prior f669 probe task run in isolated Fargate (bookworm recipe generation). These are FAILED G1 probes under the OLD recipe, not proof of universal Fargate incompatibility; recorded here only as historical context. Runtime code unchanged this stage.",
     "taskId": "cfcc4a32e3ea45a7be898d322f663411",
-    "startedAfter": "exact DNS repair",
     "stopped": "exit 1 at 2026-10-09T20:57:40Z",
     "passed": ["identity", "mounts", "read-only-root", "SDK-static", "DNS controls"],
     "failed": { "browser-sandbox": "FATAL No usable sandbox", "xlsx-recalc": "null result" }
   },
   "baseImage": {
-    "reference": "node:24.21.0-bookworm-slim",
-    "indexDigest": "sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20",
-    "platformManifestDigestAmd64": "sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd",
+    "reference": "node:24.21.0-trixie-slim",
+    "indexDigest": "sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+    "indexBytes": 5177,
+    "platformManifestDigestAmd64": "sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+    "platformManifestBytes": 1923,
+    "platformConfigDigest": "sha256:04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f",
+    "platformConfigBytes": 6769,
+    "debianBaseDigest": "sha256:918311b7b6c4c6f68b232ba516584925f6c78ad82b6fd534b98979df6438e483",
+    "debianBaseName": "debian:trixie-slim",
     "tagResolvedAt": "2026-10-09",
-    "resolvedVia": "registry-1.docker.io library/node manifests API (tag 24.21.0-bookworm-slim; index + linux/amd64)",
+    "created": "2026-10-06T01:44:57Z",
+    "resolvedVia": "registry-1.docker.io library/node manifests API (tag 24.21.0-trixie-slim; multiarch index + linux/amd64 platform manifest + config blob retained verbatim in owned scratch)",
     "nodeVersion": "24.21.0",
     "nodeMajor": 24,
-    "pythonSeries": "3.11 (Debian bookworm system python3)",
-    "replaces": "node:24.9.0-bookworm-slim@sha256:3e69116c924bfcba6c6979aff60d966c37aef56d488ce091c69d442ebec9f103",
+    "nodeVersionFromConfigEnv": "NODE_VERSION=24.21.0 (from the retained amd64 platform config blob)",
+    "pythonSeries": "3.13 (Debian trixie system python3; python3-venv 3.13.5-1)",
+    "pythonSeriesNote": "W02-01/bookworm recipe used CPython 3.11; trixie ships 3.13, so the pip-venv removal path is /opt/meri-venv/lib/python3.13/site-packages/pip.",
+    "replaces": "node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20 (W02-01/bookworm recipe; built as 7327)",
     "licenseSource": "Node.js is MIT-style with bundled third-party notices: https://raw.githubusercontent.com/nodejs/node/v24.21.0/LICENSE ; release notes https://nodejs.org/en/blog/release/v24.21.0 ; upstream image recipe/source https://raw.githubusercontent.com/docker-library/official-images/master/library/node . License audit INCOMPLETE (base/reference links recorded; notice files and the full image license audit are not yet retained)."
   },
   "npm": [
@@ -118,7 +127,7 @@
     "headlessShellVersion": "155.0.8059.12",
     "source": "playwright-core/browsers.json and playwright-core/lib/coreBundle.js (downloaded package, read in this session)",
     "installCommand": "node node_modules/playwright/cli.js install chromium",
-    "platformKey": "debian12-x64 -> cftUrl('linux64/chrome-linux64.zip')",
+    "platformKey": "debian13-x64 -> cftUrl('linux64/chrome-linux64.zip')",
     "downloadPath": "https://cdn.playwright.dev/builds/cft/155.0.8059.12/linux64/chrome-linux64.zip",
     "downloadPathResolved": "307 -> https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.12/linux64/chrome-linux64.zip",
     "archiveFile": "chrome-linux64.zip",
@@ -132,9 +141,12 @@
     },
     "installedPaths": {
       "chrome": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome",
-      "chromeSandbox": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox"
+      "chromeSandbox": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox",
+      "chromeSandboxAlias": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox"
     },
-    "buildTimeCheck": "Dockerfile byte-verifies both installed files against perFilePins; browser tree stays root-owned and chrome_sandbox is asserted root/4755",
+    "extractedExecutable": "chromium-1247/chrome-linux64/chrome",
+    "sandboxHelper": "chromium-1247/chrome-linux64/chrome_sandbox (underscore; Chrome-for-Testing naming)",
+    "buildTimeCheck": "Dockerfile byte-verifies both installed files against perFilePins; browser tree stays root-owned and chrome_sandbox + chrome-sandbox are asserted root/4755; the final inventory pins both helper paths at uid0/gid0/mode4755",
     "sandboxHelperDiscovery": {
       "sourceCommit": "384c82079f60e0b79cdca6e49efd5cfceefa5b74",
       "source": "chromium/src sandbox/linux/suid/client/setuid_sandbox_host.cc (expects an adjacent `chrome-sandbox`, hyphen)",
@@ -142,10 +154,8 @@
       "remedy": "Dockerfile creates a root-owned adjacent `chrome-sandbox` alias (cp -a of the pinned helper), mode 4755, byte-identical to the pinned sha256, preserved alongside the original; verified at build time",
       "note": "recorded as the discovery reason/source only; NOT a browser-success claim"
     },
-    "extractedExecutable": "chromium-1247/chrome-linux64/chrome",
-    "sandboxHelper": "chromium-1247/chrome-linux64/chrome_sandbox (underscore; Chrome-for-Testing naming)",
     "installPathInImage": "/opt/meri-browsers",
-    "chromeSandboxInternals": "chrome://sandbox renders a two-cell table (#sandbox-status) with rows Layer 1 Sandbox (Namespace/SUID/None), PID namespaces, Network namespaces, Seccomp-BPF sandbox, Seccomp-BPF sandbox supports TSYNC (Yes/No); #evaluation holds the verdict; see chromium 155.0.8059.12 chrome/browser/resources/sandbox_internals/sandbox_internals.{ts,html}"
+    "chromeSandboxInternals": "chrome://sandbox renders a two-cell table (#sandbox-status) with Layer 1 Sandbox (Namespace/SUID/None), PID namespaces, Network namespaces, Seccomp-BPF sandbox and TSYNC rows; see chromium 155.0.8059.12 chrome/browser/resources/sandbox_internals/sandbox_internals.{ts,html}"
   },
   "pypi": [
     { "name": "python-docx", "version": "1.2.0", "license": "MIT", "wheel": "python_docx-1.2.0-py3-none-any.whl", "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7" },
@@ -154,106 +164,129 @@
     { "name": "pypdf", "version": "6.20.0", "license": "BSD-3-Clause", "wheel": "pypdf-6.20.0-py3-none-any.whl", "sha256": "f003fc2014814d264fe7dd3f9d435c158e23e1a85a2233f87a0a2d6d21c914ad" }
   ],
   "pypiTransitive": [
-    { "name": "lxml", "version": "6.1.3", "license": "BSD-3-Clause", "wheel": "lxml-6.1.3-cp311-cp311-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", "sha256": "527195c188d7d0af748cd48d220ab8cdc5cb99be3d49ac4d9be7324d8abf9bc0", "selectedFor": "linux x86_64 cp311 (manylinux_2_28, Debian bookworm glibc 2.36)" },
+    { "name": "lxml", "version": "6.1.3", "license": "BSD-3-Clause", "wheel": "lxml-6.1.3-cp313-cp313-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl", "sha256": "d85dfab42dd672f87a7f76e9de7172962aee69fa12044f0d6e1a23cbd53fb80e", "selectedFor": "linux x86_64 cp313, non-free-threaded, manylinux_2_28 (Debian trixie glibc >= 2.36); the W02-01 cp311 wheel is the wrong ABI for trixie python3.13", "wheelBytes": 5232385 },
     { "name": "et_xmlfile", "version": "2.0.0", "license": "MIT", "wheel": "et_xmlfile-2.0.0-py3-none-any.whl", "sha256": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa" },
     { "name": "typing_extensions", "version": "4.16.0", "license": "PSF-2.0", "wheel": "typing_extensions-4.16.0-py3-none-any.whl", "sha256": "481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8" }
   ],
+  "wheelHashVerification": {
+    "method": "downloaded each exact wheel from files.pythonhosted.org and sha256-summed the bytes in this session",
+    "verified": true,
+    "detail": "all 7 target wheels matched the pinned sha256 (lxml cp313 5232385 bytes; the six universal wheels unchanged from W02-01 and re-downloaded). Build-time --require-hashes install is still NOT RUN (no Linux/pip execution)."
+  },
   "osPackages": {
-    "status": "RESOLVED-FROM-SNAPSHOT-REFRESHED-UNBUILT",
+    "status": "RESOLVED-FROM-SNAPSHOT-TRIXIE-REFRESHED-UNBUILT",
+    "distro": "Debian 13 trixie",
     "snapshotTimestamp": "20261009T000000Z",
     "repositories": {
-      "main": "https://snapshot.debian.org/archive/debian/20261009T000000Z (suite bookworm, components main)",
-      "security": "https://snapshot.debian.org/archive/debian-security/20261009T000000Z (suite bookworm-security, components main)"
+      "main": "https://snapshot.debian.org/archive/debian/20261009T000000Z (suite trixie, components main)",
+      "security": "https://snapshot.debian.org/archive/debian-security/20261009T000000Z (suite trixie-security, components main)"
     },
-    "signatureVerification": "Debian archive keyring (Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg)",
-    "checkValidUntil": "disabled source-scoped (Check-Valid-Until: no) on both fixed snapshot sources only, as Debian documents for historical snapshots; signature verification retained",
+    "signatureVerification": "Debian archive keyring (Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg). Local signature verification was NOT performed; Release/InRelease authentication is prospective via the retained signed keyring and the real apt build, and is NOT a claimed local signature proof.",
+    "checkValidUntil": "disabled source-scoped (Check-Valid-Until: no) on both fixed snapshot sources only, as Debian documents for historical snapshots. HONEST RATIONALE: at build time on 2026-10-09 the trixie-security Release Valid-Until (2026-10-15T23:02:22Z) has NOT yet expired; the directive is retained because the fixed snapshot is a historical artifact used after its validity window and signature verification stays enabled.",
+    "scopedCaBootstrap": "the upstream node:trixie-slim image ships without ca-certificates; apt bootstraps ca-certificates=20250419 over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS with normal CA verification. No trusted=yes, no AllowUnauthenticated, no TLS bypass, no mutable latest/snapshot-less suite.",
     "snapshotEvidence": {
-      "mainReleaseDate": "Sat, 11 Jul 2026 10:16:37 UTC (bookworm 12.15)",
-      "securityInReleaseDate": "Thu, 08 Oct 2026 23:02:21 UTC",
-      "securityPackagesXzSha256": "d97872da3ff1a60952a9bf64d2c908b1275b32f67a73beb20ae455dc5bcd8137",
-      "securityPackagesXzBytes": 349348,
-      "note": "by-hash fetch matched the security InRelease Packages.xz SHA256; the real build verifies Release signatures via Signed-By"
-    },
-    "caBootstrap": "the upstream slim Node image ships without ca-certificates; apt bootstraps ca-certificates=20250419~deb12u1 over HTTP from the same fixed signed snapshot, then both sources switch to HTTPS with normal CA verification",
-    "bookwormVersionAtSnapshot": "12.15",
-    "resolvedAt": "2026-10-09",
-    "note": "Direct pins are the highest appropriate candidates in snapshot 20261009T000000Z; the Dockerfile then runs `apt-get -y --no-remove dist-upgrade` to refresh ALL inherited installed packages from the signed fixed sources (no-removal; fails rather than silently removing a needed package). The real build records the full installed inventory to /opt/meri-worker/os-installed-packages.txt.",
-    "securityFindings": {
-      "scan": "ECR basic scan of the PRIOR candidate f669d360: 12 CRITICAL / 64 HIGH / 70 MEDIUM / 16 LOW / 3 UNDEFINED",
-      "source": "Debian security tracker (https://security-tracker.debian.org/tracker/<CVE-ID>) and source packages; public metadata only",
-      "criticalFixesInThisRefresh": {
-        "perl/perl-base": "5.36.0-7+deb12u3 -> 5.36.0-7+deb12u4 (CVE-2026-12087, -13221, -57433, -8376, -42496; -8376 is 32-bit specific)",
-        "libnss3": "2:3.87.1-1+deb12u2 -> 2:3.87.1-1+deb12u4 (CVE-2026-16389)",
-        "libgnutls30": "3.7.9-2+deb12u5 -> 3.7.9-2+deb12u7 (CVE-2026-33845, -42010)",
-        "python3.11": "3.11.2-6+deb12u8 -> 3.11.2-6+deb12u9 (CVE-2026-19445; server-SNI specific)",
-        "libssl3/openssl": "3.0.20-1~deb12u2 -> 3.0.22-1~deb12u1 (CVE-2026-75803)"
-      },
-      "remainingOpen": {
-        "CVE-2026-95210": "GnuTLS; no fixed version available in this snapshot",
-        "CVE-2026-52490": "tiff/libtiff6 4.5.0-6+deb12u4; tracker describes the tiffcrop utility; NOT suppressed and NOT called unreachable without installed-binary/use evidence"
-      },
-      "note": "10 of 12 critical findings have current bookworm fixes applied via the refreshed pins + dist-upgrade. Package metadata is NOT a completed security audit and does NOT establish zero vulnerabilities; installed-binary/use verification (dpkg inventory, SDK binary SHA256, CFT chrome/helper hashes) is recorded at real build time, and remaining scanner findings are not hidden."
-    },
-    "firstBuildFailure": {
-      "buildId": "meri-greenfield-qualification-build:7464da9b-af57-4481-b4a4-959b9789e7ec",
-      "at": "2026-10-09T20:15:15Z..20:15:54Z",
-      "stage": "apt dependency resolution (failed BEFORE any npm/browser/runtime execution)",
-      "note": "The signed HTTP CA bootstrap and the subsequent verified HTTPS snapshot apt update both succeeded.",
-      "error": "poppler-utils : Depends: libpoppler126 (= 22.12.0-2+deb12u2) but 22.12.0-2+deb12u3 is to be installed",
-      "cause": "bookworm-security updates libpoppler126 to 22.12.0-2+deb12u3; poppler-utils was pinned to the older main version deb12u2, whose exact dependency then conflicted",
-      "fix": "pin poppler-utils to the security-updated 22.12.0-2+deb12u3 (libpoppler126 resolves to the matching deb12u3); do not downgrade the security library",
-      "coherenceScan": "all other pinned packages' exact-version (=) Dependencies resolve to the snapshot versions (python3->libpython3-stdlib, python3-venv->python3, libreoffice-impress->libreoffice-core/libreoffice-draw); no other mismatch found. libnss3/libexpat1/ca-certificates were left at their resolved versions (no exact-dependency conflict; changing them would be unrelated scope)"
+      "mainReleaseSha256": "ed56aac47e7911e65ee63aae8d67e29f20e023f840e49f8ed037043a33de138a",
+      "mainReleaseBytes": 138612,
+      "mainReleaseDate": "Sat, 12 Sep 2026 07:55:41 UTC (trixie 13.7)",
+      "securityReleaseSha256": "29d373d5d74320b73e0a464f1dae402bbe88ca28bd6f3cf04b14982afd77ddb6",
+      "securityReleaseBytes": 41759,
+      "securityReleaseDate": "Thu, 08 Oct 2026 23:02:22 UTC",
+      "securityValidUntil": "Thu, 15 Oct 2026 23:02:22 UTC",
+      "mainPackagesXzSha256": "7778d3e3f303b7ddb8ce0fe7c8d57473a076c6bf2e8f241f75421d2396352498",
+      "mainPackagesXzBytes": 9678380,
+      "securityPackagesXzSha256": "5cf72f9c534b27dd9fb350b7d4c31b05a82dea2abcfed19a08097bf8d7e8f847",
+      "securityPackagesXzBytes": 264900,
+      "note": "retained Packages.xz sha256/size match the Release index lines (trixie-security main/binary-amd64/Packages.xz = 5cf72f9c...264900; trixie main/binary-amd64/Packages.xz = 7778d3e3...9678380). Codex independently audited this alignment."
     },
     "resolved": {
-      "ca-certificates": "20250419~deb12u1",
-      "python3": "3.11.2-1+b1",
-      "python3-venv": "3.11.2-1+b1",
-      "libreoffice-core": "4:7.4.7-1+deb12u14",
-      "libreoffice-writer": "4:7.4.7-1+deb12u14",
-      "libreoffice-calc": "4:7.4.7-1+deb12u14",
-      "libreoffice-impress": "4:7.4.7-1+deb12u14",
-      "fonts-liberation": "1:1.07.4-11",
-      "fonts-dejavu-core": "2.37-6",
-      "fonts-noto-core": "20201225-1",
-      "fonts-crosextra-carlito": "20220224-1",
-      "fonts-crosextra-caladea": "20200211-1",
-      "poppler-utils": "22.12.0-2+deb12u3",
-      "libnss3": "2:3.87.1-1+deb12u4",
-      "libnspr4": "2:4.35-1",
-      "libatk1.0-0": "2.46.0-5",
-      "libatk-bridge2.0-0": "2.46.0-5",
-      "libcups2": "2.4.2-3+deb12u9",
-      "libdrm2": "2.4.114-1+b1",
-      "libxkbcommon0": "1.5.0-1",
-      "libxcomposite1": "1:0.4.5-1",
-      "libxdamage1": "1:1.1.6-1",
-      "libxfixes3": "1:6.0.0-2",
-      "libxrandr2": "2:1.5.2-2+b1",
-      "libgbm1": "22.3.6-1+deb12u2",
-      "libpango-1.0-0": "1.50.12+ds-1",
-      "libcairo2": "1.16.0-7",
-      "libasound2": "1.2.8-1+b1",
-      "libatspi2.0-0": "2.46.0-5",
-      "libx11-6": "2:1.8.4-2+deb12u2",
-      "libxcb1": "1.15-1",
-      "libxext6": "2:1.3.4-1+b1",
-      "libglib2.0-0": "2.74.6-2+deb12u9",
-      "libexpat1": "2.5.0-1+deb12u4"
+      "ca-certificates": "20250419",
+      "python3": "3.13.5-1",
+      "python3-venv": "3.13.5-1",
+      "libreoffice-core": "4:25.2.3-2+deb13u8",
+      "libreoffice-writer": "4:25.2.3-2+deb13u8",
+      "libreoffice-calc": "4:25.2.3-2+deb13u8",
+      "libreoffice-impress": "4:25.2.3-2+deb13u8",
+      "fonts-liberation": "1:2.1.5-3",
+      "fonts-dejavu-core": "2.37-8",
+      "fonts-noto-core": "20201225-2",
+      "fonts-crosextra-carlito": "20230309-2",
+      "fonts-crosextra-caladea": "20200211-2",
+      "poppler-utils": "25.03.0-5+deb13u4",
+      "libnss3": "2:3.110-1+deb13u4",
+      "libnspr4": "2:4.36-1",
+      "libatk1.0-0t64": "2.56.2-1+deb13u2",
+      "libatk-bridge2.0-0t64": "2.56.2-1+deb13u2",
+      "libcups2t64": "2.4.10-3+deb13u2",
+      "libdrm2": "2.4.124-2",
+      "libxkbcommon0": "1.7.0-2",
+      "libxcomposite1": "1:0.4.6-1",
+      "libxdamage1": "1:1.1.6-1+b2",
+      "libxfixes3": "1:6.0.0-2+b4",
+      "libxrandr2": "2:1.5.4-1+b3",
+      "libgbm1": "25.0.7-2+deb13u1",
+      "libpango-1.0-0": "1.56.3-1",
+      "libcairo2": "1.18.4-1+b1",
+      "libasound2t64": "1.2.14-1+deb13u1",
+      "libatspi2.0-0t64": "2.56.2-1+deb13u2",
+      "libx11-6": "2:1.8.12-1",
+      "libxcb1": "1.17.0-2+b1",
+      "libxext6": "2:1.3.4-1+b3",
+      "libglib2.0-0t64": "2.84.4-3~deb13u5",
+      "libexpat1": "2.8.3-1~deb13u1",
+      "libtiff6": "4.7.0-3+deb13u3"
+    },
+    "directPinCount": 35,
+    "directPinNote": "35 direct exact (=) pins: the 34 packages on the single apt-get install line plus ca-certificates=20250419 bootstrapped in the prior layer. t64 renames applied (libasound2t64, libatk1.0-0t64, libatk-bridge2.0-0t64, libcups2t64, libatspi2.0-0t64, libglib2.0-0t64). The Dockerfile then runs `apt-get -y --no-remove dist-upgrade` to refresh ALL inherited installed packages from the signed fixed sources (no-removal; fails rather than silently removing a needed package). Actual apt resolution was NOT run locally.",
+    "dependencyEdgesNote": "16 direct dependency edges were verified available in the retained Packages indexes without a direct-pin conflict (e.g. python3 -> libpython3-stdlib; python3-venv -> python3; libreoffice-impress -> libreoffice-core/libreoffice-draw; poppler-utils -> libpoppler147). Resolved binary versions are the highest appropriate candidates in the snapshot.",
+    "securityFindings": {
+      "source": "Debian security tracker (https://security-tracker.debian.org/tracker/<CVE-ID>) plus Debian source packages; public metadata only, read during the disposition review",
+      "fixedInThisRefresh": {
+        "libreoffice (CVE-2026-63277)": "4:7.4.7-1+deb12u14 (bookworm) -> 4:25.2.3-2+deb13u8 (trixie-security); document-controlled JDBC driver remote code load now has the vendor-fixed line",
+        "tiff libtiff6 (CVE-2026-52490, CVE-2026-12912)": "4.5.0-6+deb12u4 (bookworm) -> 4.7.0-3+deb13u3 (trixie); tiffcrop and PixarLog decoding fixes",
+        "util-linux (CVE-2026-53615)": "2.38.1 (bookworm) -> 2.41.5-0+deb13u1 (trixie) fixes 53615; other util-linux CVEs remain (below)"
+      },
+      "remainingOpen": {
+        "gnutls28 (CVE-2026-95210 CRITICAL; CVE-2026-95184, CVE-2026-95209 HIGH)": "libgnutls30t64 3.8.9-3+deb13u4 (trixie); Debian marks trixie vulnerable and unfixed",
+        "gcc (CVE-2026-95619 HIGH)": "libstdc++6 14.2.0-19 (gcc-14, trixie); vendor fix recorded only in Debian GCC14 14.4.0-3 / GCC13 13.5.0-3 (different branches)",
+        "krb5 (CVE-2026-107778 HIGH)": "1.21.3-5+deb13u1 (trixie); Debian unfixed",
+        "zlib (CVE-2026-85091 HIGH)": "zlib1g 1:1.3.dfsg+really1.3.1-1+b1 (trixie); Debian unfixed",
+        "cyrus-sasl2 (CVE-2026-107161 HIGH)": "libsasl2-2 / libsasl2-modules-db 2.1.28+dfsg1-9 (trixie); Debian unfixed",
+        "util-linux (CVE-2026-78410, CVE-2026-78408, CVE-2026-78409, CVE-2026-76642 HIGH)": "2.41.5-0+deb13u1 (trixie) does not cover these; vendor fixes recorded only in Debian Sid 2.42.3-1 / 2.42.4-1"
+      },
+      "note": "This candidate resolves the Office/TIFF parsing findings that motivated the refresh, but it is NOT zero-CVE and introduces no waiver. GnuTLS, GCC, Kerberos, Cyrus, zlib and several util-linux findings remain open. Package metadata is NOT a completed security audit; installed-binary/use verification requires the real build and a fresh COMPLETE ECR scan."
     },
     "expectedInheritedVersions": {
-      "note": "Inherited installed packages refreshed by `apt-get -y --no-remove dist-upgrade` from snapshot 20261009T000000Z; the real build records the actual inventory. Not exact-pinned (they are not direct dependencies we select), but expected to resolve to at least:",
-      "perl-base": "5.36.0-7+deb12u4",
-      "perl": "5.36.0-7+deb12u4",
-      "libgnutls30": "3.7.9-2+deb12u7",
-      "libssl3": "3.0.22-1~deb12u1",
-      "libtiff6": "4.5.0-6+deb12u4",
-      "python3.11-venv": "3.11.2-6+deb12u9"
+      "note": "Inherited installed packages refreshed by `apt-get -y --no-remove dist-upgrade` from snapshot 20261009T000000Z; the real build records the actual inventory. Not exact-pinned (they are not direct dependencies we select).",
+      "libgnutls30t64": "3.8.9-3+deb13u4",
+      "libstdc++6": "14.2.0-19",
+      "libtiff6": "4.7.0-3+deb13u3",
+      "util-linux": "2.41.5-0+deb13u1",
+      "python3.13-venv": "3.13.5-2+deb13u5"
     }
   },
+  "privilegeReduction": {
+    "scope": "owner-authorized permission-bit reduction only; NO library/utility/package removal and NO version change",
+    "step": "after all install/COPY/chown steps and BEFORE the final inventory, the Dockerfile strips SUID/SGID from unintended static REGULAR files via chmod (find / -xdev -type f -perm /6000, excluding exactly the two pinned Chrome helper paths), enumerating and logging each affected path+mode",
+    "preserved": "exactly two root-owned mode-4755 paths: /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox and /opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox (unchanged bytes + identity)",
+    "failClosed": "the final inventory still fails on ANY unreviewed SUID/SGID entry (including directories) or wrong helper identity; base SUID binaries are not silently permitted",
+    "separation": "this is visibly separate from CVE disposition: it reduces privilege surface and does NOT fix package CVEs or waive findings; NNP/private-host controls remain separate"
+  },
+  "publicSourcesRetained": {
+    "note": "exact bytes retained verbatim under the ignored .task-inputs scratch during this session; hashes here are of those retained bytes",
+    "dockerIndex": "https://registry-1.docker.io/v2/library/node/manifests/24.21.0-trixie-slim (OCI index) sha256=173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66 bytes=5177",
+    "dockerAmd64Manifest": "sha256=c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63 bytes=1923",
+    "dockerAmd64Config": "sha256=04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f bytes=6769",
+    "debianMainRelease": "https://snapshot.debian.org/archive/debian/20261009T000000Z/dists/trixie/Release sha256=ed56aac47e7911e65ee63aae8d67e29f20e023f840e49f8ed037043a33de138a bytes=138612",
+    "debianSecurityRelease": "https://snapshot.debian.org/archive/debian-security/20261009T000000Z/dists/trixie-security/Release sha256=29d373d5d74320b73e0a464f1dae402bbe88ca28bd6f3cf04b14982afd77ddb6 bytes=41759",
+    "debianMainPackagesXz": "https://snapshot.debian.org/archive/debian/20261009T000000Z/dists/trixie/main/binary-amd64/Packages.xz sha256=7778d3e3f303b7ddb8ce0fe7c8d57473a076c6bf2e8f241f75421d2396352498 bytes=9678380",
+    "debianSecurityPackagesXz": "https://snapshot.debian.org/archive/debian-security/20261009T000000Z/dists/trixie-security/main/binary-amd64/Packages.xz sha256=5cf72f9c534b27dd9fb350b7d4c31b05a82dea2abcfed19a08097bf8d7e8f847 bytes=264900",
+    "pypiWheels": "7 wheel bytes downloaded from files.pythonhosted.org; all sha256 matched the pins (see wheelHashVerification)"
+  },
   "unresolvedPins": [
-    "Assembled image digest for THIS refreshed recipe (assembledImageDigest null; the prior f669d360 candidate is a separate, probe-only build)",
-    "CVE-2026-95210 (GnuTLS) and CVE-2026-52490 (tiff/tiffcrop) have no fix in snapshot 20261009T000000Z and remain open",
-    "CFT archive and per-file chrome/chrome_sandbox SHA256 values are pinned and asserted by the recipe; refreshed-image installed-byte assertions remain unexecuted until its build",
-    "Installed-binary/use verification of flagged utilities (e.g. tiffcrop) requires the built image; not available at authoring time"
+    "Assembled image digest for THIS trixie candidate (assembledImageDigest null; the prior bookworm 7327 is a separate, bookworm build)",
+    "LibreOffice/TIFF fix verification against installed bytes (requires the real build; NOT RUN locally)",
+    "Remaining vendor findings CVE-2026-95210/-95184/-95209 (GnuTLS), CVE-2026-95619 (GCC), CVE-2026-107778 (krb5), CVE-2026-85091 (zlib), CVE-2026-107161 (Cyrus SASL), CVE-2026-78408/-78409/-78410/-76642 (util-linux) have no coherent trixie fix in this snapshot",
+    "Release/InRelease signature verification is prospective via the retained signed Debian keyring and the real apt build; no local signature proof was produced",
+    "Actual apt dependency resolution, native build, ECR rescan and the final image-inventory filesystem facts are all NOT RUN in this preparation session"
   ]
 }

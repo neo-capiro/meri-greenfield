@@ -1,9 +1,17 @@
-# Meri W02-01 qualification worker image recipe (PREPARATION ONLY).
+# Meri W02-08 qualification worker image recipe (CANDIDATE, PREPARATION ONLY).
 #
-# NOT built by this session. A PRIOR probe-only candidate was built by Codex
-# (ECR sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837,
-# CodeBuild aaec4b57-0bb1-4a80-a464-21d364be6465). THIS refreshed recipe is NOT
-# YET BUILT and has no assembled digest; see component-pins.json.
+# This is the Debian 13 / trixie refresh candidate prepared in W02-08. It is NOT
+# built by this session and has NO assembled image digest. Do not attribute any
+# prior digest, scan or admission to it.
+#
+# Honest reconciliation of prior wording: the earlier W02-01 refreshed
+# bookworm recipe was in fact built (integration 8785118 -> image
+# sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75, "7327"),
+# and its ECR basic scan remains UNRESOLVED at 2 CRITICAL / 13 HIGH (see
+# docs/coordination/reports/W02-IMAGE-SECURITY-DISPOSITION-PREP.md). The earlier
+# component-pins "NOT YET BUILT" wording was stale historical candidate wording
+# and is corrected in this ticket. That 7327 evidence/admission does NOT transfer
+# to this candidate, which must be built and rescanned on its own.
 #
 # Intended build (build context is THIS qualification package directory):
 #   docker build --pull --platform linux/amd64 \
@@ -18,20 +26,24 @@
 #   TMPDIR=/tmp, CLAUDE_CONFIG_DIR=/workspace/config,
 #   PLAYWRIGHT_BROWSERS_PATH=/opt/meri-browsers.
 
-# Immutable upstream base: Node LTS 24.21.0 on Debian bookworm slim, linux/amd64.
-# Multiarch index digest resolved 2026-10-09 from registry-1.docker.io library/node;
-# linux/amd64 manifest sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd.
-FROM node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20
+# Immutable upstream base: Node LTS 24.21.0 on Debian 13 / trixie slim, linux/amd64.
+# Multiarch index digest resolved 2026-10-09 from registry-1.docker.io library/node
+# (tag 24.21.0-trixie-slim); linux/amd64 platform manifest
+# sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63.
+FROM node:24.21.0-trixie-slim@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66
 
 # The upstream slim Node image ships WITHOUT ca-certificates. Debian documents
-# source-scoped Check-Valid-Until: no for historical snapshots, and the
-# bookworm-security Release of the fixed snapshot is expired by build time. So:
+# source-scoped Check-Valid-Until: no for historical snapshots. At build time on
+# 2026-10-09 the trixie-security snapshot Release Valid-Until (2026-10-15) has
+# NOT yet expired; the directive is retained because this fixed snapshot is a
+# historical artifact consumed after its validity window. Signature verification
+# stays enabled. So:
 #   1) bootstrap apt over the fixed signed snapshot via HTTP only (no CA needed),
 #      installing the exact resolved ca-certificates;
 #   2) switch both fixed sources to HTTPS with normal CA verification for every
 #      subsequent download.
 # Signed-By keyring verification is retained throughout; no trust bypass, no
-# unauthenticated downloads, no TLS bypass.
+# unauthenticated downloads, no TLS bypass, no mutable latest/stable tag.
 RUN set -eux; \
     rm -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list; \
     printf '%s\n' \
@@ -41,20 +53,20 @@ RUN set -eux; \
     printf '%s\n' \
       'Types: deb' \
       'URIs: http://snapshot.debian.org/archive/debian/20261009T000000Z' \
-      'Suites: bookworm' \
+      'Suites: trixie' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
       'Check-Valid-Until: no' \
       '' \
       'Types: deb' \
       'URIs: http://snapshot.debian.org/archive/debian-security/20261009T000000Z' \
-      'Suites: bookworm-security' \
+      'Suites: trixie-security' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
       'Check-Valid-Until: no' \
       > /etc/apt/sources.list.d/meri-snapshot.sources; \
     apt-get update; \
-    apt-get install -y --no-install-recommends --no-remove ca-certificates=20250419~deb12u1; \
+    apt-get install -y --no-install-recommends --no-remove ca-certificates=20250419; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*
 
@@ -63,14 +75,14 @@ RUN set -eux; \
     printf '%s\n' \
       'Types: deb' \
       'URIs: https://snapshot.debian.org/archive/debian/20261009T000000Z' \
-      'Suites: bookworm' \
+      'Suites: trixie' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
       'Check-Valid-Until: no' \
       '' \
       'Types: deb' \
       'URIs: https://snapshot.debian.org/archive/debian-security/20261009T000000Z' \
-      'Suites: bookworm-security' \
+      'Suites: trixie-security' \
       'Components: main' \
       'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' \
       'Check-Valid-Until: no' \
@@ -80,22 +92,26 @@ RUN set -eux; \
 # 20261009T000000Z (see component-pins.json osPackages.resolved). Then refresh
 # ALL inherited installed packages with a no-removal bounded upgrade so the base
 # cannot stay stale (fail rather than silently removing a needed package).
+# The t64 transition is reflected in the names (libasound2t64, libatk1.0-0t64,
+# libatk-bridge2.0-0t64, libcups2t64, libatspi2.0-0t64, libglib2.0-0t64).
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends --no-remove \
-      python3=3.11.2-1+b1 python3-venv=3.11.2-1+b1 \
-      libreoffice-core=4:7.4.7-1+deb12u14 libreoffice-writer=4:7.4.7-1+deb12u14 \
-      libreoffice-calc=4:7.4.7-1+deb12u14 libreoffice-impress=4:7.4.7-1+deb12u14 \
-      fonts-liberation=1:1.07.4-11 fonts-dejavu-core=2.37-6 fonts-noto-core=20201225-1 \
-      fonts-crosextra-carlito=20220224-1 fonts-crosextra-caladea=20200211-1 \
-      poppler-utils=22.12.0-2+deb12u3 \
-      libnss3=2:3.87.1-1+deb12u4 libnspr4=2:4.35-1 libatk1.0-0=2.46.0-5 \
-      libatk-bridge2.0-0=2.46.0-5 libcups2=2.4.2-3+deb12u9 libdrm2=2.4.114-1+b1 \
-      libxkbcommon0=1.5.0-1 libxcomposite1=1:0.4.5-1 libxdamage1=1:1.1.6-1 \
-      libxfixes3=1:6.0.0-2 libxrandr2=2:1.5.2-2+b1 libgbm1=22.3.6-1+deb12u2 \
-      libpango-1.0-0=1.50.12+ds-1 libcairo2=1.16.0-7 libasound2=1.2.8-1+b1 \
-      libatspi2.0-0=2.46.0-5 libx11-6=2:1.8.4-2+deb12u2 libxcb1=1.15-1 \
-      libxext6=2:1.3.4-1+b1 libglib2.0-0=2.74.6-2+deb12u9 libexpat1=2.5.0-1+deb12u4; \
+      python3=3.13.5-1 python3-venv=3.13.5-1 \
+      libreoffice-core=4:25.2.3-2+deb13u8 libreoffice-writer=4:25.2.3-2+deb13u8 \
+      libreoffice-calc=4:25.2.3-2+deb13u8 libreoffice-impress=4:25.2.3-2+deb13u8 \
+      fonts-liberation=1:2.1.5-3 fonts-dejavu-core=2.37-8 fonts-noto-core=20201225-2 \
+      fonts-crosextra-carlito=20230309-2 fonts-crosextra-caladea=20200211-2 \
+      poppler-utils=25.03.0-5+deb13u4 \
+      libnss3=2:3.110-1+deb13u4 libnspr4=2:4.36-1 libatk1.0-0t64=2.56.2-1+deb13u2 \
+      libatk-bridge2.0-0t64=2.56.2-1+deb13u2 libcups2t64=2.4.10-3+deb13u2 \
+      libdrm2=2.4.124-2 libxkbcommon0=1.7.0-2 libxcomposite1=1:0.4.6-1 \
+      libxdamage1=1:1.1.6-1+b2 libxfixes3=1:6.0.0-2+b4 libxrandr2=2:1.5.4-1+b3 \
+      libgbm1=25.0.7-2+deb13u1 libpango-1.0-0=1.56.3-1 libcairo2=1.18.4-1+b1 \
+      libasound2t64=1.2.14-1+deb13u1 libatspi2.0-0t64=2.56.2-1+deb13u2 \
+      libx11-6=2:1.8.12-1 libxcb1=1.17.0-2+b1 libxext6=2:1.3.4-1+b3 \
+      libglib2.0-0t64=2.84.4-3~deb13u5 libexpat1=2.8.3-1~deb13u1 \
+      libtiff6=4.7.0-3+deb13u3; \
     apt-get -y --no-remove dist-upgrade; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*
@@ -140,11 +156,12 @@ RUN set -eux; \
     echo "sdk-linux-x64 binary verified: 4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
 
 # Python candidate libraries: hash-pinned, isolated venv (avoids PEP 668).
+# The venv is CPython 3.13 on trixie; the pip removal path tracks the series.
 RUN python3 -m venv /opt/meri-venv
 COPY requirements.lock.txt ./
 RUN set -eux; \
     /opt/meri-venv/bin/pip install --no-cache-dir --require-hashes -r requirements.lock.txt; \
-    rm -rf /opt/meri-venv/lib/python3.11/site-packages/pip /root/.cache
+    rm -rf /opt/meri-venv/lib/python3.13/site-packages/pip /root/.cache
 ENV PATH="/opt/meri-venv/bin:${PATH}"
 
 # Selected qualification sources only (scoped COPY, never the whole repository).
@@ -152,7 +169,7 @@ COPY sdk-options.mjs ./
 COPY probes/ ./probes/
 
 # Matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12) via the
-# adopted Playwright CLI. Debian12 maps to the CFT archive
+# adopted Playwright CLI. Debian13 maps to the CFT archive
 # builds/cft/155.0.8059.12/linux64/chrome-linux64.zip -> chromium-1247/
 # chrome-linux64/{chrome,chrome_sandbox}. The CFT helper is chrome_sandbox
 # (underscore). The browser tree STAYS root-owned so the setuid helper keeps its
@@ -216,6 +233,62 @@ RUN set -eux; \
       test -u "$sb"; \
     done; \
     test "$(stat -c '%U' /opt/meri-browsers)" = root
+
+# PRIVILEGE-BIT REDUCTION (owner-authorized; PERMISSION BITS ONLY). Runs after
+# ALL install/COPY/chown steps and BEFORE the final inventory. It strips SUID/SGID
+# from unintended static REGULAR files via chmod and logs each affected path+mode.
+# NO library/utility/package removal and NO package-version change. This is
+# visibly separate from CVE disposition: it reduces the SUID/SGID surface and does
+# NOT fix package CVEs or waive findings. It fails closed on any find/stat error
+# or race. The two pinned Chrome helpers keep their exact bytes and root:root 4755
+# identity (required by the existing qualification contract).
+RUN set -eux; \
+    helper_sb=/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox; \
+    helper_hyphen=/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox; \
+    : > /opt/meri-worker/suid-sgid-reduced.txt; \
+    find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o \
+      -type f -perm /6000 -print > /tmp/suid-files.list; \
+    sort -o /tmp/suid-files.list /tmp/suid-files.list; \
+    while IFS= read -r f; do \
+      [ -n "$f" ] || continue; \
+      if [ "$f" = "$helper_sb" ] || [ "$f" = "$helper_hyphen" ]; then continue; fi; \
+      printf '%s mode=%s\n' "$f" "$(stat -c '%a' "$f")" >> /opt/meri-worker/suid-sgid-reduced.txt; \
+      chmod u-s,g-s "$f"; \
+      test -z "$(find "$f" -perm /6000 -print)"; \
+    done < /tmp/suid-files.list; \
+    rm -f /tmp/suid-files.list; \
+    echo "=== SUID/SGID bits reduced (two Chrome helpers preserved) ==="; \
+    cat /opt/meri-worker/suid-sgid-reduced.txt; \
+    for sb in "$helper_sb" "$helper_hyphen"; do \
+      test "$(stat -c '%U:%G' "$sb")" = root:root; \
+      test "$(stat -c '%a' "$sb")" = 4755; \
+      test -u "$sb"; \
+    done
+
+# END-OF-RECIPE STATIC INVENTORY (W02-08). Runs ONLY in the real linux/amd64
+# build, AFTER all installs/COPYs/chowns and after the privilege-bit reduction,
+# via the owner-closed stdlib probe probes/image-inventory.py (SHA 01b673c0...).
+# Its roots/pins/allow-list/output are COMPILED into the probe; the CLI supplies
+# only the exact declared absolute roots, the exact two pinned Chrome helper
+# allow-suid paths, bounds and the fixed output path. It never follows links into
+# /proc /sys /dev, records path/type/mode/owner/size and SHA256, verifies the
+# unchanged SDK binary and CfT chrome/helper hashes, and fails closed on any
+# unreviewed SUID/SGID entry (including directories), wrong helper identity,
+# traversal error, race, truncation or limit overrun. Incomplete coverage is NOT
+# treated as absence and a name search does not prove renamed copies absent.
+RUN set -eux; \
+    python3 /opt/meri-worker/probes/image-inventory.py \
+      --root /opt/meri-worker --root /opt/meri-venv --root /opt/meri-browsers \
+      --root /usr --root /etc --root /var/lib/dpkg \
+      --root /bin --root /sbin --root /lib --root /lib64 \
+      --root /root --root /home \
+      --deadline-ms 300000 --max-entries 500000 --max-events 4000000 \
+      --max-manifest-bytes 67108864 --max-hash-bytes 536870912 \
+      --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox \
+      --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox \
+      --out /opt/meri-worker/image-inventory.json; \
+    echo "=== image inventory summary ==="; \
+    python3 -c "import json;d=json.load(open('/opt/meri-worker/image-inventory.json'));print(json.dumps(d['summary'],sort_keys=True))"
 
 ENV HOME=/workspace/home \
     TMPDIR=/tmp \
