@@ -1,0 +1,17 @@
+{
+  "schema": "meri-retrieval-benchmark-manifest/0.1.0",
+  "revision": "R2-20261010",
+  "state": "AWAITING_APPROVED_REAL_REQUEST_SOURCE",
+  "realRequestsReceived": 0,
+  "realSeedMinimum": 75,
+  "expandedCasesMinimum": 200,
+  "caseIds": [],
+  "sourceSnapshotManifest": null,
+  "frozenSplit": null,
+  "measuredBudgets": null,
+  "results": null,
+  "optionalDecisions": "DISABLED",
+  "optionalJev": "DISABLED",
+  "protocol": "docs/ROUTING-EVALUATION.md",
+  "authorityBoundary": "No production trace retrieval, paid real-data benchmark or extra model budget authorized."
+}

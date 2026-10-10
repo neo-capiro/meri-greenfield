@@ -1,0 +1,21 @@
+# Routing and retrieval evaluation protocol
+
+R2 / REL-01,REL-06 / R-10. Codex owns integration; a different Codex session reviews. **Protocol adopted; dataset empty; all RG results unmeasured.** [Gate definitions](coordination/r2/gates.json) preserve targets and input coordinates. Proposed gates are not PASS results.
+
+Start with75 real authorized requests, including successful controls and reported failures. Expand to≥200 cases spanning paraphrases/mixed domains, pronouns/same-name subjects, selected skills, calendar/DST/FY/stage/version edges, denied/revoked grants, missing/stale sources, late-body evidence, enumeration and outages. Generated controls are synthetic and cannot count toward75 real requests. Preserve the original60-task completion/factual suite,100-case isolation suite and artifact/recovery/concurrency gates.
+
+Freeze case IDs/hashes, authority, source snapshots/as-of times, expected scope/window, accepted operation routes and exact arguments, gold canonical records/passages, mandatory coverage, expected grounded facts and valid clarify/abstain outcomes. Results bind exact image/SDK/model/proxy/catalog/contracts/manifests/config and oracle mode. No oracle grants extra authority.
+
+Target grouped100 development /50 calibration /50 held-out cases at200 total. Group paraphrases/related snapshots before splitting. Adjust group-balanced counts once during freeze, publish exact denominators/hashes and keep held-out labels from tuning sessions. Do not remove failures/gold records or tune against held-out outcomes. Report missing/skipped/ineligible cases explicitly. A small held-out set may support baseline reporting while remaining underpowered for optional-service promotion.
+
+RG-01 scores accepted routes and all required source families. RG-02/RG-04 require100% of frozen deterministic cohorts. RG-03 uses atomic candidate-discovery units with≤10 gold canonical records, deduplicating chunks by source record: gold retrieved in top10/all gold. Never truncate gold; larger history cases use full enumeration/coverage under RG-04/05/12. RG-05/RG-07 require zero false exhaustive/absence claims and unauthorized disclosure/mutation. RG-06 covers all14 selected skills' identity/version/evidence/completion/lifecycle. RG-08 requires actual proxy/model/runtime reference blocks, deferred schemas, headers/streaming, revocation and supported bounded fallback.
+
+Replay original path, correct-tool/arguments and correct-evidence controls with identical authority/snapshots. The first localizes routing versus retrieval/source/coverage; the second localizes evidence access versus synthesis/skill/domain handling. Report interacting defects. Reuse Promptfoo/OpenTelemetry where suitable; schema fixtures do not prove model quality.
+
+## Performance, costs and optional experiments
+
+Measure accepted request to grounded final answer, including discovery/retry/advice/tool latency. Record raw samples, sample count, concurrency/load, p50, nearest-rank p95, errors and exact warm/cold definitions. UI acknowledgement≤2s, fresh worker readiness≤90s and warm answers are distinct. Preserve the original ordinary-answer p95≤8s cohort; broader RG-09 warm-lookup p95≤15s does not relax it. G1 must freeze measured cohort/configuration/budgets; proposed ceilings alone do not satisfy that requirement.
+
+Current G1 paid tests remain synthetic and share the existing$10 Bedrock cap across failures, retries and unresolved holds. This protocol authorizes neither paid real-data benchmarks nor a larger ceiling. Account for all SDK/subagent attempts, tokens, calls, cancellations and outstanding liability.
+
+Decisions/JEV remain disabled. Later authorized paired shadow trials follow a qualified baseline, reporting denominators, absolute/relative errors, confidence intervals, calibration/abstention and domain slices. Decisions promotion requires≥25% relative route-error improvement with adequate paired evidence, incremental p95≤500ms and answer-p95 regression≤10%. Unmet/underpowered evidence keeps it disabled. Freeze JEV task-specific human-label/calibration/abstention criteria before testing; no universal threshold is invented. Optional outage fallback must already be qualified.

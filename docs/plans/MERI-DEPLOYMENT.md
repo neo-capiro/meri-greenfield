@@ -1,14 +1,29 @@
 # Meri deployment plan for Codex and Hermes
 
-Prepared 9 October 2026; updated 9 October 2026 with the standalone Meri Figma design and UI acceptance contract. Save this file in the new repository as `docs/plans/MERI-DEPLOYMENT.md`. The final section contains the prompt to start Codex.
+Prepared 9 October 2026; Revision R2 dated 10 October 2026 (America/New_York). Supersedes the prior deployment-plan revision. Save this file in the new repository as `docs/plans/MERI-DEPLOYMENT.md`; keep the accompanying updated capability workbook in `docs/plans/`. Section 10 contains the prompt to start Codex. Neither this plan nor the workbook reports implementation or qualification completion.
 
 Build a new, independently deployed Meri workspace with the Claude Agent SDK, AI Elements, governed Capiro data and memory access, browser work, downloadable artifacts, and durable execution. Codex coordinates implementation, delegates bounded work sessions to Hermes, verifies the resulting commits, and owns integration and deployment. Hermes is a development worker; it is not part of Meri's production agent runtime.
 
-This plan implements the defined first release in the updated Meri Greenfield Agent Plan. A runnable demo is a milestone, not release acceptance. Expect roughly two weeks for a demo, six to eight weeks for a controlled pilot, and ten to fourteen weeks for production readiness with three senior engineers and part-time platform/QA support. These are planning estimates; credentials, source access, policy discovery, and qualification can change them. Full parity with every current Meri business workflow is a separately estimated scope.
+This R2 plan and its companion updated capability workbook are the current two-file deployment handoff. They retain the defined first-release scope; any already-provided Meri Greenfield Agent Plan remains background for unaffected requirements. Agents do not need to obtain a third document to start the REL work. A runnable demo is a milestone, not release acceptance. Expect roughly two weeks for a demo, six to eight weeks for a controlled pilot, and ten to fourteen weeks for production readiness with three senior engineers and part-time platform/QA support. These are inherited planning assumptions, not a certification that R2 preserves the remaining schedule. Re-estimate from accepted deployment work, the added named-skill qualification, credentials, source access, policy discovery and qualification results at W00. Full parity with every current Meri business workflow is a separately estimated scope.
+
+### Revision R2 — 10 October 2026
+
+This revision preserves the existing capability inventory, isolated hosting, Figma/AI Elements interface, three mode buttons, artifact/browser workflows, governed memory/actions, Temporal durability, and Codex/Hermes working-session model. R2 additionally proposes the 14 current quick-action workflow intents for v1 original skill qualification; this is an explicit named-workflow scope clarification, not a claim of full current-Meri parity. Commitments & Deliverables remains required. W00 records the proposed selections, maps existing accepted work and re-estimates remaining skill/reliability work. It changes how retrieval, tool discovery, skills and evidence qualify for that release:
+
+- Add one authoritative typed capability catalog and executable skill manifests; consolidate overlapping infrastructure without imposing a fixed total tool count or a giant free-text query tool.
+- Establish a Claude SDK baseline with qualified native deferred tool discovery through the actual trusted model proxy. The SDK remains the sole production agent loop.
+- Bind scope/identity at the server; normalize calendar/fiscal-year/version windows; separate candidate search, exact queries, and full evidence reads.
+- Send selected skill identity/version and typed scope/dates from the UI; preserve Commitments & Deliverables; eliminate keyword-based memory capture, missing portfolio sources, and instructions requiring absent recipes.
+- Add normalized coverage/freshness/paging/error metadata, trace/oracle diagnostics, a 75-case starting benchmark expanded to 200 cases, REL-01–REL-09 tickets, and RG-01–RG-12 proposed qualification gates.
+- Evaluate OpenAI Decisions only as an optional bounded routing advisor, and JEV only as an optional calibrated evidence judge initially. Neither authorizes scope, executes tools, creates tool arguments, or blocks core release when unavailable.
+
+The accompanying workbook retains the original inventory and adds revision, audit, gateway, reliability execution and qualification detail. R-01–R-12, REL-01–REL-09 and RG-01–RG-12 are shared identifiers across both artifacts. These are requirements and proposed gates; no new PASS claims are made.
+
+**Authority order:** explicit user instructions and repository instructions; this R2 plan and its companion workbook revision; pinned contracts and task briefs; the earlier Greenfield Agent Plan for unaffected scope. Where an older plan suggests a fixed ten-tool interface, regex-only workflow routing, or mandatory JEV/Decisions selection, R2 replaces that recommendation. Codex records any unresolved conflict before dependent implementation and continues independent work.
 
 ## 1. Architecture and reuse requirements
 
-Create a new repository and independent infrastructure. Read the existing Capiro repository to discover schemas, identity boundaries, policies, source domains, and current capabilities. Do not import its agent, retrieval implementation, UI, queues, or infrastructure modules. Existing Capiro records, institutional memory, and user identity remain authoritative external sources accessed through new connectors.
+Use the standalone Meri repository and independent infrastructure. Create them only if this deployment has not already established them; otherwise preserve and extend the current accepted work. Read the existing Capiro repository to discover schemas, identity boundaries, policies, source domains, and current capabilities. Do not import its agent, retrieval implementation, UI, queues, or infrastructure modules. Existing Capiro records, institutional memory, and user identity remain authoritative external sources accessed through new connectors.
 
 | Area | Adopt | Build only the Capiro-specific part |
 | --- | --- | --- |
@@ -17,17 +32,29 @@ Create a new repository and independent infrastructure. Read the existing Capiro
 | Browser work | One supported Playwright integration and its matching browser build | Tenant-bound browser ownership, authenticated access, action approval, and receipts |
 | Durable execution | Temporal server and TypeScript SDK | Workflows for runs, approvals, schedules, execution activities, and verified checkpoints |
 | Identity | Clerk's official backend SDK for the existing identity integration | Current membership, client walls, mailbox access, and resource authorization |
-| Memory and data | PostgreSQL and supported source/database clients | New permission-aware connectors, governed memory search, freshness and provenance |
+| Memory and data | PostgreSQL and supported source/database clients; native SDK tool discovery where qualified | One permission-aware typed catalog/gateway, source adapters, exact queries, candidate retrieval, evidence reading, governed memory and coverage/freshness contracts |
 | Documents | python-docx | Original document skills, templates, validation, and revision workflow |
 | Spreadsheets | XlsxWriter for creation; qualified openpyxl use for edits | Formula/reference checks, recalculation workflow, and preservation rules |
 | Slides and PDF | PptxGenJS, LibreOffice, PDF.js; qualified PDF/OCR libraries | Original presentation skills, rendering, previews, and quality checks |
 | Persistence | S3 and PostgreSQL | Artifact provenance, immutable versions, authorized downloads, and checkpoint manifests |
-| Verification | Playwright Test, Promptfoo, OpenTelemetry and existing CI tooling | Capiro task fixtures, policy tests, recovery tests, and release evidence |
+| Verification | Playwright Test, Promptfoo, OpenTelemetry and existing CI tooling | Versioned task/evidence fixtures, trace/oracle diagnostics, domain truth, policy/recovery checks and release evidence |
 | Development delegation | Installed Hermes Kanban if qualified; otherwise bounded Hermes CLI sessions | Task briefs and a thin launcher only if needed |
 
 Pin adopted versions, licenses, image digests, and compatibility evidence in `docs/COMPONENTS.md`. Check licenses before copying code or bundling skills. In particular, write original Office skills rather than assuming third-party Office skill text is freely redistributable. A custom replacement requires an observed upstream limitation and a recorded decision. Do not add another agent loop, swarm scheduler, browser framework, or workflow engine by default.
 
-The AI SDK is the UI transport layer, not a second model orchestration loop. Use the Claude Agent SDK for Meri's agent behavior. Public search uses supported SDK tools or a qualified search provider; institutional retrieval always goes through the new authorized gateway.
+The AI SDK is the UI transport layer, not a second model orchestration loop. Use the Claude Agent SDK for Meri's agent behavior. Public search uses supported SDK tools or a qualified search provider; institutional retrieval always goes through the new authorized gateway. Optional classifiers/judges are bounded trusted-service calls, not a second agent loop or authorization service.
+
+### Typed catalog, retrieval and skill ownership
+
+Use one versioned catalog as the source for SDK/MCP schemas, handlers, discovery descriptions, authorization metadata, UI capability labels and qualification mappings. A shared gateway is not one generic operation: retain separate typed semantics for exact counts/status/history, evidence reading, graph paths and domain-specific comparisons. Do not expose arbitrary SQL, unrestricted table names, or a free-text `query_data` escape hatch. The gateway can use parameterized SQL internally after validating a closed operation contract.
+
+Keep a small, measured default tool surface and discover authorized specialized tools as needed. There is no fixed total tool-count target. Merge wrappers only when their source authority, filters, semantics, output and failure behavior genuinely match. Preserve domain capabilities even when shared connectors serve several operations. Authorization is rechecked by the gateway at execution, including tools discovered earlier in the session.
+
+The trusted control/gateway layer resolves current actor, tenant, client or authorized portfolio, mailbox/source grants, entitlements and entity IDs. UI/model-provided names and scope hints are requests, not authority. When subject ambiguity changes the answer, resolve it from authorized candidates or ask a targeted clarification. Institutional Memory is a governed source, not a keyword-triggered replacement for mail, meetings, client history or official facts.
+
+The UI must send a selected skill's stable ID/version and typed subject/window parameters; the server pins its executable manifest to the run. Original SDK skill prose teaches the workflow. The manifest specifies required evidence, allowed operations, approval constraints, completion conditions, budgets and provenance. The gateway/control service enforces those conditions. This does not import the current Meri planner, recipes or skill code; use their behavior as reference and write the new contracts independently.
+
+Native SDK deferred discovery is the default candidate for the new catalog. Qualify it with the pinned runtime/model and actual trusted proxy, including supported reference blocks, headers, stream events, cancellation, resume and compaction. A non-first-party proxy can change SDK discovery defaults or reject the required payload. If qualification fails, repair the proxy or pin a documented supported configuration; use a measured bounded fallback and record the limitation. Do not silently restore the old lexical discovery engine or globally preload an unmeasured full catalog.
 
 ### Figma design and UI implementation contract
 
@@ -83,9 +110,9 @@ Use at most three concurrent implementation sessions and one independent review 
 | Lane | Owner | Scope |
 | --- | --- | --- |
 | A | Hermes implementer | Runtime qualification, worker image, execution broker, checkpoints, infrastructure, Temporal |
-| B | Hermes implementer | Source inventory, gateway authorization, governed memory, selected commands |
-| C | Hermes implementer | Figma-mapped AI Elements workspace, UI coverage ledger, shell integration, artifact records, native file generation, previews, original skills |
-| D | Separate Hermes reviewer/session | Independent policy, browser, UI behavior/visual/accessibility, artifact, recovery, and load verification |
+| B | Hermes implementer | Source inventory; typed catalog/adapters, authorization, normalized evidence, governed memory and selected commands; REL-02/REL-03/REL-06 scoped tickets |
+| C | Hermes implementer | Figma-mapped AI Elements workspace, explicit skill identity/manifests, UI coverage ledger, shell integration, artifact records, native file generation, previews and original skills; REL-04 scoped tickets |
+| D | Separate Hermes reviewer/session | Independent trace/benchmark/domain-truth, policy, browser, UI behavior/visual/accessibility, artifact, recovery and load verification; separate optional-router/judge reviews |
 | Integration and release | Codex | Shared contracts, dependency order, migration allocation, conflict resolution, final checks, deployments |
 
 A worker may propose an interface change, but Codex approves and integrates it before dependent work begins. Give each task a base commit and owned paths. One session owns a shared file, lockfile, migration, or contract at a time. Reserve migration identifiers centrally.
@@ -116,7 +143,7 @@ Record in `docs/coordination/STATUS.md`:
 1. Repository and integration branch, current commit, and existing work to preserve.
 2. Execution host, Hermes version, selected profiles, and supported invocation mode.
 3. AWS targets, credential mechanism, source endpoints, Clerk integration, and DNS ownership.
-4. Selected capabilities, source inventory, unresolved decisions, and blockers.
+4. Selected capabilities, source inventory, REL/R/RG mappings, measured baseline, unresolved decisions and blockers.
 5. Current gate, evidence links, task/session identifiers, and next ready tasks.
 
 Ask only for genuinely missing access, a material scope choice, or an action requiring authorization. Continue independent work while a source or account is blocked. Do not upgrade Hermes, change global model settings, or create a second gateway dispatcher merely to fit this plan.
@@ -128,14 +155,14 @@ apps/web/                 AI Elements workspace and UI transport
 apps/control/             Conversations, run APIs, approvals, Temporal workflows
 apps/worker/              Claude Agent SDK, workspace, browser and artifact execution
 apps/gateway/             Current authorization, source tools and model/data proxy
-packages/contracts/       Events, tools, proposals, artifacts and checkpoints
+packages/contracts/       Versioned catalog, skill invocation/manifests, evidence, events, proposals, artifacts and checkpoints
 packages/skills/          Original skills and templates
 infra/                    New CDK stacks and environment configuration
-evals/                    Promptfoo, policy fixtures, Playwright UI/visual and recovery checks
+evals/                    Promptfoo, held-out retrieval/domain truth, policy fixtures, Playwright UI/visual and recovery checks
 docs/plans/               Architecture and this deployment plan
 docs/design/meri/         Pinned Figma references, frame IDs, screenshots and UI decisions
 docs/coordination/        Status, decisions, task briefs and worker reports
-docs/                     Components, UI spec/coverage, source inventory and capability parity
+docs/                     Components, UI spec/coverage, source inventory, capability parity, routing and evidence contracts
 ```
 
 Use the installed Hermes board as the task-status authority when qualified; `STATUS.md` is Codex's dated projection and handoff. Git task briefs are the authoritative task contracts. If Kanban is unavailable, use one Git-backed task ledger and the CLI fallback rather than inventing a replacement scheduler.
@@ -146,22 +173,157 @@ Each row is a work package split into one- to two-hour Hermes tickets. Those are
 
 | Package | Owner | Depends on | Required output |
 | --- | --- | --- | --- |
-| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision |
-| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned events, tools, proposals, artifact/checkpoint schemas; fixture conventions; screen/control/state mappings in UI-SPEC and UI-COVERAGE |
-| W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike and Temporal production-topology decision |
+| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |
+| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned catalog, typed operations, skill invocation/manifests, normalized evidence, events, proposals and artifact/checkpoint schemas; REL-02; fixture and UI control/state mappings |
+| W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike, native discovery compatibility and Temporal production-topology decision; REL-05 runtime-only checkpoint, not its later end-to-end acceptance |
 | W03 Isolated foundation | A | W02 | New CDK stacks, OIDC CI roles, persistence, networking, secrets, deployment/runbooks |
-| W04 Authorization and reads | B | W01; W03 for live integration | Two-tenant and within-tenant fixtures; memory read; full agreed source coverage |
+| W04 Authorization and reads | B | W01/REL-02; W03 for live integration | Two-tenant and within-tenant fixtures; exact/search/evidence adapters; memory read; source coverage/freshness/paging; REL-03 and REL-06 |
 | W05 Durable runs | A | W02–W03 | Broker ownership/fencing, SDK SessionStore, file checkpoints, events, approvals and schedules |
-| W06 Workspace interface | C | W01; W05 for integration | Figma-mapped AI Elements screens and responsive states; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons with shell handoff |
+| W06 Workspace interface | C | W01/REL-02; W05 for integration | Figma-mapped AI Elements screens and responsive states; explicit skill ID/version/scope/dates; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons; REL-04 |
 | W07 Artifacts and browser | C, sequential scoped tickets | W02; W04–W06 for authorized integration | Native files, render/revise/download workflow; public browsing, then qualified authenticated work |
 | W08 Selected mutations | B | W04 passes; W05 | Memory proposals, tasks and artifact filing with approval, idempotency and receipts |
-| W09 Independent verification | D | Starts with W01; expands as packages land | Adversarial policy suite, UI coverage audit and behavior/visual/accessibility tests, browser tests, artifact benchmark, recovery/load evidence |
+| W09 Independent verification | D | Starts with W01; expands as packages land | Held-out RG suite and oracle checks, adversarial policy suite, UI behavior/visual/accessibility, browser/artifact/recovery/load evidence; independent REL-06/REL-09 acceptance |
 | W10 Staging candidate | Codex; D verifies | W03–W09 accepted | Immutable candidate deployed and complete release evidence |
 | W11 Controlled release | Codex | W10; release authorization | Internal allowlist, bounded tenant canary, production rollout and rollback evidence |
 
 Freeze contracts before parallel implementation; downstream UI and gateway work may use fixtures while live infrastructure is being qualified. Integrate reviewed dependency commits before launching dependent live-integration tickets. Scope expansion goes in the capability ledger with its own estimate and gates.
 
-Inventory current Meri from the actual repository. The previous audit identified roughly 139 business capabilities; recheck the current count and tenant feature flags. Access to all agreed data domains does not mean every existing business workflow is implemented. Every selected capability needs a new tool/workflow and a passing behavior/policy fixture. Every deferred item must remain visible.
+Inventory current Meri from the actual repository. The 10 October audit at `fd8765ec01d292013758606204f2c9d886cd31c1` identified 139 native business capability IDs; recheck the current count, aliases and deployed tenant flags. This count is not the number exposed on every turn or the target count for the new SDK catalog. Access to all agreed data domains does not mean every existing business workflow is implemented. Every selected capability needs a new typed implementation/workflow and passing behavior/policy fixtures. Consolidated IDs map to their replacement operations; every deferred item remains visible in the workbook and Git ledger.
+
+## 4.1 Retrieval, tool and skill reliability workstream
+
+This workstream qualifies the new implementation, not an in-place repair or import of current Meri. It runs within W00–W09 and uses their existing lanes, worktrees and review process. Source audit findings identify regression cases; only end-to-end traces and frozen fixtures establish live cause and measured improvement.
+
+### Audited baseline and regression cases
+
+Reference commit: `neo-capiro/capirov2@fd8765ec01d292013758606204f2c9d886cd31c1`. Record the deployment SHA, flags and source availability separately when collecting live traces. Current governed turns bypass historical V3 recipe planning; do not assume both historical and current planners execute on the same turn. Current authorization, canonical registries and coverage safeguards are useful behavioral requirements even though the new implementation is independently written.
+
+| Audit finding | Pinned behavioral reference | Required new behavior / regression |
+| --- | --- | --- |
+| Calendar phrases can fall through to a 30-day change window; early portfolio selection can omit a requested window or required domains | `apps/api/src/meri/meri-context-plane.service.ts` | R-03/R-04: exact calendar/timezone boundaries; weekly portfolio fixtures require the requested window and all manifest-required sources |
+| Memory-keyword checks can capture a broader relationship-history request | Same Context Plane; relationship quick-action prompts in `packages/shared/src/meri-skills.ts` | R-07/R-08: explicit skill or resolved task intent owns source requirements; mentioning memory cannot restrict the whole task to memory |
+| UI quick-action text loses selected skill ID/version before the stream request | `apps/web/src/vnext/meri/VNextMeriComposer.tsx`; `apps/web/src/components/chat/useMeriChatController.ts` | R-07: typed invocation survives submit, steering, reconnect, resume and fork with an explicit version policy |
+| Regex family selection and lexical discovery can miss paraphrases; actual exposure depends on gateway mode and flags | `apps/meriv2-orchestrator/src/meri/meriv3/meri-semantic-tool-gateway.ts`; `meri-progressive-tool-discovery.ts` | R-01/R-06: qualify the SDK catalog with synonyms, extra words, mixed-domain requests and unavailable tools; log mode and exposed/discovered operations |
+| Overlapping search names hide materially different methods and coverage: capped substring/recency discovery versus narrow semantic knowledge retrieval versus canonical retrieval | `apps/api/src/meri/meri-tools.service.ts`; `apps/api/src/embeddings/client-kb.service.ts` | R-04/R-05: explicit candidate, exact and evidence contracts; normalized method/coverage/paging/freshness; no false negatives from snippets or capped candidate sets |
+| A description requires high-level recipes that governed turns remove | `apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-assistant.service.ts` | R-01/R-08: no schema/skill description references an unavailable operation; contract lint and representative replay |
+| Historical skill prose/required-tool metadata is not uniformly enforced; governed procedures have stronger enforcement | `apps/api/src/meri/meri.service.ts`; `meri-procedure-runtime.ts`; `skills/commitments-audit.procedure.ts` | R-07/R-08: one executable manifest resolver; preserve procedure protections without forcing every ordinary question through a comprehensive workflow |
+| Current JEV duties are evidence/client judgments, not tool routing; calibrations are provisional | `apps/meriv2-orchestrator/src/meri/jev/jev-provider.factory.ts`; `packages/meriv2-core/src/jev/task-registry.ts` | R-12: establish task-specific labelled calibration and abstention before evidence gating; no production router claims based on current JEV integration |
+
+The pinned directory paths are audit references, not code to copy. Recheck filenames in the discovered repository and link exact lines/commits in `docs/RETRIEVAL-AUDIT.md`. Topic-based effort escalation is a qualification hypothesis until replayed: a simple budget/status question must not become a long research run merely because it names defense, legislation or a portfolio. The workstream must distinguish observed source behavior from an unverified production incident explanation.
+
+### Shared requirements
+
+| ID | Requirement and implementation boundary | Acceptance evidence |
+| --- | --- | --- |
+| R-01 | Canonical catalog and typed operations: one source for schemas, adapters, descriptions, availability, authority and eval mappings; no fixed total count, giant free-text query operation or raw SQL exposure | Catalog/handler drift checks, distinct operation examples, selected/deferred/replacement mapping, unavailable-recipe lint |
+| R-02 | Server-bound scope/entity identity: bind current actor/tenant/client or authorized portfolio, grants and entity IDs; validate model/UI scope requests; reauthorize every read/write/publication | Same-name clients, pronouns/follow-ups, denied IDs, portfolio/client/personal distinctions, revocation and within-tenant fixtures |
+| R-03 | Calendar/FY/version windows: calendar periods, relative durations and fiscal years are distinct; normalize timezone, inclusive start/exclusive end, document version and funding stage | This/last week, Monday/Sunday policy, DST, month/year boundaries, last seven days, fiscal-year rollover and conflicting version/stage fixtures |
+| R-04 | Candidate search/exact query/source-read distinction: hybrid candidate discovery where useful; typed authoritative counts/status/history/comparisons; full decisive passage reads | Search coverage versus enumerated counts; late-body match; multi-source history; bill version/status and PE identity/budget-stage truth |
+| R-05 | Normalized evidence/coverage/freshness/paging: consistent envelopes, explicit status and method, authorized citations, source versions, filters and continuation | Partial/unavailable/stale/empty/truncated fixtures; no absence claim from incomplete coverage; exact-version evidence continuity |
+| R-06 | Native SDK discovery and proxy compatibility: small measured default surface and authorized domain discovery through pinned supported model/runtime/proxy | End-to-end reference/stream/header/compaction/resume compatibility; adversarial catalog recall; observed token/call/latency evidence |
+| R-07 | Explicit skill invocation and executable manifest: selected ID/version plus typed scope/dates; manifest pins required evidence, allowed operations, approval constraints, completion and budget | Submit/steer/reconnect/resume/fork fixtures, manifest validation, active-version migration policy and required-source completion checks |
+| R-08 | Scoped original skills including Commitments: preserve the 14 quick-action workflow intents as proposed v1 selections; qualify their promises; ordinary questions remain lightweight | Skill-by-skill expected evidence/output rubric; Commitments proof/owner/date/ambiguity/dedup/coverage fixtures; no forbidden source widening |
+| R-09 | Complexity budget and bounded recovery: budget follows requested work and evidence, not a domain keyword; direct known-ID lookup avoids unnecessary discovery; recovery follows diagnosed failure | Simple versus comprehensive paired fixtures; no blind repeated search; explicit partial/clarify/block outcomes; enforced runtime/token/tool budgets |
+| R-10 | End-to-end trace/oracle diagnostics: correlated route, arguments, result coverage, evidence read and final claims; correct-tool and correct-evidence runs localize failure | Replayable redacted traces, failure taxonomy, original/oracle comparisons and per-stage timings/costs |
+| R-11 | Optional Decisions routing benchmark: bounded choice/predicate/score advice, multi-source coverage, abstention/fallback, no authority or argument generation | SDK baseline first, paired held-out shadow trials, calibrated confidence, outage/timeout tests and independent adoption decision |
+| R-12 | Optional calibrated JEV evidence benchmark: task-specific passage relevance/claim support/client-fit improvement with abstention; no unsupported tool-router integration | Human-labelled gold data, withheld-evidence/authoritative-state safeguards, calibration plots, error slices and fallback tests |
+
+R2 proposes the 14 current quick-action intents as named v1 skill selections, all pending qualification. This adds explicit workflow selection where the earlier inventory did not select every named recipe. W00 must record/re-estimate that scope against accepted standalone work; the workbook must show proposed/pending status rather than implemented. Retain existing intent/prompt descriptions as qualification references and write original versioned SDK skill content and executable manifests. Six historical built-ins and firm/self-service skill management retain their existing inventory classifications and separate parity decisions. They are not silently declared fully implemented by R-08. Preserve any already-selected firm-skill capability from the original ledger, with the same typed invocation and manifest requirements.
+
+For Commitments & Deliverables, preserve promises versus suggestions, known versus unknown owner/date, evidence of delivery, conflicting statements, deduplication and disclosed source coverage. Task creation is a separate governed action, never an automatic consequence of extracting a suggested commitment. Memory proposals/review, task creation, artifact filing/version/download and schedule lifecycle retain explicit contracts and approval rules. SDK `Read` acts only after authorized file delivery; it does not replace ingestion, source authorization, provenance or artifact filing.
+
+### Contract deliverables
+
+Codex freezes these before dependent adapter/UI/runtime work:
+
+- `docs/CAPABILITY-CATALOG.md` and `packages/contracts/` definitions: stable capability ID/version; source authority; precise selection examples and limitations; closed input/output schema; aliases; side effects; required grants; handler; discovery terms; retry/error taxonomy; retirement/replacement map; R/REL/RG and fixture IDs.
+- `docs/RETRIEVAL-CONTRACT.md`: authorized entity resolution; calendar/FY/version normalization; exact query/search/source-read modes; source inventory; authoritative versus derived/approved-memory distinctions; continuation and negative-assertion policy.
+- `docs/SKILL-CONTRACT.md` and immutable manifests: ID/version, source requirements, legal operations, subject/window inputs, artifact/output rubric, completion obligations, budget, approval boundaries and version policy for existing runs.
+- `docs/ROUTING-EVALUATION.md`, versioned `evals/` fixtures and `docs/RETRIEVAL-AUDIT.md`: deployed baseline settings, held-out split, scoring, confidence/abstention calibration, oracle protocol, measured performance budgets, optional-service adoption decisions and exact candidate evidence.
+
+A client-side selected-skill request has this logical shape; field names can change only through a reviewed versioned contract:
+
+```json
+{
+  "skill_id": "relationship-brief",
+  "skill_version": "1.0.0",
+  "scope_request": { "kind": "client", "entity_id": "authorized-client-id" },
+  "window_request": {
+    "basis": "calendar-week",
+    "expression": "this week",
+    "timezone": "America/New_York"
+  },
+  "prompt": "Prepare this week's relationship brief."
+}
+```
+
+The server binds identity and authorization, resolves the supplied subject, returns and stores the normalized window with exact timestamps/week policy, and pins the manifest before execution. A request is not preauthorized merely because an ID appears above. UI date selection may supply explicit dates; text-derived and selected dates must converge to the same normalized contract. If the UI modifies an explicit workflow into a different goal, resolve the change deliberately and record whether the skill version/manifest was preserved or replaced.
+
+Every evidence response contains at least:
+
+| Field group | Required content |
+| --- | --- |
+| Outcome | `complete`, `partial`, `empty`, `unavailable`, `denied`, or `error`; stable reason/error code and retryability |
+| Request identity | Request/trace ID, operation/version, server-resolved subject scope, normalized dates/FY/version and applied filters |
+| Authority and method | Source/system, authoritative/derived/approved-memory designation, exact/search/read method, source snapshot/version and adapter version |
+| Evidence | Stable record IDs, authorized citations/locators, extracted relevant passages or full-read handles, snippet/full-read distinction |
+| Coverage | Sources requested/checked/unavailable, enumerable count when known, returned count, truncation, cursor/page status, searched range/history limits |
+| Freshness | Source synchronization/as-of timestamps, retrieval timestamp and explicit stale/unknown status |
+| Continuation | Authorized next cursor/read handles and required follow-up for decisive passages or incomplete enumeration |
+
+Do not invent a total count for a vector candidate search. An exact aggregate uses the authorized underlying source and validated filters; it cannot infer a count from top-k candidates. A snippet is a discovery aid, not proof that the relevant later passage was read. Evidence handles are opaque, scope-bound and reauthorized at use. Complete negative statements require complete relevant coverage; otherwise state what was checked and what remains unavailable.
+
+### Bounded routing and evidence services
+
+The first accepted baseline uses Claude Agent SDK selection, the qualified catalog and server contracts. OpenAI Decisions is an optional trusted-tier advisor: the public-beta API currently supports choice/predicate/score outputs with `gpt-6-luna`. It does not generate arbitrary argument JSON or execute tools. Confirm current account availability, endpoint/model support and version at qualification rather than assuming access.
+
+Benchmark choices such as exact lookup, relationship history, legislation, defense-budget comparison, or clarification after authority filtering. Multi-source requests must allow several relevant families or a multi-source branch; a single winning family cannot suppress manifest-required evidence. Calibrate confidence/abstention from labelled data. Advice can prioritize discovery, but Claude retains the loop and the gateway retains authority. Use one bounded call only where measured benefit justifies it; outage, unsupported beta, timeout, uncertainty or rejected advice falls back to the accepted SDK baseline. Do not add mandatory serial classifier calls to every known-ID lookup.
+
+Current JEV integration is an evidence/client judge and its registrations are provisionally calibrated. Begin with relevance/support/client-fit evaluation after candidate retrieval. A judge cannot recover a never-retrieved record or replace authoritative counts/status, mandatory source reads or domain invariants. Preserve required evidence and log exclusions/abstentions. A future JEV routing task requires its own explicit contract, labelled benchmark and adoption decision; it is outside the initial R-12 role. Do not chain JEV and Decisions as mandatory selectors. Optional shadow results do not affect user scope, committed actions or required baseline coverage.
+
+### Diagnostics and benchmark protocol
+
+REL-01 starts with 75 representative real requests, including successful cases and the user's reported failures. Expand to at least 200 versioned cases spanning paraphrases, mixed domains, pronouns, ambiguous identities, selected skills, calendar/FY/version edges, denied grants, missing/stale sources, late-body evidence and source outages. Keep the original release task and policy suites; the reliability cases may overlap only where their labels and scoring fully satisfy both purposes.
+
+Freeze case IDs, authorized source snapshots/as-of times, expected subject/window, accepted operation routes, exact filters/arguments, labelled answer-bearing records, required evidence coverage, expected grounded facts and allowed clarification/abstention outcomes. For Recall@10, freeze atomic discovery retrieval units with at most 10 gold answer-bearing records; do not remove gold records to make that metric attainable. Comprehensive history/enumeration cases with more than 10 required records qualify completeness/paging under RG-05/RG-12 instead. Use distinct development/calibration and held-out sets; group near-duplicate paraphrases and source snapshots so they cannot leak across splits. Do not tune descriptions, thresholds or prompts on the held-out set.
+
+For every evaluated request retain redacted, access-controlled evidence of:
+
+1. Actor/grants, requested and resolved subject, requested and normalized dates/FY/version, selected skill ID/version/manifest, deployed model/runtime/proxy/catalog flags.
+2. Available/exposed/discovered operations, selection and argument validation, rejected route reasons and permitted fallback.
+3. Per-call result status, coverage/freshness/paging, read handles actually resolved, decisive passages and claim-to-source mapping.
+4. SDK round trips, data/tool calls, recovery attempts, subagent/classifier/judge calls, p50/p95 timings and measured usage/cost for all attempts.
+5. Final output, rubric score, human adjudication and failure stage: intent/scope, discovery/selection, arguments, retrieval/index/source, evidence read, skill completion, synthesis or environment.
+
+Use existing OpenTelemetry and Promptfoo mechanisms; add a thin fixture adapter only as needed. First replay the original path. Then run a correct-tool oracle with accepted arguments and unchanged authorization/source snapshot. Finally run a correct-evidence oracle using the gold authorized evidence. If the correct-tool/argument oracle still retrieves the wrong or incomplete evidence, investigate adapters/query/index/source/coverage. If it retrieves the right evidence but the answer remains wrong, continue to later layers. If the correct-evidence oracle still produces an incorrect result, investigate synthesis/skill/domain handling. Report interacting failures rather than attributing every bad answer to routing.
+
+Compare the accepted SDK baseline against optional Decisions shadow and optional JEV evidence shadow separately. Use paired cases and report denominators, absolute/relative errors, calibration, abstentions, confidence intervals and important domain/source slices. A high confidence score is not evidence of calibration. If the held-out data are too small to support an adoption claim, keep the optional service in shadow and collect more labelled cases.
+
+### Execution tickets and safe parallelization
+
+Each REL ticket is decomposed into bounded Hermes sessions under section 5. Codex owns contract integration, acceptance and the next ready ticket. D reviews the exact implementation commit independently. Task briefs carry R/REL/RG and capability/skill/fixture IDs so workbook rows map to executable evidence.
+
+| Ticket | Owner / paths | Dependencies | Required deliverable and review evidence | Required IDs |
+| --- | --- | --- | --- | --- |
+| REL-01 Traces and baseline | Codex + B/D scoped sessions; `docs/RETRIEVAL-AUDIT.md`, `evals/` baseline fixtures | W00; read-only current-Meri trace/source access where available | 75-case initial set, failure taxonomy, deployed settings, source snapshots, oracle protocol and measured budgets; inaccessible production traces explicitly blocked | R-09/R-10; RG-09 |
+| REL-02 Contracts and catalog | Codex + one B session; `packages/contracts/`, catalog/retrieval/skill docs | W00 discovery accepted; W01 contract ownership allocated; REL-01 inventory findings (REL-02 contributes to W01 completion) | Frozen typed operations, scope/window/evidence/skill contracts, handler/schema/description mapping and unavailable-recipe checks | R-01–R-05/R-07; RG-02/RG-07 |
+| REL-03 Retrieval adapters | B; `apps/gateway/` source adapters, scoped fixture files | Accepted REL-02; W03 for live source checks | Independently written exact/search/read adapters with coverage/freshness/paging; memory/client/portfolio and selected domain truth fixtures | R-02–R-05; RG-02–RG-05/RG-07/RG-12 |
+| REL-04 Skills and UI identity | C; `apps/web/`, `packages/skills/`, owned manifests/UI ledger | Accepted REL-02; W05 for resume/fork integration | Typed explicit invocation, original scoped skills, Commitments, required evidence/completion, calendar/portfolio/memory regressions and Playwright checks | R-03/R-07/R-08; RG-02/RG-06/RG-12 |
+| REL-05 SDK discovery and loop | A; `apps/worker/`, trusted proxy integration; Codex owns catalog shared changes | Runtime checkpoint: accepted REL-02 and W02 spike environment ready. Final end-to-end checkpoint: accepted REL-03/04 and W03/W05 integration | Runtime-only discovery/proxy evidence contributes to W02 before W03. Later lightweight baseline, budgets/recovery, resume/compaction and adversarial integration evidence qualify under W09 | R-01/R-06/R-09/R-10; RG-01/RG-08/RG-09/RG-12 |
+| REL-06 Benchmark and domain truth | D with scoped B evidence support; `evals/`, `docs/ROUTING-EVALUATION.md` | REL-01; accepted REL-03/04/05 baseline | Expanded 200-case frozen suite and held-out labels, exact domain truth, oracle diagnostics, baseline result manifest and independent adjudication | R-01–R-10; RG-01–RG-09/RG-12 |
+| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |
+| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |
+| REL-09 Integration and canary | Codex; D reviews exact candidate | Pre-staging checkpoint: accepted REL-03–REL-06, W04–W08 and prior W09 checks; promoted optional services only. Canary checkpoint: W10 accepted, then W11 authorization | Pre-staging trace/reconnect/revocation/full-read/RG evidence completes W09 for W10. Post-staging immutable candidate and bounded canary evidence complete the ticket under W11; canary is not a W09 prerequisite | R-01–R-12 as applicable; RG-01–RG-12 as applicable |
+
+Package dependencies refer to their required checkpoints, not a circular requirement to complete every subtask first. REL-05 has a runtime-only checkpoint contributing to W02 before W03/W05, then a separate full integration checkpoint under W09. REL-09 has a pre-staging integration checkpoint contributing to W09/W10, then a post-staging canary checkpoint under W11; report their statuses separately. Contracts land before REL-03/04/05 write dependent code. B adapters, C UI/skills and A SDK qualification may then run in separate owned paths using the accepted fixture contracts. Expand the full held-out evaluation only after baseline integration; D can prepare fixtures independently earlier. Optional REL-07/08 never block release of a passing SDK baseline. An adopted optional service carries its own gates and independent kill switch.
+
+### Agents already deploying: resume and integrate R2
+
+Do not create another repository or replace existing qualified infrastructure merely because this revision was delivered. Codex first inventories the current standalone deployment branch/worktrees, accepted commits, candidate digests, current W/G status, Hermes task/session IDs, live processes, contract versions and evidence. Preserve existing work and explicitly identify which R/REL/RG requirements it already satisfies.
+
+Apply missing REL tickets incrementally from the current accepted integration commit. Before altering shared contracts, record affected adapters/UI/workers/in-flight runs, reserve their owned paths, and publish an additive version/migration compatibility decision. Pause only dependent tickets whose contract changed; continue independent work. Resume an in-flight Hermes session by its explicit ID when compatible, or issue a scoped repair/integration task with its pinned handoff. Do not discard worktrees, reset the shared checkout, relaunch a second dispatcher, rerun accepted checks without cause, or redeploy existing stacks as an assumed clean start.
+
+The initial R2 handoff should state: preserved work/evidence; current deployment target and immutable candidate; unmet R requirements; ready REL tickets and owners; changed-contract compatibility; proposed RG budgets; optional-service disabled/shadow status; and the next gate. A file delivery alone does not authorize a production rollout that was not previously authorized.
 
 ## 5. Launching and supervising Hermes
 
@@ -212,14 +374,14 @@ Advance environments only when the evidence passes. Work on independent packages
 
 | Gate | Required evidence |
 | --- | --- |
-| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability and data inventory; pinned Meri Figma reference, UI inventory and shared-shell integration decision; no guessed production target |
-| G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, interrupt/resume, checkpoint and egress spike; production Temporal persistence, authentication/TLS, backup and upgrade design |
+| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability/data inventory; pinned Figma/UI/shell decision; current deployment/session evidence preserved; REL-01 audit/baseline plan; no guessed target |
+| G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, actual-proxy native discovery (RG-08), interrupt/resume/checkpoint/egress spike; accepted REL-02 contracts; Temporal persistence/authentication/TLS/backup/upgrade design; measured cohort budgets frozen |
 | G2 Isolated development | New stack deployed with source connections disabled; seeded identity/policy fixtures; task capabilities, restricted IAM/network paths, encryption, and conversation ownership pass |
-| G3 Read-only data | One client and governed memory first, then all agreed domains; pagination/count/history/citations/freshness verified; tenant and within-tenant policy fixtures, including the measured revocation deadline, pass |
-| G4 Execution workspace | SDK plus Figma-mapped UI/artifact/browser integration; core walkthroughs pass against real contracts, not mock success; worker loss, approval-wait restart, session/files recovery, cancellation and single-writer fencing pass |
+| G3 Read-only data | One client and memory, then all agreed domains; exact/search/full-evidence/coverage/freshness/paging, calendar/FY/version and authority fixtures (RG-02–RG-05/RG-07); measured revocation deadline and tenant/within-tenant policy checks pass |
+| G4 Execution workspace | SDK baseline plus Figma-mapped UI/artifact/browser integration; selected skill ID/version/manifest and evidence completion (RG-06); native discovery/reconnect/full-read/recovery (RG-08/RG-12); real walkthroughs, worker loss, approval wait, cancellation and fencing pass |
 | G5 Selected commands | Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations |
-| G6 Staging | Exact immutable candidate passes full task/policy/artifact/UI/browser/recovery/load suite, Figma visual/responsive/accessibility checks and UI coverage audit, retention/deletion, deployment rollback, database restore and workflow compatibility |
-| G7 Controlled release | Internal users, then bounded tenant allowlist; observable task quality/cost/error evidence; release owner authorizes the candidate before broader production rollout |
+| G6 Staging | Exact immutable candidate passes original full suite, frozen reliability benchmark (core RG-01–RG-09/RG-12), Figma/UI/visual/accessibility, retention/deletion, rollback/restore/workflow compatibility; RG-10/RG-11 additionally pass only for promoted optional services |
+| G7 Controlled release | Internal users, then bounded tenant allowlist; observe routing/evidence/task quality/latency/cost/error; optional services have independent bypass; release owner authorizes the exact candidate before broader rollout |
 
 Authenticated browser actions qualify individually after public browsing. OAuth/connector secrets remain in the trusted layer. Browser profiles, cookies, downloads and uploads are conversation-bound. External side effects follow the same proposal/current-authority/idempotency rules as other commands.
 
@@ -227,10 +389,10 @@ Authenticated browser actions qualify individually after public browsing. OAuth/
 
 1. **Build CI and infrastructure.** Use GitHub Actions OIDC with narrowly scoped environment-specific AWS roles, immutable ECR images, and CDK. Separate trusted migrations from agent execution. Keep production roles unavailable to worker sessions.
 2. **Deploy development foundations.** Verify the AWS account/region immediately before changes. Review CDK synthesis/diff, then deploy new networking, database, buckets, keys, gateway/control services, Temporal and broker resources. Do not modify existing Capiro stacks.
-3. **Start with fixtures.** Exercise login, current membership, gateway tools, SDK streaming, capability expiry, cancellation, task budgets and durable checkpoints before enabling real sources.
-4. **Enable reads progressively.** Use a restricted read role that cannot bypass policies through owner privileges. Validate one client and memory, then every inventory domain. Record unsupported history, freshness or coverage explicitly.
+3. **Start with fixtures.** Exercise login, current membership, typed scope/window/evidence/skill contracts, actual-proxy SDK discovery/streaming, capability expiry, cancellation, complexity budgets and checkpoints. Build the accepted SDK baseline before any optional routing/judging. Preserve qualified existing fixtures and work.
+4. **Enable reads progressively.** Use a restricted read role that cannot bypass policies through owner privileges. Validate one client and memory, then every selected inventory domain with exact/search/evidence operations. Require calendar/FY/version and complete-negative-coverage fixtures. Record unsupported history, unavailable/stale sources, truncation and continuation explicitly.
 5. **Enable selected actions.** Add memory proposals, tasks and artifact filing after G3–G5 pass. An approval binds the exact immutable action and expires; execution rechecks current authority.
-6. **Deploy an immutable staging candidate.** Capture code SHA, image digests, component/skill versions, contracts, checkpoint format, migrations, Temporal compatibility strategy and environment configuration. Deploy those exact assets and run the complete release suite.
+6. **Deploy an immutable staging candidate.** Capture code SHA, images, runtime/model/proxy/catalog/skill/manifest versions, contracts, checkpoint format, migrations, Temporal compatibility and environment configuration. Deploy those exact assets and run the original full suite plus frozen core RG gates. Keep Decisions/JEV disabled or shadow unless their own adoption gates pass; unsupported optional availability never blocks a passing core candidate.
 7. **Run controlled release.** Keep current Meri available. Start with named internal users and an explicit tenant allowlist. Use feature flags to separate run creation, source writes, schedules and authenticated browser actions. Review failures, quality, latency and cost against agreed limits before increasing exposure.
 8. **Publish release evidence.** Record candidate manifest, deployment diff, migration effects, acceptance results, restore/rollback drill, canary observations, known limitations and the release decision. If production authorization is still required, present this concrete candidate for approval after all authorized preparatory work is complete.
 
@@ -242,7 +404,7 @@ A release passes only when every applicable criterion has evidence against the s
 
 | Criterion | Required result |
 | --- | --- |
-| Real work | At least 60 representative tasks; at least 90% completed successfully; at least 95% checked factual correctness |
+| Real work | Preserve the original at least 60 representative end-to-end tasks with at least 90% successful completion and at least 95% checked factual correctness. Start reliability work with 75 real requests and expand to at least 200 labelled cases; score the applicable frozen held-out RG gates separately |
 | Cross-tenant isolation | Zero unauthorized rows, citations, transcripts, browser state or files across at least 100 adversarial cases |
 | Within-tenant authorization | 100% fixtures pass for client walls, mailbox ownership, private memory, expired grants, role changes and revocation of already-stored context |
 | Revocation | Numeric propagation bound agreed before G3 and met in staging; live cancellation, further publication denial and historical thread/file/preview/artifact access checks pass |
@@ -261,6 +423,29 @@ A release passes only when every applicable criterion has evidence against the s
 | Deployment operations | Exact candidate succeeds in staging; alerting, restore, rollback and in-flight compatibility drills pass |
 | Reuse | Every generic subsystem has a pinned adoption/license record; custom replacements explain a demonstrated limitation |
 
+### Retrieval and routing qualification gates
+
+The following RG thresholds are **new proposed acceptance gates**, not existing production results. Freeze definitions, denominators, labelled gold data and measured latency cohorts before qualification. Codex may record a user-authorized scope/target change; workers may not lower a target merely to mark a ticket complete. Core gates apply to the exact baseline candidate; optional RG-10/RG-11 apply only if the service is promoted.
+
+| Gate | Proposed acceptance result | Evidence and boundary |
+| --- | --- | --- |
+| RG-01 | Accepted route on at least 95% of held-out cases | Score allowed source/tool paths and all required families, including expected clarification; a route need not use one identical call sequence |
+| RG-02 | 100% deterministic subject/window/FY/version fixtures pass | Server-bound scope/entity IDs; normalized calendar/timezone, relative duration, funding stage and evidence version |
+| RG-03 | Labelled answer-bearing evidence Recall@10 at least 95% on frozen discovery retrieval units with at most 10 gold records | Define unit/source/candidate pool; retain all gold labels and report denominators/source slices. Cases with more than 10 required records use completeness/paging RG-05/RG-12; exact lookup/counts use RG-04 |
+| RG-04 | 100% deterministic count/status/comparison fixtures pass | Authorized source snapshots, exact filters, bill/document version, PE identity/FY/stage and comparison consistency |
+| RG-05 | Zero false absence claims on partial, unavailable or stale cases | Complete coverage or a clear limitation; empty candidate search does not prove no matching records |
+| RG-06 | 100% selected skill ID/version and required evidence/completion fixtures pass | Includes client/portfolio/relationship/memory collisions and Commitments; replay, steer, reconnect, resume and fork preserve or explicitly version the contract |
+| RG-07 | Zero unauthorized disclosure/mutation in the qualification suite | Cross-tenant and within-tenant boundaries; current grants, memory/mailbox walls, stored context, citations, files and revoked access |
+| RG-08 | Native discovery actual-proxy compatibility and adversarial catalog recall suite pass | Known required capabilities found or an explicit supported fallback invoked; reference/header/stream/compaction/resume behavior and authorization at execution verified |
+| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |
+| RG-10 | Optional classifier reduces held-out routing errors by at least 25% relatively, with no material coverage/argument regression | Paired sufficiently powered labelled cases, confidence intervals and human adjudication; low baseline error or insufficient data can require more cases; latency must also pass RG-09 |
+| RG-11 | Optional JEV improves labelled evidence quality with calibrated abstention and no required-evidence loss | Freeze task-specific improvement/calibration/adoption thresholds before shadow scoring; report relevant/support/client-fit separately; authoritative facts and mandatory reads remain protected |
+| RG-12 | Replay/reconnect/revocation/full-evidence-read/coverage-completeness contract suite passes | No stale discovered authorization; session/files/source versions pinned; decisive passage actually read; partial outcomes and continuation preserved |
+
+Latency definitions are distinct. UI acknowledgement (at most two seconds) is accepted-request feedback; fresh-task readiness (at most 90 seconds) includes a new isolated worker; RG-09 measures a warm simple lookup from accepted request to grounded final answer. If the companion original plan/workbook retains an ordinary-answer p95 at most eight seconds, keep that target for its frozen original cohort; RG-09's broader warm lookup ceiling does not replace it. Report both cohorts and avoid hiding discovery/retry/classifier latency outside the measurement. Do not call an unfinished streaming token a completed answer.
+
+RG-11 intentionally has no invented universal JEV gain number: REL-06/REL-08 must pin a task-specific measurable adoption threshold, calibration/abstention rubric and latency ceiling before judging. Until that qualification exists, JEV is disabled/shadow and cannot veto mandatory evidence. RG-10 likewise requires sufficient labelled evidence for its claimed improvement; optional indecision cannot delay a qualified baseline release.
+
 Define UI acknowledgement as the request being accepted, not model completion. Measure fresh-task readiness separately from a warm worker. Set numeric per-task and tenant spend caps after the qualification benchmark; do not invent a universal dollar target.
 
 Artifact validation includes rendering the generated document/slides, opening the native format, checking referenced inputs and formulas, and comparing revisions. LibreOffice recalculation is not universal Excel equivalence. Unsupported features must be rejected or disclosed rather than silently lost.
@@ -271,11 +456,11 @@ Use Playwright's screenshot and interaction capabilities rather than inventing a
 
 ## 8. Rollback and recovery
 
-Maintain independent kill switches for new runs, source writes, schedules and browser actions. A data-policy failure disables the affected access immediately and revokes capabilities; changing a prompt is not a security fix.
+Maintain independent kill switches for new runs, source writes, schedules, browser actions and optional Decisions/JEV services. Bypassing an optional service returns to the already-qualified SDK baseline, not an untested route. A data-policy failure disables the affected access immediately and revokes capabilities; changing a prompt is not a security fix.
 
 Use additive expand/contract migrations. Support old and new readers/writers during rollout, backfill separately, and postpone destructive removal until rollback and in-flight runs no longer depend on the old schema. Application rollback reverts images/configuration; it must not automatically reverse a migration that deletes new user data.
 
-Record each run's image, SDK/runtime, tool contracts, skills, and checkpoint-format versions. Use Temporal's qualified versioning/deployment approach and retain compatible workers for in-flight histories. Do not resume checkpoints with an unqualified runtime or deploy nondeterministic workflow changes onto existing histories.
+Record each run's image, SDK/runtime/model/proxy, catalog/tool contracts, skill ID/version/manifest, normalized scope/window/source snapshot, optional-service configuration and checkpoint-format versions. Use Temporal's qualified versioning/deployment approach and retain compatible workers for in-flight histories. Do not resume checkpoints with an unqualified runtime or deploy nondeterministic workflow changes onto existing histories.
 
 For rollback:
 
@@ -303,6 +488,9 @@ Dependency commits:
 Owned paths:
 Paths/interfaces requiring Codex approval:
 Adopted components and pinned versions:
+R/REL/RG IDs and capability/skill/fixture IDs:
+Catalog/skill invocation/manifest/evidence contract versions:
+Baseline versus optional-service state and frozen budgets:
 Figma frame/component IDs and pinned design reference:
 UI controls/states, API/event contracts and Playwright coverage owned:
 Required behavior and authorization boundaries:
@@ -327,6 +515,9 @@ Base commit and result commit:
 Changed files:
 What behavior changed:
 Checks run and exact outcomes:
+Applicable R/REL/RG results, fixture IDs and benchmark split:
+Contract compatibility, normalized scope/window and evidence coverage effects:
+Trace/oracle diagnosis and measured latency/cost where applicable:
 Evidence/log/screenshots:
 Policy and migration effects:
 Remaining issues and risks:
@@ -338,17 +529,24 @@ Codex's final status reports accepted capability coverage, deployment environmen
 
 ## 10. Ready to paste into Codex
 
-Give Codex this file and the updated Meri Greenfield Agent Plan, with access to the existing Capiro repository for read-only discovery.
+Give Codex this R2 file and the updated capability workbook as the current two-file handoff, with the current standalone deployment repository/branch and existing Capiro read access. Retain any already-provided Meri Greenfield Agent Plan as background for unaffected requirements; obtaining another document is not a prerequisite to start REL work. Agents already working should use this as an incremental revision, not a clean-start instruction. Codex stores the workbook with a dated revision/checksum, exports the accepted shared R/REL/RG/capability mappings into Git contracts/ledgers, and records discrepancies before dependent edits. The workbook is the reviewable inventory; versioned executable contracts and task briefs govern implementation after reconciliation.
 
 ```text
 You are the lead implementer and integration owner for the new Meri agent.
 
-Read docs/plans/MERI-DEPLOYMENT.md and the updated Meri Greenfield Agent
-Plan. Execute their defined first release in a new repository and independent
-infrastructure. Use Claude Agent SDK for the deployed runtime, AI Elements
+Read Revision R2 of docs/plans/MERI-DEPLOYMENT.md and its updated capability
+workbook as the current handoff. Retain any already-provided Greenfield Agent
+Plan as background for unaffected scope; do not require a third document to
+start REL work. Use R2 when older routing/ten-tool recommendations conflict. Execute the defined first
+release in the independent Meri repository/infrastructure. If deployment work
+is already underway, first inspect accepted commits, worktrees, live Hermes
+sessions, contracts, candidate images and gate evidence. Preserve qualified
+work, current stacks and in-flight sessions; resume incrementally. Do not
+create a second repository/stack, reset branches or discard progress. Use Claude Agent SDK for the deployed runtime, AI Elements
 for the UI, Playwright for browser work, Temporal for durable execution, and
 the adopted open-source artifact/testing components. Use existing Capiro
-code only to discover data schemas, current policies and capability scope.
+code as a behavioral reference for data schemas, policies and capability scope;
+never import its agent/retrieval/UI/planner/skill/infrastructure implementation.
 
 Use the standalone Meri Figma section as the UI design and interaction reference:
 https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=439-81406
@@ -367,9 +565,44 @@ Otherwise use bounded CLI sessions with query files, explicit session IDs,
 structured process arguments and captured output. Do not simulate delegation
 or add another swarm framework.
 
+Create and qualify one typed catalog/gateway and executable skill manifest
+resolver. Do not target a fixed total tool count or expose giant free-text
+query_data/raw SQL. Separate exact queries, candidate searches and full source
+reads; return normalized subject/window/FY/version, authority, evidence,
+coverage, freshness, pagination and explicit errors. The server binds identity
+and grants and rechecks authority. The UI sends selected skill ID/version and
+typed scope/dates; manifests own evidence and completion. Preserve Commitments
+& Deliverables and scoped original quick-actions; ordinary queries stay light.
+
+Use native SDK deferred tool discovery only after qualifying the pinned
+runtime/model through the actual trusted proxy. One Claude SDK loop owns
+execution. Required skill source families cannot be dropped by memory keywords
+or one selected family. Test calendar-week/timezone and portfolio source
+coverage, absent-recipe instructions, exact counts/status/version/budget
+comparisons, topic-driven effort escalation and bounded recovery.
+
+Run REL-01 through REL-06 and REL-09 with dependencies, owned paths and an
+independent review. Start with 75 real cases, expand to 200 frozen labelled
+cases, isolate held-out data and run correct-tool/correct-evidence oracle
+experiments. Preserve the full original acceptance suite. Report R/REL/RG IDs,
+traces, denominators, confidence intervals and timings/costs against the exact
+candidate; proposed thresholds are not current PASS results.
+
+REL-07 Decisions and REL-08 JEV are optional shadow experiments after the SDK
+baseline. Decisions supplies bounded choice/predicate/score advice, not tool
+arguments/execution/authority; permit multi-source decisions and abstention.
+JEV starts as a calibrated evidence judge, never a substitute for retrieval or
+mandatory source reads. Neither service is a mandatory serial router or blocks
+core release when unavailable. Promote only after its held-out quality and
+latency gates pass; otherwise keep disabled/shadow with immediate baseline
+fallback. Preserve stricter existing performance cohorts and distinguish warm
+answer latency from UI acknowledgement and fresh-worker readiness.
+
 Start with read-only repository/AWS/source discovery. Record the actual
 accounts, regions, roles and repository before deployments; never guess
-targets or expose secrets. Preserve existing work. Freeze shared contracts,
+targets or expose secrets. Preserve existing work and explicit session IDs.
+Reconcile R2 against already-qualified evidence and pin additive compatibility
+for changed contracts before dependent tickets continue. Freeze shared contracts,
 then create scoped task briefs and dedicated Git worktrees. Run up to three
 implementation sessions and one separate reviewer initially. Give each
 session a pinned commit, owned paths, dependencies, adoption choices,
@@ -400,8 +633,10 @@ work. Never bypass tenant policies, silently lower success criteria, repeatedly
 retry quota failures, import the old Meri implementation, or claim an untested
 capability is complete.
 
-Begin with discovery, write the initial status and dependency queue, then
-launch the first bounded Hermes qualification task. Report accepted outcomes,
+Begin with discovery or current-deployment reconciliation, write preserved
+evidence and the dependency queue, then launch the next ready bounded Hermes
+task. Preserve current authorization; this revision alone does not authorize
+a production rollout. Report accepted outcomes,
 blockers and the next gate throughout.
 ```
 
@@ -410,6 +645,11 @@ blockers and the next gate throughout.
 Verify installed versions and current API support before executing examples.
 
 - [Claude Agent SDK](https://platform.claude.com/docs/en/agent-sdk/overview)
+- [Native SDK tool search and proxy compatibility](https://code.claude.com/docs/en/agent-sdk/tool-search)
+- [OpenAI Decisions — optional bounded classification](https://developers.openai.com/api/docs/guides/decisions)
+- [OpenAI function-calling contract guidance](https://developers.openai.com/api/docs/guides/function-calling)
+- [Evaluation guidance](https://developers.openai.com/api/docs/guides/evaluation-best-practices)
+- [Pinned current-Meri source audit](https://github.com/neo-capiro/capirov2/tree/fd8765ec01d292013758606204f2c9d886cd31c1)
 - [AI Elements](https://elements.ai-sdk.dev/)
 - [Standalone Meri Figma design](https://www.figma.com/design/Zc2dEN5aLU47dVdsewDmiJ/Capiro-3.0-%E2%80%94-UI-Redesign?node-id=439-81406)
 - [Figma Code Connect — optional design/component mapping](https://developers.figma.com/docs/code-connect/)

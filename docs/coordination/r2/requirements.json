@@ -1,0 +1,203 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "sheet": "Tool contracts",
+  "records": [
+    {
+      "row": 8,
+      "fields": {
+        "Requirement ID": "R-01",
+        "Contract": "Canonical catalog and typed operations",
+        "Implementation rule": "One authoritative catalog. Precise names, when-to-use, enums, inputs/outputs and failure semantics. Preserve domain distinctions. Tool count follows evidence.",
+        "Scope": "Core",
+        "Owner": "Hermes gateway",
+        "Depends on": "REL-01",
+        "Qualification gates": "RG-01, RG-04, RG-08",
+        "Completion evidence": "Catalog diff, schema lint, domain fixtures",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 9,
+      "fields": {
+        "Requirement ID": "R-02",
+        "Contract": "Server-bound scope and entity",
+        "Implementation rule": "Bind tenant, actor, canonical client/entity IDs and grants in trusted code. Recheck at discovery, load, use, resume and destination. Clarify unresolved identity.",
+        "Scope": "Core",
+        "Owner": "Hermes gateway/security",
+        "Depends on": "R-01",
+        "Qualification gates": "RG-02, RG-07, RG-12",
+        "Completion evidence": "Scope and ambiguous-identity fixtures",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 10,
+      "fields": {
+        "Requirement ID": "R-03",
+        "Contract": "Calendar, fiscal year and version",
+        "Implementation rule": "Resolve actor timezone, this week, inclusive/exclusive bounds, fiscal year, bill session, budget stage and exact revision. Validate comparable units.",
+        "Scope": "Core",
+        "Owner": "Hermes retrieval",
+        "Depends on": "R-02",
+        "Qualification gates": "RG-02, RG-04",
+        "Completion evidence": "Boundary, FY/stage/version fixtures",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 11,
+      "fields": {
+        "Requirement ID": "R-04",
+        "Contract": "Search, exact query and source read",
+        "Implementation rule": "Separate candidate search, typed exact operations and evidence reading. Use qualified lexical/semantic discovery. No raw SQL or giant free-text query contract.",
+        "Scope": "Core",
+        "Owner": "Hermes retrieval",
+        "Depends on": "R-01, R-02, R-03",
+        "Qualification gates": "RG-03, RG-04, RG-12",
+        "Completion evidence": "Adapter contracts and oracle retrieval runs",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 12,
+      "fields": {
+        "Requirement ID": "R-05",
+        "Contract": "Evidence, coverage and freshness",
+        "Implementation rule": "Uniform success/empty/partial/unavailable status, IDs/revisions, timestamps, checked sources, applied scope, returned/total, cursor and truncation. Read material evidence.",
+        "Scope": "Core",
+        "Owner": "Hermes retrieval",
+        "Depends on": "R-04",
+        "Qualification gates": "RG-03, RG-05, RG-12",
+        "Completion evidence": "Envelopes, paging and false-absence fixtures",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 13,
+      "fields": {
+        "Requirement ID": "R-06",
+        "Contract": "Native discovery through proxy",
+        "Implementation rule": "Claude SDK owns the loop and native deferred search. Validate actual proxy tool_reference and schema loading. Small catalogs may load upfront.",
+        "Scope": "Core",
+        "Owner": "Hermes runtime",
+        "Depends on": "R-01, R-02",
+        "Qualification gates": "RG-01, RG-08, RG-09",
+        "Completion evidence": "Proxy integration and catalog recall report",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 14,
+      "fields": {
+        "Requirement ID": "R-07",
+        "Contract": "Skill identity and manifest",
+        "Implementation rule": "UI sends selected ID/version and typed subject/date inputs. Server binds immutable evidence/completion manifest. Natural-language invocation reaches the same resolver.",
+        "Scope": "Core",
+        "Owner": "Hermes UI/skills",
+        "Depends on": "R-01, R-02, R-03",
+        "Qualification gates": "RG-02, RG-06, RG-12",
+        "Completion evidence": "Invocation payload and lifecycle fixtures",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 15,
+      "fields": {
+        "Requirement ID": "R-08",
+        "Contract": "Original scoped skills and Commitments",
+        "Implementation rule": "Retain 14 current quick-action intents as original SDK skills. Qualify required sources. Commitments preserves promises, unknown fields and evidence-backed completion.",
+        "Scope": "Core",
+        "Owner": "Hermes skills",
+        "Depends on": "R-05, R-07",
+        "Qualification gates": "RG-05, RG-06",
+        "Completion evidence": "All 14 intent fixtures and procedure rubric",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 16,
+      "fields": {
+        "Requirement ID": "R-09",
+        "Contract": "Complexity and bounded recovery",
+        "Implementation rule": "Simple questions use main SDK loop. Delegate valuable parallel work. Retry with purposeful bounded source fallback. Preserve verified partial output and budgets.",
+        "Scope": "Core",
+        "Owner": "Hermes runtime",
+        "Depends on": "R-04, R-05, R-06",
+        "Qualification gates": "RG-09, RG-12",
+        "Completion evidence": "Warm/cold cohorts, retries and stop receipts",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 17,
+      "fields": {
+        "Requirement ID": "R-10",
+        "Contract": "Traces, benchmark and oracle",
+        "Implementation rule": "Trace subject/window, invocation, candidates, arguments, source statuses, evidence, calls and p50/p95 latency. Start 75 real queries and expand to 200 versioned cases with a held-out split.",
+        "Scope": "Core",
+        "Owner": "Hermes QA/observability",
+        "Depends on": "REL-01",
+        "Qualification gates": "RG-01 through RG-12",
+        "Completion evidence": "Baseline, labelled fixtures, oracle reports",
+        "Implementation state": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 18,
+      "fields": {
+        "Requirement ID": "R-11",
+        "Contract": "Optional Decisions routing evaluation",
+        "Implementation rule": "Public-beta choice/predicate/score service advises ambiguous family or complexity among authorized supplied options. SDK forms tool arguments. Bypass on error.",
+        "Scope": "Optional experiment",
+        "Owner": "Hermes evaluation",
+        "Depends on": "R-01 through R-10 qualified baseline",
+        "Qualification gates": "RG-09, RG-10",
+        "Completion evidence": "Paired held-out route and latency report",
+        "Implementation state": "Not run"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    },
+    {
+      "row": 19,
+      "fields": {
+        "Requirement ID": "R-12",
+        "Contract": "Optional calibrated JEV evidence",
+        "Implementation rule": "Evaluate passage/claim/client-fit tasks after retrieval against human labels. No existing JEV router. Calibrate abstention and retain all required evidence.",
+        "Scope": "Optional experiment",
+        "Owner": "Hermes evaluation",
+        "Depends on": "R-01 through R-10 qualified baseline",
+        "Qualification gates": "RG-11",
+        "Completion evidence": "Human-labelled calibration and recall report",
+        "Implementation state": "Not run"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    }
+  ]
+}

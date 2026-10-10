@@ -1,0 +1,11 @@
+# Browser host egress: owner source acceptance
+
+Codex integration owner10October2026 accepts the focused egress/template repair `9461d8d179e075d5a64d05669e57fc873292fb71` **offline only**. No host/change set/deployment or browser sandbox acceptance follows.
+
+Owner independently read all four returned paths, their exact diff and the full preparation report; reconciled Git/current bytes and346 evidence payloads/10,420,315B against manifestSHA256 `378cfb21195ba876f1a55bbc67c2b210eca79d69f326f8b54dcf1d0e9ece25bf`. Final22621B templateSHA256 `0536107c4ffe8d44d78597e4981d0f523d8f6c22fcd168f5a23f1432bafd189a` contains one host group with exactly two inline TCP443 destinations: existing new private endpoint group and regional S3 prefix list; no host ingress, CIDR-wide allows or standalone egress. Instance DependsOn includes completed group and endpoint ingress. Fixed destination IDs create no mutual group dependency.
+
+This closes the creation/readiness gap: CloudFormation documents default outbound rules if no explicit egress is supplied. Providing restrictive rules on the group and waiting for completion prevents the instance depending on a separately created egress resource. [Primary CloudFormation documentation](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-ec2-securitygroup.html).
+
+Author focused structural1/1 and distinct fresh accepted-image synthesis passed; raw/gzip user data,14 accepted support assets, IAM, key, logs and other instance properties remain unchanged. Owner verified actual final template semantics with DATA checks, rather than rerunning unchanged suites. Corrected DATA checker2 accounts for the manifest's records key; the first checker refusal remains. Evidence: `.task-inputs/CODEX-G1-browser-review-owner-acceptance-2/result.json`.
+
+Fresh authority/change-set review, actual credential trust delivery, independent external fixed-instance teardown, original deadline, actual boot/runtime security, browser AND renderer sandbox, logs and instance/root-volume termination remain required. All49 worker scan findings/22severe and five older vendor findings stay OPEN. The prepared UUID has not launched; no residual-risk runtime waiver or G1 PASS is given.

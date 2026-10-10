@@ -1,0 +1,164 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "sheet": "Deployment work",
+  "records": [
+    {
+      "row": 8,
+      "fields": {
+        "Ticket ID": "REL-01",
+        "Phase": "Baseline",
+        "Work": "Inventory existing implementation and accepted evidence. Capture failed queries, traces and oracle controls. Pin current branches/config without interrupting in-flight sessions.",
+        "Owner": "Codex + Hermes QA",
+        "Dependencies": "Existing standalone handoff",
+        "Requirement IDs": "R-10",
+        "Qualification gates": "RG-01 through RG-12",
+        "Completion evidence": "Trace packet, 75-query seed and gap matrix",
+        "State": "Gap check pending",
+        "Rollout guidance": "Resume existing work. Do not recreate qualified components."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 9,
+      "fields": {
+        "Ticket ID": "REL-02",
+        "Phase": "Contracts",
+        "Work": "Publish one typed catalog and alias/deprecation mapping for all 139 original IDs. Preserve domain semantics and action governance. Remove contradictions in descriptions.",
+        "Owner": "Hermes gateway",
+        "Dependencies": "REL-01 and allocated W01 contract ownership. Contributes to W01.",
+        "Requirement IDs": "R-01, R-02",
+        "Qualification gates": "RG-01, RG-02, RG-04, RG-07",
+        "Completion evidence": "Catalog, typed contracts and preservation map",
+        "State": "Gap check pending",
+        "Rollout guidance": "Incremental PRs. No arbitrary ten-tool target."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 10,
+      "fields": {
+        "Ticket ID": "REL-03",
+        "Phase": "Retrieval",
+        "Work": "Qualify search/exact/source-read adapters, windows and evidence envelope. Repair gaps found in completed gateway work.",
+        "Owner": "Hermes retrieval",
+        "Dependencies": "REL-02",
+        "Requirement IDs": "R-03, R-04, R-05",
+        "Qualification gates": "RG-02, RG-03, RG-04, RG-05, RG-12",
+        "Completion evidence": "Adapter/oracle fixtures and coverage reports",
+        "State": "Gap check pending",
+        "Rollout guidance": "Keep source authorization and reliable existing behavior."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 11,
+      "fields": {
+        "Ticket ID": "REL-04",
+        "Phase": "Skills/UI",
+        "Work": "Carry skill identity/version and typed inputs. Implement original contracts for 14 quick-action intents with stronger Commitments & Deliverables rubric.",
+        "Owner": "Hermes UI + skills",
+        "Dependencies": "REL-02. Retrieval can progress in parallel.",
+        "Requirement IDs": "R-07, R-08",
+        "Qualification gates": "RG-02, RG-05, RG-06, RG-12",
+        "Completion evidence": "Invocation fixtures and skill manifest matrix",
+        "State": "Gap check pending",
+        "Rollout guidance": "No implicit selection of historical built-ins/firm authoring."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 12,
+      "fields": {
+        "Ticket ID": "REL-05",
+        "Phase": "SDK runtime",
+        "Work": "Use one Claude loop and native deferred discovery through the actual proxy. Bound simple work, delegation, retries and recovery.",
+        "Owner": "Hermes runtime",
+        "Dependencies": "REL-02. Runtime-only checkpoint contributes to W02. Full integration follows REL-03/REL-04 under W09.",
+        "Requirement IDs": "R-06, R-09",
+        "Qualification gates": "RG-01, RG-08, RG-09, RG-12",
+        "Completion evidence": "Proxy/discovery report and warm/cold timing",
+        "State": "Gap check pending",
+        "Rollout guidance": "Do not add another production planner loop."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 13,
+      "fields": {
+        "Ticket ID": "REL-06",
+        "Phase": "Qualification",
+        "Work": "Expand seed to 200 cases with held-out routes, arguments, evidence, domain truth and oracle replays. Retain all original release gates.",
+        "Owner": "Hermes QA + independent reviewer",
+        "Dependencies": "REL-03, REL-04, REL-05",
+        "Requirement IDs": "R-10",
+        "Qualification gates": "RG-01 through RG-09, RG-12",
+        "Completion evidence": "Pinned fixture set, paired results and release evidence",
+        "State": "Not run",
+        "Rollout guidance": "Core qualification. Actual results remain blank here."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 14,
+      "fields": {
+        "Ticket ID": "REL-07",
+        "Phase": "Optional Decisions",
+        "Work": "Shadow bounded family/complexity choice for ambiguous requests after the baseline. Keep model arguments and authorization with Claude/gateway.",
+        "Owner": "Hermes evaluation",
+        "Dependencies": "REL-06 baseline",
+        "Requirement IDs": "R-11",
+        "Qualification gates": "RG-09, RG-10",
+        "Completion evidence": "Paired sufficiently powered route/latency report",
+        "State": "Not run",
+        "Rollout guidance": "Optional. Failure/unavailability falls back to native discovery."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    },
+    {
+      "row": 15,
+      "fields": {
+        "Ticket ID": "REL-08",
+        "Phase": "Optional JEV",
+        "Work": "Evaluate passage relevance, claim support and client fit after retrieval against human labels. Calibrate abstention and preserve required evidence.",
+        "Owner": "Hermes evaluation",
+        "Dependencies": "REL-06 baseline",
+        "Requirement IDs": "R-12",
+        "Qualification gates": "RG-11",
+        "Completion evidence": "Human-label calibration and evidence-quality report",
+        "State": "Not run",
+        "Rollout guidance": "Optional. No serial Decisions/JEV chain on every tool call."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    },
+    {
+      "row": 16,
+      "fields": {
+        "Ticket ID": "REL-09",
+        "Phase": "Integration/release",
+        "Work": "Merge reviewed increments, rerun impacted original and reliability gates, canary allowlisted tenants and exercise bypass/rollback. Publish evidence and handover.",
+        "Owner": "Codex + Hermes reviewer/ops",
+        "Dependencies": "REL-06. Pre-staging completes W09 for W10. Canary follows W10 and release authorization under W11. REL-07/08 only if enabled.",
+        "Requirement IDs": "R-01 through R-12 as enabled",
+        "Qualification gates": "Core RG gates plus optional gates if enabled",
+        "Completion evidence": "Immutable candidate, canary receipts and rollback drill",
+        "State": "Gap check pending",
+        "Rollout guidance": "Continue existing deployment sequence. Optional experiments do not block core."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    }
+  ]
+}

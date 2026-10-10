@@ -76,6 +76,12 @@ Choose an **independent authenticated Meri entry point**, preserving the user's 
 
 Use AI Elements and shadcn primitives first, mapping controls/states to frozen 0.1.0 contracts or explicit local behavior. UI-SPEC and UI-COVERAGE track unresolved APIs as gaps; this decision does not add endpoints or modify the contract freeze. Responsive, visual, keyboard/accessibility and real behavior checks remain required at the applicable UI and staging gates. No deployment, source connection, cutover or gate advancement is authorized by this decision.
 
+## D013 R2 tooling and reliability adoption
+
+Codex integration decision10October2026 following the human's updated plan/workbook. Adopt the dated/checksummed inputs and six `r2/` ledgers incrementally. D010 Codex-only G0/G1 overrides embedded Hermes examples. Retain D01296selected/43deferred native scope; workbook coverage labels add no grant or deferred command. Add14 original quick-action skill intents, pending manifest/behavior qualification; Commitments & Deliverables is required. Preserve other separately classified workflows.
+
+Allocate a reviewed additive0.2 catalog/retrieval/skill namespace; strict0.1.0 remains unchanged. Exact-commit freeze and qualified compatibility precede dependent business implementation. Adopt REL-01 audit/baseline and evaluation plans, but75 real-request collection remains blocked pending the human's approved location/owner. G0 discovery acceptance remains planning acceptance, not full REL-01 completion. G1 stays OPEN with REL-02 contracts, actual-proxy RG-08 and measured frozen cohorts added. Preserve original stricter gates. Decisions/JEV remain disabled optional later experiments; no new provider/model/rollout authority. See [reconciliation](reports/CODEX-R2-ADOPTION.md).
+
 ## D009 Native qualification deadline preparation
 
 Codex implementation decision10October2026 UTC within the user's isolated qualification scope. Prepare a dedicated Step Functions Standard definition as the sole future SDK/Office qualification launcher and containment owner. Application/control services stay Fargate; production Temporal is unchanged. Local controller death must not remove the already admitted managed deadline. Prefer finite sequential AWS SDK states/JSONata, with no new Lambda, recurring scheduler or additional database in this allocation. A concrete design blocker returns to Codex rather than silently expanding infrastructure.

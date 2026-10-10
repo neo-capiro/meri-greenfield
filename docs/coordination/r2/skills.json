@@ -1,0 +1,250 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "sheet": "Current workflows",
+  "nativeScopeExpansion": false,
+  "records": [
+    {
+      "row": 8,
+      "fields": {
+        "ID": "quick_skill.research_company",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Research a Company",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe research_federal_market_strategy. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Research [company name or domain] and build a comprehensive federal market strategy covering its capabilities, mission fit, Program Elements and procurement lines, contracts and OTAs, grants and innovation programs, partners, congressional opportunities, qualification gaps, capture strategy, a 90-day plan, and a long-range roadmap. Cite the supporting sources.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L34\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 9,
+      "fields": {
+        "ID": "quick_skill.relationship_brief",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Relationship Brief",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_relationship_brief. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved. Memory cannot narrow the required multi-source relationship coverage.",
+        "Current starter prompt": "Tell me everything I should know about [person or organization]. Build a relationship brief across every authorized source that may contain relevant history, including email, meetings, contacts, notes, memory, documents, and commitments. Separate verified facts from inference and identify any incomplete source coverage.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L60\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 10,
+      "fields": {
+        "ID": "quick_skill.client_changes",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Client Changes",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_client_changes. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved. Resolve this week in the actor timezone. Keep roster/per-client source coverage and carryover separate.",
+        "Current starter prompt": "What changed this week for this client? Check every required authorized source, distinguish new dated events from carryover, identify partial coverage, and do not claim that nothing happened unless the coverage manifest supports that conclusion.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L77\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 11,
+      "fields": {
+        "ID": "quick_skill.portfolio_changes",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Portfolio Changes",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_portfolio_changes. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved. Resolve this week in the actor timezone. Keep roster/per-client source coverage and carryover separate.",
+        "Current starter prompt": "What changed across my active client portfolio this week? Enumerate the full authorized active-client roster, inspect every required source for each client, preserve per-client coverage, identify partial or unavailable sources, and separate dated events from carryover.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L104\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 12,
+      "fields": {
+        "ID": "quick_skill.portfolio_overlap",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Portfolio Overlap",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_portfolio_overlap. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Search across my clients for overlap with [external company or domain]. Research the external company and return evidence-backed overlap in capabilities, agencies, military services, missions, Program Elements, NAICS, PSC, contracts, people, and strategic priorities. Do not imply an existing relationship unless the evidence proves one.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L130\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 13,
+      "fields": {
+        "ID": "quick_skill.mail_history",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Mail History",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_relationship_brief. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Search my mailbox history with [person or organization] and produce a correspondence timeline. For each key thread: the subject, the dates, what was asked or promised, and any commitments or open items still outstanding. Cite message dates for every claim. Check every required authorized mail source before concluding; do not claim there is no correspondence unless the coverage manifest supports it.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L156\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 14,
+      "fields": {
+        "ID": "quick_skill.meeting_prep",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Meeting Prep Brief",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_relationship_brief. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Catch me up on [client, person, or issue] so I can prepare for my upcoming meeting. Cover: what has happened recently across every authorized source; the most important email exchanges; prior meetings and conversations; decisions already made; outstanding questions and unresolved issues; upcoming deadlines, meetings, and legislative developments; and everything we have committed to doing. Separate verified facts from inference, flag any incomplete source coverage, and end with a one-page pre-meeting checklist.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L172\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 15,
+      "fields": {
+        "ID": "quick_skill.commitments_audit",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Commitments & Deliverables",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_client_changes. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved. Preserve promise versus suggestion, unknown owner/date, evidence-backed delivery status, deduplication and mapped Monday coverage.",
+        "Current starter prompt": "What has changed with the commitments and deliverables we owe this client? Audit every commitment we have made. List each commitment with: what was promised, when and where it was made, the internal owner, current status (completed, in progress, or no record of action), and what needs follow-up. Cross-check emails, meeting notes, debriefs, native tasks, action items, and monday.com work from boards explicitly mapped to this client or a board ID/link I supplied: explicitly flag any commitment found in an email or meeting summary that has no corresponding tracked task or action item. Do not treat unrelated personal monday.com work as this client\u2019s commitment, do not mark anything complete without evidence, cite the underlying records, and say whether monday.com was checked, disconnected, unavailable, or not mapped.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L199\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/skills/commitments-audit.procedure.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-procedure-runtime.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 16,
+      "fields": {
+        "ID": "quick_skill.funding_opportunity_match",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Funding Opportunity Match",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_funding_opportunity_match. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Find active funding opportunities for {{clientName}} and score how well each fits us. For each candidate: what it funds, how it aligns with our capabilities and past awards, the agency and program landscape, and a fit verdict with citations. Note any source you could not check \u2014 the match evidence is top-k, not exhaustive.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L225\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 17,
+      "fields": {
+        "ID": "quick_skill.pe_deep_dive",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "PE Deep Dive",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_pe_deep_dive. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Give me a complete brief on Program Element [PE number or name]: what it funds, the budget line over the FYDP, the report language Congress attached, who the contractors are, and any authorizing or appropriating bills touching it. If I did not give a PE number, resolve it first and confirm the match. Name any source you could not check.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L242\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 18,
+      "fields": {
+        "ID": "quick_skill.bill_watch",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Bill Watch",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_bill_watch. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "What is the status of bills affecting [client name]? Include federal bills and any state legislation where we have a footprint.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L259\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 19,
+      "fields": {
+        "ID": "quick_skill.hearing_watch",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Hearing Watch",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_hearing_watch. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "What committee hearings are coming up that [client name] should care about?",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L277\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 20,
+      "fields": {
+        "ID": "quick_skill.representation_lookup",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Representation Lookup",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_representation_lookup. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Who represents [state or district], and which of them touch [client name]?",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L294\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    },
+    {
+      "row": 21,
+      "fields": {
+        "ID": "quick_skill.regulatory_docket_brief",
+        "Category": "Current Meri quick-action recipes",
+        "Current capability": "Regulatory Docket Brief",
+        "Current code evidence": "User-visible permanent/keep/transitional quick-action definition; canonical recipe query_regulatory_docket_brief. Availability feature-gated.",
+        "New Meri coverage": "Proposed v1: original SDK skill preserving this workflow intent. Explicit skill identity, version, typed subject/dates and evidence/completion manifest are selected.",
+        "Coverage status": "Proposed selected v1; qualification pending",
+        "Action to retain parity": "R-07/R-08, REL-04. Qualify the starter promise and required sources. Ordinary questions do not inherit this workflow unless selected or confidently resolved.",
+        "Current starter prompt": "Where does the rulemaking on [rule or docket keyword] stand? Cover the federal docket and any state register activity.",
+        "Source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/meri-skills.ts#L311\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-recipes.ts"
+      },
+      "integrationDisposition": "R2 selected intent; original manifest/allowed sources and runtime qualification pending",
+      "owner": "Codex under D010",
+      "manifestVersion": null
+    }
+  ]
+}

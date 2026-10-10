@@ -1,5 +1,7 @@
 # Dependency queue
 
+Current R2 overlay10October2026: [reconciled inputs/scope](reports/CODEX-R2-ADOPTION.md) and machine-readable `r2/` ledgers govern additions without discarding this historical queue. G0 discovery/planning retained; G1 OPEN. REL-01 real75-case seed awaits human's approved source/owner; baseline/audit protocol prepared. REL-02 additive0.2 foundation allocated to Codex, then operation-specific domain contracts and independent exact-commit freeze. REL-03/04 dependent business implementation waits for contracts;14 original skill manifests/rubrics are new pending work. REL-05 actual-proxy native discovery contributes a runtime-only G1 checkpoint, then full integration under W09. REL-06/09 follow dependencies; REL-07/08 disabled optional. W03 stays queued. Current canary terminal-routing repair, browser egress source review, durable-state owner acceptance and counter/usage independent review are bounded Codex qualification tasks. No Hermes, cutover or current-Meri mutation.
+
 The Git-backed ledger records allocated dependencies and owner acceptance. Under the human's D010 instruction, all future G0/G1 implementation and independent verification are Codex-only; do not launch/resume Hermes. Historical session rows remain evidence. Codex updates gates after independent acceptance; worker status never promotes dependencies automatically.
 
 | Task/package | State | Dependencies | Owner/owned paths | Acceptance |

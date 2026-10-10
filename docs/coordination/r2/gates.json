@@ -1,0 +1,203 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "sheet": "Qualification",
+  "records": [
+    {
+      "row": 8,
+      "fields": {
+        "Gate ID": "RG-01",
+        "Measure": "Accepted tool/source route",
+        "Target": "0.95",
+        "Unit": "Rate",
+        "Fixtures and protocol": "Held-out accepted routes, including multi-source questions. Start 75 real queries and expand to 200 cases.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-01, R-06, R-10",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 9,
+      "fields": {
+        "Gate ID": "RG-02",
+        "Measure": "Subject, window, FY and version",
+        "Target": "1",
+        "Unit": "Rate",
+        "Fixtures and protocol": "Deterministic fixtures for canonical identity, this week/timezone, DST, FY/stage, bill/session and exact revisions.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-02, R-03, R-07",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 10,
+      "fields": {
+        "Gate ID": "RG-03",
+        "Measure": "Answer-bearing Recall@10",
+        "Target": "0.95",
+        "Unit": "Rate",
+        "Fixtures and protocol": "Frozen discovery units with <=10 gold answer-bearing records. Deduplicate chunks by canonical source record. Recall=gold records retrieved in top 10 / all gold records. Never truncate gold labels. Larger history/enumeration uses RG-04/RG-05/RG-12.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-04, R-05, R-10",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 11,
+      "fields": {
+        "Gate ID": "RG-04",
+        "Measure": "Exact counts/status/comparisons",
+        "Target": "1",
+        "Unit": "Rate",
+        "Fixtures and protocol": "Qualified deterministic domain fixtures. Compatible subject, year, stage, units and source authority required.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-03, R-04",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 12,
+      "fields": {
+        "Gate ID": "RG-05",
+        "Measure": "False absence claims",
+        "Target": "0",
+        "Unit": "Count",
+        "Fixtures and protocol": "Zero false absence/exhaustive assertions when sources are unavailable, stale, failed, unsupported, truncated or unpaged.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-05, R-08",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 13,
+      "fields": {
+        "Gate ID": "RG-06",
+        "Measure": "Explicit skill contract execution",
+        "Target": "1",
+        "Unit": "Rate",
+        "Fixtures and protocol": "All 14 selected starter intents. ID/version, typed inputs, required evidence, completion and coverage survive send/follow-up/resume.",
+        "Owner": "Hermes QA",
+        "Requirement IDs": "R-07, R-08",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 14,
+      "fields": {
+        "Gate ID": "RG-07",
+        "Measure": "Unauthorized disclosure/mutation",
+        "Target": "0",
+        "Unit": "Count",
+        "Fixtures and protocol": "Tenant, user/client walls, stale grants, custom tool discovery, citations, replay and mutation boundaries. Retain original 100-case isolation gate.",
+        "Owner": "Hermes security/QA",
+        "Requirement IDs": "R-02, R-05, R-06",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 15,
+      "fields": {
+        "Gate ID": "RG-08",
+        "Measure": "Native discovery and proxy",
+        "Target": "Pass",
+        "Unit": "Contract",
+        "Fixtures and protocol": "Actual proxy supports tool_reference/deferred schema loading. Synonyms, extra terms, large catalogs, revoked tools and smaller upfront baseline qualify.",
+        "Owner": "Hermes runtime/QA",
+        "Requirement IDs": "R-01, R-06",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 16,
+      "fields": {
+        "Gate ID": "RG-09",
+        "Measure": "Simple lookup warm p95",
+        "Target": "15",
+        "Unit": "Seconds",
+        "Fixtures and protocol": "Proposed warm lookup budget. Measure and freeze before qualification. Optional router incremental p95<=500ms and <=10% answer-p95 regression. Preserve original broad/cold performance gates.",
+        "Owner": "Hermes runtime/QA",
+        "Requirement IDs": "R-06, R-09, R-11",
+        "State": "Not run",
+        "Blocks core release": "Yes for baseline. Optional router may bypass."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 17,
+      "fields": {
+        "Gate ID": "RG-10",
+        "Measure": "Optional router error reduction",
+        "Target": "0.25",
+        "Unit": "Relative rate",
+        "Fixtures and protocol": "Paired held-out test, sufficiently powered:>=25% relative routing-error reduction with no material argument/coverage regression and RG-09 latency pass.",
+        "Owner": "Hermes evaluation",
+        "Requirement IDs": "R-10, R-11",
+        "State": "Not run",
+        "Blocks core release": "No. Keep disabled if unqualified."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    },
+    {
+      "row": 18,
+      "fields": {
+        "Gate ID": "RG-11",
+        "Measure": "JEV evidence calibration",
+        "Target": "Qualified",
+        "Unit": "Contract",
+        "Fixtures and protocol": "Human-labelled improvement, calibrated abstention, version/task pins and preserved candidate recall/required evidence. Freeze promotion criteria before test.",
+        "Owner": "Hermes evaluation",
+        "Requirement IDs": "R-10, R-12",
+        "State": "Not run",
+        "Blocks core release": "No. Keep disabled if unqualified."
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "DISABLED_OPTIONAL"
+    },
+    {
+      "row": 19,
+      "fields": {
+        "Gate ID": "RG-12",
+        "Measure": "Lifecycle and evidence contracts",
+        "Target": "Pass",
+        "Unit": "Contract",
+        "Fixtures and protocol": "Reconnect/replay, revocation, stop/resume, authoritative source read, full paging/coverage and action receipt fixtures. Preserve original recovery gate.",
+        "Owner": "Hermes integration/QA",
+        "Requirement IDs": "R-02, R-04, R-05, R-07, R-09",
+        "State": "Not run",
+        "Blocks core release": "Yes"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    }
+  ]
+}

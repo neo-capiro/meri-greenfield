@@ -1,0 +1,191 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "sheet": "Routing audit",
+  "records": [
+    {
+      "row": 8,
+      "fields": {
+        "Finding ID": "A-01",
+        "Priority": "P0",
+        "Finding": "Calendar window mismatch",
+        "Observed source behavior": "Numeric last/past N days parsed. Change intent can fall back to 30 days for this week.",
+        "Failure hypothesis": "Wrong window despite plausible tool selection.",
+        "Applicability": "Source finding. Production frequency unmeasured.",
+        "Requirement IDs": "R-03, R-10",
+        "Ticket IDs": "REL-03, REL-06",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts",
+        "Validation owner": "Hermes retrieval/QA",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 9,
+      "fields": {
+        "Finding ID": "A-02",
+        "Priority": "P0",
+        "Finding": "Memory first-match precedence",
+        "Observed source behavior": "Memory/remember branch precedes broader relationship-history intent. Relationship starter includes memory.",
+        "Failure hypothesis": "Multi-source request may retrieve memory-only evidence.",
+        "Applicability": "Source finding. Actual governed route must be traced.",
+        "Requirement IDs": "R-04, R-07, R-08",
+        "Ticket IDs": "REL-03, REL-04",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts",
+        "Validation owner": "Hermes retrieval/skills",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 10,
+      "fields": {
+        "Finding ID": "A-03",
+        "Priority": "P0",
+        "Finding": "Portfolio scope loses requirements",
+        "Observed source behavior": "Early portfolio branch uses fixed domains and no time window.",
+        "Failure hypothesis": "Weekly portfolio updates can lose dates or mail/meeting coverage.",
+        "Applicability": "Source finding. Scope remains authorization-controlled.",
+        "Requirement IDs": "R-03, R-05, R-08",
+        "Ticket IDs": "REL-03, REL-04",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-context-plane.service.ts",
+        "Validation owner": "Hermes retrieval/skills",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 11,
+      "fields": {
+        "Finding ID": "A-04",
+        "Priority": "P0",
+        "Finding": "Selected skill identity is lost",
+        "Observed source behavior": "Starter fills editable composer text. Stream request omits selected skill ID/version.",
+        "Failure hypothesis": "Runtime reclassifies intent instead of binding selected contract.",
+        "Applicability": "Source finding. Click/send/follow-up requires integration fixture.",
+        "Requirement IDs": "R-07, R-08",
+        "Ticket IDs": "REL-04",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/web/src/vnext/meri/VNextMeriComposer.tsx\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/web/src/components/chat/useMeriChatController.ts",
+        "Validation owner": "Hermes UI/skills",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 12,
+      "fields": {
+        "Finding ID": "A-05",
+        "Priority": "P1",
+        "Finding": "Semantic gateway is lexical routing",
+        "Observed source behavior": "Selection is deterministic regex/domain mapping. Enabled mode narrows exposure. Legacy/shadow differ.",
+        "Failure hypothesis": "Paraphrases and route ownership drift can hide eligible tools.",
+        "Applicability": "Conditional on deployed mode/flags. No live flags read.",
+        "Requirement IDs": "R-01, R-06, R-10",
+        "Ticket IDs": "REL-02, REL-05",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meri-semantic-tool-gateway.ts",
+        "Validation owner": "Hermes runtime",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 13,
+      "fields": {
+        "Finding ID": "A-06",
+        "Priority": "P1",
+        "Finding": "Discovery matching is brittle",
+        "Observed source behavior": "AND-token matching over limited token prefixes. Separate search/describe/load rounds are bounded.",
+        "Failure hypothesis": "Extra words or synonyms can cause false discovery misses and latency.",
+        "Applicability": "Conditional on narrowed catalog path. No live error rate measured.",
+        "Requirement IDs": "R-01, R-06",
+        "Ticket IDs": "REL-05",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meri-progressive-tool-discovery.ts",
+        "Validation owner": "Hermes runtime/QA",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 14,
+      "fields": {
+        "Finding ID": "A-07",
+        "Priority": "P0",
+        "Finding": "Search contracts materially differ",
+        "Observed source behavior": "Research search: literal/capped,360-character preview. Client-KB: semantic/four kinds,280-character preview. Canonical search: coverage and paging.",
+        "Failure hypothesis": "Similar names can select a source that cannot answer completely.",
+        "Applicability": "Code methods inspected. Live connector health unknown.",
+        "Requirement IDs": "R-01, R-04, R-05",
+        "Ticket IDs": "REL-02, REL-03",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-tools.service.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/embeddings/client-kb.service.ts",
+        "Validation owner": "Hermes gateway/retrieval",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 15,
+      "fields": {
+        "Finding ID": "A-08",
+        "Priority": "P1",
+        "Finding": "Required recipes unavailable",
+        "Observed source behavior": "Research description requires high-level recipes, but governed adapter removes those schemas and bypasses recipe planner.",
+        "Failure hypothesis": "Contradictory instructions can produce dead ends.",
+        "Applicability": "Upstream evidence may already exist. Do not claim universal cause.",
+        "Requirement IDs": "R-01, R-06, R-08",
+        "Ticket IDs": "REL-02, REL-05",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/meriv2-orchestrator/src/meri/meriv3/meriv3-retrieval-assistant.service.ts",
+        "Validation owner": "Hermes runtime/skills",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 16,
+      "fields": {
+        "Finding ID": "A-09",
+        "Priority": "P1",
+        "Finding": "Skill metadata has different consumers",
+        "Observed source behavior": "Ordinary firm requiredTools metadata does not enforce execution in API proxy. Governed procedure requirements protect schemas.",
+        "Failure hypothesis": "Prompt-only skill parity misses evidence/completion guarantees.",
+        "Applicability": "Historical compatibility and governed paths differ.",
+        "Requirement IDs": "R-07, R-08",
+        "Ticket IDs": "REL-04",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri.service.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/skills/commitments-audit.procedure.ts",
+        "Validation owner": "Hermes skills",
+        "State": "Gap check pending"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    },
+    {
+      "row": 17,
+      "fields": {
+        "Finding ID": "A-10",
+        "Priority": "P1",
+        "Finding": "JEV calibration is provisional",
+        "Observed source behavior": "Current tasks are passage relevance, claim support and client fit. No active tool-router contract.",
+        "Failure hypothesis": "Confidence is not proof of routing or evidence quality.",
+        "Applicability": "Source finding. New router requires separate labelled evaluation.",
+        "Requirement IDs": "R-11, R-12",
+        "Ticket IDs": "REL-07, REL-08",
+        "Pinned source evidence": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/jev/jev-provider.factory.ts\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/meriv2-core/src/jev/task-registry.ts",
+        "Validation owner": "Hermes evaluation",
+        "State": "Not run"
+      },
+      "implementationOwner": "Codex for current G0/G1; future owner allocation pending",
+      "integrationState": "PENDING; proposed input is not a measured result"
+    }
+  ]
+}

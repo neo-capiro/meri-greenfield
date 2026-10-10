@@ -1,0 +1,85 @@
+{
+  "schema": "meri-r2-inventory-ledger/1",
+  "planSha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+  "workbookSha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "ownerOverride": "Codex-only G0/G1; no Hermes under D010",
+  "evidenceBoundary": "Supplied input requirements/source findings; no new runtime PASS or current production enablement claim",
+  "inputs": [
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+      "bytes": 127877,
+      "sha256": "3d281d7a1a9a1eaf4fe520dde8e46e2abedac82f6b771041a613c1cfb0df25ec"
+    },
+    {
+      "path": "docs/plans/archive/MERI-DEPLOYMENT-20261010-before-R2.md",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560"
+    }
+  ],
+  "sheets": [
+    {
+      "name": "Overview",
+      "dataRows": null,
+      "formulaCells": 18
+    },
+    {
+      "name": "New Meri",
+      "dataRows": 322,
+      "formulaCells": 0
+    },
+    {
+      "name": "SDK coverage",
+      "dataRows": 48,
+      "formulaCells": 0
+    },
+    {
+      "name": "Current native tools",
+      "dataRows": 139,
+      "formulaCells": 0
+    },
+    {
+      "name": "Current workflows",
+      "dataRows": 93,
+      "formulaCells": 0
+    },
+    {
+      "name": "UI states",
+      "dataRows": 60,
+      "formulaCells": 0
+    },
+    {
+      "name": "Routing audit",
+      "dataRows": 10,
+      "formulaCells": 0
+    },
+    {
+      "name": "Tool contracts",
+      "dataRows": 12,
+      "formulaCells": 0
+    },
+    {
+      "name": "Qualification",
+      "dataRows": 12,
+      "formulaCells": 0
+    },
+    {
+      "name": "Deployment work",
+      "dataRows": 9,
+      "formulaCells": 0
+    }
+  ],
+  "nativeDisposition": {
+    "selected": 96,
+    "deferred": 43,
+    "qualifiedParity": 0
+  },
+  "quickActionIntents": 14,
+  "realRequestSource": "Human will provide approved location and owner; no trace read or synthetic substitution",
+  "formulaBoundary": "Stored XML values/formula text only; no recalculation or external refresh"
+}
