@@ -1,5 +1,17 @@
 # Integration decisions
 
+## D010 Codex-only G0/G1 completion
+
+Accepted 10 October 2026 by the human owner in this chat: finish G0 and G1 with Codex alone and no Hermes. This supersedes D002 and historical task requirements to use an actual Hermes implementation/review session for future work. Codex owns focused implementation, separate independent Codex review and exact-candidate integration verification. No Hermes launch or resume is permitted. Preserve all prior sessions, failures, partials and acceptance records.
+
+Historical Hermes turn caps, launcher preparation and once-only local-test allocations do not bind new Codex work. Meaningful tests may be rerun after changes or to resolve a specific uncertainty; record failures and rerun reasons. This changes the development method only: isolation, contracts, source/image/security admission, real runtime evidence, cleanup, the approved $10 synthetic Bedrock ceiling and all deployment gates remain mandatory. Existing Meri/Capiro remains untouched and no cutover is authorized.
+
+## D011 Accepted v1 scope; pilot identity pending
+
+Accepted 10 October 2026 by the human owner in this chat: finalize the documented v1 capability ledger with 96 selected and 43 explicitly deferred capabilities across the 22 inventoried dataset domains. This includes basic Research Portfolio/Business Development reads while specialized analytics and broad writes remain deferred. Selection is intended new implementation scope, not accepted parity or a source permission grant. Each selected capability still needs a newly implemented behavior/policy fixture and every deferred capability remains visible.
+
+The owner selected providing the first pilot tenant, client and internal users rather than substituting synthetic-only enrollment. Their actual names/IDs and the authorized Capiro source-access owner are pending. Synthetic G1 preparation proceeds independently; live source connections stay disabled. Scope acceptance does not establish source endpoints, restricted principals, identity mapping, current membership/grants or live-source G0 closure.
+
 ## D001 Repository and AWS destination
 
 Accepted 9 October 2026 by the human owner in this chat: create private `neo-capiro/meri-greenfield`, using a separate Git repository and checkout; deploy independent Fargate development/staging resources in AWS account `967807252336`, region `us-east-1`. Authorized local checkout: `C:\dev\main\meri-greenfield-kickoff-20261009`. Use a new VPC, ECS cluster, IAM roles, database, buckets, KMS keys, secrets, logs and pipeline. Existing Capiro remains untouched and available. No cutover/production release is authorized by this decision.
