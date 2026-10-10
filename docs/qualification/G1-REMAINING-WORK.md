@@ -1,6 +1,24 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 22:10Z: [current eight-gate status](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+Current continuation,10 October2026 22:40Z: the [first actual SDK wire experiment](../coordination/reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
+completed with worker exit0, full terminal history, STOPPED beforeD/C and complete
+canonical decoderPASS; distinct actual-evidence review is pending. Its one Start
+is consumed permanently; no retry/redrive. Interrupt/replacement/resume, opaque
+sessions, original skills and stale fencing remain. The initial PENDING/digest-
+absent observation refusal remains, followed by a successful same-handle read.
+Proxyq2's returning owner reports91-package install/freeze success and an actual
+import failure missingexpression. Complete supported proxy dependency closure,
+Prisma/native provisioning, real app/auth/lifespan and Linux/Fargate assembly
+remain open. Trusted TLS/ECS, CountTokens/native usage, durable$10 and revocation
+still require actual tests. BrowserSOURCE5 is accepted offline; fresh restricted-
+role authority, one disposable-volume/two managed wire captures, watchdog/host
+admission and real browser/renderer sandbox/physical cleanup remain. Separate
+Office/security disposition, REL-02/RG-08 and measured frozen cohorts remain.
+The75 approved real-request location/owner awaits the human's promised follow-up;
+it does not block synthetic runtime work. G0 accepted/G1OPEN/G2–G7 unentered,
+source connections disabled, currentMeri untouched and inference$0/$10.
+
+Historical continuation,10 October2026 22:10Z: [current eight-gate status](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records G0 accepted/G1 OPEN/G2–G7 unentered. Exact SDK immutableversion:1 is
 owner accepted with no Start authority; original failed operations remain.
 The45-read authority capture completed but its real scan encoding is refused by

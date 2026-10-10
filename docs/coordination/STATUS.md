@@ -1,6 +1,23 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 22:10Z: **eight deployment gates total;
+Current continuation,10 October2026 22:40Z: **eight deployment gates total;
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [first actual SDK experiment](reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
+completed: one admitted roleless Fargate task, worker exit0, complete1227-event
+terminal history, physical task/worker STOPPED beforeD/C and successful complete
+canonical raw-wire decoding. Distinct runtime evidence review is pending; this
+does not qualify actual proxy/provider, interruption/resume or allG1. The initial
+PENDING observation refusal and all original consumed publication failures remain.
+All45 renewed full authority responses matched; explicit bounded one-run risk
+was recorded with all49+five security findings still OPEN and Office DEFERRED.
+Proxyq2 installed91 exact packages and passed its installed-byte freeze according
+to its returning owner; the genuine app import progressed pasthttpx2 and now fails
+missingexpression. Full supported proxy dependency closure is being reconciled
+before another installation. BrowserSOURCE5 is independently accepted offline;
+fresh restricted-role authority/staging preparation is next, no browser host.
+Codex-only parallel work continues. Source connections disabled/currentMeri
+untouched/no cutover; inference$0/$10. Dated observations below are historical.
+
+Historical continuation,10 October2026 22:10Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records owner-accepted exact SDK immutableversion:1 with no Start authority;
 the original publisherexit1/consumed reservations remain. All45 actual readonly
