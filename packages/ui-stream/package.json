@@ -1,0 +1,20 @@
+{
+  "name": "@capiro/meri-ui-stream",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Trusted Meri event producer and browser-safe AI SDK transport protocol",
+  "type": "module",
+  "files": ["dist", "README.md"],
+  "exports": {
+    ".": { "types": "./dist/producer.d.ts", "default": "./dist/producer.js" },
+    "./protocol": { "types": "./dist/protocol.d.ts", "default": "./dist/protocol.js" }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": { "@capiro/meri-contracts": "0.1.0", "ai": "7.0.137" },
+  "devDependencies": { "@capiro/meri-contracts": "file:../contracts", "ai": "7.0.137", "typescript": "5.9.3" },
+  "engines": { "node": ">=24 <25" }
+}
