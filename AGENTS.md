@@ -10,7 +10,7 @@ Application/control services must use a separate Fargate environment: independen
 
 Use the Claude Agent SDK as the only model orchestration loop; AI SDK supplies UI transport. Use one qualified Playwright integration and Temporal for durable orchestration. Adopt upstream libraries before custom replacements. Original artifact skills only; do not copy restrictive Office skill implementations or this host's Codex skills into the product.
 
-One owner at a time per contract/shared file/lockfile/migration. Contracts are `0.1.0` only after Codex freezes a reviewed integration commit. Propose changes to Codex before editing them. Migration IDs are allocated centrally; none allocated yet. Every task names its pinned base, dependencies, owned paths, acceptance checks, runtime/turn deadline and authorized external actions.
+One owner at a time per contract/shared file/lockfile/migration. Contracts are `0.1.0` only after Codex freezes a reviewed integration commit. Propose changes to Codex before editing them. Migration IDs are allocated centrally; qualification-only proxy state migration0001 is allocated in `docs/coordination/tasks/CODEX-G1-PROXY-DURABLE-STATE.md`. No product/Temporal migration is allocated. Every task names its pinned base, dependencies, owned paths, acceptance checks, runtime/turn deadline and authorized external actions.
 
 Run relevant checks and return reviewable commits and scrubbed evidence. Never store secret values or private source content in Git, logs or task briefs. Failed/blocked checks stay visible. Never lower deployment gates or claim local fixtures prove live policy, browser, durability, Fargate or release acceptance.
 

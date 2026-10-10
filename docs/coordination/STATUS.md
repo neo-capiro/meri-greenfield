@@ -2,7 +2,7 @@
 
 Updated 10 October 2026 UTC, Codex integration owner. Current Meri/Capiro remain untouched. No cutover, application service, live source connection, native browser host or paid Bedrock inference has been created by this checkpoint.
 
-Latest Codex checkpoint: G0 ACCEPTED / G1 OPEN. Role-free SDK/Office and complete browser v2 sources are independently accepted OFFLINE. A fourth new stack creates only the read-only TestState role; six actual read-only probes are retained. Actual ECS casing and terminal container-ARN incompatibilities hold worker launches while their versioned correction is implemented. V2 support packaging and trusted proxy qualification are in progress. See [owner checkpoint](reports/CODEX-G1-OWNER-CHECKPOINT.md). Historical paragraphs below retain earlier checkpoints rather than current runtime admission.
+Latest Codex checkpoint: **G0 ACCEPTED / G1 OPEN.** Actual SDK:2/Office:2 readbacks pass with TaskRoleArn absent. A separate canary:1 sleep definition is registered and strictly validated, without launch. The eleven-source v2 ECS wire correction is independently accepted offline; AWS syntax checks and five pure Choice probes pass with retained validation warnings. The first support-image build failed final auth cleanup after pushing an UNADMITTED image; a new v3 recipe/request is undergoing independent review. Native data preparation and the real upstream proxy transport spike are also under independent review. Paid inference remains $0. See [deployed checkpoint](reports/CODEX-G1-DEPLOYED-CHECKPOINT.md). Historical paragraphs below retain earlier observations and are not current runtime admission.
 
 ## Current outcome
 
