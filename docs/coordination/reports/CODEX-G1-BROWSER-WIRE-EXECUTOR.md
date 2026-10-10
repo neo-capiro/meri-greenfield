@@ -1,0 +1,47 @@
+# Codex browser EC2 wire executor source preparation
+
+Disposition: **SOURCE PREPARATION ONLY / NOT ADMITTED**. This is Codex implementation, not independent review. No AWS, STS, TestState, role, volume, host, browser, Docker, provider or Hermes operation occurred. No cloud helper/entrypoint was imported or invoked. The optional read-only AWS allowance was unused. Current Meri and shared/canonical adapters remain untouched; G1 and all security findings remain open.
+
+Dedicated branch `task/g1-browser-wire-executor`, base `e1d7dea29872176476c2455cc97f3ffa34b1ef92`; sole tracked output is this report. All executable candidates and evidence are ignored under `C:/dev/main/meri-greenfield-worktrees/g1-browser-wire-executor/.task-inputs/CODEX-G1-browser-wire-executor-1/`. The outline was written before implementation.
+
+The smallest cohesive closure has eight members: binding/file/freeze validation; narrow AWS capture; separate role, volume and probe domain modules; a thin pre-import entry; the original pure planner and original role proposal. Entry verifies all raw source records against an external closure pin before local imports. No broad generic adapter, package, lifecycle controller or product contract changed. The previous planner/report7410ef82 remains unaccepted; its exact source bytes are preserved.
+
+The proposed role is `arn:aws:iam::967807252336:role/MeriGreenfield-BrowserWireReadOnly-20261010`, in a new same-name stack. Trust is states.amazonaws.com plus exact SourceAccount, with no invented TestState SourceArn. Permissions remain EC2 DescribeInstances/DescribeVolumes only, region-limited but Resource:* because these Describe APIs lack exact resource scoping. This broader regional metadata ability needs explicit owner review; fixed requests are a separate boundary.
+
+Nine finite action names cover role staging/change-set readback/execution/role readback; volume create/readback/delete; and two separately frozen TestState calls. Every action needs an external exact owner freeze. Mutations consume an exclusive fixed reservation after fresh exact STS and before the one API call. Unknown responses retain captures and consume the attempt; no automatic retry. CREATE change set must contain exactly one IAM role ADD and its actual Original template must equal the pinned proposal before execution. Role readback checks the exact newly created stack/resource, trust, inline policy, and absence of attached policies/boundary. No role was created or trust qualified here.
+
+The fresh fixture UUID/client token is `b247b9a1-bfde-414a-a76b-9ff4fdd83110`. Its request is fixed size1/gp3/encrypted, exact new qualification KMS ARN `arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042`, no snapshot/attach/data write, and three run/purpose/component tags. AZ must come from a fresh exact qualification subnet readback, not this synthetic fixture. Creation uses a maximum300s window; all later fixture actions must preserve the original createNotBeforeMs+900000 ceiling. Fresh singleton DescribeVolumes must positively match ID, tags, window, size/type/encryption/key and available/unattached state before one exact DeleteVolume. Root retains the actual ID before deletion. Delete ACK never proves absence.
+
+The two fixed probes use the byte-exact original planner: DescribeInstances with the exact new VPC/owner filters and MaxResults5, and DescribeVolumes with the retained exact newly deleted ID. Direct-instance mode is refused. DEBUG/revealSecrets:false, selected read-only state and full graph are fixed. Create/predelete/delete records and owner input provenance are linked by raw hashes; the planner's provenance field is deletion provenance, not a certified absent result. Full binary TestState response/debug/error/cause/output is retained without guessing error spelling or translating it into cleanup success.
+
+## Exact private source closure
+
+| Member | Bytes | SHA256 |
+| --- | ---: | --- |
+| wire_binding.py | 6930 | `855a5e0757ceb9e3b30c5cff8ace671fd37ddec661a715e635e367bf39d2abe1` |
+| wire_capture.py | 4785 | `4bd37f9996c6a19c13fee6790a428c70250238acef6d65b8748bf05615c93cba` |
+| role_action.py | 7956 | `e8c2bec6337d9feb7c14c5270ab98ee75f073fd0b9995edf2b412a8dc5fb4691` |
+| volume_action.py | 4859 | `9b21442c2e68b3b66de75b38380bdce328e0bf36a1b68e6c48a55e87f1dd7c37` |
+| probe_action.py | 3336 | `9e17e4dc1afbd162e43316ddca850980a31167a75a3d7d1b7e7d211f1657eead` |
+| run_action.py | 5714 | `136e92d7f540d88ca343d7e853156c07f83b03714968ecaa4e065db8729d4225` |
+| prepare_fixtures.py | 7216 | `3efe0db4eb0d4c47927b9be096acbbe54c87994467a84b2c28211a335cb48179` |
+| role-template.PROPOSAL.json | 1844 | `ac5cf2950e1d1625bd7926009769a52c2fe79755f520d279b58663a5b59790c4` |
+
+`source-closure.json`:1310B SHA256 `78f6da0fde0f9fd334f3aa7ac4ae641fb63e40247102091b0687b47cb066b38a`. `README.md` documents fixed paths, action schemas, exit codes and limits; `OWNER-FREEZE-TEMPLATE.json` is deliberately refusing/incomplete. No owner action directory, freeze or reservation exists. Source closure pins are integrity evidence; trusted external owner review and serialized closed-writer files establish authority.
+
+## Verification actually performed
+
+One isolated30s-bounded child imported only pure `wire_binding.py` and the original pure planner. **35 synthetic controls PASS**, exit0, 1.828s, stdout69B/stderr0. Literal two-request/StartAt-refusal oracles, strict JSON, unknown planner fields, volume identity/tag/window/attachment/key/state negatives, freeze schema/deadline negatives and plain pinned-file drift/ancestor escape controls ran. Synthetic volume IDs and timestamps are not AWS evidence. The child disabled socket connect/DNS and subprocess entrypoints; neither cloud modules nor dispatch code were imported. Eight source raw records were stable across that check.
+
+Final source-only follow-up added the immutable fixture ceiling, actual CFN Original-template checks and typed AWS JSON object validation in unimported domain/capture modules. Those received AST parsing only; no claim that35 controls executed those paths. Preserved `source-closure-first-check.json` and process sourcePre/sourcePost retain the exact earlier tested closure. Final `final-static-source-inspection.json`:3933B SHA `54b2bb18fb7ffcbfe321e7873724aeb4d5d6c430cd4ffedd739bc9d6a38a030c`. No failed behavior run or automatic rerun occurred. No canonical/cloud/native test was run.
+
+Primary AWS documentation rechecked10October2026 identifies a material request-shape detail: [CreateVolume](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html) does not return attachmentSet and validates KMS asynchronously. The helper accepts missing attachments only for creation provenance, while fresh DescribeVolumes must explicitly show Attachments:[] before delete. Size1/gp3, create-time tags and client token are supported. [DeleteVolume](https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeleteVolume.html) requires available/unattached and may remain deleting for minutes. [CreateChangeSet](https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_CreateChangeSet.html) separates CREATE/staging from execution. [TestState](https://docs.aws.amazon.com/step-functions/latest/apireference/API_TestState.html) supplies actual service testing evidence only after separately authorized execution. These API references are source evidence, not live compatibility proof.
+
+## Remaining blockers before any action
+
+1. Independent source review and focused fake-adapter coverage of these unimported cloud/lifecycle modules; root must review final closure and generate each separate exact action freeze. There is no source acceptance or admission implied by this report/commit.
+2. Fresh caller permissions, new role/stack absence and actual role trust/readback; the role proposal remains untested. Fresh qualification AZ and NEW KMS key policy/grants/EBS authorization and fixture cost must be independently reviewed. Owner authority records are explicitly external prerequisites, not booleans proving cloud facts.
+3. **Uncertain-create recovery is not implemented.** Before admitting CreateVolume, root needs a separately reviewed read-only reconciliation and exact-owned-ID billing/cleanup fallback. If no usable ID is returned, this source refuses deletion. It performs no broad tag-query delete, detachment, automatic stack/volume cleanup or deadline reset. Expiry refuses work; it is not a durable cleanup watchdog. Missing/ambiguous/attached/foreign records remain UNKNOWN and need root disposition. This is an explicit partial operational gap.
+4. Runtime AWS CLI/API shapes, credential-profile behavior, IAM canonical readback and actual EC2 TestState Error/Cause profile remain unqualified. CLI not-found text, empty data, ACKs or access-denied never become absence. A nonfinal first probe stays nonfinal; mutations are not retried.
+
+Capture uses fixed AWS executable/profile/region, stripped AWS endpoint/proxy/preload overrides and retries1 total attempt. Per-call direct-child timeout<=45s is clipped to the action's original ceiling; <=40 calls. Raw stdout/stderr are retained, with8MiB/1MiB bounds checked after capture, not live memory enforcement. No descendant-tree or remote completion/physical cleanup guarantee is claimed. Existing owner CLI config is trusted; secrets were not read or recorded. SDK/native qualification, browser/renderer sandbox, isolation, managed teardown, visual evidence, all49+5 findings and G1 remain separate gates.
