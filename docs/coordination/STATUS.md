@@ -1,21 +1,22 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 22:40Z: **eight deployment gates total;
+Current continuation,10 October2026 22:52Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [first actual SDK experiment](reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
-completed: one admitted roleless Fargate task, worker exit0, complete1227-event
-terminal history, physical task/worker STOPPED beforeD/C and successful complete
-canonical raw-wire decoding. Distinct runtime evidence review is pending; this
-does not qualify actual proxy/provider, interruption/resume or allG1. The initial
-PENDING observation refusal and all original consumed publication failures remain.
-All45 renewed full authority responses matched; explicit bounded one-run risk
-was recorded with all49+five security findings still OPEN and Office DEFERRED.
-Proxyq2 installed91 exact packages and passed its installed-byte freeze according
-to its returning owner; the genuine app import progressed pasthttpx2 and now fails
-missingexpression. Full supported proxy dependency closure is being reconciled
-before another installation. BrowserSOURCE5 is independently accepted offline;
-fresh restricted-role authority/staging preparation is next, no browser host.
-Codex-only parallel work continues. Source connections disabled/currentMeri
-untouched/no cutover; inference$0/$10. Dated observations below are historical.
+is now [independently reviewed](reports/CODEX-G1-SDK-NATIVE-WIRE-INDEPENDENT.md)
+and owner accepted for the exact native loopback fixture and physical cleanup:
+one roleless Fargate task, worker exit0, complete1227-event history and full
+canonical raw-wire decoding. Interruption/resume and allG1 remain unqualified.
+The one Start is consumed; initial observation refusal and older failures remain.
+The [q2 proxy evidence](reports/CODEX-G1-PROXY-NATIVE-Q2.md) is independently
+owner verified:91 exact installed packages/full freeze, then a genuine app import
+FAILED on missingexpression. A coherent123-wheel community candidate is prepared
+for distinct DATA review before one new isolated installation; q2 is preserved.
+BrowserSOURCE5 and [closed role preparation](reports/CODEX-G1-BROWSER-WIRE-ROLE-OWNER.md)
+are accepted within their documented scope. Eight actual read-only authority
+calls completed; staging supervisor review and renewed fresh authority precede
+any role mutation. No browser host. All49+five security findings remain OPEN,
+Office DEFERRED. Codex-only parallel work continues; source connections disabled,
+currentMeri untouched/no cutover and inference$0/$10. Older entries are historical.
 
 Historical continuation,10 October2026 22:10Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)

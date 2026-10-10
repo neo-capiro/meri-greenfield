@@ -1,17 +1,18 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,10 October2026,22:40UTC. **G0 accepted/G1 active; eight
+Current continuation,10 October2026,22:52UTC. **G0 accepted/G1 active; eight
 deployment gates total.** The [first actual native SDK wire experiment](CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
-finished with exit0, full1227-event terminal history, task/worker STOPPED before
-originalD/C and successful full canonical wire reconstruction. Distinct actual
-evidence review is pending. The one Start is consumed; no retry/redrive/fallback.
-The fresh45 source-encoding hold is closed with complete UTF-8 exact-baseline
-readback and explicit bounded one-run risk; all49+five findings remain OPEN.
-Proxyq2 reports exact91 install/freeze success but real import still fails on
-missingexpression; complete native proxy closure is being reconciled. Browser
-SOURCE5 is owner accepted offline; fresh restricted-role authority/staging
-preparation is next. No host/provider/source/cutover; spend$0/$10. Historical
-observations below retain their original failures and narrower acceptances.
+has [distinct actual-evidence acceptance](CODEX-G1-SDK-NATIVE-WIRE-INDEPENDENT.md)
+and root acceptance for the exact loopback fixture/physical cleanup: exit0,
+full1227-event history and complete canonical wire reconstruction. The one Start
+is consumed; no retry/redrive/fallback. All49+five findings remain OPEN.
+The [q2 proxy install/freeze and preserved genuine import failure](CODEX-G1-PROXY-NATIVE-Q2.md)
+are independently root verified. A123-wheel coherent community proposal is under
+distinct DATA review while a focused new q3 wrapper is prepared; no q3 admission.
+BrowserSOURCE5 and [closed role authority preparation](CODEX-G1-BROWSER-WIRE-ROLE-OWNER.md)
+are accepted within scope. Eight read-only calls are retained; distinct supervisor
+review/renewed fresh authority precede role staging. No host/provider/source/cutover;
+spend$0/$10. Historical observations retain original failures/narrower acceptances.
 
 Historical continuation,10 October2026,22:10UTC. **Eight deployment gates:
 G0 accepted; G1 active/OPEN; G2–G7 not entered.** Three bounded Codex

@@ -1,22 +1,23 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 22:40Z: the [first actual SDK wire experiment](../coordination/reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
-completed with worker exit0, full terminal history, STOPPED beforeD/C and complete
-canonical decoderPASS; distinct actual-evidence review is pending. Its one Start
-is consumed permanently; no retry/redrive. Interrupt/replacement/resume, opaque
-sessions, original skills and stale fencing remain. The initial PENDING/digest-
-absent observation refusal remains, followed by a successful same-handle read.
-Proxyq2's returning owner reports91-package install/freeze success and an actual
-import failure missingexpression. Complete supported proxy dependency closure,
-Prisma/native provisioning, real app/auth/lifespan and Linux/Fargate assembly
-remain open. Trusted TLS/ECS, CountTokens/native usage, durable$10 and revocation
-still require actual tests. BrowserSOURCE5 is accepted offline; fresh restricted-
-role authority, one disposable-volume/two managed wire captures, watchdog/host
-admission and real browser/renderer sandbox/physical cleanup remain. Separate
-Office/security disposition, REL-02/RG-08 and measured frozen cohorts remain.
-The75 approved real-request location/owner awaits the human's promised follow-up;
-it does not block synthetic runtime work. G0 accepted/G1OPEN/G2–G7 unentered,
-source connections disabled, currentMeri untouched and inference$0/$10.
+Current continuation,10 October2026 22:52Z: the [first actual SDK wire experiment](../coordination/reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
+is independently reviewed and owner accepted for the exact native loopback fixture
+and physical cleanup. Its one Start is consumed permanently; no retry/redrive.
+Interrupt/replacement/resume, opaque sessions, original skills and stale fencing
+remain. The initial PENDING/digest-absent observation refusal remains historical.
+Proxyq2's91-package install/full freeze and actual failed import missingexpression
+are independently owner verified. A123-wheel coherent community candidate is
+under distinct DATA review, with new guarded q3 source preparation in parallel;
+no q3 installation is admitted. Prisma/native provisioning, real app/auth/lifespan,
+Linux/Fargate assembly, trusted TLS/ECS, CountTokens/native usage, durable$10 and
+revocation still require actual tests. BrowserSOURCE5/role preparation are accepted
+within scope; staging supervisor review and renewed fresh role authority precede
+one role stage. Disposable-volume/two managed wire captures, watchdog/host admission,
+real browser/renderer sandbox/physical cleanup remain. Separate Office/security
+disposition, REL-02/RG-08 and measured frozen cohorts remain. The75 approved real-
+request location/owner awaits the human's promised follow-up and does not block
+synthetic runtime. G0 accepted/G1OPEN/G2–G7 unentered, source connections disabled,
+currentMeri untouched and inference$0/$10.
 
 Historical continuation,10 October2026 22:10Z: [current eight-gate status](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records G0 accepted/G1 OPEN/G2–G7 unentered. Exact SDK immutableversion:1 is
