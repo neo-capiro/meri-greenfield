@@ -1,0 +1,21 @@
+# Independent evidence-consistency repair review
+
+Outline before verification: review only `eb7c848ecb0cd537ddb0b8511e6c6269b80cd8a1` and its four changed paths in dedicated branch `review/r2-evidence-consistency`. Read the original failed review, literal controls, author repair and captures. Independently verify the original review and repair seals, protected sources and exact original test prefix. Execute the original independent contradiction controls against the repaired validator, correcting the separately disclosed aliased record-scope fixture to mutate only record lineage, and add independent mixed-source, unavailable-source and tuple-distinction observations. Borrow existing dependencies read-only, retain binary streams and before/after source/runtime hashes. Do not replay the unchanged canonical31 suite or qualify live authorization, REL-02, public0.2 freeze or G1. Final findings follow after the actual run.
+
+## Decision and source assessment
+
+PASS for the two original evidence-consistency findings. The integration owner independently reviewed the three added validator lines, four appended regression groups and document definition. JSON tuple encoding distinguishes validated string triples without delimiter collisions. Returned records must belong to reconciled checked/partial sources; denied/unavailable records are refused while other eligible partial evidence remains valid. No schema, public0.1 distribution, catalog, skill, runtime or real authorization behavior changed.
+
+I read the original independent report and the repair report in full. The original review's244 payloads/5,060,613 bytes and repair's31 payloads/1,603,660 bytes match their sealed hashes. All four repair files and33 protected files equal the recorded source bytes; the original17 R2 test groups remain an exact17,536-byte prefix. The author's canonical31 pass and two literal rejections are corroborated as the author's executions, not replayed here. The historical two false accepts remain preserved in the original report and binary stdout.
+
+## Actual independent controls
+
+The original literal control source was inspected, then copied with exactly one deliberate fixture correction: clone the record scope array before mutating its tenant, so the subject scope remains unchanged. That previously disclosed alias is no longer mistaken for record-only coverage. The new result specifically rejects with `Evidence lineage mismatch`.
+
+Nine expected refusals all rejected, including duplicate source/record/version identities with different citations and records from an explicitly denied source. Three additional independent groups passed: legitimate checked/partial mail with a disclosed denied second source, unavailable-source record refusal, and distinct delimiter/version tuples. Same-actor subject/window continuity remains a characterization with explicit reselection obligations; it is not claimed newly enforced.
+
+One direct Node24.19.0 child exited0 with empty stderr in0.594 seconds under a30-second bound. Raw stdout20,362 bytes/SHA256 `28bbeeb940a2e40c6956eb996954a47d0bc1783a79680ca65c5ad5f38c0cd7f9`. All583 selected source/runtime files, including the seven borrowed dependency package trees and executable, remained exact before/after. No dependency installation, cloud, provider, source-data, native/browser or Hermes action occurred.
+
+Evidence is under this worktree's ignored `.task-inputs/r2-repair-owner-1/`, including literal source, raw streams, process/environment receipt and source inventories. `.task-inputs/review-r2-repair.py` records the finite DATA checks and runner. Two initial exploratory reads guessed nonexistent control filenames; they ran no candidate. The actual runner succeeded once. JavaScript network denial, trusted local hashes, direct-child timeout and post-completion2MiB capture checks do not establish OS network/descendant containment or hostile-filesystem resistance.
+
+Accept this repaired local0.2 consistency foundation only. REL-02's complete operation mappings/handlers, authored skill manifests, authenticated source receipts/revocation, real75-request provenance and200-case held-out benchmarks, public0.2 freeze and G1 remain open. No source activation or cutover is authorized by these synthetic results.
