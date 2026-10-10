@@ -127,3 +127,37 @@ test('strict0.1 readers remain strict and0.2 never silently upgrades them',()=>{
     const walk=node=>{if(!node||typeof node!=='object')return;if(node.type==='object')assert.equal(node.additionalProperties,false);for(const child of Object.values(node))if(child&&typeof child==='object')walk(child);};walk(schema);
   }
 });
+
+test('immutable record-version identity cannot be inflated by citations or substituted content',()=>{
+  const e=envelope();e.status='complete';e.reasonCode='OK';e.negativeAssertion={kind:'none'};e.data={kind:'history',records:[record()]};e.coverage.returnedCount=1;e.coverage.enumerableTotal=1;assertEvidence(e);
+  const copy={...structuredClone(e.data.records[0]),citationId:randomUUID()};e.data.records.push(copy);e.coverage.returnedCount=2;e.coverage.enumerableTotal=2;
+  assert.throws(()=>assertEvidence(e),/Duplicate evidence record-version identity/);
+  copy.contentSha256='a'.repeat(64);copy.content.text='Different content does not create a different version identity.';
+  assert.throws(()=>assertEvidence(e),/Duplicate evidence record-version identity/);
+  for(const [method,kind] of [['candidate-search','candidates'],['source-read','source-read'],['exact','status']]){
+    const f=structuredClone(e);f.method=method;f.data.kind=kind;f.coverage.enumerableTotal=null;if(kind==='status')f.data.statusCode='found';
+    assert.throws(()=>assertEvidence(f),/Duplicate evidence record-version identity/);
+  }
+});
+test('record-version tuple identity separates delimiter collisions, versions and sources',()=>{
+  const e=envelope();e.status='complete';e.reasonCode='OK';e.negativeAssertion={kind:'none'};
+  const a={...record(),recordId:'a:b',recordVersionId:'c'},b={...record(),recordId:'a',recordVersionId:'b:c'},version={...a,citationId:randomUUID(),recordVersionId:'next-version'},otherSource={...a,citationId:randomUUID(),sourceId:'meetings'};
+  e.sources.push({...e.sources[0],sourceId:'meetings'});e.coverage.sourcesRequested.push('meetings');e.coverage.sourcesChecked.push('meetings');
+  e.data={kind:'history',records:[a,b,version,otherSource]};e.coverage.returnedCount=4;e.coverage.enumerableTotal=4;assertEvidence(e);
+  e.data.records.push({...a,citationId:randomUUID()});e.coverage.returnedCount=5;e.coverage.enumerableTotal=5;
+  assert.throws(()=>assertEvidence(e),/Duplicate evidence record-version identity/);
+});
+test('denied or unavailable source state cannot contribute returned candidate evidence',()=>{
+  for(const status of ['denied','unavailable']){
+    const e=envelope();e.method='candidate-search';e.status='partial';e.reasonCode='PARTIAL_COVERAGE';e.negativeAssertion={kind:'none'};e.data={kind:'candidates',records:[record()]};e.coverage.enumerableTotal=null;e.coverage.enumeration='partial';e.coverage.sourcesChecked=[];e.coverage.sourcesUnavailable=['mail'];e.sources[0].status=status;
+    assert.throws(()=>assertEvidence(e),/Evidence source is not eligible/);
+  }
+});
+test('mixed checked or partial and denied sources retain legitimate disclosed partial records',()=>{
+  for(const eligibleStatus of ['checked','partial']){
+    const e=envelope();e.method='candidate-search';e.status='partial';e.reasonCode='PARTIAL_COVERAGE';e.negativeAssertion={kind:'none'};e.data={kind:'candidates',records:[record()]};e.coverage.enumerableTotal=null;e.coverage.enumeration='partial';e.coverage.limitations=['Synthetic meetings source denied; mail evidence remains eligible.'];e.sources[0].status=eligibleStatus;
+    e.sources.push({...e.sources[0],sourceId:'meetings',status:'denied'});e.coverage.sourcesRequested.push('meetings');e.coverage.sourcesUnavailable=['meetings'];assertEvidence(e);
+    e.data.records.push({...record(),sourceId:'meetings'});e.coverage.returnedCount=2;
+    assert.throws(()=>assertEvidence(e),/Evidence source is not eligible/);
+  }
+});

@@ -145,7 +145,10 @@ export function assertEvidence(envelope) {
     if (data.kind === 'history' && c.enumeration === 'complete' && c.enumerableTotal !== records.length) fail('Complete history requires exact enumerable total');
     if (envelope.method === 'candidate-search' && c.enumerableTotal !== null) fail('Candidate search cannot invent total');
     if (envelope.method === 'source-read' && records.some(record => record.content.kind !== 'full-read')) fail('Source read requires full material content');
+    // Citations/content cannot manufacture another immutable record version.
+    unique(records.map(record => JSON.stringify([record.sourceId, record.recordId, record.recordVersionId])), 'evidence record-version identity');
     for (const record of records) {
+      if (!checked.includes(record.sourceId)) fail('Evidence source is not eligible');
       if (!requested.includes(record.sourceId) || record.scopes.some(scope => !envelope.subject.scopes.some(parent => canonicalSha256(parent) === canonicalSha256(scope)))) fail('Evidence lineage mismatch');
       if (record.content.kind === 'snippet' && !next.requiredReads.includes(record.content.readHandle)) fail('Snippet requires decisive follow-up');
     }

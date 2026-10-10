@@ -1,0 +1,36 @@
+# R2 evidence consistency repair
+
+## Outline before implementation
+
+Dedicated branch `fix/r2-evidence-consistency`, worktree `C:/dev/main/meri-greenfield-worktrees/r2-evidence-repair`, exact base `ed09a250ad9b8088c111007d6573ac969017b010`.
+
+The existing 0.2 validator remains the canonical owner of declared cross-field consistency. Returned record arrays must contain unique immutable `(sourceId, recordId, recordVersionId)` identities using unambiguous tuple encoding; citations and content cannot manufacture a new counted item. Every returned record must correspond to a reconciled `checked` or `partial` source state. Explicitly denied/unavailable sources cannot contribute records, while legitimate records from other eligible sources in a partial envelope remain valid.
+
+Own only `packages/contracts/retrieval-0.2/validate.mjs`, `packages/contracts/test/retrieval-r2.test.mjs`, `docs/RETRIEVAL-CONTRACT.md`, and this report. Preserve all original 17 R2 and ten 0.1 test groups and protected schema/public-distribution/root/ledger bytes. No schema, catalog, skill, authorization, runtime or source-access implementation changes. Add narrow duplicate-identity, tuple-collision, denied/unavailable and mixed-source regressions. Run the focused canonical suite once plus the two returned literal counterexamples, retaining raw captures and source/runtime pre/post pins. Existing Ajv dependencies are borrowed read-only; no install/network/provider/AWS/Hermes action. Root owns distinct review and acceptance; REL-02 completeness, production freeze and live gates remain open.
+
+## Implemented behavior and boundaries
+
+`assertEvidence` now rejects repeated immutable record-version identities using `JSON.stringify([sourceId, recordId, recordVersionId])`. This is an injective encoding of the three validated string values, avoiding delimiter collisions. Uniqueness applies to every returned record array, including history, candidates, source reads and supporting status/comparison evidence. Citation/content/scope changes do not manufacture additional identities. Distinct versions of a record and identical record/version IDs in different sources remain distinct. History completeness still requires the declared total to equal the unique returned records. Scalar count behavior is unchanged. Multiple events sharing an immutable record version need a separate reviewed event identity/counting contract; this repair does not invent one.
+
+Every returned record must refer to a reconciled source in the existing `checked` list, which is derived from `checked` and `partial` source states. Denied and unavailable states cannot contribute records. The mixed-source positive control retains eligible mail evidence while disclosing denied meetings, for both checked and partial mail. It then rejects a meetings record added to that response. Existing declared scope, freshness, completeness, continuation and absence rules remain active. These are local declaration checks, not real permission or source receipts.
+
+Only three validator lines were added. The retrieval document now states the counted unit and eligibility invariant explicitly. No schema, operation catalog, skill, adapter, runtime, public package export or 0.1 consumer contract changed. The original 17-group R2 test file is preserved as an exact 17,536-byte prefix; four focused groups were appended. The existing ten-group 0.1 boundary suite is unchanged.
+
+## Actual verification and retained evidence
+
+The only candidate executions were:
+
+- `node --import <fixed network-guard file URL> --test packages/contracts/test/boundaries.test.mjs packages/contracts/test/retrieval-r2.test.mjs`: **31 PASS, 0 FAIL, 0 skipped**, once with a 120-second direct-child bound. Ten old plus seventeen existing R2 plus four new groups passed. The captured TAP duration was 566.5285 ms; supervisor envelope elapsed 0.812 seconds.
+- `node --import <same fixed guard> <literal-checks.mjs>`: **both returned literal counterexamples rejected**, once with a 30-second direct-child bound; envelope elapsed 1.844 seconds. The inputs are extracted unchanged in value from the independent review's retained original stdout, rather than created by this suite's fixture factory.
+
+Both commands exited 0 with empty stderr and exact measured source/runtime pre/post equality. Canonical stdout SHA256 is `8501b7e78445b40a3b66e62354d262bfceac1b71df91080154fb17ee01df7dbb`; literal-control stdout is `d0e964cf25362158a18dd83fde8607b8d9b85b3d846a6b6d439c8e3aa2494c91`. Binary stdout/stderr, exact argv, replacement environment, UTC timing, exit/deadline fields, source pins and seven borrowed dependency-package file inventories are retained under this worktree's `.task-inputs/CODEX-R2-EVIDENCE-REPAIR-1/checks/`. Node 24.19.0 is fixed by raw executable hash; Ajv 8.20.0, ajv-formats and canonicalize plus their four dependency trees were borrowed read-only through a junction. No install occurred.
+
+The independent original failed stdout remains byte-exact at SHA256 `b872b1d28b97148f37c14504a2e6061c9bc72aa05e8ea6ccf3f92b304aaf209d`, together with its process envelope and original control source. That historical run had seven expected rejections and two false accepts; it has not been overwritten or relabeled. This repair reran only those two contradictory literal values. It does not upgrade the independent report's separately qualified aliased foreign-scope fixture or skill-continuity characterization.
+
+One setup command initially used the read-only review worktree as its cwd: it created only this new outline and an empty scratch directory there; a duplicate junction request was refused. The outline was copied byte-exact to the allocated repair worktree, only the newly created wrong-location report and verified-empty scratch were removed, and the review worktree's Git status was verified clean. No existing reviewer source/evidence/dependency bytes changed. The tool error and correction are retained in task history; no candidate test failed. All implementation/check/commit actions use the dedicated repair worktree.
+
+`git diff --check` passed. The final source read and diff remain focused on evidence consistency, preserving existing public functions and dependency direction. The source/data seal binds protected 0.1 and 0.2 schema/public distribution, root package/lock, adopted-plan/standards, six R2 ledgers and catalog/skill documents to their raw Git base bytes. Local snapshots assume a trusted checkout; they do not prove hostile-filesystem resistance.
+
+## Remaining acceptance limits
+
+The preload refuses common JS networking APIs, with replacement environments excluding credentials; it is not an OS network sandbox. Deadlines supervise direct children and do not prove descendant containment. No database, source connector, service, model, provider, AWS, native browser or Hermes execution occurred. No production namespace freeze, REL-02 completion, live authorization, complete operation/handler mappings, authored skill execution, real 75-request provenance/200-case evaluation or deployment gate follows. Source evidence truth and current grants remain trusted-gateway/source-adapter responsibilities. Root owns distinct independent review and acceptance of this repair.
