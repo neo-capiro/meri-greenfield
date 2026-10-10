@@ -9,13 +9,13 @@ import { TextDecoder } from 'node:util';
 const SELF = fileURLToPath(import.meta.url);
 const ROOT = resolve(dirname(SELF), '../..');
 const GIT = 'C:/Program Files/Git/cmd/git.exe';
-export const SOURCE_REFERENCE = '651ec8ce136a9ed3b22f911ea0dac90f33de40c7';
+export const SOURCE_REFERENCE = '234f51f4a7ced907d53be088fc37eb0d1d9705d5';
 export const MAX_STATIC_PINS_BYTES = 16 * 1024 * 1024;
 export const COMPILER_PINS = Object.freeze([
   ['infra/native-enforcement/app.mjs', 618, 'e03076acb2ccda59bd38c2e2763f94af0d057f6c6c1bd3e699e25c72314ab1ed'],
   ['infra/native-enforcement/lib/binding.mjs', 17314, '985519195dec59763d120ab8b1847eb71c023a782fa652e4d32e35528f5484e7'],
   ['infra/native-enforcement/lib/expressions.mjs', 14772, '5195d83752a230ed3fae80bab14871026d6678caf1fbd9e4f82350d9d6fc0a45'],
-  ['infra/native-enforcement/lib/workflow.mjs', 25523, '237eae6c3938464732c13add0ef6e18484c203e51f00a79c1ef8064e6fd3bc98'],
+  ['infra/native-enforcement/lib/workflow.mjs', 26275, 'c2051ec152fd5e0e9b7376f69da85dedd6e8b7348d1ec10a279ed2753525a830'],
   ['infra/native-enforcement/lib/infrastructure.mjs', 4892, '80876d633d73b511d5060baecc6a609350d90706435f7acbcd086f40832c42b2'],
   ['infra/native-enforcement/lib/task-definition.mjs', 9432, 'edd9a835e7c05ed4fe47eaaa375bdb74204913e31b49fd169d9079a169164896'],
   ['infra/native-enforcement/lib/probe-profiles.mjs', 4920, '67dff6ffb4025e1767226a5bb330998ad78bd9d76083319adb910a22e3397660'],
