@@ -32,14 +32,24 @@ managed survival has not been measured.
 Discovery filters the immutable CFN stack ARN, with explicit opaque pagination,
 20 pages/20 instances per complete scan, owner account and exact stack/name/
 logical/run tags plus launch window. Positive ownership is separate from AMI/
-network/root security qualification. Positively owned instance IDs and first
-root IDs persist within the20-record cap; additional observed root IDs/drift
-persist without erasing the first. Direct singleton DescribeInstances rebinds
-ownership before termination.
+network/root security qualification. Positively owned instance IDs persist within
+the20-record cap. Every valid owned observation of each ID contributes root
+evidence, including repeated observations in one accumulated scan. The first
+valid retained root never changes; at most20 distinct root IDs per instance are
+retained in observation order. Further distinct IDs set sticky `rootOverflow`;
+the ledger preserves the first ID and bounded history instead of silently
+replacing it. Overflow IDs beyond the cap are not individually retained, so the
+flag requires owner reconciliation from raw execution history. Differing roots
+set sticky `rootDrift`; missing/malformed root observations set sticky
+`rootUnknown`. All three preserve UNKNOWN through later clean scans/direct reads.
+Qualification requires a valid root mapping and ID. Direct singleton
+DescribeInstances rebinds ownership before termination.
 The ledger retains at most20 owned IDs; overflow stays UNKNOWN and requires
 owner reconciliation from the complete history. This is a single-host scope,
 not authority to operate arbitrary fleets. Security-failing owned instances can
-still be contained. Missing/conflicting
+still be contained: missing/malformed root evidence does not prevent termination
+after fresh positive ownership/state checks. Root evidence still gates root
+reads and cleanup confirmation. Missing/conflicting
 identity is not broad termination authority. Scan failures retain the known
 ledger and continue its containment. One attempted termination is recorded before
 dispatch; an ambiguous response cannot cause another explicit termination task
@@ -71,13 +81,20 @@ node --test infra/browser-enforcement/browser-enforcement.test.mjs
 
 The test refuses an evaluator whose raw SHA256 differs from
 `8327cafae2779d31512939cc45eba2f1b3fff3c09cdf7906ed457c31f198302b`.
-It evaluates actual compiled expressions and four composed synthetic traces
+It evaluates actual compiled expressions and composed synthetic traces
 starting explicitly after the production refusal guard. These are not AWS tests
 or proof of physical survival, IAM, cloud deadlines or guest behavior. The source
 assumes the explicitly unqualified `ec2-sdk-pascal-iso-v1` response profile with
 valid SDK ISO timestamps. Malformed timestamps/terminal States.Runtime or data
 limit failures are not a universal finally path. Service outages or transition
 latency can defeat physical cleanup; UNKNOWN must block further admission.
+
+The containment repair adds permanent regressions for missing/malformed roots,
+owned early-page evidence followed by a read error, all same-ID observations,
+cross-scan/direct stickiness, bounded overflow, and later valid-root retention.
+The byte-identical eight independent controls from the rejected source review
+are retained separately in the repair evidence. Passing these offline checks
+does not qualify the intentionally unavailable positive-volume-absence decoder.
 
 Next smallest step: independently review this source, then owner-controlled
 read-only TestState wire qualification of DescribeInstances and exact retained/

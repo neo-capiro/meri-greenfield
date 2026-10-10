@@ -4,7 +4,7 @@ export const FIXED = Object.freeze({
   stackName: 'MeriGreenfield-BrowserQualification', logicalId: 'BrowserHost3080399B',
   vpc: 'vpc-06e1941747e798f0a', subnet: 'subnet-0864c000b771df32c',
   ami: 'ami-0fb0f484b75566814', stopAfterMs: 720000, ceilingMs: 900000,
-  wireProfile: 'ec2-sdk-pascal-iso-v1', maxPages: 20, maxInstances: 20,
+  wireProfile: 'ec2-sdk-pascal-iso-v1', maxPages: 20, maxInstances: 20, maxRootIds: 20,
 });
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const digest = /^[0-9a-f]{64}$/;

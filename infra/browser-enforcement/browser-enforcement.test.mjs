@@ -221,3 +221,70 @@ test('owned first-page evidence still gets containment when later page fails; pa
   assert.equal(r.calls.filter(x=>x.state==='TerminateOwned').length,1);
   assert.equal(r.ctx.discoveryComplete,false);assert.equal(r.output.cleanup,'UNKNOWN');
 });
+
+test('fresh owned missing and malformed roots still dispatch one termination and remain UNKNOWN', async () => {
+  for (const malformed of [false,true]) {
+    const i=instance();if(malformed)i.BlockDeviceMappings[0].Ebs.VolumeId='not-a-volume';else i.BlockDeviceMappings=[];
+    const r=await traceFromInitialize(call=>page([i]));
+    assert.equal(r.calls.filter(x=>x.state==='TerminateOwned').length,1);
+    assert.equal(r.ctx.ledger[0].rootVolumeId,null);assert.equal(r.ctx.ledger[0].rootUnknown,true);
+    assert.equal(r.ctx.ledger[0].qualified,false);assert.equal(r.ctx.failed,true);
+    assert.equal(r.ctx.ledger[0].absent,false);assert.equal(r.output.cleanup,'UNKNOWN');
+  }
+});
+test('owned root-unknown early page survives later scan error and still dispatches once', async () => {
+  const i=instance();i.BlockDeviceMappings=[];
+  const r=await traceFromInitialize(call=>{
+    if(call.state==='ListFirst')return {...page([i]),NextToken:'next-page'};
+    if(call.state==='ListNext')return {error:{Error:'Ec2.UnauthorizedOperation'}};
+    return page([i]);
+  });
+  assert.equal(r.calls.filter(x=>x.state==='TerminateOwned').length,1);
+  assert.equal(r.ctx.discoveryComplete,false);assert.equal(r.ctx.ledger[0].rootUnknown,true);
+  assert.equal(r.ctx.uncertain,true);assert.equal(r.output.cleanup,'UNKNOWN');
+});
+test('all duplicate owned observations contribute roots and qualification, independent of first row', async () => {
+  const a=instance(),b=instance();b.BlockDeviceMappings[0].Ebs.VolumeId='vol-fedcba98765432100';
+  const single=await scan([a]);assert.equal(single.ledger[0].qualified,true);assert.equal(single.ledger[0].rootUnknown,false);
+  let c=await scan([a,b]);assert.equal(c.ledger.length,1);
+  assert.equal(c.ledger[0].rootVolumeId,a.BlockDeviceMappings[0].Ebs.VolumeId);
+  assert.deepEqual(c.ledger[0].observedRootVolumeIds,['vol-0123456789abcdef0','vol-fedcba98765432100']);
+  assert.equal(c.ledger[0].rootDrift,true);assert.equal(c.uncertain,true);
+  assert.equal(c.ledger[0].qualified,true);assert.equal(c.ledger[0].rootUnknown,false);
+  const bad=instance();bad.BlockDeviceMappings[0].Ebs.VolumeId='malformed';
+  c=await scan([a,bad]);assert.equal(c.ledger[0].qualified,false);assert.equal(c.ledger[0].rootUnknown,true);
+  assert.equal(c.ledger[0].rootVolumeId,a.BlockDeviceMappings[0].Ebs.VolumeId);
+});
+test('root drift and unknown evidence stay sticky across clean scan and direct observations', async () => {
+  const a=instance(),b=instance();b.BlockDeviceMappings[0].Ebs.VolumeId='vol-fedcba98765432100';
+  let c=await scan([a,b]);c.scan=[a];c=await assign('ReconcileScan',c);
+  c=await assign('DescribeOwned',c,page([a]));c=await assign('RetainDirect',c);
+  assert.equal(c.ledger[0].rootDrift,true);assert.equal(c.uncertain,true);
+  const bad=instance();bad.BlockDeviceMappings=[];c=await assign('DescribeOwned',c,page([bad]));c=await assign('RetainDirect',c);
+  c.scan=[a];c=await assign('ReconcileScan',c);
+  assert.equal(c.ledger[0].rootUnknown,true);assert.equal(c.ledger[0].qualified,false);
+  assert.equal(c.ledger[0].rootVolumeId,'vol-0123456789abcdef0');
+  assert.equal(await condition('MayTerminate',c),true);assert.equal(await condition('CleanupComplete',c),false);
+});
+test('root history caps scan/direct additions, retains first ID and sticky overflow evidence', async () => {
+  const a=instance();let c=await scan([a]);
+  const rows=Array.from({length:FIXED.maxRootIds},(_,n)=>{
+    const i=instance();i.BlockDeviceMappings[0].Ebs.VolumeId=`vol-${n.toString(16).padStart(17,'0')}`;return i;
+  });
+  c.scan=rows;c=await assign('ReconcileScan',c);
+  assert.equal(c.ledger[0].observedRootVolumeIds.length,FIXED.maxRootIds);
+  assert.equal(c.ledger[0].rootVolumeId,'vol-0123456789abcdef0');assert.equal(c.ledger[0].observedRootVolumeIds[0],c.ledger[0].rootVolumeId);
+  assert.equal(c.ledger[0].rootOverflow,true);assert.equal(c.ledger[0].rootDrift,true);assert.equal(c.uncertain,true);
+  const b=instance();b.BlockDeviceMappings[0].Ebs.VolumeId='vol-fedcba98765432100';
+  c=await assign('DescribeOwned',c,page([b]));c=await assign('RetainDirect',c);
+  assert.equal(c.ledger[0].observedRootVolumeIds.length,FIXED.maxRootIds);
+  c.scan=[a];c=await assign('ReconcileScan',c);
+  assert.equal(c.ledger[0].rootOverflow,true);assert.equal(c.ledger[0].rootVolumeId,'vol-0123456789abcdef0');
+  assert.equal(c.ledger[0].instanceId,a.InstanceId);assert.equal(await condition('CleanupComplete',c),false);
+});
+test('unknown first observation can retain a later valid root without erasing sticky uncertainty', async () => {
+  const bad=instance();bad.BlockDeviceMappings=[];let c=await scan([bad]);
+  c.scan=[instance()];c=await assign('ReconcileScan',c);
+  assert.equal(c.ledger[0].rootVolumeId,'vol-0123456789abcdef0');assert.equal(c.ledger[0].rootUnknown,true);
+  assert.equal(c.ledger[0].qualified,false);assert.equal(c.uncertain,true);
+});

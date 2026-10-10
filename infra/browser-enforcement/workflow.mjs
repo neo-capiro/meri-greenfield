@@ -30,7 +30,23 @@ export function compileWatchdog(input) {
   const owned = i => `($type(${i})='object' and $type(${i}.InstanceId)='string' and $exists($match(${i}.InstanceId,/^i-[0-9a-f]{17}$/)) and ${array(`${i}.Tags`)} and ${expectedTags(i)} and $type(${i}.LaunchTime)='string' and $exists($match(${i}.LaunchTime,/^[0-9]{4}-[0-9]{2}-[0-9]{2}T/)) and $toMillis(${i}.LaunchTime)>=${b.t0Ms}-5000 and $toMillis(${i}.LaunchTime)<=${b.C})`;
   const root = i => `${i}.BlockDeviceMappings[DeviceName=${i}.RootDeviceName].Ebs.VolumeId`;
   const rootValid = i => `($type(${i}.RootDeviceName)='string' and ${array(`${i}.BlockDeviceMappings`)} and $count(${i}.BlockDeviceMappings[DeviceName=${i}.RootDeviceName])=1 and $type(${root(i)})='string' and $exists($match(${root(i)},/^vol-[0-9a-f]{17}$/)))`;
-  const qualified = i => `(${i}.ImageId=${literal(FIXED.ami)} and ${i}.VpcId=${literal(FIXED.vpc)} and ${i}.SubnetId=${literal(FIXED.subnet)} and $count(${i}.BlockDeviceMappings)=1 and ${i}.BlockDeviceMappings[DeviceName=${i}.RootDeviceName].Ebs.DeleteOnTermination=true)`;
+  const qualified = i => `(${rootValid(i)} and ${i}.ImageId=${literal(FIXED.ami)} and ${i}.VpcId=${literal(FIXED.vpc)} and ${i}.SubnetId=${literal(FIXED.subnet)} and $count(${i}.BlockDeviceMappings)=1 and ${i}.BlockDeviceMappings[DeviceName=${i}.RootDeviceName].Ebs.DeleteOnTermination=true)`;
+  // One emitted root-history operation for accumulated pages and fresh direct
+  // reads. It never authorizes termination. Missing evidence, drift and bounded
+  // overflow survive later clean observations; the first root is never erased.
+  const retainRoots = `function($old,$observations) {(
+    $validRoots := [$map($observations,function($i){${rootValid('$i')}?${root('$i')}:null})][$!=null];
+    $allRoots := $distinct($append($old.observedRootVolumeIds,$validRoots));
+    $roots := [$filter($allRoots,function($r,$n){$n<${FIXED.maxRootIds}})];
+    $unknown := $old.rootUnknown or $count($filter($observations,function($i){$not(${rootValid('$i')})}))>0;
+    $overflow := $old.rootOverflow or $count($allRoots)>${FIXED.maxRootIds};
+    $drift := $old.rootDrift or $count($allRoots)>1;
+    $merge([$old,{
+      "rootVolumeId":$old.rootVolumeId=null?($count($roots)>0?$roots[0]:null):$old.rootVolumeId,
+      "observedRootVolumeIds":$roots,"rootDrift":$drift,"rootUnknown":$unknown,"rootOverflow":$overflow,
+      "qualified":$old.qualified and $count($filter($observations,function($i){$not(${qualified('$i')})}))=0
+    }])
+  )}`;
   const s = {};
   const pass = (name, update, next) => { s[name] = { Type: 'Pass', Assign: { ctx: merge(update) }, Next: next }; };
   const choice = (name, condition, yes, no) => { s[name] = { Type: 'Choice', Choices: [{ Condition: expr(condition), Next: yes }], Default: no }; };
@@ -66,26 +82,21 @@ export function compileWatchdog(input) {
   const reconcile = `(
     $owned := [$ctx.scan[${owned('$')}]];
     $allIds := $distinct($append([$ctx.ledger.instanceId],[$owned.InstanceId]));
-    $ids := [$filter($allIds,function($id,$n){$n<20})];
+    $ids := [$filter($allIds,function($id,$n){$n<${FIXED.maxInstances}})];
+    $retainRoots := ${retainRoots};
     $rows := [$map($ids,function($id) {(
       $old := $ctx.ledger[instanceId=$id][0];
-      $i := $owned[InstanceId=$id][0];
-      $r := ${rootValid('$i')} ? ${root('$i')} : null;
-      $exists($old) ? $merge([$old,{
-        "seen":$exists($i),
-        "rootVolumeId":$old.rootVolumeId=null?$r:$old.rootVolumeId,
-        "observedRootVolumeIds":$distinct($append($old.observedRootVolumeIds,$r!=null?[$r]:[])),
-        "rootDrift":$old.rootDrift or ($exists($i) and $r!=null and $old.rootVolumeId!=null and $r!=$old.rootVolumeId),
-        "qualified":$old.qualified and ($exists($i)?${qualified('$i')}:true)
-      }]) : {
-        "instanceId":$id,"rootVolumeId":$r,"observedRootVolumeIds":$r!=null?[$r]:[],"seen":true,"rootDrift":false,
-        "qualified":${qualified('$i')},"attempted":false,"terminal":false,"absent":false
-      }
+      $observations := [$owned[InstanceId=$id]];
+      $base := $exists($old)?$old:{
+        "instanceId":$id,"rootVolumeId":null,"observedRootVolumeIds":[],"rootDrift":false,"rootUnknown":false,"rootOverflow":false,
+        "qualified":true,"attempted":false,"terminal":false,"absent":false
+      };
+      $merge([$retainRoots($base,$observations),{"seen":$count($observations)>0}])
     )})];
     $merge([$ctx,{
       "ledger":$rows,"index":0,"discoveryComplete":true,
       "failed":$ctx.failed or $count($ctx.scan)!=1 or $count($owned)!=1 or $count($rows[qualified=false])>0,
-      "uncertain":$ctx.uncertain or $count($allIds)>20 or $count($ctx.scan)!=$count($owned) or $count($rows[rootDrift=true])>0
+      "uncertain":$ctx.uncertain or $count($allIds)>${FIXED.maxInstances} or $count($ctx.scan)!=$count($owned) or $count($rows[rootDrift=true or rootUnknown=true or rootOverflow=true])>0
     }])
   )`;
   s.ReconcileScan = { Type: 'Pass', Assign: { ctx: expr(reconcile) }, Next: 'HasLedger' };
@@ -101,20 +112,15 @@ export function compileWatchdog(input) {
   choice('DirectShape', `${array('$ctx.result.Reservations')} and $count($ctx.result.Reservations)=1 and $ctx.result.Reservations[0].OwnerId=${literal(FIXED.account)} and ${array('$ctx.result.Reservations[0].Instances')} and $count($ctx.result.Reservations[0].Instances)=1 and ${selected}.InstanceId=$ctx.ledger[$ctx.index].instanceId and ${owned(selected)}`, 'RetainDirect', 'NextOwnedFailed');
   s.RetainDirect = { Type: 'Pass', Assign: { ctx: expr(`(
     $i := ${selected}; $old := $ctx.ledger[$ctx.index];
-    $r := ${rootValid('$i')} ? ${root('$i')} : null;
-    $drift := $r!=null and $old.rootVolumeId!=null and $r!=$old.rootVolumeId;
-    $row := $merge([$old,{
-      "rootVolumeId":$old.rootVolumeId=null?$r:$old.rootVolumeId,
-      "observedRootVolumeIds":$distinct($append($old.observedRootVolumeIds,$r!=null?[$r]:[])),
-      "rootDrift":$old.rootDrift or $drift,"qualified":$old.qualified and ${qualified('$i')}
-    }]);
+    $retainRoots := ${retainRoots};
+    $row := $retainRoots($old,[$i]);
     $merge([$ctx,{
       "ledger":[$map($ctx.ledger,function($v,$n){$n=$ctx.index?$row:$v})],
-      "uncertain":$ctx.uncertain or $drift,"failed":$ctx.failed or $not(${qualified('$i')})
+      "uncertain":$ctx.uncertain or $row.rootDrift or $row.rootUnknown or $row.rootOverflow,"failed":$ctx.failed or $not($row.qualified)
     }])
   )`) }, Next: 'DirectState' };
   choice('DirectState', `${selected}.State.Name='terminated'`, 'MarkTerminal', 'MayTerminate');
-  choice('MayTerminate', `${selected}.State.Name in ['pending','running','stopping','stopped','shutting-down'] and $ctx.ledger[$ctx.index].rootVolumeId!=null`, 'AlreadyAttempted', 'NextOwnedFailed');
+  choice('MayTerminate', `${selected}.State.Name in ['pending','running','stopping','stopped','shutting-down']`, 'AlreadyAttempted', 'NextOwnedFailed');
   choice('AlreadyAttempted', '$ctx.ledger[$ctx.index].attempted', 'NextOwned', 'RecordAttempt');
   const updateRow = changes => `{"ledger":[$map($ctx.ledger,function($v,$i){$i=$ctx.index?$merge([$v,${changes}]):$v})]}`;
   pass('RecordAttempt', updateRow('{"attempted":true}'), 'TerminateBudget');
