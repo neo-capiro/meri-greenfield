@@ -48,7 +48,7 @@ The adoption report/pins intentionally remain immutable historical candidate evi
 
 Browser/DOM/hydration/responsive/visual/a11y/E2E, compiled CSS/themes/KaTeX fonts, bundle size, Markdown/plugin/helper safety, real UI transport/product controls, model/provider calls, full release security/license audit, OS sandbox/live policy/durability/Fargate and G1 remain NOT RUN or unaccepted. Current Meri and deployment placement are unchanged. No deployment, cutover, security waiver or performance guarantee follows from offline preparation acceptance.
 
-Integration follow-through remains with the integration owner: merge only the exact source allowlist below and the separately reviewed report/owner decision records through the normal integration path. Keep G1 and product/release gates open and retain cold-timeout/notice/build limitations. A later consuming build or performance change needs its own bounded review and evidence; no widening, retry-until-green or source/export pruning is authorized by this offline acceptance.
+Integration contains the exact source allowlist below and this owner decision; the separate actual review report is preserved unchanged at31acba1. Parent byte comparison confirms all30 source files match candidate8d2cd175 exactly; no dependency installation or extra canonical execution was needed. Keep G1 and product/release gates open and retain cold-timeout/notice/build limitations. A later consuming build or performance change needs its own bounded review and evidence; no widening, retry-until-green or source/export pruning is authorized by this offline acceptance.
 
 ## Exact30-file source allowlist and actual bytes
 

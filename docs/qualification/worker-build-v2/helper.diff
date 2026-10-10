@@ -1,0 +1,49 @@
+--- operational-helper
++++ candidate-helper
+@@ -35,6 +35,7 @@
+ INVENTORY_SOURCE = CONTEXT + '/probes/image-inventory.py'
+ INVENTORY_OUTPUT = '/opt/meri-worker/image-inventory.json'
+ DISPATCH_DEADLINE_SECONDS = 1200
++INLINE_BUILDSPEC_MAX_BYTES = 25600
+ REJECTED_INVENTORY_SHA256 = '01b673c02faf67ce8de2a3b3dd3a6739956e4f527207abd0a5621cf12e245d02'
+ BUILDER_INFRA = 'infra/qualification/app.mjs'
+ BUILDER_INFRA_SHA256 = 'a866b68fda76cf3bf09636909d62d7dbee646ed396a7879052be63ee60a0442f'
+@@ -58,6 +59,20 @@
+ 
+ def json_bytes(value):
+     return (json.dumps(value, indent=2, ensure_ascii=True, sort_keys=True) + '\n').encode()
++
++def checked_inline_buildspec(raw):
++    require(isinstance(raw, bytes) and 0 < len(raw) <= INLINE_BUILDSPEC_MAX_BYTES,
++            'Inline buildspec must contain 1..25600 bytes before preparation/dispatch')
++    try:
++        text = raw.decode('ascii')
++    except UnicodeDecodeError as error:
++        raise ValueError('Inline buildspec must be ASCII; character and byte limits must agree') from error
++    require(len(text) <= INLINE_BUILDSPEC_MAX_BYTES, 'Inline buildspec exceeds 25600 characters')
++    value = json.loads(text)
++    canonical = (json.dumps(value, ensure_ascii=True, separators=(',', ':')) + '\n').encode('ascii')
++    require(raw == canonical, 'Inline buildspec must use canonical compact ASCII JSON with final LF')
++    return text
++
+ 
+ def ordered_records(records, key, fields):
+     require(isinstance(records, list) and all(isinstance(r, dict) and set(r) == fields for r in records), 'Unexpected configuration record fields')
+@@ -175,7 +190,7 @@
+         require(constants.get(name)==wanted, 'Inventory compiled contract changed: '+name)
+     raw = (ROOT/BUILDSPEC).read_bytes()
+     require(0<len(raw)<=128*1024, 'Reviewed override missing/oversized')
+-    spec=json.loads(raw)
++    spec=json.loads(checked_inline_buildspec(raw))
+     require(set(spec)=={'version','env','phases'} and spec['version']=='0.2' and spec['env']=={'shell':'bash'}
+             and set(spec['phases'])=={'build'} and set(spec['phases']['build'])=={'commands'}
+             and len(spec['phases']['build']['commands'])==1 and isinstance(spec['phases']['build']['commands'][0],str), 'Unexpected worker override shape')
+@@ -235,6 +250,8 @@
+     require(all(isinstance(review[key], str) and 0 < len(review[key]) <= 4000 for key in ('reviewer', 'notes')), 'Review attribution/notes required')
+ 
+ def build_input_for(request, version, buildspec):
++    require(isinstance(buildspec, str), 'Inline buildspec dispatch input must be text')
++    checked_inline_buildspec(buildspec.encode('utf-8'))
+     variables = dict(IMAGE_TAG=request['imageTag'], SOURCE_COMMIT=request['sourceCommit'], SOURCE_S3_VERSION=version,
+                      SOURCE_ARCHIVE_SHA256=request['archive']['sha256'], BUILD_RUN_UUID=request['idempotencyToken'],
+                      WORKER_BUILDSPEC_SHA256=request['buildspecOverrideSha256'], RESULT_KEY=request['resultKey'],

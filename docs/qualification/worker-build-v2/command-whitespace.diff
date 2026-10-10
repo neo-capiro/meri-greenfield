@@ -1,0 +1,386 @@
+--- reviewed-command
++++ candidate-command
+@@ -3,28 +3,28 @@
+ SECONDS=0
+ worker_deadline=$((SECONDS+900))
+ bound() {
+-  local cap=$1 remaining limit
+-  shift
+-  remaining=$((worker_deadline-SECONDS))
+-  if [ "$remaining" -le 0 ]; then return 124; fi
+-  limit=$cap
+-  if [ "$remaining" -lt "$limit" ]; then limit=$remaining; fi
+-  timeout --signal=KILL "$limit" "$@"
++local cap=$1 remaining limit
++shift
++remaining=$((worker_deadline-SECONDS))
++if [ "$remaining" -le 0 ]; then return 124; fi
++limit=$cap
++if [ "$remaining" -lt "$limit" ]; then limit=$remaining; fi
++timeout --signal=KILL "$limit" "$@"
+ }
+ worker_id=''
+ auth_dir=''
+ registry='967807252336.dkr.ecr.us-east-1.amazonaws.com'
+ cleanup() {
+-  status=$?
+-  trap - EXIT INT TERM
+-  if [ -z "$worker_id" ] && [ -f worker-container-id.txt ]; then worker_id=$(cat worker-container-id.txt); fi
+-  if [[ "$worker_id" =~ ^[a-f0-9]{64}$ ]]; then timeout --signal=KILL 10 docker rm -v "$worker_id" >/dev/null 2>&1 || true; fi
+-  if [[ "$auth_dir" =~ ^/tmp/meri-worker-auth\.[A-Za-z0-9]{8}$ ]]; then
+-    timeout --signal=KILL 10 docker logout "$registry" >/dev/null 2>&1 || true
+-    rm -f "$auth_dir/config.json"
+-    rmdir "$auth_dir" || true
+-  fi
+-  exit "$status"
++status=$?
++trap - EXIT INT TERM
++if [ -z "$worker_id" ] && [ -f worker-container-id.txt ]; then worker_id=$(cat worker-container-id.txt); fi
++if [[ "$worker_id" =~ ^[a-f0-9]{64}$ ]]; then timeout --signal=KILL 10 docker rm -v "$worker_id" >/dev/null 2>&1 || true; fi
++if [[ "$auth_dir" =~ ^/tmp/meri-worker-auth\.[A-Za-z0-9]{8}$ ]]; then
++timeout --signal=KILL 10 docker logout "$registry" >/dev/null 2>&1 || true
++rm -f "$auth_dir/config.json"
++rmdir "$auth_dir" || true
++fi
++exit "$status"
+ }
+ trap cleanup EXIT
+ trap 'exit 130' INT
+@@ -43,45 +43,45 @@
+ assert os.environ["REPOSITORY_URI"]=="967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker"
+ assert os.environ["REPOSITORY_NAME"]=="meri-greenfield/qualification-worker"
+ assert os.environ["RESULT_BUCKET"]=="meri-greenfield-qual-build-967807252336-us-east-1"
+-commit=os.environ["SOURCE_COMMIT"]; run=os.environ["BUILD_RUN_UUID"]
+-assert re.fullmatch(r"[a-f0-9]{40}",commit) and str(uuid.UUID(run,version=4))==run
++commit=os.environ["SOURCE_COMMIT"];run=os.environ["BUILD_RUN_UUID"]
++assert re.fullmatch(r"[a-f0-9]{40}",commit)and str(uuid.UUID(run,version=4))==run
+ assert os.environ["IMAGE_TAG"]=="worker-"+commit+"-"+run
+ assert os.environ["RESULT_KEY"]=="results/worker-"+commit+"-"+run+"/manifest.json"
+ assert re.fullmatch(r"[a-f0-9]{64}",os.environ["SOURCE_ARCHIVE_SHA256"])
+ assert re.fullmatch(r"[a-f0-9]{64}",os.environ["WORKER_BUILDSPEC_SHA256"])
+-assert os.environ["SOURCE_S3_VERSION"] not in ["","null"]
++assert os.environ["SOURCE_S3_VERSION"]not in["","null"]
+ assert re.fullmatch(r"meri-greenfield-qualification-build:[a-f0-9-]{36}",os.environ["CODEBUILD_BUILD_ID"])
+ who=json.load(open("worker-builder-identity.json"))
+ assert who["Account"]=="967807252336"
+-assert isinstance(who,dict) and isinstance(who.get("Arn"),str) and re.fullmatch(r"arn:aws:sts::967807252336:assumed-role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H/[A-Za-z0-9_+=,.@-]{2,64}",who["Arn"])
++assert isinstance(who,dict)and isinstance(who.get("Arn"),str)and re.fullmatch(r"arn:aws:sts::967807252336:assumed-role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H/[A-Za-z0-9_+=,.@-]{2,64}",who["Arn"])
+ expected=json.loads(base64.b64decode(os.environ["WORKER_EXPECTED_B64"],validate=True))
+ assert expected["sourceCommit"]==commit and expected["buildspec"]["sha256"]==os.environ["WORKER_BUILDSPEC_SHA256"]
+ assert expected["buildspec"]["placement"]=="OWNER_OVERRIDE_NOT_IN_ARCHIVE"
+ contract=expected["inventoryContract"]
+-assert contract["schema"]=="meri.qualification.image-inventory/1" and contract["outputPath"]=="/opt/meri-worker/image-inventory.json"
+-p=pathlib.Path("worker-source.zip"); st=p.lstat()
+-assert stat.S_ISREG(st.st_mode) and st.st_nlink==1 and 0<st.st_size<=64*1024*1024
+-archive=p.read_bytes(); assert hashlib.sha256(archive).hexdigest()==os.environ["SOURCE_ARCHIVE_SHA256"]
++assert contract["schema"]=="meri.qualification.image-inventory/1"and contract["outputPath"]=="/opt/meri-worker/image-inventory.json"
++p=pathlib.Path("worker-source.zip");st=p.lstat()
++assert stat.S_ISREG(st.st_mode)and st.st_nlink==1 and 0<st.st_size<=64*1024*1024
++archive=p.read_bytes();assert hashlib.sha256(archive).hexdigest()==os.environ["SOURCE_ARCHIVE_SHA256"]
+ meta=json.load(open("worker-source-download.json"))
+ assert meta["VersionId"]==os.environ["SOURCE_S3_VERSION"]
+ assert meta["ChecksumSHA256"]==base64.b64encode(hashlib.sha256(archive).digest()).decode()
+-assert meta["ServerSideEncryption"]=="aws:kms" and meta["SSEKMSKeyId"]=="arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
++assert meta["ServerSideEncryption"]=="aws:kms"and meta["SSEKMSKeyId"]=="arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+ assert meta["Metadata"]=={"sourcecommit":commit,"archivesha256":os.environ["SOURCE_ARCHIVE_SHA256"]}
+ records=expected["sourceFiles"]+[expected["builderAuthority"]]
+-assert 0<len(records)<=5001 and len({r["path"] for r in records})==len(records)
+-with zipfile.ZipFile(p) as z:
+- names=z.namelist(); assert len(names)<=20000 and len(names)==len(set(names)) and sum(i.file_size for i in z.infolist())<=128*1024*1024
++assert 0<len(records)<=5001 and len({r["path"]for r in records})==len(records)
++with zipfile.ZipFile(p)as z:
++ names=z.namelist();assert len(names)<=20000 and len(names)==len(set(names))and sum(i.file_size for i in z.infolist())<=128*1024*1024
+  for item in z.infolist():
+-  parts=item.filename.rstrip("/").split("/"); mode=item.external_attr>>16
+-  assert not item.filename.startswith("/") and "\\" not in item.filename and ".." not in parts
+-  assert not {".git",".task-inputs",".runtime","private-evidence","node_modules"}.intersection(parts)
+-  assert stat.S_IFMT(mode) in [0,stat.S_IFREG,stat.S_IFDIR] and item.file_size<=8*1024*1024
+- assert {n for n in names if n.startswith("apps/worker/qualification/") and not n.endswith("/")}=={r["path"] for r in expected["sourceFiles"]}
++  parts=item.filename.rstrip("/").split("/");mode=item.external_attr>>16
++  assert not item.filename.startswith("/")and"\\"not in item.filename and".."not in parts
++  assert not{".git",".task-inputs",".runtime","private-evidence","node_modules"}.intersection(parts)
++  assert stat.S_IFMT(mode)in[0,stat.S_IFREG,stat.S_IFDIR]and item.file_size<=8*1024*1024
++ assert{n for n in names if n.startswith("apps/worker/qualification/")and not n.endswith("/")}=={r["path"]for r in expected["sourceFiles"]}
+  for record in records:
+-  name=record["path"]; path=pathlib.Path(name); st=path.lstat()
+-  assert name in names and stat.S_ISREG(st.st_mode) and not path.is_symlink()
++  name=record["path"];path=pathlib.Path(name);st=path.lstat()
++  assert name in names and stat.S_ISREG(st.st_mode)and not path.is_symlink()
+   data=path.read_bytes()
+-  assert len(data)==record["bytes"] and hashlib.sha256(data).hexdigest()==record["sha256"] and data==z.read(name)
++  assert len(data)==record["bytes"]and hashlib.sha256(data).hexdigest()==record["sha256"]and data==z.read(name)
+ pathlib.Path("worker-expected.json").write_text(json.dumps(expected,sort_keys=True)+"\n")
+ PY
+ auth_dir=$(mktemp -d /tmp/meri-worker-auth.XXXXXXXX)
+@@ -104,7 +104,7 @@
+ class Bounded:
+  def __init__(self,raw):self.raw=raw;self.total=0
+  def read(self,n):
+-  assert type(n) is int and 0<=n<=1048576,"unbounded tar read refused"
++  assert type(n)is int and 0<=n<=1048576,"unbounded tar read refused"
+   remaining=MAX_STREAM-self.total
+   assert remaining>=0,"tar stream cap"
+   data=self.raw.read(min(n,remaining+1));self.total+=len(data)
+@@ -113,18 +113,18 @@
+ reader=Bounded(sys.stdin.buffer)
+ os.mkdir("worker-extracted",0o700)
+ output=pathlib.Path("worker-extracted/image-inventory.json")
+-with tarfile.open(fileobj=reader,mode="r|",bufsize=512,errorlevel=2) as archive:
++with tarfile.open(fileobj=reader,mode="r|",bufsize=512,errorlevel=2)as archive:
+  member=archive.next()
+- assert member is not None and member.name=="image-inventory.json" and member.type in [tarfile.REGTYPE,tarfile.AREGTYPE]
+- assert not member.linkname and not member.issparse() and member.mode&0o6000==0 and 0<member.size<=MAX_FILE
++ assert member is not None and member.name=="image-inventory.json"and member.type in[tarfile.REGTYPE,tarfile.AREGTYPE]
++ assert not member.linkname and not member.issparse()and member.mode&0o6000==0 and 0<member.size<=MAX_FILE
+  assert set(member.pax_headers)<={"mtime","atime","ctime"}
+  for value in member.pax_headers.values():
+-  assert isinstance(value,str) and len(value)<=64 and all(c in "0123456789.-" for c in value)
++  assert isinstance(value,str)and len(value)<=64 and all(c in"0123456789.-"for c in value)
+  fd=os.open(output,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+  try:
+-  st=os.fstat(fd);assert stat.S_ISREG(st.st_mode) and st.st_nlink==1
++  st=os.fstat(fd);assert stat.S_ISREG(st.st_mode)and st.st_nlink==1
+   digest=hashlib.sha256();remaining=member.size;written=0
+-  with archive.extractfile(member) as body:
++  with archive.extractfile(member)as body:
+    while remaining:
+     chunk=body.read(min(1048576,remaining));assert chunk,"short tar payload"
+     assert len(chunk)<=remaining;digest.update(chunk)
+@@ -137,7 +137,7 @@
+  finally:os.close(fd)
+  padding=(-member.size)%512
+  if padding:assert archive.fileobj.read(padding)==b"\0"*padding
+- assert archive.next() is None,"extra tar member refused"
++ assert archive.next()is None,"extra tar member refused"
+  trailing=0
+  while True:
+   tail=archive.fileobj.read(512)
+@@ -145,64 +145,61 @@
+   assert not any(tail),"nonzero trailing tar bytes refused"
+   trailing+=len(tail)
+  assert trailing>=512,"missing tar end marker"
+-pathlib.Path("worker-copy-validation.json").write_text(json.dumps({"schema":"meri-worker-inventory-copy/1",
+- "sourcePath":"/opt/meri-worker/image-inventory.json","payloadBytes":written,"payloadSha256":digest.hexdigest(),
+- "tarStreamBytes":reader.total,"maxPayloadBytes":MAX_FILE,"maxTarStreamBytes":MAX_STREAM,
+- "singleRegularMember":True,"arbitraryExtraction":False},sort_keys=True)+"\n")
++pathlib.Path("worker-copy-validation.json").write_text(json.dumps({"schema":"meri-worker-inventory-copy/1","sourcePath":"/opt/meri-worker/image-inventory.json","payloadBytes":written,"payloadSha256":digest.hexdigest(),"tarStreamBytes":reader.total,"maxPayloadBytes":MAX_FILE,"maxTarStreamBytes":MAX_STREAM,"singleRegularMember":True,"arbitraryExtraction":False},sort_keys=True)+"\n")
+ PY
+ bound 30 docker cp "$worker_id:/opt/meri-worker/image-inventory.json" - | bound 30 python3 -I worker-copy-inventory.py
+ bound 30 docker container inspect "$worker_id" > worker-container-after.json
+ bound 45 python3 -I - <<'PY'
+ import hashlib,json,os,pathlib,posixpath,re,stat
+-expected=json.load(open("worker-expected.json")); contract=expected["inventoryContract"]
++expected=json.load(open("worker-expected.json"));contract=expected["inventoryContract"]
+ iid=pathlib.Path("worker-image-id.txt").read_text().strip()
+ assert re.fullmatch(r"sha256:[a-f0-9]{64}",iid)
+-images=json.load(open("worker-image-inspect.json")); assert len(images)==1
+-image=images[0]; assert image["Id"]==iid and image["Os"]=="linux" and image["Architecture"]=="amd64"
+-cfg=image["Config"]; pin=contract["imageConfig"]
+-for key in ["User","WorkingDir","Entrypoint","Volumes"]: assert cfg[key]==pin[key],key
+-assert cfg.get("Cmd") in [None,[]] and not cfg.get("Healthcheck") and not cfg.get("ExposedPorts") and not cfg.get("OnBuild")
++images=json.load(open("worker-image-inspect.json"));assert len(images)==1
++image=images[0];assert image["Id"]==iid and image["Os"]=="linux"and image["Architecture"]=="amd64"
++cfg=image["Config"];pin=contract["imageConfig"]
++for key in["User","WorkingDir","Entrypoint","Volumes"]:assert cfg[key]==pin[key],key
++assert cfg.get("Cmd")in[None,[]]and not cfg.get("Healthcheck")and not cfg.get("ExposedPorts")and not cfg.get("OnBuild")
+ assert cfg["Labels"]["org.opencontainers.image.revision"]==os.environ["SOURCE_COMMIT"]
+ assert cfg["Labels"]["meri.qualification.kind"]=="worker-inventory-only"
+-env=cfg["Env"]; assert isinstance(env,list) and all(isinstance(e,str) and "=" in e for e in env)
+-pairs=[e.split("=",1) for e in env]; assert len({k for k,v in pairs})==len(pairs)
+-env=dict(pairs); allowed=set(pin["requiredEnv"])|{"PATH","NODE_VERSION","YARN_VERSION"}
++env=cfg["Env"];assert isinstance(env,list)and all(isinstance(e,str)and"="in e for e in env)
++pairs=[e.split("=",1)for e in env];assert len({k for k,v in pairs})==len(pairs)
++env=dict(pairs);allowed=set(pin["requiredEnv"])|{"PATH","NODE_VERSION","YARN_VERSION"}
+ assert set(env)<=allowed and all(env.get(k)==v for k,v in pin["requiredEnv"].items())
+ assert env.get("PATH")=="/opt/meri-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ assert re.fullmatch(r"24\.[0-9]+\.[0-9]+",env.get("NODE_VERSION",""))
+ assert re.fullmatch(r"1\.[0-9]+\.[0-9]+",env.get("YARN_VERSION",""))
+-cid=pathlib.Path("worker-container-id.txt").read_text().strip(); assert re.fullmatch(r"[a-f0-9]{64}",cid)
+-for file in ["worker-container-before.json","worker-container-after.json"]:
+- ins=json.load(open(file)); assert len(ins)==1; ins=ins[0]
++cid=pathlib.Path("worker-container-id.txt").read_text().strip();assert re.fullmatch(r"[a-f0-9]{64}",cid)
++for file in["worker-container-before.json","worker-container-after.json"]:
++ ins=json.load(open(file));assert len(ins)==1;ins=ins[0]
+  assert ins["Id"]==cid and ins["Image"]==iid and ins["Config"]["Image"]==iid
+- assert ins["Config"]["User"]=="10001:10001" and ins["Config"]["Entrypoint"]==["/meri-never-execute-worker"]
+- assert ins["Config"].get("Cmd") in [None,[]] and ins["Config"]["Env"]==cfg["Env"]
++ assert ins["Config"]["User"]=="10001:10001"and ins["Config"]["Entrypoint"]==["/meri-never-execute-worker"]
++ assert ins["Config"].get("Cmd")in[None,[]]and ins["Config"]["Env"]==cfg["Env"]
+  h=ins["HostConfig"]
+- assert h["ReadonlyRootfs"] is True and h["Privileged"] is False and h["NetworkMode"]=="none"
+- assert h["CapDrop"]==["ALL"] and not h.get("CapAdd") and h["SecurityOpt"]==["no-new-privileges=true"]
+- assert not h.get("Binds") and not h.get("Mounts") and not h.get("Devices") and not h.get("DeviceRequests") and not h.get("PortBindings")
+- assert h.get("PidMode","")=="" and h.get("IpcMode") in ["private",""] and h.get("UTSMode","")==""
++ assert h["ReadonlyRootfs"]is True and h["Privileged"]is False and h["NetworkMode"]=="none"
++ assert h["CapDrop"]==["ALL"]and not h.get("CapAdd")and h["SecurityOpt"]==["no-new-privileges=true"]
++ assert not h.get("Binds")and not h.get("Mounts")and not h.get("Devices")and not h.get("DeviceRequests")and not h.get("PortBindings")
++ assert h.get("PidMode","")==""and h.get("IpcMode")in["private",""]and h.get("UTSMode","")==""
+  assert h["Tmpfs"]=={"/workspace":"rw,nosuid,nodev,size=64m,uid=10001,gid=10001","/tmp":"rw,nosuid,nodev,size=64m,uid=10001,gid=10001"}
+  assert h["RestartPolicy"]=={"Name":"no","MaximumRetryCount":0}
+  s=ins["State"]
+- assert s["Status"]=="created" and s["Running"] is False and s["Pid"]==0
+- assert s["Paused"] is False and s["Restarting"] is False and s["Dead"] is False and s["OOMKilled"] is False
+- assert s["ExitCode"]==0 and s["Error"]=="" and ins["RestartCount"]==0
+- assert s["StartedAt"]=="0001-01-01T00:00:00Z" and s["FinishedAt"]=="0001-01-01T00:00:00Z"
+-p=pathlib.Path("worker-extracted/image-inventory.json"); before=p.lstat()
+-assert stat.S_ISREG(before.st_mode) and not p.is_symlink() and before.st_nlink==1 and 0<before.st_size<=contract["maxBytes"]
++ assert s["Status"]=="created"and s["Running"]is False and s["Pid"]==0
++ assert s["Paused"]is False and s["Restarting"]is False and s["Dead"]is False and s["OOMKilled"]is False
++ assert s["ExitCode"]==0 and s["Error"]==""and ins["RestartCount"]==0
++ assert s["StartedAt"]=="0001-01-01T00:00:00Z"and s["FinishedAt"]=="0001-01-01T00:00:00Z"
++p=pathlib.Path("worker-extracted/image-inventory.json");before=p.lstat()
++assert stat.S_ISREG(before.st_mode)and not p.is_symlink()and before.st_nlink==1 and 0<before.st_size<=contract["maxBytes"]
+ fd=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+ try:
+  opened=os.fstat(fd)
+  identity=lambda s:(s.st_dev,s.st_ino,s.st_mode,s.st_uid,s.st_gid,s.st_size,s.st_mtime_ns,s.st_ctime_ns)
+  assert identity(opened)==identity(before)
+- chunks=[]; total=0
++ chunks=[];total=0
+  while True:
+   chunk=os.read(fd,min(1048576,contract["maxBytes"]-total+1))
+   if not chunk:break
+-  total+=len(chunk); assert total<=contract["maxBytes"];chunks.append(chunk)
++  total+=len(chunk);assert total<=contract["maxBytes"];chunks.append(chunk)
+  raw=b"".join(chunks)
+- assert len(raw)==before.st_size and identity(os.fstat(fd))==identity(before) and identity(p.lstat())==identity(before)
++ assert len(raw)==before.st_size and identity(os.fstat(fd))==identity(before)and identity(p.lstat())==identity(before)
+ finally:os.close(fd)
+ def unique_pairs(pairs):
+  value={}
+@@ -210,55 +207,53 @@
+   assert key not in value,"duplicate JSON key";value[key]=item
+  return value
+ inv=json.loads(raw,object_pairs_hook=unique_pairs)
+-assert inv["schema"]==contract["schema"] and inv["ok"] is True and inv["refused"] is False and inv["platform"]=="linux"
++assert inv["schema"]==contract["schema"]and inv["ok"]is True and inv["refused"]is False and inv["platform"]=="linux"
+ assert inv["coverage"]=={"complete":True,"scope":"declared roots/aliases; names do not prove renamed features absent"}
+-assert inv["truncated"] is False and inv["errors"]==[] and inv["unexpectedPrivilegeFiles"]==[]
+-summary=inv["summary"]; assert summary["roots"]==sorted(contract["roots"]) and summary["exclusions"]==sorted(contract["exclusions"])
+-assert summary["errors"]==0 and summary["limitsExceeded"] is None and summary["unexpectedPrivilegeEntries"]==0 and summary["expectationFailures"]==0
+-entries=inv["entries"]; assert isinstance(entries,list) and 0<len(entries)<=contract["maxEntries"]
++assert inv["truncated"]is False and inv["errors"]==[]and inv["unexpectedPrivilegeFiles"]==[]
++summary=inv["summary"];assert summary["roots"]==sorted(contract["roots"])and summary["exclusions"]==sorted(contract["exclusions"])
++assert summary["errors"]==0 and summary["limitsExceeded"]is None and summary["unexpectedPrivilegeEntries"]==0 and summary["expectationFailures"]==0
++entries=inv["entries"];assert isinstance(entries,list)and 0<len(entries)<=contract["maxEntries"]
+ by={}
+ def under(p,root):return p==root or p.startswith(root.rstrip("/")+"/")
+ for e in entries:
+- assert isinstance(e,dict) and isinstance(e.get("path"),str)
+- path=e["path"]; assert len(path)<=4096 and posixpath.isabs(path) and posixpath.normpath(path)==path
+- assert any(under(path,root) for root in contract["roots"]) and path not in by and path!=contract["outputPath"]
+- assert e["type"] in ["file","dir","symlink","other"] and re.fullmatch(r"[0-7]{4}",e["mode"])
+- for key in ["uid","gid","size"]:assert type(e[key]) is int and e[key]>=0
++ assert isinstance(e,dict)and isinstance(e.get("path"),str)
++ path=e["path"];assert len(path)<=4096 and posixpath.isabs(path)and posixpath.normpath(path)==path
++ assert any(under(path,root)for root in contract["roots"])and path not in by and path!=contract["outputPath"]
++ assert e["type"]in["file","dir","symlink","other"]and re.fullmatch(r"[0-7]{4}",e["mode"])
++ for key in["uid","gid","size"]:assert type(e[key])is int and e[key]>=0
+  keys={"path","type","mode","uid","gid","size"}
+  if e["type"]=="file":
+   keys.add("sha256");assert re.fullmatch(r"[a-f0-9]{64}",e["sha256"])
+  elif e["type"]=="symlink":
+-  keys.add("target");assert isinstance(e["target"],str) and 0<len(e["target"])<=4096
++  keys.add("target");assert isinstance(e["target"],str)and 0<len(e["target"])<=4096
+  assert set(e)==keys;by[path]=e
+-assert [e["path"] for e in entries]==sorted(by)
++assert[e["path"]for e in entries]==sorted(by)
+ for root in contract["roots"]:
+  rec=by[root]
+  if root in contract["aliases"]:
+-  assert rec["type"]=="symlink" and posixpath.normpath(posixpath.join(posixpath.dirname(root),rec["target"]))==contract["aliases"][root]
++  assert rec["type"]=="symlink"and posixpath.normpath(posixpath.join(posixpath.dirname(root),rec["target"]))==contract["aliases"][root]
+   assert by[contract["aliases"][root]]["type"]=="dir"
+  else:assert rec["type"]=="dir"
+-pins=contract["pins"]; observed=[]
++pins=contract["pins"];observed=[]
+ for path,pin in sorted(pins.items()):
+- rec=by[path];assert rec["type"]=="file" and all(rec.get(k)==v for k,v in pin.items())
++ rec=by[path];assert rec["type"]=="file"and all(rec.get(k)==v for k,v in pin.items())
+  observed.append({"path":path,"status":"match","expected":pin,"observed":rec})
+ assert inv["expectations"]==observed and summary["expectations"]==len(pins)
+ privilege=[e for e in entries if int(e["mode"],8)&0o6000]
+ assert inv["privilegeFiles"]==privilege and summary["privilegeEntries"]==len(privilege)
+-assert {e["path"] for e in privilege}=={p for p,v in pins.items() if v.get("mode")=="4755"}
+-for e in privilege:assert e["type"]=="file" and all(e.get(k)==v for k,v in pins[e["path"]].items())
+-assert summary["entries"]==len(entries) and summary["files"]==sum(e["type"]=="file" for e in entries)
+-assert summary["symlinks"]==sum(e["type"]=="symlink" for e in entries)
++assert{e["path"]for e in privilege}=={p for p,v in pins.items()if v.get("mode")=="4755"}
++for e in privilege:assert e["type"]=="file"and all(e.get(k)==v for k,v in pins[e["path"]].items())
++assert summary["entries"]==len(entries)and summary["files"]==sum(e["type"]=="file"for e in entries)
++assert summary["symlinks"]==sum(e["type"]=="symlink"for e in entries)
+ def candidate(name):
+- if name=="tiffcrop":return "tiffcrop"
+- if name.startswith("libdigestmd5"):return "libdigestmd5"
+- if name in {"java","javac","jar","keytool","jexec","rmiregistry"} or name.startswith(("libjvm","libjli")):return "java-jvm"
+-candidates=[dict(e,kind=candidate(posixpath.basename(e["path"]))) for e in entries if candidate(posixpath.basename(e["path"]))]
++ if name=="tiffcrop":return"tiffcrop"
++ if name.startswith("libdigestmd5"):return"libdigestmd5"
++ if name in{"java","javac","jar","keytool","jexec","rmiregistry"}or name.startswith(("libjvm","libjli")):return"java-jvm"
++candidates=[dict(e,kind=candidate(posixpath.basename(e["path"])))for e in entries if candidate(posixpath.basename(e["path"]))]
+ assert inv["candidates"]==candidates and summary["candidates"]==len(candidates)
+ assert by["/opt/meri-worker/probes/image-inventory.py"]["sha256"]==expected["inventorySource"]["sha256"]
+-assert type(summary["elapsedMs"]) is int and 0<=summary["elapsedMs"]<120000
+-pathlib.Path("worker-inventory-validation.json").write_text(json.dumps({"schema":"meri-worker-inventory-validation/1","ok":True,
+- "inventorySha256":hashlib.sha256(raw).hexdigest(),"inventoryBytes":len(raw),"sourceInventorySha256":expected["inventorySource"]["sha256"],
+- "imageIid":iid,"containerId":cid,"staticCoverageOnly":True,"runtimeQualification":"NOT_RUN","securityDisposition":"NOT_GRANTED"},sort_keys=True)+"\n")
++assert type(summary["elapsedMs"])is int and 0<=summary["elapsedMs"]<120000
++pathlib.Path("worker-inventory-validation.json").write_text(json.dumps({"schema":"meri-worker-inventory-validation/1","ok":True,"inventorySha256":hashlib.sha256(raw).hexdigest(),"inventoryBytes":len(raw),"sourceInventorySha256":expected["inventorySource"]["sha256"],"imageIid":iid,"containerId":cid,"staticCoverageOnly":True,"runtimeQualification":"NOT_RUN","securityDisposition":"NOT_GRANTED"},sort_keys=True)+"\n")
+ PY
+ bound 30 docker rm -v "$worker_id" > worker-container-removed.txt
+ [ "$(cat worker-container-removed.txt)" = "$worker_id" ]
+@@ -273,34 +268,20 @@
+ bound 30 docker image inspect "$worker_iid" > worker-image-after-push.json
+ bound 30 python3 -I - <<'PY'
+ import base64,datetime,hashlib,json,os,pathlib,re
+-expected=json.load(open("worker-expected.json")); validation=json.load(open("worker-inventory-validation.json"));copied=json.load(open("worker-copy-validation.json"))
+-assert copied["sourcePath"]=="/opt/meri-worker/image-inventory.json" and copied["singleRegularMember"] is True
+-assert copied["payloadBytes"]==validation["inventoryBytes"] and copied["payloadSha256"]==validation["inventorySha256"]
++expected=json.load(open("worker-expected.json"));validation=json.load(open("worker-inventory-validation.json"));copied=json.load(open("worker-copy-validation.json"))
++assert copied["sourcePath"]=="/opt/meri-worker/image-inventory.json"and copied["singleRegularMember"]is True
++assert copied["payloadBytes"]==validation["inventoryBytes"]and copied["payloadSha256"]==validation["inventorySha256"]
+ iid=pathlib.Path("worker-image-id.txt").read_text().strip();cid=pathlib.Path("worker-container-removed.txt").read_text().strip()
+-assert validation["ok"] is True and validation["imageIid"]==iid and validation["containerId"]==cid
++assert validation["ok"]is True and validation["imageIid"]==iid and validation["containerId"]==cid
+ assert pathlib.Path("worker-container-removal-readback.txt").read_bytes()==b""
+ raw=pathlib.Path("worker-extracted/image-inventory.json").read_bytes()
+-assert len(raw)==validation["inventoryBytes"] and hashlib.sha256(raw).hexdigest()==validation["inventorySha256"]
++assert len(raw)==validation["inventoryBytes"]and hashlib.sha256(raw).hexdigest()==validation["inventorySha256"]
+ e=json.load(open("worker-ecr-image.json"))["imageDetails"];assert len(e)==1;e=e[0]
+-assert e["registryId"]=="967807252336" and e["repositoryName"]=="meri-greenfield/qualification-worker"
+-assert os.environ["IMAGE_TAG"] in e["imageTags"] and re.fullmatch(r"sha256:[a-f0-9]{64}",e["imageDigest"])
++assert e["registryId"]=="967807252336"and e["repositoryName"]=="meri-greenfield/qualification-worker"
++assert os.environ["IMAGE_TAG"]in e["imageTags"]and re.fullmatch(r"sha256:[a-f0-9]{64}",e["imageDigest"])
+ image=json.load(open("worker-image-after-push.json"));assert len(image)==1 and image[0]["Id"]==iid
+ uri=os.environ["REPOSITORY_URI"]+"@"+e["imageDigest"];assert uri in image[0]["RepoDigests"]
+-m={"schema":"meri-worker-build-result/1","status":"BUILT_STATIC_INVENTORY_ONLY_NOT_RUNTIME_OR_SECURITY_ACCEPTED",
+- "sourceCommit":os.environ["SOURCE_COMMIT"],"sourceArchiveSha256":os.environ["SOURCE_ARCHIVE_SHA256"],
+- "sourceS3Version":os.environ["SOURCE_S3_VERSION"],"sourceBucket":"meri-greenfield-qual-build-967807252336-us-east-1",
+- "sourceKey":"inputs/worker-"+os.environ["SOURCE_COMMIT"]+"/"+os.environ["SOURCE_ARCHIVE_SHA256"]+".zip",
+- "resultBucket":"meri-greenfield-qual-build-967807252336-us-east-1","resultKey":os.environ["RESULT_KEY"],
+- "kmsKeyArn":"arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+- "buildspecSha256":os.environ["WORKER_BUILDSPEC_SHA256"],"buildRunUuid":os.environ["BUILD_RUN_UUID"],
+- "buildId":os.environ["CODEBUILD_BUILD_ID"],"createdAt":datetime.datetime.now(datetime.timezone.utc).isoformat(),
+- "imageTag":os.environ["IMAGE_TAG"],"imageIid":iid,"imageDigest":e["imageDigest"],"imageUri":uri,
+- "expected":expected,"ecrImage":e,"imageInspect":json.load(open("worker-image-inspect.json"))[0],
+- "imageAfterPush":image[0],"workerContainerBefore":json.load(open("worker-container-before.json"))[0],
+- "workerContainerAfter":json.load(open("worker-container-after.json"))[0],"workerContainerRemoved":cid,
+- "inventoryValidation":validation,"inventoryCopy":copied,"inventory":json.loads(raw),"workerContainerNeverStarted":True,
+- "builderIdentities":{"preflight":json.load(open("worker-builder-identity.json")),"beforeEcrPush":json.load(open("worker-push-identity.json"))},
+- "independentRegistryDigestVerification":"NOT_RUN","runtimeQualification":"NOT_RUN","securityDisposition":"NOT_GRANTED"}
++m={"schema":"meri-worker-build-result/1","status":"BUILT_STATIC_INVENTORY_ONLY_NOT_RUNTIME_OR_SECURITY_ACCEPTED","sourceCommit":os.environ["SOURCE_COMMIT"],"sourceArchiveSha256":os.environ["SOURCE_ARCHIVE_SHA256"],"sourceS3Version":os.environ["SOURCE_S3_VERSION"],"sourceBucket":"meri-greenfield-qual-build-967807252336-us-east-1","sourceKey":"inputs/worker-"+os.environ["SOURCE_COMMIT"]+"/"+os.environ["SOURCE_ARCHIVE_SHA256"]+".zip","resultBucket":"meri-greenfield-qual-build-967807252336-us-east-1","resultKey":os.environ["RESULT_KEY"],"kmsKeyArn":"arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042","buildspecSha256":os.environ["WORKER_BUILDSPEC_SHA256"],"buildRunUuid":os.environ["BUILD_RUN_UUID"],"buildId":os.environ["CODEBUILD_BUILD_ID"],"createdAt":datetime.datetime.now(datetime.timezone.utc).isoformat(),"imageTag":os.environ["IMAGE_TAG"],"imageIid":iid,"imageDigest":e["imageDigest"],"imageUri":uri,"expected":expected,"ecrImage":e,"imageInspect":json.load(open("worker-image-inspect.json"))[0],"imageAfterPush":image[0],"workerContainerBefore":json.load(open("worker-container-before.json"))[0],"workerContainerAfter":json.load(open("worker-container-after.json"))[0],"workerContainerRemoved":cid,"inventoryValidation":validation,"inventoryCopy":copied,"inventory":json.loads(raw),"workerContainerNeverStarted":True,"builderIdentities":{"preflight":json.load(open("worker-builder-identity.json")),"beforeEcrPush":json.load(open("worker-push-identity.json"))},"independentRegistryDigestVerification":"NOT_RUN","runtimeQualification":"NOT_RUN","securityDisposition":"NOT_GRANTED"}
+ pathlib.Path("worker-manifest.json").write_text(json.dumps(m,sort_keys=True,indent=2)+"\n")
+ PY
+ bound 30 aws sts get-caller-identity --region us-east-1 --output json --no-cli-pager > worker-result-identity.json
+@@ -310,9 +291,9 @@
+ bound 15 python3 -I - <<'PY'
+ import base64,hashlib,json,os
+ u=json.load(open("worker-result-upload.json"))
+-assert isinstance(u.get("VersionId"),str) and u["VersionId"] not in ["","null"]
++assert isinstance(u.get("VersionId"),str)and u["VersionId"]not in["","null"]
+ assert u["ChecksumSHA256"]==base64.b64encode(hashlib.sha256(open("worker-manifest.json","rb").read()).digest()).decode()
+-assert u["ServerSideEncryption"]=="aws:kms" and u["SSEKMSKeyId"]=="arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
++assert u["ServerSideEncryption"]=="aws:kms"and u["SSEKMSKeyId"]=="arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+ PY
+ bound 10 docker logout "$registry" >/dev/null
+ rm -f "$auth_dir/config.json"

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "figma-meri-extension-capture/1",
+  "packagedUtc": "2026-10-10T01:28:12.288216+00:00",
+  "scope": {
+    "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+    "pageId": "411:40601",
+    "sectionId": "439:81406",
+    "darkFrameId": "448:89992",
+    "exactOriginalStyleReferencesOnly": true,
+    "outsideSectionNodeTraversal": false
+  },
+  "originalSnapshot": {
+    "path": "docs/design/meri/20261010T004355Z",
+    "inventorySha256": "6b04fb2b28ed90c17247a4722d671f8af8b7890534b7c5f83dd309d49b29ec6a",
+    "manifestSha256": "cd5fed106532eccce57de84dd9013e7e30108de16bd4c7e4afa861a9f8bd02e6",
+    "all9PayloadHashesVerifiedUnchanged": true,
+    "modified": false
+  },
+  "captureUtc": {
+    "start": "2026-10-10T01:25:11.846Z",
+    "styleResponses": [
+      "2026-10-10T01:26:09.159Z",
+      "2026-10-10T01:26:10.604Z"
+    ],
+    "screenshotBefore": "2026-10-10T01:26:11.266Z",
+    "screenshotAfter": "2026-10-10T01:26:13.097Z",
+    "end": "2026-10-10T01:26:23.924Z"
+  },
+  "revision": {
+    "immutableFileVersion": null,
+    "available": false,
+    "atomicCapture": false,
+    "differentLaterLiveCaptureThanOriginal": true
+  },
+  "directRootFingerprint": {
+    "algorithm": "SHA256",
+    "encoding": "UTF-8 JSON ordered8columnroot tuples ensure_ascii=False separators=(',',':')",
+    "start": "546d9fe4a2acbd2c00d8ae8217dd5578b3ebfa4a6d6c6ef8aad912ebfd0b55b4",
+    "end": "546d9fe4a2acbd2c00d8ae8217dd5578b3ebfa4a6d6c6ef8aad912ebfd0b55b4",
+    "original": "546d9fe4a2acbd2c00d8ae8217dd5578b3ebfa4a6d6c6ef8aad912ebfd0b55b4",
+    "allMatch": true,
+    "rootCount": 115,
+    "limits": "Direct roots only; no nested/style edit detection or immutable-version proof"
+  },
+  "styles": {
+    "requested": 18,
+    "found": 18,
+    "missing": 0,
+    "errors": 0,
+    "types": {
+      "TEXT": 15,
+      "EFFECT": 2,
+      "PAINT": 1
+    },
+    "fontFilesLicenseRuntimeParityQualified": false
+  },
+  "screenshot": {
+    "path": "dark-448-89992.png",
+    "nodeId": "448:89992",
+    "method": "Documented native inline node.screenshot({scale:1,contentsOnly:false})",
+    "mimeType": "image/png",
+    "mimeSource": "MCP ImageContent.mimeType; no HTTP request/download in this extension",
+    "httpContentType": null,
+    "httpContentTypeReason": "No HTTP URL fetch attempted",
+    "bytes": 90381,
+    "width": 1440,
+    "height": 1040,
+    "sha256": "d5c921e681e918b02cdb5b705347798d3d554570faf1f026aa295169c718b674",
+    "pngSignatureChunkCrcAndIendVerified": true,
+    "visuallyInspected": true,
+    "visualObservation": "Dark content/sidebar with light shared top header; sample fixture text only",
+    "assetUrlPersisted": false
+  },
+  "attempts": {
+    "styles": 2,
+    "inlineScreenshot": 1,
+    "rootFingerprints": 2,
+    "newFailures": [],
+    "historicalFailure": "Original one URL MIME-validation failure retained in unchanged original manifest; no repeated broken-download attempt"
+  },
+  "files": [
+    {
+      "path": "capture-scripts.json",
+      "bytes": 7577,
+      "sha256": "432e8a50fd8949d961dfcb95a0f0acdc150e3e2f3da535808c8ef4323197d8c4"
+    },
+    {
+      "path": "dark-448-89992.png",
+      "bytes": 90381,
+      "sha256": "d5c921e681e918b02cdb5b705347798d3d554570faf1f026aa295169c718b674"
+    },
+    {
+      "path": "raw-connector-responses.json",
+      "bytes": 160713,
+      "sha256": "eb35682d711218d2ef132fb7e36ad4080b9324de93b7da35f0ea1c65c46e385f"
+    },
+    {
+      "path": "root-structure-end.json",
+      "bytes": 18420,
+      "sha256": "5650717d8b992fbd11dc5521af75c3e64f7f0194f1b542898f291c7032c0334e"
+    },
+    {
+      "path": "root-structure-start.json",
+      "bytes": 18420,
+      "sha256": "1730a8201bfc4f76b9e414803775bd73d4d4aa0aea1b59e135a6383415e777ad"
+    },
+    {
+      "path": "styles.json",
+      "bytes": 20265,
+      "sha256": "9ecb24384a628aa7a28ff75e2d27ec454ad8bcd6871956568bb1b999c9ef4ff3"
+    },
+    {
+      "path": "SUMMARY.md",
+      "bytes": 3707,
+      "sha256": "8c026ca054a9b3645514df3b6f6cb465ad58ee8473867134a407578861bac3ba"
+    }
+  ],
+  "manifestSelfHash": "Excluded; supplied at handoff",
+  "noGateAcceptance": true,
+  "remainingGaps": [
+    "Full product control/reaction/overlay mapping",
+    "Component/UI behavior, font/runtime/license parity, theme switching and accessibility",
+    "No immutable document version or atomic-capture proof"
+  ]
+}

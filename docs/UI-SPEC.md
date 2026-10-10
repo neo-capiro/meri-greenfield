@@ -8,16 +8,20 @@ Follow [the deployment plan](plans/MERI-DEPLOYMENT.md#figma-design-and-ui-implem
 
 The adopted [snapshot](design/meri/20261010T004355Z/SUMMARY.md) is a **non-atomic multi-call capture** from **2026-10-10T00:43:55.609Z through 00:54:02.016Z**. No immutable Figma revision/version identifier was available; the Figma API version is not a design revision. Direct-root metadata fingerprints matched during part of the capture window, which does not exclude later or nested leaf edits. Preserve these exact files/hashes in task briefs; later live design edits require an explicit baseline update.
 
+The separately adopted later [evidence extension](design/meri/20261010T012511Z-extension/SUMMARY.md) captures all 18 referenced style definitions and a valid dark reference PNG from **2026-10-10T01:25:11.846Z through 01:26:23.924Z**. Its [manifest](design/meri/20261010T012511Z-extension/capture-manifest.json), SHA256 `229c5d7082f33e366277aa20b042d389db2f85b7a4dd75f3f9ae3b9369295f85`, binds this later live evidence without overwriting the original baseline or its failed download history. Both captures are non-atomic and have no immutable Figma revision. Extension start/end direct-root metadata also match the original; this does not prove unchanged nested content or styles across either capture.
+
 | Evidence | Exact reference / limit |
 | --- | --- |
 | Full inventory | [inventory.json](design/meri/20261010T004355Z/inventory.json), SHA256 `6b04fb2b28ed90c17247a4722d671f8af8b7890534b7c5f83dd309d49b29ec6a` |
-| Capture manifest | [capture-manifest.json](design/meri/20261010T004355Z/capture-manifest.json), SHA256 `cd5fed106532eccce57de84dd9013e7e30108de16bd4c7e4afa861a9f8bd02e6` |
+| Original capture manifest | [capture-manifest.json](design/meri/20261010T004355Z/capture-manifest.json), SHA256 `cd5fed106532eccce57de84dd9013e7e30108de16bd4c7e4afa861a9f8bd02e6` |
 | Inventory totals | 85 main roots (80 screens and 5 state boards), 29 overlay roots, 60 state examples, 15 component families / 70 variants, 11 named starts, 38 variables / 5 collections |
 | Direct-root accounting | 85 main + 29 overlays + review map `439:81407` = 115 owned direct roots |
-| File accounting | 10 snapshot files; manifest records 9 payloads and excludes its own self-hash |
+| File accounting | Original: 10 files / 9 manifest payloads. Later extension: 8 files / 7 manifest payloads. Both manifests exclude their own self-hash |
 | Prototype capture | Partial full-product graph: summary reports 2,214 reaction nodes / 118 deduplicated definitions. Full Home reaction definitions are captured; complete product control/overlay mapping is OPEN |
-| Missing evidence | 18 referenced style definitions not captured; dark reference PNG download failed MIME validation, so no local dark pixels or visual comparison exists |
-| Whitespace preservation | Captured text files intentionally retain their source EOF blank lines. This is a documented snapshot-preservation whitespace exception; do not describe the captured snapshot as passing a whitespace diff check |
+| Original missing-evidence history | Original baseline lacked 18 referenced style definitions and its one dark PNG download failed MIME validation. That history remains unchanged; the later extension supplies both reference gaps |
+| Adopted style definitions | [styles.json](design/meri/20261010T012511Z-extension/styles.json), SHA256 `9ecb24384a628aa7a28ff75e2d27ec454ad8bcd6871956568bb1b999c9ef4ff3`: all 18 exact referenced IDs (15 text, 2 effect, 1 paint) |
+| Adopted dark reference | [Dark PNG](design/meri/20261010T012511Z-extension/dark-448-89992.png), SHA256 `d5c921e681e918b02cdb5b705347798d3d554570faf1f026aa295169c718b674`: inspected 1440×1040 native inline PNG; dark content/sidebar with light shared header. Application visual comparison remains PENDING |
+| Whitespace preservation | Six original and six extension capture text files retain source EOF blank lines byte-for-byte to preserve manifest hashes. This explicit capture-only formatting exception is not a clean-whitespace claim; owner-authored docs use one ending newline |
 
 Capture counts and screenshots are design evidence. They are not semantic distinct-control counts, implemented coverage or functional passes. State boards are required supporting fixtures; their classification does not defer any capability.
 
@@ -80,7 +84,7 @@ Implement generic patterns with AI Elements and shadcn/ui primitives before cust
 | Immutable artifacts and attachments | Artifact / Attachments / FileTree |
 | Applicable workspace details | Context / Checkpoint / WebPreview / CodeBlock / Terminal |
 
-AI Elements candidate `636bf87` is **NOT accepted at this draft**. Parent typecheck passed; SSR execution yielded 8/10 with two timeouts, and the separate actual Hermes review closed at its 40-turn limit without a report commit. It also observed a cold-start timeout; later warm passes do not erase failures or establish their cause. The required committed review and owner acceptance remain pending. Do not call this a compatibility pass or product acceptance. Before adopting a candidate, record exact upstream commit/blob and local file hashes, package/lock versions, licenses/notices, verified supported APIs, meaningful SSR/component compatibility results and independent review followed by Codex acceptance in the component record. Component adoption does not pass live UI, policy, sandbox or staging gates.
+AI Elements source candidate `8d2cd17584f85fd87e010d1592dc13dc7e8aa27a` is **accepted OFFLINE for source/pins/API/plain-text fixture preparation only**, integrated at `d442885` after separate actual Hermes review2 `84d28013` (preserved at `31acba1`) and the owner's independent strict-compile/12-test pass. See [the owner decision](coordination/reports/W02-09-OFFLINE-ACCEPTANCE.md). Component/source APIs are unchanged; the thin diagnostic repair caches the first SSR outcome and permits no automatic second child. Original `636bf87` strict-compile/8-of-10 history, two SSR timeouts and review1's 40-turn closure without a report remain retained. Later passes are not guaranteed cold-cache runs and do not establish the timeout cause or resolve cold-start reliability. Seven notice gaps, unsigned upstream tag and retained skipLibCheck remain explicit limits. Browser/CSS/hydration/theme/plugin behavior, the consuming component mappings and product UI acceptance remain open; this source decision advances no deployment gate.
 
 Use the plan's adopted preview/generation libraries rather than building Office editors. Previews are read-only; natural-language revisions create immutable new versions. Full Office WYSIWYG editing remains the plan's existing separate scope. Original Office skills/templates, generation validation and exact-version previews/downloads remain required v1 work.
 
@@ -181,11 +185,11 @@ Match the pinned design at its exact reference dimensions before qualifying addi
 | Desktop Home | `442:81437`, 1440×1040 | [Home PNG](design/meri/20261010T004355Z/home-442-81437.png), `6f15ecf712252124bfee60a0245e62ccd989a3359dd0510de572d98cabfae772` |
 | Tablet conversation | `448:90209`, 1024×1100 | [Tablet PNG](design/meri/20261010T004355Z/tablet-448-90209.png), `d87d103ba89ec8da13577f75ca1841c15117464d456389c74770b4c65518aab4` |
 | Phone Home | `449:88256`, 390×844 | [Phone PNG](design/meri/20261010T004355Z/phone-449-88256.png), `a57e744f7d07d73ac4350421eff46b6bd07004441bf57be868110dd91fe8e3bf` |
-| Dark workspace | `448:89992`, design 1440×1040 | Dark PNG failed validation; recapture and visual check OPEN |
+| Dark workspace | `448:89992`, 1440×1040 | [Later Dark PNG](design/meri/20261010T012511Z-extension/dark-448-89992.png), `d5c921e681e918b02cdb5b705347798d3d554570faf1f026aa295169c718b674`; captured and inspected, application comparison PENDING |
 
-The Home desktop capture shows a 64px header and 232px sidebar. These are observations for that reference, not a tested universal breakpoint policy. Tablet conversation and phone Home are different views; neither proves responsive parity for all 85 frames. Additional breakpoints, orientation, overflow and reduced-motion behavior require recorded implementation and checks.
+The Home desktop capture shows a 64px header and 232px sidebar. These are observations for that reference, not a tested universal breakpoint policy. Tablet conversation and phone Home are different views; neither proves responsive parity for all 85 frames. Additional breakpoints, orientation, overflow and reduced-motion behavior require recorded implementation and checks. The later dark reference shows dark content/sidebar with a light shared top header; it establishes no live theme-switching or application parity.
 
-The snapshot records **38 variables in five collections**. Light and dark are separate collections, not two modes of one collection. Preserve variable aliases and their captured values from inventory/context; do not infer the 18 missing style definitions.
+The snapshot records **38 variables in five collections**. Light and dark are separate collections, not two modes of one collection. Preserve variable aliases and captured values from the original inventory. The later [style definitions](design/meri/20261010T012511Z-extension/styles.json) supply all 18 exact referenced IDs; use their recorded fields rather than inferred style values.
 
 | Exact collection ID | Captured collection | Captured mode |
 | --- | --- | --- |
@@ -195,7 +199,7 @@ The snapshot records **38 variables in five collections**. Light and dark are se
 | `VariableCollectionId:2:77` | tailwind / spacing | `2:5` Mode 1 |
 | `VariableCollectionId:448:90059` | Meri · Dark theme | `448:0` Dark |
 
-Observed typography includes Geist Regular/Medium/SemiBold and Geist Mono Medium. Font files, runtime availability, metrics and redistribution rights remain unverified. Do not claim pixel equivalence until fonts/tokens/styles and the missing dark reference are qualified.
+Observed typography includes Geist Regular/Medium/SemiBold and Geist Mono Medium. Font files, runtime availability, metrics and redistribution rights remain unverified. The later capture preserves the referenced style definitions and an inspected dark PNG. Do not claim pixel equivalence until fonts/tokens/styles and actual application rendering are qualified.
 
 Required future checks include semantic roles/names; keyboard-only navigation and visible focus; Enter/Shift+Enter/IME behavior; focus restoration and modal escape; screen-reader stream announcements without repeated entire transcripts; disabled controls that cannot execute; contrast in both themes; touch targets; zoom/reflow; long titles/messages/tool output; tables/code/filenames; loading/error/revoked states; overflow and reduced motion. Render plain user-facing copy rather than implementation jargon. Baseline pixels alone pass none of these checks.
 
@@ -203,12 +207,12 @@ Required future checks include semantic roles/names; keyboard-only navigation an
 
 | Work | Gate/package / proposed owner | Status and evidence required |
 | --- | --- | --- |
-| Finish semantic distinct-control inventory, full graph, all overlay children, exact fixture links and missing styles/dark screenshot | G0/W00–W01; Codex+C, D checks | OPEN. Existing exact frame/state/component IDs are complete; full control mapping is partial |
+| Finish semantic distinct-control inventory, full graph, all overlay children and exact fixture links | G0/W00–W01; Codex+C, D checks | OPEN. Existing exact frame/state/component IDs are complete; full control mapping is partial |
 | Independent session/identity bridge and versioned shared-shell navigation; owned behavior for outside-section Home header pointers | G0/W04/W06; Codex+B+separate new frontend owner | OPEN. No guessed routes, outside traversal, provider/source credentials or private Capiro logic |
-| Accept exact AI Elements/shadcn source, APIs, versions/licenses and meaningful compatibility evidence | G1/W02/W06; Codex+Hermes+D | OPEN. Candidate636bf87 remains NOT accepted at this draft |
+| Accept exact AI Elements/shadcn source, APIs, versions/licenses and meaningful compatibility evidence | G1/W02/W06; Codex+Hermes+D | Source preparation accepted OFFLINE8d2cd17/d442885 after review2 and parent12; cold performance, consuming browser/CSS and complete release notice/security checks OPEN |
 | Version missing admission, run lifecycle, schedule, upload/revision/download and other service contracts without loosening frozen authorization | W01/W04/W08; Codex+A+B+C | OPEN. Shapes alone cannot enable controls |
 | Implement every v1 planned capability, state and component in the coverage ledger using adopted primitives and actual authorized services | W06–W08/G4–G5; C+A+B | PENDING. Include background stop/steer/resume/fork, stale approvals, evidence/memory, upload/extraction failures, immutable revisions/exact downloads/filing, browser permissions and schedule lifecycle |
-| Match exact desktop/tablet/phone references; qualify theme/font/responsive/long-content/accessibility behavior | W06/W09/G6; C implements, D independently verifies | PENDING on actual application candidate; dark pixels missing |
+| Match exact desktop/tablet/phone/dark references; qualify theme/font/responsive/long-content/accessibility behavior | W06/W09/G6; C implements, D independently verifies | PENDING on actual application candidate; all four local visual references exist, including the later dark capture |
 | Exercise all 11 walkthrough starts and 100% of accepted distinct visible controls with real transitions/adverse states and tenant/client preservation | W09/G6; D independently verifies; C+A+B repair | PENDING on immutable staging candidate with traceable Playwright, visual and accessibility evidence |
 
 Document generation and capture classification are not UI acceptance. Preserve all agreed v1 capabilities until their required gates pass; resolve discrepancies explicitly through recorded owner decisions. No source connection, deployment or cutover is admitted by these documents.

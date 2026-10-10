@@ -1,0 +1,31 @@
+# V2 repair provenance and offline limits
+
+Status: **Codex owner repair; candidate/unaccepted**. Packaging is distinct from independent acceptance. No operational replacement, build-helper preparation/execution, cloud action, installation, provider call, native application test or Hermes launch occurred.
+
+## Changes preserved
+
+V1's reviewed override was 25,900 bytes. Compact JSON with final LF was 25,840. Candidate v2 is 25,592 ASCII bytes/characters including final LF. It removes 40 leading Bash indentation spaces and 189 Python whitespace characters, including 19 non-significant continuation newlines; JSON escaping/formatting accounts for the rest. No quoted string or other semantic token changed. The three inline Python STS identity programs are byte-identical.
+
+Each of five embedded heredoc programs has identical parsed AST (locations excluded) and identical token sequence with only tokenizer NL omitted. NEWLINE, INDENT, DEDENT, all identifiers/operators/constants/strings remain compared. Program whitespace reductions are 33,17,98,37,4 characters; non-significant newline removals are 0,3,2,14,0. Transformation candidates producing SyntaxWarning were rejected. Outer Bash equality is checked with programs replaced by markers and leading spaces normalized; the exact difference is 40 leading spaces.
+
+[REPRESENTATION-PROOF.json](REPRESENTATION-PROOF.json), SHA256 `cab06b68e425db4d2191663dbcea8cf8c3902dc2108a29ebdbe8aa1ca35ab22a`, was produced by the new [read-only comparison](compare-representations.py) against actual adjacent v1/v2 bytes. It also verifies non-command JSON property equality, unchanged inline programs, adjacent v2 test loading and unchanged prepare/execute AST. [Command](command-whitespace.diff), [helper](helper.diff) and [test](tests.diff) diffs preserve useful original repair evidence.
+
+Only two existing helper functions differ: expected_content wraps the override read with checked_inline_buildspec; build_input_for validates the actual inline text first. All other existing helper AST nodes are identical. New nodes are the 25600 constant and checker. The checker requires 1..25600 bytes, ASCII, at most 25600 characters and canonical compact JSON plus final LF. It rejects instead of silently rewriting. Eight bytes of margin are enforced locally, not treated as a reason to relax command semantics.
+
+The unchanged prepare path validates expected_content before archive/evidence creation. The unchanged execute path validates it before reservation/S3. Actual build_input_for checks again, including through the final pre-dispatch input equality replay. Source/archive/project/principal/review bindings, exact mandatory override, new resources, 1200-second dispatch/900-second remote limits, 15-minute build/5-minute queue, no automatic retries, inert never-started container, bounded copy, removal before publication, three STS bindings and credential cleanup remain required.
+
+## Evidence replay
+
+Codex ran `python -B docs/qualification/worker-build-v2/test_start_reviewed_worker_build.py` **once** after byte-preserving packaging: 28 methods, 0 failures, 0 errors, 0.610s. The 25 existing methods plus 3 new ones cover actual 25,600 boundary acceptance; 25,601 rejection; empty/non-ASCII/noncanonical rejection; rejection in actual prepare before archive/evidence/external calls; and actual dispatch-input rejection. Positive fake transactions use the adjacent candidate helper and 25,592-byte candidate override. The expected deliberate duplicate-ZIP negative fixture emits its existing zipfile warning.
+
+The comparison source was run once. Bash `-n` received the candidate command on stdin and passed; no command body ran. Raw stdout/stderr, copied-file hashes and check exit records remain in a new ignored packaging-evidence directory, not in Git. No private project/build receipt, IAM/source payload, source-version receipt or credential file was copied into this tracked package.
+
+The preserved proof was generated under Python3.11.15. Parent independently ran the28 methods once under Python3.12.14 (0.751s, exit0), plus the source comparison and Bash syntax check (both exit0). Two post-capture wrapper assertions failed: LF-only handling of CRLF unittest output, then equality with cross-version proof digests. Saved results were verified without rerunning tests. Python3.12 adds empty type_params AST fields and different tokenizer numeric IDs; read-only metadata normalization reproduced all five frozen3.11 AST/token hashes. The actual within-version old/new program equality assertions passed under both runtimes. No source token, inventory identity check or acceptance bound was normalized. Parent results and wrapper limitations remain in ignored worker-build-v2-owner-check evidence.
+
+Original ignored provenance hashes: owner verification JSON `36697e3aec0724bad266241a27ccc1d01556336d293ee738c5c64d81bf7d724e`; owner verification source `b02f46f12134a5e51ce317524dba0a87b9b3224c2a5a506b64dd0856b928b46f`; owner generator `809186da1697c46139c38b68d7e2cd374d0f3b79b8d28becfbc541f9ee33c42c`. They remain at their original ignored locations and are not portable/rerunnable package tools: their hardcoded original directories and exclusive output behavior are intentional provenance limits. Use the source-only sibling comparison for review; it has no output-file side effects.
+
+## Acceptance boundaries
+
+The [attempt record](../../coordination/reports/W02-08-BUILD-ATTEMPT-1.md) preserves the prior API failure and consumed reservation. Never alter/replay it. Actual separate Hermes review of these new exact bytes is still required before operational replacement, new preparation or a new owner-admitted build. V1 review does not accept v2.
+
+No second AWS acceptance, native Docker create/cp/config compatibility, complete assembled Linux inventory, scan/security disposition, runtime/browser/model/source isolation, recovery, deployment or G1 evidence is claimed. Windows inventory nondeterminism, live authority/administrative TOCTOU, post-capture local stdout acceptance limit, hard-termination cleanup and uncertain publication reconciliation remain unchanged limits. Application/control stay isolated on Fargate; current Meri/Capiro and cutover remain untouched.

@@ -1,0 +1,59 @@
+--- operational-tests
++++ candidate-tests
+@@ -18,10 +18,11 @@
+ import zipfile
+ from unittest.mock import patch
+ 
+-ROOT = pathlib.Path(__file__).resolve().parents[1]
+-HELPER = ROOT / '.task-inputs/start-reviewed-worker-build.py'
++TOOL_DIR = pathlib.Path(__file__).resolve().parent
++ROOT = next(p for p in TOOL_DIR.parents if (p / 'docs/coordination/private-evidence/qualification-build-context/project.json').is_file())
++HELPER = TOOL_DIR / 'start-reviewed-worker-build.py'
+ HELPER_BYTES = HELPER.read_bytes()
+-SPEC_BYTES = (ROOT / '.task-inputs/worker-buildspec.json').read_bytes()
++SPEC_BYTES = (TOOL_DIR / 'worker-buildspec.json').read_bytes()
+ PROJECT_BYTES = (ROOT / 'docs/coordination/private-evidence/qualification-build-context/project.json').read_bytes()
+ BASE_PROJECT = json.loads(PROJECT_BYTES)['projects'][0]
+ BASE_BUILD = json.loads((ROOT / 'docs/coordination/private-evidence/W02-build-8785118/start-build.json').read_bytes())
+@@ -256,6 +257,41 @@
+ 
+ 
+ class OwnerGlueTests(unittest.TestCase):
++    def test_inline_buildspec_exact_boundary_ascii_and_canonical(self):
++        m=subject()
++        def sized(size):
++            value=json.loads(SPEC_BYTES)
++            overhead=len((json.dumps(value,separators=(',',':'))+'\n').encode('ascii'))
++            value['phases']['build']['commands'][0]+=' '*(size-overhead)
++            data=(json.dumps(value,separators=(',',':'))+'\n').encode('ascii')
++            self.assertEqual(len(data),size)
++            return data
++        boundary=sized(25600)
++        self.assertEqual(m.checked_inline_buildspec(boundary).encode('ascii'),boundary)
++        self.assertEqual(m.checked_inline_buildspec(SPEC_BYTES).encode('ascii'),SPEC_BYTES)
++        for bad in (sized(25601),b'',SPEC_BYTES+b' ',SPEC_BYTES.replace(b'"version"',b'"versi\xc3\xb3n"'),json.dumps(json.loads(SPEC_BYTES),indent=2).encode()):
++            with self.subTest(bytes=len(bad)),self.assertRaises(ValueError):m.checked_inline_buildspec(bad)
++
++    def test_oversized_inline_spec_stops_actual_prepare_before_archive_or_evidence(self):
++        m=subject();memory=Memory();m.Path=memory.Path;m.ROOT=memory.Path(m.ROOT)
++        memory.files[str(m.ROOT/m.BUILDSPEC)]=b' ' * 25601
++        contract=m.inventory_contract()
++        source='\n'.join(k+'='+repr(v) for k,v in {'SCHEMA':contract['schema'],'OUTPUT_PATH':contract['outputPath'],'REQUIRED_ROOTS':tuple(contract['roots']),'ROOT_ALIASES':contract['aliases'],'PINNED_FILES':contract['pins']}.items())
++        def git(*args,**kwargs):return '\n'.join([m.DOCKERFILE,m.INVENTORY_SOURCE]) if args[0]=='ls-tree' else source
++        def record(commit,path):return dict(path=path,bytes=1,sha256=m.BUILDER_INFRA_SHA256 if path==m.BUILDER_INFRA else 'a'*64)
++        before=dict(memory.files)
++        with patch.object(m,'clean_head'),patch.object(m,'git',side_effect=git),patch.object(m,'source_record',side_effect=record),patch.object(m,'archive_bytes',side_effect=AssertionError('Archive/evidence creation forbidden')),patch.object(m,'save',side_effect=AssertionError('Evidence write forbidden')),patch.object(m.subprocess,'run',side_effect=AssertionError('External call forbidden')):
++            with self.assertRaisesRegex(ValueError,'25600'):m.prepare('a'*40)
++        self.assertEqual(memory.files,before)
++
++    def test_inline_size_guard_at_actual_build_input_boundary(self):
++        t=Transaction();m=t.module
++        valid=m.build_input_for(t.request,'fake-version',SPEC_BYTES.decode('ascii'))
++        self.assertEqual(valid['buildspecOverride'].encode('ascii'),SPEC_BYTES)
++        for bad in (' '*25601,SPEC_BYTES.decode('ascii')+' ',SPEC_BYTES.decode('ascii')+'\u2603'):
++            with self.subTest(chars=len(bad)),self.assertRaises(ValueError):m.build_input_for(t.request,'fake-version',bad)
++        self.assertEqual(t.calls,[])
++
+     def test_import_and_default_cli_make_no_external_call(self):
+         with patch.object(subprocess, 'run', side_effect=AssertionError('External call')), patch.object(subprocess, 'check_output', side_effect=AssertionError('External call')):
+             m = subject()

@@ -1,0 +1,23 @@
+# Worker-build v2 inline-size candidate — UNACCEPTED
+
+These files preserve the **Codex owner repair candidate**, byte-for-byte, after the first worker-build attempt hit CodeBuild's observed inline-buildspec limit. V2 is **not independently reviewed or accepted**, and is not a build approval, portable deployment command, runtime/security disposition or G1 pass. Frozen [v1](../worker-build-v1/README.md) and the root operational v1 copies remain unchanged.
+
+The [first-attempt record](../../coordination/reports/W02-08-BUILD-ATTEMPT-1.md) records InvalidInputException: Max buildspec length is 25600. The 25,900-byte override was rejected; compact JSON alone measured 25,840 bytes including LF. The exclusive attempt/reservation and uploaded source remain preserved. Read-only reconciliation observed the same prior terminal builds, with no new build. Do not resume, retry or reuse that request, reservation, source version or idempotency identity.
+
+| Candidate file | Exact bytes | SHA256 |
+| --- | --- | --- |
+| [start-reviewed-worker-build.py](start-reviewed-worker-build.py) | 31,925 | `6b4b17a3531ea190d3abf1402a99c06e2a2d99009b90a0dc027c1d85d757905b` |
+| [test_start_reviewed_worker_build.py](test_start_reviewed_worker_build.py) | 52,740 | `4484d845620b9d02887bee742ed723309da35cc0ccb4cf52b4581f41c14924f2` |
+| [worker-buildspec.json](worker-buildspec.json) | 25,592 | `cdd6edb8282f3fbf931162451493ee13e11d74e59fff0523cdd1f084609edd9c` |
+
+The override contains **25,592 ASCII bytes/characters including final LF**, eight below 25,600. Only compact serialization and proven inert whitespace changed its command representation. No command, literal, identity/authority check, bound, cleanup or publication ordering was relaxed. The helper adds fail-closed canonical ASCII/byte/character checks before preparation/archive/evidence/reservation/S3 and again at the actual dispatch-input boundary. Future edits must satisfy the same bound.
+
+[Repair notes](REPAIR-NOTES.md), [representation proof](REPRESENTATION-PROOF.json), [read-only comparison source](compare-representations.py) and [command](command-whitespace.diff)/[helper](helper.diff)/[test](tests.diff) diffs explain the exact change. Codex replayed the candidate's **28 pure methods once** from this v2 directory; all passed. Five heredoc AST/token checks, three unchanged inline identity programs, non-command buildspec property equality, helper-only delta checks and Bash `-n` passed. These are offline source/fixture results only.
+
+The comparison script is self-contained against sibling frozen v1 and adjacent v2. It reads source, parses data/AST/tokens and writes JSON only to stdout; it does not import/invoke the build helper, use retained private fixtures, execute Bash or write files. The preserved proof JSON is source-only evidence with no private receipt or credential payload. Original owner generator/verification scripts remain ignored and use hardcoded original locations plus exclusive outputs; they are read-only provenance references, **not rerunnable instructions for this package**.
+
+The helper is deliberately **not portable**. It still names the integration checkout, exact new qualification resources, retained project evidence and operational ignored override. Never invoke this tracked reference with --prepare or --execute. The pure test loader reads the helper/spec adjacent to itself and locates retained integration-root fixtures; a review worktree without those ignored fixtures cannot run the test unchanged there. Use the integration-root v2 test only after verifying its bytes equal the exact reviewed committed base, as specified in the bounded review brief. Do not substitute old operational v1 inputs or copy private fixture contents into Git.
+
+Next: commit these candidate references, perform **one actual separate Hermes review of the exact new bytes**, and obtain Codex acceptance before any operational replacement or new preparation. A later build requires a new archive/request/reservation and fresh owner one-build admission plus fresh identity/full-project checks. No cloud mutation or review launch is performed by this packaging task.
+
+The preserved unified helper/test diffs intentionally retain six space-only context lines required by their original diff representation. Those source-diff payloads, like the separately pinned Figma captures, have an explicit formatting exception; owner-authored prose and comparison code use one ending newline.

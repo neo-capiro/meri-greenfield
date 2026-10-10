@@ -1,0 +1,741 @@
+{
+  "schemaVersion": "figma-meri-style-extension/1",
+  "originalSnapshot": {
+    "inventorySha256": "6b04fb2b28ed90c17247a4722d671f8af8b7890534b7c5f83dd309d49b29ec6a",
+    "manifestSha256": "cd5fed106532eccce57de84dd9013e7e30108de16bd4c7e4afa861a9f8bd02e6",
+    "immutableLocalReference": true,
+    "modified": false
+  },
+  "captureScope": {
+    "fileKey": "Zc2dEN5aLU47dVdsewDmiJ",
+    "pageId": "411:40601",
+    "sectionId": "439:81406",
+    "styleIdsFromOriginalInventoryOnly": true,
+    "outsideNodeTraversal": false
+  },
+  "captureUtc": [
+    "2026-10-10T01:26:09.159Z",
+    "2026-10-10T01:26:10.604Z"
+  ],
+  "requestedStyleIds": [
+    "S:62dca2b22cc244e1300d5ac46d674f9a3741e6eb,",
+    "S:f7400433ae1455445e076154300eb162ea22e711,",
+    "S:21cdd7c16e9fbf5bfa80c907008cd2b69672092e,",
+    "S:6ccf6cbcadc3249e995abea53235555963a800a8,",
+    "S:0b93a17c01c05e9704e5f241c1a2fd480e344756,",
+    "S:a7d5276dbd9d78f06cddc3cd8be537f4c6a88f14,",
+    "S:f47586d691139e14042481e97a19e05260e5b398,",
+    "S:b03a42a48e2e9b91cb2945860d7e6d6306d1ef0b,",
+    "S:544e57c66022a177e72dc45b28f7291feb46497c,",
+    "S:2f19f6dc79f9caeadc9f5a524def0d112e570f6c,",
+    "S:042b9ae10c73fc2b682bce6d012c69aae1fd5f31,",
+    "S:e61c392d3443fb4d8023cb556ae7d9621cab42c4,",
+    "S:1811a94e2aa84d9fa1f534d89a66a5f6ab5f0954,",
+    "S:062329697eb3bd5febe4dd9104bf8e154fe6f2d1,",
+    "S:0c97b34d398857dd4fffd662921b3487dd112d70,",
+    "S:2d2af6656185f831f661b2b97ae5a1186ac90b81,",
+    "S:4c133741316a887479acb115921ddf9e774ef022,",
+    "S:6db05fddd7d5a77dd604f689c4d2e0ccf5fd2116,"
+  ],
+  "definitions": [
+    {
+      "requestedId": "S:62dca2b22cc244e1300d5ac46d674f9a3741e6eb,",
+      "status": "FOUND",
+      "id": "S:62dca2b22cc244e1300d5ac46d674f9a3741e6eb,",
+      "type": "TEXT",
+      "name": "v2/Mono",
+      "key": "62dca2b22cc244e1300d5ac46d674f9a3741e6eb",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 12,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist Mono",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 129.99999523162842
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:f7400433ae1455445e076154300eb162ea22e711,",
+      "status": "FOUND",
+      "id": "S:f7400433ae1455445e076154300eb162ea22e711,",
+      "type": "TEXT",
+      "name": "v2/Stat",
+      "key": "f7400433ae1455445e076154300eb162ea22e711",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 22,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "SemiBold",
+        "variationSettings": {
+          "wght": 600
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -2
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 120.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:21cdd7c16e9fbf5bfa80c907008cd2b69672092e,",
+      "status": "FOUND",
+      "id": "S:21cdd7c16e9fbf5bfa80c907008cd2b69672092e,",
+      "type": "TEXT",
+      "name": "v2/Title L",
+      "key": "21cdd7c16e9fbf5bfa80c907008cd2b69672092e",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 20,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -1.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 129.99999523162842
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:6ccf6cbcadc3249e995abea53235555963a800a8,",
+      "status": "FOUND",
+      "id": "S:6ccf6cbcadc3249e995abea53235555963a800a8,",
+      "type": "EFFECT",
+      "name": "v2/shadow-xs",
+      "key": "6ccf6cbcadc3249e995abea53235555963a800a8",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "effects": [
+        {
+          "type": "DROP_SHADOW",
+          "visible": true,
+          "radius": 2,
+          "boundVariables": {},
+          "color": {
+            "r": 0.0470588244497776,
+            "g": 0.03921568766236305,
+            "b": 0.03529411926865578,
+            "a": 0.05000000074505806
+          },
+          "offset": {
+            "x": 0,
+            "y": 1
+          },
+          "spread": 0,
+          "blendMode": "NORMAL",
+          "showShadowBehindNode": true
+        }
+      ]
+    },
+    {
+      "requestedId": "S:0b93a17c01c05e9704e5f241c1a2fd480e344756,",
+      "status": "FOUND",
+      "id": "S:0b93a17c01c05e9704e5f241c1a2fd480e344756,",
+      "type": "TEXT",
+      "name": "v2/Button",
+      "key": "0b93a17c01c05e9704e5f241c1a2fd480e344756",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 14,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 120.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:a7d5276dbd9d78f06cddc3cd8be537f4c6a88f14,",
+      "status": "FOUND",
+      "id": "S:a7d5276dbd9d78f06cddc3cd8be537f4c6a88f14,",
+      "type": "TEXT",
+      "name": "v2/Label",
+      "key": "a7d5276dbd9d78f06cddc3cd8be537f4c6a88f14",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 12,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 120.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:f47586d691139e14042481e97a19e05260e5b398,",
+      "status": "FOUND",
+      "id": "S:f47586d691139e14042481e97a19e05260e5b398,",
+      "type": "TEXT",
+      "name": "v2/Body",
+      "key": "f47586d691139e14042481e97a19e05260e5b398",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 14,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 145.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:b03a42a48e2e9b91cb2945860d7e6d6306d1ef0b,",
+      "status": "FOUND",
+      "id": "S:b03a42a48e2e9b91cb2945860d7e6d6306d1ef0b,",
+      "type": "TEXT",
+      "name": "v2/Caption",
+      "key": "b03a42a48e2e9b91cb2945860d7e6d6306d1ef0b",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 12,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 139.9999976158142
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:544e57c66022a177e72dc45b28f7291feb46497c,",
+      "status": "FOUND",
+      "id": "S:544e57c66022a177e72dc45b28f7291feb46497c,",
+      "type": "TEXT",
+      "name": "v2/Display",
+      "key": "544e57c66022a177e72dc45b28f7291feb46497c",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 40,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "SemiBold",
+        "variationSettings": {
+          "wght": 600
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -3
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 110.00000238418579
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:2f19f6dc79f9caeadc9f5a524def0d112e570f6c,",
+      "status": "FOUND",
+      "id": "S:2f19f6dc79f9caeadc9f5a524def0d112e570f6c,",
+      "type": "PAINT",
+      "name": "v2/metal-face",
+      "key": "2f19f6dc79f9caeadc9f5a524def0d112e570f6c",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "paints": [
+        {
+          "type": "GRADIENT_LINEAR",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "gradientStops": [
+            {
+              "color": {
+                "r": 0.2666666805744171,
+                "g": 0.250980406999588,
+                "b": 0.23529411852359772,
+                "a": 1
+              },
+              "position": 0,
+              "boundVariables": {}
+            },
+            {
+              "color": {
+                "r": 0.10980392247438431,
+                "g": 0.09803921729326248,
+                "b": 0.09019608050584793,
+                "a": 1
+              },
+              "position": 0.46000000834465027,
+              "boundVariables": {}
+            },
+            {
+              "color": {
+                "r": 0.0470588244497776,
+                "g": 0.03921568766236305,
+                "b": 0.03529411926865578,
+                "a": 1
+              },
+              "position": 1,
+              "boundVariables": {}
+            }
+          ],
+          "gradientTransform": [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              -1,
+              0,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "requestedId": "S:042b9ae10c73fc2b682bce6d012c69aae1fd5f31,",
+      "status": "FOUND",
+      "id": "S:042b9ae10c73fc2b682bce6d012c69aae1fd5f31,",
+      "type": "EFFECT",
+      "name": "v2/metal-shadow",
+      "key": "042b9ae10c73fc2b682bce6d012c69aae1fd5f31",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "effects": [
+        {
+          "type": "INNER_SHADOW",
+          "visible": true,
+          "radius": 0,
+          "boundVariables": {},
+          "color": {
+            "r": 1,
+            "g": 1,
+            "b": 1,
+            "a": 0.14000000059604645
+          },
+          "offset": {
+            "x": 0,
+            "y": 1
+          },
+          "spread": 0,
+          "blendMode": "NORMAL"
+        },
+        {
+          "type": "DROP_SHADOW",
+          "visible": true,
+          "radius": 2,
+          "boundVariables": {},
+          "color": {
+            "r": 0.0470588244497776,
+            "g": 0.03921568766236305,
+            "b": 0.03529411926865578,
+            "a": 0.14000000059604645
+          },
+          "offset": {
+            "x": 0,
+            "y": 1
+          },
+          "spread": 0,
+          "blendMode": "NORMAL",
+          "showShadowBehindNode": true
+        }
+      ]
+    },
+    {
+      "requestedId": "S:e61c392d3443fb4d8023cb556ae7d9621cab42c4,",
+      "status": "FOUND",
+      "id": "S:e61c392d3443fb4d8023cb556ae7d9621cab42c4,",
+      "type": "TEXT",
+      "name": "v2/Lede",
+      "key": "e61c392d3443fb4d8023cb556ae7d9621cab42c4",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 15,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 150
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:1811a94e2aa84d9fa1f534d89a66a5f6ab5f0954,",
+      "status": "FOUND",
+      "id": "S:1811a94e2aa84d9fa1f534d89a66a5f6ab5f0954,",
+      "type": "TEXT",
+      "name": "v2/Mono eyebrow",
+      "key": "1811a94e2aa84d9fa1f534d89a66a5f6ab5f0954",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 11,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist Mono",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 6
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 129.99999523162842
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "UPPER"
+    },
+    {
+      "requestedId": "S:062329697eb3bd5febe4dd9104bf8e154fe6f2d1,",
+      "status": "FOUND",
+      "id": "S:062329697eb3bd5febe4dd9104bf8e154fe6f2d1,",
+      "type": "TEXT",
+      "name": "v2/Title S",
+      "key": "062329697eb3bd5febe4dd9104bf8e154fe6f2d1",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 14,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "SemiBold",
+        "variationSettings": {
+          "wght": 600
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 135.0000023841858
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:0c97b34d398857dd4fffd662921b3487dd112d70,",
+      "status": "FOUND",
+      "id": "S:0c97b34d398857dd4fffd662921b3487dd112d70,",
+      "type": "TEXT",
+      "name": "v2/Small",
+      "key": "0c97b34d398857dd4fffd662921b3487dd112d70",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 13,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Regular",
+        "variationSettings": {
+          "wght": 400
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.30000001192092896
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 145.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:2d2af6656185f831f661b2b97ae5a1186ac90b81,",
+      "status": "FOUND",
+      "id": "S:2d2af6656185f831f661b2b97ae5a1186ac90b81,",
+      "type": "TEXT",
+      "name": "v2/Title",
+      "key": "2d2af6656185f831f661b2b97ae5a1186ac90b81",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 15,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "SemiBold",
+        "variationSettings": {
+          "wght": 600
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -1
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 135.0000023841858
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:4c133741316a887479acb115921ddf9e774ef022,",
+      "status": "FOUND",
+      "id": "S:4c133741316a887479acb115921ddf9e774ef022,",
+      "type": "TEXT",
+      "name": "v2/Body medium",
+      "key": "4c133741316a887479acb115921ddf9e774ef022",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 14,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "Medium",
+        "variationSettings": {
+          "wght": 500
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -0.5
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 145.00000476837158
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    },
+    {
+      "requestedId": "S:6db05fddd7d5a77dd604f689c4d2e0ccf5fd2116,",
+      "status": "FOUND",
+      "id": "S:6db05fddd7d5a77dd604f689c4d2e0ccf5fd2116,",
+      "type": "TEXT",
+      "name": "v2/Stat XL",
+      "key": "6db05fddd7d5a77dd604f689c4d2e0ccf5fd2116",
+      "description": "",
+      "remote": false,
+      "boundVariables": {},
+      "fontSize": 34,
+      "textDecoration": "NONE",
+      "fontName": {
+        "family": "Geist",
+        "style": "SemiBold",
+        "variationSettings": {
+          "wght": 600
+        }
+      },
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": -3
+      },
+      "lineHeight": {
+        "unit": "PERCENT",
+        "value": 110.00000238418579
+      },
+      "leadingTrim": "NONE",
+      "paragraphIndent": 0,
+      "paragraphSpacing": 0,
+      "textWrapStyle": "AUTO",
+      "listSpacing": 0,
+      "hangingPunctuation": false,
+      "hangingList": false,
+      "textCase": "ORIGINAL"
+    }
+  ],
+  "typeCounts": {
+    "TEXT": 15,
+    "EFFECT": 2,
+    "PAINT": 1
+  },
+  "limitations": [
+    "Live extension is later than original baseline; no immutable document version available.",
+    "Style definitions were resolved by exact referenced IDs; no global style consumers or outside-section nodes were traversed.",
+    "Font files, redistribution rights, CSS/component parity and runtime availability were not qualified.",
+    "No live theme switching, accessibility or application behavior was tested."
+  ],
+  "createdNodeIds": [],
+  "mutatedNodeIds": []
+}
+

@@ -1,0 +1,78 @@
+{
+  "awsCalls": 0,
+  "candidateASCIICharacters": 25592,
+  "candidateBytes": 25592,
+  "dispatchInputRevalidationPreserved": true,
+  "existingHelperFunctionsChanged": [
+    "expected_content",
+    "build_input_for"
+  ],
+  "helperInvoked": false,
+  "inlineIdentityProgramsByteIdentical": 3,
+  "margin": 8,
+  "maxInlineBytes": 25600,
+  "newHelperNodes": [
+    "INLINE_BUILDSPEC_MAX_BYTES",
+    "checked_inline_buildspec"
+  ],
+  "otherBuildspecFieldsEqual": true,
+  "outerBashOnly40LeadingSpacesRemoved": true,
+  "prepareExecuteASTUnchanged": true,
+  "programs": [
+    {
+      "astEqual": true,
+      "astSha256": "6939d2a2dfd84aed7ca38f563b26e02e7ba882c86bfdc8bbbdcb1a36318ce66d",
+      "candidateBytes": 3605,
+      "index": 1,
+      "onlyWhitespaceEdited": true,
+      "originalBytes": 3638,
+      "semanticTokenSha256": "89233f9cece14d992d0049df2f73ff62e6844c006b43e7ba95b6814f0a06aebe",
+      "semanticTokensEqual": true
+    },
+    {
+      "astEqual": true,
+      "astSha256": "eccf9724d45acf48a639ced8f9e20b7df03f96ae687e5602dc53d6411ca0525a",
+      "candidateBytes": 2473,
+      "index": 2,
+      "onlyWhitespaceEdited": true,
+      "originalBytes": 2490,
+      "semanticTokenSha256": "b793dd8a88b918db7b93add8d4e4b997f74422af66efbab558f774995aea52c6",
+      "semanticTokensEqual": true
+    },
+    {
+      "astEqual": true,
+      "astSha256": "b1d867bb6f8013319e92adcb35f344a1fe54b7a554dd8ee15d396e5a2f422675",
+      "candidateBytes": 7603,
+      "index": 3,
+      "onlyWhitespaceEdited": true,
+      "originalBytes": 7701,
+      "semanticTokenSha256": "6ed00dd2183c722f5bb27f29717e4541f92b5255843b9e22cb636d49f0c6c42e",
+      "semanticTokensEqual": true
+    },
+    {
+      "astEqual": true,
+      "astSha256": "7cfe330a70a9d00046f906e3f54c412ec5c96da7470ad8a744daf29a7a6c7203",
+      "candidateBytes": 3122,
+      "index": 4,
+      "onlyWhitespaceEdited": true,
+      "originalBytes": 3159,
+      "semanticTokenSha256": "ef4e7500d84fef0e5c205007c9f49920d3d21209f17a71dfff64c789f812df88",
+      "semanticTokensEqual": true
+    },
+    {
+      "astEqual": true,
+      "astSha256": "9ec55cb078532e7d9905f91cc3a29f58542819b71cef449898271f5dbdd5adac",
+      "candidateBytes": 417,
+      "index": 5,
+      "onlyWhitespaceEdited": true,
+      "originalBytes": 421,
+      "semanticTokenSha256": "9c33d1122792abc943cc1eb212733fed2c53639753123fa72346ac9135b41657",
+      "semanticTokensEqual": true
+    }
+  ],
+  "remainingHelperASTEqual": true,
+  "schema": "worker-build-v2-read-only-comparison/1",
+  "sizeGuardBeforePreparationAndReservation": true,
+  "sourceOnly": true,
+  "testsUseAdjacentCandidate": true
+}
