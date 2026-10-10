@@ -154,6 +154,9 @@ class OverlayTests(unittest.TestCase):
         for kwargs in ({'members':True}, {'layer':0}, {'selected':513*1024**2}):
             with self.assertRaises(layer.Refusal): layer.Limits(**kwargs)
         with self.assertRaises(layer.Refusal): add(layer.Overlay(deadline=0), [(SCHEMA, 'file', b'x')])
+        overlay = layer.Overlay(layer.Limits(selected=1))
+        overlay.inventory()['limits']['selected'] = 100
+        with self.assertRaises(layer.Refusal): add(overlay, [(SCHEMA, 'file', b'xx')])
 
     def test_implicit_directory_index_and_subtree_deletion(self):
         overlay = layer.Overlay()

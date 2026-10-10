@@ -225,6 +225,6 @@ class Overlay:
                 'selected':rows, 'holds':holds, 'layers':self.layers,
                 'enterprisePaths':[p for p in sorted(self.entries) if p == 'app/enterprise' or p.startswith('app/enterprise/')],
                 'expandedBytes':self.expanded, 'members':self.member_count,
-                'limits':self.limits.__dict__, 'nativeExecution':False,
+                'limits':dict(self.limits.__dict__), 'nativeExecution':False,
                 'noticeAndAbiSecondStage':'UNQUALIFIED_REQUIRES_EXACT_MEMBER_FREEZE',
                 'communityImageAdmitted':False}
