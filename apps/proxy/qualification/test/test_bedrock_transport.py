@@ -447,6 +447,55 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(transport.requests, [])
 
 
+    async def test_lifetime_denied_before_count_has_no_hold_or_dispatch(self):
+        guard, counter, ledger, transport, client = self.setup_guard()
+        self.assertIsNone(guard.lifetime_check)  # Outside a server context.
+        def deny():
+            raise AdmissionDenied("LOCAL_LIFETIME_DENIED")
+        guard.lifetime_check = deny
+        with self.assertRaises(Exception):
+            await self.public_call(client)
+        self.assertEqual(counter.parameters, [])
+        self.assertEqual(ledger.holds, {})
+        self.assertEqual(transport.requests, [])
+
+    async def test_lifetime_revoked_after_count_prevents_hold_and_dispatch(self):
+        guard, counter, ledger, transport, client = self.setup_guard()
+        denied = False
+        def check():
+            if denied:
+                raise AdmissionDenied("LOCAL_LIFETIME_DENIED")
+        old = counter.count
+        async def count(parameters):
+            nonlocal denied
+            result = await old(parameters)
+            denied = True
+            return result
+        counter.count = count
+        guard.lifetime_check = check
+        with self.assertRaises(Exception):
+            await self.public_call(client)
+        self.assertEqual(len(counter.parameters), 1)
+        self.assertEqual(ledger.holds, {})
+        self.assertEqual(transport.requests, [])
+
+    async def test_lifetime_revoked_after_hold_keeps_unknown_without_dispatch(self):
+        guard, _, ledger, transport, client = self.setup_guard()
+        denied = False
+        def check():
+            if denied:
+                raise AdmissionDenied("LOCAL_LIFETIME_DENIED")
+        def revoke():
+            nonlocal denied
+            denied = True
+        guard.lifetime_check = check
+        ledger.after_commit = revoke
+        with self.assertRaises(Exception):
+            await self.public_call(client)
+        self.assertEqual(ledger.holds[guard.request_id]["state"], "UNKNOWN")
+        self.assertEqual(transport.requests, [])
+
+
 class BodyTests(unittest.TestCase):
     def inspect(self, body):
         return inspect_native_request("POST", URL, json.dumps(body).encode(), BodyLimits())

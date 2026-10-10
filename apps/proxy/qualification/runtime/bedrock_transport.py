@@ -50,7 +50,7 @@ class BedrockSendGuard:
     """Per-logical-request state; create a fresh guarded client for the next slot."""
 
     def __init__(self, *, request_id, counter, ledger, deadline, expected_count_origin,
-                 limits=BodyLimits(), clock=time.monotonic):
+                 limits=BodyLimits(), clock=time.monotonic, lifetime_check=None):
         if type(request_id) is not str or not 1 <= len(request_id) <= 128:
             raise AdmissionDenied("INVALID_REQUEST_SLOT")
         if expected_count_origin not in ("fixture", "aws-counttokens"):
@@ -59,6 +59,11 @@ class BedrockSendGuard:
             raise AdmissionDenied("INVALID_GUARD_CONFIGURATION")
         if type(deadline) not in (int, float) or not math.isfinite(deadline):
             raise AdmissionDenied("INVALID_DEADLINE")
+        if lifetime_check is not None and not callable(lifetime_check):
+            raise AdmissionDenied("INVALID_LIFETIME_CHECK")
+        # Trusted server composition explicitly supplies its private context
+        # check. Default callers retain the old contract without this wiring.
+        self.lifetime_check = lifetime_check
         self.request_id = request_id
         self.counter = counter
         self.ledger = ledger
@@ -72,6 +77,11 @@ class BedrockSendGuard:
         self.count_observation = None
         self._entered = False
         self._remaining()
+
+    def _check_lifetime(self):
+        if self.lifetime_check is not None:
+            if self.lifetime_check() is not None:
+                raise AdmissionDenied("INVALID_LIFETIME_CHECK_RESULT")
 
     def _remaining(self):
         remaining = self.deadline - self.clock()
@@ -93,6 +103,7 @@ class BedrockSendGuard:
         if self._entered:
             raise AdmissionDenied("SECOND_SEND_DENIED")
         self._entered = True
+        self._check_lifetime()
         self._remaining()
         try:
             raw = request.content
@@ -115,6 +126,7 @@ class BedrockSendGuard:
             count = await self._within_deadline(lambda: self.counter.count(body.count_parameters()))
         except Exception:
             raise AdmissionDenied("COUNT_ADAPTER_FAILED") from None
+        self._check_lifetime()
         if type(count) is not CountObservation or count.origin != self.expected_count_origin:
             raise AdmissionDenied("UNTRUSTED_COUNT_OBSERVATION")
         if count.model_id != COUNT_MODEL_ID or count.native_body_sha256 != body.sha256:
@@ -122,10 +134,12 @@ class BedrockSendGuard:
         if type(count.input_tokens) is not int or not 1 <= count.input_tokens <= self.limits.max_input_tokens:
             raise AdmissionDenied("INPUT_TOKEN_BOUND")
         try:
+            self._check_lifetime()
             hold = await self._within_deadline(
                 lambda: self.ledger.reserve_and_arm_once(self.request_id, body, count))
         except Exception:
             raise AdmissionDenied("LEDGER_ADMISSION_FAILED") from None
+        self._check_lifetime()
         if (type(hold) is not HoldReceipt or hold.request_id != self.request_id
                 or hold.native_body_sha256 != body.sha256 or hold.state != "UNKNOWN"):
             raise AdmissionDenied("INVALID_DURABLE_SEND_RECEIPT")
@@ -134,6 +148,7 @@ class BedrockSendGuard:
         self.armed = True
         # If the deadline elapsed at commit, retain UNKNOWN and do not send.
         self._remaining()
+        self._check_lifetime()
 
 
 def guarded_client(guard: BedrockSendGuard, *, transport: httpx.AsyncBaseTransport):
