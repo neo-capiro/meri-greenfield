@@ -120,3 +120,77 @@ retained; a new v2 corrects only that slice and remeasures the same DATA, with n
 AWS or mutation replay. Additional owner terminal reads used the wrong worktree
 once and an unsupported Windows shell wildcard once; they produced only local
 read diagnostics. No authorization or runtime conclusion follows from them.
+
+## Revision continuation outline
+
+The separate revision candidate is closed at
+`2d677cec715fb6db5ba6aad238e304f82070542e` and is under distinct review. Root
+owns only this owner report and ignored action preparation. Reuse the immutable
+accepted source2 binding/adapter for eight fixed read-only captures: full caller
+and all seven deployed stack/template/machine/role/policy responses. Keep a new
+baseline directory and finite400s direct-child supervisor, retaining binary
+streams and source pre/post identity. This reads no source data and performs no
+update/publication/Start. The fresh complete baseline is a prerequisite for a
+later independently reviewed revision-only freeze and external600s supervisor;
+no mutation is authorized by preparing it. Existing deployment evidence, null
+revision observations, source2 and source3 closures stay unchanged. Root's
+independent browser wire review separately holds external fixture creation.
+
+## Accepted source and actual revision hold, 20:51 UTC
+
+Distinct name/deployment review `39abb8d14fd08efe87936b0130a0afc7a0e22415`
+accepts the two source3 name expressions within its scope: 14 fake controls and
+18 actual-deployed local JSONata outcomes pass. Root read the complete final
+report and verified 193 sealed record occurrences and its raw Git report.
+The reviewer retained a failed seal caused by this owner report advancing;
+its final seal binds the original be33 report copy to immutable Git and records
+the later outline separately. Execution source2 and actual deployment are intact.
+
+Distinct revision review `4b7ee1d8f8d8393109f882a27c05a412e820ed08` accepts
+candidate `2d677cec715fb6db5ba6aad238e304f82070542e` and separately assesses
+the exact external supervisor. Root fully read source/report and verified all
+1,754 sealed record occurrences and raw Git. Twenty corrected independent fake
+controls pass; the first two reviewer fixture errors remain retained. These
+results establish SOURCE behavior, not actual revision creation.
+
+Root captured the exact caller and seven complete deployment responses at
+20:35:40–49 UTC, then renewed them into a new immutable directory at 20:47:30–38
+because fresh authority was required. All seven response bytes still exactly
+equal the original deployed readback. The renewal reuses the preserved fixed
+read-only implementation; old source and captures were not overwritten.
+
+After reviewing the concrete 4,438-byte revision-only freeze, SHA256
+`239fe928a85d34f81d03befcd41e9379c032bc02cce1a6cd67f617eb17310fca`,
+root admitted one same-definition update with no publication/start or
+role/logging/tracing/encryption override. The helper first verified seven fresh
+complete responses, empty SDK history, empty RUNNING tasks, and the exact caller
+immediately before consuming the permanent revision reservation.
+
+The sole UpdateStateMachine ran 20:48:09.976345–20:48:11.590837 UTC, exit0 with
+empty stderr and a 60-byte ACK containing only the original updateDate
+`2026-10-10T16:11:05.417000-04:00`. It returned no revisionId or published ARN.
+The helper therefore refused with exit2; its 600s supervisor ended at
+20:48:11.618363 without timeout and with source/freeze stable. The reservation
+remains **CONSUMED / UNKNOWN / NO RETRY**. A successful CLI ACK did not pass the
+required revision/readback gate. No after-update success summary exists.
+
+A separately captured read-only caller/machine reconciliation at 20:50 UTC
+still omits revisionId. All 158,589 response bytes equal the original machine
+readback, including graph, role and configuration. A same-definition no-op is
+a plausible explanation, not a proven service-semantic conclusion. AWS's
+[update reference](https://docs.aws.amazon.com/step-functions/latest/apireference/API_UpdateStateMachine.html)
+describes a revision response, but cannot replace this measured missing field.
+Preserve the original failure and require a separately reviewed new candidate
+and action if an actual configuration/definition change is needed. Never retry
+this consumed action, omit the publication CAS gate or invent a revision.
+
+New raw DATA is under `CODEX-G1-sdk-revision-owner-1`, the separate first
+baseline and `CODEX-G1-sdk-revision-baseline-renewal-1`. The ignored source
+acceptance decision, freeze preparer, exact supervisor and read-only renewal/
+reconciliation sources are retained. Hashes and trusted serialized owner files
+remain review bindings, not authentication or hostile-filesystem protection.
+Bounds cover direct children and post-buffer caps; total preflight filesystem
+timing, descendant/remote completion and UpdateStateMachine service CAS are not
+guaranteed. Source3 acceptance grants no native residual-risk decision. No
+publication, Start, SDK worker, provider call, source connection or cutover
+occurred. All findings, Office disposition and G1 remain OPEN; spend is $0/$10.
