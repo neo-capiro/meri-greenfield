@@ -13,11 +13,12 @@
 # and is corrected in this ticket. That 7327 evidence/admission does NOT transfer
 # to this candidate, which must be built and rescanned on its own.
 #
-# Intended build (build context is THIS qualification package directory):
+# Intended build after separate owner build-command migration (fresh context):
+#   python3 scripts/qualification/worker_context.py --output <absolute-fresh-output>
 #   docker build --pull --platform linux/amd64 \
-#     -f apps/worker/qualification/Dockerfile \
+#     -f <absolute-fresh-output>/context/Dockerfile \
 #     -t <ecr>/meri-greenfield/qualification-worker:<sha> \
-#     apps/worker/qualification
+#     <absolute-fresh-output>/context
 #
 # Runtime expectation (Codex-owned ECS task definition, NOT here):
 #   readOnlyRootFilesystem=true, user 10001:10001, drop ALL capabilities,
@@ -174,6 +175,10 @@ ENV PATH="/opt/meri-venv/bin:${PATH}"
 # Selected qualification sources only (scoped COPY, never the whole repository).
 COPY sdk-options.mjs ./
 COPY probes/ ./probes/
+COPY checkpoint/native-session-files.mjs ./checkpoint/native-session-files.mjs
+# Generated inputs preserve byte-exact canonical root modules. Four-parent
+# imports from /opt/meri-worker/probes resolve to /scripts/sdk-capture.
+COPY build-dependencies/sdk-capture/json-records.mjs build-dependencies/sdk-capture/protocol.mjs /scripts/sdk-capture/
 
 # Matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12) via the
 # adopted Playwright CLI. Debian13 maps to the CFT archive
@@ -293,7 +298,7 @@ RUN set -eux; \
       --root /opt/meri-worker --root /opt/meri-venv --root /opt/meri-browsers \
       --root /usr --root /etc --root /var/lib/dpkg \
       --root /bin --root /sbin --root /lib --root /lib64 \
-      --root /root --root /home \
+      --root /root --root /home --root /scripts \
       --deadline-ms 120000 --max-entries 300000 --max-events 2000000 \
       --max-manifest-bytes 33554432 --max-hash-bytes 536870912 \
       --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox \

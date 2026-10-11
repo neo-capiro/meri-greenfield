@@ -53,15 +53,36 @@ npm --prefix apps/worker/qualification run probe:artifacts  # Office generate/re
 ## Image recipe
 
 Docker daemon is unavailable on the authoring host; the image is NOT built here
-and `component-pins.json` keeps `assembledImageDigest: null`. Intended build
-(build context is THIS package directory so the owned `.dockerignore` applies):
+and `component-pins.json` keeps `assembledImageDigest: null`. The current source
+requires a fresh assembled context; the old direct-package build command no
+longer supplies the canonical root scanner inputs. Intended commands after the
+separate root-owned builder migration (not executed or authorized here):
 
 ```
+python3 scripts/qualification/worker_context.py --output <absolute-fresh-output>
 docker build --pull --platform linux/amd64 \
-  -f apps/worker/qualification/Dockerfile \
+  -f <absolute-fresh-output>/context/Dockerfile \
   -t <ecr>/meri-greenfield/qualification-worker:<sha> \
-  apps/worker/qualification
+  <absolute-fresh-output>/context
 ```
+
+`worker_context.py` has one fixed public-source list and no source-root, member,
+loader, build or activation option. It reads bounded regular files before
+exclusive output creation, rejects links/hardlinks, preserves raw bytes, and
+emits `context/` plus a sibling `manifest.json`. Existing or partial outputs
+are never repaired, overwritten or deleted. `verify_context(output)` rechecks
+exact files/directories and current source hashes; its manifest is packaging
+DATA, not commit authority or admission. Bounds are 34 files, 2 MiB per file,
+8 MiB aggregate and a cooperative 30-second deadline. Use an external bound
+and a trusted stable source/output filesystem for an actual build.
+
+The checkpoint adapter remains at `/opt/meri-worker/checkpoint`; the two root
+scanner modules are staged as generated context inputs and copied byte-exact
+to `/scripts/sdk-capture`. The unchanged four-parent loopback import therefore
+resolves in the image. `/scripts` joins the end-of-recipe static inventory.
+Existing probe entry paths, package locks, SDK/CfT pins and old images remain
+unchanged. No new image, interruption/resume result, complete checkpoint,
+SessionStore or G1 acceptance follows from these source checks.
 
 The recipe: immutable base `node:24.21.0-bookworm-slim@sha256:d6aa754f...`
 (Node LTS 24.21.0), Debian repositories pinned to snapshot `20261009T000000Z`

@@ -944,7 +944,7 @@ test('component-pins.json records the cp313 lxml wheel and real downloaded-byte 
 
 test('Dockerfile ends with the owner-closed inventory over the exact declared roots and helpers', () => {
   assert.ok(dockerfile.includes('image-inventory.py'), 'owner inventory probe invoked');
-  for (const r of ['/opt/meri-worker', '/opt/meri-venv', '/opt/meri-browsers', '/usr', '/etc', '/var/lib/dpkg', '/bin', '/sbin', '/lib', '/lib64', '/root', '/home']) {
+  for (const r of ['/opt/meri-worker', '/opt/meri-venv', '/opt/meri-browsers', '/usr', '/etc', '/var/lib/dpkg', '/bin', '/sbin', '/lib', '/lib64', '/root', '/home', '/scripts']) {
     assert.ok(dockerfile.includes(`--root ${r}`), `declared root ${r}`);
   }
   assert.ok(dockerfile.includes('--allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox'));
@@ -953,6 +953,30 @@ test('Dockerfile ends with the owner-closed inventory over the exact declared ro
   // The owner CLI compiles roots/pins/allow-list and exposes no escape hatch.
   assert.ok(!dockerfile.includes('--expect-file'), 'no invented expectation flag');
   assert.ok(!dockerfile.includes('--platform-override'), 'no platform escape hatch');
+});
+
+test('interruption packaging keeps accepted entry paths and canonical scanner bytes', () => {
+  assert.ok(dockerfile.includes('COPY checkpoint/native-session-files.mjs ./checkpoint/native-session-files.mjs'));
+  assert.ok(dockerfile.includes('COPY build-dependencies/sdk-capture/json-records.mjs build-dependencies/sdk-capture/protocol.mjs /scripts/sdk-capture/'));
+  assert.ok(dockerfile.includes('COPY probes/ ./probes/'));
+  const ignore = read('.dockerignore');
+  const packaging = pins.interruptionPackaging;
+  assert.equal(packaging.status, 'SOURCE_ONLY');
+  assert.equal(packaging.contextAssembler, 'scripts/qualification/worker_context.py');
+  assert.equal(packaging.records.length, 3);
+  for (const row of packaging.records) {
+    assert.ok(ignore.includes(`!${row.contextPath}\n`));
+    // The source test also remains usable at its fixed installed image path.
+    // A generated context by itself has no installed dependency tree.
+    const sourcePath = PKG === '/opt/meri-worker' ? row.imagePath : join(PKG, '../../..', row.sourcePath);
+    const raw = readFileSync(sourcePath);
+    assert.equal(raw.length, row.bytes);
+    assert.equal(createHash('sha256').update(raw).digest('hex'), row.sha256);
+  }
+  assert.deepEqual(packaging.records.map((r) => r.imagePath), [
+    '/opt/meri-worker/checkpoint/native-session-files.mjs',
+    '/scripts/sdk-capture/json-records.mjs', '/scripts/sdk-capture/protocol.mjs',
+  ]);
 });
 
 test('Dockerfile reduces SUID/SGID via chmod only, before the inventory, before USER', () => {

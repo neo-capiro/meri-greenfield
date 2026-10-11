@@ -13,3 +13,9 @@
 !.dockerignore
 !vendor/
 !vendor/capiro-meri-contracts-0.1.0.tgz
+!checkpoint/
+!checkpoint/native-session-files.mjs
+!build-dependencies/
+!build-dependencies/sdk-capture/
+!build-dependencies/sdk-capture/json-records.mjs
+!build-dependencies/sdk-capture/protocol.mjs
