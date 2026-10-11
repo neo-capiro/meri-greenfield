@@ -92,5 +92,5 @@ export const consentCopy = {
   notified:
     "I understand participants will be notified, and I'll obtain any additional consent required where participants are located.",
   intro:
-    'Meri joins as a visible participant whose name ends with "Meri Notetaker (recording)", transcribes the meeting, and creates private Meeting Notes for review. A notice is posted so participants know recording is happening. You are responsible for ensuring you are permitted to record. A polished debrief is a separate generation and review action.',
+    'Meri joins as a visible participant whose name ends with "Meri Notetaker (recording)" and transcribes the meeting. A notice tells participants recording is happening; you are responsible for permission. The service creates private Meeting Notes for review, saved as approved, and also attempts an approved Debrief from the same summary. Debrief creation can fail independently. These records are not automatically shared or emailed.',
 } as const;

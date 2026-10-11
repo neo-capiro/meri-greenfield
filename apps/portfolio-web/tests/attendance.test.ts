@@ -12,6 +12,7 @@ import {
 } from "../src/features/calendar/attendance/api";
 import {
   botSessionSchema,
+  consentCopy,
   dispatchSchema,
   progressing,
   sessionLabel,
@@ -65,6 +66,19 @@ function client(...responses: unknown[]) {
   return { api: createApiClient(fetcher), fetcher };
 }
 describe("canonical notetaker reads and status semantics", () => {
+  it("discloses notes-first approved persistence and the best-effort approved debrief without promising a review gate", () => {
+    expect(consentCopy.intro).toContain(
+      "private Meeting Notes for review, saved as approved",
+    );
+    expect(consentCopy.intro).toContain("attempts an approved Debrief");
+    expect(consentCopy.intro).toContain(
+      "Debrief creation can fail independently",
+    );
+    expect(consentCopy.intro).toContain("not automatically shared or emailed");
+    expect(consentCopy.intro).not.toContain(
+      "separate generation and review action",
+    );
+  });
   it("reads nullable latest owned meeting session with cancellation and rejects foreign receipts", async () => {
     const signal = new AbortController().signal;
     const { api, fetcher } = client(null);

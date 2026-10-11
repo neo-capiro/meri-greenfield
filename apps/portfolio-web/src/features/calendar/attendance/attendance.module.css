@@ -1,4 +1,5 @@
 .dialog {
+  width: min(660px, calc(100vw - 32px));
   max-width: 660px;
   padding: 24px;
   gap: 16px;
@@ -25,6 +26,7 @@
   width: 100%;
   padding: 12px;
   font-size: 13px;
+  font-weight: 400;
 }
 .body .consent {
   display: flex;
@@ -35,6 +37,7 @@
   font-weight: 400;
 }
 .consent input {
+  accent-color: var(--foreground);
   flex-shrink: 0;
   margin: 3px 0 0;
 }

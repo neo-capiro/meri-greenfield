@@ -120,9 +120,9 @@ function PreferenceForm({
           <>
             <p role="status">
               {query.data.enabled
-                ? "On · Meri automatically joins your meetings with this client."
+                ? "On · Automatic attendance is enabled for your meetings with this client."
                 : query.data.stopping
-                  ? "Off · Meri is still leaving a meeting. Removal will be retried by the service."
+                  ? "Off · Meri is still leaving a meeting. Removal is not yet confirmed."
                   : "Off · Automatic attendance is disabled."}
             </p>
             {enabled ? (
@@ -136,7 +136,8 @@ function PreferenceForm({
                 <p>
                   This applies to your current and future meetings associated
                   with {clientName}, until turned off. Meri joins around the
-                  start time when a supported link is available. It does not
+                  start time when the service is running and a supported link is
+                  available; enabling does not confirm attendance. It does not
                   grant access to teammates&apos; private calendars.
                 </p>
                 <p className="muted">{consentCopy.intro}</p>

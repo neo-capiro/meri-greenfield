@@ -113,7 +113,7 @@ export function SendMeriDialog({
             : "Meri will be asked to join now. Attendance depends on the meeting provider."}{" "}
           Transcript-only storage; audio retention is not offered.
         </p>
-        {!allowed && (
+        {!allowed && !uncertain && (
           <p role="alert">
             Sending Meri is unavailable while the session, permissions or
             external-action capability is unavailable.
