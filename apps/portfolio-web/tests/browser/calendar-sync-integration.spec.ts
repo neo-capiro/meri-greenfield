@@ -7,7 +7,7 @@ import {
 
 test("actual Master Calendar imports only the reviewed DST window and retains client/view/date/zone", async ({
   page,
-}) => {
+}, testInfo) => {
   const unexpected = await installFixtures(page);
   const state = await installCalendarSyncFixtures(page, { fallback: true });
   const path = `/calendar?clientId=${clientId}&view=week&date=2026-11-01&zone=America%2FNew_York`;
@@ -44,18 +44,26 @@ test("actual Master Calendar imports only the reviewed DST window and retains cl
     to: "2026-11-08T05:00:00Z",
   });
   expect(state.writes[0]!.body).toBeNull();
-  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  await dialog
+    .locator("footer")
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
+  await expect(dialog).not.toBeVisible();
   await expect(page).toHaveURL(new RegExp("clientId=" + clientId));
   expect(new URL(page.url()).search).toBe(
     new URL(path, "http://localhost").search,
   );
   expect(unexpected).toEqual([]);
   expect(state.unexpected).toEqual([]);
+  await page.screenshot({
+    path: testInfo.outputPath("master-calendar-window.png"),
+    fullPage: true,
+  });
 });
 
 test("actual client Calendar retains uncertain import across view changes without replay", async ({
   page,
-}) => {
+}, testInfo) => {
   const unexpected = await installFixtures(page);
   const state = await installCalendarSyncFixtures(page, {
     fallback: true,
@@ -75,7 +83,10 @@ test("actual client Calendar retains uncertain import across view changes withou
     .getByRole("button", { name: "Import calendar meetings" })
     .click();
   await expect(dialog).toContainText("Sync outcome unknown");
-  await dialog.getByRole("button", { name: "Close", exact: true }).click();
+  await dialog
+    .locator("footer")
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
   await page
     .getByRole("combobox", { name: "Calendar view", exact: true })
     .selectOption("week");
@@ -93,4 +104,14 @@ test("actual client Calendar retains uncertain import across view changes withou
   expect(new URL(page.url()).searchParams.get("date")).toBe("2026-10-20");
   expect(unexpected).toEqual([]);
   expect(state.unexpected).toEqual([]);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(dialog).toHaveCSS("background-color", "rgb(27, 27, 27)");
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
+  await page.screenshot({
+    path: testInfo.outputPath("client-calendar-unknown-mobile-dark.png"),
+    fullPage: true,
+  });
 });
