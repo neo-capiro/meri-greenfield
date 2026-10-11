@@ -68,10 +68,23 @@ current-fence authority. Orphaned objects after a failed publication grant no
 recovery authority. The receipt is loaded by the registry's SHA-256 identity;
 the bundle and sentinel are reread by their exact S3 VersionIds.
 
-This adapter is still source only. Read-only AWS inventory on 2026-10-11 found
-only the qualification **build** bucket, not the dedicated checkpoint bucket.
-The dedicated versioned/locked bucket, KMS key, control role, endpoint policy,
-native evidence inspector, ECS credential resolver, image, and live two-task
-experiment must be reviewed and admitted. The build bucket must not be used for
-checkpoint data. The S3 tests exercise command shapes and negative readbacks
-with a fake client; they are not AWS durability evidence.
+The approved checkpoint stack reached `CREATE_COMPLETE` on 2026-10-11. Its
+dedicated versioned/locked bucket, KMS key and unused control role were read
+back; see
+`docs/coordination/reports/CODEX-G1-SDK-CHECKPOINT-INFRA-20261011.md` for the
+exact stack and limits. The build bucket must not hold checkpoints. No
+checkpoint object or runtime task was created by that stack deployment. The
+S3 tests exercise command shapes and negative readbacks with a fake client;
+they are not AWS durability evidence.
+
+`createFixtureControl` now assembles the PostgreSQL registry, fixed handlers,
+versioned S3 store and private mTLS ingress. It resolves certificate fingerprints
+from durable grants and exposes the registry only to the trusted owner for A/B
+admission. Construction does not connect or listen. Its `start()` owns the
+listener, and `close()` drains it before releasing the owned S3 client. The
+native evidence inspector remains a mandatory trusted dependency, without a
+production implementation; passing a test inspector is not native quiescence.
+The integrated source test uses two synthetic certificates, isolated local
+PostgreSQL and fake S3 responses. Real S3 object I/O, task-role credentials,
+private endpoint, native evidence, runtime image and two-task recovery remain
+unrun and unadmitted.
