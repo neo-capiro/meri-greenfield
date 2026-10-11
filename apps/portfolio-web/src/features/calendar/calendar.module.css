@@ -1,3 +1,6 @@
+.meetingDrawer {
+  align-content: start;
+}
 .grid {
   height: 750px;
   background: var(--card);

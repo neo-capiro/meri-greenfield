@@ -57,7 +57,9 @@ export function useMeeting(id: string | null) {
       api.request(
         "core",
         `engagement/meetings/${encodeURIComponent(id ?? "")}`,
-        meetingSchema,
+        meetingSchema.refine((meeting) => meeting.id === id, {
+          message: "Meeting response does not match the requested meeting",
+        }),
         { signal },
       ),
   });

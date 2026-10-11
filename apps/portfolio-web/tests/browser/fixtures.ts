@@ -222,6 +222,10 @@ export async function installFixtures(page: Page) {
         matches: [],
       },
       "core/engagement/mail-threads": [],
+      "core/engagement/capabilities": {
+        meetingPrepComprehensiveEnabled: false,
+        runtime: { externalActionsEnabled: false },
+      },
       "core/me/email-signature": { html: null, enabled: false },
       "core/intelligence/opportunities/v2/search": opportunitySearch,
       [`core/intelligence/clients/${clientId}/pe-relevance`]: {

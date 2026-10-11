@@ -10,11 +10,11 @@ import { MeetingArtifacts } from "./MeetingArtifacts";
 import { MeetingForm } from "./MeetingForm";
 import { MeetingPreparation } from "./preparation/public";
 import { formatInstant, type CalendarZone } from "./range";
+import styles from "./calendar.module.css";
 export function MeetingDetail({
   id,
   onClose,
   zone,
-  destinations,
   clientId,
 }: {
   id: string | null;
@@ -38,6 +38,7 @@ export function MeetingDetail({
       }}
       title={inScope ? (meeting?.subject ?? "Meeting") : "Meeting unavailable"}
       drawer
+      className={styles.meetingDrawer}
     >
       <QueryState
         pending={query.isPending}

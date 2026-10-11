@@ -1,29 +1,51 @@
 import { z } from "zod";
 import { preparationSchema } from "./preparation/schema";
 export { prepItemSchema } from "./preparation/schema";
-export const meetingSchema = z.object({
-  id: z.string(),
-  subject: z.string(),
-  description: z.string().nullable(),
-  location: z.string().nullable(),
-  startsAt: z.string(),
-  endsAt: z.string(),
-  status: z.string(),
-  joinLink: z.string().nullable(),
-  visibility: z.enum(["private", "shared"]),
-  isVirtual: z.boolean(),
-  meri: z.string().nullable(),
-  client: z.object({ id: z.string(), name: z.string() }).nullable(),
-  attendees: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string().nullable(),
-      email: z.string().nullable(),
-      role: z.string().nullable(),
-    }),
-  ),
-  preps: z.array(preparationSchema),
-});
+export const meetingSchema = z
+  .object({
+    id: z.string(),
+    subject: z.string(),
+    description: z.string().nullable(),
+    location: z.string().nullable(),
+    startsAt: z.string(),
+    endsAt: z.string(),
+    status: z.string(),
+    joinLink: z.string().nullable(),
+    visibility: z.enum(["private", "shared"]),
+    isVirtual: z.boolean(),
+    meri: z.string().nullable(),
+    client: z.object({ id: z.string(), name: z.string() }).nullable(),
+    attendees: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string().nullable(),
+        email: z.string().nullable(),
+        role: z.string().nullable(),
+      }),
+    ),
+    preps: z.array(preparationSchema),
+  })
+  .superRefine((meeting, ctx) => {
+    meeting.preps.forEach((prep, index) => {
+      if (prep.meetingId !== undefined && prep.meetingId !== meeting.id) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["preps", index, "meetingId"],
+          message: "Preparation belongs to another meeting",
+        });
+      }
+      if (
+        prep.clientId !== undefined &&
+        prep.clientId !== (meeting.client?.id ?? null)
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["preps", index, "clientId"],
+          message: "Preparation belongs to another client",
+        });
+      }
+    });
+  });
 export type Meeting = z.infer<typeof meetingSchema>;
 export const hearingSchema = z.object({
   id: z.string(),

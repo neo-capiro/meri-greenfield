@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { Temporal } from "temporal-polyfill";
-import { prepItemSchema } from "../src/features/calendar/contracts";
+import {
+  meetingSchema,
+  prepItemSchema,
+} from "../src/features/calendar/contracts";
 import type { ApiClient } from "../src/shared/api/http";
 import {
   calendarRange,
@@ -16,6 +19,59 @@ import {
   fetchMeetings,
 } from "../src/features/calendar/feeds";
 describe("verified preparation contract", () => {
+  it("binds attributed preparation to its enclosing meeting and client", () => {
+    const prep = {
+      id: "prep-1",
+      status: "approved",
+      summary: null,
+      agenda: [],
+      talkingPoints: [],
+      risks: [],
+      followUps: [],
+      createdAt: "2026-10-11T12:00:00Z",
+    };
+    const meeting = {
+      id: "meeting-1",
+      subject: "Synthetic meeting",
+      description: null,
+      location: null,
+      startsAt: "2026-10-12T12:00:00Z",
+      endsAt: "2026-10-12T13:00:00Z",
+      status: "scheduled",
+      joinLink: null,
+      visibility: "private",
+      isVirtual: false,
+      meri: null,
+      client: { id: "client-1", name: "Synthetic client" },
+      attendees: [],
+      preps: [prep],
+    };
+    expect(meetingSchema.safeParse(meeting).success).toBe(true);
+    const attributed = {
+      ...prep,
+      meetingId: meeting.id,
+      clientId: meeting.client.id,
+    };
+    expect(
+      meetingSchema.safeParse({ ...meeting, preps: [attributed] }).success,
+    ).toBe(true);
+    for (const incorrect of [
+      { ...attributed, meetingId: "another-meeting" },
+      { ...attributed, clientId: "another-client" },
+      { ...attributed, clientId: null },
+    ]) {
+      expect(
+        meetingSchema.safeParse({ ...meeting, preps: [incorrect] }).success,
+      ).toBe(false);
+    }
+    expect(
+      meetingSchema.safeParse({
+        ...meeting,
+        client: null,
+        preps: [{ ...prep, clientId: null }],
+      }).success,
+    ).toBe(true);
+  });
   it("preserves comprehensive evidence-linked items and legacy edited text", () => {
     const comprehensive = {
       text: "Review the synthetic deadline",
