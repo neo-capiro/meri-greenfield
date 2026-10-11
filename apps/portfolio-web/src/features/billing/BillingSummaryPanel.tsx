@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useBillingSummary } from "./useBillingSummary";
 import styles from "./billing-summary.module.css";
@@ -19,17 +21,28 @@ const statuses = {
 } as const;
 
 export function BillingSummaryPanel({ enabled = true }: { enabled?: boolean }) {
-  const { query, visible, ready } = useBillingSummary(enabled);
+  const [expanded, setExpanded] = useState(false);
+  const { query, visible, ready } = useBillingSummary(enabled, expanded);
   if (!visible) return null;
   const summary = ready ? query.data : undefined;
   return (
-    <section className={styles.panel} aria-label="Current plan and usage">
-      <h3>Current plan and usage</h3>
-      <QueryState
-        pending={query.isPending || query.isFetching}
-        error={query.error}
-        retry={() => void query.refetch()}
-      />
+    <details
+      className={styles.panel}
+      aria-label="Current plan and usage"
+      open={expanded}
+      onToggle={(event) => setExpanded(event.currentTarget.open)}
+    >
+      <summary>
+        Current plan and usage
+        <ChevronDown size={16} aria-hidden="true" />
+      </summary>
+      {expanded && (
+        <QueryState
+          pending={query.isPending || query.isFetching}
+          error={query.error}
+          retry={() => void query.refetch()}
+        />
+      )}
       {summary && (
         <>
           <dl className={styles.rows}>
@@ -117,6 +130,6 @@ export function BillingSummaryPanel({ enabled = true }: { enabled?: boolean }) {
           </p>
         </>
       )}
-    </section>
+    </details>
   );
 }

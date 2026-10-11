@@ -1,11 +1,30 @@
 .panel {
   min-width: 0;
 }
-.panel h3 {
-  margin: 0 0 10px;
+.panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.45;
+}
+.panel summary::-webkit-details-marker {
+  display: none;
+}
+.panel summary:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.panel[open] summary {
+  margin-bottom: 10px;
+}
+.panel[open] summary svg {
+  transform: rotate(180deg);
 }
 .rows {
   margin: 0;

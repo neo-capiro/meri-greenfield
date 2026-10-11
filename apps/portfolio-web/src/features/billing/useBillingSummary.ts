@@ -6,7 +6,7 @@ import { useIdentity } from "@/shared/auth/identity";
 import { billingSummaryKey, readBillingSummary } from "./summary-api";
 import { currentBillingReader } from "./summary-authority";
 
-export function useBillingSummary(enabled: boolean) {
+export function useBillingSummary(enabled: boolean, expanded: boolean) {
   const api = useApi();
   const cache = useQueryClient();
   useIdentity();
@@ -31,7 +31,7 @@ export function useBillingSummary(enabled: boolean) {
   );
   const query = useQuery({
     queryKey: key,
-    enabled: enabled && Boolean(actor),
+    enabled: enabled && expanded && Boolean(actor),
     retry: false,
     staleTime: 0,
     queryFn: ({ signal }) => {
@@ -42,6 +42,7 @@ export function useBillingSummary(enabled: boolean) {
   const visible = enabled && Boolean(actor);
   const ready =
     visible &&
+    expanded &&
     query.isSuccess &&
     !query.isFetching &&
     !query.error &&
