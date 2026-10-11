@@ -15,6 +15,7 @@ const common = z.object({
   canonicalStatus: z.string().nullable().optional(),
   unread: z.boolean(),
   note: z.string().nullable().optional(),
+  trackedAt: z.string().nullable().optional(),
 });
 export const coreBoardSchema = z.object({
   columns: z.array(
@@ -84,6 +85,7 @@ export type TrackedBill = z.infer<typeof common> & {
   probability: number;
   tags: string[];
   changeLabel?: string;
+  changeTone?: string;
   terminalRisk: boolean;
   jurisdiction?: string;
   hearingCount?: number;
@@ -106,6 +108,7 @@ export function coreBoard(data: z.infer<typeof coreBoardSchema>): BoardPage {
       bills: column.bills.map((bill) => ({
         ...bill,
         changeLabel: bill.change?.label,
+        changeTone: bill.change?.tone,
         terminalRisk: false,
       })),
     })),
@@ -124,6 +127,7 @@ export function intelBoard(data: z.infer<typeof intelBoardSchema>): BoardPage {
         probability: bill.passageProbability,
         tags: bill.matchedTags,
         changeLabel: bill.changeChip?.label,
+        changeTone: bill.changeChip?.tone,
       })),
     })),
     total: data.total,

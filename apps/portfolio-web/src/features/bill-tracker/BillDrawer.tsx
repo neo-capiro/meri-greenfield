@@ -5,6 +5,9 @@ import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { TrackedBill } from "./contracts";
 import { useTrackBill } from "./queries";
+import { BillHearings } from "./BillHearings";
+import { billDate, fullBoardHref } from "./hearings";
+import styles from "./bill-updates.module.css";
 export function BillDrawer({
   bill,
   clientId,
@@ -19,70 +22,112 @@ export function BillDrawer({
   onClose: () => void;
 }) {
   const [confirm, setConfirm] = useState(false);
+  const [opener] = useState(() =>
+    typeof document === "undefined" ? null : document.activeElement,
+  );
   const untrack = useTrackBill(clientId, backend, onClose);
+  const trackedDate = billDate(bill.trackedAt);
+  const actionDate = billDate(bill.latestActionDate);
+  const board = fullBoardHref(destinations.existingApp, clientId);
   const detail = destinations.existingApp
     ? `${destinations.existingApp}/bills/${encodeURIComponent(bill.billId)}?clientId=${encodeURIComponent(clientId)}`
     : undefined;
   return (
     <Dialog
       open
-      drawer
+      className={styles.dialog}
       title={bill.displayNum}
       description={bill.title ?? "Bill details"}
+      onCloseAutoFocus={(event) => {
+        if (opener instanceof HTMLElement && opener.isConnected) {
+          event.preventDefault();
+          opener.focus();
+        }
+      }}
       onOpenChange={(open) => {
         if (!open && !untrack.isPending) onClose();
       }}
     >
-      <div className="stack">
+      <div className={styles.body}>
         <div className="row">
-          <span className="chip">{bill.canonicalStatus ?? bill.stage}</span>
+          <span
+            className="chip"
+            title="Estimate supplied by the configured service, not a confirmed outcome."
+          >
+            {Math.round(bill.probability * 100)}% estimate
+          </span>
+          {bill.changeLabel && (
+            <span
+              className={`chip ${styles.change}`}
+              data-tone={bill.changeTone}
+            >
+              {bill.changeLabel}
+            </span>
+          )}
           {bill.terminalRisk && <span className="danger">Terminal risk</span>}
           {bill.jurisdiction && <span>{bill.jurisdiction}</span>}
         </div>
-        <section className="stack">
-          <h3>Latest official action</h3>
+        <section className={styles.section}>
+          <h3>Latest update</h3>
+          <strong>{bill.canonicalStatus ?? bill.stage}</strong>
           <p>{bill.latestActionText ?? "No latest action available."}</p>
-          {bill.latestActionDate && (
-            <time dateTime={bill.latestActionDate}>
-              {bill.latestActionDate.slice(0, 10)}
+          {actionDate && (
+            <time dateTime={bill.latestActionDate ?? undefined}>
+              {actionDate}
             </time>
           )}
         </section>
-        <section>
-          <h3>Passage estimate</h3>
-          <p>
-            {Math.round(bill.probability * 100)}% · supplied by the configured
-            service
-          </p>
-          <small className="muted">
-            An estimate is not a confirmed legislative outcome.
-          </small>
-        </section>
-        {bill.tags.length > 0 && (
-          <div className="row">
-            {bill.tags.map((tag) => (
-              <span key={tag} className="chip">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
         {bill.note && (
-          <section>
-            <h3>Tracking note</h3>
+          <section className={styles.section}>
+            <h3>Note</h3>
             <p>{bill.note}</p>
           </section>
         )}
-        {bill.hearingCount !== undefined && (
-          <p>{bill.hearingCount} linked hearings</p>
+        {bill.tags.length > 0 && (
+          <section className={styles.section}>
+            <h3>Matched topics</h3>
+            <div className="row">
+              {bill.tags.map((tag, index) => (
+                <span key={`${tag}-${index}`} className="chip">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </section>
         )}
-        {detail ? (
-          <a className="button" href={detail}>
-            Open Bill 360 ↗
-          </a>
-        ) : (
-          <p className="muted">Bill 360 is unavailable in this environment.</p>
-        )}
+        <BillHearings
+          clientId={clientId}
+          billId={bill.billId}
+          backend={backend}
+          existingApp={destinations.existingApp}
+        />
+        <footer className={styles.footer}>
+          {trackedDate ? (
+            <time dateTime={bill.trackedAt ?? undefined}>
+              Tracked {trackedDate}
+            </time>
+          ) : (
+            <span className="muted">Tracked date unavailable</span>
+          )}
+          {board ? (
+            <a href={board}>Open full board →</a>
+          ) : (
+            <span className="muted">
+              Full board is unavailable in this environment.
+            </span>
+          )}
+        </footer>
+        <div className={styles.secondary}>
+          {detail ? (
+            <a className="button" href={detail}>
+              Open Bill 360 ↗
+            </a>
+          ) : (
+            <p className="muted">
+              Bill 360 is unavailable in this environment.
+            </p>
+          )}
+        </div>
         {confirm ? (
           <>
             <p>Remove this bill from the selected client tracker?</p>

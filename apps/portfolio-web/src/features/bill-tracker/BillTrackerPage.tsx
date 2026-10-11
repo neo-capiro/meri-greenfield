@@ -30,6 +30,7 @@ export function BillTrackerPage({
     );
   return (
     <ConfiguredTracker
+      key={`${clientId}:${backend}`}
       clientId={clientId}
       backend={backend}
       destinations={destinations}

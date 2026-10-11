@@ -8,6 +8,20 @@ import {
 import { useApi } from "@/shared/api/provider";
 import type { TrackerBackend } from "@/shared/config/config";
 import { fetchBoard, searchBills, setTracked, fetchJurisdictions } from "./api";
+import { fetchBillHearings } from "./hearings";
+export function useBillHearings(
+  clientId: string,
+  billId: string,
+  backend: TrackerBackend,
+) {
+  const api = useApi();
+  return useQuery({
+    queryKey: ["bill-hearings", backend, clientId, billId],
+    queryFn: ({ signal }) =>
+      fetchBillHearings(api, clientId, billId, backend, signal),
+    enabled: backend === "intelligence",
+  });
+}
 export const boardKey = (clientId: string, backend: TrackerBackend) =>
   ["bill-tracker", backend, clientId] as const;
 export function useBillBoard(clientId: string, backend: TrackerBackend) {
