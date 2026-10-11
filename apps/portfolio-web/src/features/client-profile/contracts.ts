@@ -13,6 +13,11 @@ export const activitySchema = z.object({
   pinned: z.boolean(),
 });
 export type Activity = z.infer<typeof activitySchema>;
+export const activityEditSchema = z.object({
+  title: z.string().trim().min(1, "Enter an activity title.").max(300),
+  body: z.string().trim().max(5000),
+});
+export type ActivityEdit = z.infer<typeof activityEditSchema>;
 export const facilitySchema = z.object({
   id: z.string(),
   name: z.string(),

@@ -1,6 +1,6 @@
 "use client";
 import { Dialog as Primitive } from "radix-ui";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { X } from "lucide-react";
 import styles from "./dialog.module.css";
 export function Dialog({
@@ -11,6 +11,9 @@ export function Dialog({
   children,
   drawer = false,
   wide = false,
+  className = "",
+  onCloseAutoFocus,
+  onOpenAutoFocus,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -19,13 +22,20 @@ export function Dialog({
   children: ReactNode;
   drawer?: boolean;
   wide?: boolean;
+  className?: string;
+  onCloseAutoFocus?: ComponentProps<
+    typeof Primitive.Content
+  >["onCloseAutoFocus"];
+  onOpenAutoFocus?: ComponentProps<typeof Primitive.Content>["onOpenAutoFocus"];
 }) {
   return (
     <Primitive.Root open={open} onOpenChange={onOpenChange}>
       <Primitive.Portal>
         <Primitive.Overlay className={styles.overlay} />
         <Primitive.Content
-          className={`${styles.content} ${drawer ? styles.drawer : ""} ${wide ? styles.wide : ""}`}
+          onCloseAutoFocus={onCloseAutoFocus}
+          onOpenAutoFocus={onOpenAutoFocus}
+          className={`${styles.content} ${drawer ? styles.drawer : ""} ${wide ? styles.wide : ""} ${className}`}
         >
           <header className="row between">
             <Primitive.Title asChild>

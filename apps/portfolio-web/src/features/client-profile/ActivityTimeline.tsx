@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useActivity } from "./queries";
 import { ActivityFilters } from "./ActivityFilters";
+import { ActivityActions } from "./ActivityActions";
 import {
   emptyActivityFilters,
   filterActivity,
@@ -12,12 +13,18 @@ import {
 import styles from "./overview.module.css";
 export function ActivityTimeline({ clientId }: { clientId: string }) {
   const activity = useActivity(clientId);
+  const timeline = useRef<HTMLElement>(null);
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [filters, setFilters] = useState({ ...emptyActivityFilters });
   const rangeError = activityRangeError(filters);
   const rows = filterActivity(activity.data ?? [], filters, zone);
   return (
-    <section className="card stack" aria-label="Activity timeline">
+    <section
+      ref={timeline}
+      tabIndex={-1}
+      className="card stack"
+      aria-label="Activity timeline"
+    >
       <header className="row between">
         <div>
           <p className="eyebrow">Relationship history</p>
@@ -46,12 +53,29 @@ export function ActivityTimeline({ clientId }: { clientId: string }) {
                 <div className="stack">
                   <div className="row between">
                     <strong>{item.title}</strong>
-                    <time className="muted" dateTime={item.occurredAt}>
-                      {new Date(item.occurredAt).toLocaleString()}
-                    </time>
+                    <div className="row">
+                      <time className="muted" dateTime={item.occurredAt}>
+                        {new Date(item.occurredAt).toLocaleString()}
+                      </time>
+                      <ActivityActions
+                        clientId={clientId}
+                        item={item}
+                        onFallbackFocus={() => timeline.current?.focus()}
+                      />
+                    </div>
                   </div>
                   <small>{item.kind}</small>
                   {item.body && <p className={styles.body}>{item.body}</p>}
+                  {item.dueAt && (
+                    <small>
+                      {item.settledAt ? "Settled " : "Due "}
+                      <time dateTime={item.settledAt ?? item.dueAt}>
+                        {new Date(
+                          item.settledAt ?? item.dueAt,
+                        ).toLocaleString()}
+                      </time>
+                    </small>
+                  )}
                   {item.sourceType === "meeting" && item.sourceId && (
                     <Link
                       className="muted"

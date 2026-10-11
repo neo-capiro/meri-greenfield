@@ -8,6 +8,8 @@
   --border-strong: #d6d3d1;
   --accent: #f0efed;
   --danger: #7a2e2e;
+  --destructive-subtle: #f3e7e5;
+  --destructive-text: #652424;
   --success: #42634b;
   --radius: 10px;
   --shadow: 0 2px 8px -2px #0c0a090a, 0 1px 2px #0c0a090a;
@@ -25,6 +27,8 @@
     --border-strong: #57534e;
     --accent: #292724;
     --danger: #e79b9b;
+    --destructive-subtle: #322626;
+    --destructive-text: #e79b9b;
     --success: #9dbea4;
     color-scheme: dark;
   }

@@ -11,7 +11,7 @@ Use Node 24 and npm 11. From this directory:
 ```powershell
 npm ci
 Copy-Item .env.example .env.local
-# Populate only designated test service origins and existing Clerk test keys.
+# Populate designated service origins and keys for their matching Clerk application.
 npm run dev
 ```
 
@@ -70,7 +70,7 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Current local evidence: 67 unit checks, 24 synthetic browser checks, TypeScript,
+Current local evidence: 67 unit checks, 28 synthetic browser checks, TypeScript,
 architecture and production build pass. ESLint passes with one static SVG image
 warning. Representative screens were reviewed against current Figma, including
 desktop and phone dark captures; full workflow/visual acceptance remains open.
@@ -89,6 +89,10 @@ template; matching backend trust/tenant configuration or an approved isolated
 production-auth preview origin is still needed for signed-in product acceptance.
 Activity history search/type/civil-date filters and clear use the latest 500
 records already fetched. They do not imply a complete historical calendar feed.
+Recorded history entries support title/details editing, due-item settlement/reopening
+and confirmed removal. Derived meeting/file/mail entries remain source-owned.
+Failures retain input; 401 uses the shared session boundary. Keyboard focus and
+pending duplicate refusal are browser checked. Live mutations remain unverified.
 
 ## Current feature boundaries
 

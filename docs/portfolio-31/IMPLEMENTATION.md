@@ -148,7 +148,7 @@ accepted. Keep Portfolio PR 1 and capirov2 PRs 2362/2364/2365 isolated/unmerged,
 with migrations unapplied. Combined gate review follows a green C1 and owner
 coordination; this report is not independent verification of the cleanup gate.
 
-## Local expansion checkpoint — 11 October 2026
+## Historical local expansion checkpoint — 11 October 2026
 
 Prospects, Bill Tracker/watchlists, matched Opportunities/budget programs,
 Government Relationships and the client breadcrumb/quick-add header are now
@@ -166,7 +166,8 @@ No backend migration, provider operation, deployment or shared routing changed.
 
 Shared operating policy: b32b4803933760dc0a93fffdcd8fba30a89c3aac; clean and three
 commits ahead of fetched origin/main. Machine map revision 2026-09-30T00:21:48Z.
-Current fetched capirov2 main remains fd8765ec; meri-greenfield main is 8586f627.
+At that checkpoint fetched capirov2 main was fd8765ec and meri-greenfield main was
+8586f627. Later source and acceptance records below supersede these historical checks.
 
 ## Authorized live read checkpoint — 11 October 2026
 
@@ -245,3 +246,43 @@ bottom of Overview. The authenticated live activity read was empty; positive
 history/filter acceptance uses synthetic records and is not marked live-complete.
 The final actual Next build also loads development Clerk across three deep links,
 renders its sign-in form, and refuses unauthenticated core proxy access with 401.
+
+## Recorded activity follow-through outline
+
+Client-profile owns recorded timeline edits and removal. Add a focused activity
+mutation adapter, row actions and activity dialogs; reuse the current HTTP client,
+TanStack invalidation, Radix menu/dialog behavior and existing form primitives.
+The existing PATCH accepts title/body and settled; DELETE returns ok. Only recorded
+rows expose writes. Settlement requires a persisted dueAt; derived meetings, files
+and mail remain owned by their source. No pinned-account-note or open-commitment
+panel is restored. Keep failure input, wait for invalidation, and confirm deletion.
+Verify existing current Figma row actions, durable errors and remove dialog,
+keyboard/focus, permissions/session failures, pending duplicate refusal and exact
+client/row paths. Live mutation checks remain separate from synthetic assertions.
+
+## Recorded activity verification — 11 October 2026
+
+CORE-050/051 now have working candidate interactions against the existing contract.
+Four browser cases verify title validation/body clearing and failure retention,
+recorded-versus-derived ownership, exact client/row paths, settlement/reopening,
+permission failures, pending controls, deletion confirmation, malformed success
+refusal, cache invalidation and the existing global expiry gate. A menu/dialog focus
+defect was fixed with native Radix autofocus callbacks and explicit return focus.
+Initial failed results are preserved in task evidence; the 401 expectation and
+duplicate fixture text selector were corrected without changing session behavior.
+
+Current local checks: 67 unit, 28 synthetic component-browser, TypeScript, formatting,
+162-module architecture and 17-route production build PASS. ESLint exits zero with
+one existing static SVG warning. Actual final Next build on localhost:5190 passes
+development sign-in/deep-link and unauthenticated proxy refusal checks. Authenticated
+product UI and live writes are NOT RUN. Desktop and phone-dark removal captures
+were inspected against 411:50341; error/close geometry was corrected. Full timeline
+visual/expanded-feed acceptance remains open. No new static assets were supplied
+for these text controls; the existing Dialog close icon is reused.
+
+The review of >80-line presentation functions found cohesive row-action/dialog
+rendering with mutation/data access kept in activity-mutations. No page-level store,
+cross-feature internals, repeated domain policy, new dependency or circular import.
+Fetched capirov2 main remains fd8765ec; meri-greenfield main is now fa00d58, whose
+proxy/browser qualification changes do not overlap these frontend paths. No rebase,
+merge, migration, deployment or shared auth/routing setting was performed.
