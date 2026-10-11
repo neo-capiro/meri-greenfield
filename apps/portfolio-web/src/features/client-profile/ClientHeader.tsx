@@ -7,6 +7,7 @@ import { DropdownMenu } from "radix-ui";
 import { clientViews } from "@/shared/shell/client-views";
 import { type Client, initials } from "@/features/portfolio/public";
 import { ClientProfileActions } from "./ClientProfileActions";
+import { ClientMeriActions } from "./ClientMeriActions";
 import styles from "./client-header.module.css";
 const asset = (name: string) => `/design/411-55991-${name}.svg`;
 export function ClientHeader({ client }: { client: Client }) {
@@ -93,15 +94,7 @@ export function ClientHeader({ client }: { client: Client }) {
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
-          <button
-            className={`button ${styles.meri}`}
-            disabled
-            title="Client Meri actions are not available yet"
-          >
-            <img src={asset("imgIcon16")} alt="" />
-            <span>Meri actions</span>
-            <img src={asset("imgChevron1")} alt="" />
-          </button>
+          <ClientMeriActions client={client} />
           <ClientProfileActions client={client} />
         </div>
       </header>

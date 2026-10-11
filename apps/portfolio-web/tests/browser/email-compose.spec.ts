@@ -147,7 +147,7 @@ async function setup(
     uploads++;
     await route.fulfill({ status: 204 });
   });
-  await page.goto("/");
+  await page.goto("/__test/email-compose");
   return {
     sent,
     counts: () => ({ prepares, uploads, confirms, reads }),

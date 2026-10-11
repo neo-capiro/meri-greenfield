@@ -10,6 +10,7 @@ import { MeetingArtifacts } from "./MeetingArtifacts";
 import { MeetingForm } from "./MeetingForm";
 import { MeetingPreparation } from "./preparation/public";
 import { MeetingAssignment } from "./library/public";
+import { MeetingAttendance } from "./attendance/public";
 import { useIdentity } from "@/shared/auth/identity";
 import { formatInstant, type CalendarZone } from "./range";
 import styles from "./calendar.module.css";
@@ -103,6 +104,7 @@ export function MeetingDetail({
                   Join meeting
                 </a>
               )}
+              <MeetingAttendance meeting={meeting} zone={zone} />
               <p>{meeting.description ?? "No description."}</p>
               <h3 className="row">
                 <Users size={16} />

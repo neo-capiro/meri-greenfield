@@ -15,6 +15,7 @@ import { ProspectDetail } from "@/features/prospects/ProspectDetail";
 import { BillTrackerPage } from "@/features/bill-tracker/BillTrackerPage";
 import { OpportunitiesPage } from "@/features/opportunities/OpportunitiesPage";
 import { RegistrantIntakeHarness } from "./registrant-intake-harness";
+import { EmailComposeHarness } from "./email-compose-harness";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -26,6 +27,7 @@ const destinations = {
 function App() {
   const path = usePathname();
   if (path === "/__test/registrant-intake") return <RegistrantIntakeHarness />;
+  if (path === "/__test/email-compose") return <EmailComposeHarness />;
   const [, , clientId, tab] = path.split("/");
   if (clientId === "prospects")
     return tab ? (
