@@ -75,7 +75,7 @@ export function WorkspaceDocuments({
                   <td>
                     {destinations.existingApp ? (
                       <a
-                        href={`${destinations.existingApp}/workspace/draft/${draft.id}`}
+                        href={`${destinations.existingApp}/workspace/${draft.id}`}
                       >
                         Open Workspace ↗
                       </a>

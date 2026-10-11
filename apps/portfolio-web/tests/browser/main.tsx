@@ -21,6 +21,10 @@ import { MeetingDocumentsHarness } from "./meeting-documents-harness";
 import { ProfileToolsHarness } from "./profile-tools-harness";
 import { VoiceHarness } from "./voice-harness";
 import { ThreadMailHarness } from "./thread-mail-harness";
+import {
+  PublicEventHarness,
+  PublicEventCalendarHarness,
+} from "./public-event-harness";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -37,6 +41,7 @@ function App() {
   if (path === "/__test/profile-tools") return <ProfileToolsHarness />;
   if (path === "/__test/voice-source") return <VoiceHarness />;
   if (path === "/__test/thread-mail") return <ThreadMailHarness />;
+  if (path === "/__test/public-event") return <PublicEventHarness />;
   if (path === "/__test/past-performance")
     return (
       <Shell destinations={destinations}>
@@ -56,7 +61,7 @@ function App() {
   if (path === "/calendar")
     return (
       <Shell destinations={destinations}>
-        <CalendarPage destinations={destinations} />
+        <PublicEventCalendarHarness />
       </Shell>
     );
   if (!clientId) return <PortfolioIndex destinations={destinations} />;
