@@ -15,8 +15,13 @@ The S3-source run on `dacd184` completed 728 unit, 459 browser, Next production
 and Linux image build/push commands, then its final ECR read-back failed because
 the build role lacked `ecr:DescribeImages`. The digest was independently read
 back by the owner. The image scan reported one HIGH zlib finding, so the image
-is not admitted for ECS. The permission is corrected in `build.yml`; a short
-digest-bound container smoke and security disposition remain separate gates.
+is not admitted for ECS. The permission is corrected in `build.yml`. A rerun
+on `4f2a082` passed the full tests and image build, then failed a smoke check
+that called `/api/core/clients` instead of the actual proxy route
+`/api/backend/core/clients`; that run did not push an image. Separate diagnostic
+jobs confirmed the image starts as UID 1000, `/healthz` returns 200, and the
+setup/sign-in pages render. This source corrects the smoke URL. A new exact-head
+build, digest read-back and security disposition remain gates.
 
 ## Existing foundation
 
@@ -24,8 +29,11 @@ digest-bound container smoke and security disposition remain separate gates.
   `967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview`.
 - `Capiro-Portfolio-Preview-Certificate`: ISSUED ACM certificate
   `arn:aws:acm:us-east-1:967807252336:certificate/179a4c08-7745-45f9-b4be-7ddae9d36729`.
-  CloudFormation created its Route 53 validation CNAME. No service A/AAAA alias
-  exists.
+  This first certificate covers `portfolio-preview.capiro.ai` only. Clerk's
+  production primary domain is `app.capiro.ai`, with allowed subdomains enabled.
+  `certificate.yml` now targets `portfolio-preview.app.capiro.ai`; update the
+  certificate stack and verify issuance before a service change. No service
+  A/AAAA alias exists.
 
 ## Gate before `service.yml`
 
@@ -53,9 +61,11 @@ digest-bound container smoke and security disposition remain separate gates.
    `CAPABILITY_IAM` and the recorded parameter values. Wait for stack complete,
    ECS steady state and a healthy `/healthz` target. Inspect task logs without
    printing credentials or customer data.
-6. After the owner confirms the production Clerk subdomain/origin rule, add
-   `portfolio-preview.capiro.ai` A alias to this preview ALB only. Read back DNS
-   and HTTPS, then begin the separately bounded signed-in read-only test.
+6. Add `portfolio-preview.app.capiro.ai` to the production Clerk instance's
+   allowed subdomains after the production auth access change is reviewed. The
+   domain input accepts this exact hostname. Do not add a paid Clerk satellite
+   domain. Then add a Route 53 A alias for this hostname to the healthy preview
+   ALB only. Read back DNS and HTTPS before bounded signed-in testing.
 
 Rollback starts by removing the preview A alias, then scaling/deleting only the
 preview service stack after recording its exact resource IDs. Preserve

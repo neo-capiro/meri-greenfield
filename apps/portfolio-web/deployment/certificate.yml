@@ -5,10 +5,10 @@ Resources:
   PortfolioPreviewCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
-      DomainName: portfolio-preview.capiro.ai
+      DomainName: portfolio-preview.app.capiro.ai
       ValidationMethod: DNS
       DomainValidationOptions:
-        - DomainName: portfolio-preview.capiro.ai
+        - DomainName: portfolio-preview.app.capiro.ai
           HostedZoneId: Z085985135X6Q5QT98ZBK
       CertificateTransparencyLoggingPreference: ENABLED
       Tags:

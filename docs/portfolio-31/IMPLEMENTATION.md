@@ -375,6 +375,24 @@ requires disposition before ECS preview admission. No service/DNS traffic alias
 or signed-in production test was created. The failed job remains visible; the
 build-role permission is corrected in the versioned template for the next run.
 
+Clerk production-dashboard read-back on 11 October found `app.capiro.ai` as the
+verified primary domain and only entry in its enabled allowed-subdomain list.
+There are no satellite domains. A proposed `portfolio-preview.capiro.ai`
+satellite would cost $10/month; none was added. The allowed-subdomain form
+accepted `portfolio-preview.app.capiro.ai` as an input, but it was cleared
+without submission. The certificate template and preview runbook now target
+that hostname. The originally deployed certificate still covers only the old
+hostname until its CloudFormation stack is updated. No Clerk production setting
+was changed.
+
+The full S3-source build on `4f2a082` passed 728 unit and 459 browser cases,
+static checks, production compilation and the Linux image build. Its container
+smoke failed before image push because the check used `/api/core/clients` rather
+than the implemented `/api/backend/core/clients` proxy route. Diagnostic jobs
+confirmed UID 1000, a healthy `/healthz`, and setup/sign-in fallback pages. The
+smoke URL is corrected in the current source; a fresh exact-source build and
+scan are still required. The original zlib HIGH finding is not waived.
+
 ## Client lifecycle integration outline — 11 October 2026
 
 Client-intake owns the canonical three-step form, profile mapping/validation,

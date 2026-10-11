@@ -25,7 +25,7 @@ portfolio_page=$(curl --fail --silent --show-error http://127.0.0.1:5188/portfol
 [[ "$portfolio_page" == *'Portfolio setup required'* ]]
 sign_in_page=$(curl --fail --silent --show-error http://127.0.0.1:5188/sign-in)
 [[ "$sign_in_page" == *'Configure the existing Clerk test application to sign in.'* ]]
-status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' http://127.0.0.1:5188/api/core/clients)
+status=$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' http://127.0.0.1:5188/api/backend/core/clients)
 test "$status" = 503
 
 echo "Container smoke passed: nonroot user, /healthz, setup/sign-in, and unconfigured proxy."

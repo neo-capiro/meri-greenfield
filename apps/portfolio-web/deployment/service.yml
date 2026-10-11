@@ -8,7 +8,7 @@ Parameters:
     AllowedPattern: "^[0-9]{12}\\.dkr\\.ecr\\.us-east-1\\.amazonaws\\.com/capiro/portfolio-preview@sha256:[0-9a-f]{64}$"
   CertificateArn:
     Type: String
-    Description: ISSUED ACM certificate for portfolio-preview.capiro.ai
+    Description: ISSUED ACM certificate for portfolio-preview.app.capiro.ai
   AllowedIngressCidr:
     Type: String
     Description: Approved browser source IPv4 /32
