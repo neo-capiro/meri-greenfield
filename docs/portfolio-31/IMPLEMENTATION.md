@@ -341,6 +341,25 @@ change shared routing, or approve live product writes.
   image scan, and review of network/secret boundaries. Signed-in acceptance is a
   separate bounded production test after the preview is reachable.
 
+CLI foundation read-back at 2026-10-11 15:42 UTC: CloudFormation stack
+`Capiro-Portfolio-Preview-Registry` is `CREATE_COMPLETE`; its repository is
+`967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview`, with
+immutable tags, scan-on-push and AES256 encryption. Stack
+`Capiro-Portfolio-Preview-Certificate` is `CREATE_COMPLETE`; its certificate
+`arn:aws:acm:us-east-1:967807252336:certificate/179a4c08-7745-45f9-b4be-7ddae9d36729`
+is `ISSUED` with successful DNS validation. Route 53 has only the ACM validation
+CNAME for this name; it has no preview A/AAAA alias. The service stack template
+under `apps/portfolio-web/deployment` validates with CloudFormation but is not
+deployed. The exact image digest, Clerk secret references and approved browser
+source CIDR remain required service parameters. The existing Capiro ALB and
+`web-vnext` service are unchanged.
+
+Read-only ECS task-definition and Secrets Manager metadata checks confirm the
+existing `web-vnext` publishable-key reference and core API secret-key reference
+form a matching `live` Clerk key pair under one KMS key. No key value was printed
+or copied. This identifies candidate secret references for the preview; it does
+not prove the preview origin allowlist, JWT behavior or tenant membership.
+
 ## Client lifecycle integration outline — 11 October 2026
 
 Client-intake owns the canonical three-step form, profile mapping/validation,

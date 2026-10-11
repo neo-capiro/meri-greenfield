@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Isolated image registry for the Capiro Portfolio preview frontend
+
+Resources:
+  PortfolioPreviewRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: capiro/portfolio-preview
+      ImageTagMutability: IMMUTABLE
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      Tags:
+        - Key: Project
+          Value: capiro
+        - Key: Environment
+          Value: portfolio-preview
+        - Key: ManagedBy
+          Value: cloudformation
+
+Outputs:
+  RepositoryArn:
+    Value: !GetAtt PortfolioPreviewRepository.Arn
+  RepositoryUri:
+    Value: !GetAtt PortfolioPreviewRepository.RepositoryUri
