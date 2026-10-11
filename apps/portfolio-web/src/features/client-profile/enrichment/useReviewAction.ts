@@ -10,7 +10,7 @@ import {
   type ReviewAction,
   type ReviewActor,
 } from "./actions";
-import { enrichmentKey } from "./queries";
+import { latestReviewKey } from "./queries";
 import type { FillRun } from "./contracts";
 export function useReviewAction(
   clientId: string,
@@ -28,7 +28,7 @@ export function useReviewAction(
     return () => {
       controller.abort();
     };
-  }, [clientId, cache, open]);
+  }, [clientId, cache, open, actor.userId, actor.tenantId]);
   const mutation = useMutation({
     retry: false,
     mutationFn: async ({
@@ -61,7 +61,7 @@ export function useReviewAction(
           },
         );
         guard();
-        cache.setQueryData([...enrichmentKey(clientId), "latest"], result);
+        cache.setQueryData(latestReviewKey(clientId, actor), result);
         setUncertain(false);
         setReceipt(
           action.kind === "apply"

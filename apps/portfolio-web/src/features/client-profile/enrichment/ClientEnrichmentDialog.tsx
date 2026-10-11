@@ -26,7 +26,29 @@ export function ClientEnrichmentDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { identity, canRead, canEdit } = useEnrichmentAccess();
+  const access = useEnrichmentAccess();
+  return (
+    <ClientEnrichmentReview
+      key={`${clientId}:${access.identity.data?.tenant?.id}:${access.identity.data?.user.id}`}
+      clientId={clientId}
+      open={open}
+      onOpenChange={onOpenChange}
+      access={access}
+    />
+  );
+}
+function ClientEnrichmentReview({
+  clientId,
+  open,
+  onOpenChange,
+  access,
+}: {
+  clientId: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  access: ReturnType<typeof useEnrichmentAccess>;
+}) {
+  const { identity, canRead, canEdit } = access;
   const latest = useLatestReview(clientId, open && canRead);
   const setup = useEnrichmentSetup(clientId, open && canRead);
   const [selected, setSelected] = useState<string[]>([]);

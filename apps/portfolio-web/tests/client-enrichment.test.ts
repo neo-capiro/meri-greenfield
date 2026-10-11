@@ -10,7 +10,11 @@ import {
   runSchema,
   safeEvidenceUrl,
 } from "../src/features/client-profile/enrichment/contracts";
-import { loadRun } from "../src/features/client-profile/enrichment/queries";
+import {
+  loadRun,
+  latestReviewKey,
+  setupKey,
+} from "../src/features/client-profile/enrichment/queries";
 const clientId = "10000000-0000-4000-8000-000000000001";
 const runId = "10000000-0000-4000-8000-000000000002";
 const findingId = "10000000-0000-4000-8000-000000000003";
@@ -105,15 +109,13 @@ describe("enrichment contracts and scoped actions", () => {
   });
   it("validates run receipt client and requested run identity", async () => {
     const api = createApiClient(
-      vi
-        .fn()
-        .mockResolvedValue(
-          response({
-            ...raw,
-            clientId: runId,
-            findings: raw.findings.map((f) => ({ ...f, clientId: runId })),
-          }),
-        ),
+      vi.fn().mockResolvedValue(
+        response({
+          ...raw,
+          clientId: runId,
+          findings: raw.findings.map((f) => ({ ...f, clientId: runId })),
+        }),
+      ),
     );
     await expect(loadRun(api, clientId, runId)).rejects.toThrow(
       "different client",
@@ -244,5 +246,101 @@ describe("enrichment contracts and scoped actions", () => {
     });
     expect(() => assertReviewAccess(cache, actor, true)).toThrow();
     expect(() => assertReviewAccess(cache, actor, false)).not.toThrow();
+  });
+  it("keeps latest/setup cache data separate across users and tenants", () => {
+    const cache = new QueryClient();
+    const first = { tenantId: "tenant-a", userId: "user-a" };
+    const second = { tenantId: "tenant-a", userId: "user-b" };
+    const other = { tenantId: "tenant-b", userId: "user-a" };
+    cache.setQueryData(latestReviewKey(clientId, first), review());
+    cache.setQueryData(setupKey(clientId, first), { clientId });
+    expect(
+      cache.getQueryData(latestReviewKey(clientId, second)),
+    ).toBeUndefined();
+    expect(
+      cache.getQueryData(latestReviewKey(clientId, other)),
+    ).toBeUndefined();
+    expect(cache.getQueryData(setupKey(clientId, second))).toBeUndefined();
+  });
+  it("refuses an actor switch while preflight is in flight with zero POST", async () => {
+    const cache = new QueryClient();
+    const actor = { tenantId: "tenant", userId: "first" };
+    cache.setQueryData(["identity"], {
+      user: { id: "first", email: null },
+      tenant: { id: "tenant", name: "Test" },
+      role: "user_admin",
+    });
+    const fetcher = vi.fn(async () => {
+      cache.setQueryData(["identity"], {
+        user: { id: "second", email: null },
+        tenant: { id: "tenant", name: "Test" },
+        role: "user_admin",
+      });
+      return response(raw);
+    });
+    await expect(
+      executeReviewAction(
+        createApiClient(fetcher),
+        clientId,
+        review(),
+        { kind: "apply", findingIds: [findingId] },
+        () => assertReviewAccess(cache, actor, true),
+        new AbortController().signal,
+        () => {},
+      ),
+    ).rejects.toThrow("current session");
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+  it("refuses identity state carrying a current error even with stale success data", () => {
+    const cache = new QueryClient();
+    const actor = { tenantId: "tenant", userId: "first" };
+    cache.setQueryData(["identity"], {
+      user: { id: "first", email: null },
+      tenant: { id: "tenant", name: "Test" },
+      role: "user_admin",
+    });
+    cache
+      .getQueryCache()
+      .find({ queryKey: ["identity"] })
+      ?.setState({
+        status: "success",
+        error: new Error("Identity refresh failed"),
+      });
+    expect(() => assertReviewAccess(cache, actor, true)).toThrow(
+      "current session",
+    );
+  });
+  it("rejects cancellation receipt which still reports running", async () => {
+    const fetcher = vi.fn(async () => response({ ...raw, status: "running" }));
+    await expect(
+      executeReviewAction(
+        createApiClient(fetcher),
+        clientId,
+        review(),
+        { kind: "cancel" },
+        () => {},
+        new AbortController().signal,
+        () => {},
+      ),
+    ).rejects.toThrow("Cancellation was not confirmed");
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+  it("rejects ignore acknowledgment without a rejected saved finding", async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(response(raw))
+      .mockResolvedValueOnce(response({ ok: true }))
+      .mockResolvedValueOnce(response(raw));
+    await expect(
+      executeReviewAction(
+        createApiClient(fetcher),
+        clientId,
+        review(),
+        { kind: "reject", findingId, reason: "" },
+        () => {},
+        new AbortController().signal,
+        () => {},
+      ),
+    ).rejects.toThrow("did not confirm");
   });
 });

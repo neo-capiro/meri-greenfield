@@ -24,6 +24,7 @@ export function assertReviewAccess(
   const parsed = identitySchema.safeParse(cache.getQueryData(["identity"]));
   if (
     state?.status !== "success" ||
+    Boolean(state.error) ||
     state.isInvalidated ||
     state.fetchStatus !== "idle" ||
     !parsed.success ||
@@ -128,6 +129,11 @@ export async function executeReviewAction(
         signal,
       },
     );
+    if (action.kind === "cancel" && result.status !== "cancelled")
+      throw new ApiError(
+        502,
+        "Cancellation was not confirmed by the saved run.",
+      );
     return result;
   }
   if (action.kind === "assign")
@@ -140,10 +146,10 @@ export async function executeReviewAction(
           matterId: z.string().uuid().nullable(),
           alreadyApplied: z.boolean(),
         })
-        .refine(
-          (r) =>
-            !("matterId" in action.target) ||
-            r.matterId === action.target.matterId,
+        .refine((r) =>
+          "matterId" in action.target
+            ? r.matterId === action.target.matterId
+            : r.matterId !== null,
         ),
       { method: "POST", body: action.target, signal },
     );
@@ -160,5 +166,19 @@ export async function executeReviewAction(
     );
   guard();
   signal.throwIfAborted();
-  return loadRun(api, clientId, review.id, signal);
+  const result = await loadRun(api, clientId, review.id, signal);
+  const expected =
+    action.kind === "reject"
+      ? "rejected"
+      : action.kind === "restore"
+        ? "pending"
+        : "accepted";
+  if (
+    result.findings.find((f) => f.id === action.findingId)?.status !== expected
+  )
+    throw new ApiError(
+      502,
+      "The saved finding did not confirm the requested review state.",
+    );
+  return result;
 }
