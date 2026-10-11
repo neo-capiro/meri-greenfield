@@ -191,6 +191,33 @@ test('an audience entry cannot substitute for the operation-bound producer or cu
   }
 });
 
+test('resolver current and producer must share the same canonical run lineage', async t => {
+  const f = fixture();
+  const wrongCurrent = structuredClone(f.current);
+  wrongCurrent.identity.canonical.actorId = 'unrelated-actor';
+  const wrongProducer = structuredClone(f.producer);
+  wrongProducer.identity.canonical.actorId = 'unrelated-actor';
+  const first = await startIngress(t, {
+    resolver: async () => ({ peer: { ...PEER }, context: wrongCurrent,
+      producer: f.producer, audience: [f.producer] }),
+    handlers: trustedHandlers(f),
+  });
+  const second = await startIngress(t, {
+    resolver: async () => ({ peer: { ...PEER }, context: f.current,
+      producer: wrongProducer, audience: [f.current] }),
+    handlers: trustedHandlers(f),
+  });
+  const original = await httpsCall({ port: first.port,
+    body: wire(requestFor(f, 'authorizeFixturePhase')) });
+  const resumedRequest = requestFor(f, 'authorizeFixturePhase');
+  resumedRequest.context = structuredClone(f.current);
+  const resumed = await httpsCall({ port: second.port, body: wire(resumedRequest) });
+  for (const response of [original, resumed]) {
+    assert.equal(response.status, 403);
+    assert.equal(response.body.length, 0);
+  }
+});
+
 test('response freshness uses a trusted clock reading after handler completion', async t => {
   const f = fixture();
   const { port } = await startIngress(t, { resolver: trustedResolver(f),

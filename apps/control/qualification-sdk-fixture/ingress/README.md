@@ -9,9 +9,12 @@ with a verified client certificate.
 
 The resolver receives `{ fingerprintSha256, operation, signal }`, where the
 fingerprint is derived from the authenticated socket certificate. It returns
-`{ peer, context, producer, audience }` or `null`. For authorization and commit,
-the presented context must equal the bound `producer`; for load and verify it
-must equal the bound `context`. In every case it must also occur in `audience`.
+`{ peer, context, producer, audience }` or `null`. For authorization, the
+presented context must equal either the original `producer` or the bound
+current `context`; commit requires `producer`, and load/verify require
+`context`. In every case the presented context must also occur in `audience`.
+The two trusted contexts must share the same run, namespace, clock, pins and
+canonical actor lineage. This does not prove which grant is currently active.
 This is a credential binding check on data, not a currentness decision. The
 resolver must be backed by trusted authority; the transport has no fallback.
 

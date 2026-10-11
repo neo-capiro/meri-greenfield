@@ -74,6 +74,22 @@ function fixedBinding(resolved) {
     if (error instanceof Error && error.message === INGRESS_CODES.RESOLVER) throw error;
     fail(INGRESS_CODES.RESOLVER);
   }
+  // The resolver may return current B together with historical producer A so
+  // an A authorize can receive an explicit stale decision. Both contexts must
+  // still describe the same run and immutable lineage. This is a structural
+  // binding check; the registry owns whether B is actually current.
+  const same = (left, right) => canonicalSha256(left) === canonicalSha256(right);
+  const left = producer.identity.canonical, right = context.identity.canonical;
+  if (producer.phase !== 'interrupt' || context.runUuid !== producer.runUuid ||
+      !same(context.namespace, producer.namespace) || !same(context.clock, producer.clock) ||
+      !same(context.pins, producer.pins) ||
+      context.identity.policyRevision !== producer.identity.policyRevision ||
+      ['tenantId', 'actorId', 'conversationId', 'runId'].some(key => left[key] !== right[key]) ||
+      (context.phase === 'interrupt' && !same(context, producer)) ||
+      (context.phase === 'resume' && (context.identity.attempt !== 2 ||
+        context.identity.fence <= producer.identity.fence ||
+        context.identity.admittedAtMs <= producer.identity.admittedAtMs)) ||
+      !['interrupt', 'resume'].includes(context.phase)) fail(INGRESS_CODES.RESOLVER);
   return { peer, context, producer, audience };
 }
 
@@ -82,7 +98,7 @@ function fixedBinding(resolved) {
  *
  * The resolver receives the socket-derived fingerprint and the fixed operation;
  * a null/undefined answer is an unknown credential and refuses. The presented
- * context must match the operation's trusted bound context AND an audience
+ * context must match an operation-allowed trusted context AND an audience
  * entry; anything else refuses without implying a stale denial.
  *
  * @param {{fingerprintSha256: string, operation: string, presentedContext: object,
@@ -103,9 +119,10 @@ export async function bindAuthenticatedOperation({ fingerprintSha256, operation,
   if (resolved === null || resolved === undefined) fail(INGRESS_CODES.UNKNOWN_PEER);
   const binding = fixedBinding(resolved);
   const presented = canonicalSha256(presentedContext);
-  const expected = operation === 'authorizeFixturePhase' || operation === 'commitFixtureCheckpoint'
-    ? binding.producer : binding.context;
-  if (canonicalSha256(expected) !== presented ||
+  const candidates = operation === 'authorizeFixturePhase'
+    ? [binding.producer, binding.context]
+    : operation === 'commitFixtureCheckpoint' ? [binding.producer] : [binding.context];
+  if (!candidates.some(expected => canonicalSha256(expected) === presented) ||
       !binding.audience.some(entry => canonicalSha256(entry) === presented)) {
     fail(INGRESS_CODES.CONTEXT_BINDING);
   }

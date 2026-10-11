@@ -23,3 +23,11 @@ fence state, immutable S3 bytes, real ECS peer identity or two-task recovery.
 No source connection, AWS, Docker, provider/customer data, cloud write, image
 build, PR, merge or deployment. Run pinned Node 24 focused and affected suites,
 check final diff, verify test server/socket closure and keep failed attempts.
+
+## Scope change discovered during integration
+
+The added resumed-task authorization assertion reproduced an ingress
+operation-binding defect. Repair the private ingress binding and its tests in
+this same local source-only branch, then rerun the affected suites. The change
+must allow both historical-A and current-B authorization while still refusing
+an unrelated or out-of-audience context before trusted handler dispatch.

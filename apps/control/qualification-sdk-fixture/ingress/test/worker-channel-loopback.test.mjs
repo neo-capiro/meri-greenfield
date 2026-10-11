@@ -65,6 +65,7 @@ test('A commit and B stale denial/load/verify cross the actual mTLS callback cha
     current: f.current, phaseDeadlineMs: NOW + 10000, requestId,
     reference, now: testClock() });
   assert.equal(await resumed.gateway.authorize(driver(f.producer)), false);
+  assert.equal(await resumed.gateway.authorize(driver(f.current)), true);
   const loaded = await resumed.checkpoint.load({ context: driver(f.current), reference });
   assert.deepEqual(loaded.bundle, f.bundle);
   assert.equal(loaded.receipt.completeRecoveryCheckpoint, false);
@@ -74,10 +75,11 @@ test('A commit and B stale denial/load/verify cross the actual mTLS callback cha
 
   assert.deepEqual(seen.map(({ operation }) => operation), [
     'authorizeFixturePhase', 'commitFixtureCheckpoint', 'authorizeFixturePhase',
+    'authorizeFixturePhase',
     'loadFixtureCheckpoint', 'verifyFixtureCheckpoint',
   ]);
   assert.ok(seen.every(({ peer }) => peer.peerId === PEER.peerId));
-  assert.equal(calls.resolver.length, 5);
+  assert.equal(calls.resolver.length, 6);
   assert.ok(calls.resolver.every(query => query.fingerprintSha256 === TRUSTED_FINGERPRINT));
   assert.equal(await waitFor(() => ingress.activeConnections() === 0), true);
 });
