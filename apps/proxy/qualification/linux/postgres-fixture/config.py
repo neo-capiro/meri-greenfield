@@ -47,9 +47,12 @@ def parse(raw):
     require(type(raw)is bytes and len(raw)<=4096,'CONFIG_BOUND')
     v=json.loads(raw.decode('utf-8'),object_pairs_hook=pairs,
         parse_constant=lambda _:require(False,'NONFINITE_JSON'))
-    require(type(v)is dict and set(v)=={'schema','runId','proxyImage','postgresImage','t0Ms',
-        'startDeadlineMs','workDeadlineMs','cleanupDeadlineMs','originalC'},'CONFIG_SHAPE')
-    require(v['schema']=='meri.postgres.tls-fixture/1' and v['postgresImage']==PG_IMAGE,'FIXED_PG_IMAGE')
+    base={'schema','runId','proxyImage','postgresImage','t0Ms','startDeadlineMs','workDeadlineMs','cleanupDeadlineMs','originalC'}
+    require(type(v)is dict and v.get('schema') in ('meri.postgres.tls-fixture/1','meri.postgres.native-combined/1'),'CONFIG_SHAPE')
+    combined=v['schema']=='meri.postgres.native-combined/1'
+    require(set(v)==base|({'rootAdmissionSha256'} if combined else set()),'CONFIG_SHAPE')
+    if combined:require(type(v['rootAdmissionSha256'])is str and re.fullmatch('[0-9a-f]{64}',v['rootAdmissionSha256']),'ROOT_ADMISSION_PIN')
+    require(v['postgresImage']==PG_IMAGE,'FIXED_PG_IMAGE')
     require(type(v['runId'])is str and str(uuid.UUID(v['runId']))==v['runId'],'RUN_UUID')
     require(type(v['proxyImage'])is str and re.fullmatch('sha256:[0-9a-f]{64}',v['proxyImage'])
         and v['proxyImage']!=OLD_IMAGE,'FRESH_BUILT_PROXY_IMAGE_REQUIRED')
@@ -59,6 +62,7 @@ def parse(raw):
         and v['startDeadlineMs']<v['workDeadlineMs']<=v['t0Ms']+300000
         and v['workDeadlineMs']<v['cleanupDeadlineMs']<=v['workDeadlineMs']+30000
         and v['cleanupDeadlineMs']<=v['originalC']==v['t0Ms']+900000,'ORIGINAL_BOUNDED_CLOCK')
+    if combined:require((v['workDeadlineMs']-v['t0Ms'])%1000==0 and (v['cleanupDeadlineMs']-v['workDeadlineMs'])%1000==0,'CANONICAL_INTEGER_SECONDS')
     return v
 
 def names(v):
@@ -75,3 +79,8 @@ def url(v,password,case):
     ca=mount(v)+('/wrong-ca.pem' if case=='wrong-ca' else '/ca.pem')
     query=urlencode([('sslmode','require'),('sslaccept','strict'),('sslcert',ca)])
     return ('postgresql://'+USER+':'+password+'@'+host+':5432/'+names(v)['native']+'?'+query).encode('ascii')
+
+def owner_url(v,password):
+    require(v['schema']=='meri.postgres.native-combined/1' and re.fullmatch('[0-9a-f]{64}',password),'COMBINED_OWNER_ONLY')
+    query=urlencode([('sslmode','require'),('sslaccept','strict'),('sslcert','/run/meri-native-owner/'+v['runId']+'/ca.pem')])
+    return ('postgresql://meri_fixture_owner:'+password+'@'+HOST+':5432/'+names(v)['native']+'?'+query).encode('ascii')

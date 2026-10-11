@@ -9,8 +9,9 @@ import secrets
 import sys
 import time
 
-from config import CASES,HOST,PG_IMAGE,USER,is_postgres_repo_digest,mount,names,parse,read_owner,require,url
+from config import CASES,HOST,PG_IMAGE,USER,is_postgres_repo_digest,mount,names,owner_url,parse,read_owner,require,url
 from docker_capture import DockerCapture
+import native_bootstrap
 
 HERE=Path(__file__).resolve().parent
 
@@ -55,11 +56,16 @@ def main(argv=None):
     raw,input_identity=read_owner(args.config);require(hashlib.sha256(raw).hexdigest()==args.config_sha256,'OWNER_CONFIG_HASH')
     v=parse(raw);now=time.time_ns()//1000000
     require(v['t0Ms']<=now<v['startDeadlineMs'],'FRESH_ORIGINAL_START')
+    combined=v['schema']=='meri.postgres.native-combined/1';admitted=None;native=None
+    if combined:
+        admission_raw,admission_identity=read_owner(args.config.with_name('admission.json'))
+        admitted=native_bootstrap.admission(admission_raw,v)
+        native=native_bootstrap.native_config_module(HERE.parent/'native-runtime',admitted)
     args.output.mkdir(mode=0o700);private=args.output/'private';private.mkdir(mode=0o700)
     # Private file area is NEVER a result artifact; destroyed only after owned containers are absent.
     client=private/'client';client.mkdir(mode=0o700);os.chown(client,10001,10001)
     certs=private/'certs';certs.mkdir(mode=0o700);os.chown(certs,10001,10001)
-    n=names(v);owner=v['runId'];attempts=[];network_attempt=False
+    n=names(v);owner=v['runId'];attempts=[];network_attempt=False;removed_early=[]
     c=DockerCapture(args.output,v['workDeadlineMs'])
     result={'schema':'meri.postgres.tls-fixture-result/1','runId':owner,'configSha256':args.config_sha256,
         'proxyImage':v['proxyImage'],'postgresImage':PG_IMAGE,'clock':{k:v[k] for k in ('t0Ms','workDeadlineMs','cleanupDeadlineMs','originalC')},
@@ -74,6 +80,7 @@ def main(argv=None):
             else:require(any(is_postgres_repo_digest(ref) for ref in im[0].get('RepoDigests',[])),'PINNED_POSTGRES_REPODIGEST')
             result[label+'ImageId']=im[0]['Id']
         prospective=[n['client']+'-certs',n['server'],n['plain']]+[n['client']+'-'+case for case in CASES]
+        if combined:prospective += [n['client']+'-schema',n['client']+'-auth']
         for kind,name in [('network',n['network'])]+[('container',name) for name in prospective]:
             data,err,_=c.call('prior-absence',[kind,'inspect',name],allowed=(1,))
             require(json.loads(data)==[] and (b'No such container' in err if kind=='container' else b'not found' in err.lower()),'FRESH_RESOURCE_NAME_REQUIRED')
@@ -85,7 +92,7 @@ def main(argv=None):
         certname=n['client']+'-certs'
         a=common(certname,owner,'none','10001:10001',v['proxyImage'])+['--mount','type=bind,source='+str(certs)+',target=/fixture','--entrypoint','/bin/sh',v['proxyImage'],'-ceu',certscript]
         cid=create(c,a,v['proxyImage'],owner,attempts);c.call('certificates',['start','--attach',cid])
-        admin=secrets.token_hex(32);password=secrets.token_hex(32);wrong=secrets.token_hex(32)
+        admin=secrets.token_hex(32);password=secrets.token_hex(32);wrong=secrets.token_hex(32);owner_password=secrets.token_hex(32) if combined else None
         for case in CASES:write(client/(case+'-url'),url(v,wrong if case=='wrong-password' else password,case),10001)
         write(client/'database-url',url(v,password,'positive'),10001)
         for name in ('ca.pem','wrong-ca.pem'):write(client/name,(certs/name).read_bytes(),10001)
@@ -99,9 +106,12 @@ def main(argv=None):
                 "CREATE DATABASE "+n['native']+" OWNER meri_fixture_owner;\nCREATE DATABASE "+n['state']+" OWNER meri_fixture_owner;\n"
                 "REVOKE ALL ON DATABASE "+n['native']+" FROM PUBLIC;\nREVOKE ALL ON DATABASE "+n['state']+" FROM PUBLIC;\n"
                 "GRANT CONNECT ON DATABASE "+n['native']+" TO "+USER+";\n")
+            if combined and ssl:
+                sql=sql.replace('meri_fixture_owner NOLOGIN','meri_fixture_owner LOGIN PASSWORD '+"'"+owner_password+"'")
             write(server/'bootstrap.sql',sql.encode(),999)
             # No client shares this local socket; local trust exists ONLY during isolated bootstrap.
             hba='local all all reject\nhostnossl all all 0.0.0.0/0 reject\nhostnossl all all ::/0 reject\nhostssl all '+USER+' 0.0.0.0/0 scram-sha-256\nhostssl all '+USER+' ::/0 scram-sha-256\n'
+            if combined and ssl:hba+='hostssl '+n['native']+' meri_fixture_owner 0.0.0.0/0 scram-sha-256\nhostssl '+n['native']+' meri_fixture_owner ::/0 scram-sha-256\n'
             write(server/'pg_hba.conf',hba.encode(),999)
             conf="listen_addresses='*'\nport=5432\npassword_encryption='scram-sha-256'\nhba_file='/run/meri-pg/pg_hba.conf'\nssl="+('on' if ssl else 'off')+"\nssl_cert_file='/run/meri-pg/server.pem'\nssl_key_file='/run/meri-pg/server.key'\nssl_min_protocol_version='TLSv1.2'\nlog_statement='none'\nlog_min_error_statement='panic'\nlog_min_messages='fatal'\nmax_connections=20\nshared_buffers='32MB'\n"
             write(server/'postgresql.conf',conf.encode(),999)
@@ -135,9 +145,52 @@ def main(argv=None):
             value=json.loads(data);result['controls'][case]=value
             require(value.get('case')==case and value.get('passed') is True and observed['State']['ExitCode']==0,'NATIVE_CONTROL_FAILED_'+case)
         result['tlsControlsPassed']=True
-    except Exception as error:result.update(errorType=type(error).__name__,tlsControlsPassed=False)
+        if combined:
+            # Genuine schema bootstrap has separate mounted owner authority; the
+            # app container never sees that directory/URL/password.
+            require(time.time_ns()//1000000<v['startDeadlineMs'],'AUTH_ORIGINAL_60_SECOND_START_EXPIRED')
+            owner_root=private/'native-owner';owner_root.mkdir(mode=0o700);os.chown(owner_root,10001,10001)
+            owner_mount='/run/meri-native-owner/'+owner
+            write(owner_root/'database-url',owner_url(v,owner_password),10001);write(owner_root/'ca.pem',(certs/'ca.pem').read_bytes(),10001)
+            write(owner_root/'bootstrap.json',json.dumps({'runtimeSha256':admitted['runtimeSha256'],'deadlineMs':v['startDeadlineMs']},sort_keys=True).encode(),10001)
+            a=common(n['client']+'-schema',owner,n['network'],'10001:10001',v['proxyImage'])+['--mount',
+                'type=bind,source='+str(owner_root)+',target='+owner_mount+',readonly','--mount',
+                'type=bind,source='+str(HERE/'native_bootstrap.py')+',target=/run/native_bootstrap.py,readonly',
+                '--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],'-I','-B','/run/native_bootstrap.py','--run',owner,'--deadline-ms',str(v['startDeadlineMs'])]
+            cid=create(c,a,v['proxyImage'],owner,attempts);schema_raw,_,_=c.call('native-schema',['start','--attach',cid])
+            schema_result=json.loads(schema_raw);result['nativeSchema']=schema_result
+            observed=c.inspect('container',cid,owner,v['proxyImage']);require(observed['State']['Running'] is False and observed['State']['ExitCode']==0,'SCHEMA_TERMINAL')
+            removed_early.append(c.remove_container(n['client']+'-schema',owner,v['proxyImage']));attempts.remove((n['client']+'-schema',v['proxyImage']))
+            for p in owner_root.iterdir():require(p.is_file() and not p.is_symlink(),'OWNER_FILE_DRIFT');p.unlink()
+            owner_root.rmdir()
+            # Files are generated only after measured TLS and genuine schema/grant
+            # results. The separate root admission remains the source of authority.
+            write(client/'master-key',('sk-'+secrets.token_hex(32)).encode(),10001);write(client/'salt-key',secrets.token_hex(32).encode(),10001)
+            write(client/'config.yaml',(json.dumps(native.proxy_config(),sort_keys=True,separators=(',',':'))+'\n').encode(),10001)
+            mounted={name:(client/name).read_bytes() for name in native.MOUNT_NAMES}
+            config_raw,activation_raw=native_bootstrap.activation(v,admitted,mounted,result['controls'],schema_result,native,time.time_ns()//1000000)
+            for name,record in native_bootstrap.measured_evidence(result['controls'],schema_result).items():
+                with (args.output/('prerequisite-'+name+'.json')).open('xb') as stream:stream.write(record)
+            with (args.output/'derived-native-activation.json').open('xb') as stream:stream.write(activation_raw)
+            native_root=private/'native-source';native_root.mkdir(mode=0o755)
+            for name in native.SOURCE_NAMES:
+                write(native_root/name,native_bootstrap.raw_source(HERE.parent/'native-runtime'/name,admitted['sourceSha256'][name]),10001)
+            write(client/'native-config.json',config_raw,10001);write(client/'activation.json',activation_raw,10001)
+            result['derivedActivationSha256']=native_bootstrap.sha(activation_raw);result['nativeSchemaInitialized']=True
+            a=common(n['client']+'-auth',owner,n['network'],'10001:10001',v['proxyImage'])+['--mount',
+                'type=bind,source='+str(client)+',target='+mount(v)+',readonly','--mount',
+                'type=bind,source='+str(native_root)+',target=/run/native-auth-source,readonly',
+                '--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],'-I','-B','/run/native-auth-source/native_auth_probe.py',
+                '--config',mount(v)+'/native-config.json','--run','--activation',mount(v)+'/activation.json','--activation-sha',result['derivedActivationSha256']]
+            cid=create(c,a,v['proxyImage'],owner,attempts);auth_raw,_,_=c.call('native-auth',['start','--attach',cid]);result['nativeAuth']=json.loads(auth_raw)
+            observed=c.inspect('container',cid,owner,v['proxyImage'])
+            require(observed['State']['Running'] is False and observed['State']['ExitCode']==0 and result['nativeAuth'].get('nativeKeyAuthenticated') is True and result['nativeAuth'].get('postDeleteDenied') is True,'GENUINE_NATIVE_AUTH_FAILED')
+            result['nativeAuthPassed']=True
+    except Exception as error:
+        result['errorType']=type(error).__name__;result.setdefault('tlsControlsPassed',False)
+        if combined:result.setdefault('nativeAuthPassed',False)
     finally:
-        c.deadline_ms=v['cleanupDeadlineMs'];failures=[];removed=[]
+        c.deadline_ms=v['cleanupDeadlineMs'];failures=[];removed=list(removed_early)
         for name,image in reversed(attempts):
             try:removed.append(c.remove_container(name,owner,image))
             except Exception as error:failures.append({'resource':name,'errorType':type(error).__name__})
@@ -157,11 +210,17 @@ def main(argv=None):
             except Exception as error:result['privateCleanupErrorType']=type(error).__name__
         try:result['inputStable']=read_owner(args.config)==(raw,input_identity)
         except Exception as error:result.update(inputStable=False,inputReadbackErrorType=type(error).__name__)
+        if combined:
+            try:
+                result['inputStable']=result['inputStable'] and read_owner(args.config.with_name('admission.json'))==(admission_raw,admission_identity)
+                for name in native.SOURCE_NAMES:native_bootstrap.raw_source(HERE.parent/'native-runtime'/name,admitted['sourceSha256'][name])
+            except Exception as error:result.update(inputStable=False,admissionReadbackErrorType=type(error).__name__)
         result['endedAtMs']=time.time_ns()//1000000
         result['cleanupBeforeOriginalDeadline']=result['endedAtMs']<=v['cleanupDeadlineMs']<=v['originalC']
         with (args.output/'result.json').open('x') as f:json.dump(result,f,indent=2,sort_keys=True)
     print(json.dumps(result,sort_keys=True))
-    return 0 if all(result.get(k) is True for k in ('tlsControlsPassed','ownedCleanup','privateFilesRemoved','inputStable','cleanupBeforeOriginalDeadline')) else 1
+    required=('tlsControlsPassed','ownedCleanup','privateFilesRemoved','inputStable','cleanupBeforeOriginalDeadline')+(('nativeAuthPassed',) if combined else ())
+    return 0 if all(result.get(k) is True for k in required) else 1
 
 if __name__=='__main__':
     try:raise SystemExit(main())
