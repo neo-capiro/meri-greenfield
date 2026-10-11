@@ -1,4 +1,4 @@
-"""Linux build-only worker evidence. Never starts a container or publishes an image."""
+"""Linux worker image evidence and gated publication. Never starts a container."""
 import argparse
 import datetime as dt
 import hashlib
@@ -23,8 +23,11 @@ if __name__ == '__main__':
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 SCHEMA = 'meri-worker-image-input/1'
+PUBLISH_SCHEMA = 'meri-worker-image-input/2'
 ASSEMBLER = 'scripts/qualification/worker_context.py'
 COLLECTOR = 'scripts/qualification/worker_image_collect.py'
+PUBLISHER = 'scripts/qualification/worker_image_publish.py'
+CLEANER = 'scripts/clear-qualification-docker-config.py'
 CONTEXT_SHA = '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
 ASSEMBLER_SHA = '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb'
 ARTIFACTS = {
@@ -102,13 +105,15 @@ def read(path, cap):
 def validate_input(root, manifest_raw, expected_sha):
     need(type(expected_sha) is str and SHA.fullmatch(expected_sha) and digest(manifest_raw) == expected_sha, 'external input pin')
     value = loads(manifest_raw)
-    need(type(value) is dict and set(value) == {'schema', 'sourceCommit', 'runUuid', 'members', 'contextManifestSha256'}
-         and value['schema'] == SCHEMA and type(value['sourceCommit']) is str
+    need(type(value) is dict and value.get('schema') in (SCHEMA, PUBLISH_SCHEMA), 'worker input schema')
+    publish = value['schema'] == PUBLISH_SCHEMA
+    need(set(value) == ({'schema', 'sourceCommit', 'runUuid', 'members', 'contextManifestSha256'} |
+         ({'publication'} if publish else set())) and type(value['sourceCommit']) is str
          and re.fullmatch('[a-f0-9]{40}', value['sourceCommit'])
          and value['contextManifestSha256'] == CONTEXT_SHA, 'worker input schema')
     need(type(value['runUuid']) is str and str(uuid.UUID(value['runUuid'])) == value['runUuid']
          and uuid.UUID(value['runUuid']).version == 4, 'fixed run UUID')
-    rows = value['members']; need(type(rows) is list and len(rows) == 47, '47 exact source/recipe records')
+    rows = value['members']; need(type(rows) is list and len(rows) == (49 if publish else 47), 'exact source/recipe records')
     names = set()
     for row in rows:
         need(type(row) is dict and set(row) == {'path', 'bytes', 'sha256'}, 'source record')
@@ -121,6 +126,9 @@ def validate_input(root, manifest_raw, expected_sha):
         need(len(raw) == row['bytes'] and digest(raw) == row['sha256'], 'source drift')
         names.add(name)
     need(digest(read(root/ASSEMBLER, 65536)) == ASSEMBLER_SHA, 'canonical assembler')
+    if publish:
+        from worker_image_publish import validate_publication
+        validate_publication(value['publication'], value['sourceCommit'], value['runUuid'])
     return value
 
 
@@ -290,7 +298,7 @@ def owned_container(value, iid, name, token, image_labels=None):
     return container['Id'], [x['Name'] for x in mounts]
 
 
-def collect(root, manifest, context, output, call, end):
+def collect(root, manifest, context, output, call, end, *, record_result=True):
     """One fixed build/never-started extraction. Adapter is private test seam."""
     commit = manifest['sourceCommit']; token = manifest['runUuid']
     tag = 'meri-sdk-interruption:'+token
@@ -356,7 +364,7 @@ def collect(root, manifest, context, output, call, end):
             except BaseException as error: result['cleanupFailureClass'] = type(error).__name__
         result['captureComplete'] = bool(result['status'] == 'BUILD_ONLY_STATIC_EVIDENCE' and result['physicalCleanupConfirmed']
                                          and time.monotonic() < end)
-        save(output/'result.json', result)
+        if record_result: save(output/'result.json', result)
     return result
 
 
@@ -401,7 +409,7 @@ def bundle(output, destination, *, file_limit=128, byte_limit=128*1024*1024, mem
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--collect', action='store_true'); args = parser.parse_args()
-    need(args.collect and sys.platform == 'linux', 'explicit Linux build-only collector required')
+    need(args.collect and sys.platform == 'linux', 'explicit Linux worker collector required')
     root = Path(__file__).resolve().parents[2]
     need(Path(os.environ.get('CODEBUILD_SRC_DIR', '')).absolute() == root, 'fixed CodeBuild root')
     manifest_raw = read(root/'worker-image-input.json', 2*1024*1024)
@@ -411,12 +419,15 @@ def main():
          and re.fullmatch('[A-Za-z0-9._~+/=-]{1,1024}', os.environ.get('SOURCE_S3_VERSION', ''))
          and os.environ['SOURCE_S3_VERSION'] != 'null'
          and os.environ.get('RESULT_KEY') == 'results/sdk-worker-image-'+manifest['runUuid']+'/evidence.tar.gz', 'fixed source version/result environment')
+    publish = manifest['schema'] == PUBLISH_SCHEMA
+    if publish: need(os.environ.get('WORKER_IMAGE_MODE') == 'publish', 'explicit worker image mode')
     import worker_context
     expected = {p for p, _ in worker_context.MEMBERS} | {ASSEMBLER, COLLECTOR, 'buildspec.json'}
+    if publish: expected |= {PUBLISHER, CLEANER}
     need({r['path'] for r in manifest['members']} == expected, 'canonical worker membership')
     output = root/'.meri-worker-evidence'; need(not output.exists(), 'exclusive collector output')
     need(shutil.disk_usage(root).free >= 2*1024*1024*1024, '2GiB free disk floor')
-    output.mkdir(); end = time.monotonic()+1500
+    output.mkdir(); end = time.monotonic()+(1620 if publish else 1500)
     call = Commands(output, end); context = root/'.meri-worker-context'; result = None
     try:
         save(output/'source-before.json', {'sourceCommit': manifest['sourceCommit'], 'runUuid': manifest['runUuid'],
@@ -425,15 +436,47 @@ def main():
         call('assemble-context', ['timeout', '--signal=TERM', '--kill-after=5s', '45s', 'python3', '-I', '-B', '-S', ASSEMBLER, '--output', str(context)], 50)
         worker_context.verify_context(context)
         need(digest(read(context/'manifest.json', 65536)) == CONTEXT_SHA, 'accepted context manifest')
-        result = collect(root, manifest, context, output, call, end)
+        result = collect(root, manifest, context, output, call, end, record_result=not publish)
         try:
             validate_input(root, manifest_raw, os.environ['INPUT_MANIFEST_SHA256'])
-            save(output/'source-post.json', {'sourceStable': True, 'inputManifestSha256': digest(manifest_raw)})
+            source_post = {'sourceStable': True, 'inputManifestSha256': digest(manifest_raw)}
+            if publish:
+                worker_context.verify_context(context)
+                need(digest(read(context/'manifest.json', 65536)) == CONTEXT_SHA, 'post-build context drift')
+                source_post['contextManifestSha256'] = CONTEXT_SHA
+            save(output/'source-post.json', source_post)
         except BaseException as error:
-            save(output/'source-post.json', {'sourceStable': False, 'errorClass': type(error).__name__}); raise
+            save(output/'source-post.json', {'sourceStable': False, 'errorClass': type(error).__name__})
+            if publish:
+                result['status'] = 'FAILED_OR_UNKNOWN'
+                result['captureComplete'] = False
+            raise
+        if publish:
+            result['scanAdmitted'] = False
+            result['runtimeAdmitted'] = False
+            result['g1Admitted'] = False
+            if result['captureComplete'] and result['physicalCleanupConfirmed'] and not result['containerStarted']:
+                import worker_image_publish
+                publication = worker_image_publish.execute(output, manifest, result, call, end)
+                result['publication'] = publication
+                if publication['status'] == 'PUBLISHED_NOT_ADMITTED':
+                    result['ecrPublished'] = True
+                    result['status'] = 'PUBLISHED_NOT_ADMITTED'
+                    result['imageDigest'] = publication['imageDigest']
+            save(output/'result.json', result)
     finally:
-        bundle(output, root/'worker-image-result.tar.gz')
-    return 0 if result and result['captureComplete'] else 1
+        if publish and result is not None and not (output/'result.json').exists():
+            result['scanAdmitted'] = False
+            result['runtimeAdmitted'] = False
+            result['g1Admitted'] = False
+            save(output/'result.json', result)
+        if publish:
+            partial = root/'worker-image-result.partial.tar.gz'
+            bundle(output, partial)
+            partial.replace(root/'worker-image-result.tar.gz')
+        else:
+            bundle(output, root/'worker-image-result.tar.gz')
+    return 0 if result and result['captureComplete'] and (not publish or result['ecrPublished']) else 1
 
 
 if __name__ == '__main__':
