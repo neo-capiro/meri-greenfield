@@ -146,13 +146,65 @@ class ElfTests(unittest.TestCase):
 
 
 class ProfileTests(unittest.TestCase):
+    def test_profile3_measured_node_families_and_numeric_targets(self):
+        names=('libbrotlienc.so.1','libcrypto.so.4','libssl.so.4','libicui18n.so.78','libicuuc.so.78')
+        for root in ('lib','lib64','usr/lib','usr/lib64'):
+            for name in names:
+                with self.subTest(root=root,name=name):
+                    self.assertTrue(abi.selected(root+'/'+name))
+                    self.assertTrue(abi.selected(root+'/'+name+'.1.2'))
+                    self.assertFalse(layer.selected(root+'/'+name))
+        self.assertEqual(abi.PROFILE,'meri-proxy-linux-amd64-node-prisma-abi/3')
+
+    def test_profile3_nearby_versions_and_unrelated_paths_not_selected(self):
+        for name in ('libbrotlienc.so.2','libcrypto.so.5','libssl.so.5','libicui18n.so.77',
+                     'libicui18n.so.79','libicuuc.so.77','libicuuc.so.79','libicudata.so.78'):
+            self.assertFalse(abi.selected('usr/lib/'+name),name)
+        for name in ('usr/lib/private/libcrypto.so.4','usr/local/lib/libssl.so.4',
+                     'usr/lib/libicuuc.so.78.evil','usr/lib/libcrypto.so.4x','usr/lib/libssl.so.4/escape',
+                     'usr/lib/libbrotlienc.so.1'+'.1'*17,'usr/share/licenses/icu/COPYRIGHT'):
+            self.assertFalse(abi.selected(name),name)
+        # Earlier selected OpenSSL3 and notice ownership remain unchanged.
+        self.assertTrue(abi.selected('usr/lib/libcrypto.so.3'))
+        self.assertTrue(abi.selected('usr/lib/libssl.so.3'))
+        self.assertNotIn('icu',abi.NOTICE_PACKAGES)
+
+    def test_profile3_measured_five_dependency_edges_remain_data_and_hold(self):
+        names=('libbrotlienc.so.1','libcrypto.so.4','libssl.so.4','libicui18n.so.78','libicuuc.so.78')
+        raw=bytearray(binary());strings=b'\0';offsets=[]
+        for name in names:
+            offsets.append(len(strings));strings+=name.encode()+b'\0'
+        raw[768:768+len(strings)]=strings
+        dynamic=[(5,0x400300),(10,len(strings)),*[(1,i) for i in offsets],(0,0)]
+        struct.pack_into('<Q',raw,152,len(dynamic)*16);struct.pack_into('<Q',raw,160,len(dynamic)*16)
+        for i,pair in enumerate(dynamic):struct.pack_into('<qQ',raw,512+16*i,*pair)
+        overlay=layer.Overlay(selection=abi.selected)
+        compressed,diff=archive([('usr/bin/node',bytes(raw))]);overlay.add_layer(io.BytesIO(compressed),diff,1)
+        before=abi.analyze(overlay,elf)
+        self.assertEqual([h['dependency'] for h in before['holds'] if h['path']=='usr/bin/node' and h['reason']=='DEPENDENCY_BYTES_MISSING'],list(names)+['lib64/ld-linux-x86-64.so.2'])
+        candidates=[('usr/lib/'+name,binary()) for name in names]
+        candidates += [('usr/lib/libc.so.6',binary()),('lib64/ld-linux-x86-64.so.2',binary())]
+        compressed,diff=archive(candidates);overlay.add_layer(io.BytesIO(compressed),diff,2)
+        value=abi.analyze(overlay,elf);node=next(row for row in value['elf'] if row['path']=='usr/bin/node')
+        self.assertEqual(node['needed'],list(names))
+        for edge,name in zip(node['dependencyCandidates'],names):
+            self.assertEqual(edge['needed'],name)
+            self.assertEqual(edge['regularCandidates'][0]['regularTarget'],'usr/lib/'+name)
+            self.assertTrue(edge['regularCandidates'][0]['hasElfMagic'])
+        self.assertFalse(any(h['path']=='usr/bin/node' and h['reason']=='DEPENDENCY_BYTES_MISSING' for h in value['holds']))
+        self.assertEqual(value['status'],'HOLD')
+        for key in ('runtimeAdmitted','nativeExecution','originalFirstStageHoldCleared','libraryCandidatesAreLoaderProof'):
+            self.assertIs(value[key],False)
+        self.assertTrue(any(h['reason']=='PACKAGE_IDENTITY_AND_LICENSE_MAPPING_MISSING' for h in value['holds']))
+        self.assertTrue(any(h['reason']=='NATIVE_LOADER_AND_COMPLETE_PACKAGE_NOTICE_VERIFICATION_UNQUALIFIED' for h in value['holds']))
+
     def test_literal_motley_target_and_alias_metadata_only(self):
         for name in (*abi.LIBRARY_ROOTS,'usr/lib/libz.so.1.3.2.1-motley'):
             self.assertTrue(abi.selected(name))
         for name in ('usr/lib/libz.so.1.3.2.2-motley','usr/lib/libz.so.1.3.2.1-motley.evil',
                      'usr/lib/private-motley.so','usr/lib64/anything'):
             self.assertFalse(abi.selected(name))
-        self.assertEqual(abi.PROFILE,'meri-proxy-linux-amd64-node-prisma-abi/2')
+        self.assertEqual(abi.PROFILE,'meri-proxy-linux-amd64-node-prisma-abi/3')
         self.assertFalse(layer.selected('usr/lib/libz.so.1.3.2.1-motley'))
 
     def test_link_report_retains_original_identity_and_observed_resolution(self):

@@ -16,13 +16,14 @@ import zlib
 
 PINS = {'oci_layer_overlay.py':'835082c6e70bb983f53c9d20227f804c6c930ef8eeb88b6ce8ea99d131abb86c', 'elf_inventory.py':'959d60f5e363763d7d48b586cbebb2f37cdfdb9f342b7a749ae4cbd9668be73d',
         'proxy_oci_inventory.py':'ce6031a05b608b27eef56f4894bd797be362de3742988af9e71328421388264c'}
-PROFILE = 'meri-proxy-linux-amd64-node-prisma-abi/2'
+PROFILE = 'meri-proxy-linux-amd64-node-prisma-abi/3'
 ENGINE = 'opt/prisma/.cache/prisma/master/ac9d7041ed77bcc8a8dbd2ab6616b39013829574/debian-openssl-3.0.x/'
 CLI = 'opt/prisma/binaries/node_modules/'
 LIBRARY_NAMES = ('ld-linux-x86-64.so.2','libc.so.6','libm.so.6','libpthread.so.0',
                  'libdl.so.2','librt.so.1','libresolv.so.2','libutil.so.1','libgcc_s.so.1',
                  'libstdc++.so.6','libssl.so.3','libcrypto.so.3','libz.so.1','libzstd.so.1',
-                 'libbrotlidec.so.1','libbrotlicommon.so.1','libcares.so.2','libnghttp2.so.14','libuv.so.1')
+                 'libbrotlidec.so.1','libbrotlicommon.so.1','libcares.so.2','libnghttp2.so.14','libuv.so.1',
+                 'libbrotlienc.so.1','libcrypto.so.4','libssl.so.4','libicui18n.so.78','libicuuc.so.78')
 LIBRARY_ROOTS = ('lib','lib64','usr/lib','usr/lib64')
 LITERAL_LIBRARY_TARGETS = ('libz.so.1.3.2.1-motley',)
 NOTICE_PACKAGES = ('glibc','libgcc','libstdc++','nodejs','nodejs-18','nodejs-20','nodejs-22',
