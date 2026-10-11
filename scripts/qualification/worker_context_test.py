@@ -36,7 +36,7 @@ class WorkerContextTests(unittest.TestCase):
         path.parent.mkdir()
         path.write_text("synthetic excluded")
         result = m.assemble_context(self.out)
-        self.assertEqual(len(result["members"]), 34)
+        self.assertEqual(len(result["members"]), 44)
         self.assertEqual(result, m.verify_context(self.out))
         for source, member in m.MEMBERS:
             self.assertEqual((self.root / source).read_bytes(), (self.out / "context" / member).read_bytes())
@@ -152,7 +152,7 @@ class WorkerContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "byte drift"):
             m.verify_context(self.out)
         member.write_bytes(raw)
-        self.assertEqual(len(m.verify_context(self.out)["members"]), 34)
+        self.assertEqual(len(m.verify_context(self.out)["members"]), 44)
 
     def test_extra_directory_and_output_file_refused(self):
         m.assemble_context(self.out)

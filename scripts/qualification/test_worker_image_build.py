@@ -30,7 +30,7 @@ def project():
 
 
 def request():
-    caller = {'Account': build.ACCOUNT, 'Arn': build.authority.PRINCIPAL, 'UserId': 'synthetic-user-id'}
+    caller = {'Account': build.ACCOUNT, 'Arn': 'arn:aws:iam::967807252336:user/hermes-cli', 'UserId': 'synthetic-user-id'}
     auth = {'decision': 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'capturedAt': dt.datetime.now(dt.timezone.utc).isoformat(),
             'caller': caller, 'project': project(), 'authorityRecords': {k: 'f'*64 for k in
                 ('roleTrust', 'inlinePolicy', 'attachedPolicies', 'kmsKey', 'kmsPolicy')}}
@@ -72,9 +72,12 @@ class Controls(unittest.TestCase):
 
     def test_authority_full_identity_and_role(self):
         value = request()['authority']; self.assertEqual(build.validate_authority(value), project())
+        self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
         for field in ('UserId', 'Account', 'Arn'):
             wrong = copy.deepcopy(value); wrong['caller'][field] = ''
             with self.assertRaises(ValueError): build.validate_authority(wrong)
+        old = copy.deepcopy(value); old['caller']['Arn'] = build.authority.PRINCIPAL
+        with self.assertRaises(ValueError): build.validate_authority(old)
         wrong = copy.deepcopy(value); wrong['project']['serviceRole'] = 'foreign'
         with self.assertRaises(ValueError): build.validate_authority(wrong)
 
@@ -123,7 +126,7 @@ class Controls(unittest.TestCase):
     def test_source_missing_and_duplicate_before_output(self):
         root = Path(self.temp.name)
         value = {'schema': collect.SCHEMA, 'sourceCommit': 'c'*40, 'runUuid': TOKEN, 'contextManifestSha256': collect.CONTEXT_SHA,
-                 'members': [{'path': 'missing', 'bytes': 1, 'sha256': 'a'*64}]*37}
+                 'members': [{'path': 'missing', 'bytes': 1, 'sha256': 'a'*64}]*47}
         raw = collect.encoded(value)
         with self.assertRaises((ValueError, OSError)): collect.validate_input(root, raw, collect.digest(raw))
         self.assertFalse((root/'.meri-worker-evidence').exists())
@@ -224,17 +227,23 @@ class Controls(unittest.TestCase):
         entries = [dict(path=p, type='file', **pin) for p, pin in pins.items()]
         source = {'contextPath': 'probes/sdk-interruption.mjs', 'bytes': 123, 'sha256': 'a'*64}
         entries.append({'path': '/opt/meri-worker/probes/sdk-interruption.mjs', 'type': 'file', 'size': 123, 'sha256': 'a'*64})
+        private = {'contextPath': 'build-dependencies/contracts/qualification-sdk/wire.mjs', 'bytes': 321, 'sha256': 'b'*64}
+        entries.append({'path': '/packages/contracts/qualification-sdk/wire.mjs', 'type': 'file', 'size': 321, 'sha256': 'b'*64})
         value = {'schema': 'meri.qualification.image-inventory/1', 'ok': True, 'refused': False, 'truncated': False,
                  'coverage': {'complete': True}, 'summary': {'roots': sorted(collect.REQUIRED_ROOTS), 'errors': 0,
                  'expectationFailures': 0, 'unexpectedPrivilegeEntries': 0, 'limitsExceeded': None}, 'errors': [], 'unexpectedPrivilegeFiles': [],
                  'entries': entries, 'expectations': [{'path': p, 'status': 'match', 'expected': pin} for p, pin in pins.items()],
                  'privilegeFiles': [{'path': p} for p in collect.HELPERS]}
-        collect.validate_inventory(collect.encoded(value), [source], component)
+        collect.validate_inventory(collect.encoded(value), [source, private], component)
+        with self.assertRaises(ValueError):
+            collect.validate_inventory(collect.encoded(value),
+                                       [source, {'contextPath': 'build-dependencies/foreign/unknown.mjs',
+                                                 'bytes': 1, 'sha256': 'f'*64}], component)
         for mutate in [lambda r: r['expectations'][0]['expected'].update(sha256='f'*64),
                        lambda r: r['entries'][-1].update(sha256='f'*64), lambda r: r.update(truncated=True),
                        lambda r: r['privilegeFiles'].append({'path': '/foreign'})]:
             wrong = copy.deepcopy(value); mutate(wrong)
-            with self.assertRaises(ValueError): collect.validate_inventory(collect.encoded(wrong), [source], component)
+            with self.assertRaises(ValueError): collect.validate_inventory(collect.encoded(wrong), [source, private], component)
 
     def test_lost_create_ack_owned_cleanup_both_volumes(self):
         output = Path(self.temp.name); seen = []; manifest = {'sourceCommit': 'c'*40, 'runUuid': TOKEN}

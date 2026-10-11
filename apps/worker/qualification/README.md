@@ -66,22 +66,25 @@ docker build --pull --platform linux/amd64 \
   <absolute-fresh-output>/context
 ```
 
-`worker_context.py` has one fixed public-source list and no source-root, member,
+`worker_context.py` has one fixed source list and no source-root, member,
 loader, build or activation option. It reads bounded regular files before
 exclusive output creation, rejects links/hardlinks, preserves raw bytes, and
 emits `context/` plus a sibling `manifest.json`. Existing or partial outputs
 are never repaired, overwritten or deleted. `verify_context(output)` rechecks
 exact files/directories and current source hashes; its manifest is packaging
-DATA, not commit authority or admission. Bounds are 34 files, 2 MiB per file,
+DATA, not commit authority or admission. Bounds are 44 files, 2 MiB per file,
 8 MiB aggregate and a cooperative 30-second deadline. Use an external bound
 and a trusted stable source/output filesystem for an actual build.
 
-The checkpoint adapter remains at `/opt/meri-worker/checkpoint`; the two root
-scanner modules are staged as generated context inputs and copied byte-exact
-to `/scripts/sdk-capture`. The unchanged four-parent loopback import therefore
-resolves in the image. `/scripts` joins the end-of-recipe static inventory.
-Existing probe entry paths, package locks, SDK/CfT pins and old images remain
-unchanged. No new image, interruption/resume result, complete checkpoint,
+The native adapter and private fixture channel/transport remain at
+`/opt/meri-worker/checkpoint`; the root scanner modules are staged at
+`/scripts/sdk-capture`. The private contract/schema/test closure is staged
+at `/packages/contracts` so the existing four-parent imports resolve without
+rewriting canonical source. The worker package declares the exact direct
+`ajv`, `ajv-formats` and `canonicalize` versions; `/packages/node_modules`
+links to its locked install. `/packages` joins the end-of-recipe static
+inventory. The public `0.1.0` archive/exports and SDK/CfT pins are unchanged.
+No new image, interruption/resume result, complete checkpoint,
 SessionStore or G1 acceptance follows from these source checks.
 
 The recipe: immutable base `node:24.21.0-bookworm-slim@sha256:d6aa754f...`

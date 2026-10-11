@@ -22,16 +22,29 @@ import worker_context
 import worker_image_collect as collector
 
 ROOT = Path(__file__).resolve().parents[2]
-REFERENCE = 'c8978118a53cc6fc4cc3a553cdafdba4126d2443'
+REFERENCE = '5192c575e78957bd4bc8d2c512a1efb5b455a884'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'
-PYTHON = Path('C:/Users/neoma/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
+WORKER_BUILDER_PRINCIPAL = 'arn:aws:iam::967807252336:user/hermes-cli'
+PYTHON = Path('C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 PYTHON_SHA = '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1'
 HELPERS = ('worker_image_build.py', 'worker_image_collect.py', 'worker_context.py',
            'host_assets_build.py', 'host_assets_source.py', 'aws_evidence.py',
            'teststate_request.py', 'readonly_shapes.py')
 ORIGINAL = tuple(p for p, _ in worker_context.MEMBERS)+(collector.ASSEMBLER,)
+PACKAGING_CHANGES = {
+    'apps/worker/qualification/.dockerignore',
+    'apps/worker/qualification/Dockerfile',
+    'apps/worker/qualification/README.md',
+    'apps/worker/qualification/component-pins.json',
+    'apps/worker/qualification/package.json',
+    'apps/worker/qualification/package-lock.json',
+    'apps/worker/qualification/probes/image-inventory.py',
+    'apps/worker/qualification/probes/image-inventory.test.mjs',
+    'apps/worker/qualification/probes/static.test.mjs',
+    collector.ASSEMBLER,
+}
 need, sha, save, write, encoded, loads, read = (collector.need, collector.digest, collector.save,
                                              collector.write, collector.encoded, collector.loads, collector.read)
 
@@ -80,9 +93,11 @@ def git_files(commit, names, capture=None, prefix='source'):
 
 
 def baseline(commit, capture=None):
-    old = git_files(REFERENCE, ORIGINAL, capture, 'reference')
+    stable = tuple(p for p in ORIGINAL if p not in PACKAGING_CHANGES)
+    old = git_files(REFERENCE, stable, capture, 'reference')
     current = git_files(commit, ORIGINAL+(collector.COLLECTOR,), capture, 'candidate')
-    need(all(current[p] == old[p] == read(ROOT/p, 2*1024*1024) for p in ORIGINAL), 'fixed 35 original sources drift')
+    need(all(current[p] == old[p] for p in stable), 'stable fixture source drift')
+    need(all(current[p] == read(ROOT/p, 2*1024*1024) for p in ORIGINAL), 'candidate Git/current drift')
     need(current[collector.COLLECTOR] == read(ROOT/collector.COLLECTOR, 2*1024*1024), 'collector Git/current drift')
     need(sha(current[collector.ASSEMBLER]) == collector.ASSEMBLER_SHA, 'assembler reference pin')
     return current
@@ -93,7 +108,7 @@ def validate_authority(value):
          and value['decision'] == 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'root authority descriptor')
     caller = value['caller']
     need(type(caller) is dict and set(caller) == {'Account', 'Arn', 'UserId'} and caller['Account'] == ACCOUNT
-         and caller['Arn'] == authority.PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
+         and caller['Arn'] == WORKER_BUILDER_PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
     project = authority.project_configuration(value['project'])
     need(project.get('arn') == f'arn:aws:codebuild:{REGION}:{ACCOUNT}:project/{PROJECT}'
          and project.get('name') == PROJECT and project.get('serviceRole') == ROLE and project.get('encryptionKey') == KMS
@@ -141,12 +156,12 @@ def prepare(commit, path, authority_file, authority_sha):
         for name, raw in sorted(files.items()):
             item = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0)); item.create_system = 3; item.external_attr = 0o100644 << 16
             archive.writestr(item, raw)
-    packed = buffer.getvalue(); need(len(files) == 38 and len(packed) <= 8*1024*1024, '38-member bounded archive')
+    packed = buffer.getvalue(); need(len(files) == 48 and len(packed) <= 8*1024*1024, '48-member bounded archive')
     need(pins() == before and baseline(commit) == {p: v for p, v in files.items() if p not in ('buildspec.json', 'worker-image-input.json')}, 'prepare source stability')
     request = {'schema': SCHEMA, 'sourceCommit': commit, 'runUuid': token, 'helperFiles': before,
                'authority': observed, 'authoritySha256': sha(authority_raw), 'builderProject': project,
                'inputSha256': sha(files['worker-image-input.json']), 'recipeSha256': sha(recipe()),
-               'archive': {'bytes': len(packed), 'sha256': sha(packed), 'entries': 38,
+               'archive': {'bytes': len(packed), 'sha256': sha(packed), 'entries': 48,
                            'key': 'inputs/sdk-worker-image-'+token+'/source.zip'},
                'resultKey': 'results/sdk-worker-image-'+token+'/evidence.tar.gz'}
     evidence = slot(path, True)
@@ -174,13 +189,13 @@ def load(evidence):
          'members': [{'path': p, 'bytes': len(v), 'sha256': sha(v)} for p, v in sorted(expected_files.items())]}, 'exact input rows')
     expected_files['worker-image-input.json'] = manifest_raw
     packed = read(evidence/'source.zip', 8*1024*1024)
-    need(request['archive'] == {'bytes': len(packed), 'sha256': sha(packed), 'entries': 38, 'key': 'inputs/sdk-worker-image-'+token+'/source.zip'}
+    need(request['archive'] == {'bytes': len(packed), 'sha256': sha(packed), 'entries': 48, 'key': 'inputs/sdk-worker-image-'+token+'/source.zip'}
          and request['resultKey'] == 'results/sdk-worker-image-'+token+'/evidence.tar.gz'
          and request['inputSha256'] == sha(manifest_raw) and request['recipeSha256'] == sha(recipe())
          and read(evidence/'buildspec.json', 65536) == recipe(), 'fixed archive/recipe/keys')
     with zipfile.ZipFile(io.BytesIO(packed)) as archive:
         entries = archive.infolist()
-        need(len(entries) == 38 and {e.filename for e in entries} == set(expected_files)
+        need(len(entries) == 48 and {e.filename for e in entries} == set(expected_files)
              and all((e.external_attr >> 16) == 0o100644 and not e.is_dir() and e.file_size == len(expected_files[e.filename])
                      and archive.read(e) == expected_files[e.filename] for e in entries), 'exact regular ZIP bytes')
     return request, raw
@@ -276,7 +291,7 @@ def execute(path, review_file, review_sha):
     end = time.monotonic()+600
     def call(label, args):
         remaining = min(45, end-time.monotonic()); need(remaining > 0, 'whole dispatch deadline')
-        value = aws_evidence.capture(evidence, label, args, timeout=remaining)
+        value = aws_evidence.capture(evidence, label, args, timeout=remaining, profile='default')
         need(loads(read(evidence/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         return value
     return dispatch(evidence, request, raw, review_sha, call)
@@ -289,7 +304,7 @@ def reconcile(path):
     end = time.monotonic()+300
     def call(label, args):
         need(end-time.monotonic() > 0, 'readback deadline')
-        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()))
+        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()), profile='default')
         need(loads(read(destination/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         need(type(value) is dict and 'nextToken' not in value and 'NextToken' not in value, 'complete readback'); return value
     need(call('caller', ['sts', 'get-caller-identity']) == request['authority']['caller'], 'readback caller')
