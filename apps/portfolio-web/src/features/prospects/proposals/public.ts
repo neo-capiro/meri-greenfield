@@ -1,1 +1,0 @@
-export { ProspectProposals } from "./ProspectProposals";
