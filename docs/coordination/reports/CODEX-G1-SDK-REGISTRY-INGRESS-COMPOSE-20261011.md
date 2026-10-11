@@ -38,7 +38,11 @@ credentials are actually different at the TLS socket.
   Fargate replacement, native SDK recovery or physical task revocation ran.
   The result cannot close G1 or support a durability claim.
 
-The test cluster is under ignored `.task-inputs/sdk-service-pg-1/` on loopback
-port 55441. Final exact-commit verification, cluster shutdown and process/port
-readback are recorded below after the commit is created. No AWS, provider,
-source-data, PR, merge or deployment side effect occurred.
+The source commit is `b1fbc8643d07f7906c52b67f083fa3c4c9db1885`.
+On that exact commit, the combined ingress/service unit/real PostgreSQL suite
+passed 35/35, exit 0, against a fourth fresh isolated database. The test
+cluster was under ignored `.task-inputs/sdk-service-pg-1/` on loopback port
+55441. `pg_ctl stop -m fast -w` exited 0; a subsequent process and port
+readback found no owned PostgreSQL process or listener. The worktree was clean
+after the source commit. No AWS, provider, source-data, PR, merge or deployment
+side effect occurred.
