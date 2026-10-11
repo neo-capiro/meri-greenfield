@@ -1,0 +1,37 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeCanaryQualification/8a3260e0-c4b8-11f1-ab65-126b5e1d784f",
+            "StackName": "MeriGreenfield-NativeCanaryQualification",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/codex-g1-canary-definition-20261010/edd3aa62-c0cc-461d-b505-b6c7dcec99c5",
+            "Description": "INERT dedicated canary qualification task definition; no IAM/service/resource relocation",
+            "CreationTime": "2026-10-10T14:40:29.732000+00:00",
+            "LastUpdatedTime": "2026-10-10T14:42:25.098000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Outputs": [
+                {
+                    "OutputKey": "CanaryTaskDefinitionArn",
+                    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-canary:1"
+                }
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "6d6a3e70-6f8f-4c62-915b-1eb1ba9e2850"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "Versions": [
+        {
+            "ETag": "\"a5d9d0a7356461943904919f432204be\"",
+            "ChecksumAlgorithm": [
+                "SHA256"
+            ],
+            "ChecksumType": "FULL_OBJECT",
+            "Size": 2394778,
+            "StorageClass": "STANDARD",
+            "Key": "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
+            "VersionId": "RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6",
+            "IsLatest": true,
+            "LastModified": "2026-10-11T18:17:15+00:00",
+            "Owner": {
+                "ID": "229e8a21dd8f8c90a898abcc04440a6abd8b477fd192a38847367029b4442beb"
+            }
+        }
+    ],
+    "RequestCharged": null,
+    "Prefix": "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/"
+}

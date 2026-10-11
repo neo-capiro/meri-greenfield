@@ -1,0 +1,50 @@
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "meri-greenfield-qualification-sdk-control",
+        "RoleId": "AROA6CVOOW5YJSXX642B2",
+        "Arn": "arn:aws:iam::967807252336:role/meri-greenfield-qualification-sdk-control",
+        "CreateDate": "2026-10-11T16:52:53+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "ecs-tasks.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:SourceAccount": "967807252336"
+                        },
+                        "ArnLike": {
+                            "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
+                        }
+                    }
+                }
+            ]
+        },
+        "Description": "Only the trusted synthetic SDK checkpoint control task uses this role",
+        "MaxSessionDuration": 3600,
+        "Tags": [
+            {
+                "Key": "Project",
+                "Value": "meri-greenfield"
+            },
+            {
+                "Key": "Environment",
+                "Value": "qualification"
+            },
+            {
+                "Key": "Owner",
+                "Value": "Codex-integration"
+            },
+            {
+                "Key": "SourcesEnabled",
+                "Value": "false"
+            }
+        ],
+        "RoleLastUsed": {}
+    }
+}

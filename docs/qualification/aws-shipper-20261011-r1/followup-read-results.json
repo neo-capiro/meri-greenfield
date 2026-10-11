@@ -1,0 +1,70 @@
+{
+  "stateMachines": [
+    {
+      "label": "machine-0",
+      "arn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+      "stackCapture": "resources-merigreenfield-browsermanagedfixture-20261011"
+    },
+    {
+      "label": "machine-1",
+      "arn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+      "stackCapture": "resources-merigreenfield-nativecanaryenforcement"
+    },
+    {
+      "label": "machine-2",
+      "arn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+      "stackCapture": "resources-merigreenfield-nativesdkenforcement"
+    }
+  ],
+  "results": [
+    {
+      "label": "ecr-native-diagnostic-scan",
+      "status": "FAIL",
+      "reason": "'utf-8' codec can't decode byte 0x92 in position 40757: invalid start byte"
+    },
+    {
+      "label": "builder-inline-0",
+      "status": "PASS"
+    },
+    {
+      "label": "control-inline-0",
+      "status": "PASS"
+    },
+    {
+      "label": "all-builds-0",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-0",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-0-executions",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-1",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-1-executions",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-2",
+      "status": "PASS"
+    },
+    {
+      "label": "machine-2-executions",
+      "status": "PASS"
+    },
+    {
+      "label": "runtime-kms",
+      "status": "PASS"
+    },
+    {
+      "label": "merigreenfield-instances",
+      "status": "PASS"
+    }
+  ]
+}

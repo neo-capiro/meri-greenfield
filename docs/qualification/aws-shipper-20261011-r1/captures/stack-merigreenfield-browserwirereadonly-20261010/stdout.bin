@@ -1,0 +1,49 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-BrowserWireReadOnly-20261010/e5039620-c502-11f1-8f72-0e08b184dc4d",
+            "StackName": "MeriGreenfield-BrowserWireReadOnly-20261010",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/browser-wire-b247b9a1-bfde-414a-a76b-9ff4fdd83110/901d9687-8ceb-4a67-aec7-ce247ea8433a",
+            "Description": "UNEXECUTED PROPOSAL: separate Meri browser EC2 read-only TestState role",
+            "CreationTime": "2026-10-10T23:32:44.874000+00:00",
+            "LastUpdatedTime": "2026-10-10T23:47:14.519000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "RoleArn",
+                    "OutputValue": "arn:aws:iam::967807252336:role/MeriGreenfield-BrowserWireReadOnly-20261010"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "MeriComponent",
+                    "Value": "qualification-browser-wire"
+                },
+                {
+                    "Key": "QualificationRun",
+                    "Value": "b247b9a1-bfde-414a-a76b-9ff4fdd83110"
+                }
+            ],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "00062bc2-3a2b-41de-8b88-7fce4a7a826c"
+                }
+            ]
+        }
+    ]
+}

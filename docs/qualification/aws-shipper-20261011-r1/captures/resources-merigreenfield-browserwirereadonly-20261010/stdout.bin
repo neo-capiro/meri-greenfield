@@ -1,0 +1,14 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "BrowserWireReadOnlyRole",
+            "PhysicalResourceId": "MeriGreenfield-BrowserWireReadOnly-20261010",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-10T23:47:34.812000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

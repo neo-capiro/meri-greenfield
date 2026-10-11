@@ -1,0 +1,110 @@
+{
+    "Vpcs": [
+        {
+            "OwnerId": "967807252336",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-0c010d6a4fdb1203a",
+                    "CidrBlock": "10.40.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "capiro"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/Capiro-dev-Network/4e3a7200-45e0-11f1-83f7-12277e1e1399"
+                },
+                {
+                    "Key": "ManagedBy",
+                    "Value": "cdk"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "Vpc8378EB38"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "dev"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "Capiro-dev-Network/Vpc"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "Capiro-dev-Network"
+                }
+            ],
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "VpcId": "vpc-0ac26cfac7ed972be",
+            "State": "available",
+            "CidrBlock": "10.40.0.0/16",
+            "DhcpOptionsId": "dopt-0386a717c85092391"
+        },
+        {
+            "OwnerId": "967807252336",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-02cca52c08519a0ca",
+                    "CidrBlock": "10.80.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": false,
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "meri-greenfield-qualification"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "Vpc8378EB38"
+                }
+            ],
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "VpcId": "vpc-06e1941747e798f0a",
+            "State": "available",
+            "CidrBlock": "10.80.0.0/16",
+            "DhcpOptionsId": "dopt-0386a717c85092391"
+        }
+    ]
+}

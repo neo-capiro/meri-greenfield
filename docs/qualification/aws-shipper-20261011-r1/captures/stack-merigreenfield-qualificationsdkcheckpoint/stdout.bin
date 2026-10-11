@@ -1,0 +1,65 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationSdkCheckpoint/2ac21470-c594-11f1-85e1-0eab4fe6dfb5",
+            "StackName": "MeriGreenfield-QualificationSdkCheckpoint",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/meri-sdk-checkpoint-8c4554d-20261011/43275c4b-9d2e-4cbc-88a4-ed18367e1010",
+            "Description": "Dedicated synthetic SDK checkpoint bucket and trusted control role",
+            "CreationTime": "2026-10-11T16:52:38.912000+00:00",
+            "LastUpdatedTime": "2026-10-11T16:52:49.605000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "CheckpointBucketName",
+                    "OutputValue": "meri-greenfield-qual-checkpoint-967807252336-us-east-1"
+                },
+                {
+                    "OutputKey": "CheckpointKeyArn",
+                    "OutputValue": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c"
+                },
+                {
+                    "OutputKey": "ControlTaskRoleArn",
+                    "OutputValue": "arn:aws:iam::967807252336:role/meri-greenfield-qualification-sdk-control"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "0c53f701-28bf-43e2-a8b7-f370ff376e6c"
+                }
+            ]
+        }
+    ]
+}

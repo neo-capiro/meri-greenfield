@@ -1,0 +1,159 @@
+{
+    "RouteTables": [
+        {
+            "Associations": [
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-0ba09ddd06693d4c0",
+                    "RouteTableId": "rtb-0a062faae50d3da2a",
+                    "SubnetId": "subnet-06437dfaae1c217c3",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-0a062faae50d3da2a",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.80.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                },
+                {
+                    "DestinationPrefixListId": "pl-63a5400a",
+                    "GatewayId": "vpce-07962a243f84c3591",
+                    "Origin": "CreateRoute",
+                    "State": "active"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet2"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcisolatedworkerSubnet2RouteTableF1532EFF"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "OwnerId": "967807252336"
+        },
+        {
+            "Associations": [
+                {
+                    "Main": false,
+                    "RouteTableAssociationId": "rtbassoc-04a27130d4b50e587",
+                    "RouteTableId": "rtb-0cdf44d0066d39b23",
+                    "SubnetId": "subnet-0864c000b771df32c",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-0cdf44d0066d39b23",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.80.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                },
+                {
+                    "DestinationPrefixListId": "pl-63a5400a",
+                    "GatewayId": "vpce-07962a243f84c3591",
+                    "Origin": "CreateRoute",
+                    "State": "active"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet1"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcisolatedworkerSubnet1RouteTableD0446D86"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                }
+            ],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "OwnerId": "967807252336"
+        },
+        {
+            "Associations": [
+                {
+                    "Main": true,
+                    "RouteTableAssociationId": "rtbassoc-00cea574997837ce6",
+                    "RouteTableId": "rtb-08a35b368a129cece",
+                    "AssociationState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "PropagatingVgws": [],
+            "RouteTableId": "rtb-08a35b368a129cece",
+            "Routes": [
+                {
+                    "DestinationCidrBlock": "10.80.0.0/16",
+                    "GatewayId": "local",
+                    "Origin": "CreateRouteTable",
+                    "State": "active"
+                }
+            ],
+            "Tags": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "OwnerId": "967807252336"
+        }
+    ]
+}

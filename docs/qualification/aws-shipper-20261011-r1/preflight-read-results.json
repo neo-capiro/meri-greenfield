@@ -1,0 +1,298 @@
+{
+  "identity": {
+    "UserId": "AIDA6CVOOW5YCNOGMSALQ",
+    "Account": "967807252336",
+    "Arn": "arn:aws:iam::967807252336:user/capirocli"
+  },
+  "results": [
+    {
+      "label": "stack-merigreenfield-qualificationbuild",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-qualificationbuild",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-qualificationruntime",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-qualificationruntime",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-qualificationsdkcheckpoint",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-qualificationsdkcheckpoint",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-nativequalification",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-nativequalification",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-nativesdkenforcement",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-nativesdkenforcement",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-nativecanaryenforcement",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-nativecanaryenforcement",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-nativecanaryqualification",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-nativecanaryqualification",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-teststatereadonly",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-teststatereadonly",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-browsermanagedfixture-20261011",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-browsermanagedfixture-20261011",
+      "status": "PASS"
+    },
+    {
+      "label": "stack-merigreenfield-browserwirereadonly-20261010",
+      "status": "PASS"
+    },
+    {
+      "label": "resources-merigreenfield-browserwirereadonly-20261010",
+      "status": "PASS"
+    },
+    {
+      "label": "ecr-repository",
+      "status": "PASS"
+    },
+    {
+      "label": "ecr-images",
+      "status": "PASS"
+    },
+    {
+      "label": "ecr-old-manifest",
+      "status": "PASS"
+    },
+    {
+      "label": "ecr-fresh-scan",
+      "status": "FAIL",
+      "reason": "ecr-fresh-scan: AWS operation failed; inspect retained raw evidence"
+    },
+    {
+      "label": "build-project",
+      "status": "PASS"
+    },
+    {
+      "label": "build-history",
+      "status": "PASS"
+    },
+    {
+      "label": "historical-build",
+      "status": "PASS"
+    },
+    {
+      "label": "historical-head",
+      "status": "PASS"
+    },
+    {
+      "label": "historical-download",
+      "status": "PASS"
+    },
+    {
+      "label": "historical-prefix-versions",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-bucket-location",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-bucket-versioning",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-bucket-encryption",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-public-access-block",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-bucket-policy",
+      "status": "PASS"
+    },
+    {
+      "label": "build-get-bucket-tagging",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-bucket-location",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-bucket-versioning",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-bucket-encryption",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-public-access-block",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-bucket-policy",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-get-bucket-tagging",
+      "status": "PASS"
+    },
+    {
+      "label": "checkpoint-lock",
+      "status": "PASS"
+    },
+    {
+      "label": "kms-1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+      "status": "PASS"
+    },
+    {
+      "label": "kms-policy-1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+      "status": "PASS"
+    },
+    {
+      "label": "kms-3a04f062-40de-4ed8-9a24-dad87c488e0c",
+      "status": "PASS"
+    },
+    {
+      "label": "kms-policy-3a04f062-40de-4ed8-9a24-dad87c488e0c",
+      "status": "PASS"
+    },
+    {
+      "label": "builder-get-role",
+      "status": "PASS"
+    },
+    {
+      "label": "builder-list-role-policies",
+      "status": "PASS"
+    },
+    {
+      "label": "builder-list-attached-role-policies",
+      "status": "PASS"
+    },
+    {
+      "label": "control-get-role",
+      "status": "PASS"
+    },
+    {
+      "label": "control-list-role-policies",
+      "status": "PASS"
+    },
+    {
+      "label": "control-list-attached-role-policies",
+      "status": "PASS"
+    },
+    {
+      "label": "ecs-cluster",
+      "status": "PASS"
+    },
+    {
+      "label": "ecs-running",
+      "status": "PASS"
+    },
+    {
+      "label": "ecs-stopped",
+      "status": "PASS"
+    },
+    {
+      "label": "ecs-services",
+      "status": "PASS"
+    },
+    {
+      "label": "definition-meri-greenfield-qualification-2",
+      "status": "PASS"
+    },
+    {
+      "label": "definition-meri-greenfield-qualification-sdk-2",
+      "status": "PASS"
+    },
+    {
+      "label": "definition-meri-greenfield-qualification-office-2",
+      "status": "PASS"
+    },
+    {
+      "label": "definition-meri-greenfield-qualification-canary-1",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-describe-network-interfaces",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-describe-subnets",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-describe-security-groups",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-describe-route-tables",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-describe-vpc-endpoints",
+      "status": "PASS"
+    },
+    {
+      "label": "named-vpcs",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-peerings-requester",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-peerings-accepter",
+      "status": "PASS"
+    },
+    {
+      "label": "dns-firewall-associations",
+      "status": "PASS"
+    },
+    {
+      "label": "meri-logs",
+      "status": "PASS"
+    },
+    {
+      "label": "selected-aurora-metadata",
+      "status": "PASS"
+    }
+  ]
+}

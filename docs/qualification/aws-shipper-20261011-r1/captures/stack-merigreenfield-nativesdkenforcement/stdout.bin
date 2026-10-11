@@ -1,0 +1,40 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeSdkEnforcement/9db306b0-c4e0-11f1-8aed-12ffde6aba01",
+            "StackName": "MeriGreenfield-NativeSdkEnforcement",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/codex-g1-sdk-f1bdbc76-20261010/1485afdc-847e-4dc2-86da-7546d8a0eb7c",
+            "Description": "INERT dedicated native qualification; no application/control relocation",
+            "Parameters": [
+                {
+                    "ParameterKey": "DefinitionObjectVersion",
+                    "ParameterValue": "s.upW5EAgxUeDQwJWt_GpSbaSdzIAJyJ"
+                }
+            ],
+            "CreationTime": "2026-10-10T19:27:22.329000+00:00",
+            "LastUpdatedTime": "2026-10-10T20:10:43.274000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "e41f7d56-18d4-440c-b622-a42f7d87e9c0"
+                }
+            ]
+        }
+    ]
+}

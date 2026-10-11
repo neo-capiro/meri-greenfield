@@ -1,0 +1,4 @@
+cft-archive sha256: a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489 (198335306 bytes; independently inspected)
+cft-chrome sha256: adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0 (pin adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0)
+cft-helper-original sha256: be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314 (pin be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314)
+cft-helper-alias sha256: be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314 (matched to pinned original; hyphen alias for Chromium setuid host)

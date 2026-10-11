@@ -1,0 +1,37 @@
+{
+  "schema": "meri-codex-aws-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "kms",
+    "describe-key",
+    "--key-id",
+    "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+  "startedAt": "2026-10-11T22:25:25.415978+00:00",
+  "endedAt": "2026-10-11T22:25:26.409471+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 0,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 788,
+    "sha256": "b108660ec45911ce0443f272c7928d6a02ba246aaa6bc41f8a49d93532d4075d"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "readonlyRequestValidation": null
+}

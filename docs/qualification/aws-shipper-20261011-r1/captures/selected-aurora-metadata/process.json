@@ -1,0 +1,38 @@
+{
+  "schema": "meri-shipper-extra-read-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "rds",
+    "describe-db-clusters",
+    "--db-cluster-identifier",
+    "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+    "--query",
+    "DBClusters[].{identifier:DBClusterIdentifier,status:Status,engine:Engine,engineVersion:EngineVersion,subnetGroup:DBSubnetGroup,securityGroups:VpcSecurityGroups,encrypted:StorageEncrypted,public:PubliclyAccessible,capacity:ServerlessV2ScalingConfiguration,arn:DBClusterArn}",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+  "startedAt": "2026-10-11T22:25:32.884528+00:00",
+  "endedAt": "2026-10-11T22:25:33.917818+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 0,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 725,
+    "sha256": "299206b62c3793660f324e01d6a8ec85251866d3e61c685e212fb0f4d4f27d58"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

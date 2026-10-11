@@ -1,0 +1,21 @@
+{
+    "KeyMetadata": {
+        "AWSAccountId": "967807252336",
+        "KeyId": "3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+        "Arn": "arn:aws:kms:us-east-1:967807252336:key/3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+        "CreationDate": "2026-10-09T16:34:35.993000-04:00",
+        "Enabled": true,
+        "Description": "",
+        "KeyUsage": "ENCRYPT_DECRYPT",
+        "KeyState": "Enabled",
+        "Origin": "AWS_KMS",
+        "KeyManager": "CUSTOMER",
+        "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
+        "KeySpec": "SYMMETRIC_DEFAULT",
+        "EncryptionAlgorithms": [
+            "SYMMETRIC_DEFAULT"
+        ],
+        "MultiRegion": false,
+        "CurrentKeyMaterialId": "f68cef267944870dbd67cd9fabf1c1a0922af2b810f47a18964b884d70801ad0"
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "FixtureLifecycle",
+            "PhysicalResourceId": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+            "ResourceType": "AWS::StepFunctions::StateMachine",
+            "LastUpdatedTimestamp": "2026-10-11T04:32:31.470000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "FixtureRole",
+            "PhysicalResourceId": "MeriGreenfield-BrowserManagedFixture-20-FixtureRole-8A8BHc9NlSeA",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-11T04:32:12.164000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

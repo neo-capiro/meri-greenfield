@@ -1,0 +1,40 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeCanaryEnforcement/e06bfd80-c4be-11f1-b0a5-0affd5e16a85",
+            "StackName": "MeriGreenfield-NativeCanaryEnforcement",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/codex-g1-canary-cbfce523-20261010/3b5b5f0d-65da-4d95-a490-962eb27a7be7",
+            "Description": "INERT dedicated native qualification; no application/control relocation",
+            "Parameters": [
+                {
+                    "ParameterKey": "DefinitionObjectVersion",
+                    "ParameterValue": "4sFrfa8eROYjpsQ6PeKymEcZw6SBaMP7"
+                }
+            ],
+            "CreationTime": "2026-10-10T15:25:51.391000+00:00",
+            "LastUpdatedTime": "2026-10-10T18:13:01.116000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "UPDATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "UPDATE_STACK",
+                    "OperationId": "3014f471-77bd-4834-9a91-beef560d598a"
+                }
+            ]
+        }
+    ]
+}

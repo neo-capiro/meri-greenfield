@@ -1,0 +1,39 @@
+{
+  "schema": "meri-codex-aws-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "stepfunctions",
+    "list-executions",
+    "--state-machine-arn",
+    "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+    "--max-results",
+    "100",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+  "startedAt": "2026-10-11T22:27:37.957157+00:00",
+  "endedAt": "2026-10-11T22:27:38.909709+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 0,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 781,
+    "sha256": "87c29c7bb7ebc7c59687e9fd1a20b061f8c593417de28810c7b486a128271d0c"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "readonlyRequestValidation": null
+}

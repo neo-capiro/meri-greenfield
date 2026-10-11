@@ -1,0 +1,3999 @@
+[
+  {
+    "label": "captures/all-builds-0",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "codebuild",
+        "batch-get-builds",
+        "--ids",
+        "meri-greenfield-qualification-build:7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+        "meri-greenfield-qualification-build:2cac1c04-036d-4480-bcc3-25833133abaf",
+        "meri-greenfield-qualification-build:6092fa3d-9509-45b3-aee7-4a304df2e125",
+        "meri-greenfield-qualification-build:6baed94e-1d9f-4e5e-bf56-dce4f9b0e660",
+        "meri-greenfield-qualification-build:a34efcc4-2f20-40f3-b2f2-5fc0ff17200f",
+        "meri-greenfield-qualification-build:a88d6125-abdd-4ad8-8520-d602a5134275",
+        "meri-greenfield-qualification-build:0056c94a-88c9-4c0c-9daf-2ceef38df2b1",
+        "meri-greenfield-qualification-build:3a1174b0-0ef1-4c63-9930-927757afd6ba",
+        "meri-greenfield-qualification-build:fe9f54bd-8e36-4290-a580-eaa329767dd7",
+        "meri-greenfield-qualification-build:9c08cd70-01ac-4f4d-bc38-8fecda952dcd",
+        "meri-greenfield-qualification-build:1acf96ad-8550-47ce-a02f-301cf7e0e1dc",
+        "meri-greenfield-qualification-build:b32822ce-9ccf-405a-b5dd-f0c9740dda56",
+        "meri-greenfield-qualification-build:0e9dac8a-b69b-408e-af11-77dfc66f8655",
+        "meri-greenfield-qualification-build:8bd865ad-200e-45b1-ac8d-454a0c00388e",
+        "meri-greenfield-qualification-build:e81b9c38-064a-4324-ac16-5e5a60f2dbb0",
+        "meri-greenfield-qualification-build:f78dc8c3-a0d9-45b1-a893-9abb1f403287",
+        "meri-greenfield-qualification-build:c30be2bc-c0d1-45ac-b0a8-c23ab360f3f8",
+        "meri-greenfield-qualification-build:55c89c64-547f-41ff-8a8b-3120e25d8b39",
+        "meri-greenfield-qualification-build:aaec4b57-0bb1-4a80-a464-21d364be6465",
+        "meri-greenfield-qualification-build:7464da9b-af57-4481-b4a4-959b9789e7ec",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:35.813615+00:00",
+      "endedAt": "2026-10-11T22:27:37.173501+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 403842,
+        "sha256": "4968ef8d2f522c8c23f272e31d04a3487e5a410d1ac4b956c382cea838537432"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/build-get-bucket-encryption",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-encryption",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:23.183634+00:00",
+      "endedAt": "2026-10-11T22:25:24.248004+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 565,
+        "sha256": "75ff5c80a64a3291236285afdcc600d6a8e90d38bde2201ea9ac130b05507e9c"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-get-bucket-location",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-location",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:22.130633+00:00",
+      "endedAt": "2026-10-11T22:25:23.184297+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 38,
+        "sha256": "580f3ae63e65899a657e0565d3b73977606157c01bfaf3e83130dccda2df186f"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-get-bucket-policy",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-policy",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:23.380747+00:00",
+      "endedAt": "2026-10-11T22:25:24.391864+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 352,
+        "sha256": "7c7bd9ba4735be665758959bbe0d89688a1361a20715b060e33638b364367368"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-get-bucket-tagging",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-tagging",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:23.434229+00:00",
+      "endedAt": "2026-10-11T22:25:24.441348+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 879,
+        "sha256": "4e3dbe4f875dcc38294ff2206f2156975e8b12acb8825e465ddf1e74e6996452"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-get-bucket-versioning",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-versioning",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:22.417837+00:00",
+      "endedAt": "2026-10-11T22:25:23.377239+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 31,
+        "sha256": "c09f5c2ec78beeb6322bd85f53999dfd2bb6a0db15c1596d9781e483e98604f9"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-get-public-access-block",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-public-access-block",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:23.184297+00:00",
+      "endedAt": "2026-10-11T22:25:24.179303+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 198,
+        "sha256": "2d5dddfa40f86db2f2f342efff9f819a9edec785ecec6b4bec5dd23b3219377e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-history",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "codebuild",
+        "list-builds-for-project",
+        "--project-name",
+        "meri-greenfield-qualification-build",
+        "--sort-order",
+        "DESCENDING",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:21.084175+00:00",
+      "endedAt": "2026-10-11T22:25:22.103267+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1726,
+        "sha256": "dd70ad59a9cc4d2552833c33fa16161724c5a59b5f58cb254aaba20247cd4c17"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/build-project",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "codebuild",
+        "batch-get-projects",
+        "--names",
+        "meri-greenfield-qualification-build",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:21.053233+00:00",
+      "endedAt": "2026-10-11T22:25:22.126617+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 5071,
+        "sha256": "4a4279a20d8a9b4c3dff4088c560b2f1e340ce0fdbac66966e719d684b7788e6"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/builder-get-role",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "get-role",
+        "--role-name",
+        "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:26.441452+00:00",
+      "endedAt": "2026-10-11T22:25:27.472366+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1879,
+        "sha256": "553d218c033e4b3884ea8dba7e4804926fd8926e9b2f0410c961f004d501c18c"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/builder-inline-0",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "get-role-policy",
+        "--role-name",
+        "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "--policy-name",
+        "BuilderRoleDefaultPolicy8E4A45D4",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:35.813615+00:00",
+      "endedAt": "2026-10-11T22:27:36.913281+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 5309,
+        "sha256": "c7c6d267e782f766dc8e460b79b416db37b413857f80ac66fa3a2adc2347b24e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/builder-list-attached-role-policies",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "list-attached-role-policies",
+        "--role-name",
+        "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:27.255771+00:00",
+      "endedAt": "2026-10-11T22:25:28.281018+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 34,
+        "sha256": "ff7675aab7d020cd91d45cf598910ca3aeea005387cea360be64bb74ab120fe0"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/builder-list-role-policies",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "list-role-policies",
+        "--role-name",
+        "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:27.084307+00:00",
+      "endedAt": "2026-10-11T22:25:28.073630+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 79,
+        "sha256": "045b4210f235b31cda241e3da42bea77ad39fb6e060cc60f18031a445ee6fcea"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-bucket-encryption",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-encryption",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:24.394870+00:00",
+      "endedAt": "2026-10-11T22:25:25.369285+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 565,
+        "sha256": "f87fbd877375038b8a9c5de71ae93222c04f2bac39552d3057072f4cb2dd17fc"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-bucket-location",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-location",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:24.181302+00:00",
+      "endedAt": "2026-10-11T22:25:25.207670+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 38,
+        "sha256": "580f3ae63e65899a657e0565d3b73977606157c01bfaf3e83130dccda2df186f"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-bucket-policy",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-policy",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:25.209673+00:00",
+      "endedAt": "2026-10-11T22:25:26.166519+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1317,
+        "sha256": "671ceb73898245ef1ebfea8ca181ed1b36d4697a5fba84e683ad053deae005ac"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-bucket-tagging",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-tagging",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:25.253684+00:00",
+      "endedAt": "2026-10-11T22:25:26.286480+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 900,
+        "sha256": "504418ef9502136ce25b4086a8b37041f668a28c4f56ee1152bdbdbb4a984487"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-bucket-versioning",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-bucket-versioning",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:24.251099+00:00",
+      "endedAt": "2026-10-11T22:25:25.251071+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 61,
+        "sha256": "18ced3c308b631f8dd00d4ea1b4b7b6ee9c956b7a473972337d99279418d81a2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-get-public-access-block",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-public-access-block",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:24.444349+00:00",
+      "endedAt": "2026-10-11T22:25:25.412971+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 198,
+        "sha256": "2d5dddfa40f86db2f2f342efff9f819a9edec785ecec6b4bec5dd23b3219377e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/checkpoint-lock",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-object-lock-configuration",
+        "--bucket",
+        "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:25.371285+00:00",
+      "endedAt": "2026-10-11T22:25:26.341311+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 234,
+        "sha256": "b6f534b0ca603ad51bb4714a04493dbb74f1518eb8e8234f0d348b93dbe89120"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/control-get-role",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "get-role",
+        "--role-name",
+        "meri-greenfield-qualification-sdk-control",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:27.300749+00:00",
+      "endedAt": "2026-10-11T22:25:28.284503+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1661,
+        "sha256": "2ea6d27280ca5a5c4bae1a7d6b605639460016d1a644d654fb77f3f07a182fb6"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/control-inline-0",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "get-role-policy",
+        "--role-name",
+        "meri-greenfield-qualification-sdk-control",
+        "--policy-name",
+        "ControlTaskRoleDefaultPolicy7B4A7327",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:35.813615+00:00",
+      "endedAt": "2026-10-11T22:27:36.901796+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1978,
+        "sha256": "f3b2ec19fa3270e43851098df3535c69e9805b9517a022dbc91895cba251a1bb"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/control-list-attached-role-policies",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "list-attached-role-policies",
+        "--role-name",
+        "meri-greenfield-qualification-sdk-control",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:28.077627+00:00",
+      "endedAt": "2026-10-11T22:25:29.050502+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 34,
+        "sha256": "ff7675aab7d020cd91d45cf598910ca3aeea005387cea360be64bb74ab120fe0"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/control-list-role-policies",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "iam",
+        "list-role-policies",
+        "--role-name",
+        "meri-greenfield-qualification-sdk-control",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:27.476367+00:00",
+      "endedAt": "2026-10-11T22:25:28.409679+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 83,
+        "sha256": "e013e455ecf408bd268e18a25bbe6409d8a9bd66af3457aaf363fd9eae387ecb"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/definition-meri-greenfield-qualification-2",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "describe-task-definition",
+        "--task-definition",
+        "meri-greenfield-qualification:2",
+        "--include",
+        "TAGS",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:29.371390+00:00",
+      "endedAt": "2026-10-11T22:25:30.388051+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 6436,
+        "sha256": "05ed196a12a128b8d5a1887009f5c9aac1b8fe18c9d60ed91fd622d05bf23f2a"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/definition-meri-greenfield-qualification-canary-1",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "describe-task-definition",
+        "--task-definition",
+        "meri-greenfield-qualification-canary:1",
+        "--include",
+        "TAGS",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:30.034546+00:00",
+      "endedAt": "2026-10-11T22:25:31.051256+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 6334,
+        "sha256": "1946b31eb186011aeb8283be234afa5ef63def4e6126d69bf3a3720cb7512947"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/definition-meri-greenfield-qualification-office-2",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "describe-task-definition",
+        "--task-definition",
+        "meri-greenfield-qualification-office:2",
+        "--include",
+        "TAGS",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:29.414119+00:00",
+      "endedAt": "2026-10-11T22:25:30.430649+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 6137,
+        "sha256": "d361b79678795326cd5c78333685a39480486f5856ee054b746b635a7bd5a508"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/definition-meri-greenfield-qualification-sdk-2",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "describe-task-definition",
+        "--task-definition",
+        "meri-greenfield-qualification-sdk:2",
+        "--include",
+        "TAGS",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:29.404123+00:00",
+      "endedAt": "2026-10-11T22:25:30.430649+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 6126,
+        "sha256": "fb11d5dc0536e79eeb0f6903629734863d9ab08186d07f47aa6ab172dbeecade"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/dns-firewall-associations",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "route53resolver",
+        "list-firewall-rule-group-associations",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:32.718147+00:00",
+      "endedAt": "2026-10-11T22:25:33.746438+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 816,
+        "sha256": "c758be0dbf0e9483f6d4fd2088e6c6e93e4b3be9c7b7de87b8ae06fde5b3855b"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/ecr-fresh-scan",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecr",
+        "describe-image-scan-findings",
+        "--repository-name",
+        "meri-greenfield/qualification-worker",
+        "--image-ids",
+        "imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:20.351965+00:00",
+      "endedAt": "2026-10-11T22:25:21.084175+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 252,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 285,
+        "sha256": "9300e6832f7e04ea69e8f754831c79d83b750822a82c4a7366a80c0473e7ceb3"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecr-images",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecr",
+        "describe-images",
+        "--repository-name",
+        "meri-greenfield/qualification-worker",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:20.177271+00:00",
+      "endedAt": "2026-10-11T22:25:21.140769+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 5313,
+        "sha256": "adad85ad4fef76dd24c43e5084ac83c529c6226fccbf8632d19d0037420dbee5"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecr-native-diagnostic-scan",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecr",
+        "describe-image-scan-findings",
+        "--repository-name",
+        "meri-greenfield/qualification-worker",
+        "--image-id",
+        "imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:27:35.813615+00:00",
+      "endedAt": "2026-10-11T22:27:37.189768+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 59678,
+        "sha256": "011fff3c6b57794e0674644c0f8d14c56a7b6a94c1512e3806b256abe2afaa6a"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecr-old-manifest",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecr",
+        "batch-get-image",
+        "--repository-name",
+        "meri-greenfield/qualification-worker",
+        "--image-ids",
+        "imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:20.244498+00:00",
+      "endedAt": "2026-10-11T22:25:21.317525+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 8323,
+        "sha256": "bc263eb6f309ec45d17c1c45a35c9aa9db733c88ffeca34483ba9948307e7056"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecr-repository",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecr",
+        "describe-repositories",
+        "--repository-names",
+        "meri-greenfield/qualification-worker",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:19.986669+00:00",
+      "endedAt": "2026-10-11T22:25:21.053233+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 814,
+        "sha256": "62090ccda9db29ab31af4a6407fd77e5fa3dbbb95d73ec44848136511e96981e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecs-cluster",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "describe-clusters",
+        "--cluster",
+        "meri-greenfield-qualification",
+        "--include",
+        "TAGS",
+        "SETTINGS",
+        "STATISTICS",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:28.283715+00:00",
+      "endedAt": "2026-10-11T22:25:29.411117+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 3975,
+        "sha256": "3ac866e9a408b71bfb343635573c0c278e46de47e12424320051c8369acb5a04"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecs-running",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "list-tasks",
+        "--cluster",
+        "meri-greenfield-qualification",
+        "--desired-status",
+        "RUNNING",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:28.301676+00:00",
+      "endedAt": "2026-10-11T22:25:29.368384+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 26,
+        "sha256": "97c8df30bd5dee0cd66a3c74327d2ca398bcabc8e81afe0293ecf467e8a617d8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecs-services",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "list-services",
+        "--cluster",
+        "meri-greenfield-qualification",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:29.051173+00:00",
+      "endedAt": "2026-10-11T22:25:30.034546+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 29,
+        "sha256": "36076713ab63a52bc980c6f0a7b243a843284e0f84e46c586f2d243753a93819"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/ecs-stopped",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ecs",
+        "list-tasks",
+        "--cluster",
+        "meri-greenfield-qualification",
+        "--desired-status",
+        "STOPPED",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:28.412687+00:00",
+      "endedAt": "2026-10-11T22:25:29.400121+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 26,
+        "sha256": "97c8df30bd5dee0cd66a3c74327d2ca398bcabc8e81afe0293ecf467e8a617d8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/historical-build",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "codebuild",
+        "batch-get-builds",
+        "--ids",
+        "meri-greenfield-qualification-build:7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:21.144771+00:00",
+      "endedAt": "2026-10-11T22:25:22.112285+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 12129,
+        "sha256": "e595588c62524b479afb06d513a4cd52f2544a774cf7860a20ded05cd9486cf2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/historical-download",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-object",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--key",
+        "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
+        "--version-id",
+        "RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6",
+        "--checksum-mode",
+        "ENABLED",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\shipper-recovered-r1\\historical-evidence.tar.gz",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:22.103267+00:00",
+      "endedAt": "2026-10-11T22:25:23.430228+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 533,
+        "sha256": "c1738e622028e8401b94c8fdf9c992b79f674b7ae208f0a53de8a878e99f262d"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/historical-head",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "head-object",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--key",
+        "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
+        "--version-id",
+        "RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6",
+        "--checksum-mode",
+        "ENABLED",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:21.335547+00:00",
+      "endedAt": "2026-10-11T22:25:22.417124+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 533,
+        "sha256": "e44f03a76045bdc1518a800dc79cb5df3fffc0c9179f8437f8e0d768740544b9"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/historical-prefix-versions",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "list-object-versions",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--prefix",
+        "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:22.118073+00:00",
+      "endedAt": "2026-10-11T22:25:23.169864+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 799,
+        "sha256": "14ba918f93557903a4a53611beea19d0959c184d17ce46cf5f6b3d74bd227ce8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/historical-source-download",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "s3api",
+        "get-object",
+        "--bucket",
+        "meri-greenfield-qual-build-967807252336-us-east-1",
+        "--key",
+        "inputs/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/source.zip",
+        "--version-id",
+        "qDplTC_3Blz56hZoRfHciu6o6OxDWJiV",
+        "--checksum-mode",
+        "ENABLED",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\shipper-recovered-r1\\historical-source.zip",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:29:46.582203+00:00",
+      "endedAt": "2026-10-11T22:29:47.713571+00:00",
+      "timeoutSeconds": 45,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 700,
+        "sha256": "a879cd30d15e748691b85b21ae57121b6d231cbb296400d00fd11082b397f6e8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/identity",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "sts",
+        "get-caller-identity",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:13.933933+00:00",
+      "endedAt": "2026-10-11T22:25:14.884356+00:00",
+      "timeoutSeconds": 45,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 133,
+        "sha256": "6875b3013ad0ed8bca5296cb6ff420e80280b50fe34035cad7dc82ec7e857110"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/kms-1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "kms",
+        "describe-key",
+        "--key-id",
+        "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:25.415978+00:00",
+      "endedAt": "2026-10-11T22:25:26.409471+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 788,
+        "sha256": "b108660ec45911ce0443f272c7928d6a02ba246aaa6bc41f8a49d93532d4075d"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/kms-3a04f062-40de-4ed8-9a24-dad87c488e0c",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "kms",
+        "describe-key",
+        "--key-id",
+        "3a04f062-40de-4ed8-9a24-dad87c488e0c",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:26.303990+00:00",
+      "endedAt": "2026-10-11T22:25:27.255771+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 788,
+        "sha256": "b1e12bdb900703b1dc477a87773a544824a48e2612a6c8d32c82f501df0345c6"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/kms-policy-1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "kms",
+        "get-key-policy",
+        "--key-id",
+        "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+        "--policy-name",
+        "default",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:26.168679+00:00",
+      "endedAt": "2026-10-11T22:25:27.084307+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 761,
+        "sha256": "8fd6fd21c736ba57377e210f18b1ee4f6a7238708566b2228dcf2e6d724160fa"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/kms-policy-3a04f062-40de-4ed8-9a24-dad87c488e0c",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "kms",
+        "get-key-policy",
+        "--key-id",
+        "3a04f062-40de-4ed8-9a24-dad87c488e0c",
+        "--policy-name",
+        "default",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:26.358913+00:00",
+      "endedAt": "2026-10-11T22:25:27.284792+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 288,
+        "sha256": "756f4c2bc42b7d79aa11947edc37f9a6d40995806c8bb3014975d8c8a018a397"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/machine-0",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "describe-state-machine",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:36.901796+00:00",
+      "endedAt": "2026-10-11T22:27:37.957157+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 27027,
+        "sha256": "3ce20e8bcc8e788684753cf872798777322d610b9eae4d9791b8c099145f0154"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/machine-0-executions",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "list-executions",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+        "--max-results",
+        "100",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:36.914288+00:00",
+      "endedAt": "2026-10-11T22:27:37.900569+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 824,
+        "sha256": "8bbd20fd452918e0fa28efa89a415635a07923ff67d9c917b3df3549d5aff1b5"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/machine-1",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "describe-state-machine",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:37.173501+00:00",
+      "endedAt": "2026-10-11T22:27:38.186539+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 160198,
+        "sha256": "3480ff6a7e0700a2176d5ee7ac4c6d8b928eb8e4ae9e878367b43eda112f7095"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/machine-1-executions",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "list-executions",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+        "--max-results",
+        "100",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:37.193080+00:00",
+      "endedAt": "2026-10-11T22:27:38.138713+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2277,
+        "sha256": "2075cd049afe605c3f09658a6b7b55e477792e41be29b913a22e90bdfa4a4339"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/machine-2",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "describe-state-machine",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:37.900569+00:00",
+      "endedAt": "2026-10-11T22:27:38.909709+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 158589,
+        "sha256": "b1f726e40594d12b44341f20e7ba32aaabf91821a7b8a35e2573e46b6a269040"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": false,
+    "withheldReason": "Avoid embedding private implementation source bodies or unrelated DNS associations; bounded metadata view in inventory-summary.json, raw capture retained locally."
+  },
+  {
+    "label": "captures/machine-2-executions",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "stepfunctions",
+        "list-executions",
+        "--state-machine-arn",
+        "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+        "--max-results",
+        "100",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:37.957157+00:00",
+      "endedAt": "2026-10-11T22:27:38.909709+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 781,
+        "sha256": "87c29c7bb7ebc7c59687e9fd1a20b061f8c593417de28810c7b486a128271d0c"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-describe-network-interfaces",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-network-interfaces",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:30.391096+00:00",
+      "endedAt": "2026-10-11T22:25:31.651584+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 10536,
+        "sha256": "e5e2a4cbb3691974bf9a11e21a66adcb9bb5b39ad2ffa8ad3a98b04c6c09a8d9"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-describe-route-tables",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-route-tables",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:31.051256+00:00",
+      "endedAt": "2026-10-11T22:25:32.159655+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 5830,
+        "sha256": "6afcb84a863c15003e89c973c97410121686650253d1b2e918e3500535fccdce"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-describe-security-groups",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-security-groups",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:30.436297+00:00",
+      "endedAt": "2026-10-11T22:25:31.651584+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 6583,
+        "sha256": "411ff9b09304e6477f8dbc8e405d338c0596a6304aad1de254626a4983ae0597"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-describe-subnets",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-subnets",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:30.436297+00:00",
+      "endedAt": "2026-10-11T22:25:31.639937+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 5382,
+        "sha256": "b5f621a2965a2e5881b8a64ec781988d262f479271071a2e6463f1d66ad9fa70"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-describe-vpc-endpoints",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-vpc-endpoints",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:31.641939+00:00",
+      "endedAt": "2026-10-11T22:25:32.746217+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 13873,
+        "sha256": "73c6ec7b1c64b557728e21b72c585909f8bf5adbb3d2ebe126ac1e662be3a833"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-logs",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "logs",
+        "describe-log-groups",
+        "--log-group-name-prefix",
+        "/meri-greenfield/",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:32.749215+00:00",
+      "endedAt": "2026-10-11T22:25:33.751172+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1471,
+        "sha256": "7ac0acd5ac2973ec7aeaec2b70d474b6831e922f71089de6fb3989eeb2f85cd8"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-peerings-accepter",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-vpc-peering-connections",
+        "--filters",
+        "Name=accepter-vpc-info.vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:32.159655+00:00",
+      "endedAt": "2026-10-11T22:25:33.236814+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 39,
+        "sha256": "2d89a301035a4e4c2bd1fe12a673547a09755258bf9878665b44a759dd07c802"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-peerings-requester",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-vpc-peering-connections",
+        "--filters",
+        "Name=requester-vpc-info.vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:31.653399+00:00",
+      "endedAt": "2026-10-11T22:25:32.703001+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 39,
+        "sha256": "2d89a301035a4e4c2bd1fe12a673547a09755258bf9878665b44a759dd07c802"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/meri-vpc-ec2-instances",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-instances",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:34:58.134561+00:00",
+      "endedAt": "2026-10-11T22:35:00.245560+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 30,
+        "sha256": "933a2f6138a1c82589807ab8a77d2ebb930948eb0f472f564d0cfb491f7a2d34"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/merigreenfield-instances",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-network-interfaces",
+        "--filters",
+        "Name=tag:Project,Values=meri-greenfield",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:38.186539+00:00",
+      "endedAt": "2026-10-11T22:27:39.268385+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 35,
+        "sha256": "0d4d0d97529e20fec7ad5b3c063cc5401acf40a80343dbb1132f25525b5f0d6d"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/named-vpcs",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "ec2",
+        "describe-vpcs",
+        "--filters",
+        "Name=vpc-id,Values=vpc-06e1941747e798f0a,vpc-0ac26cfac7ed972be",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:31.653399+00:00",
+      "endedAt": "2026-10-11T22:25:32.881527+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 3840,
+        "sha256": "b6f646831fcc8243fd6af5d8c47e4e6105c5882ea9da6349e3c8cc60820ce644"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-browsermanagedfixture-20261011",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-BrowserManagedFixture-20261011",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:19.066843+00:00",
+      "endedAt": "2026-10-11T22:25:20.174272+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1021,
+        "sha256": "b97a13fe08631e568ef9a0d07990e53681e5725ccc8f63791f1b643bb930e996"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-browserwirereadonly-20261010",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-BrowserWireReadOnly-20261010",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:19.350870+00:00",
+      "endedAt": "2026-10-11T22:25:20.351965+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 490,
+        "sha256": "e9f94a3056ea5dab75aa8497ba1767403d71b7769017ef9dfd54cc10c0e0a4be"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-nativecanaryenforcement",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-NativeCanaryEnforcement",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:17.350700+00:00",
+      "endedAt": "2026-10-11T22:25:18.367501+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1015,
+        "sha256": "f89009ed99139ab6e1b421f0faed6b7f095a5c2ee30e6a1d7afd4749f1aa4190"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-nativecanaryqualification",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-NativeCanaryQualification",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:18.067468+00:00",
+      "endedAt": "2026-10-11T22:25:19.050947+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 543,
+        "sha256": "e7bdd0f0b8eec228e0632be93c79995cefa90933c3f453228f3818e2d9b1de1e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-nativequalification",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-NativeQualification",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:16.297678+00:00",
+      "endedAt": "2026-10-11T22:25:17.350700+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1035,
+        "sha256": "38e17bc15613a07e293c66b024f94be021df83c89eb475344931ee96828aa1c4"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-nativesdkenforcement",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-NativeSdkEnforcement",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:17.017356+00:00",
+      "endedAt": "2026-10-11T22:25:18.067468+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1009,
+        "sha256": "09691ed579e960d7f8b21d4230d43421e047bd70fb5595dd4b5cc35dce70f25a"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-qualificationbuild",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-QualificationBuild",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:14.924060+00:00",
+      "endedAt": "2026-10-11T22:25:16.244657+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 4049,
+        "sha256": "ca342c7be9fa816ede0e6b22f9570cf5ca094f6462530dfa7e3ae2e4a2f65aa6"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-qualificationruntime",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-QualificationRuntime",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:14.924060+00:00",
+      "endedAt": "2026-10-11T22:25:16.295672+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 12655,
+        "sha256": "40f59ec6cc1d85860fff9e91d320508482d156c5cd13cbe716da6f4708e952d7"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-qualificationsdkcheckpoint",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-QualificationSdkCheckpoint",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:15.997066+00:00",
+      "endedAt": "2026-10-11T22:25:17.017356+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2748,
+        "sha256": "8ccaf83ff55542b3a0794a353484c8121b064a399bde10033db9df4045db54ff"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/resources-merigreenfield-teststatereadonly",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "list-stack-resources",
+        "--stack-name",
+        "MeriGreenfield-TestStateReadOnly",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:18.367501+00:00",
+      "endedAt": "2026-10-11T22:25:19.350870+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 486,
+        "sha256": "e07476f41e7ab67ff6b006fa68e5045483e5f113e7af7c80ec05b6f7cd981c58"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/runtime-kms",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "kms",
+        "describe-key",
+        "--key-id",
+        "3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:27:38.154820+00:00",
+      "endedAt": "2026-10-11T22:27:39.043153+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 788,
+        "sha256": "372176cd2c0ad1df2f05433383b8914e9f5a2b5b9667d54562a5eb983e86f1b7"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/selected-aurora-metadata",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "rds",
+        "describe-db-clusters",
+        "--db-cluster-identifier",
+        "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+        "--query",
+        "DBClusters[].{identifier:DBClusterIdentifier,status:Status,engine:Engine,engineVersion:EngineVersion,subnetGroup:DBSubnetGroup,securityGroups:VpcSecurityGroups,encrypted:StorageEncrypted,public:PubliclyAccessible,capacity:ServerlessV2ScalingConfiguration,arn:DBClusterArn}",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:25:32.884528+00:00",
+      "endedAt": "2026-10-11T22:25:33.917818+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 725,
+        "sha256": "299206b62c3793660f324e01d6a8ec85251866d3e61c685e212fb0f4d4f27d58"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/selected-aurora-subnet-metadata",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-shipper-extra-read-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "rds",
+        "describe-db-subnet-groups",
+        "--db-subnet-group-name",
+        "capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:35:00.247562+00:00",
+      "endedAt": "2026-10-11T22:35:01.227705+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1528,
+        "sha256": "f81c287eca81eadd85d4ee41361851f2bdf058e5e17486848a6a750ae45b48d2"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-browsermanagedfixture-20261011",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-BrowserManagedFixture-20261011",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:19.017359+00:00",
+      "endedAt": "2026-10-11T22:25:19.986669+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1454,
+        "sha256": "07f93bce3f1c9e341273903ae3063d904aee84f287a98a6e7268923b6b4148e1"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-browserwirereadonly-20261010",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-BrowserWireReadOnly-20261010",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:19.223594+00:00",
+      "endedAt": "2026-10-11T22:25:20.241496+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2020,
+        "sha256": "b4f3b5c1808afc9b30782deb133ced47e95862aae3d018665265c00438bb66db"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-nativecanaryenforcement",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-NativeCanaryEnforcement",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:17.217387+00:00",
+      "endedAt": "2026-10-11T22:25:18.234186+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1665,
+        "sha256": "8c7f98b9a39d635c061a1b1d9d110fa489daad73ca4cd7c97c967e9f3d09ebd0"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-nativecanaryqualification",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-NativeCanaryQualification",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:18.017570+00:00",
+      "endedAt": "2026-10-11T22:25:19.017359+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1649,
+        "sha256": "b6a3cd76cf10be0fbfc44127994e179d384a990b2957e3525420abc31d4049fb"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-nativequalification",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-NativeQualification",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:16.247940+00:00",
+      "endedAt": "2026-10-11T22:25:17.217387+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2250,
+        "sha256": "73c3fe34de9e8248b255e27b54397f50b0a919c63704d7e6dae5b67253927a97"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-nativesdkenforcement",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-NativeSdkEnforcement",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:17.001362+00:00",
+      "endedAt": "2026-10-11T22:25:18.017570+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1656,
+        "sha256": "de71f01665c752268ac289d3b92231672761615201d9a183d89630702ea93e44"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-qualificationbuild",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-QualificationBuild",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:14.928070+00:00",
+      "endedAt": "2026-10-11T22:25:15.993054+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2560,
+        "sha256": "4b26a8ee39310c672c8e87cf1e158e216bdf8b1beb92b9b70125cb8236856bc0"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-qualificationruntime",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-QualificationRuntime",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:14.928070+00:00",
+      "endedAt": "2026-10-11T22:25:15.993054+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 3313,
+        "sha256": "528703183dd45ca12bda6b60b1fe1482569308c6884059814efbd050ce39f12e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-qualificationsdkcheckpoint",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-QualificationSdkCheckpoint",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:15.997066+00:00",
+      "endedAt": "2026-10-11T22:25:16.999242+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 2608,
+        "sha256": "cf59118d0ae7ef6a8098e92c39d35320d41be63ba92e20fe74298194679bbfd7"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "captures/stack-merigreenfield-teststatereadonly",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "schema": "meri-codex-aws-capture/1",
+      "argv": [
+        "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+        "cloudformation",
+        "describe-stacks",
+        "--stack-name",
+        "MeriGreenfield-TestStateReadOnly",
+        "--profile",
+        "capiro-dev",
+        "--region",
+        "us-east-1",
+        "--output",
+        "json",
+        "--no-cli-pager",
+        "--cli-connect-timeout",
+        "10",
+        "--cli-read-timeout",
+        "30"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+      "startedAt": "2026-10-11T22:25:18.234186+00:00",
+      "endedAt": "2026-10-11T22:25:19.219593+00:00",
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "exitCode": 0,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 1655,
+        "sha256": "c9c8f48304a56790791798fc81314bfa56c6bc834dba71bf096738e5580ef427"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readonlyRequestValidation": null
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "local-checks/builder-runtime-binding",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "argv": [
+        "C:\\Users\\neoma\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+        "-I",
+        "-B",
+        "-S",
+        "-c",
+        "import sys; sys.path.insert(0, 'scripts/qualification'); import worker_image_build; worker_image_build.pins()"
+      ],
+      "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:27:39.274942+00:00",
+      "endedAt": "2026-10-11T22:27:39.531386+00:00",
+      "exitCode": 1,
+      "timeoutSeconds": 20,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 562,
+        "sha256": "d88375b006758bc85213bece804e6f28d269ab6a48213be48c6b5f45eab0250d"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "local-checks/github-backend-pr7",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "7",
+        "--repo",
+        "neo-capiro/meri-greenfield",
+        "--json",
+        "number,url,state,isDraft,headRefName,headRefOid,baseRefName,updatedAt,statusCheckRollup,mergeStateStatus"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:35:01.230708+00:00",
+      "endedAt": "2026-10-11T22:35:01.918862+00:00",
+      "exitCode": 0,
+      "timedOut": false,
+      "timeoutSeconds": 60,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 313,
+        "sha256": "446892b6c1af96e78148c2bac205861e6c23460977214f4637818219469f9674"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "local-checks/github-frontend-pr4",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "argv": [
+        "gh",
+        "pr",
+        "view",
+        "4",
+        "--repo",
+        "neo-capiro/capiro-frontend",
+        "--json",
+        "number,url,state,isDraft,headRefName,headRefOid,baseRefName,updatedAt,statusCheckRollup,mergeStateStatus"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:35:01.920971+00:00",
+      "endedAt": "2026-10-11T22:35:02.454850+00:00",
+      "exitCode": 0,
+      "timedOut": false,
+      "timeoutSeconds": 60,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 312,
+        "sha256": "ff322ee1245f3cf933a040a73d42111945a5d5be4b80cbf4b52b3ab0bef59975"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "local-checks/scan-analyzer-derived",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "argv": [
+        "C:\\Users\\neoma\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+        "-I",
+        "-B",
+        "-S",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo\\scripts\\qualification\\worker_image_scan.py",
+        "--scan-response",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\outputs\\aws-shipper-20261011-r1\\fresh-scan-derived-utf8.json",
+        "--scan-sha256",
+        "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+        "--image-digest",
+        "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:34:20.534429+00:00",
+      "endedAt": "2026-10-11T22:34:20.699682+00:00",
+      "exitCode": 0,
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 66474,
+        "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  },
+  {
+    "label": "local-checks/scan-analyzer-original",
+    "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "envelope": {
+      "argv": [
+        "C:\\Users\\neoma\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+        "-I",
+        "-B",
+        "-S",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo\\scripts\\qualification\\worker_image_scan.py",
+        "--scan-response",
+        "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\outputs\\aws-shipper-20261011-r1\\captures\\ecr-native-diagnostic-scan\\stdout.bin",
+        "--scan-sha256",
+        "011fff3c6b57794e0674644c0f8d14c56a7b6a94c1512e3806b256abe2afaa6a",
+        "--image-digest",
+        "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac"
+      ],
+      "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+      "startedAt": "2026-10-11T22:34:20.341953+00:00",
+      "endedAt": "2026-10-11T22:34:20.525087+00:00",
+      "exitCode": 2,
+      "timeoutSeconds": 60,
+      "timedOut": false,
+      "automaticRetries": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 81,
+        "sha256": "f5fd938e826f51ccbd70d63f06f6255796eb9923ad4370ee357c16bc6551d817"
+      }
+    },
+    "rawIncludedInPr": true,
+    "withheldReason": null
+  }
+]

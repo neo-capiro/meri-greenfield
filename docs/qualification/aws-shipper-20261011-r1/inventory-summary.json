@@ -1,0 +1,2427 @@
+{
+  "schema": "meri-shipper-inventory/1",
+  "generatedAt": "2026-10-11T22:39:23.743380+00:00",
+  "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+  "identity": {
+    "UserId": "AIDA6CVOOW5YCNOGMSALQ",
+    "Account": "967807252336",
+    "Arn": "arn:aws:iam::967807252336:user/capirocli"
+  },
+  "region": "us-east-1",
+  "stacks": [
+    {
+      "StackName": "MeriGreenfield-BrowserManagedFixture-20261011",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-BrowserManagedFixture-20261011/70805440-c52b-11f1-ae8d-0affd542ef15",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-11T04:22:58.797000+00:00",
+      "LastUpdatedTime": "2026-10-11T04:31:52.714000+00:00",
+      "Tags": [],
+      "Outputs": null,
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "FixtureLifecycle",
+          "PhysicalResourceId": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+          "ResourceType": "AWS::StepFunctions::StateMachine",
+          "LastUpdatedTimestamp": "2026-10-11T04:32:31.470000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "FixtureRole",
+          "PhysicalResourceId": "MeriGreenfield-BrowserManagedFixture-20-FixtureRole-8A8BHc9NlSeA",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-11T04:32:12.164000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-BrowserWireReadOnly-20261010",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-BrowserWireReadOnly-20261010/e5039620-c502-11f1-8f72-0e08b184dc4d",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-10T23:32:44.874000+00:00",
+      "LastUpdatedTime": "2026-10-10T23:47:14.519000+00:00",
+      "Tags": [
+        {
+          "Key": "MeriComponent",
+          "Value": "qualification-browser-wire"
+        },
+        {
+          "Key": "QualificationRun",
+          "Value": "b247b9a1-bfde-414a-a76b-9ff4fdd83110"
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputKey": "RoleArn",
+          "OutputValue": "arn:aws:iam::967807252336:role/MeriGreenfield-BrowserWireReadOnly-20261010"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "BrowserWireReadOnlyRole",
+          "PhysicalResourceId": "MeriGreenfield-BrowserWireReadOnly-20261010",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-10T23:47:34.812000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-NativeCanaryEnforcement",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeCanaryEnforcement/e06bfd80-c4be-11f1-b0a5-0affd5e16a85",
+      "StackStatus": "UPDATE_COMPLETE",
+      "CreationTime": "2026-10-10T15:25:51.391000+00:00",
+      "LastUpdatedTime": "2026-10-10T18:13:01.116000+00:00",
+      "Tags": [],
+      "Outputs": null,
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "NativeEnforcementMachine",
+          "PhysicalResourceId": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+          "ResourceType": "AWS::StepFunctions::StateMachine",
+          "LastUpdatedTimestamp": "2026-10-10T18:13:34.974000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "NativeEnforcementRole",
+          "PhysicalResourceId": "MeriGreenfield-NativeEnforcement-Canary-20261010",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-10T18:13:20.516000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-NativeCanaryQualification",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeCanaryQualification/8a3260e0-c4b8-11f1-ab65-126b5e1d784f",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-10T14:40:29.732000+00:00",
+      "LastUpdatedTime": "2026-10-10T14:42:25.098000+00:00",
+      "Tags": [],
+      "Outputs": [
+        {
+          "OutputKey": "CanaryTaskDefinitionArn",
+          "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-canary:1"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "CanaryTaskDefinition",
+          "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-canary:1",
+          "ResourceType": "AWS::ECS::TaskDefinition",
+          "LastUpdatedTimestamp": "2026-10-10T14:42:28.969000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-NativeQualification",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeQualification/7d925160-c468-11f1-bea1-120ccf9f5447",
+      "StackStatus": "UPDATE_COMPLETE",
+      "CreationTime": "2026-10-10T05:07:28.822000+00:00",
+      "LastUpdatedTime": "2026-10-10T14:23:59.966000+00:00",
+      "Tags": [],
+      "Outputs": [
+        {
+          "OutputKey": "SdkTaskDefinitionArn",
+          "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2"
+        },
+        {
+          "OutputKey": "OfficeTaskDefinitionArn",
+          "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-office:2"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "OfficeTaskDefinition",
+          "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-office:2",
+          "ResourceType": "AWS::ECS::TaskDefinition",
+          "LastUpdatedTimestamp": "2026-10-10T14:24:05.259000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "SdkTaskDefinition",
+          "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2",
+          "ResourceType": "AWS::ECS::TaskDefinition",
+          "LastUpdatedTimestamp": "2026-10-10T14:24:05.153000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-NativeSdkEnforcement",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeSdkEnforcement/9db306b0-c4e0-11f1-8aed-12ffde6aba01",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-10T19:27:22.329000+00:00",
+      "LastUpdatedTime": "2026-10-10T20:10:43.274000+00:00",
+      "Tags": [],
+      "Outputs": null,
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "NativeEnforcementMachine",
+          "PhysicalResourceId": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+          "ResourceType": "AWS::StepFunctions::StateMachine",
+          "LastUpdatedTimestamp": "2026-10-10T20:11:22.621000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "NativeEnforcementRole",
+          "PhysicalResourceId": "MeriGreenfield-NativeEnforcement-Sdk-20261010",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-10T20:11:03.470000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-QualificationBuild",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationBuild/e5fac410-c415-11f1-a2f2-0afff1204785",
+      "StackStatus": "UPDATE_COMPLETE",
+      "CreationTime": "2026-10-09T19:16:15.844000+00:00",
+      "LastUpdatedTime": "2026-10-09T19:35:02.626000+00:00",
+      "Tags": [
+        {
+          "Key": "Project",
+          "Value": "meri-greenfield"
+        },
+        {
+          "Key": "Environment",
+          "Value": "qualification"
+        },
+        {
+          "Key": "SourcesEnabled",
+          "Value": "false"
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputKey": "SourceBucket",
+          "OutputValue": "meri-greenfield-qual-build-967807252336-us-east-1"
+        },
+        {
+          "OutputKey": "BuildProject",
+          "OutputValue": "meri-greenfield-qualification-build"
+        },
+        {
+          "OutputKey": "RepositoryName",
+          "OutputValue": "meri-greenfield/qualification-worker"
+        },
+        {
+          "OutputKey": "RepositoryUri",
+          "OutputValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "BuildInputs8BC01732",
+          "PhysicalResourceId": "meri-greenfield-qual-build-967807252336-us-east-1",
+          "ResourceType": "AWS::S3::Bucket",
+          "LastUpdatedTimestamp": "2026-10-09T19:17:13.695000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuildInputsPolicyDF117380",
+          "PhysicalResourceId": "meri-greenfield-qual-build-967807252336-us-east-1",
+          "ResourceType": "AWS::S3::BucketPolicy",
+          "LastUpdatedTimestamp": "2026-10-09T19:17:16.327000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuildKey89FE04E7",
+          "PhysicalResourceId": "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+          "ResourceType": "AWS::KMS::Key",
+          "LastUpdatedTimestamp": "2026-10-09T19:16:58.325000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuildKeyAlias0EED660B",
+          "PhysicalResourceId": "alias/meri-greenfield/qualification-build",
+          "ResourceType": "AWS::KMS::Alias",
+          "LastUpdatedTimestamp": "2026-10-09T19:17:00.988000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuildLogs3759266E",
+          "PhysicalResourceId": "/meri-greenfield/qualification/build",
+          "ResourceType": "AWS::Logs::LogGroup",
+          "LastUpdatedTimestamp": "2026-10-09T19:16:53.339000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuilderRoleBBEBFA71",
+          "PhysicalResourceId": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-09T19:16:58.587000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BuilderRoleDefaultPolicy8E4A45D4",
+          "PhysicalResourceId": "MeriG-Build-li2bg6StDekA",
+          "ResourceType": "AWS::IAM::Policy",
+          "LastUpdatedTimestamp": "2026-10-09T19:17:33.643000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ImageBuilderAD143916",
+          "PhysicalResourceId": "meri-greenfield-qualification-build",
+          "ResourceType": "AWS::CodeBuild::Project",
+          "LastUpdatedTimestamp": "2026-10-09T19:35:08.703000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "WorkerRepository770852D6",
+          "PhysicalResourceId": "meri-greenfield/qualification-worker",
+          "ResourceType": "AWS::ECR::Repository",
+          "LastUpdatedTimestamp": "2026-10-09T19:16:45.363000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-QualificationRuntime",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7",
+      "StackStatus": "UPDATE_COMPLETE",
+      "CreationTime": "2026-10-09T20:32:59.746000+00:00",
+      "LastUpdatedTime": "2026-10-09T21:54:04.635000+00:00",
+      "Tags": [
+        {
+          "Key": "Project",
+          "Value": "meri-greenfield"
+        },
+        {
+          "Key": "Owner",
+          "Value": "Codex-integration"
+        },
+        {
+          "Key": "Environment",
+          "Value": "qualification"
+        },
+        {
+          "Key": "SourcesEnabled",
+          "Value": "false"
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputKey": "VpcId",
+          "OutputValue": "vpc-06e1941747e798f0a"
+        },
+        {
+          "OutputKey": "ClusterName",
+          "OutputValue": "meri-greenfield-qualification"
+        },
+        {
+          "OutputKey": "WorkerSecurityGroupId",
+          "OutputValue": "sg-0c4e15bec7adeed1a"
+        },
+        {
+          "OutputKey": "LogGroupName",
+          "OutputValue": "/meri-greenfield/qualification/runtime"
+        },
+        {
+          "OutputKey": "SubnetIds",
+          "OutputValue": "subnet-0864c000b771df32c,subnet-06437dfaae1c217c3"
+        },
+        {
+          "OutputKey": "TaskDefinitionArn",
+          "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "AllowedDns",
+          "PhysicalResourceId": "rslvr-fdl-e9debe05ecc1478d",
+          "ResourceType": "AWS::Route53Resolver::FirewallDomainList",
+          "LastUpdatedTimestamp": "2026-10-09T20:52:47.204000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "BlockedDns",
+          "PhysicalResourceId": "rslvr-fdl-c385a87aa13c42d2",
+          "ResourceType": "AWS::Route53Resolver::FirewallDomainList",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:41.406000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ClusterEB0386A7",
+          "PhysicalResourceId": "meri-greenfield-qualification",
+          "ResourceType": "AWS::ECS::Cluster",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:40.132000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "DnsAssociation",
+          "PhysicalResourceId": "rslvr-frgassoc-70f45bda8e8e43ae",
+          "ResourceType": "AWS::Route53Resolver::FirewallRuleGroupAssociation",
+          "LastUpdatedTimestamp": "2026-10-09T20:36:54.850000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "DnsRules",
+          "PhysicalResourceId": "rslvr-frg-32883f486cf249b0",
+          "ResourceType": "AWS::Route53Resolver::FirewallRuleGroup",
+          "LastUpdatedTimestamp": "2026-10-09T20:53:33.494000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "EmptyWorkerRole7C03C4DD",
+          "PhysicalResourceId": "MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:52.415000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "EndpointSecurityGroupF840B798",
+          "PhysicalResourceId": "sg-030c8a7ce5adea043",
+          "ResourceType": "AWS::EC2::SecurityGroup",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:58.754000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "EndpointSecurityGroupfromMeriGreenfieldQualificationRuntimeWorkerSecurityGroup6B45898C44304A094BB",
+          "PhysicalResourceId": "sgr-0cd09495db631ffc0",
+          "ResourceType": "AWS::EC2::SecurityGroupIngress",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:01.325000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ExecutionRole605A040B",
+          "PhysicalResourceId": "MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:52.505000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ExecutionRoleDefaultPolicyA5B92313",
+          "PhysicalResourceId": "MeriG-Execu-OCuQTWW3UecO",
+          "ResourceType": "AWS::IAM::Policy",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:09.478000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "RuntimeLogKey44F45B96",
+          "PhysicalResourceId": "3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+          "ResourceType": "AWS::KMS::Key",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:52.253000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "RuntimeLogKeyAlias27DA86A7",
+          "PhysicalResourceId": "alias/meri-greenfield/qualification-runtime-logs",
+          "ResourceType": "AWS::KMS::Alias",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:54.957000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "RuntimeLogs92941AA6",
+          "PhysicalResourceId": "/meri-greenfield/qualification/runtime",
+          "ResourceType": "AWS::Logs::LogGroup",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:47.457000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "Task79114B6B",
+          "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2",
+          "ResourceType": "AWS::ECS::TaskDefinition",
+          "LastUpdatedTimestamp": "2026-10-09T21:54:11.141000+00:00",
+          "ResourceStatus": "UPDATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "Vpc8378EB38",
+          "PhysicalResourceId": "vpc-06e1941747e798f0a",
+          "ResourceType": "AWS::EC2::VPC",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:49.082000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcCloudWatchLogs25679485",
+          "PhysicalResourceId": "vpce-057935580d0a956a9",
+          "ResourceType": "AWS::EC2::VPCEndpoint",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:56.428000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcEcrApi2DC95EDF",
+          "PhysicalResourceId": "vpce-0803bf544be06e51f",
+          "ResourceType": "AWS::EC2::VPCEndpoint",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:46.741000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcEcrDocker053FD29B",
+          "PhysicalResourceId": "vpce-0ee3a5130a81353a5",
+          "ResourceType": "AWS::EC2::VPCEndpoint",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:46.503000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcImageLayers1A6FFEBB",
+          "PhysicalResourceId": "vpce-07962a243f84c3591",
+          "ResourceType": "AWS::EC2::VPCEndpoint",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:54.939000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet1RouteTableAssociationC2D6915E",
+          "PhysicalResourceId": "rtbassoc-04a27130d4b50e587",
+          "ResourceType": "AWS::EC2::SubnetRouteTableAssociation",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:55.913000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet1RouteTableD0446D86",
+          "PhysicalResourceId": "rtb-0cdf44d0066d39b23",
+          "ResourceType": "AWS::EC2::RouteTable",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:01.202000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet1Subnet28F09E14",
+          "PhysicalResourceId": "subnet-0864c000b771df32c",
+          "ResourceType": "AWS::EC2::Subnet",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:53.558000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet2RouteTableAssociationD554B536",
+          "PhysicalResourceId": "rtbassoc-0ba09ddd06693d4c0",
+          "ResourceType": "AWS::EC2::SubnetRouteTableAssociation",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:55.944000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet2RouteTableF1532EFF",
+          "PhysicalResourceId": "rtb-0a062faae50d3da2a",
+          "ResourceType": "AWS::EC2::RouteTable",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:01.365000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "VpcisolatedworkerSubnet2SubnetD2755134",
+          "PhysicalResourceId": "subnet-06437dfaae1c217c3",
+          "ResourceType": "AWS::EC2::Subnet",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:53.548000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "WorkerSecurityGroup5529CF0B",
+          "PhysicalResourceId": "sg-0c4e15bec7adeed1a",
+          "ResourceType": "AWS::EC2::SecurityGroup",
+          "LastUpdatedTimestamp": "2026-10-09T20:34:58.082000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "WorkerSecurityGrouptoMeriGreenfieldQualificationRuntimeEndpointSecurityGroup49B4D9274432254A74A",
+          "PhysicalResourceId": "sgr-0bb0f076f8c07c701",
+          "ResourceType": "AWS::EC2::SecurityGroupEgress",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:01.164000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "WorkerSecurityGrouptopl63a5400a4439A7C485D",
+          "PhysicalResourceId": "sgr-01611f0456ad9d760",
+          "ResourceType": "AWS::EC2::SecurityGroupEgress",
+          "LastUpdatedTimestamp": "2026-10-09T20:35:00.452000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-QualificationSdkCheckpoint",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationSdkCheckpoint/2ac21470-c594-11f1-85e1-0eab4fe6dfb5",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-11T16:52:38.912000+00:00",
+      "LastUpdatedTime": "2026-10-11T16:52:49.605000+00:00",
+      "Tags": [
+        {
+          "Key": "Project",
+          "Value": "meri-greenfield"
+        },
+        {
+          "Key": "Owner",
+          "Value": "Codex-integration"
+        },
+        {
+          "Key": "Environment",
+          "Value": "qualification"
+        },
+        {
+          "Key": "SourcesEnabled",
+          "Value": "false"
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputKey": "CheckpointBucketName",
+          "OutputValue": "meri-greenfield-qual-checkpoint-967807252336-us-east-1"
+        },
+        {
+          "OutputKey": "CheckpointKeyArn",
+          "OutputValue": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c"
+        },
+        {
+          "OutputKey": "ControlTaskRoleArn",
+          "OutputValue": "arn:aws:iam::967807252336:role/meri-greenfield-qualification-sdk-control"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "CheckpointBucketDFE4871A",
+          "PhysicalResourceId": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+          "ResourceType": "AWS::S3::Bucket",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:23.657000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "CheckpointBucketPolicyB1665717",
+          "PhysicalResourceId": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+          "ResourceType": "AWS::S3::BucketPolicy",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:25.956000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "CheckpointKey6ED5B60F",
+          "PhysicalResourceId": "3a04f062-40de-4ed8-9a24-dad87c488e0c",
+          "ResourceType": "AWS::KMS::Key",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:08.198000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "CheckpointKeyAlias182434E4",
+          "PhysicalResourceId": "alias/meri-greenfield/qualification-sdk-checkpoint",
+          "ResourceType": "AWS::KMS::Alias",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:10.871000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ControlTaskRole6F8235EE",
+          "PhysicalResourceId": "meri-greenfield-qualification-sdk-control",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:09.571000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        },
+        {
+          "LogicalResourceId": "ControlTaskRoleDefaultPolicy7B4A7327",
+          "PhysicalResourceId": "MeriG-Contr-LXx9ptoKGIIx",
+          "ResourceType": "AWS::IAM::Policy",
+          "LastUpdatedTimestamp": "2026-10-11T16:53:40.927000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    },
+    {
+      "StackName": "MeriGreenfield-TestStateReadOnly",
+      "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-TestStateReadOnly/788c9290-c4b1-11f1-98e1-12fffece6331",
+      "StackStatus": "CREATE_COMPLETE",
+      "CreationTime": "2026-10-10T13:49:53.639000+00:00",
+      "LastUpdatedTime": "2026-10-10T13:59:21.395000+00:00",
+      "Tags": [],
+      "Outputs": [
+        {
+          "OutputKey": "RoleArn",
+          "OutputValue": "arn:aws:iam::967807252336:role/MeriGreenfield-TestStateReadOnly-20261010"
+        }
+      ],
+      "DriftInformation": {
+        "StackDriftStatus": "NOT_CHECKED"
+      },
+      "resources": [
+        {
+          "LogicalResourceId": "ReadOnlyTestStateRole",
+          "PhysicalResourceId": "MeriGreenfield-TestStateReadOnly-20261010",
+          "ResourceType": "AWS::IAM::Role",
+          "LastUpdatedTimestamp": "2026-10-10T13:59:41.618000+00:00",
+          "ResourceStatus": "CREATE_COMPLETE",
+          "DriftInformation": {
+            "StackResourceDriftStatus": "NOT_CHECKED"
+          }
+        }
+      ]
+    }
+  ],
+  "buildProject": {
+    "name": "meri-greenfield-qualification-build",
+    "arn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build",
+    "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "timeoutInMinutes": 30,
+    "queuedTimeoutInMinutes": 5,
+    "concurrentBuildLimit": 1,
+    "encryptionKey": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+    "logsConfig": {
+      "cloudWatchLogs": {
+        "status": "ENABLED",
+        "groupName": "/meri-greenfield/qualification/build"
+      }
+    },
+    "tags": [
+      {
+        "key": "Environment",
+        "value": "qualification"
+      },
+      {
+        "key": "aws:cloudformation:stack-name",
+        "value": "MeriGreenfield-QualificationBuild"
+      },
+      {
+        "key": "aws:cloudformation:logical-id",
+        "value": "ImageBuilderAD143916"
+      },
+      {
+        "key": "Project",
+        "value": "meri-greenfield"
+      },
+      {
+        "key": "aws:cloudformation:stack-id",
+        "value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationBuild/e5fac410-c415-11f1-a2f2-0afff1204785"
+      },
+      {
+        "key": "Owner",
+        "value": "Codex-integration"
+      },
+      {
+        "key": "SourcesEnabled",
+        "value": "false"
+      }
+    ],
+    "environment": {
+      "type": "LINUX_CONTAINER",
+      "image": "aws/codebuild/standard:7.0",
+      "computeType": "BUILD_GENERAL1_SMALL",
+      "privilegedMode": true,
+      "imagePullCredentialsType": "CODEBUILD"
+    },
+    "environmentVariableNames": [
+      "REPOSITORY_URI",
+      "REPOSITORY_NAME",
+      "RESULT_BUCKET",
+      "IMAGE_TAG"
+    ],
+    "source": {
+      "type": "S3",
+      "location": "meri-greenfield-qual-build-967807252336-us-east-1/inputs/qualification-source.zip"
+    },
+    "defaultBuildspecSha256": "f2b85ee04a9bf77c71d1c5032e0b6152f1ac0fbb1bc161f08ce64c146ef97433",
+    "defaultBuildspecExecutionAuthorized": false
+  },
+  "historicalBuild": {
+    "id": "meri-greenfield-qualification-build:7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+    "arn": "arn:aws:codebuild:us-east-1:967807252336:build/meri-greenfield-qualification-build:7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+    "buildStatus": "SUCCEEDED",
+    "startTime": "2026-10-11T14:13:31.043000-04:00",
+    "endTime": "2026-10-11T14:17:15.468000-04:00",
+    "sourceVersion": "qDplTC_3Blz56hZoRfHciu6o6OxDWJiV",
+    "serviceRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "logs": {
+      "groupName": "/meri-greenfield/qualification/build",
+      "streamName": "7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+      "deepLink": "https://console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Fmeri-greenfield$252Fqualification$252Fbuild/log-events/7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+      "cloudWatchLogsArn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/build:log-stream:7f906e90-98d5-435f-98aa-2b2246ffd2cb",
+      "cloudWatchLogs": {
+        "status": "ENABLED",
+        "groupName": "/meri-greenfield/qualification/build"
+      }
+    }
+  },
+  "buildHistoryStatuses": {
+    "SUCCEEDED": 9,
+    "FAILED": 11
+  },
+  "buildHistoryCount": 20,
+  "taskDefinitions": [
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2",
+      "family": "meri-greenfield-qualification",
+      "revision": 2,
+      "status": "ACTIVE",
+      "networkMode": "awsvpc",
+      "taskRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD",
+      "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+      "cpu": "2048",
+      "memory": "8192",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "containers": [
+        {
+          "name": "worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+          "user": "10001:10001",
+          "readonlyRootFilesystem": true,
+          "essential": true,
+          "secrets": [],
+          "portMappings": [],
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/meri-greenfield/qualification/runtime",
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "qualification"
+            },
+            "secretOptions": []
+          }
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-canary:1",
+      "family": "meri-greenfield-qualification-canary",
+      "revision": 1,
+      "status": "ACTIVE",
+      "networkMode": "awsvpc",
+      "taskRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD",
+      "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+      "cpu": "2048",
+      "memory": "8192",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "containers": [
+        {
+          "name": "worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
+          "user": "10001:10001",
+          "readonlyRootFilesystem": true,
+          "essential": true,
+          "secrets": [],
+          "portMappings": [],
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/meri-greenfield/qualification/runtime",
+              "mode": "blocking",
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "qualification-canary"
+            },
+            "secretOptions": []
+          }
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-office:2",
+      "family": "meri-greenfield-qualification-office",
+      "revision": 2,
+      "status": "ACTIVE",
+      "networkMode": "awsvpc",
+      "taskRoleArn": null,
+      "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+      "cpu": "2048",
+      "memory": "8192",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "containers": [
+        {
+          "name": "worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
+          "user": "10001:10001",
+          "readonlyRootFilesystem": true,
+          "essential": true,
+          "secrets": [],
+          "portMappings": [],
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/meri-greenfield/qualification/runtime",
+              "mode": "blocking",
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "qualification-office"
+            },
+            "secretOptions": []
+          }
+        }
+      ]
+    },
+    {
+      "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2",
+      "family": "meri-greenfield-qualification-sdk",
+      "revision": 2,
+      "status": "ACTIVE",
+      "networkMode": "awsvpc",
+      "taskRoleArn": null,
+      "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+      "cpu": "2048",
+      "memory": "8192",
+      "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+      },
+      "containers": [
+        {
+          "name": "worker",
+          "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
+          "user": "10001:10001",
+          "readonlyRootFilesystem": true,
+          "essential": true,
+          "secrets": [],
+          "portMappings": [],
+          "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+              "awslogs-group": "/meri-greenfield/qualification/runtime",
+              "mode": "blocking",
+              "awslogs-region": "us-east-1",
+              "awslogs-stream-prefix": "qualification-sdk"
+            },
+            "secretOptions": []
+          }
+        }
+      ]
+    }
+  ],
+  "iamRoles": [
+    {
+      "RoleName": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+      "RoleId": "AROA6CVOOW5YATAVJGRSF",
+      "Arn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+      "CreateDate": "2026-10-09T19:16:42+00:00",
+      "PermissionsBoundary": null,
+      "Tags": [
+        {
+          "Key": "Project",
+          "Value": "meri-greenfield"
+        },
+        {
+          "Key": "Environment",
+          "Value": "qualification"
+        },
+        {
+          "Key": "Owner",
+          "Value": "Codex-integration"
+        },
+        {
+          "Key": "SourcesEnabled",
+          "Value": "false"
+        }
+      ],
+      "trustPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "codebuild.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+              "StringEquals": {
+                "aws:SourceAccount": "967807252336"
+              },
+              "ArnEquals": {
+                "aws:SourceArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build"
+              }
+            }
+          }
+        ]
+      },
+      "inlinePolicies": {
+        "PolicyNames": [
+          "BuilderRoleDefaultPolicy8E4A45D4"
+        ]
+      },
+      "attachedPolicies": {
+        "AttachedPolicies": []
+      },
+      "inlinePolicyCaptureSha256": "c7c6d267e782f766dc8e460b79b416db37b413857f80ac66fa3a2adc2347b24e"
+    },
+    {
+      "RoleName": "meri-greenfield-qualification-sdk-control",
+      "RoleId": "AROA6CVOOW5YJSXX642B2",
+      "Arn": "arn:aws:iam::967807252336:role/meri-greenfield-qualification-sdk-control",
+      "CreateDate": "2026-10-11T16:52:53+00:00",
+      "PermissionsBoundary": null,
+      "Tags": [
+        {
+          "Key": "Project",
+          "Value": "meri-greenfield"
+        },
+        {
+          "Key": "Environment",
+          "Value": "qualification"
+        },
+        {
+          "Key": "Owner",
+          "Value": "Codex-integration"
+        },
+        {
+          "Key": "SourcesEnabled",
+          "Value": "false"
+        }
+      ],
+      "trustPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "ecs-tasks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+              "StringEquals": {
+                "aws:SourceAccount": "967807252336"
+              },
+              "ArnLike": {
+                "aws:SourceArn": "arn:aws:ecs:us-east-1:967807252336:*"
+              }
+            }
+          }
+        ]
+      },
+      "inlinePolicies": {
+        "PolicyNames": [
+          "ControlTaskRoleDefaultPolicy7B4A7327"
+        ]
+      },
+      "attachedPolicies": {
+        "AttachedPolicies": []
+      },
+      "inlinePolicyCaptureSha256": "f3b2ec19fa3270e43851098df3535c69e9805b9517a022dbc91895cba251a1bb"
+    }
+  ],
+  "stateMachines": [
+    {
+      "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+      "name": "MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+      "status": "ACTIVE",
+      "revisionId": "9e23ee61-ed5a-4a76-b48b-f0ce3aa43797",
+      "roleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-BrowserManagedFixture-20-FixtureRole-8A8BHc9NlSeA",
+      "type": "STANDARD",
+      "creationDate": "2026-10-11T00:32:14.440000-04:00",
+      "loggingConfiguration": {
+        "level": "OFF",
+        "includeExecutionData": false
+      },
+      "definitionSha256": "9520767a9e6a5a2d31e0d77ab4fca81bba5f9acfc60dad0f2b1d4828b8920958",
+      "executionStatuses": {
+        "SUCCEEDED": 1
+      },
+      "executions": [
+        {
+          "executionArn": "arn:aws:states:us-east-1:967807252336:execution:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110:meri-browser-fixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+          "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+          "name": "meri-browser-fixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+          "status": "SUCCEEDED",
+          "startDate": "2026-10-11T04:09:26.490000-04:00",
+          "stopDate": "2026-10-11T04:09:38.966000-04:00",
+          "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110:1",
+          "redriveCount": 0
+        }
+      ]
+    },
+    {
+      "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+      "name": "meri-greenfield-native-enforcement-canary-20261010",
+      "status": "ACTIVE",
+      "revisionId": "747d0059-dbe0-426d-9332-ed89731be5a7",
+      "roleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-NativeEnforcement-Canary-20261010",
+      "type": "STANDARD",
+      "creationDate": "2026-10-10T11:26:59.759000-04:00",
+      "loggingConfiguration": {
+        "level": "OFF",
+        "includeExecutionData": false
+      },
+      "definitionSha256": "5be47681d90780ef70573ffff8bd9f3600c097a9da0ab499d03a5f9965f20e04",
+      "executionStatuses": {
+        "SUCCEEDED": 2,
+        "FAILED": 1
+      },
+      "executions": [
+        {
+          "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-cbfce523-4807-4ebc-865c-b319e4807e22",
+          "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+          "name": "meri-canary-cbfce523-4807-4ebc-865c-b319e4807e22",
+          "status": "SUCCEEDED",
+          "startDate": "2026-10-10T14:14:44.999000-04:00",
+          "stopDate": "2026-10-10T14:25:50.595000-04:00",
+          "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:3",
+          "redriveCount": 0
+        },
+        {
+          "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-1b4fc350-7391-4c40-9e3b-b2bb27a1cfbc",
+          "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+          "name": "meri-canary-1b4fc350-7391-4c40-9e3b-b2bb27a1cfbc",
+          "status": "SUCCEEDED",
+          "startDate": "2026-10-10T11:51:09.202000-04:00",
+          "stopDate": "2026-10-10T12:00:35.159000-04:00",
+          "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:2",
+          "redriveCount": 0
+        },
+        {
+          "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-13af432b-3e3a-42fc-a916-223fd6fd2eff",
+          "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+          "name": "meri-canary-13af432b-3e3a-42fc-a916-223fd6fd2eff",
+          "status": "FAILED",
+          "startDate": "2026-10-10T11:30:27.053000-04:00",
+          "stopDate": "2026-10-10T11:30:27.102000-04:00",
+          "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:1",
+          "redriveCount": 0
+        }
+      ]
+    },
+    {
+      "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+      "name": "meri-greenfield-native-enforcement-sdk-20261010",
+      "status": "ACTIVE",
+      "revisionId": null,
+      "roleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-NativeEnforcement-Sdk-20261010",
+      "type": "STANDARD",
+      "creationDate": "2026-10-10T16:11:05.417000-04:00",
+      "loggingConfiguration": {
+        "level": "OFF",
+        "includeExecutionData": false
+      },
+      "definitionSha256": "1858d43c75d44b133271ee181da3748df7c22e174500120047f324839f342a39",
+      "executionStatuses": {
+        "SUCCEEDED": 1
+      },
+      "executions": [
+        {
+          "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-sdk-20261010:meri-native-sdk-f1bdbc76-068f-4d04-bc91-5abd2608f05f",
+          "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+          "name": "meri-native-sdk-f1bdbc76-068f-4d04-bc91-5abd2608f05f",
+          "status": "SUCCEEDED",
+          "startDate": "2026-10-10T18:33:28.180000-04:00",
+          "stopDate": "2026-10-10T18:35:01.086000-04:00",
+          "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010:1",
+          "redriveCount": 0
+        }
+      ]
+    }
+  ],
+  "ecs": {
+    "cluster": {
+      "clusters": [
+        {
+          "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/meri-greenfield-qualification",
+          "clusterName": "meri-greenfield-qualification",
+          "status": "ACTIVE",
+          "registeredContainerInstancesCount": 0,
+          "runningTasksCount": 0,
+          "pendingTasksCount": 0,
+          "activeServicesCount": 0,
+          "statistics": [
+            {
+              "name": "runningEC2TasksCount",
+              "value": "0"
+            },
+            {
+              "name": "runningFargateTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "pendingEC2TasksCount",
+              "value": "0"
+            },
+            {
+              "name": "pendingFargateTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "runningExternalTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "pendingExternalTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "runningManagedInstancesTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "pendingManagedInstancesTasksCount",
+              "value": "0"
+            },
+            {
+              "name": "activeEC2ServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "activeFargateServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "drainingEC2ServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "drainingFargateServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "activeExternalServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "drainingExternalServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "activeManagedInstancesServiceCount",
+              "value": "0"
+            },
+            {
+              "name": "drainingManagedInstancesServiceCount",
+              "value": "0"
+            }
+          ],
+          "tags": [
+            {
+              "key": "Project",
+              "value": "meri-greenfield"
+            },
+            {
+              "key": "aws:cloudformation:stack-name",
+              "value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "key": "Owner",
+              "value": "Codex-integration"
+            },
+            {
+              "key": "aws:cloudformation:stack-id",
+              "value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "key": "Environment",
+              "value": "qualification"
+            },
+            {
+              "key": "aws:cloudformation:logical-id",
+              "value": "ClusterEB0386A7"
+            },
+            {
+              "key": "SourcesEnabled",
+              "value": "false"
+            }
+          ],
+          "settings": [
+            {
+              "name": "containerInsights",
+              "value": "disabled"
+            }
+          ],
+          "capacityProviders": [],
+          "defaultCapacityProviderStrategy": []
+        }
+      ],
+      "failures": []
+    },
+    "running": {
+      "taskArns": []
+    },
+    "services": {
+      "serviceArns": []
+    },
+    "stopped": {
+      "taskArns": []
+    }
+  },
+  "network": {
+    "vpcs": {
+      "Vpcs": [
+        {
+          "OwnerId": "967807252336",
+          "InstanceTenancy": "default",
+          "CidrBlockAssociationSet": [
+            {
+              "AssociationId": "vpc-cidr-assoc-0c010d6a4fdb1203a",
+              "CidrBlock": "10.40.0.0/16",
+              "CidrBlockState": {
+                "State": "associated"
+              }
+            }
+          ],
+          "IsDefault": false,
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "capiro"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/Capiro-dev-Network/4e3a7200-45e0-11f1-83f7-12277e1e1399"
+            },
+            {
+              "Key": "ManagedBy",
+              "Value": "cdk"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "Vpc8378EB38"
+            },
+            {
+              "Key": "Environment",
+              "Value": "dev"
+            },
+            {
+              "Key": "Name",
+              "Value": "Capiro-dev-Network/Vpc"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "Capiro-dev-Network"
+            }
+          ],
+          "BlockPublicAccessStates": {
+            "InternetGatewayBlockMode": "off"
+          },
+          "VpcId": "vpc-0ac26cfac7ed972be",
+          "State": "available",
+          "CidrBlock": "10.40.0.0/16",
+          "DhcpOptionsId": "dopt-0386a717c85092391"
+        },
+        {
+          "OwnerId": "967807252336",
+          "InstanceTenancy": "default",
+          "CidrBlockAssociationSet": [
+            {
+              "AssociationId": "vpc-cidr-assoc-02cca52c08519a0ca",
+              "CidrBlock": "10.80.0.0/16",
+              "CidrBlockState": {
+                "State": "associated"
+              }
+            }
+          ],
+          "IsDefault": false,
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "Name",
+              "Value": "meri-greenfield-qualification"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "Vpc8378EB38"
+            }
+          ],
+          "BlockPublicAccessStates": {
+            "InternetGatewayBlockMode": "off"
+          },
+          "VpcId": "vpc-06e1941747e798f0a",
+          "State": "available",
+          "CidrBlock": "10.80.0.0/16",
+          "DhcpOptionsId": "dopt-0386a717c85092391"
+        }
+      ]
+    },
+    "subnets": {
+      "Subnets": [
+        {
+          "AvailabilityZoneId": "use1-az2",
+          "MapCustomerOwnedIpOnLaunch": false,
+          "OwnerId": "967807252336",
+          "AssignIpv6AddressOnCreation": false,
+          "Ipv6CidrBlockAssociationSet": [],
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet2"
+            },
+            {
+              "Key": "aws-cdk:subnet-name",
+              "Value": "isolated-worker"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcisolatedworkerSubnet2SubnetD2755134"
+            },
+            {
+              "Key": "aws-cdk:subnet-type",
+              "Value": "Isolated"
+            }
+          ],
+          "SubnetArn": "arn:aws:ec2:us-east-1:967807252336:subnet/subnet-06437dfaae1c217c3",
+          "EnableDns64": false,
+          "Ipv6Native": false,
+          "PrivateDnsNameOptionsOnLaunch": {
+            "HostnameType": "ip-name",
+            "EnableResourceNameDnsARecord": false,
+            "EnableResourceNameDnsAAAARecord": false
+          },
+          "BlockPublicAccessStates": {
+            "InternetGatewayBlockMode": "off"
+          },
+          "SubnetId": "subnet-06437dfaae1c217c3",
+          "State": "available",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "CidrBlock": "10.80.1.0/24",
+          "AvailableIpAddressCount": 248,
+          "AvailabilityZone": "us-east-1b",
+          "DefaultForAz": false,
+          "MapPublicIpOnLaunch": false
+        },
+        {
+          "AvailabilityZoneId": "use1-az1",
+          "MapCustomerOwnedIpOnLaunch": false,
+          "OwnerId": "967807252336",
+          "AssignIpv6AddressOnCreation": false,
+          "Ipv6CidrBlockAssociationSet": [],
+          "Tags": [
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Name",
+              "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet1"
+            },
+            {
+              "Key": "aws-cdk:subnet-name",
+              "Value": "isolated-worker"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcisolatedworkerSubnet1Subnet28F09E14"
+            },
+            {
+              "Key": "aws-cdk:subnet-type",
+              "Value": "Isolated"
+            }
+          ],
+          "SubnetArn": "arn:aws:ec2:us-east-1:967807252336:subnet/subnet-0864c000b771df32c",
+          "EnableDns64": false,
+          "Ipv6Native": false,
+          "PrivateDnsNameOptionsOnLaunch": {
+            "HostnameType": "ip-name",
+            "EnableResourceNameDnsARecord": false,
+            "EnableResourceNameDnsAAAARecord": false
+          },
+          "BlockPublicAccessStates": {
+            "InternetGatewayBlockMode": "off"
+          },
+          "SubnetId": "subnet-0864c000b771df32c",
+          "State": "available",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "CidrBlock": "10.80.0.0/24",
+          "AvailableIpAddressCount": 248,
+          "AvailabilityZone": "us-east-1a",
+          "DefaultForAz": false,
+          "MapPublicIpOnLaunch": false
+        }
+      ]
+    },
+    "routes": {
+      "RouteTables": [
+        {
+          "Associations": [
+            {
+              "Main": false,
+              "RouteTableAssociationId": "rtbassoc-0ba09ddd06693d4c0",
+              "RouteTableId": "rtb-0a062faae50d3da2a",
+              "SubnetId": "subnet-06437dfaae1c217c3",
+              "AssociationState": {
+                "State": "associated"
+              }
+            }
+          ],
+          "PropagatingVgws": [],
+          "RouteTableId": "rtb-0a062faae50d3da2a",
+          "Routes": [
+            {
+              "DestinationCidrBlock": "10.80.0.0/16",
+              "GatewayId": "local",
+              "Origin": "CreateRouteTable",
+              "State": "active"
+            },
+            {
+              "DestinationPrefixListId": "pl-63a5400a",
+              "GatewayId": "vpce-07962a243f84c3591",
+              "Origin": "CreateRoute",
+              "State": "active"
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet2"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcisolatedworkerSubnet2RouteTableF1532EFF"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            }
+          ],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "OwnerId": "967807252336"
+        },
+        {
+          "Associations": [
+            {
+              "Main": false,
+              "RouteTableAssociationId": "rtbassoc-04a27130d4b50e587",
+              "RouteTableId": "rtb-0cdf44d0066d39b23",
+              "SubnetId": "subnet-0864c000b771df32c",
+              "AssociationState": {
+                "State": "associated"
+              }
+            }
+          ],
+          "PropagatingVgws": [],
+          "RouteTableId": "rtb-0cdf44d0066d39b23",
+          "Routes": [
+            {
+              "DestinationCidrBlock": "10.80.0.0/16",
+              "GatewayId": "local",
+              "Origin": "CreateRouteTable",
+              "State": "active"
+            },
+            {
+              "DestinationPrefixListId": "pl-63a5400a",
+              "GatewayId": "vpce-07962a243f84c3591",
+              "Origin": "CreateRoute",
+              "State": "active"
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet1"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcisolatedworkerSubnet1RouteTableD0446D86"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            }
+          ],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "OwnerId": "967807252336"
+        },
+        {
+          "Associations": [
+            {
+              "Main": true,
+              "RouteTableAssociationId": "rtbassoc-00cea574997837ce6",
+              "RouteTableId": "rtb-08a35b368a129cece",
+              "AssociationState": {
+                "State": "associated"
+              }
+            }
+          ],
+          "PropagatingVgws": [],
+          "RouteTableId": "rtb-08a35b368a129cece",
+          "Routes": [
+            {
+              "DestinationCidrBlock": "10.80.0.0/16",
+              "GatewayId": "local",
+              "Origin": "CreateRouteTable",
+              "State": "active"
+            }
+          ],
+          "Tags": [],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "OwnerId": "967807252336"
+        }
+      ]
+    },
+    "workerAndEndpointSecurityGroups": {
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-0c4e15bec7adeed1a",
+          "IpPermissionsEgress": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 443,
+              "ToPort": 443,
+              "UserIdGroupPairs": [
+                {
+                  "Description": "Only new private endpoints",
+                  "UserId": "967807252336",
+                  "GroupId": "sg-030c8a7ce5adea043"
+                }
+              ],
+              "IpRanges": [],
+              "Ipv6Ranges": [],
+              "PrefixListIds": [
+                {
+                  "Description": "ECR regional image-layer S3 gateway endpoint",
+                  "PrefixListId": "pl-63a5400a"
+                }
+              ]
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "WorkerSecurityGroup5529CF0B"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            }
+          ],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-0c4e15bec7adeed1a",
+          "OwnerId": "967807252336",
+          "GroupName": "MeriGreenfield-QualificationRuntime-WorkerSecurityGroup5529CF0B-IXmdsY4FwTSJ",
+          "Description": "Qualification worker: only new image/log endpoints and restricted S3 layer endpoint",
+          "IpPermissions": []
+        },
+        {
+          "GroupId": "sg-0cf5db8b58c48aaf4",
+          "IpPermissionsEgress": [
+            {
+              "IpProtocol": "-1",
+              "UserIdGroupPairs": [],
+              "IpRanges": [
+                {
+                  "CidrIp": "0.0.0.0/0"
+                }
+              ],
+              "Ipv6Ranges": [],
+              "PrefixListIds": []
+            }
+          ],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-0cf5db8b58c48aaf4",
+          "OwnerId": "967807252336",
+          "GroupName": "default",
+          "Description": "default VPC security group",
+          "IpPermissions": [
+            {
+              "IpProtocol": "-1",
+              "UserIdGroupPairs": [
+                {
+                  "UserId": "967807252336",
+                  "GroupId": "sg-0cf5db8b58c48aaf4"
+                }
+              ],
+              "IpRanges": [],
+              "Ipv6Ranges": [],
+              "PrefixListIds": []
+            }
+          ]
+        },
+        {
+          "GroupId": "sg-030c8a7ce5adea043",
+          "IpPermissionsEgress": [
+            {
+              "IpProtocol": "icmp",
+              "FromPort": 252,
+              "ToPort": 86,
+              "UserIdGroupPairs": [],
+              "IpRanges": [
+                {
+                  "Description": "Disallow all traffic",
+                  "CidrIp": "255.255.255.255/32"
+                }
+              ],
+              "Ipv6Ranges": [],
+              "PrefixListIds": []
+            }
+          ],
+          "Tags": [
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "EndpointSecurityGroupF840B798"
+            }
+          ],
+          "VpcId": "vpc-06e1941747e798f0a",
+          "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-030c8a7ce5adea043",
+          "OwnerId": "967807252336",
+          "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG",
+          "Description": "New private ECR and log endpoints",
+          "IpPermissions": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort": 443,
+              "ToPort": 443,
+              "UserIdGroupPairs": [
+                {
+                  "Description": "Worker to new private endpoints",
+                  "UserId": "967807252336",
+                  "GroupId": "sg-0c4e15bec7adeed1a"
+                }
+              ],
+              "IpRanges": [],
+              "Ipv6Ranges": [],
+              "PrefixListIds": []
+            }
+          ]
+        }
+      ]
+    },
+    "endpoints": {
+      "VpcEndpoints": [
+        {
+          "VpcEndpointId": "vpce-07962a243f84c3591",
+          "VpcEndpointType": "Gateway",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "ServiceName": "com.amazonaws.us-east-1.s3",
+          "State": "available",
+          "PolicyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::prod-us-east-1-starport-layer-bucket/*\"}]}",
+          "RouteTableIds": [
+            "rtb-0a062faae50d3da2a",
+            "rtb-0cdf44d0066d39b23"
+          ],
+          "SubnetIds": [],
+          "Groups": [],
+          "IpAddressType": "ipv4",
+          "DnsOptions": {
+            "DnsRecordIpType": "service-defined"
+          },
+          "PrivateDnsEnabled": false,
+          "RequesterManaged": false,
+          "NetworkInterfaceIds": [],
+          "DnsEntries": [],
+          "CreationTimestamp": "2026-10-09T20:34:52+00:00",
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcImageLayers1A6FFEBB"
+            },
+            {
+              "Key": "Name",
+              "Value": "meri-greenfield-qualification"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            }
+          ],
+          "OwnerId": "967807252336",
+          "ServiceRegion": "us-east-1"
+        },
+        {
+          "VpcEndpointId": "vpce-057935580d0a956a9",
+          "VpcEndpointType": "Interface",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "ServiceName": "com.amazonaws.us-east-1.logs",
+          "State": "available",
+          "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+          "RouteTableIds": [],
+          "SubnetIds": [
+            "subnet-06437dfaae1c217c3",
+            "subnet-0864c000b771df32c"
+          ],
+          "Groups": [
+            {
+              "GroupId": "sg-030c8a7ce5adea043",
+              "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+            }
+          ],
+          "IpAddressType": "ipv4",
+          "DnsOptions": {
+            "DnsRecordIpType": "ipv4"
+          },
+          "PrivateDnsEnabled": true,
+          "RequesterManaged": false,
+          "NetworkInterfaceIds": [
+            "eni-0d99c7ca63e7e0e7b",
+            "eni-062d297b2dfd889ff"
+          ],
+          "DnsEntries": [
+            {
+              "DnsName": "vpce-057935580d0a956a9-iay0ksoa.logs.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-057935580d0a956a9-iay0ksoa-us-east-1a.logs.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-057935580d0a956a9-iay0ksoa-us-east-1b.logs.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "logs.us-east-1.amazonaws.com",
+              "HostedZoneId": "Z03793121TQR0CN68EEJZ"
+            },
+            {
+              "DnsName": "streaming-logs.us-east-1.amazonaws.com",
+              "HostedZoneId": "Z04543191V14YSOH1VETR"
+            },
+            {
+              "DnsName": "streaming-logs.us-east-1.api.aws",
+              "HostedZoneId": "Z07961483QFOBH87EWUNU"
+            },
+            {
+              "DnsName": "logs.us-east-1.api.aws",
+              "HostedZoneId": "Z0391347NS0XBZ1I8R24"
+            }
+          ],
+          "CreationTimestamp": "2026-10-09T20:35:00.700000+00:00",
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcCloudWatchLogs25679485"
+            },
+            {
+              "Key": "Name",
+              "Value": "meri-greenfield-qualification"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            }
+          ],
+          "OwnerId": "967807252336",
+          "ServiceRegion": "us-east-1"
+        },
+        {
+          "VpcEndpointId": "vpce-0ee3a5130a81353a5",
+          "VpcEndpointType": "Interface",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "ServiceName": "com.amazonaws.us-east-1.ecr.dkr",
+          "State": "available",
+          "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+          "RouteTableIds": [],
+          "SubnetIds": [
+            "subnet-06437dfaae1c217c3",
+            "subnet-0864c000b771df32c"
+          ],
+          "Groups": [
+            {
+              "GroupId": "sg-030c8a7ce5adea043",
+              "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+            }
+          ],
+          "IpAddressType": "ipv4",
+          "DnsOptions": {
+            "DnsRecordIpType": "ipv4"
+          },
+          "PrivateDnsEnabled": true,
+          "RequesterManaged": false,
+          "NetworkInterfaceIds": [
+            "eni-0c7fb6cc9aa576a4a",
+            "eni-0f281ba5e49513bbc"
+          ],
+          "DnsEntries": [
+            {
+              "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim.dkr.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim-us-east-1b.dkr.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim-us-east-1a.dkr.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "dkr.ecr.us-east-1.amazonaws.com",
+              "HostedZoneId": "Z0379268ZH24PUU5HMJU"
+            },
+            {
+              "DnsName": "*.dkr.ecr.us-east-1.amazonaws.com",
+              "HostedZoneId": "Z0379268ZH24PUU5HMJU"
+            },
+            {
+              "DnsName": "dkr-ecr.us-east-1.on.aws",
+              "HostedZoneId": "Z03913762QQ8GW1YGV9VF"
+            },
+            {
+              "DnsName": "*.dkr-ecr.us-east-1.on.aws",
+              "HostedZoneId": "Z03913762QQ8GW1YGV9VF"
+            }
+          ],
+          "CreationTimestamp": "2026-10-09T20:35:00.751000+00:00",
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcEcrDocker053FD29B"
+            },
+            {
+              "Key": "Name",
+              "Value": "meri-greenfield-qualification"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            }
+          ],
+          "OwnerId": "967807252336",
+          "ServiceRegion": "us-east-1"
+        },
+        {
+          "VpcEndpointId": "vpce-0803bf544be06e51f",
+          "VpcEndpointType": "Interface",
+          "VpcId": "vpc-06e1941747e798f0a",
+          "ServiceName": "com.amazonaws.us-east-1.ecr.api",
+          "State": "available",
+          "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+          "RouteTableIds": [],
+          "SubnetIds": [
+            "subnet-06437dfaae1c217c3",
+            "subnet-0864c000b771df32c"
+          ],
+          "Groups": [
+            {
+              "GroupId": "sg-030c8a7ce5adea043",
+              "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+            }
+          ],
+          "IpAddressType": "ipv4",
+          "DnsOptions": {
+            "DnsRecordIpType": "ipv4"
+          },
+          "PrivateDnsEnabled": true,
+          "RequesterManaged": false,
+          "NetworkInterfaceIds": [
+            "eni-0940bdfbba3d50d5a",
+            "eni-079c9e391bd7d89c3"
+          ],
+          "DnsEntries": [
+            {
+              "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx.api.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx-us-east-1a.api.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx-us-east-1b.api.ecr.us-east-1.vpce.amazonaws.com",
+              "HostedZoneId": "Z7HUB22UULQXV"
+            },
+            {
+              "DnsName": "api.ecr.us-east-1.amazonaws.com",
+              "HostedZoneId": "Z0129288NU13M9OK8OAC"
+            },
+            {
+              "DnsName": "ecr.us-east-1.api.aws",
+              "HostedZoneId": "Z07952803GPQA7O4IMGE6"
+            }
+          ],
+          "CreationTimestamp": "2026-10-09T20:35:00.999000+00:00",
+          "Tags": [
+            {
+              "Key": "Project",
+              "Value": "meri-greenfield"
+            },
+            {
+              "Key": "aws:cloudformation:stack-name",
+              "Value": "MeriGreenfield-QualificationRuntime"
+            },
+            {
+              "Key": "Owner",
+              "Value": "Codex-integration"
+            },
+            {
+              "Key": "aws:cloudformation:stack-id",
+              "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+            },
+            {
+              "Key": "Environment",
+              "Value": "qualification"
+            },
+            {
+              "Key": "aws:cloudformation:logical-id",
+              "Value": "VpcEcrApi2DC95EDF"
+            },
+            {
+              "Key": "Name",
+              "Value": "meri-greenfield-qualification"
+            },
+            {
+              "Key": "SourcesEnabled",
+              "Value": "false"
+            }
+          ],
+          "OwnerId": "967807252336",
+          "ServiceRegion": "us-east-1"
+        }
+      ]
+    },
+    "endpointEnisPreserved": [
+      {
+        "id": "eni-0c7fb6cc9aa576a4a",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-0ee3a5130a81353a5"
+      },
+      {
+        "id": "eni-0940bdfbba3d50d5a",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-0803bf544be06e51f"
+      },
+      {
+        "id": "eni-0d99c7ca63e7e0e7b",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-057935580d0a956a9"
+      },
+      {
+        "id": "eni-079c9e391bd7d89c3",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-0803bf544be06e51f"
+      },
+      {
+        "id": "eni-0f281ba5e49513bbc",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-0ee3a5130a81353a5"
+      },
+      {
+        "id": "eni-062d297b2dfd889ff",
+        "interfaceType": "vpc_endpoint",
+        "status": "in-use",
+        "description": "VPC Endpoint Interface vpce-057935580d0a956a9"
+      }
+    ],
+    "requesterPeerings": {
+      "VpcPeeringConnections": []
+    },
+    "accepterPeerings": {
+      "VpcPeeringConnections": []
+    },
+    "meriVpcInstances": {
+      "Reservations": []
+    },
+    "dnsFirewallAssociations": [
+      {
+        "Id": "rslvr-frgassoc-70f45bda8e8e43ae",
+        "Arn": "arn:aws:route53resolver:us-east-1:967807252336:firewall-rule-group-association/rslvr-frgassoc-70f45bda8e8e43ae",
+        "FirewallRuleGroupId": "rslvr-frg-32883f486cf249b0",
+        "VpcId": "vpc-06e1941747e798f0a",
+        "Name": "meri-greenfield-qualification",
+        "Priority": 101,
+        "MutationProtection": "DISABLED",
+        "Status": "COMPLETE",
+        "StatusMessage": "Finished rule group association update",
+        "CreatorRequestId": "75e9c399-f755-6458-f814-19073a0a8f7c",
+        "CreationTime": "2026-10-09T20:35:37.655000904Z",
+        "ModificationTime": "2026-10-09T20:36:47.919076631Z"
+      }
+    ]
+  },
+  "eventualAuroraMetadata": [
+    {
+      "identifier": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+      "status": "available",
+      "engine": "aurora-postgresql",
+      "engineVersion": "16.11",
+      "subnetGroup": "capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt",
+      "securityGroups": [
+        {
+          "VpcSecurityGroupId": "sg-059b4e4de0b1dcca5",
+          "Status": "active"
+        }
+      ],
+      "encrypted": true,
+      "public": null,
+      "capacity": {
+        "MinCapacity": 1.0,
+        "MaxCapacity": 16.0
+      },
+      "arn": "arn:aws:rds:us-east-1:967807252336:cluster:capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv"
+    }
+  ],
+  "eventualAuroraVpc": "vpc-0ac26cfac7ed972be",
+  "limitations": [
+    "Stored CloudFormation drift metadata is not a new drift detection run.",
+    "Empty stopped-task retention does not establish historical task cleanup.",
+    "No new build, deployment, runtime, SQL, fence or provider action occurred.",
+    "Historical state-machine success is not current runtime admission."
+  ]
+}

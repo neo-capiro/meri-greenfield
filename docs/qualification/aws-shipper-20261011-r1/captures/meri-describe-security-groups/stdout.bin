@@ -1,0 +1,171 @@
+{
+    "SecurityGroups": [
+        {
+            "GroupId": "sg-0c4e15bec7adeed1a",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 443,
+                    "ToPort": 443,
+                    "UserIdGroupPairs": [
+                        {
+                            "Description": "Only new private endpoints",
+                            "UserId": "967807252336",
+                            "GroupId": "sg-030c8a7ce5adea043"
+                        }
+                    ],
+                    "IpRanges": [],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": [
+                        {
+                            "Description": "ECR regional image-layer S3 gateway endpoint",
+                            "PrefixListId": "pl-63a5400a"
+                        }
+                    ]
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "WorkerSecurityGroup5529CF0B"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                }
+            ],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-0c4e15bec7adeed1a",
+            "OwnerId": "967807252336",
+            "GroupName": "MeriGreenfield-QualificationRuntime-WorkerSecurityGroup5529CF0B-IXmdsY4FwTSJ",
+            "Description": "Qualification worker: only new image/log endpoints and restricted S3 layer endpoint",
+            "IpPermissions": []
+        },
+        {
+            "GroupId": "sg-0cf5db8b58c48aaf4",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-0cf5db8b58c48aaf4",
+            "OwnerId": "967807252336",
+            "GroupName": "default",
+            "Description": "default VPC security group",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [
+                        {
+                            "UserId": "967807252336",
+                            "GroupId": "sg-0cf5db8b58c48aaf4"
+                        }
+                    ],
+                    "IpRanges": [],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        },
+        {
+            "GroupId": "sg-030c8a7ce5adea043",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "icmp",
+                    "FromPort": 252,
+                    "ToPort": 86,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "Description": "Disallow all traffic",
+                            "CidrIp": "255.255.255.255/32"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "EndpointSecurityGroupF840B798"
+                }
+            ],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "SecurityGroupArn": "arn:aws:ec2:us-east-1:967807252336:security-group/sg-030c8a7ce5adea043",
+            "OwnerId": "967807252336",
+            "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG",
+            "Description": "New private ECR and log endpoints",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 443,
+                    "ToPort": 443,
+                    "UserIdGroupPairs": [
+                        {
+                            "Description": "Worker to new private endpoints",
+                            "UserId": "967807252336",
+                            "GroupId": "sg-0c4e15bec7adeed1a"
+                        }
+                    ],
+                    "IpRanges": [],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        }
+    ]
+}

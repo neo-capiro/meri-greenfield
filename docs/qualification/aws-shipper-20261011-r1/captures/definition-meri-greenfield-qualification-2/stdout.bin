@@ -1,0 +1,187 @@
+{
+    "taskDefinition": {
+        "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2",
+        "containerDefinitions": [
+            {
+                "name": "worker",
+                "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+                "cpu": 0,
+                "links": [],
+                "portMappings": [],
+                "essential": true,
+                "entryPoint": [],
+                "command": [],
+                "environment": [
+                    {
+                        "name": "MERI_QUALIFICATION_ONLY",
+                        "value": "true"
+                    },
+                    {
+                        "name": "CLAUDE_CONFIG_DIR",
+                        "value": "/workspace/config"
+                    },
+                    {
+                        "name": "MERI_SOURCES_ENABLED",
+                        "value": "false"
+                    },
+                    {
+                        "name": "CHROMIUM_SANDBOX_REQUIRED",
+                        "value": "true"
+                    },
+                    {
+                        "name": "PLAYWRIGHT_BROWSERS_PATH",
+                        "value": "/opt/meri-browsers"
+                    },
+                    {
+                        "name": "HOME",
+                        "value": "/workspace/home"
+                    },
+                    {
+                        "name": "TMPDIR",
+                        "value": "/tmp"
+                    }
+                ],
+                "environmentFiles": [],
+                "mountPoints": [
+                    {
+                        "sourceVolume": "workspace",
+                        "containerPath": "/workspace",
+                        "readOnly": false
+                    },
+                    {
+                        "sourceVolume": "tmp",
+                        "containerPath": "/tmp",
+                        "readOnly": false
+                    }
+                ],
+                "volumesFrom": [],
+                "linuxParameters": {
+                    "capabilities": {
+                        "add": [],
+                        "drop": [
+                            "ALL"
+                        ]
+                    },
+                    "devices": [],
+                    "tmpfs": []
+                },
+                "secrets": [],
+                "stopTimeout": 60,
+                "user": "10001:10001",
+                "privileged": false,
+                "readonlyRootFilesystem": true,
+                "dnsServers": [],
+                "dnsSearchDomains": [],
+                "extraHosts": [],
+                "dockerSecurityOptions": [],
+                "dockerLabels": {},
+                "ulimits": [],
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-group": "/meri-greenfield/qualification/runtime",
+                        "awslogs-region": "us-east-1",
+                        "awslogs-stream-prefix": "qualification"
+                    },
+                    "secretOptions": []
+                },
+                "systemControls": [],
+                "credentialSpecs": []
+            }
+        ],
+        "family": "meri-greenfield-qualification",
+        "taskRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD",
+        "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+        "networkMode": "awsvpc",
+        "revision": 2,
+        "volumes": [
+            {
+                "name": "workspace",
+                "host": {}
+            },
+            {
+                "name": "tmp",
+                "host": {}
+            }
+        ],
+        "status": "ACTIVE",
+        "requiresAttributes": [
+            {
+                "name": "ecs.capability.execution-role-awslogs"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.ecr-auth"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.task-iam-role"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.22"
+            },
+            {
+                "name": "ecs.capability.execution-role-ecr-pull"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+            },
+            {
+                "name": "ecs.capability.task-eni"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+            },
+            {
+                "name": "ecs.capability.container-ordering"
+            },
+            {
+                "name": "ecs.capability.extensible-ephemeral-storage"
+            }
+        ],
+        "placementConstraints": [],
+        "compatibilities": [
+            "EC2",
+            "FARGATE"
+        ],
+        "runtimePlatform": {
+            "cpuArchitecture": "X86_64",
+            "operatingSystemFamily": "LINUX"
+        },
+        "requiresCompatibilities": [
+            "FARGATE"
+        ],
+        "cpu": "2048",
+        "memory": "8192",
+        "registeredAt": "2026-10-09T17:54:10.133000-04:00",
+        "registeredBy": "arn:aws:iam::967807252336:user/capirocli",
+        "ephemeralStorage": {
+            "sizeInGiB": 50
+        }
+    },
+    "tags": [
+        {
+            "key": "Project",
+            "value": "meri-greenfield"
+        },
+        {
+            "key": "Environment",
+            "value": "qualification"
+        },
+        {
+            "key": "Owner",
+            "value": "Codex-integration"
+        },
+        {
+            "key": "SourcesEnabled",
+            "value": "false"
+        }
+    ]
+}

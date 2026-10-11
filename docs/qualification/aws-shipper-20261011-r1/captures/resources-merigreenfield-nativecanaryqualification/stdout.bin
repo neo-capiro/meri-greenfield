@@ -1,0 +1,14 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "CanaryTaskDefinition",
+            "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-canary:1",
+            "ResourceType": "AWS::ECS::TaskDefinition",
+            "LastUpdatedTimestamp": "2026-10-10T14:42:28.969000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

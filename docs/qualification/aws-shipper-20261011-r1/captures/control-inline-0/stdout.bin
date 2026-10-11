@@ -1,0 +1,48 @@
+{
+    "RoleName": "meri-greenfield-qualification-sdk-control",
+    "PolicyName": "ControlTaskRoleDefaultPolicy7B4A7327",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Condition": {
+                    "StringEquals": {
+                        "s3:x-amz-server-side-encryption-aws-kms-key-id": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c",
+                        "s3:x-amz-server-side-encryption": "aws:kms"
+                    },
+                    "Null": {
+                        "s3:if-none-match": "false"
+                    }
+                },
+                "Action": "s3:PutObject",
+                "Resource": "arn:aws:s3:::meri-greenfield-qual-checkpoint-967807252336-us-east-1/qualification-sdk/fixture/*",
+                "Effect": "Allow"
+            },
+            {
+                "Action": [
+                    "s3:GetObject",
+                    "s3:GetObjectVersion"
+                ],
+                "Resource": "arn:aws:s3:::meri-greenfield-qual-checkpoint-967807252336-us-east-1/qualification-sdk/fixture/*",
+                "Effect": "Allow"
+            },
+            {
+                "Condition": {
+                    "StringEquals": {
+                        "kms:ViaService": "s3.us-east-1.amazonaws.com"
+                    },
+                    "ArnLike": {
+                        "kms:EncryptionContext:aws:s3:arn": "arn:aws:s3:::meri-greenfield-qual-checkpoint-967807252336-us-east-1/qualification-sdk/fixture/*"
+                    }
+                },
+                "Action": [
+                    "kms:GenerateDataKey",
+                    "kms:Decrypt",
+                    "kms:DescribeKey"
+                ],
+                "Resource": "arn:aws:kms:us-east-1:967807252336:key/3a04f062-40de-4ed8-9a24-dad87c488e0c",
+                "Effect": "Allow"
+            }
+        ]
+    }
+}

@@ -1,0 +1,47 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-NativeQualification/7d925160-c468-11f1-bea1-120ccf9f5447",
+            "StackName": "MeriGreenfield-NativeQualification",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/codex-g1-roleless-20261010-d9f31ca/1df59320-2d14-4e09-bc15-5c0786443f85",
+            "Description": "Synthetic-only Meri native qualification task definitions (SDK capture + Office export); no services, roles, networking, log groups, secrets or assets",
+            "Parameters": [
+                {
+                    "ParameterKey": "WorkerImage",
+                    "ParameterValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c"
+                }
+            ],
+            "CreationTime": "2026-10-10T05:07:28.822000+00:00",
+            "LastUpdatedTime": "2026-10-10T14:23:59.966000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "UPDATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Outputs": [
+                {
+                    "OutputKey": "SdkTaskDefinitionArn",
+                    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2"
+                },
+                {
+                    "OutputKey": "OfficeTaskDefinitionArn",
+                    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-office:2"
+                }
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "UPDATE_STACK",
+                    "OperationId": "a05f4d59-1156-4cbe-a083-b3aa9e57e69d"
+                }
+            ]
+        }
+    ]
+}

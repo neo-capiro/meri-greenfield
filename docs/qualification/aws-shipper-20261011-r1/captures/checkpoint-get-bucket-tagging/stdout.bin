@@ -1,0 +1,32 @@
+{
+    "TagSet": [
+        {
+            "Key": "Project",
+            "Value": "meri-greenfield"
+        },
+        {
+            "Key": "aws:cloudformation:stack-name",
+            "Value": "MeriGreenfield-QualificationSdkCheckpoint"
+        },
+        {
+            "Key": "Owner",
+            "Value": "Codex-integration"
+        },
+        {
+            "Key": "aws:cloudformation:stack-id",
+            "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationSdkCheckpoint/2ac21470-c594-11f1-85e1-0eab4fe6dfb5"
+        },
+        {
+            "Key": "Environment",
+            "Value": "qualification"
+        },
+        {
+            "Key": "aws:cloudformation:logical-id",
+            "Value": "CheckpointBucketDFE4871A"
+        },
+        {
+            "Key": "SourcesEnabled",
+            "Value": "false"
+        }
+    ]
+}
