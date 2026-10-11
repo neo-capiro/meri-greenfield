@@ -27,6 +27,7 @@ import { GlobalObjectiveHarness } from "./global-objective-harness";
 import { ProfileCapacityHarness } from "./profile-capacity-harness";
 import { MemberNotesHarness } from "./member-notes-harness";
 import { BillingSummaryHarness } from "./billing-summary-harness";
+import { MeetingReviewHarness } from "./meeting-review-harness";
 import {
   PublicEventHarness,
   PublicEventCalendarHarness,
@@ -54,6 +55,7 @@ function App() {
   if (path === "/__test/profile-capacity") return <ProfileCapacityHarness />;
   if (path === "/__test/member-notes") return <MemberNotesHarness />;
   if (path === "/__test/billing-summary") return <BillingSummaryHarness />;
+  if (path === "/__test/meeting-review") return <MeetingReviewHarness />;
   if (path === "/__test/past-performance")
     return (
       <Shell destinations={destinations}>

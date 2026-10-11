@@ -12,6 +12,7 @@ import { usePreparationCapabilities, useDispatchGuard } from "../access/public";
 import { debriefBody, generateDebrief } from "./api";
 import { ManualDebriefSource } from "./ManualDebriefSource";
 import { VoiceMemoSource } from "./voice/VoiceMemoSource";
+import { SavedMeetingNotesSource } from "../review/public";
 type ReviewedDebriefSource = {
   text: string;
   method: "manual" | "upload" | "voice";
@@ -47,6 +48,7 @@ function SessionDebriefGeneration({
   const [uploading, setUploading] = useState(false);
   const [manual, setManual] = useState(false);
   const [voice, setVoice] = useState(false);
+  const [savedNotes, setSavedNotes] = useState(false);
   const [source, setSource] = useState<ReviewedDebriefSource>();
   const busy = useRef(false);
   const lifetime = useRef<AbortController | undefined>(undefined);
@@ -108,6 +110,19 @@ function SessionDebriefGeneration({
   }
   return (
     <>
+      <button
+        className="button"
+        disabled={!allowed || mutation.isPending}
+        onClick={() => setSavedNotes(true)}
+      >
+        Use saved meeting notes
+      </button>
+      <SavedMeetingNotesSource
+        meeting={meeting}
+        open={savedNotes}
+        onOpenChange={setSavedNotes}
+        onGenerate={generate}
+      />
       <button
         className="button"
         disabled={!allowed || mutation.isPending}

@@ -11,6 +11,7 @@ import { MeetingForm } from "./MeetingForm";
 import { MeetingPreparation } from "./preparation/public";
 import { MeetingAssignment } from "./library/public";
 import { MeetingAttendance } from "./attendance/public";
+import { MeetingAttachmentApprovals } from "./review/public";
 import { useIdentity } from "@/shared/auth/identity";
 import { formatInstant, type CalendarZone } from "./range";
 import styles from "./calendar.module.css";
@@ -126,7 +127,12 @@ export function MeetingDetail({
               </button>
             </div>
           )}
-          {tab === "preparation" && <MeetingPreparation meeting={meeting} />}
+          {tab === "preparation" && (
+            <>
+              <MeetingPreparation meeting={meeting} />
+              <MeetingAttachmentApprovals meeting={meeting} />
+            </>
+          )}
           {(tab === "notes" || tab === "debriefs") && (
             <MeetingArtifacts
               key={`${tab}:${identity.data?.tenant?.id}:${identity.data?.user.id}:${meeting.client?.id}`}
