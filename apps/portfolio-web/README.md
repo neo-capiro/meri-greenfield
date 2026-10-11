@@ -38,9 +38,9 @@ prove live authentication, tenant access, provider writes or deployed behavior.
 | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | CORE_API_BASE_URL                                           | Clients, people, facilities, team, advocacy, Objectives candidate, Engagement meetings/mail/files, hearings/deadlines |
 | STRATEGY_API_BASE_URL                                       | Strategies and paginated Planner tasks                                                                                |
-| WORKSPACE_API_BASE_URL                                      | Existing Workspace drafts/documents/artifacts and read-only template catalog                                           |
+| WORKSPACE_API_BASE_URL                                      | Existing Workspace drafts/documents/artifacts and read-only template catalog                                          |
 | INTELLIGENCE_API_BASE_URL                                   | Intel Bill Tracker board, paginated search and versioned watchlist configuration                                      |
-| TRACKER_BACKEND                                             | Explicit `core` or `intelligence` owner; no automatic fallback between services                                        |
+| TRACKER_BACKEND                                             | Explicit `core` or `intelligence` owner; no automatic fallback between services                                       |
 | MERI_API_BASE_URL                                           | Reserved; no alternate Meri implementation                                                                            |
 | CAPIRO_EXISTING_APP_URL                                     | Existing Workspace/Strategies/meeting preparation deep links                                                          |
 | CAPIRO_MERI_URL / CAPIRO_MODULES_URL / CAPIRO_WORKSPACE_URL | Existing shell destinations; unavailable actions stay visibly disabled                                                |
@@ -71,7 +71,7 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Latest source `2b344249c10a4f8e5933762c4ee7b98c7fc26b67`:467 unit/79 affected browser checks, TypeScript/lint/format/architecture339 PASS. Overview tags/reviewed export, recorded-note pin and audio-file debrief source are integrated. Current-source production build deferred for Cleanup disk reserve; preview5190 remainsbbf25e6. No signed-in/provider acceptance. Evidence: outputs/evidence/portfolio-profile-integration-20261011/qualified-2b34424/.
+Latest source `7e2b89430744574a0da6c0d357c652f7b56c4f88`:600unit and15affected Objective chooser browser checks PASS; TS/lint/format/architecture367 PASS,3static-image warnings. Saved ordering, thread review, public proceeding detail, Calendar sync review and native Work links are composed. Latest full browser run at e7978a4 retained349PASS/2FAIL, corrected in affected checks; no new complete green-suite claim. Current build deferred for Cleanup recovery reserve; preview5190 remainsbbf25e6. Evidence: outputs/evidence/portfolio-integrated-20261011/.
 
 Previous production-qualified source `bbf25e6ab4931886f5a382ee3362593e573c19de`:400 unit/26 affected browser checks, TypeScript/lint/format/architecture325 modules/Next17-route build and5 actual Next auth/deep-link checks PASS. Manual source and exact client Quick log Undo are integrated. Component checks intercept APIs; signed-in/provider acceptance remains open. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/.
 

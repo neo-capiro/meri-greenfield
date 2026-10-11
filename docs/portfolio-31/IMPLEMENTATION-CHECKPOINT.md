@@ -5,18 +5,24 @@ Updated 11 October 2026. **Work continues; this is not full Portfolio completion
 ## Source and isolation
 
 - Frontend: neo-capiro/meri-greenfield, branch codex/portfolio-31-20261010, checkout C:/dev/meri-greenfield-portfolio-31.
-- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: 2b344249c10a4f8e5933762c4ee7b98c7fc26b67; production build remainsbbf25e6ab4931886f5a382ee3362593e573c19de. Later delivery documentation commits are identified separately from the compiled code source.
+- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: 7e2b89430744574a0da6c0d357c652f7b56c4f88; production build remainsbbf25e6ab4931886f5a382ee3362593e573c19de. Later delivery documentation commits are identified separately from the compiled code source.
 - [Draft frontend PR1](https://github.com/neo-capiro/meri-greenfield/pull/1). No merge, cutover, deployment, shared migration or authentication change.
-- Current remote Meri main845edd0d5a30ad6dd7b22c9102091ce17b544271 inspected: no new overlap in apps/portfolio-web or docs/portfolio-31. Backend contracts rechecked at origin/main fd8765ec01d292013758606204f2c9d886cd31c1.
+- Current remote Meri main6839a10c16ca66d47936aabbecbdcc27be5ad397 inspected: no new overlap in apps/portfolio-web or docs/portfolio-31. Backend contracts rechecked at origin/main fd8765ec01d292013758606204f2c9d886cd31c1.
 - Shared policy:b32b4803933760dc0a93fffdcd8fba30a89c3aac; fetched remote:b2b0ce8c2bf03817b81e671d968b7892985b8d06. Machine map modified2026-09-30T00:21:48.2698715Z.
 
-Source qualification prepared from clean checkout `2b344249c10a4f8e5933762c4ee7b98c7fc26b67`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
+Source qualification prepared from clean checkout `7e2b89430744574a0da6c0d357c652f7b56c4f88`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
 
 ## Local implementation
 
 Shared shell/navigation, Clerk session/error boundary, validated service configuration, tokens/primitives and deep links support list/cards/filtering, three-step intake/edit/archive, Overview/activity actions, Objectives candidate/readiness, advocacy history, Calendar/meeting information/preparation/notes/debriefs, organization/government Relationships, Work destinations, retained Capabilities, Bill Tracker/watchlist, Opportunities, Files, team and facilities/map. Individual audit details and exact visual acceptance remain partial; a rendered screen does not close every row.
 
 Recent additions:
+
+- Saved profile ordering reuses the canonical ProfileCard and complete client catalog. Filters never persist a subset. Actual-index save/reload, keyboard ordering and invalidated authority checks pass locally; shared persistence is an unregistered backend draft2385.
+- Synced email threads expand from their authoritative direct client association. Reply/reply-all recipient review works; native provider reply remains disabled pending parent/thread binding and durable unknown-outcome recovery.
+- Mixed Master Agenda opens public proceeding detail by canonical source ID. Follow/capture/date precision and relevant-client limitations are disclosed; tenant relevance still needs backend per-user access acceptance. The native LegiWatch destination is preserved.
+- Calendar sync opens an explicit caller-owned account/window review without changing scope/date/view/zone. Only calendar writes are selected. Unknown outcomes freeze retries locally; full-reload recovery and shared manual/scheduler/webhook concurrency require the new durable operation contract and service-owner integration.
+- Global Objective client selection opens the existing empty four-field editor through `/portfolio?new=objective`. Its permanent trigger placement awaits the human decision. Work opens the existing client-scoped Strategy library/new overlay and canonical Workspace documents without a second editor.
 
 - Focus tags are composed after the Overview description and before ownership. Fresh intake merge/exact receipt preserves other fields; versionless backend concurrency remains qualified. The profile menu explicitly prepares/reviews/downloads saved JSON, with scoped refusal and partial-source disclosure.
 - Current Engagement pulse white surface/grey statistics spacing matches inspected Figma; missing health/coverage definitions remain unavailable. Portfolio trend revalidation found quarter/thread counting and unresolved caller scope; no unsafe inferred analytics were rendered.
@@ -43,29 +49,32 @@ Recent additions:
 
 ## Verification actually run
 
-Latest clean source **2b344249c10a4f8e5933762c4ee7b98c7fc26b67**, Node24.19: **467 unit/79 affected browser PASS**, TypeScript/lint/format/architecture339 PASS. Affected profile/activity/source checks use intercepted synthetic contracts, not the complete browser suite. Representative actual Overview/menu and voice/Calendar screenshots were opened and reviewed. Evidence: outputs/evidence/portfolio-profile-integration-20261011/qualified-2b34424/.
+Latest qualified implementation source **7e2b89430744574a0da6c0d357c652f7b56c4f88**, Node24.19: **600 unit PASS**, TypeScript/lint/format/architecture367 PASS; lint retains3 static-image warnings. Root independently ran15 Objective chooser/browser cases on that exact clean source. Prior affected checks: df82855 saved layout/Work5 PASS, b690077 Work2 PASS with desktop/dark-mobile visual review,016ea0f actual Calendar sync2 PASS, and6e6eb66 affected54 PASS/2 strict-locator failures subsequently corrected. All component responses are intercepted; these are separate source-bound runs, not a new complete green browser suite.
 
-**Current-source production build NOT RUN:** Cleanup native6278471a is active and disk is near its recovery reserve. Root agreed to defer new builds/installs/Docker allocations. Preview5190 and the last build/auth/deep-link qualification remain atbbf25e6. This does not establish current-source build or signed-in acceptance.
+Latest complete browser regression at e7978a4: **349 PASS/2 FAIL**. The invalidated-layout Save defect was fixed and the obsolete pulse-gradient assertion was corrected against current Figma; the affected suites above pass. Original failure traces/PNGs/results remain preserved. Evidence: outputs/evidence/portfolio-integrated-20261011/. Previous467-unit/79 affected qualification remains at2b34424. Actual saved-order dark mode, Work desktop/mobile and Master/client sync screenshots were opened and reviewed. No full pixel-parity or live-service completion claim is made.
+
+**Current-source production build NOT RUN:** Cleanup native6278471a failed and diagnostic recovery is awaiting disk-growth approval; its evidence and disk reserve remain protected. Root agreed to defer new builds/installs/Docker allocations. Preview5190 and the last build/auth/deep-link qualification remain atbbf25e6. This does not establish current-source build or signed-in acceptance.
 
 Previous production-qualified source **bbf25e6ab4931886f5a382ee3362593e573c19de**, Node24.19: **400 unit/26 affected browser checks PASS**, TypeScript/lint/format/architecture325 modules/Next17-route build PASS. Five actual Next auth/deep-link checks pass; signed-in acceptance remains blocked. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/. The26 cases cover manual4, library12 and submission/Quick log10; they are not a new complete browser-suite claim.
 
 Previous full regression at6c1c42fad9d66a13043958235d27f8c6e1f9fe65, retained separately:
 
-|Check|Result|
-|---|---|
-|Unit|384 passed;0 failed/pending|
-|Actual component browser|233 passed;0 skipped/flaky/unexpected|
-|TypeScript / formatting|PASS|
-|ESLint|PASS; existing static-image warning|
-|Architecture|PASS; module count in final-architecture.log; direction/cycles/boundaries|
-|Next production build|PASS;17 routes|
-|Actual Next server|5 auth/deep-link checks PASS; unauthenticated proxy401|
+| Check                    | Result                                                                    |
+| ------------------------ | ------------------------------------------------------------------------- |
+| Unit                     | 384 passed;0 failed/pending                                               |
+| Actual component browser | 233 passed;0 skipped/flaky/unexpected                                     |
+| TypeScript / formatting  | PASS                                                                      |
+| ESLint                   | PASS; existing static-image warning                                       |
+| Architecture             | PASS; module count in final-architecture.log; direction/cycles/boundaries |
+| Next production build    | PASS;17 routes                                                            |
+| Actual Next server       | 5 auth/deep-link checks PASS; unauthenticated proxy401                    |
 
 Evidence: outputs/evidence/portfolio-integration-review-flows-20261011/source-qualification.json. Earlier337-unit/193-browser qualification retained191pass/2fail; empty personIds payload and uncertain-send review fixes passed all8 affected cases before the current combined run. Original screenshots/traces/results remain in portfolio-integration-mail-attendance-20261011. Earlier font/geometry/fixture failures are also preserved. Component tests intercept APIs and do not establish live permissions/provider behavior.
 
 Authorized real services, neo@capiro.ai in capiro-internal:
 
 -13 canonical Core read projections passed;47 October Master meeting records accepted the canonical meeting/preparation projection. Meeting privacy/write acceptance remains open.
+
 - Canonical intake/contact/facility create/edit/read-back/delete or archive passed on one task-created synthetic client. Client02d1b2fd-a684-4edc-a64a-a4248763cdd7 was archived, its child contact/facility removed and active-list absence read back. Existing fixtures were untouched.
 - Workspace library/detail schema checks passed for20 templates and one four-section detail; no content/session values persisted.
 - Core and Intel board schemas both passed for one accessible client with empty boards. Core remains readable during Intel ownership: availability does not establish exclusivity. Corrected interpretation is recorded separately. No tracking/hearing write.
@@ -78,34 +87,35 @@ Use Node24/npm11 in apps/portfolio-web: npm ci; copy .env.example to ignored .en
 
 Task preview: **[localhost:5190](http://localhost:5190)**, isolated Next production server frombbf25e6ab4931886f5a382ee3362593e573c19de. Real Clerk development sign-in renders. Signed-in product acceptance is blocked: development Clerk lacks the approved tenant/JWT template and backend trust; production Clerk rejects localhost. A matching development backend or approved isolated production-auth hostname is needed. No hosted preview exists.
 
-|Configuration|Verified target / responsibility|
-|---|---|
-|CORE_API_BASE_URL|https://os.capiro.ai/api — clients, Engagement, people, facilities, ownership, advocacy|
-|STRATEGY_API_BASE_URL|https://os.capiro.ai/strategy-api — existing Strategy/Planner|
-|WORKSPACE_API_BASE_URL|https://os.capiro.ai/workspace-api — drafts/documents/artifacts/template reads|
-|INTELLIGENCE_API_BASE_URL|https://os.capiro.ai/intel-api — explicit Intel tracker/watchlist/hearings|
-|TRACKER_BACKEND|Explicit core/intelligence; task preview unset, no fallback|
-|CAPIRO_EXISTING_APP_URL|https://os.capiro.ai — verified existing destination paths|
-|Other shell destinations|Explicit verified Meri/Module/Workspace destination required|
-|Clerk keys|Approved machine store only; values omitted|
+| Configuration             | Verified target / responsibility                                                        |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| CORE_API_BASE_URL         | https://os.capiro.ai/api — clients, Engagement, people, facilities, ownership, advocacy |
+| STRATEGY_API_BASE_URL     | https://os.capiro.ai/strategy-api — existing Strategy/Planner                           |
+| WORKSPACE_API_BASE_URL    | https://os.capiro.ai/workspace-api — drafts/documents/artifacts/template reads          |
+| INTELLIGENCE_API_BASE_URL | https://os.capiro.ai/intel-api — explicit Intel tracker/watchlist/hearings              |
+| TRACKER_BACKEND           | Explicit core/intelligence; task preview unset, no fallback                             |
+| CAPIRO_EXISTING_APP_URL   | https://os.capiro.ai — verified existing destination paths                              |
+| Other shell destinations  | Explicit verified Meri/Module/Workspace destination required                            |
+| Clerk keys                | Approved machine store only; values omitted                                             |
 
 The existing server proxy obtains the capiro JWT; browser tenant/permission headers are not authority. Differences stay in validated configuration. Separate hosting does not isolate backend data.
 
 ## Backend drafts and dependencies
 
-|Draft|Independently checked scope|Still required|
-|---|---|---|
-|[Objectives2362](https://github.com/neo-capiro/capirov2/pull/2362)|29 focused API/type/build/PGlite checks; four-field readiness|Owner/migration integration, full lifecycle/link/coverage contracts, live acceptance|
-|[Mail guard2364](https://github.com/neo-capiro/capirov2/pull/2364)|11 focused checks|Owner integration and provider/reply acceptance|
-|[Outbound ACL2381](https://github.com/neo-capiro/capirov2/pull/2381),171ec869|Root48 scoped actual-service checks; strict helpers/format/diff PASS; original service10/19fails|Owner integration; separate batch/intent ACL; concurrent writer fence; live/native acceptance; broader typing37unchanged baseline dependency diagnostics|
-|[Stages2365](https://github.com/neo-capiro/capirov2/pull/2365)|230 focused checks|Human legacy mapping, owner/migration integration|
-|[Billing2370](https://github.com/neo-capiro/capirov2/pull/2370),7fcd3cb|Original37 +13 actual-DDL/store PGlite; strict scoped types|Global publication fence, dispatch recovery, invoice policy/cancellation/compensation, single-use conversion receipt, owner/grants/migration, Stripe sandbox|
-|[Contacts2371](https://github.com/neo-capiro/capirov2/pull/2371)|11 PGlite/DTO/guard checks|Registration/schema, atomic conversion carry-over, native/live acceptance|
-|[Geocode2373](https://github.com/neo-capiro/capirov2/pull/2373),6e5774a|96 checks; strict extracted types; cleanup shared CLI conservation review|Combined final-source/native PostgreSQL/HTTP/provider acceptance|
-|[Client research2382](https://github.com/neo-capiro/capirov2/pull/2382),d394712|Root110 tests; exact original4 writer regressions fail; strict helper/format/diff|Old-worker inventory/drain/upgrade/recovery; owner agreement; strict routes503; broader44 inherited typing diagnostics; live acceptance|
-|[Meeting PDF2383](https://github.com/neo-capiro/capirov2/pull/2383),320878e|Root47 tests; strict8 files/format/diff; proposedDDL immutable guards|Native source/RLS/grants/publication fence and adapters; unapplied/unallocatedSQL; no activation/live acceptance|
-|[ClientActivity wall2384](https://github.com/neo-capiro/capirov2/pull/2384),d75b3c7|Root78 tests; same51 on original40fail; new spec/format/diff PASS;37 inherited type diagnostics unchanged|Responsible service/security owner, atomic revocation/write fence and CAS, full Prisma/RLS/native/live acceptance; no activation|
-|[Brief refresh2378](https://github.com/neo-capiro/capirov2/pull/2378),87de0da|18 tests using actual pinned migration SQL|Module/migration/retention agreement, native/HTTP/live acceptance|
+| Draft                                                                               | Independently checked scope                                                                                            | Still required                                                                                                                                               |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Objectives2362](https://github.com/neo-capiro/capirov2/pull/2362)                  | Root128:78 canonical-wall authorization,42 regressions,8 actual-migration checks at72bfea4; original66/78fail retained | Owner/migration integration, atomic grant revocation fence, full lineage/coverage contracts and live acceptance                                              |
+| [Mail guard2364](https://github.com/neo-capiro/capirov2/pull/2364)                  | 11 focused checks                                                                                                      | Owner integration and provider/reply acceptance                                                                                                              |
+| [Outbound ACL2381](https://github.com/neo-capiro/capirov2/pull/2381),171ec869       | Root48 scoped actual-service checks; strict helpers/format/diff PASS; original service10/19fails                       | Owner integration; separate batch/intent ACL; concurrent writer fence; live/native acceptance; broader typing37unchanged baseline dependency diagnostics     |
+| [Stages2365](https://github.com/neo-capiro/capirov2/pull/2365)                      | 230 focused checks                                                                                                     | Human legacy mapping, owner/migration integration                                                                                                            |
+| [Billing2370](https://github.com/neo-capiro/capirov2/pull/2370),7fcd3cb             | Original37 +13 actual-DDL/store PGlite; strict scoped types                                                            | Global publication fence, dispatch recovery, invoice policy/cancellation/compensation, single-use conversion receipt, owner/grants/migration, Stripe sandbox |
+| [Contacts2371](https://github.com/neo-capiro/capirov2/pull/2371)                    | 11 PGlite/DTO/guard checks                                                                                             | Registration/schema, atomic conversion carry-over, native/live acceptance                                                                                    |
+| [Geocode2373](https://github.com/neo-capiro/capirov2/pull/2373),6e5774a             | 96 checks; strict extracted types; cleanup shared CLI conservation review                                              | Combined final-source/native PostgreSQL/HTTP/provider acceptance                                                                                             |
+| [Client research2382](https://github.com/neo-capiro/capirov2/pull/2382),d394712     | Root110 tests; exact original4 writer regressions fail; strict helper/format/diff                                      | Old-worker inventory/drain/upgrade/recovery; owner agreement; strict routes503; broader44 inherited typing diagnostics; live acceptance                      |
+| [Meeting PDF2383](https://github.com/neo-capiro/capirov2/pull/2383),320878e         | Root47 tests; strict8 files/format/diff; proposedDDL immutable guards                                                  | Native source/RLS/grants/publication fence and adapters; unapplied/unallocatedSQL; no activation/live acceptance                                             |
+| [ClientActivity wall2384](https://github.com/neo-capiro/capirov2/pull/2384),d75b3c7 | Root78 tests; same51 on original40fail; new spec/format/diff PASS;37 inherited type diagnostics unchanged              | Responsible service/security owner, atomic revocation/write fence and CAS, full Prisma/RLS/native/live acceptance; no activation                             |
+| [Saved layouts2385](https://github.com/neo-capiro/capirov2/pull/2385),46937ce       | Root55 SQL/contract checks and strict types PASS; complete catalog CAS and caller-owned profile order                  | Registration, allocated/unapplied SQL, atomic catalog/membership fence, owner and live acceptance                                                            |
+| [Brief refresh2378](https://github.com/neo-capiro/capirov2/pull/2378),87de0da       | 18 tests using actual pinned migration SQL                                                                             | Module/migration/retention agreement, native/HTTP/live acceptance                                                                                            |
 
 All are drafts. Billing follows the approved inline quote/charge/receipt direction; a stored paid receipt alone grants no client slot. No charges/customer messages were used for validation.
 
@@ -113,8 +123,8 @@ All are drafts. Billing follows the approved inline quote/charge/receipt directi
 
 ## Traceability and ongoing work
 
-Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 246 partial frontend, 91 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
+Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 258 partial frontend, 79 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
 
-Quick log Undo and manual debrief source are integrated. Saved-performance removal is validated only in its component harness pending the current product entry point. Profile tags/export, activity pin/actions and voice source are integrated and locally qualified. Synced thread expansion/review, public proceeding detail and persisted card ordering are the next bounded slices; native reply remains a verified backend dependency. Preview-only research and reviewed PDF candidates2382/2383 are published; neither is activated. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
+Quick log Undo and manual debrief source are integrated. Saved-performance removal is validated only in its component harness pending the current product entry point. Profile tags/export, activity pin/actions and voice source are integrated and locally qualified. Synced thread expansion/recipient review, public proceeding detail, card ordering, explicit Calendar sync review and native Work handoffs are composed and locally checked; native reply and durable sync recovery remain backend dependencies. Preview-only research and reviewed PDF candidates2382/2383 are published; neither is activated. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
 
 Feature folders own contracts/adapters/query/mutation coordination/UI; routes compose public interfaces. Foundations do not import features. Existing Schedule-X/React Flow and Workspace editor are reused; no competing Meri/editor or whole Module rebuild.
