@@ -53,7 +53,11 @@ export function useTargetMutation(clientId: string, onSaved?: () => void) {
         return;
       }
       const schema = targetSchema.refine(
-        (row) => row.clientId === clientId && row.memberId === write.memberId,
+        (row) =>
+          row.clientId === clientId &&
+          row.memberId === write.memberId &&
+          (write.kind !== "add" ||
+            row.sourceDirectory === write.sourceDirectory),
         "Target association mismatch",
       );
       if (write.kind === "tier")
