@@ -22,7 +22,7 @@ gaps listed in pins are unresolved legal evidence, not license approval.
 ## Exact build context
 
 Create a fresh context with these seven source files and an `artifacts/`
-directory containing exactly the321 records in `assembly-pins.json.artifacts`:
+directory containing exactly the330 records in `assembly-pins.json.artifacts`:
 
 ```
 Dockerfile  assembly-pins.json  requirements.lock
@@ -31,16 +31,20 @@ artifacts/wheels/<124 exact filenames>
 artifacts/npm/{prisma-5.4.2.tgz,prisma-engines-5.4.2.tgz}
 artifacts/engines/{query-engine,schema-engine}-debian-openssl-3.0.x
 artifacts/engines/{query-engine,schema-engine}{.sha256,.gz.sha256}
+artifacts/engines/{debian-openssl-1.1.x,linux-musl,linux-musl-openssl-3.0.x}/query-engine{,.sha256,.gz.sha256}
 artifacts/schema.prisma
 artifacts/notices/<exact pinned records>
 ```
 
-The author DATA-only copy is `.task-inputs/linux-community-assembly-1/context-artifacts-2`
-in the dedicated `g1-proxy-linux-community-assembly` worktree. Its sibling
-`artifact-context-manifest-2.json` binds the same321 files/219,286,960bytes. The
-original320-file projection remains unchanged: the new projection additionally
-retains tqdm's British-spelled LICENCE from its already pinned wheel. Binaries
-are ignored evidence and must be independently pinned/copied by the build owner;
+The current DATA-only copy is `.task-inputs/linux-remaining-engine-assembly-1/context-artifacts-1`
+in the dedicated `g1-proxy-linux-remaining-engine-assembly` worktree. Its sibling
+`artifact-context-manifest-1.json` binds330 files/271,935,624bytes. All previous321
+files/219,286,960bytes are unchanged, including tqdm's LICENCE. Nine recovered
+query-engine bodies/sidecars add52,648,664bytes. The old320/321 projections remain
+unchanged. The first new Windows copy hit MAX_PATH; its partial directory is
+preserved as `context-artifacts-1-FIRST`. A new DATA helper completed a fresh
+context using Windows extended-length file paths, without overwriting the partial.
+Binaries are ignored evidence and must be independently pinned/copied by the build owner;
 they are not committed source. No extra or link may enter the context. The
 Dockerfile verifies the complete artifact set before offline installation.
 
@@ -67,11 +71,22 @@ schema. Its five original binary targets remain unchanged. Exact native Debian
 OpenSSL3 query/schema engines and their upstream checksum texts were recovered
 and independently hashed from previously retained registry CAS. Eight checksum
 endpoint requests returned403 and remain preserved; this is not release absence.
-Only this native pair is available. The upstream cache layout is supplied without
-a checksum bypass or a single-engine override that relabels multiple platforms.
-If Prisma5.4.2/Python0.11
-requires other target binaries, the network-denied build must fail and report the
-missing target. No binaryTargets removal, inferred generation success or ABI claim.
+The three distinct Debian1.1/musl/musl3 query engines and each checksum sidecar
+were subsequently recovered from the same retained upstream layer22 and accepted
+as DATA at c45f67eff756ae545b7163265348beb7e4b02bf8. Pins retain their exact
+provenance and closed target-to-artifact mapping. All four query platforms receive
+their own commit/target cache directory. The native schema-engine remains native
+only; no other schema engine is invented. Uncompressed checksum text must match
+its pinned body; retained gzip checksum text does not verify an unacquired gzip
+payload. No checksum bypass or platform override is enabled.
+
+The retained upstream generated client has four concrete query-engine keys:
+Debian1.1, Debian3, musl and musl3; `native` resolves to Debian3. The future genuine
+generation must produce exactly those four keys, exact canonical Prisma package
+paths, and each platform's pinned body/size. Unknown/missing/native-alias keys,
+other paths or a different platform's accepted body are refused. Five schema
+targets remain raw-byte unchanged. Actual offline generation/import may still
+fail; no generated-client copy, generation success or ABI claim is made here.
 
 A successful future build retains actual Node/Python versions, dpkg inventory,
 Python distribution versions and generated Prisma `BINARY_PATHS`, package file

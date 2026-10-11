@@ -21,6 +21,7 @@ TOTAL_LIMIT = 5 * 1024 * 1024 * 1024
 ENGINE_COMMIT = "ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
 TARGETS = ["native", "debian-openssl-1.1.x", "debian-openssl-3.0.x",
            "linux-musl", "linux-musl-openssl-3.0.x"]
+QUERY_TARGETS = tuple(TARGETS[1:])  # native resolves to Debian OpenSSL3 here.
 CACHE = Path("/opt/prisma/binaries")
 APP = Path("/opt/meri-proxy")
 VENV = Path("/opt/meri-proxy-venv")
@@ -100,7 +101,55 @@ def load_pins(path):
         raise BuildRefused("MISSING_PRISMA_INPUT")
     if {"wheels/" + r["filename"] for r in wheels} != {x["path"] for x in artifacts if x["kind"] == "wheel"}:
         raise BuildRefused("WHEEL_INVENTORY_MISMATCH")
+    query_engine_inputs(pins)
     return pins
+
+
+def query_engine_inputs(pins):
+    """Closed target-to-artifact mapping; never alias native bytes as another ABI."""
+    rows = pins.get("prisma", {}).get("queryEngineMappings")
+    if type(rows) is not list or len(rows) != len(QUERY_TARGETS):
+        raise BuildRefused("QUERY_TARGET_MAPPING")
+    artifacts = {row["path"]: row for row in pins["artifacts"]}
+    result = {}
+    for row in rows:
+        if type(row) is not dict or set(row) != {"target", "body", "sha256", "gzipSha256"}:
+            raise BuildRefused("QUERY_TARGET_MAPPING")
+        target = row["target"]
+        if type(target) is not str or target not in QUERY_TARGETS or target in result:
+            raise BuildRefused("QUERY_TARGET_MAPPING")
+        stem = "engines/" if target == "debian-openssl-3.0.x" else "engines/" + target + "/"
+        expected = {"target": target,
+                    "body": stem + "query-engine" + ("-" + target if target == "debian-openssl-3.0.x" else ""),
+                    "sha256": stem + "query-engine.sha256", "gzipSha256": stem + "query-engine.gz.sha256"}
+        if row != expected or any(name not in artifacts or artifacts[name]["kind"] != "engine"
+                                  for name in (row["body"], row["sha256"], row["gzipSha256"])):
+            raise BuildRefused("QUERY_TARGET_ARTIFACT")
+        if artifacts[row["body"]]["bytes"] <= 0 or any(artifacts[row[key]]["bytes"] != 64
+                                                      for key in ("sha256", "gzipSha256")):
+            raise BuildRefused("QUERY_TARGET_ARTIFACT")
+        result[target] = row
+    if set(result) != set(QUERY_TARGETS):
+        raise BuildRefused("QUERY_TARGET_MAPPING")
+    return result
+
+
+def verify_query_engines(root, pins):
+    mappings = query_engine_inputs(pins)
+    artifacts = {row["path"]: row for row in pins["artifacts"]}
+    for row in mappings.values():
+        for key in ("body", "sha256", "gzipSha256"):
+            expected = {k: artifacts[row[key]][k] for k in ("bytes", "sha256")}
+            if hash_file(root / row[key]) != expected:
+                raise BuildRefused("QUERY_TARGET_HASH")
+        # gzip checksum text is retained metadata, not verification of a gzip body.
+        checksum = (root / row["sha256"]).read_bytes()
+        compressed_checksum = (root / row["gzipSha256"]).read_bytes()
+        if checksum != artifacts[row["body"]]["sha256"].encode("ascii"):
+            raise BuildRefused("QUERY_TARGET_CHECKSUM")
+        if len(compressed_checksum) != 64 or any(c not in b"0123456789abcdef" for c in compressed_checksum):
+            raise BuildRefused("QUERY_TARGET_CHECKSUM")
+    return mappings
 
 
 def _plain_ancestors(path):
@@ -161,6 +210,7 @@ def verify_artifacts(root, pins):
     header = schema.split(b"// Budget", 1)[0].decode("utf-8")
     if not all('"' + target + '"' in header for target in TARGETS):
         raise BuildRefused("SCHEMA_TARGETS_CHANGED")
+    verify_query_engines(root, pins)
     return {"artifacts": len(actual), "bytes": sum(r["bytes"] for r in expected.values())}
 
 
@@ -184,8 +234,45 @@ def _npm_members(archive):
     return members
 
 
-def assemble_cache(root):
-    if CACHE.exists():
+def assemble_engine_cache(root, pins):
+    mappings = verify_query_engines(root, pins)
+    cache_home = CACHE.parent / ".cache"
+    if os.path.lexists(cache_home):
+        raise BuildRefused("ENGINE_CACHE_ALREADY_EXISTS")
+    # Preserve the native package pair; other platforms are supplied through the
+    # exact upstream target cache, then copied by the genuine generator.
+    engines = CACHE / "node_modules/@prisma/engines"
+    for kind in ("query-engine", "schema-engine"):
+        name = kind + "-debian-openssl-3.0.x"
+        with (root / "engines" / name).open("rb") as source, (engines / name).open("xb") as sink:
+            while block := source.read(1024 * 1024):
+                sink.write(block)
+        (engines / name).chmod(0o755)
+        if hash_file(engines / name) != hash_file(root / "engines" / name):
+            raise BuildRefused("COPIED_ENGINE_DRIFT")
+    entries = [(target, "query-engine", row) for target, row in mappings.items()]
+    entries.append(("debian-openssl-3.0.x", "schema-engine",
+                    {"body": "engines/schema-engine-debian-openssl-3.0.x",
+                     "sha256": "engines/schema-engine.sha256", "gzipSha256": "engines/schema-engine.gz.sha256"}))
+    created = set()
+    for target, kind, row in entries:
+        target_cache = CACHE.parent / ".cache/prisma/master" / ENGINE_COMMIT / target
+        if target not in created:
+            target_cache.mkdir(parents=True)
+            created.add(target)
+        for key, suffix in (("body", ""), ("sha256", ".sha256"), ("gzipSha256", ".gz.sha256")):
+            source_path = root / row[key]
+            destination = target_cache / (kind + suffix)
+            with source_path.open("rb") as source, destination.open("xb") as sink:
+                while block := source.read(1024 * 1024):
+                    sink.write(block)
+            destination.chmod(0o755 if key == "body" else 0o644)
+            if hash_file(destination) != hash_file(source_path):
+                raise BuildRefused("CACHE_COPY_DRIFT")
+
+
+def assemble_cache(root, pins):
+    if os.path.lexists(CACHE):
         raise BuildRefused("CACHE_ALREADY_EXISTS")
     # Validate BOTH archives fully before creating output. No tar extractall,
     # links, scripts, npm install or package lifecycle hooks are used.
@@ -214,30 +301,7 @@ def assemble_cache(root):
                 if count != member.size:
                     raise BuildRefused("NPM_TRUNCATED_MEMBER")
                 out.chmod(0o755 if member.mode & 0o111 else 0o644)
-    engines = CACHE / "node_modules/@prisma/engines"
-    for kind in ("query-engine", "schema-engine"):
-        name = kind + "-debian-openssl-3.0.x"
-        with (root / "engines" / name).open("rb") as source, (engines / name).open("xb") as sink:
-            while block := source.read(1024 * 1024):
-                sink.write(block)
-        (engines / name).chmod(0o755)
-        if hash_file(engines / name) != hash_file(root / "engines" / name):
-            raise BuildRefused("COPIED_ENGINE_DRIFT")
-    # Upstream fetch-engine 5.4.2 checks this exact cache + checksum before
-    # downloading. Only the actually retained Debian OpenSSL 3 target is present.
-    native_cache = Path("/opt/prisma/.cache/prisma/master") / ENGINE_COMMIT / "debian-openssl-3.0.x"
-    native_cache.mkdir(parents=True)
-    for kind in ("query-engine", "schema-engine"):
-        for suffix in ("", ".sha256", ".gz.sha256"):
-            source_name = kind + ("-debian-openssl-3.0.x" if not suffix else suffix)
-            source_path = root / "engines" / source_name
-            destination = native_cache / (kind + suffix)
-            with source_path.open("rb") as source, destination.open("xb") as sink:
-                while block := source.read(1024 * 1024):
-                    sink.write(block)
-            destination.chmod(0o755 if not suffix else 0o644)
-            if hash_file(destination) != hash_file(source_path):
-                raise BuildRefused("CACHE_COPY_DRIFT")
+    assemble_engine_cache(root, pins)
     (CACHE / "node_modules/.bin").mkdir()
     (CACHE / "node_modules/.bin/prisma").symlink_to("../prisma/build/index.js")
 
@@ -246,7 +310,7 @@ def generate(root, pins):
     if sys.platform != "linux" or sys.version_info[:2] != (3, 13) or Path(sys.prefix) != VENV:
         raise BuildRefused("LINUX_BUILD_VENV_REQUIRED")
     before = verify_artifacts(root, pins)
-    assemble_cache(root)
+    assemble_cache(root, pins)
     schema = APP / "schema.prisma"
     with schema.open("xb") as out:
         out.write((root / "schema.prisma").read_bytes())
@@ -283,13 +347,8 @@ def generate(root, pins):
         raise BuildRefused("BUILD_INPUT_DRIFT")
     # This is genuine generated-client inspection inside the later owner build.
     from prisma.client import BINARY_PATHS, Prisma
-    paths = dict(BINARY_PATHS.query_engine)
-    if not paths or any(not str(p).startswith("/opt/prisma/") for p in paths.values()):
-        raise BuildRefused("GENERATED_ENGINE_PATHS")
-    if not set(paths) <= {"native", "debian-openssl-3.0.x"}:
-        # Only this native platform was actually acquired. Never relabel the
-        # same native executable as Debian1.1 or musl to satisfy five targets.
-        raise BuildRefused("UNQUALIFIED_GENERATED_TARGETS")
+    paths = BINARY_PATHS.query_engine
+    engine_bytes = validate_generated_engines(paths, pins)
     records = []
     package = VENV / "lib/python3.13/site-packages/prisma"
     for path in sorted(package.rglob("*")):
@@ -297,14 +356,27 @@ def generate(root, pins):
             records.append({"path": path.relative_to(VENV).as_posix(), **hash_file(path)})
     if not records or len(records) > 10000:
         raise BuildRefused("GENERATED_INVENTORY_BOUND")
-    expected_engine_hashes = {r["sha256"] for r in pins["artifacts"]
-                              if r["path"] == "engines/query-engine-debian-openssl-3.0.x"}
-    engine_bytes = {k: hash_file(Path(v)) for k, v in paths.items()}
-    if any(row["sha256"] not in expected_engine_hashes for row in engine_bytes.values()):
-        raise BuildRefused("GENERATED_ENGINE_NOT_PINNED")
     return {"status": "GENERATED_BUILD_OBSERVATION_NOT_RUNTIME_ADMITTED", "seconds": time.monotonic() - started,
             "input": before, "clientClassPresent": isinstance(Prisma, type), "BINARY_PATHS": paths,
             "files": records, "engineBytes": engine_bytes}
+
+
+def validate_generated_engines(paths, pins):
+    mappings = query_engine_inputs(pins)
+    if type(paths) is not dict or set(paths) != set(QUERY_TARGETS):
+        raise BuildRefused("UNQUALIFIED_GENERATED_TARGETS")
+    artifacts = {row["path"]: row for row in pins["artifacts"]}
+    result = {}
+    for target, raw in paths.items():
+        expected_path = CACHE / "node_modules/prisma" / ("query-engine-" + target)
+        if type(raw) is not str or raw != str(expected_path):
+            raise BuildRefused("GENERATED_ENGINE_PATHS")
+        observed = hash_file(expected_path)
+        artifact = artifacts[mappings[target]["body"]]
+        if observed != {key: artifact[key] for key in ("bytes", "sha256")}:
+            raise BuildRefused("GENERATED_ENGINE_NOT_PINNED")
+        result[target] = observed
+    return result
 
 
 def main(argv=None):

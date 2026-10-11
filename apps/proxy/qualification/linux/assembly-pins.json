@@ -185,8 +185,56 @@
         "license": "Apache-2.0"
       }
     ],
-    "otherTargetsAcquired": false,
-    "downloadFailures": "Eight fixed checksum endpoint requests returned HTTP 403; retained, not absence proof"
+    "otherTargetsAcquired": true,
+    "downloadFailures": "Eight fixed checksum endpoint requests returned HTTP 403; retained, not absence proof",
+    "queryEngineMappings": [
+      {
+        "target": "debian-openssl-1.1.x",
+        "body": "engines/debian-openssl-1.1.x/query-engine",
+        "sha256": "engines/debian-openssl-1.1.x/query-engine.sha256",
+        "gzipSha256": "engines/debian-openssl-1.1.x/query-engine.gz.sha256"
+      },
+      {
+        "target": "debian-openssl-3.0.x",
+        "body": "engines/query-engine-debian-openssl-3.0.x",
+        "sha256": "engines/query-engine.sha256",
+        "gzipSha256": "engines/query-engine.gz.sha256"
+      },
+      {
+        "target": "linux-musl",
+        "body": "engines/linux-musl/query-engine",
+        "sha256": "engines/linux-musl/query-engine.sha256",
+        "gzipSha256": "engines/linux-musl/query-engine.gz.sha256"
+      },
+      {
+        "target": "linux-musl-openssl-3.0.x",
+        "body": "engines/linux-musl-openssl-3.0.x/query-engine",
+        "sha256": "engines/linux-musl-openssl-3.0.x/query-engine.sha256",
+        "gzipSha256": "engines/linux-musl-openssl-3.0.x/query-engine.gz.sha256"
+      }
+    ],
+    "remainingEngineRecovery": {
+      "commit": "c45f67eff756ae545b7163265348beb7e4b02bf8",
+      "manifest": {
+        "path": "C:\\dev\\main\\meri-greenfield-worktrees\\g1-prisma-remaining-engine-data\\.task-inputs\\prisma-remaining-engine-data-1\\FINAL-MANIFEST.json",
+        "bytes": 38436,
+        "sha256": "5f23bc4980861531ca55ba56a5373716673519acdbcdc0e73325f69b9ec49e00"
+      },
+      "reconciliation": {
+        "path": "C:\\dev\\main\\meri-greenfield-worktrees\\g1-prisma-remaining-engine-data\\.task-inputs\\prisma-remaining-engine-data-1\\reconciliation.json",
+        "bytes": 14555,
+        "sha256": "84b5fd44e535c92981729baf6bb720fae61332d7a38d8bc14e633cfa5f465de0"
+      },
+      "generatedQueryKeys": [
+        "debian-openssl-1.1.x",
+        "debian-openssl-3.0.x",
+        "linux-musl",
+        "linux-musl-openssl-3.0.x"
+      ],
+      "nativeResolvesTo": "debian-openssl-3.0.x",
+      "gzipBodiesAcquired": false,
+      "runtimeAdmitted": false
+    }
   },
   "wheels": [
     {
@@ -5103,6 +5151,60 @@
   ],
   "artifacts": [
     {
+      "path": "engines/debian-openssl-1.1.x/query-engine",
+      "bytes": 17568600,
+      "sha256": "31628668b87cc70845652e5787757bebd591caaa07fe6739f85c208eb202a374",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/debian-openssl-1.1.x/query-engine.gz.sha256",
+      "bytes": 64,
+      "sha256": "076731aed6ce6c0251d651e745de8440c903bf5f26760b11c0da2521c9ae5b29",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/debian-openssl-1.1.x/query-engine.sha256",
+      "bytes": 64,
+      "sha256": "e9050d2941ad5df2cfa07c30669949ddcddaeb367459ef954c27c7daa553b462",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl-openssl-3.0.x/query-engine",
+      "bytes": 17543944,
+      "sha256": "9472689617f471a63ddb59acdc2d07dc98882d0454499bba4256f7eed7f3b9af",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl-openssl-3.0.x/query-engine.gz.sha256",
+      "bytes": 64,
+      "sha256": "d4f20295b7648c4294437dde7b89ee5d262f0775c71cf70f5341a4c17051bd34",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl-openssl-3.0.x/query-engine.sha256",
+      "bytes": 64,
+      "sha256": "c597e9eb03aa02f58d84e0fff1420fa2ab03540b416751729c3b935f9a8bc1cf",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl/query-engine",
+      "bytes": 17535736,
+      "sha256": "9af1fb0d0f97151e10fc2d9419c5be557cd7f78ac6e7965e0593218ee11b53f6",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl/query-engine.gz.sha256",
+      "bytes": 64,
+      "sha256": "4b4a74bd9854295970e970b0da5633a3ca12343d423ec91310034cef0dc8e298",
+      "kind": "engine"
+    },
+    {
+      "path": "engines/linux-musl/query-engine.sha256",
+      "bytes": 64,
+      "sha256": "57deecf140882169f80b67dba80fadbfa28a798b3cb21bb9ffcc0c4102b3a460",
+      "kind": "engine"
+    },
+    {
       "path": "engines/query-engine-debian-openssl-3.0.x",
       "bytes": 17568600,
       "sha256": "ceb43f7d85a862ce26c707534076094118040c834f2331025253c18079410626",
@@ -7030,8 +7132,8 @@
     }
   ],
   "artifactTotals": {
-    "files": 321,
-    "bytes": 219286960
+    "files": 330,
+    "bytes": 271935624
   },
   "licensing": {
     "communityOnly": true,

@@ -25,6 +25,8 @@ build = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(build)  # Safe stdlib-only build owner, no action on import.
 PINS = json.loads((HERE / "assembly-pins.json").read_bytes())
 TMP = Path(os.environ.get("MERI_ASSEMBLY_TEST_TMP", str(Path.cwd() / ".task-inputs/linux-assembly-tests")))
+if os.name == "nt":
+    TMP = Path("\\\\?\\" + str(TMP.resolve()))  # Fixed Linux cache layout exceeds Windows MAX_PATH in deep test scratch.
 
 
 def archive(entries):
@@ -203,6 +205,115 @@ class AssemblyInputs(unittest.TestCase):
         self.assertNotIn("NEVER_RETAIN", json.dumps(probe.DENIED))
         self.assertIsNone(probe.audit("import", ("stdlib",)))
         self.assertNotIn("ARBITRARY_UPSTREAM_ERROR_WITH_VALUES", probe.REFUSAL_REASONS)
+
+    def engine_fixture(self):
+        root = self.directory / "inputs"
+        root.mkdir()
+        bodies = {"debian-openssl-1.1.x": b"distinct-debian11",
+                  "debian-openssl-3.0.x": b"distinct-debian3",
+                  "linux-musl": b"distinct-musl",
+                  "linux-musl-openssl-3.0.x": b"distinct-musl3"}
+        literal_paths = {
+            "debian-openssl-1.1.x": "engines/debian-openssl-1.1.x/query-engine",
+            "debian-openssl-3.0.x": "engines/query-engine-debian-openssl-3.0.x",
+            "linux-musl": "engines/linux-musl/query-engine",
+            "linux-musl-openssl-3.0.x": "engines/linux-musl-openssl-3.0.x/query-engine"}
+        contents = {}
+        for target, content in bodies.items():
+            path = literal_paths[target]
+            stem = path if target != "debian-openssl-3.0.x" else "engines/query-engine"
+            contents[path] = content
+            contents[stem + ".sha256"] = hashlib.sha256(content).hexdigest().encode()
+            contents[stem + ".gz.sha256"] = b"1" * 64
+        contents["engines/schema-engine-debian-openssl-3.0.x"] = b"only-native-schema"
+        contents["engines/schema-engine.sha256"] = hashlib.sha256(b"only-native-schema").hexdigest().encode()
+        contents["engines/schema-engine.gz.sha256"] = b"2" * 64
+        p = copy.deepcopy(PINS)
+        for name, content in contents.items():
+            path = root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+            row = next(row for row in p["artifacts"] if row["path"] == name)
+            row.update(bytes=len(content), sha256=hashlib.sha256(content).hexdigest())
+        return root, p, bodies, literal_paths
+
+    def test_target_mapping_requires_four_concrete_keys_no_native_alias(self):
+        self.assertEqual(set(build.query_engine_inputs(PINS)),
+                         {"debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"})
+        for operation in ("missing", "duplicate", "unknown", "alias", "foreignpath"):
+            p = copy.deepcopy(PINS)
+            rows = p["prisma"]["queryEngineMappings"]
+            if operation == "missing": rows.pop()
+            elif operation == "duplicate": rows[-1] = copy.deepcopy(rows[0])
+            elif operation == "unknown": rows[-1]["target"] = "foreign"
+            elif operation == "alias": rows[-1]["target"] = "native"
+            else: rows[0]["body"] = "engines/query-engine-debian-openssl-3.0.x"
+            with self.subTest(operation=operation), self.assertRaises(build.BuildRefused):
+                self.pins(p)
+
+    def test_target_hash_and_checksum_relation_refuse_before_cache(self):
+        root, p, _, paths = self.engine_fixture()
+        target = root / paths["linux-musl"]
+        target.write_bytes(b"native substitution")
+        with self.assertRaisesRegex(build.BuildRefused, "QUERY_TARGET_HASH"):
+            build.verify_query_engines(root, p)
+        cache = self.directory / "prisma/binaries"
+        with mock.patch.object(build, "CACHE", cache):
+            with self.assertRaises(build.BuildRefused): build.assemble_engine_cache(root, p)
+        self.assertFalse(cache.exists())
+
+    def test_checksum_sidecars_are_not_merely_unrelated_pinned_text(self):
+        root, p, _, _ = self.engine_fixture()
+        row = next(row for row in p["artifacts"] if row["path"] == "engines/linux-musl/query-engine.sha256")
+        (root / row["path"]).write_bytes(b"0" * 64)
+        row["sha256"] = hashlib.sha256(b"0" * 64).hexdigest()
+        with self.assertRaisesRegex(build.BuildRefused, "QUERY_TARGET_CHECKSUM"):
+            build.verify_query_engines(root, p)
+
+    def test_exact_target_cache_layout_preserves_distinct_bytes(self):
+        root, p, bodies, _ = self.engine_fixture()
+        cache = self.directory / "prisma/binaries"
+        (cache / "node_modules/@prisma/engines").mkdir(parents=True)
+        with mock.patch.object(build, "CACHE", cache):
+            build.assemble_engine_cache(root, p)
+        base = cache.parent / ".cache/prisma/master/ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
+        for target, expected in bodies.items():
+            self.assertEqual((base / target / "query-engine").read_bytes(), expected)
+            self.assertEqual((base / target / "query-engine.sha256").read_bytes(), hashlib.sha256(expected).hexdigest().encode())
+            self.assertEqual((base / target / "query-engine.gz.sha256").read_bytes(), b"1" * 64)
+        self.assertEqual((base / "debian-openssl-3.0.x/schema-engine").read_bytes(), b"only-native-schema")
+        self.assertEqual(len([p for p in base.rglob("*") if p.is_file()]), 15)
+        self.assertFalse((base / "linux-musl/schema-engine").exists())
+
+    def test_preexisting_cache_namespace_is_refused(self):
+        root, p, _, _ = self.engine_fixture()
+        cache = self.directory / "prisma/binaries"
+        (cache.parent / ".cache").mkdir(parents=True)
+        with mock.patch.object(build, "CACHE", cache):
+            with self.assertRaisesRegex(build.BuildRefused, "ENGINE_CACHE_ALREADY_EXISTS"):
+                build.assemble_engine_cache(root, p)
+
+    def test_generated_four_platform_paths_and_exact_bodies(self):
+        _, p, bodies, _ = self.engine_fixture()
+        cache = self.directory / "prisma/binaries"
+        paths = {}
+        for target, content in bodies.items():
+            path = cache / "node_modules/prisma" / ("query-engine-" + target)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(content)
+            paths[target] = str(path)
+        with mock.patch.object(build, "CACHE", cache):
+            self.assertEqual(set(build.validate_generated_engines(paths, p)), set(bodies))
+            for bad in ({}, {**paths, "native": next(iter(paths.values()))}, {**paths, "foreign": "x"}):
+                with self.assertRaisesRegex(build.BuildRefused, "UNQUALIFIED_GENERATED_TARGETS"):
+                    build.validate_generated_engines(bad, p)
+            wrong = dict(paths); wrong["linux-musl"] += "/../query-engine-linux-musl"
+            with self.assertRaisesRegex(build.BuildRefused, "GENERATED_ENGINE_PATHS"):
+                build.validate_generated_engines(wrong, p)
+            # A body from another accepted platform must still be refused.
+            Path(paths["linux-musl"]).write_bytes(bodies["debian-openssl-3.0.x"])
+            with self.assertRaisesRegex(build.BuildRefused, "GENERATED_ENGINE_NOT_PINNED"):
+                build.validate_generated_engines(paths, p)
 
 
 if __name__ == "__main__":
