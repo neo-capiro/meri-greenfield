@@ -26,7 +26,7 @@ REFERENCE = '5192c575e78957bd4bc8d2c512a1efb5b455a884'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'
-PYTHON = Path('C:/Users/neoma/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
+PYTHON = Path('C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 PYTHON_SHA = '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1'
 HELPERS = ('worker_image_build.py', 'worker_image_collect.py', 'worker_context.py',
            'host_assets_build.py', 'host_assets_source.py', 'aws_evidence.py',
