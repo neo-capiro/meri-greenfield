@@ -15,6 +15,16 @@
   color: var(--muted-foreground);
   font-weight: 500;
 }
+.pinned {
+  color: var(--warning-text, #6c5226);
+  font-size: 12px;
+  white-space: nowrap;
+}
+@media (prefers-color-scheme: dark) {
+  .pinned {
+    color: var(--warning-text, #d6b274);
+  }
+}
 .trigger:hover {
   background: var(--muted);
 }
@@ -35,6 +45,22 @@
 }
 .menu [data-highlighted] {
   background: var(--muted);
+}
+.menu [data-disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+.review {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 .error:empty {
   display: none;

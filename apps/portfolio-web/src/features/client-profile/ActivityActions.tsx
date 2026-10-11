@@ -1,10 +1,13 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DropdownMenu } from "radix-ui";
-import { QueryState } from "@/shared/ui/QueryState";
 import type { Activity } from "./contracts";
 import { useChangeActivity } from "./activity-mutations";
-import { EditActivity, RemoveActivity } from "./ActivityDialogs";
+import {
+  ActivityMutationStatus,
+  EditActivity,
+  RemoveActivity,
+} from "./ActivityDialogs";
 import styles from "./activity-actions.module.css";
 
 export function ActivityActions({
@@ -19,11 +22,19 @@ export function ActivityActions({
   const [dialog, setDialog] = useState<"edit" | "remove" | null>(null);
   const openingDialog = useRef(false);
   const trigger = useRef<HTMLButtonElement>(null);
-  const mutation = useChangeActivity(clientId, item);
+  const pinFocus = useRef(false);
   const close = () => {
     openingDialog.current = false;
     setDialog(null);
   };
+  const state = useChangeActivity(clientId, item, close);
+  const { mutation } = state;
+  useEffect(() => {
+    if (!mutation.isPending && pinFocus.current) {
+      pinFocus.current = false;
+      if (document.activeElement === document.body) trigger.current?.focus();
+    }
+  }, [mutation.isPending]);
   const returnFocus = () => {
     if (trigger.current) trigger.current.focus();
     else onFallbackFocus();
@@ -32,10 +43,13 @@ export function ActivityActions({
   return (
     <>
       <div className={styles.actions}>
+        {item.kind === "note" && item.pinned && (
+          <span className={styles.pinned}>★ Pinned</span>
+        )}
         {item.dueAt && (
           <button
             className="button"
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || state.reviewing || !state.canWrite}
             onClick={() =>
               mutation.mutate({ action: "settle", settled: !item.settledAt })
             }
@@ -52,7 +66,7 @@ export function ActivityActions({
             ref={trigger}
             className={styles.trigger}
             aria-label={`Activity actions: ${item.title}`}
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || state.reviewing || !state.canOpen}
           >
             ⋯
           </DropdownMenu.Trigger>
@@ -65,6 +79,17 @@ export function ActivityActions({
                 if (openingDialog.current) event.preventDefault();
               }}
             >
+              {item.kind === "note" && (
+                <DropdownMenu.Item
+                  disabled={!state.canWrite}
+                  onSelect={() => {
+                    pinFocus.current = true;
+                    mutation.mutate({ action: "pin", pinned: !item.pinned });
+                  }}
+                >
+                  {item.pinned ? "Unpin note" : "Pin note"}
+                </DropdownMenu.Item>
+              )}
               <DropdownMenu.Item
                 onSelect={() => {
                   openingDialog.current = true;
@@ -85,26 +110,26 @@ export function ActivityActions({
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
       </div>
-      <div className={styles.error}>
-        <QueryState
-          error={mutation.error}
+      {!dialog && (
+        <ActivityMutationStatus
+          state={state}
           retry={() => {
             if (mutation.variables) mutation.mutate(mutation.variables);
           }}
         />
-      </div>
+      )}
       {dialog === "edit" && (
         <EditActivity
-          clientId={clientId}
           item={item}
+          state={state}
           onClose={close}
           onReturnFocus={returnFocus}
         />
       )}
       {dialog === "remove" && (
         <RemoveActivity
-          clientId={clientId}
           item={item}
+          state={state}
           onClose={close}
           onReturnFocus={returnFocus}
         />

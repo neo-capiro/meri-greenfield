@@ -48,7 +48,7 @@ test("recorded edits retain failed input, reject blank titles and refresh the sc
       if (fail)
         return json(route, { message: "Synthetic edit unavailable" }, 503);
       current = { ...current, ...fields, body: fields.body || null };
-      return json(route, { id, clientId });
+      return json(route, { ...current, clientId, tenantId: "tenant-test" });
     },
   );
   await page.goto(`/portfolio/${clientId}`);
@@ -93,6 +93,15 @@ test("recorded edits retain failed input, reject blank titles and refresh the sc
     "Updated staff recap",
   );
   fail = false;
+  await expect(
+    edit.getByRole("button", { name: "Save activity", exact: true }),
+  ).toBeDisabled();
+  await edit
+    .getByRole("button", { name: "Review latest activity", exact: true })
+    .click();
+  await expect(
+    edit.getByText("Latest saved activity", { exact: true }),
+  ).toBeVisible();
   await edit
     .getByRole("button", { name: "Save activity", exact: true })
     .click();
@@ -117,7 +126,7 @@ test("recorded edits retain failed input, reject blank titles and refresh the sc
   expect(writes).toEqual(
     Array(2).fill({ title: "Updated staff recap", body: "" }),
   );
-  expect(reads).toBe(2);
+  expect(reads).toBe(6);
   expect(unexpected).toEqual([]);
 });
 
@@ -155,7 +164,7 @@ test("settlement requires a due date, retains permission errors, prevents duplic
         ...current,
         settledAt: fields.settled ? "2026-10-11T15:00:00Z" : null,
       };
-      return json(route, { id, clientId });
+      return json(route, { ...current, clientId, tenantId: "tenant-test" });
     },
   );
   await page.goto(`/portfolio/${clientId}`);
@@ -257,6 +266,12 @@ test("removal is confirmed, retains service errors and rejects a false success r
   await dialog.screenshot({
     path: "test-results/activity-remove-mobile-dark.png",
   });
+  await expect(
+    dialog.getByRole("button", { name: "Remove activity", exact: true }),
+  ).toBeDisabled();
+  await dialog
+    .getByRole("button", { name: "Review latest activity", exact: true })
+    .click();
   await dialog
     .getByRole("button", { name: "Remove activity", exact: true })
     .click();
@@ -266,6 +281,9 @@ test("removal is confirmed, retains service errors and rejects a false success r
       .getByRole("region", { ...region, includeHidden: true })
       .getByText("Staff call recap", { exact: true }),
   ).toBeVisible();
+  await dialog
+    .getByRole("button", { name: "Review latest activity", exact: true })
+    .click();
   await dialog
     .getByRole("button", { name: "Remove activity", exact: true })
     .click();
