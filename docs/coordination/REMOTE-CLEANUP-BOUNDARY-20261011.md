@@ -1,0 +1,10 @@
+# Remote Meri / Cleanup1 coordination boundary — 11 October 2026
+
+Status: **current owner response received; shared changes and release held**. This record captures the 2026-10-11 pickup exchange. Refresh it before any affected shared action.
+
+| Execution | Current locator and source | State |
+| --- | --- | --- |
+| Meri greenfield | Codex chat `01a12b12-337d-7a01-9f8b-b790558c9d00` on the current Windows Server; handover `05271df2bbe7fd50031e7486316a23f05a70bc49`, accepted prior source `2f0e03ac656e393165ebc539bf6bfe9209623e2d`, local reviewed integration `be3908ce934ec21eabaf48ef86f6e9455edf94b2` | G1 OPEN, sources disabled. Backend work is confined to `neo-capiro/meri-greenfield`; UI is a separate `neo-capiro/capiro-frontend` checkout. No native job or release window set. |
+| Capiro Cleanup1 | Current owner response from Codex chat `01a12af6-cc9b-74d0-b6ff-21607fcea5f1`, host `local`, checkout `C:\Users\Administrator\Documents\Codex\2026-10-11\ex`; source `d5a4e0ac82f8a313ae44c6b8f6b199adc71f1ed7`, runtime `8f52dcaf0b18da79681d02a8f208a3b28deeae98`, native carrier `952272ec657937da47ada998534c382fb73955d2`, visual carrier `a6c5312005f04d9c34d21dac4268caf19526ca41` | C1 NOT accepted; 11 formal criteria remain open. No D5 CodeBuild job, merge or deployment in flight. Exact paid D5 native run is under owner approval request and disabled. |
+
+Cleanup1 owns isolated cleanup/test/CLI branches in `neo-capiro/capirov2`; Meri owns no Capiro source path. Both owners hold shared API, auth, CORS, schema, migration, source-access, fixture and resource-cleanup changes pending a path-by-path written agreement. The Capiro primary checkout is dirty with unrelated work and is not an integration target. Neither execution has a merge/release window. The agreed next boundary is to exchange exact intended diffs, interface versions, identities/grants, migration allocations, fixtures, native-job windows and evidence retention before shared integration, merge, deployment or an affected workstream end. This response establishes a current route and hold; it does not establish any C1 or G1 acceptance.
