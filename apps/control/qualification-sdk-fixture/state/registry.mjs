@@ -161,8 +161,9 @@ export class FixtureRegistry {
       const staleGrant = presented.grantId === current.grantId ? null :
         await lockGrant(client, presented.grantId);
       const nowMs = await databaseNow(client);
-      return decideAuthorization({ current, grant: grantView(grant), staleGrant,
+      const decision = decideAuthorization({ current, grant: grantView(grant), staleGrant,
         peer, presented, nowMs });
+      return Object.freeze({ ...decision, checkedAtMs: nowMs });
     });
   }
 

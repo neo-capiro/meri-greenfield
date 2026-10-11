@@ -26,11 +26,14 @@ export const CERTS = Object.freeze({
   serverCert: read('server.crt'), serverKey: read('server.key'),
   ca: read('ca1.crt'), otherCa: read('ca2.crt'),
   clientCert: read('client-trusted.crt'), clientKey: read('client-trusted.key'),
+  clientBCert: read('client-trusted-b.crt'), clientBKey: read('client-trusted-b.key'),
   rogueCert: read('client-untrusted.crt'), rogueKey: read('client-untrusted.key'),
 });
 
 /** SHA-256 of the trusted client certificate, as the ingress derives it from the socket. */
 export const TRUSTED_FINGERPRINT = new X509Certificate(CERTS.clientCert).fingerprint256
+  .replace(/:/g, '').toLowerCase();
+export const TRUSTED_B_FINGERPRINT = new X509Certificate(CERTS.clientBCert).fingerprint256
   .replace(/:/g, '').toLowerCase();
 
 export const PATH = INGRESS_PATH;
@@ -74,6 +77,7 @@ export function httpsCall({ port, path = PATH, method = 'POST', body = Buffer.al
       minVersion: 'TLSv1.3', headers: { 'content-type': 'application/json',
         'content-length': String(body.length), ...headers } };
     if (client === 'trusted') { options.cert = CERTS.clientCert; options.key = CERTS.clientKey; }
+    if (client === 'trusted-b') { options.cert = CERTS.clientBCert; options.key = CERTS.clientBKey; }
     if (client === 'rogue') { options.cert = CERTS.rogueCert; options.key = CERTS.rogueKey; }
     const request = https.request(options, response => {
       const chunks = [];
@@ -92,6 +96,7 @@ export function rawCall({ port, text, client = 'trusted', ca = CERTS.ca, timeout
   return new Promise(resolve => {
     const options = { host: '127.0.0.1', port, ca, minVersion: 'TLSv1.3' };
     if (client === 'trusted') { options.cert = CERTS.clientCert; options.key = CERTS.clientKey; }
+    if (client === 'trusted-b') { options.cert = CERTS.clientBCert; options.key = CERTS.clientBKey; }
     if (client === 'rogue') { options.cert = CERTS.rogueCert; options.key = CERTS.rogueKey; }
     let settled = false, data = '';
     const socket = tls.connect(options, () => { socket.write(text); });

@@ -11,7 +11,8 @@ if ($OutputDirectory -eq '') {
 $certDir = [System.IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Path $certDir -Force | Out-Null
 $owned = @('ca1.crt','ca1.key','ca2.crt','ca2.key','server.crt','server.key',
-  'client-trusted.crt','client-trusted.key','client-untrusted.crt','client-untrusted.key')
+  'client-trusted.crt','client-trusted.key','client-trusted-b.crt','client-trusted-b.key',
+  'client-untrusted.crt','client-untrusted.key')
 foreach ($name in $owned) {
   if (Test-Path -LiteralPath (Join-Path $certDir $name)) {
     throw "Refusing to overwrite existing synthetic certificate: $name"
@@ -47,6 +48,7 @@ foreach ($ca in @('ca1','ca2')) {
 foreach ($entry in @(
   @{ Name='server'; Subject='/CN=localhost'; Ca='ca1'; Ext=$serverExt },
   @{ Name='client-trusted'; Subject='/CN=fixture-worker-a'; Ca='ca1'; Ext=$clientExt },
+  @{ Name='client-trusted-b'; Subject='/CN=fixture-worker-b'; Ca='ca1'; Ext=$clientExt },
   @{ Name='client-untrusted'; Subject='/CN=fixture-worker-b'; Ca='ca2'; Ext=$clientExt }
 )) {
   $name = $entry.Name
