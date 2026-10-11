@@ -68,6 +68,10 @@ export function ClientMeriActions({ client }: { client: Client }) {
         clientId={client.id}
         open={enrichment}
         onOpenChange={setEnrichment}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          trigger.current?.focus();
+        }}
       />
       {preferences && (
         <ClientAttendancePreferences
