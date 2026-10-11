@@ -188,6 +188,12 @@ export async function installFixtures(page: Page) {
     }
     const responses: Record<string, unknown> = {
       "core/clients": [client],
+      "core/intelligence/portfolio-alerts": {
+        alerts: [],
+        total: 0,
+        clientCount: 1,
+        generatedAt: "2026-10-11T06:00:00Z",
+      },
       [`core/clients/${clientId}`]: client,
       "core/client-account-owners": {},
       "core/client-account-owners/options": [],

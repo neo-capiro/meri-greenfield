@@ -20,6 +20,7 @@ import { ProfileResults } from "./ProfileResults";
 import { IndexFilters } from "./IndexFilters";
 import { PortfolioPulse } from "./PortfolioPulse";
 import { GlobalQuickLog } from "./GlobalQuickLog";
+import { PortfolioAttention } from "./attention/public";
 import styles from "./portfolio.module.css";
 
 export function PortfolioIndex({
@@ -225,14 +226,7 @@ export function PortfolioIndex({
                   </button>
                 )}
               </section>
-              <aside className={`card stack ${styles.attention}`}>
-                <h3>Needs attention</h3>
-                <p className="muted">Attention summaries are unavailable.</p>
-                <small>
-                  Open a client to review its current objectives, activity,
-                  meetings and work.
-                </small>
-              </aside>
+              <PortfolioAttention clients={clients.data} />
             </div>
             <GlobalQuickLog clients={clients.data} />
           </>
