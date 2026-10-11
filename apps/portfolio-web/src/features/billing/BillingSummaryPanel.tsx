@@ -20,7 +20,13 @@ const statuses = {
   comped: "Complimentary",
 } as const;
 
-export function BillingSummaryPanel({ enabled = true }: { enabled?: boolean }) {
+export function BillingSummaryPanel({
+  enabled = true,
+  existingApp,
+}: {
+  enabled?: boolean;
+  existingApp?: string;
+}) {
   const [expanded, setExpanded] = useState(false);
   const { query, visible, ready } = useBillingSummary(enabled, expanded);
   if (!visible) return null;
@@ -129,6 +135,14 @@ export function BillingSummaryPanel({ enabled = true }: { enabled?: boolean }) {
             today.
           </p>
         </>
+      )}
+      {expanded && existingApp && (
+        <a
+          className={styles.manageLink}
+          href={`${existingApp}/settings/billing`}
+        >
+          Manage billing
+        </a>
       )}
     </details>
   );

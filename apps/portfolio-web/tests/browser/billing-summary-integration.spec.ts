@@ -48,6 +48,9 @@ test("actual Add profile keeps creation reachable around an optional billing dis
   await panel.locator("summary").focus();
   await page.keyboard.press("Enter");
   await expect(panel.getByText("$217.00", { exact: false })).toBeVisible();
+  await expect(
+    panel.getByRole("link", { name: "Manage billing" }),
+  ).toHaveAttribute("href", "http://127.0.0.1:5191/existing/settings/billing");
   expect(reads).toBe(1);
   await dialog.screenshot({
     path: info.outputPath("billing-chooser-desktop.png"),
@@ -96,6 +99,9 @@ test("actual chooser omits financial summary without billing permission while re
   ).toBeEnabled();
   await expect(
     dialog.getByRole("group", { name: "Current plan and usage" }),
+  ).toHaveCount(0);
+  await expect(
+    dialog.getByRole("link", { name: "Manage billing" }),
   ).toHaveCount(0);
   await dialog.getByRole("button", { name: /Manual entry/ }).click();
   await expect(

@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { Destinations } from "@/shared/config/config";
 import { ClientIntakeDialog } from "@/features/client-intake/public";
 import { RegistrantImportDialog } from "@/features/intake/registrant/public";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
@@ -17,6 +18,7 @@ import styles from "./portfolio.module.css";
 interface CreateProfileDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  destinations: Destinations;
 }
 export function CreateProfileDialog(props: CreateProfileDialogProps) {
   return props.open ? <ProfileChoiceSession {...props} /> : null;
@@ -24,6 +26,7 @@ export function CreateProfileDialog(props: CreateProfileDialogProps) {
 function ProfileChoiceSession({
   open,
   onOpenChange,
+  destinations,
 }: CreateProfileDialogProps) {
   const router = useRouter();
   const identity = useIdentity();
@@ -92,7 +95,10 @@ function ProfileChoiceSession({
       <div className={styles.choiceGroup}>
         <p className="eyebrow">New client</p>
         {permitted && <ProfileCapacityStatus capacity={capacity} />}
-        <BillingSummaryPanel enabled={open} />
+        <BillingSummaryPanel
+          enabled={open}
+          existingApp={destinations.existingApp}
+        />
         <button
           className={styles.profileChoice}
           disabled={!permitted || !capacity.allowed}

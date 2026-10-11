@@ -244,7 +244,11 @@ export function PortfolioIndex({
             <GlobalQuickLog clients={clients.data} />
           </>
         )}
-        <CreateProfileDialog open={creating} onOpenChange={setCreating} />
+        <CreateProfileDialog
+          open={creating}
+          onOpenChange={setCreating}
+          destinations={destinations}
+        />
         <GlobalObjectiveClientPicker
           open={params.get("new") === "objective"}
           onOpenChange={(open) => {
