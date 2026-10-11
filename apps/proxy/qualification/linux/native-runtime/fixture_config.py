@@ -37,6 +37,7 @@ class NativeFixture:
     native_url_sha256: str
     work_seconds: int
     cleanup_seconds: int
+    proxy_image: str = PROXY_IMAGE
 
     def __post_init__(self):
         try:
@@ -46,6 +47,7 @@ class NativeFixture:
         require(type(self.native_url_sha256) is str and re.fullmatch("[0-9a-f]{64}", self.native_url_sha256) is not None, "URL_PIN")
         for value, cap in ((self.work_seconds, MAX_WORK_SECONDS), (self.cleanup_seconds, MAX_CLEANUP_SECONDS)):
             require(type(value) is int and 0 < value <= cap, "FINITE_BUDGET")
+        require(type(self.proxy_image) is str and re.fullmatch("sha256:[0-9a-f]{64}", self.proxy_image) is not None, "IMAGE_DIGEST")
 
     @property
     def root(self):
@@ -69,12 +71,12 @@ def parse_config(raw):
         v = json.loads(raw.decode("utf-8"), object_pairs_hook=pairs,
                        parse_constant=lambda _: require(False, "NONFINITE_CONFIG"))
         require(type(v) is dict and set(v) == {"schema", "runId", "postgresImage", "proxyImage", "nativeUrlSha256", "workSeconds", "cleanupSeconds"}, "CONFIG_SHAPE")
-        require(v["schema"] == "meri.native-auth.fixture/1" and v["postgresImage"] == PG_IMAGE and v["proxyImage"] == PROXY_IMAGE, "FIXED_ARTIFACTS")
+        require(v["schema"] == "meri.native-auth.fixture/1" and v["postgresImage"] == PG_IMAGE, "FIXED_ARTIFACTS")
         require(type(v["runId"]) is str and str(uuid.UUID(v["runId"])) == v["runId"], "RUN_ID")
         require(type(v["nativeUrlSha256"]) is str and re.fullmatch("[0-9a-f]{64}", v["nativeUrlSha256"]) is not None, "URL_PIN")
         for field, cap in (("workSeconds", MAX_WORK_SECONDS), ("cleanupSeconds", MAX_CLEANUP_SECONDS)):
             require(type(v[field]) is int and 0 < v[field] <= cap, "FINITE_BUDGET")
-        return NativeFixture(v["runId"], v["nativeUrlSha256"], v["workSeconds"], v["cleanupSeconds"])
+        return NativeFixture(v["runId"], v["nativeUrlSha256"], v["workSeconds"], v["cleanupSeconds"], v["proxyImage"])
     except (UnicodeError, json.JSONDecodeError, TypeError, AttributeError, ValueError) as error:
         if isinstance(error, Refused):
             raise
@@ -131,3 +133,70 @@ def proxy_config():
                 "disable_model_info_refresh": True, "allow_public_health_readiness_details": False},
             "litellm_settings": {"callbacks": [], "turn_off_message_logging": True,
                 "redact_messages_in_exceptions": True, "redact_user_api_key_info": True}}
+
+
+SOURCE_NAMES = ("fixture_config.py", "native_auth_probe.py")
+MOUNT_NAMES = ("database-url", "master-key", "salt-key", "ca.pem", "config.yaml")
+PREREQUISITES = ("positiveEncryptedPrismaQuery", "wrongCaDenied", "wrongSanDenied",
+                "plaintextDenied", "wrongPasswordScramDenied", "nonownerRole",
+                "nativeSchemaInitialized", "ownedCleanupPlan")
+ENGINE = "ac9d7041ed77bcc8a8dbd2ab6616b39013829574"
+TLS_DISCOVERY = "4fa4672b51d80d83caa27e3dddfb26e40fd0bad1"
+
+
+def sha256(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _hash_map(value, names, reason):
+    require(type(value) is dict and set(value) == set(names), reason)
+    require(all(type(v) is str and re.fullmatch("[0-9a-f]{64}", v) for v in value.values()), reason)
+
+
+def validate_activation(config_raw, raw, expected_sha, *, sources, now_ms, uid, platform):
+    """Validate reviewed DATA only. The external SHA is supplied by trusted owner.
+
+    Evidence references do not manufacture successful TLS/bootstrap observations.
+    The root supervisor must bind the actually launched image to this descriptor.
+    """
+    config = parse_config(config_raw)
+    require(type(raw) is bytes and 0 < len(raw) <= 16384, "ACTIVATION_BOUND")
+    require(type(expected_sha) is str and re.fullmatch("[0-9a-f]{64}", expected_sha) is not None and sha256(raw) == expected_sha, "ACTIVATION_SHA")
+    try:
+        v = json.loads(raw.decode("utf-8"), object_pairs_hook=pairs,
+                       parse_constant=lambda _: require(False, "NONFINITE_ACTIVATION"))
+    except (UnicodeError, json.JSONDecodeError):
+        raise Refused("ACTIVATION_JSON") from None
+    require(type(v) is dict and set(v) == {"schema", "decision", "runId", "configSha256", "imageSha256", "sourceSha256", "linuxUid", "notBeforeUnixMs", "startDeadlineUnixMs", "workDeadlineUnixMs", "cleanupDeadlineUnixMs", "mountedSha256", "tls", "prerequisiteEvidenceSha256"}, "ACTIVATION_SHAPE")
+    require(v["schema"] == "meri.native-auth.activation/1" and v["decision"] == "ADMIT_ONE_SYNTHETIC_NATIVE_AUTH_PROBE", "ACTIVATION_DECISION")
+    require(v["runId"] == config.run_id and v["configSha256"] == sha256(config_raw) and v["imageSha256"] == config.proxy_image, "ACTIVATION_BINDING")
+    _hash_map(v["sourceSha256"], SOURCE_NAMES, "SOURCE_PINS")
+    require(type(sources) is dict and sources == v["sourceSha256"], "SOURCE_DRIFT")
+    require(type(v["linuxUid"]) is int and v["linuxUid"] == 10001 and type(uid) is int and uid == 10001 and platform == "linux", "LINUX_UID")
+    clocks = [v[name] for name in ("notBeforeUnixMs", "startDeadlineUnixMs", "workDeadlineUnixMs", "cleanupDeadlineUnixMs")]
+    require(all(type(n) is int and 0 < n < 2**53 for n in clocks) and type(now_ms) is int, "ACTIVATION_CLOCK")
+    start, latest, work, total = clocks
+    require(start <= now_ms <= latest <= start + 60000 and latest < work and work == start + config.work_seconds * 1000 and total == work + config.cleanup_seconds * 1000, "ORIGINAL_DEADLINES")
+    _hash_map(v["mountedSha256"], MOUNT_NAMES, "MOUNT_PINS")
+    require(v["mountedSha256"]["database-url"] == config.native_url_sha256, "URL_PIN")
+    require(v["tls"] == {"engineCommit": ENGINE, "discoveryCommit": TLS_DISCOVERY,
+        "sslmode": "require", "sslaccept": "strict", "sslcert": config.path("ca.pem").as_posix(),
+        "host": HOST, "serverMinimumProtocol": "TLSv1.2"}, "PINNED_NATIVE_TLS")
+    _hash_map(v["prerequisiteEvidenceSha256"], PREREQUISITES, "PREREQUISITE_EVIDENCE")
+    return config, v
+
+
+def validate_mounts(config, activation, mounted):
+    require(type(mounted) is dict and set(mounted) == set(MOUNT_NAMES) and all(type(v) is bytes for v in mounted.values()), "MOUNT_SHAPE")
+    require({k: sha256(v) for k, v in mounted.items()} == activation["mountedSha256"], "MOUNT_DRIFT")
+    value = bind_native_url(mounted["database-url"], config)
+    require(parse_qsl(urlsplit(value).query, keep_blank_values=True, strict_parsing=True) == [
+        ("sslmode", "require"), ("sslaccept", "strict"), ("sslcert", config.path("ca.pem").as_posix())], "NATIVE_TLS_URL")
+    for name in ("master-key", "salt-key"):
+        raw = mounted[name]
+        require(32 <= len(raw) <= 256 and all(33 <= b <= 126 for b in raw), "MOUNTED_KEYS_INVALID")
+    require(mounted["master-key"].startswith(b"sk-") and mounted["master-key"] != mounted["salt-key"], "MOUNTED_KEYS_INVALID")
+    require(mounted["ca.pem"].startswith(b"-----BEGIN CERTIFICATE-----\n") and mounted["ca.pem"].rstrip().endswith(b"-----END CERTIFICATE-----"), "CA_PEM_SHAPE")
+    expected = (json.dumps(proxy_config(), sort_keys=True, separators=(",", ":")) + "\n").encode()
+    require(mounted["config.yaml"] == expected, "FIXED_UPSTREAM_CONFIG")
+    return value, mounted["master-key"].decode("ascii"), mounted["salt-key"].decode("ascii")
