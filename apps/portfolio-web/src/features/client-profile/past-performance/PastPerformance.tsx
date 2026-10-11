@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useIdentity } from "@/shared/auth/identity";
+import { currentClientWriter } from "../quick-log/public";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useSubmissions } from "./queries";
 import { RemoveSubmission } from "./RemoveSubmission";
@@ -44,6 +46,8 @@ function History({
   clientName: string;
 }) {
   const history = useSubmissions(clientId);
+  const identity = useIdentity();
+  const actor = currentClientWriter(useQueryClient());
   const [selected, setSelected] = useState<SavedSubmission | null>(null);
   const [receipt, setReceipt] = useState("");
   return (
@@ -52,7 +56,7 @@ function History({
         <h2>Past performance</h2>
         <button
           className="button ghost"
-          disabled={history.isFetching}
+          disabled={history.isFetching || !actor}
           onClick={() => void history.refetch()}
         >
           Refresh history
@@ -62,11 +66,17 @@ function History({
         Saved capability submissions and their recorded outcomes.
       </p>
       <QueryState
-        pending={history.isPending}
-        error={history.error}
+        pending={Boolean(actor) && history.isPending}
+        error={identity.error ?? history.error}
         retry={() => void history.refetch()}
       />
-      {!history.error && history.data && (
+      {!actor && (
+        <p>
+          A current authorized session is required to inspect saved submission
+          history.
+        </p>
+      )}
+      {actor && !history.error && history.data && (
         <>
           <p className="muted">
             {history.data.length} saved submissions shown

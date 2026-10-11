@@ -1,6 +1,6 @@
 .toast {
   position: fixed;
-  top: 84px;
+  top: 144px;
   right: max(24px, calc((100vw - 1000px) / 2));
   z-index: 60;
   display: flex;
