@@ -1,0 +1,9 @@
+# Proxy runtime-four provenance outline
+
+Pinned base: `eef3d6f771b88d8e09291050bf9122498d19c5db`. Dedicated worktree/branch: `C:/dev/main/meri-greenfield-worktrees/g1-proxy-runtime4-provenance`, `task/g1-proxy-runtime4-provenance`. Read AGENTS and implementation standards before this outline. This bounded DATA discovery owns only this task, the corresponding new report and `.task-inputs/proxy-runtime4-provenance-1/`.
+
+Trace the exact runtime bodies of `/opt/meri-proxy/schema.prisma`, `/opt/prisma/binaries/node_modules/prisma/build/index.js`, `/opt/prisma/binaries/node_modules/@prisma/engines/schema-engine-debian-openssl-3.0.x` and `/opt/meri-proxy-venv/lib/python3.13/site-packages/litellm/proxy/db/create_views.py` to the canonical Dockerfile, prisma-build.py, frozen assembly/context and accepted TLS7 receipts. Canonical build/assembly owners remain read-only. Expected artifact bytes must be distinguished from actual files measured inside an image.
+
+Inspect fixed archive metadata with bounded streaming reads, select only exact regular members, retain raw selected bytes and hashes, and establish the copy/generation transformations. Do not install/import/execute Node, Prisma, LiteLLM or native/image code, perform a build, access cloud/network, create admission/UUID/T0/consume records, or alter any old pack. If one final body cannot be established, identify that exact gap and the smallest measurement-only builder prerequisite. No fallback hashes or authority scheme changes.
+
+Verification is source/DATA only: fixed current/raw Git identity, retained metadata/artifact hash agreement, duplicate/path/type/size checks for selected archives, and exact selected-body hashes. Root owns actual runtime/context/policy dispatch, independent review and acceptance. Deadline: 20 minutes from allocation; concrete incomplete findings are preferable to scope expansion. No product/runtime/security/G1 acceptance follows.
