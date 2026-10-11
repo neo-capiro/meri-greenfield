@@ -1,0 +1,1 @@
+export { ProspectBrief } from "./ProspectBrief";
