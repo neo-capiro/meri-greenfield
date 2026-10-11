@@ -209,6 +209,10 @@ def start_input(request, version):
 
 
 def validate_build(build, request, start):
+    retry = build.get('autoRetryConfig')
+    # Initial builds can include the observed counter; neither shape permits retries.
+    need(type(retry) is dict and set(retry) in ({'autoRetryLimit'}, {'autoRetryLimit', 'autoRetryNumber'})
+         and all(type(value) is int and value == 0 for value in retry.values()), 'exact zero build retries')
     identifier = build.get('id', '')
     need(re.fullmatch(re.escape(PROJECT)+':[a-f0-9-]{36}', identifier)
          and str(uuid.UUID(identifier.split(':')[1])) == identifier.split(':')[1]
@@ -219,7 +223,7 @@ def validate_build(build, request, start):
     actual_env = loads(encoded(build.get('environment', {})))
     actual_env['environmentVariables'] = authority.ordered(actual_env.get('environmentVariables'), 'name', {'name', 'value', 'type'})
     need(build.get('sourceVersion') == start['sourceVersion'] and build.get('timeoutInMinutes') == 30
-         and build.get('queuedTimeoutInMinutes') == 5 and build.get('autoRetryConfig') == {'autoRetryLimit': 0}
+         and build.get('queuedTimeoutInMinutes') == 5
          and build.get('source') == dict(project['source'], location=start['sourceLocationOverride'], buildspec=start['buildspecOverride'])
          and actual_env == env and build.get('serviceRole') == ROLE and build.get('encryptionKey') == KMS
          and build.get('cache') == project['cache'] and build.get('artifacts') == {'location': ''}

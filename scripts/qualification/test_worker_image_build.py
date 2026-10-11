@@ -352,4 +352,45 @@ class Controls(unittest.TestCase):
                 self.assertFalse(result['captureComplete'])
 
 
+    def test_initial_full_ack_with_zero_retry_counter(self):
+        req, start, ack = full_ack()
+        build.validate_build(ack, req, start)
+        ack['autoRetryConfig'] = {'autoRetryLimit': 0, 'autoRetryNumber': 0}
+        build.validate_build(ack, req, start)
+        self.assertEqual(start['autoRetryLimitOverride'], 0)
+
+    def test_full_ack_retry_fields_are_closed_integer_zero(self):
+        req, start, ack = full_ack()
+        invalid = [None, [], {}, {'autoRetryNumber': 0}, {'autoRetryLimit': 0, 'nextAutoRetry': None},
+                   {'autoRetryLimit': 0, 'autoRetryNumber': 0, 'unknown': 0}]
+        for field in ('autoRetryLimit', 'autoRetryNumber'):
+            for value in (1, -1, False, True, 0.0, '0', None, [], {}):
+                invalid.append({'autoRetryLimit': 0, 'autoRetryNumber': 0} | {field: value})
+        for retry in invalid:
+            with self.subTest(retry=retry), self.assertRaises(ValueError):
+                build.validate_build(dict(ack, autoRetryConfig=retry), req, start)
+
+    def test_full_ack_zero_counter_does_not_waive_other_bindings(self):
+        req, start, ack = full_ack()
+        ack['autoRetryConfig'] = {'autoRetryLimit': 0, 'autoRetryNumber': 0}
+        for field, value in (('sourceVersion', 'foreign'), ('serviceRole', 'foreign'),
+                             ('encryptionKey', 'foreign'), ('queuedTimeoutInMinutes', 6)):
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                build.validate_build(dict(ack, **{field: value}), req, start)
+
+
+def full_ack():
+    """Independent complete synthetic ACK, using the existing literal project fixture."""
+    req = request(); start = build.start_input(req, 'immutable-version'); p = project()
+    env = copy.deepcopy(p['environment'])
+    env['environmentVariables'] = sorted(start['environmentVariablesOverride'], key=lambda row: row['name'])
+    ack = {'id': build.PROJECT+':'+TOKEN, 'arn': f'arn:aws:codebuild:{build.REGION}:{build.ACCOUNT}:build/'+build.PROJECT+':'+TOKEN,
+           'projectName': build.PROJECT, 'sourceVersion': 'immutable-version', 'timeoutInMinutes': 30,
+           'queuedTimeoutInMinutes': 5, 'autoRetryConfig': {'autoRetryLimit': 0},
+           'source': dict(p['source'], location=start['sourceLocationOverride'], buildspec=start['buildspecOverride']),
+           'environment': env, 'serviceRole': build.ROLE, 'encryptionKey': build.KMS, 'cache': p['cache'],
+           'artifacts': {'location': ''}, 'logs': {'cloudWatchLogs': p['logsConfig']['cloudWatchLogs']}}
+    return req, start, ack
+
+
 if __name__ == '__main__': unittest.main()
