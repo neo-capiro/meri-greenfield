@@ -124,6 +124,15 @@ describe("retained firm LDA intake contract", () => {
     ).rejects.toMatchObject({ uncertain: false });
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
+  it("classifies failed preflight reads as unambiguously not dispatched", async () => {
+    const fetcher = vi
+      .fn()
+      .mockRejectedValue(new TypeError("Read disconnected"));
+    await expect(
+      importClients(createApiClient(fetcher), 12, [8]),
+    ).rejects.toMatchObject({ uncertain: false, message: "Read disconnected" });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it("sends bounded exact IDs and returns the verified receipt", async () => {
     const fetcher = vi
       .fn()

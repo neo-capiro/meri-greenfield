@@ -7,7 +7,7 @@
 - Own only the new `features/intake/registrant` feature, focused tests and this report. Existing intake composition is `features/client-intake` and remains root owned.
 - Implement CORE-019–023: search → explicitly link firm → review unique client IDs → explicit bounded import → exact partial receipt. CORE-018 has no baseline Figma reference and is not resurrected.
 - Design context and screenshots inspected: current Prototype 3.1 search `411:44770`, dialog `411:44870`; review `411:44899`, dialog `411:44999`. Reuse shared Dialog, tokens, HTTP client, identity and React Query. No Figma edits.
-- Public interface for root composition: `RegistrantImportDialog({open, onOpenChange, onImported?, onCloseAutoFocus?})`. Completion callback receives only a validated documented receipt. Results stay open.
+- Public interface for root composition: `RegistrantImportDialog({open, onOpenChange, onImported?, onBack?, onCloseAutoFocus?})` from `features/intake/registrant/public`. Completion callback receives only a validated documented receipt. Results stay open. Optional Back returns to the root-owned method chooser; absent callback closes. Opener focus is restored by default, with caller override honored.
 
 ## Verified contracts
 
@@ -29,8 +29,20 @@ Reads require `standard_user`; writes `user_admin` (role hierarchy includes `cap
 - Re-read anchor and candidates immediately before import and refuse observed drift. The API has no atomic expected-registrant precondition; concurrent anchor changes after the read remain a backend contract dependency. No ignored speculative fields are sent.
 - No operation ID/receipt lookup exists. Unknown POST completion freezes the original IDs; explicit GET readback shows observed onboarded state, not a fabricated transaction receipt or proof that an unobserved import cannot finish. No automatic import retry/batching.
 - Per-ID locks do not establish a tenant-wide slot fence for concurrent imports of different IDs; billing owner must review shared capacity behavior. This feature does not alter billing.
-- Root owns entry-point composition, shared fixtures/proxy/config and live GET checks. No hosted preview or live import acceptance is claimed.
+- Root owns entry-point composition, shared fixtures/proxy/config and live GET checks. Current proxy does not allow `core/firm`; root is adding the exact five reviewed method/path contracts above, preserving origin/session/traversal checks. Isolated intercepted browser tests do not validate that proxy. No hosted preview or live import acceptance is claimed.
+- Root can mount the NEW test-only `RegistrantIntakeHarness` at `/__test/registrant-intake` in its shared browser main. The focused spec uses this explicit callback/identity-refetch probe. The helper is not imported by production routes; existing shared fixture files are unchanged here.
+
+## Feature structure
+
+`contracts` owns canonical response types, `domain` owns unique-ID grouping/selection/receipt invariants, and `api` owns Core routing and the boundary between preflight read rejection and uncertain dispatched writes. `queries` retains cache/mutation ownership and checks the current identity query before writes. `useFirmLink` owns link confirmation/readback; `useImportAttempt` owns one attempt and read-only recovery. Search/review/receipt/recovery/firm confirmation render separately. The dialog composes identity, firm scope, selection and these feature interfaces; it performs no direct requests.
+
+The service's reported alias figures remain separate. Compact USD display follows current Figma, with full reported value in the title. Added firm-wide confirmation, scope notice, and explicit partial/uncertain outcomes are deliberate contract-driven visual states. No displayed client data or amounts are hardcoded in production source. Shared Dialog, approved gradient, Geist, tokens and responsive styles are reused. Light desktop and mobile dark were visually reviewed; no baselines were regenerated.
 
 ## Validation
 
-Pending source, focused tests and isolated synthetic browser checks. Explicit Node 24.19.0; borrowed dependencies read-only; no install/full build/deployment.
+- Node **24.19.0** explicitly: bundled `dependencies/node/bin/node.exe`. Existing installed dependencies borrowed read-only; no install/full build/deployment or backend/provider calls.
+- **20/20** focused unit checks: exact Core routes/bodies, search constraints, link/candidate scope receipts, alias grouping, bounded IDs, complete import ID partition/count, partial skips, observed anchor drift, preflight failure classified as not dispatched, dispatched transport/5xx/foreign receipt ambiguity, slot refusal and truthful readback.
+- **15/15** isolated component browser checks, zero retries: search/link/review/partial receipt; validation/empty/error/query retention; read-only standard-user role; stale identity error fail-closed; alias/imported selection; anchor drift; pending duplicate/close refusal; lost receipt readback; slot error/input retention; empty feed; lost firm-link receipt; foreign receipt; 100-ID cap/filter retention; desktop focus/font/layout; mobile dark overflow/actions.
+- Full application TypeScript, scoped ESLint, architecture **248 modules**, touched-file Prettier and diff checks pass. The dependency-less isolated checkout emits React autodetection's existing warning; the actual browser uses the installed React19.3 runtime and Geist font-load assertion.
+- First evidence retained: unit **18/19** and type error caused by `it.each` spreading numeric arrays rather than passing an array argument; corrected to named case objects with unchanged boundary assertions. Browser **10/12** initially: pending request-count assertion ran before read preflight reached POST (now waits for dispatch), and missing default opener focus restoration was fixed in the feature. No test/visual baseline or shared behavior was weakened.
+- Owned preview: **http://127.0.0.1:5199/__test/registrant-intake**, standalone Vite fixture with intercepted synthetic HTTP. Four screenshots cover search, partial receipt, desktop review and mobile dark review. Root integration, authenticated live reads/writes and hosted preview remain **NOT RUN** in this slice.

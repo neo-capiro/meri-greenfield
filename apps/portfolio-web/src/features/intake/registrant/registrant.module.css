@@ -8,6 +8,18 @@
 .dialog > header {
   flex-shrink: 0;
 }
+.back {
+  order: -1;
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-bottom: -8px;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
 .dialog h2 {
   font-size: 20px;
   line-height: 1.3;

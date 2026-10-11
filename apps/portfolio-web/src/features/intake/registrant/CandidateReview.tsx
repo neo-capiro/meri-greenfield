@@ -8,6 +8,12 @@ const dollars = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 0,
 });
+const compactDollars = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
 export function CandidateReview({
   data,
   selected,
@@ -84,10 +90,12 @@ export function CandidateReview({
                         {row.name}
                         {index > 0 ? " (filing alias)" : ""}
                       </strong>
-                      <small>
+                      <small
+                        title={`Disclosed total: ${dollars.format(row.totalSpend)}`}
+                      >
                         {row.filings} filings · latest{" "}
                         {row.latestFilingYear ?? "unknown"} ·{" "}
-                        {dollars.format(row.totalSpend)} disclosed total
+                        {compactDollars.format(row.totalSpend)} disclosed total
                       </small>
                     </span>
                   ))}

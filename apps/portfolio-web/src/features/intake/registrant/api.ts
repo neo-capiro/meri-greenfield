@@ -68,15 +68,21 @@ export async function importClients(
   ids: number[],
 ) {
   const selected = [...ids];
-  validateSelection(selected);
-  const anchor = await fetchRegistrant(api);
-  if (anchor.ldaRegistrantId !== registrantId)
+  try {
+    validateSelection(selected);
+    const anchor = await fetchRegistrant(api);
+    if (anchor.ldaRegistrantId !== registrantId)
+      throw new Error(
+        "The linked firm changed. Refresh and review before importing.",
+      );
+    validateSelection(selected, await fetchCandidates(api, registrantId));
+  } catch (error) {
+    // No write has been dispatched during this preflight, including 5xx reads.
     throw new ImportAttemptError(
-      "The linked firm changed. Refresh and review before importing.",
+      error instanceof Error ? error.message : "Pre-import review failed.",
       false,
     );
-  const current = await fetchCandidates(api, registrantId);
-  validateSelection(selected, current);
+  }
   try {
     return await api.request(
       "core",
