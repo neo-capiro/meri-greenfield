@@ -3,7 +3,8 @@
 # container behavior and image scan before runtime admission.
 FROM node:24.21.0-alpine3.23@sha256:9ec4a2e289874ed0d722e1772ec2de45d2801541db8612f3638b26f128c69ac2 AS base
 RUN apk add --no-cache --upgrade zlib=1.3.2-r1 ca-certificates \
-    && test "$(apk info -v zlib)" = zlib-1.3.2-r1
+    && apk info -v zlib \
+    && apk info -v zlib | grep -Eq '^zlib-1[.]3[.]2-r1([[:space:]]|$)'
 WORKDIR /app
 
 FROM base AS build
