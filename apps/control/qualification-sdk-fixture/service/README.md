@@ -59,6 +59,14 @@ checksum, encryption key and version before they can become a receipt readback.
 The default AWS client has one attempt. The injected client is for isolated
 tests; production composition must use task-role credentials and narrow IAM.
 
+The adapter also has a read-only `readEvidence({ producer, kind, reference,
+signal })` operation for `init`, `interrupt`, `exit` and `drain`. It requires
+the producer's tenant/policy scope, exact object version, hash and size, and
+reads only the corresponding fixed run prefix with a 64 KiB ceiling. It does
+not expose evidence upload. Reading these bytes does not validate their native
+meaning or prove quiescence; the mandatory trusted inspector and its evidence
+producer remain to be implemented and reviewed before commit admission.
+
 `createS3CheckpointStore` assembles the partial receipt using that I/O. Its
 mandatory `evidenceInspector.verify` must independently read and qualify the
 four native evidence references and quiescence; a worker's reference or boolean

@@ -6,7 +6,10 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const SHA = /^[0-9a-f]{64}$/;
-const KINDS = new Set(['bundle', 'sentinel', 'receipt']);
+const STORED_KINDS = new Set(['bundle', 'sentinel', 'receipt']);
+const EVIDENCE_KINDS = new Set(['init', 'interrupt', 'exit', 'drain']);
+const EVIDENCE_PATHS = new Set([...EVIDENCE_KINDS].map(kind => `evidence/${kind}`));
+const evidenceLimit = 64 * 1024;
 const fail = () => { throw new Error('FIXTURE_OBJECT_IO_REFUSED'); };
 const sha = bytes => createHash('sha256').update(bytes).digest();
 const checksum = bytes => sha(bytes).toString('base64');
@@ -14,8 +17,8 @@ const hex = bytes => sha(bytes).toString('hex');
 const version = value => typeof value === 'string' && value.length > 0 &&
   value.length <= 256 && value !== 'null';
 
-function identity(runUuid, kind, objectId) {
-  if (!UUID.test(runUuid) || !KINDS.has(kind) || !UUID.test(objectId)) fail();
+function identity(runUuid, kind, objectId, allowedKinds = STORED_KINDS) {
+  if (!UUID.test(runUuid) || !allowedKinds.has(kind) || !UUID.test(objectId)) fail();
   return `qualification-sdk/fixture/runs/${runUuid}/${kind}/${objectId}`;
 }
 
@@ -57,9 +60,9 @@ export function createS3FixtureObjects({ bucket, kmsKeyArn, region = 'us-east-1'
       sha256: hex(bytes), bytes: bytes.length });
   }
 
-  async function read({ runUuid, kind, objectId, versionId, expectedSha256,
-    expectedBytes, maxBytes, signal }) {
-    const key = identity(runUuid, kind, objectId);
+  async function readObject({ runUuid, kind, objectId, versionId, expectedSha256,
+    expectedBytes, maxBytes, signal }, allowedKinds) {
+    const key = identity(runUuid, kind, objectId, allowedKinds);
     if ((versionId !== undefined && !version(versionId)) || !SHA.test(expectedSha256) ||
         (expectedBytes !== undefined && (!Number.isSafeInteger(expectedBytes) || expectedBytes < 1)) ||
         !Number.isSafeInteger(maxBytes) || maxBytes < 1) fail();
@@ -77,5 +80,28 @@ export function createS3FixtureObjects({ bucket, kmsKeyArn, region = 'us-east-1'
     return Object.freeze({ bytes, versionId: result.VersionId });
   }
 
-  return Object.freeze({ put, read, close: () => { if (owned) s3.destroy(); } });
+  function read(input) { return readObject(input, STORED_KINDS); }
+
+  function readEvidence({ producer, kind, reference, signal } = {}) {
+    if (!producer || !UUID.test(producer.runUuid) ||
+        !producer.identity || !producer.identity.canonical ||
+        !EVIDENCE_KINDS.has(kind) || !reference ||
+        !Array.isArray(reference.scopes) || reference.scopes.length !== 1) fail();
+    const scope = reference.scopes[0], producerIdentity = producer.identity;
+    if (!scope || scope.kind !== 'tenant' ||
+        scope.tenantId !== producerIdentity.canonical.tenantId ||
+        scope.resourceId !== scope.tenantId ||
+        scope.policyRevision !== producerIdentity.policyRevision ||
+        !UUID.test(reference.objectId) || !version(reference.versionId) ||
+        !SHA.test(reference.sha256) ||
+        !Number.isSafeInteger(reference.bytes) ||
+        reference.bytes < 1 || reference.bytes > evidenceLimit) fail();
+    return readObject({ runUuid: producer.runUuid, kind: `evidence/${kind}`,
+      objectId: reference.objectId, versionId: reference.versionId,
+      expectedSha256: reference.sha256, expectedBytes: reference.bytes,
+      maxBytes: evidenceLimit, signal }, EVIDENCE_PATHS);
+  }
+
+  return Object.freeze({ put, read, readEvidence,
+    close: () => { if (owned) s3.destroy(); } });
 }

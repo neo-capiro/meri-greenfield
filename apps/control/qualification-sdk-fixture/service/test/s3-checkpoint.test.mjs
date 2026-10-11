@@ -93,3 +93,47 @@ test('S3 adapter refuses a missing version and a stream beyond the read ceiling'
     versionId: 'immutable-test', expectedSha256: createHash('sha256').update(raw).digest('hex'),
     maxBytes: 64 }), /FIXTURE_OBJECT_IO_REFUSED/);
 });
+
+test('native evidence reads only the producer-scoped immutable version and cannot be written through this adapter', async () => {
+  const f = liveFixture(), s3 = fakeS3();
+  const objects = createS3FixtureObjects({ bucket, kmsKeyArn, client: s3.client });
+  const raw = Buffer.from('{"kind":"init","observation":"synthetic"}');
+  const reference = { ...f.evidence.init, bytes: raw.length,
+    sha256: createHash('sha256').update(raw).digest('hex') };
+  const key = `qualification-sdk/fixture/runs/${f.producer.runUuid}/evidence/init/${reference.objectId}`;
+  s3.objects.set(key, { bytes: raw, versionId: reference.versionId });
+  const observed = await objects.readEvidence({ producer: f.producer, kind: 'init', reference });
+  assert.deepEqual(observed.bytes, raw);
+  assert.equal(observed.versionId, reference.versionId);
+  assert.equal(s3.calls.length, 1);
+  assert.equal(s3.calls[0].input.Key, key);
+  assert.equal(s3.calls[0].input.VersionId, reference.versionId);
+
+  const foreign = { ...reference, scopes: [{ ...reference.scopes[0], tenantId: 'foreign' }] };
+  assert.throws(() => objects.readEvidence({ producer: f.producer, kind: 'init', reference: foreign }),
+    /FIXTURE_OBJECT_IO_REFUSED/);
+  assert.throws(() => objects.readEvidence({ producer: f.producer, kind: 'unknown', reference }),
+    /FIXTURE_OBJECT_IO_REFUSED/);
+  assert.throws(() => objects.readEvidence({ producer: f.producer, kind: 'init',
+    reference: { ...reference, bytes: 65537 } }), /FIXTURE_OBJECT_IO_REFUSED/);
+  assert.throws(() => objects.readEvidence({ producer: f.producer, kind: 'init',
+    reference: { ...reference, versionId: undefined } }), /FIXTURE_OBJECT_IO_REFUSED/);
+  assert.equal(s3.calls.length, 1);
+  await assert.rejects(objects.put({ runUuid: f.producer.runUuid, kind: 'evidence/init',
+    objectId: reference.objectId, bytes: raw, maxBytes: 65536 }), /FIXTURE_OBJECT_IO_REFUSED/);
+  assert.equal(s3.calls.length, 1);
+
+  const wrongVersion = createS3FixtureObjects({ bucket, kmsKeyArn, client: {
+    send: async command => {
+      assert(command instanceof GetObjectCommand);
+      return { VersionId: 'other-version', ContentLength: raw.length,
+        ChecksumSHA256: checksum(raw), ServerSideEncryption: 'aws:kms',
+        SSEKMSKeyId: kmsKeyArn, Body: (async function* () { yield raw; })() };
+    },
+  } });
+  await assert.rejects(wrongVersion.readEvidence({ producer: f.producer, kind: 'init', reference }),
+    /FIXTURE_OBJECT_IO_REFUSED/);
+  s3.alter();
+  await assert.rejects(objects.readEvidence({ producer: f.producer, kind: 'init', reference }),
+    /FIXTURE_OBJECT_IO_REFUSED/);
+});
