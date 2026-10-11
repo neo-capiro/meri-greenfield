@@ -47,12 +47,19 @@ def activation_status(config):
 
 class _DiscardUpstreamOutput:
     """Never retain upstream text: exceptions/logs may contain credentials."""
-    def __init__(self):
-        self.count = 0
+    def __init__(self, descriptor, counter):
+        require(type(descriptor) is int and descriptor in (1, 2), "FIXED_OUTPUT_DESCRIPTOR")
+        self._descriptor = descriptor
+        self._counter = counter
+
+    def fileno(self):
+        # Prisma passes these streams to Popen; the outer context has already
+        # redirected the fixed descriptors to devnull before any native import.
+        return self._descriptor
 
     def write(self, text):
-        self.count += len(text)
-        require(self.count <= 2 * 1024 * 1024, "UPSTREAM_LOG_BOUND")
+        self._counter[0] += len(text)
+        require(self._counter[0] <= 2 * 1024 * 1024, "UPSTREAM_LOG_BOUND")
         return len(text)
 
     def flush(self):
@@ -75,8 +82,8 @@ def _discard_native_output():
         null = os.open(os.devnull, os.O_WRONLY)
         os.dup2(null, 1)
         os.dup2(null, 2)
-        sink = _DiscardUpstreamOutput()
-        with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+        counter = [0]
+        with contextlib.redirect_stdout(_DiscardUpstreamOutput(1, counter)), contextlib.redirect_stderr(_DiscardUpstreamOutput(2, counter)):
             yield
     finally:
         try:
@@ -193,10 +200,10 @@ async def _genuine_native_probe(prepared):
         "LITELLM_SALT_KEY": salt, "CONFIG_FILE_PATH": str(config.path("config.yaml")),
         "LITELLM_LOCAL_MODEL_COST_MAP": "True"}
     old = {name: os.environ.get(name) for name in environment}
-    sink = _DiscardUpstreamOutput()
+    counter = [0]
     try:
         os.environ.update(environment)
-        with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+        with contextlib.redirect_stdout(_DiscardUpstreamOutput(1, counter)), contextlib.redirect_stderr(_DiscardUpstreamOutput(2, counter)):
             # Fixed genuine upstream imports only, after root verifies full runtime.
             import httpx
             from litellm.proxy import proxy_server as server

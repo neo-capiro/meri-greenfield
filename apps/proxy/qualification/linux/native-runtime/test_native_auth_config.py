@@ -118,11 +118,30 @@ class Configuration(unittest.TestCase):
         self.assertEqual(config["litellm_settings"]["callbacks"], [])
 
     def test_discarded_upstream_text_is_bounded_and_not_retained(self):
-        sink = probe._DiscardUpstreamOutput()
+        sink = probe._DiscardUpstreamOutput(1, [0])
         self.assertEqual(sink.write("synthetic private text"), 22)
-        self.assertEqual(set(vars(sink)), {"count"})
+        self.assertEqual(set(vars(sink)), {"_descriptor", "_counter"})
         with self.assertRaisesRegex(Refused, "UPSTREAM_LOG_BOUND"):
             sink.write("x" * (2 * 1024 * 1024))
+
+    def test_native_subprocess_streams_have_only_fixed_standard_descriptors(self):
+        counter = [0]
+        stdout = probe._DiscardUpstreamOutput(1, counter)
+        stderr = probe._DiscardUpstreamOutput(2, counter)
+        self.assertEqual((stdout.fileno(), stderr.fileno()), (1, 2))
+        self.assertIsNot(stdout, stderr)
+        for descriptor in (True, 0, 3, "1", None):
+            with self.subTest(descriptor=descriptor), self.assertRaisesRegex(Refused, "FIXED_OUTPUT_DESCRIPTOR"):
+                probe._DiscardUpstreamOutput(descriptor, counter)
+
+    def test_standard_streams_share_the_original_aggregate_write_limit(self):
+        counter = [0]
+        stdout = probe._DiscardUpstreamOutput(1, counter)
+        stderr = probe._DiscardUpstreamOutput(2, counter)
+        stdout.write("x" * (2 * 1024 * 1024 - 1))
+        self.assertEqual(stderr.write("y"), 1)
+        with self.assertRaisesRegex(Refused, "UPSTREAM_LOG_BOUND"):
+            stderr.write("z")
 
 
 def activation_fixture():
@@ -252,13 +271,18 @@ class Activation(unittest.TestCase):
 
     def test_native_output_descriptor_ownership_restores_on_failure(self):
         duplicated=[];closed=[]
+        original_stdout, original_stderr = sys.stdout, sys.stderr
         with patch.object(probe.os, "dup", side_effect=[31,32]), patch.object(probe.os, "open", return_value=33), patch.object(probe.os, "dup2", side_effect=lambda source,target: duplicated.append((source,target))), patch.object(probe.os, "close", side_effect=closed.append):
             with self.assertRaisesRegex(RuntimeError, "synthetic failure"):
                 with probe._discard_native_output():
+                    self.assertEqual((sys.stdout.fileno(), sys.stderr.fileno()), (1, 2))
+                    self.assertIsNot(sys.stdout, sys.stderr)
                     print("synthetic private text discarded")
                     raise RuntimeError("synthetic failure")
         self.assertEqual(duplicated, [(33,1),(33,2),(31,1),(32,2)])
         self.assertEqual(closed, [31,32,33])
+        self.assertIs(sys.stdout, original_stdout)
+        self.assertIs(sys.stderr, original_stderr)
 
 
 if __name__ == "__main__":
