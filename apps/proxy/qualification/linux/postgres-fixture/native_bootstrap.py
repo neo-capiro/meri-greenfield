@@ -14,6 +14,8 @@ import sys
 import time
 import types
 from urllib.parse import urlsplit,parse_qsl
+from native_output_capture import capture_native_output
+from prisma_error_evidence import classify_exception,classify_native_output
 
 SOURCE_NAMES=('fixture_config.py','native_auth_probe.py')
 RUNTIME={'schema':'/opt/meri-proxy/schema.prisma',
@@ -117,7 +119,30 @@ def grant_sql():
      'GRANT USAGE ON SCHEMA public TO meri_native_auth_app','GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO meri_native_auth_app',
      'GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO meri_native_auth_app')
 
-async def views_and_grants(owner_url):
+async def revoked_owner_reconnect(check,deadline):
+    """Require complete specific private P1000 evidence, never generic failure."""
+    caught=None
+    with capture_native_output(deadline) as captured:
+        try:await check.connect()
+        except Exception as error:caught=error
+        finally:await check.disconnect()
+        captured.check()
+    captured.check();facts=captured.facts()
+    stdout_bytes,stderr_bytes=captured.private_bytes()
+    try:
+        native=classify_native_output('wrong-password',stderr_bytes,
+            expected_user='meri_fixture_owner',expected_host='meri-native-auth-pg',
+            evidence_complete=facts['complete'] is True)
+        typed=classify_exception('wrong-password',caught,evidence_complete=facts['complete'] is True)
+        require(caught is not None and not stdout_bytes and facts['complete'] is True
+            and native['complete'] is True and native['specificRejection'] is True
+            and native['reason']=='PASSWORD_REJECTED' and typed['complete'] is True
+            and 'TIMEOUT' not in typed['classes']
+            and (typed['specificRejection'] is False or typed['reason']=='PASSWORD_REJECTED'),
+            'OLD_OWNER_CREDENTIAL_NOT_REVOKED')
+    finally:del stdout_bytes,stderr_bytes,caught
+
+async def views_and_grants(owner_url,deadline):
     from prisma import Prisma
     from litellm.proxy.db.create_views import create_missing_views
     db=Prisma(datasource={'url':owner_url});await db.connect()
@@ -135,11 +160,8 @@ async def views_and_grants(owner_url):
         # An ordinary LOGIN owner can change its own password; it cannot set NOLOGIN.
         await db.execute_raw('ALTER ROLE meri_fixture_owner PASSWORD NULL')
     finally:await db.disconnect()
-    check=Prisma(datasource={'url':owner_url});denied=False
-    try:await check.connect()
-    except Exception as error:denied='P1000' in str(error) or 'password authentication failed' in str(error).lower()
-    finally:await check.disconnect()
-    require(denied,'OLD_OWNER_CREDENTIAL_NOT_REVOKED')
+    check=Prisma(datasource={'url':owner_url})
+    await revoked_owner_reconnect(check,deadline)
 
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__,allow_abbrev=False);p.add_argument('--run',required=True);p.add_argument('--deadline-ms',type=int,required=True);args=p.parse_args(argv)
@@ -164,7 +186,7 @@ def main(argv=None):
         # Fresh disposable process, no ambient provider authority. No schema copy/SQL view clone.
         os.environ.clear();os.environ.update({k:v for k,v in env.items() if k!='DATABASE_URL'})
         async def bounded():
-            async with asyncio.timeout(remaining()):await views_and_grants(owner)
+            async with asyncio.timeout(remaining()):await views_and_grants(owner,deadline)
         asyncio.run(bounded())
         remaining()
     print(json.dumps({'schemaInitialized':True,'viewsVerified':8,'grantsVerified':True,'ownerCredentialRevoked':True,'runtimeAdmitted':False},sort_keys=True));return 0

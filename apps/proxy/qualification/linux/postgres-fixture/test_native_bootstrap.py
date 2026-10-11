@@ -24,6 +24,24 @@ def inputs():
 
 def measured():return {'schemaInitialized':True,'viewsVerified':8,'grantsVerified':True,'ownerCredentialRevoked':True,'runtimeAdmitted':False}
 
+def owner_error_bytes(*,user='meri_fixture_owner',host='meri-native-auth-pg'):
+    message=(f'Authentication failed against database server at `{host}`, '
+        f'the provided database credentials for `{user}` are not valid.\n\n'
+        f'Please make sure to provide valid database credentials for the database server at `{host}`.')
+    return (json.dumps({'is_panic':False,'message':message,
+        'meta':{'database_user':user,'database_host':host},'error_code':'P1000'},separators=(',',':'))+'\n').encode()
+
+class FakeCapture:
+    def __init__(self,raw,complete=True,stdout=b''):
+        self.raw=raw;self.complete=complete;self.stdout=stdout
+    def __enter__(self):return self
+    def __exit__(self,*args):return False
+    def check(self):pass
+    def facts(self):return {'complete':self.complete}
+    def private_bytes(self):return self.stdout,self.raw
+
+EngineConnectionError=type('EngineConnectionError',(Exception,),{'__module__':'prisma.engine.errors'})
+
 class CompositionTests(unittest.TestCase):
     def test_v1_data_unchanged_and_combined_strict(self):
         v,a,raw=inputs();self.assertEqual(config.parse(json.dumps(v).encode()),v)
@@ -84,7 +102,7 @@ class CompositionTests(unittest.TestCase):
             def __init__(self,**kw):count[0]+=1;self.number=count[0]
             async def connect(self):
                 if self.number==2:
-                    if reconnect is not None:raise RuntimeError(reconnect)
+                    if reconnect is not None:raise EngineConnectionError(reconnect)
             async def disconnect(self):pass
             async def execute_raw(self,sql):calls.append(sql);return 0
             async def query_raw(self,sql):
@@ -94,12 +112,15 @@ class CompositionTests(unittest.TestCase):
         async def views(db):self.assertIsInstance(db,Fake);calls.append('GENUINE_HELPER_CALL_FAKE')
         replacements={'prisma':types.SimpleNamespace(Prisma=Fake),'litellm.proxy.db.create_views':types.SimpleNamespace(create_missing_views=views)}
         old={k:sys.modules.get(k) for k in replacements};sys.modules.update(replacements)
+        capture=b.capture_native_output
+        b.capture_native_output=lambda deadline:FakeCapture(owner_error_bytes() if reconnect=='P1000 password authentication failed' else b'')
         try:
-            coro=b.views_and_grants('UNUSED_FAKE_MOUNTED_OWNER_URL')
+            coro=b.views_and_grants('UNUSED_FAKE_MOUNTED_OWNER_URL',123.0)
             try:coro.send(None)
             except StopIteration:return calls
             raise AssertionError('fake yielded IO')
         finally:
+            b.capture_native_output=capture
             for key,value in old.items():
                 if value is None:sys.modules.pop(key,None)
                 else:sys.modules[key]=value
@@ -113,5 +134,45 @@ class CompositionTests(unittest.TestCase):
     def test_owner_reconnect_unknown_or_success_not_revocation(self):
         for message in ('connection timeout',None):
             with self.subTest(message=message),self.assertRaisesRegex(ValueError,'CREDENTIAL_NOT_REVOKED'):self.run_grants(reconnect=message)
+
+    def reconnect(self,raw,*,error=EngineConnectionError('opaque'),complete=True,stdout=b'',disconnect_error=False):
+        calls=[];capture=b.capture_native_output
+        b.capture_native_output=lambda deadline:(calls.append(('deadline',deadline)) or FakeCapture(raw,complete,stdout))
+        class Check:
+            async def connect(self):
+                calls.append('connect')
+                if error is not None:raise error
+            async def disconnect(self):
+                calls.append('disconnect')
+                if disconnect_error:raise RuntimeError('fixed synthetic disconnect failure')
+        try:
+            coro=b.revoked_owner_reconnect(Check(),123.0)
+            try:coro.send(None)
+            except StopIteration:pass
+            else:raise AssertionError('fake yielded IO')
+            return calls
+        finally:b.capture_native_output=capture
+
+    def test_complete_owner_p1000_uses_original_deadline_and_disconnect(self):
+        self.assertEqual(self.reconnect(owner_error_bytes()),[('deadline',123.0),'connect','disconnect'])
+
+    def test_revocation_requires_caught_error_complete_private_specific_owner(self):
+        for raw,options in [(b'',{}),(owner_error_bytes(),{'error':None}),
+                (owner_error_bytes(),{'complete':False}),(owner_error_bytes(),{'stdout':b'unknown'}),
+                (owner_error_bytes(user='meri_native_auth_app'),{}),
+                (owner_error_bytes(host='foreign'),{}),(owner_error_bytes()+b'{}\n',{}),
+                (owner_error_bytes(),{'error':TimeoutError('timeout')}),
+                (owner_error_bytes(),{'error':RuntimeError('P1000 password authentication failed')})]:
+            with self.subTest(options=options),self.assertRaisesRegex(ValueError,'CREDENTIAL_NOT_REVOKED'):
+                self.reconnect(raw,**options)
+
+    def test_revocation_disconnect_unknown_and_conflicting_structured_error_refuse(self):
+        with self.assertRaisesRegex(RuntimeError,'disconnect failure'):
+            self.reconnect(owner_error_bytes(),disconnect_error=True)
+        data_error=type('DataError',(Exception,),{'__module__':'prisma.errors'})('fixed')
+        payload={'user_facing_error':{'error_code':'P1011','message':'hostname mismatch','meta':{}}}
+        data_error.data=payload;data_error.code='P1011';data_error.meta=payload['user_facing_error']['meta']
+        with self.assertRaisesRegex(ValueError,'CREDENTIAL_NOT_REVOKED'):
+            self.reconnect(owner_error_bytes(),error=data_error)
 
 if __name__=='__main__':unittest.main()
