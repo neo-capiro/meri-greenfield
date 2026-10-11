@@ -221,10 +221,10 @@ print(json.dumps(passed));sys.exit(0 if all(passed) else 1)
   assert.equal(r.status, 0, r.stderr); assert.deepEqual(JSON.parse(r.stdout), [true, true, true, true, true, true]);
 });
 
-test('compiled production roots cover usr aliases, root/home and canonical scripts; binary pins stay exact', () => {
+test('compiled production roots cover usr aliases, scripts and private packages; binary pins stay exact', () => {
   const r = runPython(`import importlib.util,sys,json\ns=importlib.util.spec_from_file_location('i',sys.argv[1]);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);print(json.dumps({'roots':m.REQUIRED_ROOTS,'aliases':m.ROOT_ALIASES,'pins':m.PINNED_FILES}))`);
   assert.equal(r.status, 0); const p = JSON.parse(r.stdout);
-  for (const root of ['/bin', '/sbin', '/lib', '/lib64', '/root', '/home', '/scripts']) assert.ok(p.roots.includes(root));
+  for (const root of ['/bin', '/sbin', '/lib', '/lib64', '/root', '/home', '/scripts', '/packages']) assert.ok(p.roots.includes(root));
   assert.equal(Object.keys(p.pins).length, 4);
   assert.equal(p.pins['/opt/meri-browsers/chromium-1247/chrome-linux64/chrome'].sha256, 'adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0');
 });

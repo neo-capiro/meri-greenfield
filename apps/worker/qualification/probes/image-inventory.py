@@ -17,7 +17,7 @@ import time
 SCHEMA = "meri.qualification.image-inventory/1"
 OUTPUT_PATH = "/opt/meri-worker/image-inventory.json"
 REQUIRED_ROOTS = ("/opt/meri-worker", "/opt/meri-venv", "/opt/meri-browsers", "/usr", "/etc",
-                  "/var/lib/dpkg", "/bin", "/sbin", "/lib", "/lib64", "/root", "/home", "/scripts")
+                  "/var/lib/dpkg", "/bin", "/sbin", "/lib", "/lib64", "/root", "/home", "/scripts", "/packages")
 ROOT_ALIASES = {"/bin": "/usr/bin", "/sbin": "/usr/sbin", "/lib": "/usr/lib", "/lib64": "/usr/lib64"}
 DEFAULT_EXCLUDES = ("/proc", "/sys", "/dev", "/run")
 _BROWSER = "/opt/meri-browsers/chromium-1247/chrome-linux64/"

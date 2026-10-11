@@ -50,6 +50,9 @@ test('package.json pins the exact qualification dependency versions', () => {
     '@capiro/meri-contracts': 'file:vendor/capiro-meri-contracts-0.1.0.tgz',
     '@modelcontextprotocol/sdk': '1.32.1',
     '@playwright/mcp': '0.0.83',
+    ajv: '8.20.0',
+    'ajv-formats': '3.0.1',
+    canonicalize: '5.1.0',
     'pdfjs-dist': '6.4.299',
     playwright: '1.64.0-alpha-1790635538000',
     'playwright-core': '1.64.0-alpha-1790635538000',
@@ -76,6 +79,8 @@ test('component-pins.json agrees with package.json, lock and tests', () => {
     const expectedVersion = name === '@capiro/meri-contracts' ? '0.1.0' : version;
     assert.equal(npmByName[name].version, expectedVersion, `${name} pins version`);
     assert.match(npmByName[name].integrity, /^sha512-/, `${name} pins integrity`);
+    assert.equal(npmByName[name].integrity, lock.packages[`node_modules/${name}`].integrity,
+      `${name} pinned archive integrity`);
     assert.ok(npmByName[name].license, `${name} license recorded`);
   }
   assert.equal(npmByName['@anthropic-ai/claude-agent-sdk'].bundledCli.version, '2.1.295');
@@ -977,6 +982,31 @@ test('interruption packaging keeps accepted entry paths and canonical scanner by
     '/opt/meri-worker/checkpoint/native-session-files.mjs',
     '/scripts/sdk-capture/json-records.mjs', '/scripts/sdk-capture/protocol.mjs',
   ]);
+});
+
+test('private SDK fixture closure has exact context bytes and image paths', () => {
+  const packaging = pins.sdkFixturePackaging;
+  assert.equal(packaging.status, 'SOURCE_ONLY');
+  assert.equal(packaging.contextAssembler, 'scripts/qualification/worker_context.py');
+  assert.deepEqual(packaging.directDependencies,
+    ['ajv@8.20.0', 'ajv-formats@3.0.1', 'canonicalize@5.1.0']);
+  assert.equal(packaging.records.length, 10);
+  const ignore = read('.dockerignore');
+  for (const row of packaging.records) {
+    assert.ok(ignore.includes(`!${row.contextPath}\n`), `context allow-list: ${row.contextPath}`);
+    const sourcePath = PKG === '/opt/meri-worker' ? row.imagePath : join(PKG, '../../..', row.sourcePath);
+    const raw = readFileSync(sourcePath);
+    assert.equal(raw.length, row.bytes, row.sourcePath);
+    assert.equal(createHash('sha256').update(raw).digest('hex'), row.sha256, row.sourcePath);
+    assert.equal(row.imagePath,
+      row.contextPath.startsWith('checkpoint/') ? `/opt/meri-worker/${row.contextPath}` :
+        `/packages/contracts/${row.contextPath.slice('build-dependencies/contracts/'.length)}`);
+  }
+  assert.ok(dockerfile.includes('COPY build-dependencies/contracts/ /packages/contracts/'));
+  assert.ok(dockerfile.includes('RUN ln -s /opt/meri-worker/node_modules /packages/node_modules'));
+  assert.ok(dockerfile.includes('--root /packages'));
+  assert.ok(pkg.scripts.test.includes('checkpoint/fixture-channel.test.mjs'));
+  assert.ok(pkg.scripts.test.includes('checkpoint/fixture-transport.test.mjs'));
 });
 
 test('Dockerfile reduces SUID/SGID via chmod only, before the inventory, before USER', () => {

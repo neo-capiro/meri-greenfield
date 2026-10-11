@@ -25,8 +25,8 @@ if __name__ == '__main__':
 SCHEMA = 'meri-worker-image-input/1'
 ASSEMBLER = 'scripts/qualification/worker_context.py'
 COLLECTOR = 'scripts/qualification/worker_image_collect.py'
-CONTEXT_SHA = '45f8e19066eb2552bfeaf9896e5cffeb1e006f98375f7a3c93dd107219c01edf'
-ASSEMBLER_SHA = '4ab32d6bdd85061f1335890c00971637f0c5f59cdbe7acf5d2ab07e2a0f2f5c1'
+CONTEXT_SHA = 'e89bda8fa60fa2d950bcb9bb9177841e177f458131d4e5a66e8a9a17a1762940'
+ASSEMBLER_SHA = '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb'
 ARTIFACTS = {
     'image-inventory.json': 32*1024*1024, 'os-installed-packages.txt': 4*1024*1024,
     'runtime-versions.txt': 65536, 'libreoffice-version.err': 65536,
@@ -37,7 +37,7 @@ ARTIFACTS = {
     'node_modules/playwright/package.json': 131072,
 }
 REQUIRED_ROOTS = {'/opt/meri-worker', '/opt/meri-venv', '/opt/meri-browsers', '/usr', '/etc',
-                  '/var/lib/dpkg', '/bin', '/sbin', '/lib', '/lib64', '/root', '/home', '/scripts'}
+                  '/var/lib/dpkg', '/bin', '/sbin', '/lib', '/lib64', '/root', '/home', '/scripts', '/packages'}
 HELPERS = {'/opt/meri-browsers/chromium-1247/chrome-linux64/'+n for n in ('chrome_sandbox', 'chrome-sandbox')}
 SHA = re.compile(r'[a-f0-9]{64}')
 IID = re.compile(r'sha256:[a-f0-9]{64}')
@@ -108,7 +108,7 @@ def validate_input(root, manifest_raw, expected_sha):
          and value['contextManifestSha256'] == CONTEXT_SHA, 'worker input schema')
     need(type(value['runUuid']) is str and str(uuid.UUID(value['runUuid'])) == value['runUuid']
          and uuid.UUID(value['runUuid']).version == 4, 'fixed run UUID')
-    rows = value['members']; need(type(rows) is list and len(rows) == 37, '37 exact source/recipe records')
+    rows = value['members']; need(type(rows) is list and len(rows) == 47, '47 exact source/recipe records')
     names = set()
     for row in rows:
         need(type(row) is dict and set(row) == {'path', 'bytes', 'sha256'}, 'source record')
@@ -237,8 +237,15 @@ def validate_inventory(raw, source_rows, component):
     for row in source_rows:
         if row['contextPath'] in ('.dockerignore', 'Dockerfile', 'README.md', 'component-pins.json'):
             continue  # Build-only files are not copied into the image.
-        path = ('/scripts/sdk-capture/'+Path(row['contextPath']).name if row['contextPath'].startswith('build-dependencies/')
-                else '/opt/meri-worker/'+row['contextPath'])
+        context_path = row['contextPath']
+        if context_path.startswith('build-dependencies/contracts/'):
+            path = '/packages/contracts/' + context_path.removeprefix('build-dependencies/contracts/')
+        elif context_path.startswith('build-dependencies/sdk-capture/'):
+            path = '/scripts/sdk-capture/' + Path(context_path).name
+        elif context_path.startswith('build-dependencies/'):
+            raise ValueError('unknown staged image source')
+        else:
+            path = '/opt/meri-worker/' + context_path
         entry = by_path.get(path, {})
         need(entry.get('type') == 'file' and entry.get('size') == row['bytes']
              and entry.get('sha256') == row['sha256'], 'image source byte binding')
