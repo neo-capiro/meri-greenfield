@@ -276,6 +276,10 @@ export async function installFixtures(page: Page) {
       },
       "strategy/planner/tasks": { items: [], nextCursor: null },
       "core/federal-register/upcoming-deadlines": [],
+      [`intelligence/clients/${clientId}/bills/tx-2025-hb1/hearings`]: {
+        count: 0,
+        hearings: [],
+      },
       [`intelligence/clients/${clientId}/tracker/board`]: {
         columns: [
           { id: "introduced", label: "Introduced", cards: [] },
