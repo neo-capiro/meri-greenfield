@@ -8,7 +8,8 @@ its enterprise tree, and does not change any earlier Wolfi ABI/security finding.
 
 `assembly-pins.json` owns the exact source/artifact identities, selected wheel
 metadata, license members and limits. `requirements.lock` is the exact-artifact
-projection of standard uv0.12.1 resolution for Linux CPython3.13.5, with hashes.
+projection of standard uv0.12.1 resolution for Linux CPython3.13.5, with hashes,
+plus the explicit same-version SoundFile platform-artifact supplement below.
 No hand-written resolver is involved. The Windows NumPy1.26.4 selection has no
 CPython3.13 wheel: the compatible upstream-lock NumPy2.4.4 branch is selected.
 Windows-only pywin32 is absent; upstream uvloop0.22.1 and pyroscope-io0.8.16 are
@@ -22,7 +23,7 @@ gaps listed in pins are unresolved legal evidence, not license approval.
 ## Exact build context
 
 Create a fresh context with these seven source files and an `artifacts/`
-directory containing exactly the330 records in `assembly-pins.json.artifacts`:
+directory containing exactly the331 records in `assembly-pins.json.artifacts`:
 
 ```
 Dockerfile  assembly-pins.json  requirements.lock
@@ -36,7 +37,7 @@ artifacts/schema.prisma
 artifacts/notices/<exact pinned records>
 ```
 
-The current DATA-only copy is `.task-inputs/linux-remaining-engine-assembly-1/context-artifacts-1`
+The prior DATA-only copy is `.task-inputs/linux-remaining-engine-assembly-1/context-artifacts-1`
 in the dedicated `g1-proxy-linux-remaining-engine-assembly` worktree. Its sibling
 `artifact-context-manifest-1.json` binds330 files/271,935,624bytes. All previous321
 files/219,286,960bytes are unchanged, including tqdm's LICENCE. Nine recovered
@@ -44,9 +45,43 @@ query-engine bodies/sidecars add52,648,664bytes. The old320/321 projections rema
 unchanged. The first new Windows copy hit MAX_PATH; its partial directory is
 preserved as `context-artifacts-1-FIRST`. A new DATA helper completed a fresh
 context using Windows extended-length file paths, without overwriting the partial.
+The fresh SoundFile qualification context is
+`.task-inputs/linux-soundfile-assembly-1/context-artifacts-1` in the dedicated
+`g1-proxy-soundfile-assembly` worktree; its sibling
+`artifact-context-manifest-1.json` binds331 files/273,112,858bytes. It preserves329
+old artifacts, replaces only the SoundFile wheel and adds one bundled LGPL notice.
+The prior330-file context and all prior failed/successful build evidence remain
+unchanged. Native extended-length paths are used for streamed Windows copy/hash.
 Binaries are ignored evidence and must be independently pinned/copied by the build owner;
 they are not committed source. No extra or link may enter the context. The
 Dockerfile verifies the complete artifact set before offline installation.
+
+## SoundFile and fixed offline pricing prerequisite
+
+The first guarded E3 app import failed with OSError at SoundFile0.12.1's final
+`libsndfile.so` fallback; its universal wheel contains no native library. The new
+qualification candidate selects the official same-version
+`soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl`, SHA256
+`074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6`.
+Both Python modules and full METADATA are unchanged; the other123 wheels,
+requirements and all engines/schema remain exact. This supplies the bundled
+`_soundfile_data/libsndfile_x86_64.so` (embedded version string libsndfile1.2.0).
+It is a qualification artifact selection supplement, not a new resolver result
+or a successful native-load/security verdict. The original uv pylock pin remains
+historical resolution provenance; the current hash projection names this wheel.
+
+Retain the unchanged BSD3-Clause package notice and the newly inventoried full
+`_soundfile_data/COPYING` LGPL2.1 notice. Corresponding source, native codec notices,
+relinking obligations and vulnerability disposition remain unqualified; the
+artifact-closure flag does not clear those holds. The tokenizers notice gap also
+remains open. No broad production/release/license acceptance follows.
+
+The recipe sets supported `LITELLM_LOCAL_MODEL_COST_MAP=True`, which pinned
+LiteLLM1.104.2 checks before its remote pricing-map HTTP/retry path. It uses the
+wheel's existing local backup, retaining the network-none and audit guards.
+Earlier blocked GitHub pricing metadata fetches were not model calls. This
+setting does not prove every future socket/self-pipe attempt disappears; retain
+and review all actual import diagnostics in a fresh separately admitted run.
 
 The fixed CA bootstrap retains Debian signatures over HTTP, then switches to
 normal HTTPS. All inherited installed packages receive a no-removal upgrade

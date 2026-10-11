@@ -8,7 +8,8 @@
     "offline generation unrun; multi-target behavior unproved",
     "genuine guarded Linux app import unrun",
     "community virtual-key auth/database unrun",
-    "OS/native/package security remains open; no production acceptance"
+    "OS/native/package security remains open; no production acceptance",
+    "bundled libsndfile1.2.0 source/codec notices/security unqualified"
   ],
   "base": {
     "reference": "node:24.21.0-trixie-slim@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
@@ -4459,10 +4460,10 @@
     {
       "name": "soundfile",
       "version": "0.12.1",
-      "filename": "soundfile-0.12.1-py2.py3-none-any.whl",
-      "url": "https://files.pythonhosted.org/packages/04/bc/cd845c2dbb4d257c744cd58a5bcdd9f6d235ca317e7e22e49564ec88dcd9/soundfile-0.12.1-py2.py3-none-any.whl",
-      "bytes": 24030,
-      "sha256": "828a79c2e75abab5359f780c81dccd4953c45a2c4cd4f05ba3e233ddf984b882",
+      "filename": "soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl",
+      "url": "https://files.pythonhosted.org/packages/c1/07/7591f4efd29e65071c3a61b53725036ea8f73366a4920a481ebddaf8d0ca/soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl",
+      "bytes": 1174746,
+      "sha256": "074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6",
       "metadataBytes": 14827,
       "metadataSha256": "d200e6f6a800b0a38f0c523d28952ad7af50278ab6877edad90101e56da626e3",
       "requiresPython": null,
@@ -4471,8 +4472,8 @@
         "numpy ; extra == 'numpy'"
       ],
       "wheelTags": [
-        "py2-none-any",
-        "py3-none-any"
+        "py2-none-manylinux_2_31_x86_64",
+        "py3-none-manylinux_2_31_x86_64"
       ],
       "notices": [
         {
@@ -4480,12 +4481,18 @@
           "file": "soundfile--2cb81534b809a60d--license",
           "bytes": 1512,
           "sha256": "0dd2e411fed553ba891845077e5a32c5b726d1bbc46ff31a2118ae1ccf816752"
+        },
+        {
+          "member": "_soundfile_data/COPYING",
+          "file": "soundfile--4b65dbd72ad2192b--copying",
+          "bytes": 26518,
+          "sha256": "ad01ea5cd2755f6048383c8d54c88459cd6fcb17757c5c8892f8c5ea060f6140"
         }
       ],
-      "archiveMembers": 8,
+      "archiveMembers": 10,
       "largestMember": {
-        "bytes": 60756,
-        "name": "soundfile.py"
+        "bytes": 3607784,
+        "name": "_soundfile_data/libsndfile_x86_64.so"
       }
     },
     {
@@ -6243,6 +6250,12 @@
       "kind": "notice"
     },
     {
+      "path": "notices/soundfile--4b65dbd72ad2192b--copying",
+      "bytes": 26518,
+      "sha256": "ad01ea5cd2755f6048383c8d54c88459cd6fcb17757c5c8892f8c5ea060f6140",
+      "kind": "notice"
+    },
+    {
       "path": "notices/sse-starlette--cd5bd643dcb5565e--license",
       "bytes": 1511,
       "sha256": "80af6bfccbebd2c14d4aab96695cab9950e177190cc80f5ef819e99996883e8e",
@@ -7011,9 +7024,9 @@
       "kind": "wheel"
     },
     {
-      "path": "wheels/soundfile-0.12.1-py2.py3-none-any.whl",
-      "bytes": 24030,
-      "sha256": "828a79c2e75abab5359f780c81dccd4953c45a2c4cd4f05ba3e233ddf984b882",
+      "path": "wheels/soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl",
+      "bytes": 1174746,
+      "sha256": "074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6",
       "kind": "wheel"
     },
     {
@@ -7132,13 +7145,13 @@
     }
   ],
   "artifactTotals": {
-    "files": 330,
-    "bytes": 271935624
+    "files": 331,
+    "bytes": 273112858
   },
   "licensing": {
     "communityOnly": true,
     "fullUpstreamImageAdopted": false,
-    "wheelNoticesRetained": 185,
+    "wheelNoticesRetained": 186,
     "wheelsWithoutPackagedNotice": [
       "tokenizers"
     ],
@@ -7147,14 +7160,38 @@
     "noticeAcquisitionQualification": "tqdm LICENCE recovered from already pinned wheel; original selector omitted British spelling; original184-notice evidence retained"
   },
   "wheelRecordValidation": {
-    "bytes": 2929317,
-    "sha256": "dfe57ea9fff29ad75ea3374dfabec2304b16f4df1a4ff644162caac74a121294",
+    "bytes": 2929694,
+    "sha256": "ab93aa40578c5010d340f00eff79ab333fe757d3d296925e9a9f8cdf2803c354",
     "wheels": 124,
-    "members": 14249,
-    "uncompressedBytes": 559431074,
+    "members": 14251,
+    "uncompressedBytes": 563065723,
     "memberLimit": 536870912,
     "aggregateLimit": 5368709120,
     "streamedAllMembers": true,
     "nativeExecuted": false
+  },
+  "soundfileQualificationSupplement": {
+    "version": "0.12.1",
+    "previousWheel": {
+      "filename": "soundfile-0.12.1-py2.py3-none-any.whl",
+      "bytes": 24030,
+      "sha256": "828a79c2e75abab5359f780c81dccd4953c45a2c4cd4f05ba3e233ddf984b882"
+    },
+    "candidateWheel": {
+      "filename": "soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl",
+      "bytes": 1174746,
+      "sha256": "074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6"
+    },
+    "origin": "official PyPI0.12.1 release; DATA discovery e55785253c6656b2c55f1da43deb1c9d8e79046e",
+    "samePythonMembersAndMetadata": true,
+    "qualificationOnly": true,
+    "bundledLibrary": {
+      "member": "_soundfile_data/libsndfile_x86_64.so",
+      "bytes": 3607784,
+      "sha256": "1c265077c2fff814919884222825d0d40cbea783d414796dea028e05ad811ed3",
+      "versionString": "libsndfile-1.2.0"
+    },
+    "correspondingSourceCodecNoticesSecurityQualified": false,
+    "resolverQualification": "same-version artifact selection supplement; original selectedPylock remains historical source evidence"
   }
 }

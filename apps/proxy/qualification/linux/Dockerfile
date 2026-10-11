@@ -35,7 +35,7 @@ RUN set -eux; \
 
 COPY assembly-pins.json requirements.lock prisma-build.py import-probe.py /opt/meri-proxy/
 COPY artifacts/ /opt/meri-proxy/artifacts/
-ENV PYTHONDONTWRITEBYTECODE=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_INDEX=1
+ENV PYTHONDONTWRITEBYTECODE=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_INDEX=1 LITELLM_LOCAL_MODEL_COST_MAP=True
 
 # No wheel resolution, source build, npm install, external engine fetch or DB.
 # BuildKit enforces network-none during BOTH installation and native generation.

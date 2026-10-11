@@ -111,6 +111,39 @@ class AssemblyInputs(unittest.TestCase):
         self.assertTrue(polars)
         self.assertGreater(max(r["largestMember"]["bytes"] for r in polars), 128 * 1024 * 1024)
 
+    def test_soundfile_same_version_platform_artifact_and_both_notices(self):
+        row = next(r for r in PINS["wheels"] if r["name"] == "soundfile")
+        self.assertEqual(row["version"], "0.12.1")
+        self.assertEqual(row["filename"], "soundfile-0.12.1-py2.py3-none-manylinux_2_31_x86_64.whl")
+        self.assertEqual(row["sha256"], "074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6")
+        self.assertEqual(row["bytes"], 1174746)
+        self.assertEqual(row["wheelTags"], ["py2-none-manylinux_2_31_x86_64", "py3-none-manylinux_2_31_x86_64"])
+        self.assertEqual(row["metadataSha256"], "d200e6f6a800b0a38f0c523d28952ad7af50278ab6877edad90101e56da626e3")
+        self.assertEqual(row["requirements"], ["cffi (>=1.0)", "numpy ; extra == 'numpy'"])
+        notices = {r["member"]: r for r in row["notices"]}
+        self.assertEqual(set(notices), {"soundfile-0.12.1.dist-info/LICENSE", "_soundfile_data/COPYING"})
+        self.assertEqual(notices["soundfile-0.12.1.dist-info/LICENSE"]["sha256"],
+                         "0dd2e411fed553ba891845077e5a32c5b726d1bbc46ff31a2118ae1ccf816752")
+        self.assertEqual(notices["_soundfile_data/COPYING"]["sha256"],
+                         "ad01ea5cd2755f6048383c8d54c88459cd6fcb17757c5c8892f8c5ea060f6140")
+        artifacts = {r["path"]: r for r in PINS["artifacts"]}
+        self.assertNotIn("wheels/soundfile-0.12.1-py2.py3-none-any.whl", artifacts)
+        for notice in notices.values():
+            artifact = artifacts["notices/" + notice["file"]]
+            self.assertEqual((artifact["bytes"], artifact["sha256"], artifact["kind"]),
+                             (notice["bytes"], notice["sha256"], "notice"))
+        self.assertTrue(PINS["soundfileQualificationSupplement"]["qualificationOnly"])
+        self.assertFalse(PINS["soundfileQualificationSupplement"]["correspondingSourceCodecNoticesSecurityQualified"])
+
+    def test_local_model_cost_map_is_fixed_before_genuine_import(self):
+        source = (HERE / "Dockerfile").read_text()
+        env = [line for line in source.splitlines() if line.startswith("ENV ")]
+        settings = [item for line in env for item in line[4:].split() if item.startswith("LITELLM_LOCAL_MODEL_COST_MAP=")]
+        self.assertEqual(settings, ["LITELLM_LOCAL_MODEL_COST_MAP=True"])
+        self.assertLess(source.index("LITELLM_LOCAL_MODEL_COST_MAP=True"), source.index("ENTRYPOINT"))
+        self.assertEqual(source.count("RUN --network=none"), 3)
+        self.assertFalse(PINS["runtimeAdmitted"])
+
     def test_safe_archive_positive_and_malicious_members(self):
         with archive([("package/package.json", b"{}", "file")]) as tar:
             self.assertEqual(len(build._npm_members(tar)), 1)
