@@ -1,13 +1,20 @@
 "use client";
+import { useId, useState } from "react";
+import { useIsMutating } from "@tanstack/react-query";
 import { TextareaField } from "@/shared/ui/TextareaField";
-import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
-import { contactInput, type Person } from "./contracts";
-import { usePersonMutation } from "./mutations";
+import { ApiError } from "@/shared/api/http";
+import { useIdentity } from "@/shared/auth/identity";
+import type { Person } from "./contracts";
+import { canManageContacts } from "./contact-api";
+import { peopleWriteKey, usePersonMutation } from "./mutations";
+import { ContactForm } from "./ContactForm";
 import { HierarchyEditor } from "./HierarchyEditor";
 import { ContactMail } from "./ContactMail";
 import { QuickLog } from "@/features/client-profile/public";
+import styles from "./contact-drawer.module.css";
+
 export function ContactDrawer({
   clientId,
   person,
@@ -21,149 +28,193 @@ export function ContactDrawer({
   open: boolean;
   onClose: () => void;
 }) {
-  const [validation, setValidation] = useState("");
+  const formId = useId();
+  const [opener] = useState(() =>
+    typeof document !== "undefined" &&
+    document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null,
+  );
+  const identity = useIdentity();
+  const permitted = canManageContacts(identity.data?.role);
   const [remove, setRemove] = useState(false);
   const [note, setNote] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const [discard, setDiscard] = useState(false);
   const mutation = usePersonMutation(clientId, onClose);
+  const busy = useIsMutating({ mutationKey: peopleWriteKey(clientId) }) > 0;
+  const uncertainCreate =
+    !person &&
+    Boolean(mutation.error) &&
+    (!(mutation.error instanceof ApiError) || mutation.error.status >= 500);
+  function close() {
+    if (!busy) {
+      if (dirty) setDiscard(true);
+      else onClose();
+    }
+  }
   return (
     <Dialog
       open={open}
       onOpenChange={(value) => {
-        if (!value && !mutation.isPending) onClose();
+        if (!value) close();
       }}
       title={person?.name ?? "Add contact"}
       drawer
-    >
-      <form
-        className="stack"
-        onSubmit={(event) => {
+      className={styles.drawer}
+      onCloseAutoFocus={(event) => {
+        if (opener?.isConnected) {
           event.preventDefault();
-          const result = contactInput.safeParse(
-            Object.fromEntries(new FormData(event.currentTarget)),
-          );
-          if (!result.success) {
-            setValidation(
-              result.error.issues[0]?.message ?? "Check the contact details.",
-            );
-            return;
+          opener.focus();
+        }
+      }}
+    >
+      <div className={`${styles.viewport} stack`} aria-busy={busy}>
+        {person?.title && <p className="muted">{person.title}</p>}
+        <QueryState
+          error={identity.error}
+          retry={() => void identity.refetch()}
+        />
+        {identity.isSuccess && !permitted && (
+          <p role="status">Your role cannot change organization contacts.</p>
+        )}
+        <ContactForm
+          id={formId}
+          person={person}
+          disabled={!permitted || busy || uncertainCreate}
+          onDirty={() => setDirty(true)}
+          onSave={(input) =>
+            mutation.mutate({
+              kind: "save",
+              id: person?.id,
+              body: { ...input, email: input.email || null },
+            })
           }
-          setValidation("");
-          mutation.mutate({
-            kind: "save",
-            id: person?.id,
-            body: { ...result.data, email: result.data.email || null },
-          });
-        }}
-      >
-        <label>
-          Name
-          <input
-            name="name"
-            required
-            maxLength={300}
-            defaultValue={person?.name ?? ""}
-            autoFocus
-          />
-        </label>
-        <p className="muted">
-          Saved titles may describe current or historical roles. Verify changes
-          against a dated source; keep former roles and the source in Notes.
-        </p>
-        <label>
-          Title
-          <input
-            name="title"
-            maxLength={300}
-            defaultValue={person?.title ?? ""}
-          />
-        </label>
-        <div className="grid two">
-          <label>
-            Email
-            <input
-              type="email"
-              name="email"
-              defaultValue={person?.email ?? ""}
+        />
+        {person && (
+          <>
+            <button
+              className="button"
+              disabled={!permitted || busy}
+              onClick={() => setNote(true)}
+            >
+              Log note
+            </button>
+            <ContactMail
+              clientId={clientId}
+              person={{ ...person, personId: person.id }}
             />
-          </label>
-          <label>
-            Phone
-            <input
-              name="phone"
-              maxLength={120}
-              defaultValue={person?.phone ?? ""}
+            <fieldset
+              disabled={!permitted || busy}
+              style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}
+            >
+              <HierarchyEditor
+                key={`${person.id}:${person.placementSource}:${person.hierarchyLevel}:${person.reportsToPersonId}`}
+                clientId={clientId}
+                person={person}
+                people={people}
+              />
+            </fieldset>
+            <QuickLog
+              clientId={clientId}
+              clientName={person.name}
+              personId={person.id}
+              open={note}
+              onOpenChange={setNote}
             />
-          </label>
-        </div>
-        <label>
-          Role
-          <input
-            name="role"
-            maxLength={300}
-            defaultValue={person?.role ?? ""}
-          />
-        </label>
+          </>
+        )}
         <TextareaField
           label="Notes"
           name="notes"
+          form={formId}
           maxLength={20000}
           defaultValue={person?.notes ?? ""}
+          disabled={!permitted || busy || uncertainCreate}
+          onChange={() => setDirty(true)}
         />
-        {validation && <p role="alert">{validation}</p>}
         <QueryState error={mutation.error} />
+        {uncertainCreate && (
+          <p role="alert">
+            This request may have saved. Your draft is preserved. Close and
+            check the refreshed roster before creating another contact.
+          </p>
+        )}
+      </div>
+      <footer className={styles.footer}>
+        {person && (
+          <button
+            type="button"
+            className="button ghost"
+            disabled={!permitted || busy}
+            onClick={() => {
+              mutation.reset();
+              setRemove(true);
+            }}
+          >
+            Remove
+          </button>
+        )}
+        <span className={styles.spacer} />
+        <button
+          type="button"
+          className="button"
+          disabled={busy}
+          onClick={close}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          form={formId}
+          className="button primary"
+          disabled={!permitted || busy || uncertainCreate}
+        >
+          {mutation.isPending ? "Saving…" : "Save contact"}
+        </button>
+      </footer>
+      <Dialog
+        open={discard}
+        onOpenChange={setDiscard}
+        title="Discard contact changes?"
+        description="Your unsaved contact details will be discarded."
+      >
         <div className="formActions">
-          {person && (
-            <button
-              type="button"
-              className="button ghost"
-              onClick={() => setRemove(true)}
-            >
-              Remove
-            </button>
-          )}
-          <button className="button primary" disabled={mutation.isPending}>
-            {mutation.isPending ? "Saving…" : "Save contact"}
+          <button className="button" onClick={() => setDiscard(false)}>
+            Keep editing
+          </button>
+          <button className="button primary" onClick={onClose}>
+            Discard changes
           </button>
         </div>
-      </form>
+      </Dialog>
       {person && (
-        <>
-          <HierarchyEditor
-            key={`${person.id}:${person.placementSource}:${person.hierarchyLevel}:${person.reportsToPersonId}`}
-            clientId={clientId}
-            person={person}
-            people={people}
-          />
-          <button className="button" onClick={() => setNote(true)}>
-            Log note
-          </button>
-          <ContactMail
-            clientId={clientId}
-            person={{ ...person, personId: person.id }}
-          />
-          <QuickLog
-            clientId={clientId}
-            clientName={person.name}
-            personId={person.id}
-            open={note}
-            onOpenChange={setNote}
-          />
-          <Dialog
-            open={remove}
-            onOpenChange={setRemove}
-            title="Remove contact"
-            description={`Remove ${person.name} from this client's roster?`}
-          >
-            <QueryState error={mutation.error} />
+        <Dialog
+          open={remove}
+          onOpenChange={(value) => {
+            if (!busy) setRemove(value);
+          }}
+          title="Remove contact"
+          description={`Remove ${person.name} from this client's roster? Saved direct reports will retain their contacts and lose this manager link.`}
+        >
+          <QueryState error={mutation.error} />
+          <div className="formActions">
+            <button
+              className="button"
+              disabled={busy}
+              onClick={() => setRemove(false)}
+            >
+              Keep contact
+            </button>
             <button
               className="button primary"
-              disabled={mutation.isPending}
+              disabled={!permitted || busy}
               onClick={() => mutation.mutate({ kind: "delete", id: person.id })}
             >
-              Confirm remove
+              {busy ? "Removing…" : "Confirm remove"}
             </button>
-          </Dialog>
-        </>
+          </div>
+        </Dialog>
       )}
     </Dialog>
   );

@@ -12,6 +12,8 @@ import styles from "./relationships.module.css";
 import type { Destinations } from "@/shared/config/config";
 import { GovernmentRelationships } from "./GovernmentRelationships";
 import { RelationshipTypeNavigation } from "./RelationshipTypeNavigation";
+import { useIdentity } from "@/shared/auth/identity";
+import { canManageContacts } from "./contact-api";
 export function RelationshipsPage({
   clientId,
   destinations = {},
@@ -28,6 +30,8 @@ export function RelationshipsPage({
 }
 function OrganizationRelationships({ clientId }: { clientId: string }) {
   const query = usePeople(clientId);
+  const identity = useIdentity();
+  const permitted = canManageContacts(identity.data?.role);
   const people = query.data ?? [];
   const params = useSearchParams();
   const router = useRouter();
@@ -51,15 +55,30 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
       <header className="row between">
         <h1>Relationships</h1>
         <div className="row">
-          <button className="button" onClick={() => setReviewing(true)}>
+          <button
+            className="button"
+            disabled={!permitted || !query.isSuccess}
+            onClick={() => setReviewing(true)}
+          >
             Configure hierarchy
           </button>
-          <button className="button primary" onClick={() => open("new")}>
+          <button
+            className="button primary"
+            disabled={!permitted || !query.isSuccess || query.isFetching}
+            onClick={() => open("new")}
+          >
             Add contact
           </button>
         </div>
       </header>
       <RelationshipTypeNavigation />
+      <QueryState
+        error={identity.error}
+        retry={() => void identity.refetch()}
+      />
+      {identity.isSuccess && !permitted && (
+        <p role="status">Your role cannot change organization contacts.</p>
+      )}
       <QueryState
         pending={query.isPending}
         error={query.error}
@@ -78,7 +97,11 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
               {people.length} contacts ·{" "}
               {people.filter((p) => p.hierarchyLevel).length} placed
             </span>
-            <button className="button" onClick={() => setReviewing(true)}>
+            <button
+              className="button"
+              disabled={!permitted}
+              onClick={() => setReviewing(true)}
+            >
               Title-based hierarchy
             </button>
           </div>
@@ -89,7 +112,11 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
                 {review.length} contacts need title or placement review. Verify
                 roles before changing placement.
               </span>
-              <button className="button" onClick={() => setReviewing(true)}>
+              <button
+                className="button"
+                disabled={!permitted}
+                onClick={() => setReviewing(true)}
+              >
                 Review titles
               </button>
             </div>
@@ -111,11 +138,17 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
           )}
           <section className="card stack">
             <h3>Contact list</h3>
+            {people.length > 0 &&
+              !people.some((p) =>
+                `${p.name} ${p.title ?? ""}`
+                  .toLowerCase()
+                  .includes(search.trim().toLowerCase()),
+              ) && <p className="empty">No contacts match your search.</p>}
             {people
               .filter((p) =>
                 `${p.name} ${p.title}`
                   .toLowerCase()
-                  .includes(search.toLowerCase()),
+                  .includes(search.trim().toLowerCase()),
               )
               .map((p) => (
                 <button
@@ -136,7 +169,7 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
         </p>
       )}
       <ContactDrawer
-        key={selected ?? "closed"}
+        key={`${clientId}:${selected ?? "closed"}`}
         clientId={clientId}
         person={person}
         people={people}

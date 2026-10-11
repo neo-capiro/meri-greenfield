@@ -1,54 +1,47 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
-import { acknowledged } from "@/shared/api/http";
-import { personSchema, type Person } from "./contracts";
+import { ApiError } from "@/shared/api/http";
+import { useIdentity } from "@/shared/auth/identity";
+import {
+  canManageContacts,
+  writePerson,
+  type PersonChange,
+} from "./contact-api";
 import { peopleKey } from "./queries";
-type HierarchyInput = {
-  hierarchyLevel?: Person["hierarchyLevel"];
-  reportsToPersonId?: string | null;
-  resetToAutomatic?: boolean;
-  reviewRequired?: boolean;
-};
-type ContactInput = {
-  name: string;
-  title: string;
-  email: string | null;
-  phone: string;
-  role: string;
-  notes: string;
-};
-export type PersonChange =
-  | { kind: "save"; id?: string; body: ContactInput }
-  | { kind: "hierarchy"; id: string; body: HierarchyInput }
-  | { kind: "delete"; id: string };
+export type { PersonChange } from "./contact-api";
+export const peopleWriteKey = (clientId: string) =>
+  ["client-people-write", clientId] as const;
 export function usePersonMutation(clientId: string, onSaved?: () => void) {
   const api = useApi();
   const cache = useQueryClient();
+  const identity = useIdentity();
   return useMutation({
-    mutationFn: (change: PersonChange) => {
-      const root = `clients/${clientId}/people`;
-      if (change.kind === "delete")
-        return api.request("core", `${root}/${change.id}`, acknowledged, {
-          method: "DELETE",
-        });
-      if (change.kind === "hierarchy")
-        return api.request(
-          "core",
-          `${root}/${change.id}/hierarchy`,
-          personSchema,
-          { method: "PATCH", body: change.body },
+    mutationKey: peopleWriteKey(clientId),
+    retry: false,
+    mutationFn: async (change: PersonChange) => {
+      if (!canManageContacts(identity.data?.role))
+        throw new ApiError(
+          403,
+          "Your role cannot change organization contacts.",
         );
-      return api.request(
-        "core",
-        `${root}${change.id ? `/${change.id}` : ""}`,
-        personSchema,
-        { method: change.id ? "PATCH" : "POST", body: change.body },
-      );
+      // The currently executing mutation is already counted. Refuse a second
+      // synchronous submission, including another drawer/hierarchy control.
+      if (cache.isMutating({ mutationKey: peopleWriteKey(clientId) }) > 1)
+        throw new ApiError(
+          409,
+          "Wait for the current contact change to finish.",
+        );
+      return writePerson(api, clientId, change);
     },
     onSuccess: async () => {
       await cache.invalidateQueries({ queryKey: peopleKey(clientId) });
       onSaved?.();
+    },
+    onError: async () => {
+      // An uncertain receipt can follow a committed write. Read back the roster;
+      // never turn a failed/foreign receipt into a successful-looking close.
+      await cache.invalidateQueries({ queryKey: peopleKey(clientId) });
     },
   });
 }
