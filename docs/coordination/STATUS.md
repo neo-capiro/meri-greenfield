@@ -1,6 +1,6 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 08:31 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 08:47 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** Several substantial runtime proofs remain;
 G1 is not close enough to promise a completion time. Codex alone owns this work.
 
@@ -29,6 +29,12 @@ source repair is now accepted; actual private runtime arguments
 were not exported, so the diagnosis is a source-supported inference. Native CA
 and SAN formatting still needs structural diagnosis, with no relaxed acceptance.
 
+The fixed-value native OpenSSL shape diagnostic is independently SOURCE
+accepted at21bd3c036f2a5316e1aa66da65da6cf3f0e19a4d. Root66/66 offline
+controls pass with zero audit attempts/no Prisma import. Qualification
+grammar is unchanged. A fresh namespace6 context is being prepared only;
+no new native experiment is admitted by source acceptance.
+
 The first managed browser wire bootstrap ran once on its exact immutable version.
 Its complete144-event history corroborates one owned empty encrypted1GiB volume
 create and the first delete acknowledgement. Root and a distinct reviewer checked
@@ -37,6 +43,13 @@ physical absence is unproven; Ec2.Ec2Exception is the observed absence error wir
 The two follow-up read-only probes were not admitted or run: root review and
 final DATA preparation missed the strict entry cutoff within original C900.
 The original clock/consumes are preserved, with no reset/retry/manual mutation.
+The separate post-bootstrap read-only provenance profile is independently
+SOURCE accepted at072a42e0bd334db65ff9ee0aa569ddfb8a4b4030 after root20/20
+offline controls/audit0. The old profile and original clock are unchanged;
+historical cleanup stays UNKNOWN. Stage2 planner/executor binding, fresh
+authority and actual read-only observation remain; no proof clock or
+operational admission was allocated.
+
 No browser host has launched. Future wire/absence proof, activation handling and
 an armed teardown are required before host/browser/renderer qualification.
 
