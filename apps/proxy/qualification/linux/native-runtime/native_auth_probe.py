@@ -106,30 +106,22 @@ async def _fixed_route_sequence(client, server, master, deadline):
     require(live.status_code == 200 and live.json() == "I'm alive!", "LIVELINESS_FAILED")
     ready = await request(*ROUTES[1])
     require(ready.status_code == 200 and ready.json() == {"status": "healthy", "db": "connected"}, "NATIVE_DATABASE_NOT_READY")
-    token = None
-    deleted = False
-    try:
-        generated = await request(*ROUTES[2], key=master,
-            body={"duration": "5m", "key_type": "read_only", "models": []})
-        require(generated.status_code == 200, "KEY_GENERATION_FAILED")
-        value = generated.json()
-        token = value.get("key") if type(value) is dict else None
-        require(type(token) is str and token.startswith("sk-") and 16 <= len(token) <= 256 and token != master, "NATIVE_KEY_SHAPE")
-        info = await request(*ROUTES[3], key=token)
-        require(info.status_code == 200 and type(info.json()) is dict and type(info.json().get("info")) is dict, "NATIVE_KEY_NOT_AUTHENTICATED")
-        removed = await request(*ROUTES[4], key=master, body={"keys": [token]})
-        require(removed.status_code == 200 and removed.json() == {"deleted_keys": [token]}, "NATIVE_KEY_DELETE_FAILED")
-        deleted = True
-        rejected = await request(*ROUTES[5], key=token)
-        require(rejected.status_code in (401, 403), "DELETED_KEY_STILL_AUTHENTICATED")
-        return {"nativeKeyAuthenticated": True, "postDeleteDenied": True,
-                "databaseReady": True, "providerCalls": 0, "runtimeAdmitted": False}
-    finally:
-        # A failure does not earn cleanup success. Root owns DB/volume destruction.
-        # Do not silently retry an uncertain delete; its ACK may have been lost.
-        if token is not None and not deleted:
-            # No secret or credential-derived value is emitted in this outcome.
-            pass
+    generated = await request(*ROUTES[2], key=master,
+        body={"duration": "5m", "key_type": "read_only", "models": []})
+    require(generated.status_code == 200, "KEY_GENERATION_FAILED")
+    value = generated.json()
+    token = value.get("key") if type(value) is dict else None
+    require(type(token) is str and token.startswith("sk-") and 16 <= len(token) <= 256 and token != master, "NATIVE_KEY_SHAPE")
+    info = await request(*ROUTES[3], key=token)
+    require(info.status_code == 200 and type(info.json()) is dict and type(info.json().get("info")) is dict, "NATIVE_KEY_NOT_AUTHENTICATED")
+    # Exactly one delete attempt. On any failure root destroys disposable state;
+    # an uncertain ACK never triggers a second delete or a cleanup success claim.
+    removed = await request(*ROUTES[4], key=master, body={"keys": [token]})
+    require(removed.status_code == 200 and removed.json() == {"deleted_keys": [token]}, "NATIVE_KEY_DELETE_FAILED")
+    rejected = await request(*ROUTES[5], key=token)
+    require(rejected.status_code in (401, 403), "DELETED_KEY_STILL_AUTHENTICATED")
+    return {"nativeKeyAuthenticated": True, "postDeleteDenied": True,
+            "databaseReady": True, "providerCalls": 0, "runtimeAdmitted": False}
 
 
 def _read_data(path, cap):

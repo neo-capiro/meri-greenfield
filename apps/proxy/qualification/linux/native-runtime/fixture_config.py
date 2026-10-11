@@ -117,8 +117,8 @@ def bind_native_url(raw, config):
         query = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
         require(len(query) <= 8 and len({k for k, _ in query}) == len(query), "AMBIGUOUS_NATIVE_QUERY")
         require(all(k != "host" for k, _ in query), "EFFECTIVE_HOST_OVERRIDE")
-        # No libpq-to-Prisma equivalence or accepted query-key allowlist is invented.
-        # The operational probe remains disabled until exact native TLS is reviewed.
+        # Operational TLS fields are enforced separately by validate_mounts().
+        # Parsing this URL alone does not prove native TLS behavior.
         return value
     except (UnicodeError, ValueError) as error:
         if isinstance(error, Refused):
