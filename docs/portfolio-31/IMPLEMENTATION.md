@@ -286,3 +286,34 @@ cross-feature internals, repeated domain policy, new dependency or circular impo
 Fetched capirov2 main remains fd8765ec; meri-greenfield main is now fa00d58, whose
 proxy/browser qualification changes do not overlap these frontend paths. No rebase,
 merge, migration, deployment or shared auth/routing setting was performed.
+
+## Facilities projection dependency — 11 October 2026
+
+The facilities owner needs geographic projection and polygon clipping for real
+facility coordinates and current district GeoJSON. The app had no map/projection
+library. Parent owns the app package manifest and lockfile; add only d3-geo 3.1.1
+(ISC, Node >=12) and @types/d3-geo 3.1.1 (MIT). Registry metadata and the upstream
+projection documentation/license were checked on this date. Five small packages
+were added with lifecycle scripts disabled; no root/runtime lockfile is touched.
+The feature owner will reuse React/SVG for accessible selection and D3 for actual
+geographic calculations. No basemap provider, key, paid requests, fixture pins or
+handwritten projection algorithm. Projection/domain and browser integration checks
+will accompany the feature integration; adding the package alone closes no audit ID.
+
+## Preview authentication dependency — 11 October 2026
+
+The official Clerk environment/troubleshooting documentation confirms that a
+production instance requires its configured root domain (a separate subdomain can
+share its production identity). Development instances have independent users and
+settings. GitHub has no allocated meri-greenfield environment/preview target; the
+capirov2 production target is shared and is not an isolated Portfolio preview.
+No hosting, DNS, auth, CORS or shared routing change has been made. The concrete
+remaining requirement is an owner-approved isolated hostname on the production
+Clerk root domain with a separate hosting target, or a matching development
+backend and capiro-internal test tenant. A different test account alone does not
+resolve issuer/origin compatibility. No hosts-file, TLS-trust or Origin bypass is
+used. Continue local contract/interaction checks and authorized read-only API
+checks while that deployment/access boundary remains unresolved.
+
+Sources: https://clerk.com/docs/guides/development/managing-environments and
+https://clerk.com/docs/guides/development/troubleshooting/using-production-keys-in-development.
