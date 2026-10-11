@@ -8,6 +8,7 @@ import { safeWebsite } from "@/features/portfolio/public";
 import { useMeeting } from "./queries";
 import { MeetingArtifacts } from "./MeetingArtifacts";
 import { MeetingForm } from "./MeetingForm";
+import { MeetingPreparation } from "./preparation/public";
 import { formatInstant, type CalendarZone } from "./range";
 export function MeetingDetail({
   id,
@@ -113,66 +114,7 @@ export function MeetingDetail({
               </button>
             </div>
           )}
-          {tab === "preparation" && (
-            <div className="stack">
-              {meeting.preps.map((prep) => (
-                <article className="card stack" key={prep.id}>
-                  <span className="chip">{prep.status}</span>
-                  {prep.summary && <p>{prep.summary}</p>}
-                  {(
-                    ["agenda", "talkingPoints", "risks", "followUps"] as const
-                  ).map((section) => (
-                    <div key={section}>
-                      <h3>
-                        {section === "talkingPoints"
-                          ? "Talking points"
-                          : section === "followUps"
-                            ? "Follow-ups"
-                            : section[0]?.toUpperCase() + section.slice(1)}
-                      </h3>
-                      <ul>
-                        {prep[section].map((value, index) => (
-                          <li key={index}>
-                            {typeof value === "string" ? (
-                              value
-                            ) : "text" in value ? (
-                              value.text
-                            ) : (
-                              <>
-                                <strong>{value.title}</strong>
-                                {value.description && (
-                                  <p>{value.description}</p>
-                                )}
-                                {value.dueDate && (
-                                  <span>Due {value.dueDate}</span>
-                                )}
-                              </>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </article>
-              ))}
-              {meeting.preps.length === 0 && (
-                <p className="empty">No preparation yet.</p>
-              )}
-              {destinations.existingApp ? (
-                <a
-                  className="button"
-                  href={`${destinations.existingApp}/engagement/meetings?meeting=${encodeURIComponent(meeting.id)}`}
-                >
-                  Open meeting preparation in Modules ↗
-                </a>
-              ) : (
-                <p className="muted">
-                  Configure the existing Modules destination to generate and
-                  edit preparation.
-                </p>
-              )}
-            </div>
-          )}
+          {tab === "preparation" && <MeetingPreparation meeting={meeting} />}
           {(tab === "notes" || tab === "debriefs") && (
             <MeetingArtifacts meeting={meeting} kind={tab} />
           )}

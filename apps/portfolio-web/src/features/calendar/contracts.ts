@@ -1,16 +1,6 @@
 import { z } from "zod";
-// Current comprehensive prep persists evidence-linked items; older/edited
-// preparation persists strings. Preserve both verified service shapes.
-export const prepItemSchema = z.union([
-  z.string(),
-  z.object({ text: z.string(), factIds: z.array(z.string()) }),
-  z.object({ text: z.string(), evidenceReferences: z.array(z.string()) }),
-  z.object({
-    title: z.string(),
-    description: z.string(),
-    dueDate: z.string().optional(),
-  }),
-]);
+import { preparationSchema } from "./preparation/schema";
+export { prepItemSchema } from "./preparation/schema";
 export const meetingSchema = z.object({
   id: z.string(),
   subject: z.string(),
@@ -32,18 +22,7 @@ export const meetingSchema = z.object({
       role: z.string().nullable(),
     }),
   ),
-  preps: z.array(
-    z.object({
-      id: z.string(),
-      status: z.string(),
-      summary: z.string().nullable(),
-      agenda: z.array(prepItemSchema),
-      talkingPoints: z.array(prepItemSchema),
-      risks: z.array(prepItemSchema),
-      followUps: z.array(prepItemSchema),
-      createdAt: z.string(),
-    }),
-  ),
+  preps: z.array(preparationSchema),
 });
 export type Meeting = z.infer<typeof meetingSchema>;
 export const hearingSchema = z.object({
