@@ -18,6 +18,7 @@ export function PreparationSettings({
   onGenerate,
   comprehensive,
   canGenerate,
+  canWrite,
 }: {
   meetingId: string;
   client: { id: string; name: string } | null;
@@ -27,6 +28,7 @@ export function PreparationSettings({
   onGenerate: () => void;
   comprehensive: boolean;
   canGenerate: boolean;
+  canWrite: boolean;
 }) {
   const api = useApi();
   const cache = useQueryClient();
@@ -84,14 +86,19 @@ export function PreparationSettings({
                   save.reset();
                   setValidation(undefined);
                 }}
-                disabled={!query.data || query.isError || save.isPending}
+                disabled={
+                  !canWrite || !query.data || query.isError || save.isPending
+                }
               />
             </label>
             <div>
               <button
                 className="button"
-                disabled={!dirty || save.isPending || query.isError}
+                disabled={
+                  !canWrite || !dirty || save.isPending || query.isError
+                }
                 onClick={() => {
+                  if (!canWrite || save.isPending) return;
                   try {
                     setValidation(undefined);
                     save.mutate(parseBoards(boards));
@@ -127,7 +134,7 @@ export function PreparationSettings({
           Search depth
           <select
             value={depth}
-            disabled={!comprehensive}
+            disabled={!canWrite || !comprehensive}
             onChange={(event) => {
               const value = event.target.value;
               if (value === "standard" || value === "deep" || value === "max")

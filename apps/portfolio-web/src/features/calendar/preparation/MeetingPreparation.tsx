@@ -32,8 +32,10 @@ export function MeetingPreparation({
 }) {
   const identity = useIdentity();
   const allowed =
-    identity.data?.role === "standard_user" ||
-    canAdminister(identity.data?.role);
+    !identity.error &&
+    !identity.isPending &&
+    (identity.data?.role === "standard_user" ||
+      canAdminister(identity.data?.role));
   return (
     <ScopedPreparation
       key={`${identity.data?.user.id}:${identity.data?.tenant?.id}:${meeting.id}:${meeting.client?.id}`}
@@ -83,7 +85,7 @@ function ScopedPreparation({
     "research_portfolio_institutional_v1";
   function updateJob(action: "cancel" | "resume") {
     const currentJob = job.data;
-    if (!currentJob || !allowed || change.isPending) return;
+    if (!currentJob || !allowed || institutional || change.isPending) return;
     if (action === "resume") setProgressOpen(true);
     change.mutate({ jobId: currentJob.jobId, action });
   }
@@ -234,7 +236,7 @@ function ScopedPreparation({
               </p>
               <button
                 className="button"
-                disabled={change.isPending}
+                disabled={!allowed || institutional || change.isPending}
                 onClick={() => updateJob("cancel")}
               >
                 Cancel preparation
@@ -304,8 +306,13 @@ function ScopedPreparation({
           {comprehensive && request && job.isSuccess && !active && (
             <button
               className="button"
-              disabled={generate.isPending}
-              onClick={() => generate.mutate(request)}
+              disabled={
+                !allowed || institutional || cancelled || generate.isPending
+              }
+              onClick={() => {
+                if (allowed && !institutional && !cancelled)
+                  generate.mutate(request);
+              }}
             >
               Retry same preparation request
             </button>
@@ -335,6 +342,7 @@ function ScopedPreparation({
           meetingId={meeting.id}
           clientId={meeting.client?.id ?? null}
           prep={editing}
+          canWrite={allowed && !institutional}
           onClose={() => setEditing(undefined)}
         />
       )}
@@ -348,6 +356,7 @@ function ScopedPreparation({
           onGenerate={begin}
           comprehensive={comprehensive}
           canGenerate={canGenerate}
+          canWrite={allowed && !institutional}
         />
       )}
       {sources && prep && (
@@ -363,7 +372,7 @@ function ScopedPreparation({
           <PreparationProgress
             saved={active}
             stage={job.data?.stage}
-            canCancel={active && !change.isPending}
+            canCancel={allowed && !institutional && active && !change.isPending}
             onClose={() => setProgressOpen(false)}
             onCancel={() => {
               updateJob("cancel");

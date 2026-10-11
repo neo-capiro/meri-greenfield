@@ -14,11 +14,13 @@ export function PreparationEditor({
   meetingId,
   clientId,
   prep,
+  canWrite,
   onClose,
 }: {
   meetingId: string;
   clientId: string | null;
   prep: Preparation;
+  canWrite: boolean;
   onClose: () => void;
 }) {
   const api = useApi();
@@ -61,6 +63,7 @@ export function PreparationEditor({
         className={styles.form}
         onSubmit={(event) => {
           event.preventDefault();
+          if (!canWrite || save.isPending) return;
           setValidation(undefined);
           try {
             const body = editedBody(prep, values);
@@ -81,6 +84,7 @@ export function PreparationEditor({
             value={values[field]}
             rows={Math.max(1, Math.min(8, values[field].split(/\r?\n/).length))}
             disabled={
+              !canWrite ||
               save.isPending ||
               (field === "emailEvidence" && structuredEmailEvidence)
             }
@@ -95,6 +99,11 @@ export function PreparationEditor({
           Use one item per line. Editing a section saves its text; unchanged
           sections retain their original evidence references.
         </small>
+        {!canWrite && (
+          <p role="note">
+            Preparation changes are unavailable. Your draft is preserved.
+          </p>
+        )}
         {structuredEmailEvidence && (
           <p role="note">
             Email evidence is read-only here to preserve its saved source
@@ -131,7 +140,7 @@ export function PreparationEditor({
           </button>
           <button
             className="button primary"
-            disabled={!dirty || save.isPending}
+            disabled={!canWrite || !dirty || save.isPending}
           >
             {save.isPending
               ? "Saving…"
