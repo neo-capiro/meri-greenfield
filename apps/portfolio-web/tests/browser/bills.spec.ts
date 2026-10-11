@@ -138,6 +138,9 @@ test("facility edit clears optional values instead of omitting them", async ({
     geocodeStatus: "unresolved",
   };
   let saved = false;
+  await page.route(`**/clients/${clientId}/representation`, (route) =>
+    json(route, []),
+  );
   await page.route(`**/clients/${clientId}/facilities**`, async (route) => {
     if (route.request().method() === "GET")
       return json(route, [
@@ -164,13 +167,18 @@ test("facility edit clears optional values instead of omitting them", async ({
   });
   await page.goto(`/portfolio/${clientId}`);
   await page.getByRole("button", { name: /Test site/ }).click();
+  await page
+    .getByRole("button", { name: "Edit facility", exact: true })
+    .click();
   const edit = page.getByRole("dialog", { name: "Edit facility" });
   await edit.getByLabel("Notes", { exact: true }).fill("");
   await edit.getByLabel("Employees", { exact: true }).fill("");
   await edit.getByLabel("Congressional district", { exact: true }).fill("");
   await edit.getByRole("button", { name: "Save changes" }).click();
   await expect(edit).not.toBeVisible();
-  await page.getByRole("button", { name: /Test site/ }).click();
+  await page
+    .getByRole("button", { name: "Edit facility", exact: true })
+    .click();
   await expect(
     page.getByRole("dialog").getByLabel("Notes", { exact: true }),
   ).toHaveValue("");
