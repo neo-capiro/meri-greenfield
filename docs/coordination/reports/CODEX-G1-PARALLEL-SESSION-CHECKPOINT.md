@@ -1,6 +1,6 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 01:54 UTC. **G0 accepted / G1 active / OPEN;
+Current continuation, 11 October 2026 02:06 UTC. **G0 accepted / G1 active / OPEN;
 eight deployment gates, G2–G7 unentered.** [Owner record](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
 adds independently reviewed profile2 source 697d311→07e9ea4, two bounded design
 reports and new execution preparation a897/a055→d3b1fd8/deb527f. Root verified 73
@@ -9,9 +9,11 @@ passed; CRLF-wrapper and report/seal-transition refusals remain explicit. One
 fresh actual v2 scan completed with both Jobs empty: 280 selected paths, 242 CAS
 objects, 23 ELFs and seven HOLDs. Loader alias/motley/Node parser gaps are resolved
 as data; five unselected Node library families/package/notices/native qualification
-remain. Distinct actual review and finite profile3 expansion are allocated. SDK
-registration 087fc1f and browser bootstrap d3c25af returned 12/51 author checks and
-await root review; no native or cloud admission follows. Full SDK/W05 SessionStore/
+remain. Distinct actual review and finite profile3 expansion are accepted, with
+22 root synthetic tests. SDK registration 087fc1f and browser bootstrap d3c25af
+are integrated with independent 12/51-pass reviews and root exact-commit/seal
+verification; no native or cloud admission follows. A bounded Linux community
+assembly/import/authentication discovery session is active. Full SDK/W05 SessionStore/
 checkpoint/storage/workspace/fencing/replacement, actual proxy/auth/usage/budget/Fargate, browser
 wire/IAM/KMS/absence/host/renderer sandbox, Office/security/cohorts remain.
 No live T0/volume/TestState/host. All 49 current plus five older findings remain OPEN;

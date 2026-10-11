@@ -1,6 +1,6 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 01:54 UTC: **G0 accepted / G1 active / OPEN;
+Current continuation, 11 October 2026 02:06 UTC: **G0 accepted / G1 active / OPEN;
 eight deployment gates, G2–G7 unentered.** [Owner verification](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
 now includes actual offline ABI profile-v2 data: 280 selected paths, 242 CAS objects,
 23 decoded ELFs, and both completed Jobs empty. Node's measured parser limit and
@@ -10,8 +10,12 @@ qualification. This is not image incompatibility or native acceptance. All old
 consumes/results remain. Root's 19 repair checks passed; CRLF review-wrapper and
 late seal/report refusals are retained without test replay or failed-slot reset.
 Managed history (24 root checks) and discovery options (11 root checks) are accepted
-source. New tools registration (12 author checks) and explicit browser bootstrap
-(51 author checks) await root review. No live browser T0/volume/TestState/host;
+source. Root has now accepted profile3 selection after 22 independent synthetic
+checks, plus the distinct actual-v2 DATA review. SDK tool registration and explicit
+browser bootstrap are integrated after independent 12/51-pass reviews and root
+verification of exact commits/seals. These are offline source results. The next
+priority is Linux community assembly, genuine import and disposable PostgreSQL
+authentication. No live browser T0/volume/TestState/host;
 fresh wire/IAM/KMS/absence/sandbox and real native proxy/SDK tests remain. Full
 SDK/W05 SessionStore/checkpoint/workspace/fencing/replacement scope is required.
 All 49 current plus five older findings remain OPEN; Office is DEFERRED. Sources

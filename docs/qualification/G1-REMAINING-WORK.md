@@ -1,15 +1,16 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 01:54 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
+Current continuation, 11 October 2026 02:06 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
 [Actual profile-v2 and source acceptance](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
 records 280 selected paths, 242 CAS objects, 23 ELFs and seven HOLDs after one
-fresh offline scan with both Jobs empty. Review distinct actual-v2 output and
-extend only the measured
-Node library selection; preserve all old outputs/consumes. Establish actual
+fresh offline scan with both Jobs empty. Distinct actual-v2 review and profile3
+selection are now accepted, with 22 root synthetic checks. Obtain actual selected
+library bytes and transitive closure without treating that source as loader proof;
+preserve all old outputs/consumes. Establish actual
 package/notices/community assembly, genuine Linux import, PostgreSQL auth/deny/
-revoke, TLS/ECS identity, usage/durable $10 limit and Fargate. Review returned SDK
-tool registration and browser bootstrap source (reported 12/51 checks); their parent
-source/options/history remain accepted offline. Finish image public-contract
+revoke, TLS/ECS identity, usage/durable $10 limit and Fargate. SDK tool
+registration and browser bootstrap are now accepted with independent 12/51
+checks and root exact-commit/seal verification. Finish image public-contract
 package closure, native deferred search/tool-reference/success/unavailable/
 revocation through actual proxy/Bedrock, full SessionStore/checkpoint/workspace/
 fencing and native interruption/replacement/resume. Browser still needs exact

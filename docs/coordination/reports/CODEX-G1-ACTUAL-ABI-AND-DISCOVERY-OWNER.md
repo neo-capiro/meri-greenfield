@@ -188,3 +188,73 @@ community Linux/package/notices, browser wire/IAM/KMS/physical absence/sandbox/
 egress, Office/security and measured cohorts remain required. All49+five findings
 OPEN/Office DEFERRED; sources disabled/current Meri untouched/no cutover/$0 of$10
 model spend. The75 real requests still await the promised approved location/owner.
+
+## Source integrations accepted, 02:06 UTC
+
+Root independently read the complete profile3 production delta, added tests and
+report, then verified its finite seal and exact three-path commit. Only the
+profile version and five measured Node library names changed in production.
+Root ran the canonical 22 synthetic tests once: all passed, exit 0 in 0.234s,
+source/runtime stable and owned temp directory empty. Binary streams and the
+process envelope were saved before CRLF-safe verdict assertions. No actual
+image scan or native loader ran. Profile3 is source preparation; the actual
+profile2 result and its seven HOLDs remain unchanged.
+
+Root also read the distinct actual-v2 review and verified its seal, exact
+report-only commit and 1,529 references overlapping root's prior actual-data
+proof. Across these two reviews, 1,708 unique files matched. The report retains
+its author's prior supervision-repair involvement and grants no recertification
+of that code. DATA corroboration does not clear runtime/package/license holds.
+
+The returned SDK registration and browser bootstrap sources now pass root
+acceptance for offline source integration. Root read their complete changes,
+tests and reports, inspected both independent review reports, and verified all
+four seals and exact changed-path/raw-Git bindings: 3,148 record occurrences,
+1,652 unique files. The independent runs passed 12 SDK adapter and 51 browser
+checks once each; root corroborated their retained process/stream receipts
+without replaying those successful tests. Both reviewers disclose their prior
+related work. No actual SDK factory, gateway authority, cloud or browser-host
+execution is established by these checks.
+
+| Author commit | Integration commit | Accepted scope |
+|---|---|---|
+| 485cf96d675ea9ae2d75b8abb0baac61f893f464 | de4c01136f48fbf919aa39db03dd29fa1c7f2a50 | Profile3 finite Node dependency selection; 22 root checks |
+| 892b72d93a4e62a204124ade8ef7ca378166ee59 | 04912b7f77e4f8c691266ceb6c7385895db850b7 | Distinct actual-v2 DATA reconciliation; HOLD unchanged |
+| 087fc1f21483febe5aa08818071432eacff10e15 | bbceafd047204274429d3de205f42cbe84086ad7 | Two fixed synthetic SDK tool adapters; source only |
+| ad83df5cf3bf4eab8b16bbdf3e7a0aee50bd0c64 | dfd47f152091be2092341cc2fe364df9b01c9230 | Independent 12-pass adapter review |
+| d3c25af8d554f1f86b2b48e8e912982ae8f1287b | 9b8991462b3fa1af7454065ca65201d7e315aeb1 | Explicit finite browser-bootstrap factories; source only |
+| 22c03f6c92b5682de7550b3543c698e748b44d68 | a457f46d7fa16eebccdbd2acced4ca434b45e7d5 | Independent 51-pass browser source review |
+
+Root proof locations under ignored `.task-inputs/`:
+
+| Proof | Bytes | SHA256 |
+|---|---:|---|
+| abi3-v2-report-owner-review-1/decision.json | 497104 | `4c4d30a51dfea6eeb4484b45d28990f86f1a5b466e5795cc47e1a48aa0837f44` |
+| discovery-bootstrap-final-owner-review-1/decision.json | 421990 | `272aba494793127ac64de8d436d1e129ad2f7a83b154947fff9028f2a6dd4148` |
+
+The registration module uses the public contracts export and preserves gateway
+execution as the current-authority boundary. Its inherited options import and
+worker-image package closure still need repair. The bootstrap shares canonical
+binding, graph and template owners; old inert products remain byte-compatible.
+Its descriptor hash is finite project DATA identity, not RFC8785 or authority.
+Actual bootstrap history/probe integration, fresh IAM/KMS/cost/admission, wire
+behavior, managed survival and physical absence remain open.
+
+The human's research was checked against current primary SDK documentation.
+[SessionStore writes are best-effort](https://code.claude.com/docs/en/agent-sdk/session-storage),
+and its use conflicts with the SDK's enableFileCheckpointing option. That option
+is distinct from an application-owned immutable workspace/recovery snapshot;
+the plan's W05 wording does not itself select an unsupported option combination.
+The research's suggestion to defer SessionStore is not adopted. Both planned
+responsibilities remain required; their concrete integration must be verified.
+[Discovery settings](https://code.claude.com/docs/en/agent-sdk/tool-search) confirm
+the fixture's search flag and beta-disable omission.
+[Server-side Bedrock tool search](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool)
+requires InvokeModel; this does not establish what our pinned SDK/proxy emits.
+
+Next priority is the supported Linux community assembly, genuine import and
+disposable-PostgreSQL authentication path, with a bounded primary-source
+discovery session active. No further Windows package install is allocated.
+Full SDK/Fargate/W05 scope, isolated environment, existing browser-host exception,
+all security holds, disabled source connections and $0/$10 spend remain unchanged.
+G0 is accepted, G1 remains OPEN and G2–G7 are unentered.
