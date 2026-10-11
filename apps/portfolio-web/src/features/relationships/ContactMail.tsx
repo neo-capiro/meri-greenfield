@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { type Person } from "./contracts";
+import { type MailContact } from "./email";
 import { useContactThreads, useMailThread } from "./email";
 import { MailCompose } from "./MailCompose";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -10,7 +10,7 @@ export function ContactMail({
   person,
 }: {
   clientId: string;
-  person: Person;
+  person: MailContact;
 }) {
   const query = useContactThreads(clientId, person.email);
   const [selected, setSelected] = useState<string | null>(null);

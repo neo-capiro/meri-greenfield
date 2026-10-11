@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useSaveMeeting } from "./mutations";
 import { useState } from "react";
 import { Temporal } from "temporal-polyfill";
@@ -122,13 +123,11 @@ export function MeetingForm({
             defaultValue={meeting?.location ?? ""}
           />
         </label>
-        <label>
-          Description
-          <textarea
-            name="description"
-            defaultValue={meeting?.description ?? ""}
-          />
-        </label>
+        <TextareaField
+          label="Description"
+          name="description"
+          defaultValue={meeting?.description ?? ""}
+        />
         {validation && (
           <p className="danger" role="alert">
             {validation}

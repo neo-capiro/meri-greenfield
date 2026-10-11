@@ -1,8 +1,81 @@
 import type { Page, Route } from "@playwright/test";
 export const clientId = "10000000-0000-4000-8000-000000000001";
 export const personId = "20000000-0000-4000-8000-000000000001";
+export const opportunity = {
+  id: "sam_gov:notice/one",
+  source: "sam_gov" as const,
+  sourceRecordId: "notice/one",
+  title: "Test opportunity",
+  agency: "Test agency",
+  type: "contract" as const,
+  lifecycle: "active" as const,
+  deadline: "2026-10-24",
+  summary: "Synthetic record",
+  value: 1250000,
+  valueBasis: "source_backed" as const,
+  relevanceScore: 0.8,
+  matchedSignals: [
+    {
+      signal: "sensor",
+      strength: "strong" as const,
+      matchedOn: "Test sensor capability",
+    },
+  ],
+  eligibility: {
+    state: "needs_review" as const,
+    reason: "Review source requirements",
+  },
+  clientId,
+  decoration: {
+    workflow: { available: true, status: "pursuing", unavailableReason: null },
+    bookmark: { saved: true, scope: "client" as const, clientId },
+    capabilities: {
+      save: { allowed: true, reason: "Allowed" },
+      pursue: { allowed: false, reason: "Review required" },
+    },
+  },
+};
+export const opportunitySearch = {
+  opportunities: [opportunity],
+  page: 1,
+  pageSize: 20,
+  total: 1,
+  totalIsCapped: false,
+  catalogComplete: true,
+  counts: { active: 1, grants: 0, contracts: 1, closed: 0 },
+  mode: "matched",
+  clientId,
+  freshness: [
+    {
+      source: "sam_gov",
+      state: "current",
+      lastSyncedAt: "2026-10-10T12:00:00Z",
+    },
+  ],
+  profileGaps: null,
+  generatedAt: "2026-10-11T12:00:00Z",
+};
 export const objectiveId = "30000000-0000-4000-8000-000000000001";
 export const capabilityId = "40000000-0000-4000-8000-000000000001";
+export const prospectId = "70000000-0000-4000-8000-000000000001";
+export const prospect = {
+  id: prospectId,
+  displayName: "Test Prospect",
+  domain: "prospect.test",
+  website: "https://prospect.test",
+  description: "Synthetic prospect for isolated validation.",
+  serviceHypothesis: "Advocacy",
+  geography: "Virginia",
+  ownerUserId: null,
+  stage: "proposal",
+  status: "active",
+  nextAction: "Review proposal",
+  nextActionDueAt: "2026-11-05T14:00:00Z",
+  linkedClientId: null,
+  convertedAt: null,
+  createdAt: "2026-10-01T12:00:00Z",
+  updatedAt: "2026-10-01T12:00:00Z",
+};
 export const client = {
   id: clientId,
   name: "Test Aerospace",
@@ -122,6 +195,19 @@ export async function installFixtures(page: Page) {
         tenant: { id: "tenant-test", name: "UI tests" },
         role: "user_admin",
       },
+      "core/business-development/prospect-stages": null,
+      "core/business-development/prospects": {
+        prospects: [prospect],
+        counts: {
+          visible: 1,
+          total: 1,
+          active: 1,
+          dismissed: 0,
+          byStage: { proposal: 1 },
+        },
+      },
+      [`core/business-development/prospects/${prospectId}`]: prospect,
+      [`core/business-development/prospects/${prospectId}/history`]: [],
       [`core/clients/${clientId}/people`]: [person],
       [`core/clients/${clientId}/team`]: [],
       [`core/clients/${clientId}/activity`]: [],
@@ -136,6 +222,26 @@ export async function installFixtures(page: Page) {
       },
       "core/engagement/mail-threads": [],
       "core/me/email-signature": { html: null, enabled: false },
+      "core/intelligence/opportunities/v2/search": opportunitySearch,
+      [`core/intelligence/clients/${clientId}/pe-relevance`]: {
+        data: [
+          {
+            peCode: "0604134A",
+            title: "Synthetic test program",
+            score: 0.91,
+            paths: [
+              {
+                path: "capability_pe_direct",
+                score: 1,
+                evidence: ["Explicit capability reference"],
+              },
+            ],
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 20,
+      },
       "core/engagement/attachments": [
         file,
         {
@@ -161,7 +267,21 @@ export async function installFixtures(page: Page) {
       },
       "strategy/planner/tasks": { items: [], nextCursor: null },
       "core/federal-register/upcoming-deadlines": [],
+      [`intelligence/clients/${clientId}/tracker/board`]: {
+        columns: [
+          { id: "introduced", label: "Introduced", cards: [] },
+          { id: "committee", label: "In committee", cards: [] },
+          { id: "passed", label: "Passed chamber", cards: [] },
+          { id: "enacted", label: "Enacted", cards: [] },
+        ],
+        total: 0,
+        nextCursor: null,
+        hasMore: false,
+        withheld: 0,
+      },
     };
+    if (path === "core/business-development/prospect-stages")
+      return json(route, { message: "New stages unavailable" }, 404);
     if (path in responses) return json(route, responses[path]);
     unexpected.push(`${method} ${path}`);
     await json(route, { message: "No fixture for this contract" }, 500);

@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { TokenInput } from "@/shared/ui/TokenInput";
@@ -133,22 +134,18 @@ export function CapabilityEditor({
             />
           </>
         )}
-        <label>
-          Description
-          <textarea
-            name="description"
-            defaultValue={capability?.description ?? ""}
-            maxLength={20000}
-          />
-        </label>
-        <label>
-          Notes
-          <textarea
-            name="notes"
-            defaultValue={capability?.notes ?? ""}
-            maxLength={20000}
-          />
-        </label>
+        <TextareaField
+          label="Description"
+          name="description"
+          defaultValue={capability?.description ?? ""}
+          maxLength={20000}
+        />
+        <TextareaField
+          label="Notes"
+          name="notes"
+          defaultValue={capability?.notes ?? ""}
+          maxLength={20000}
+        />
         {!capability && (
           <small>
             Save first to add PE numbers, match keywords and documents to the

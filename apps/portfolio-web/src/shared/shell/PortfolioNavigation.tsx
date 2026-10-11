@@ -3,19 +3,9 @@
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import styles from "./shell.module.css";
+import { clientViews } from "./client-views";
 
 const asset = (index: number) => `/design/471-93465-imgIcon${index || ""}.svg`;
-const clientItems = [
-  ["Overview", "", 3],
-  ["Objectives", "/objectives", 4],
-  ["Calendar", "/calendar", 5],
-  ["Relationships", "/relationships", 1],
-  ["Work", "/work", 6],
-  ["Capabilities", "/capabilities", 7],
-  ["Bill Tracker", "/bills", 8],
-  ["Opportunities", "/opportunities", 9],
-  ["Files", "/files", 8],
-] as const;
 
 export function PortfolioNavigation({
   client,
@@ -70,7 +60,7 @@ export function PortfolioNavigation({
             {client.name}
           </p>
           <nav aria-label="Client" onClick={onNavigate}>
-            {clientItems.map(([label, suffix, icon]) => (
+            {clientViews.map(({ label, suffix, icon }) => (
               <Link
                 key={suffix}
                 href={`/portfolio/${client.id}${suffix}`}

@@ -6,6 +6,7 @@ export const serviceKeys = [
   "meri",
 ] as const;
 export type Service = (typeof serviceKeys)[number];
+export type TrackerBackend = "core" | "intelligence";
 export type Destinations = {
   meri?: string;
   modules?: string;
@@ -17,6 +18,7 @@ export type RuntimeConfig = {
   destinations: Destinations;
   authConfigured: boolean;
   publishableKey?: string;
+  trackerBackend?: TrackerBackend;
   issues: string[];
 };
 const variables: Record<Service, string> = {
@@ -57,6 +59,13 @@ export function readConfig(
   env: Record<string, string | undefined>,
 ): RuntimeConfig {
   const issues: string[] = [];
+  const trackerBackend = env.TRACKER_BACKEND?.trim() || undefined;
+  if (
+    trackerBackend &&
+    trackerBackend !== "core" &&
+    trackerBackend !== "intelligence"
+  )
+    issues.push("TRACKER_BACKEND must be core or intelligence.");
   const services: RuntimeConfig["services"] = {};
   for (const key of serviceKeys) {
     const value = validatedUrl(env[variables[key]], variables[key], issues);
@@ -90,6 +99,10 @@ export function readConfig(
     issues.push("CORE_API_BASE_URL is required for Portfolio.");
   return {
     services,
+    trackerBackend:
+      trackerBackend === "core" || trackerBackend === "intelligence"
+        ? trackerBackend
+        : undefined,
     destinations,
     publishableKey: authConfigured ? publicKey : undefined,
     authConfigured:

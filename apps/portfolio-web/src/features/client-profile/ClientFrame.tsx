@@ -4,6 +4,8 @@ import type { Destinations } from "@/shared/config/config";
 import { Shell } from "@/shared/shell/Shell";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useClient } from "@/features/portfolio/public";
+import { ClientHeader } from "./ClientHeader";
+import styles from "./client-header.module.css";
 export function ClientFrame({
   clientId,
   destinations,
@@ -28,7 +30,12 @@ export function ClientFrame({
           />
         </div>
       ) : (
-        children
+        client.data && (
+          <>
+            <ClientHeader client={client.data} />
+            <div className={styles.content}>{children}</div>
+          </>
+        )
       )}
     </Shell>
   );

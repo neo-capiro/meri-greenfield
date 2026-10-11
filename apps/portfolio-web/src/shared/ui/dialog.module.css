@@ -32,3 +32,6 @@
   border-radius: 16px 0 0 16px;
   width: min(600px, 100vw);
 }
+.wide {
+  width: min(1280px, calc(100vw - 32px));
+}

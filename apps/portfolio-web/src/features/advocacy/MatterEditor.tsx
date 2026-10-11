@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useSaveMatter } from "./mutations";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -84,14 +85,12 @@ export function MatterEditor({
             </select>
           </label>
         )}
-        <label>
-          Summary
-          <textarea
-            name="summary"
-            maxLength={4000}
-            defaultValue={matter?.summary ?? ""}
-          />
-        </label>
+        <TextareaField
+          label="Summary"
+          name="summary"
+          maxLength={4000}
+          defaultValue={matter?.summary ?? ""}
+        />
         <QueryState error={mutation.error} />
         <button className="button primary" disabled={mutation.isPending}>
           {mutation.isPending

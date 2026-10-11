@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useSaveProfileNotes } from "./mutations";
 import { useIdentity, canAdminister } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
@@ -28,16 +29,14 @@ export function NotesDialog({
           );
         }}
       >
-        <label>
-          Notes
-          <textarea
-            name="notes"
-            defaultValue={client.data?.intakeData?.profileNotes ?? ""}
-            readOnly={!editable}
-            rows={12}
-            maxLength={20000}
-          />
-        </label>
+        <TextareaField
+          label="Notes"
+          name="notes"
+          defaultValue={client.data?.intakeData?.profileNotes ?? ""}
+          readOnly={!editable}
+          rows={12}
+          maxLength={20000}
+        />
         {!editable && (
           <small>
             Editing profile notes requires an administrator. Use Quick log to

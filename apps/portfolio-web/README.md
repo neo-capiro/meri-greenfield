@@ -39,7 +39,8 @@ prove live authentication, tenant access, provider writes or deployed behavior.
 | CORE_API_BASE_URL                                           | Clients, people, facilities, team, advocacy, Objectives candidate, Engagement meetings/mail/files, hearings/deadlines |
 | STRATEGY_API_BASE_URL                                       | Strategies and paginated Planner tasks                                                                                |
 | WORKSPACE_API_BASE_URL                                      | Existing Workspace drafts/documents/artifacts                                                                         |
-| INTELLIGENCE_API_BASE_URL                                   | Intelligence feeds; feature contracts still being revalidated                                                         |
+| INTELLIGENCE_API_BASE_URL                                   | Intel Bill Tracker board, paginated search and versioned watchlist configuration                                      |
+| TRACKER_BACKEND                                             | Explicit `core` or `intelligence` owner; no automatic fallback between services                                        |
 | MERI_API_BASE_URL                                           | Reserved; no alternate Meri implementation                                                                            |
 | CAPIRO_EXISTING_APP_URL                                     | Existing Workspace/Strategies/meeting preparation deep links                                                          |
 | CAPIRO_MERI_URL / CAPIRO_MODULES_URL / CAPIRO_WORKSPACE_URL | Existing shell destinations; unavailable actions stay visibly disabled                                                |
@@ -67,11 +68,29 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Current local evidence: 45 unit checks, 8 synthetic browser checks, TypeScript,
-ESLint, architecture and production build pass. This checkpoint still requires
-full Figma asset/interaction review and live acceptance. Production dependency
-audit reports zero advisories. ESLint's development-only braces dependency has
-an outstanding upstream advisory; no incompatible lint downgrade was applied.
+Current local evidence: 61 unit checks, 21 synthetic browser checks, TypeScript,
+architecture and production build pass. ESLint passes with one static SVG image
+warning. Representative screens were reviewed against current Figma, including
+desktop and phone dark captures; full workflow/visual acceptance remains open.
+The actual Next production server also passes setup/deep-link/fail-closed proxy
+checks without configured credentials. These checks do not establish live
+authentication or backend acceptance. The previous dependency audit found zero
+production advisories; ESLint's development-only braces advisory remains open.
+
+## Current feature boundaries
+
+Prospects use Business Development records, separate from legacy client-profile
+types. New creates and stage writes require the guarded stage-catalog candidate
+in capirov2 PR #2365. Existing legacy stages remain visible without an invented
+migration mapping. Proposals, conversion and billing remain separate open flows.
+
+Bill Tracker owns focused adapters for the materially different core and Intel
+contracts. Watchlist version conflicts and partial rejection retain edits.
+Opportunities and budget-program reads preserve source identity and client scope,
+then hand off to the existing Modules for details. Government Relationships own
+directory paging, committee hierarchy, target mutations and recommendations;
+reviewed email reuses the organization-contact mail flow. Client header quick
+adds reuse existing dialogs and routes. Unavailable Meri actions stay disabled.
 
 See `../../docs/portfolio-31/IMPLEMENTATION.md` and the task implementation matrix
 for remaining workflows and contract dependencies. Historical audit API labels

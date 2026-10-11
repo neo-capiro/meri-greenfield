@@ -90,6 +90,55 @@ describe("configuration and service boundary", () => {
     );
     expect(result.status).toBe(400);
   });
+  it("preserves an OpenStates identity as one encoded detail parameter", async () => {
+    const id = "ocd-person/80000000-0000-4000-8000-000000000001";
+    const network = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ id }));
+    const result = await proxyRequest(
+      new Request(
+        "http://localhost:5188/api/backend/core/explorer/state-legislators/test",
+      ),
+      "core",
+      ["explorer", "state-legislators", id],
+      config,
+      async () => "minted",
+      network,
+    );
+    expect(result.status).toBe(200);
+    expect(String(network.mock.calls[0]?.[0])).toBe(
+      "https://core.example.test/api/explorer/state-legislators/ocd-person%2F80000000-0000-4000-8000-000000000001",
+    );
+  });
+  it.each([
+    ["explorer", "state-legislators", "ocd-person/../../me"],
+    [
+      "explorer",
+      "state-legislators",
+      "ocd-person%2F80000000-0000-4000-8000-000000000001",
+    ],
+    [
+      "explorer",
+      "state-legislators",
+      "ocd-person/80000000-0000-4000-8000-000000000001",
+      "me",
+    ],
+    ["directory", "members", "ocd-person/80000000-0000-4000-8000-000000000001"],
+  ])("keeps the state identity exception bounded: %j", async (...path) => {
+    const network = vi.fn();
+    const result = await proxyRequest(
+      new Request(
+        "http://localhost:5188/api/backend/core/explorer/state-legislators/test",
+      ),
+      "core",
+      path,
+      config,
+      async () => "minted",
+      network,
+    );
+    expect(result.status).toBe(400);
+    expect(network).not.toHaveBeenCalled();
+  });
   it("rejects a cross-origin mutation before minting a token", async () => {
     const token = vi.fn();
     const result = await proxyRequest(

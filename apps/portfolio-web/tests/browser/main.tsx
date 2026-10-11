@@ -10,6 +10,10 @@ import { RelationshipsPage } from "@/features/relationships/RelationshipsPage";
 import { CapabilitiesPage } from "@/features/capabilities/CapabilitiesPage";
 import { CalendarPage } from "@/features/calendar/CalendarPage";
 import { FilesPage } from "@/features/files/FilesPage";
+import { ProspectsIndex } from "@/features/prospects/ProspectsIndex";
+import { ProspectDetail } from "@/features/prospects/ProspectDetail";
+import { BillTrackerPage } from "@/features/bill-tracker/BillTrackerPage";
+import { OpportunitiesPage } from "@/features/opportunities/OpportunitiesPage";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -21,6 +25,12 @@ const destinations = {
 function App() {
   const path = usePathname();
   const [, , clientId, tab] = path.split("/");
+  if (clientId === "prospects")
+    return tab ? (
+      <ProspectDetail id={tab} destinations={destinations} />
+    ) : (
+      <ProspectsIndex destinations={destinations} />
+    );
   if (path === "/calendar")
     return (
       <Shell destinations={destinations}>
@@ -29,14 +39,27 @@ function App() {
     );
   if (!clientId) return <PortfolioIndex destinations={destinations} />;
   const content =
-    tab === "files" ? (
+    tab === "opportunities" ? (
+      <OpportunitiesPage clientId={clientId} destinations={destinations} />
+    ) : tab === "bills" ? (
+      <BillTrackerPage
+        clientId={clientId}
+        backend={
+          new URLSearchParams(window.location.search).get("testBackend") ===
+          "core"
+            ? "core"
+            : "intelligence"
+        }
+        destinations={destinations}
+      />
+    ) : tab === "files" ? (
       <FilesPage clientId={clientId} destinations={destinations} />
     ) : tab === "objectives" ? (
       <ObjectivesPage clientId={clientId} />
     ) : tab === "work" ? (
       <WorkPage clientId={clientId} destinations={destinations} />
     ) : tab === "relationships" ? (
-      <RelationshipsPage clientId={clientId} />
+      <RelationshipsPage clientId={clientId} destinations={destinations} />
     ) : tab === "capabilities" ? (
       <CapabilitiesPage clientId={clientId} destinations={destinations} />
     ) : tab === "calendar" ? (

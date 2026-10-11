@@ -10,6 +10,7 @@ export function Dialog({
   description,
   children,
   drawer = false,
+  wide = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -17,13 +18,14 @@ export function Dialog({
   description?: string;
   children: ReactNode;
   drawer?: boolean;
+  wide?: boolean;
 }) {
   return (
     <Primitive.Root open={open} onOpenChange={onOpenChange}>
       <Primitive.Portal>
         <Primitive.Overlay className={styles.overlay} />
         <Primitive.Content
-          className={`${styles.content} ${drawer ? styles.drawer : ""}`}
+          className={`${styles.content} ${drawer ? styles.drawer : ""} ${wide ? styles.wide : ""}`}
         >
           <header className="row between">
             <Primitive.Title asChild>

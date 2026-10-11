@@ -1,7 +1,9 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useCreateProfile } from "./mutations";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { createProfileSchema } from "./contracts";
@@ -44,18 +46,16 @@ export function CreateProfileDialog({
       description="Create a client organization and its primary contact."
     >
       <form onSubmit={submit} className="stack">
+        <p className="muted">
+          Adding a prospect?{" "}
+          <Link href="/portfolio/prospects?new=1">Open Add prospect ↗</Link>
+        </p>
         <div className="formGrid">
           <label>
             Organization name
             <input name="name" required maxLength={200} autoFocus />
           </label>
-          <label>
-            Profile type
-            <select name="profileType">
-              <option value="CLIENT">Client</option>
-              <option value="PROSPECT">Prospect profile</option>
-            </select>
-          </label>
+          <input type="hidden" name="profileType" value="CLIENT" />
           <label>
             Website
             <input name="website" placeholder="example.org" />
@@ -77,10 +77,7 @@ export function CreateProfileDialog({
             <input name="primaryContactPhone" type="tel" />
           </label>
         </div>
-        <label>
-          Organization description
-          <textarea name="description" />
-        </label>
+        <TextareaField label="Organization description" name="description" />
         {validation && (
           <p role="alert" className="danger">
             {validation}

@@ -84,6 +84,6 @@ export const createProfileSchema = z.object({
   primaryContactName: z.string().trim(),
   primaryContactEmail: z.union([z.email(), z.literal("")]),
   primaryContactPhone: z.string().trim(),
-  profileType: z.enum(["CLIENT", "PROSPECT"]),
+  profileType: z.literal("CLIENT"),
 });
 export type CreateProfile = z.infer<typeof createProfileSchema>;

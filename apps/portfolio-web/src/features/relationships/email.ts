@@ -94,12 +94,18 @@ export function useSignature() {
 }
 type SendInput = {
   clientId: string;
-  personIds: string[];
+  personIds?: string[];
   to: { email: string; name: string }[];
   subject: string;
   bodyHtml: string;
   appendSignature: boolean;
   threadId?: string;
+};
+export type MailContact = {
+  personId?: string;
+  name: string;
+  title: string | null;
+  email: string | null;
 };
 export function useSendMail() {
   const api = useApi();

@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useSaveObjective } from "./mutations";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
@@ -82,26 +83,23 @@ export function ObjectiveEditor({
           </span>
           <small>Four required fields before review or ready.</small>
         </div>
-        <label>
-          Outcome<span className="muted">What should be different?</span>
-          <textarea
-            autoFocus
-            maxLength={2000}
-            value={fields.outcome}
-            onChange={(e) => setFields({ ...fields, outcome: e.target.value })}
-          />
-        </label>
-        <label>
-          Government problem
-          <span className="muted">What must government solve?</span>
-          <textarea
-            maxLength={4000}
-            value={fields.governmentProblem}
-            onChange={(e) =>
-              setFields({ ...fields, governmentProblem: e.target.value })
-            }
-          />
-        </label>
+        <TextareaField
+          label="Outcome"
+          hint="What should be different?"
+          autoFocus
+          maxLength={2000}
+          value={fields.outcome}
+          onChange={(e) => setFields({ ...fields, outcome: e.target.value })}
+        />
+        <TextareaField
+          label="Government problem"
+          hint="What must government solve?"
+          maxLength={4000}
+          value={fields.governmentProblem}
+          onChange={(e) =>
+            setFields({ ...fields, governmentProblem: e.target.value })
+          }
+        />
         <label>
           Ask type
           <select
@@ -122,28 +120,20 @@ export function ObjectiveEditor({
             ))}
           </select>
         </label>
-        <label>
-          Minimum win
-          <span className="muted">
-            What is the smallest result that matters?
-          </span>
-          <textarea
-            maxLength={2000}
-            value={fields.minimumWin}
-            onChange={(e) =>
-              setFields({ ...fields, minimumWin: e.target.value })
-            }
-          />
-        </label>
-        <label>
-          Limits{" "}
-          <span className="muted">Optional boundaries and constraints</span>
-          <textarea
-            maxLength={4000}
-            value={fields.limits}
-            onChange={(e) => setFields({ ...fields, limits: e.target.value })}
-          />
-        </label>
+        <TextareaField
+          label="Minimum win"
+          hint="What is the smallest result that matters?"
+          maxLength={2000}
+          value={fields.minimumWin}
+          onChange={(e) => setFields({ ...fields, minimumWin: e.target.value })}
+        />
+        <TextareaField
+          label="Limits"
+          hint="Optional boundaries and constraints"
+          maxLength={4000}
+          value={fields.limits}
+          onChange={(e) => setFields({ ...fields, limits: e.target.value })}
+        />
         {record?.status !== "draft" && record && (
           <small>Saving changes reopens this objective as a draft.</small>
         )}

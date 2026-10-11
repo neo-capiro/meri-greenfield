@@ -159,8 +159,15 @@ export function ClientOverview({ clientId }: { clientId: string }) {
       <NotesDialog
         key={showNotes ? "open" : "closed"}
         clientId={clientId}
-        open={showNotes}
-        onOpenChange={setShowNotes}
+        open={showNotes || params.has("notes")}
+        onOpenChange={(open) => {
+          setShowNotes(open);
+          if (!open && params.has("notes")) {
+            const next = new URLSearchParams(params);
+            next.delete("notes");
+            router.replace(`/portfolio/${clientId}?${next}`, { scroll: false });
+          }
+        }}
       />
       <QuickLog
         clientId={clientId}

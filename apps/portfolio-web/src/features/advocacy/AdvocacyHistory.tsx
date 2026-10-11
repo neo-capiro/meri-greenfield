@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useAddAdvocacyRecord } from "./mutations";
 import { useState } from "react";
 import { Plus } from "lucide-react";
@@ -203,10 +204,7 @@ function RecordDialog({
           Date and time (your browser time zone)
           <input name="activityDate" type="datetime-local" />
         </label>
-        <label>
-          Summary
-          <textarea name="summary" maxLength={4000} />
-        </label>
+        <TextareaField label="Summary" name="summary" maxLength={4000} />
         <QueryState error={mutation.error} />
         <button className="button primary" disabled={mutation.isPending}>
           Save record

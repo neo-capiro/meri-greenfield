@@ -9,7 +9,24 @@ import { titleOverlaps } from "./contracts";
 import { OrganizationChart } from "./OrganizationChart";
 import { ContactDrawer } from "./ContactDrawer";
 import styles from "./relationships.module.css";
-export function RelationshipsPage({ clientId }: { clientId: string }) {
+import type { Destinations } from "@/shared/config/config";
+import { GovernmentRelationships } from "./GovernmentRelationships";
+import { RelationshipTypeNavigation } from "./RelationshipTypeNavigation";
+export function RelationshipsPage({
+  clientId,
+  destinations = {},
+}: {
+  clientId: string;
+  destinations?: Destinations;
+}) {
+  const params = useSearchParams();
+  return params.get("kind") === "government" ? (
+    <GovernmentRelationships clientId={clientId} destinations={destinations} />
+  ) : (
+    <OrganizationRelationships clientId={clientId} />
+  );
+}
+function OrganizationRelationships({ clientId }: { clientId: string }) {
   const query = usePeople(clientId);
   const people = query.data ?? [];
   const params = useSearchParams();
@@ -42,18 +59,7 @@ export function RelationshipsPage({ clientId }: { clientId: string }) {
           </button>
         </div>
       </header>
-      <nav className="row" aria-label="Relationship type">
-        <button className="button" aria-current="page">
-          Organization
-        </button>
-        <button
-          className="button"
-          disabled
-          title="Government relationship workflow is being connected"
-        >
-          Government relationships
-        </button>
-      </nav>
+      <RelationshipTypeNavigation />
       <QueryState
         pending={query.isPending}
         error={query.error}

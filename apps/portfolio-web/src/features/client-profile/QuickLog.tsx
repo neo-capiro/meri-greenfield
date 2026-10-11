@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useLogActivity } from "./mutations";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -52,10 +53,7 @@ export function QuickLog({
           Title
           <input name="title" required maxLength={300} autoFocus />
         </label>
-        <label>
-          Details
-          <textarea name="body" maxLength={5000} />
-        </label>
+        <TextareaField label="Details" name="body" maxLength={5000} />
         <small>Logged email records history; it does not send a message.</small>
         <QueryState error={mutation.error} />
         <div className="formActions">

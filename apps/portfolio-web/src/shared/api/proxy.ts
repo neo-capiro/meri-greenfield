@@ -9,12 +9,14 @@ const permittedRoots: Record<Service, readonly string[]> = {
     "legiwatch",
     "federal-register",
     "funding-opportunities",
-    "prospects",
-    "proposals",
+    "business-development",
+    "intelligence",
+    "directory",
+    "explorer",
   ],
   strategy: ["planner", "strategies"],
   workspace: ["drafts", "documents", "artifacts"],
-  intelligence: ["clients", "legiwatch", "opportunities"],
+  intelligence: ["clients", "legiwatch", "opportunities", "tracker"],
   meri: [],
 };
 const jsonError = (status: number, message: string) =>
@@ -33,15 +35,26 @@ export async function proxyRequest(
   if (!Object.hasOwn(permittedRoots, service))
     return jsonError(404, "Unknown service.");
   const selected = service as Service;
+  // OpenStates uses an opaque ocd-person/<UUID> as one route parameter. Accept
+  // that exact identity shape only at the verified state-legislator detail path.
+  const statePersonId =
+    selected === "core" &&
+    path.length === 3 &&
+    path[0] === "explorer" &&
+    path[1] === "state-legislators" &&
+    /^ocd-person\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      path[2] ?? "",
+    );
   if (
     !path.length ||
     !permittedRoots[selected].includes(path[0] ?? "") ||
     path.some(
-      (segment) =>
+      (segment, index) =>
         !segment ||
         segment === "." ||
         segment === ".." ||
-        /[\\/%?#\x00-\x1f]/.test(segment),
+        /[\\%?#\x00-\x1f]/.test(segment) ||
+        (segment.includes("/") && !(index === 2 && statePersonId)),
     )
   ) {
     return jsonError(400, "Invalid service path.");

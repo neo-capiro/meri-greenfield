@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useSaveFacility } from "./mutations";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
@@ -25,14 +26,17 @@ export function FacilityDialog({
     event.preventDefault();
     const raw = Object.fromEntries(new FormData(event.currentTarget));
     const body: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(raw))
-      if (typeof value === "string" && value.trim()) body[key] = value.trim();
+    for (const [key, value] of Object.entries(raw)) {
+      if (typeof value !== "string") continue;
+      if (value.trim()) body[key] = value.trim();
+      else if (facility && key !== "name") body[key] = null;
+    }
     if (!body.name) {
       setValidation("Facility name is required.");
       return;
     }
     if (body.state) body.state = String(body.state).toUpperCase();
-    if (body.employeeCount !== undefined)
+    if (body.employeeCount !== undefined && body.employeeCount !== null)
       body.employeeCount = Number(body.employeeCount);
     setValidation("");
     mutation.mutate(body);
@@ -108,10 +112,11 @@ export function FacilityDialog({
             />
           </label>
         </div>
-        <label>
-          Notes
-          <textarea name="notes" defaultValue={facility?.notes ?? ""} />
-        </label>
+        <TextareaField
+          label="Notes"
+          name="notes"
+          defaultValue={facility?.notes ?? ""}
+        />
         {validation && (
           <p className="danger" role="alert">
             {validation}

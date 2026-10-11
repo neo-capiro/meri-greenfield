@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -102,14 +103,12 @@ export function ContactDrawer({
             defaultValue={person?.role ?? ""}
           />
         </label>
-        <label>
-          Notes
-          <textarea
-            name="notes"
-            maxLength={20000}
-            defaultValue={person?.notes ?? ""}
-          />
-        </label>
+        <TextareaField
+          label="Notes"
+          name="notes"
+          maxLength={20000}
+          defaultValue={person?.notes ?? ""}
+        />
         {validation && <p role="alert">{validation}</p>}
         <QueryState error={mutation.error} />
         <div className="formActions">
@@ -138,7 +137,10 @@ export function ContactDrawer({
           <button className="button" onClick={() => setNote(true)}>
             Log note
           </button>
-          <ContactMail clientId={clientId} person={person} />
+          <ContactMail
+            clientId={clientId}
+            person={{ ...person, personId: person.id }}
+          />
           <QuickLog
             clientId={clientId}
             clientName={person.name}

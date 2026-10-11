@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useChangeMeetingArtifact } from "./mutations";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
@@ -140,15 +141,13 @@ export function MeetingArtifacts({
             });
           }}
         >
-          <label>
-            Content
-            <textarea
-              name="body"
-              rows={12}
-              required
-              defaultValue={editing?.body}
-            />
-          </label>
+          <TextareaField
+            label="Content"
+            name="body"
+            rows={12}
+            required
+            defaultValue={editing?.body}
+          />
           <label className="row">
             <input
               type="checkbox"

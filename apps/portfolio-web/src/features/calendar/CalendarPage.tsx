@@ -260,9 +260,12 @@ export function CalendarPage({
         clientId={clientId}
       />
       <MeetingForm
-        key={creating ? "new" : "closed"}
-        open={creating}
-        onOpenChange={setCreating}
+        key={creating || params.get("new") === "meeting" ? "new" : "closed"}
+        open={creating || params.get("new") === "meeting"}
+        onOpenChange={(open) => {
+          setCreating(open);
+          if (!open && params.has("new")) update({ new: undefined });
+        }}
         clientId={scope}
         zone={zone}
       />

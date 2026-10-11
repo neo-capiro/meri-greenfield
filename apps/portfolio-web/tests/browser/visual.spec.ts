@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { installFixtures, clientId } from "./fixtures";
+import { clientId, prospectId } from "./fixtures";
+import { installGovernmentFixtures } from "./government-fixtures";
 test("representative feature screens render at desktop/mobile and in dark mode", async ({
   page,
 }, testInfo) => {
-  const unexpected = await installFixtures(page);
+  const unexpected = await installGovernmentFixtures(page);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   for (const path of [
@@ -12,13 +13,45 @@ test("representative feature screens render at desktop/mobile and in dark mode",
     `/${clientId}/objectives`,
     `/${clientId}/work`,
     `/${clientId}/relationships`,
+    `/${clientId}/relationships?kind=government`,
     `/${clientId}/capabilities`,
     `/${clientId}/files`,
+    `/${clientId}/bills`,
+    `/${clientId}/opportunities`,
+    "/prospects",
+    `/prospects/${prospectId}`,
   ]) {
-    const name = path.split("/").pop() || "index";
+    const name = path.includes("?kind=government")
+      ? "government"
+      : path.split("/").pop() || "index";
     await page.goto(`/portfolio${path}`);
     await expect(page.locator("main h1").first()).toBeVisible();
     await page.evaluate(() => document.fonts.ready);
+    if (path.startsWith(`/${clientId}`)) {
+      const action = page.getByRole("button", {
+        name: "Meri actions",
+        exact: true,
+      });
+      await expect(action).toBeDisabled();
+      expect(
+        await action.evaluate(
+          (element) => getComputedStyle(element).backgroundImage,
+        ),
+      ).toContain("linear-gradient");
+      const icons = page
+        .getByRole("navigation", { name: "Breadcrumb" })
+        .locator("img");
+      expect(
+        await icons.evaluateAll((images) =>
+          images.every(
+            (element) =>
+              element instanceof HTMLImageElement &&
+              element.getBoundingClientRect().width === element.naturalWidth &&
+              element.getBoundingClientRect().height === element.naturalHeight,
+          ),
+        ),
+      ).toBe(true);
+    }
     if (path === `/${clientId}`) {
       const pulse = page
         .locator("section")

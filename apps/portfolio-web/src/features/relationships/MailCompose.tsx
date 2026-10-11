@@ -1,8 +1,9 @@
 "use client";
+import { TextareaField } from "@/shared/ui/TextareaField";
 import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
-import { type Person } from "./contracts";
+import { type MailContact } from "./email";
 import {
   plainMailHtml,
   useSendMail,
@@ -15,7 +16,7 @@ export function MailCompose({
   thread,
   onClose,
 }: {
-  person: Person;
+  person: MailContact;
   clientId: string;
   thread?: { id: string; subject: string };
   onClose: () => void;
@@ -71,16 +72,14 @@ export function MailCompose({
               onChange={(e) => setSubject(e.target.value)}
             />
           </label>
-          <label>
-            Message
-            <textarea
-              required
-              maxLength={8000}
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              rows={9}
-            />
-          </label>
+          <TextareaField
+            label="Message"
+            required
+            maxLength={8000}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={9}
+          />
           <button
             type="button"
             className="button"
@@ -171,7 +170,7 @@ export function MailCompose({
             send.mutate(
               {
                 clientId,
-                personIds: [person.id],
+                ...(person.personId ? { personIds: [person.personId] } : {}),
                 to: [{ email: person.email, name: person.name }],
                 subject: subject.trim(),
                 bodyHtml: plainMailHtml(body),
