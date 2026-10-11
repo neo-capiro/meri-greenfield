@@ -14,16 +14,29 @@ export function encodeFixtureRequest(request, { nowMs }) {
   } catch { fail('FIXTURE_WIRE_INVALID_REQUEST'); }
 }
 
-export function decodeFixtureResponse(raw, request, { producer, nowMs }) {
+function decodeCanonical(raw, validate, errorCode) {
   try {
     if (!Buffer.isBuffer(raw) || raw.length === 0 || raw.length > MAX_FIXTURE_WIRE_BYTES ||
         (raw[0] === 0xef && raw[1] === 0xbb && raw[2] === 0xbf)) fail('BOUND_OR_ENCODING');
     const bytes = Buffer.from(raw);
-    const response = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+    const value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
     // Canonical validation bounds node/depth/schema traversal before serialization.
-    const status = assertFixtureResponse(request, response, { producer, nowMs });
-    const canonical = Buffer.from(canonicalize(response), 'utf8');
+    const result = validate(value);
+    const canonical = Buffer.from(canonicalize(value), 'utf8');
     if (canonical.length > MAX_FIXTURE_WIRE_BYTES || !canonical.equals(bytes)) fail('NONCANONICAL');
-    return { response, status };
-  } catch { fail('FIXTURE_WIRE_INVALID_RESPONSE'); }
+    return { value, result };
+  } catch { fail(errorCode); }
+}
+
+/** Parse worker bytes as bounded canonical DATA; this never authenticates the peer or context. */
+export function decodeFixtureRequest(raw, { nowMs }) {
+  return decodeCanonical(raw, request => assertFixtureRequest(request, { nowMs }),
+    'FIXTURE_WIRE_INVALID_REQUEST').value;
+}
+
+export function decodeFixtureResponse(raw, request, { producer, nowMs }) {
+  const { value: response, result: status } = decodeCanonical(raw,
+    response => assertFixtureResponse(request, response, { producer, nowMs }),
+    'FIXTURE_WIRE_INVALID_RESPONSE');
+  return { response, status };
 }

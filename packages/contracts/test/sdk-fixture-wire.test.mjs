@@ -63,7 +63,7 @@ function response(f, req) {
 }
 const options = f => ({ producer: f.producer, nowMs: NOW });
 
-import {encodeFixtureRequest, decodeFixtureResponse, MAX_FIXTURE_WIRE_BYTES} from '../qualification-sdk/wire.mjs';
+import {encodeFixtureRequest, decodeFixtureRequest, decodeFixtureResponse, MAX_FIXTURE_WIRE_BYTES} from '../qualification-sdk/wire.mjs';
 export {fixture, request, response, context, NOW, T, id, copy, profile, partial, canonicalize};
 
 const raw = value => Buffer.from(canonicalize(value));
@@ -74,6 +74,34 @@ test('canonical fixture wire encodes and decodes all four fixed operations witho
     const q=request(f,op),before=copy(q),encoded=encodeFixtureRequest(q,{nowMs:NOW});
     assert.equal(encoded.toString(),canonicalize(q));assert.deepEqual(q,before);
     const r=response(f,q),result=decode(f,q,raw(r));assert.deepEqual(result.response,r);assert.equal(result.status,r.status);
+  }
+});
+test('trusted-service request decoder round-trips all four canonical worker operations as DATA',()=>{
+  const f=fixture();
+  for(const op of ['authorizeFixturePhase','commitFixtureCheckpoint','loadFixtureCheckpoint','verifyFixtureCheckpoint']){
+    const q=request(f,op),before=copy(q),encoded=encodeFixtureRequest(q,{nowMs:NOW});
+    assert.deepEqual(decodeFixtureRequest(encoded,{nowMs:NOW}),before);
+    assert.deepEqual(q,before);
+  }
+});
+test('request decoder refuses invalid buffers, encoding, structure and expired context',()=>{
+  const q=request(fixture(),'authorizeFixturePhase'),r=raw(q);
+  for(const b of [Buffer.from([0xc3,0x28]),Buffer.concat([Buffer.from([0xef,0xbb,0xbf]),r]),
+    r.subarray(0,r.length-1),Buffer.from('null'),Buffer.from('[]'),Buffer.alloc(0),
+    Buffer.alloc(MAX_FIXTURE_WIRE_BYTES+1,0x20),'{}'])
+    assert.throws(()=>decodeFixtureRequest(b,{nowMs:NOW}),/^Error: FIXTURE_WIRE_INVALID_REQUEST$/);
+  assert.throws(()=>decodeFixtureRequest(r,{nowMs:T+720000}),/^Error: FIXTURE_WIRE_INVALID_REQUEST$/);
+  const invalid={...q,operation:'arbitrary'};
+  assert.throws(()=>decodeFixtureRequest(raw(invalid),{nowMs:NOW}),/^Error: FIXTURE_WIRE_INVALID_REQUEST$/);
+});
+test('request decoder refuses noncanonical duplicate, whitespace, number and escape forms',()=>{
+  const q=request(fixture(),'authorizeFixturePhase'),s=raw(q).toString();
+  for(const value of [' '+s,s+'\n','{"operation":"authorizeFixturePhase",'+s.slice(1),
+    s.replace('"attempt":1','"attempt":1.0'),
+    s.replace('"admittedAtMs":1000000','"admittedAtMs":1e6'),
+    s.replace('"requestId":"0','"requestId":"\\u0030')]){
+    assert.notEqual(value,s);assert.deepEqual(JSON.parse(value),JSON.parse(s));
+    assert.throws(()=>decodeFixtureRequest(Buffer.from(value),{nowMs:NOW}),/^Error: FIXTURE_WIRE_INVALID_REQUEST$/);
   }
 });
 test('wire refuses invalid UTF8 BOM truncation and non-object responses',()=>{
