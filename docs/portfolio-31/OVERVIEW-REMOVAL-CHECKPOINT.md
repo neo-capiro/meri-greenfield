@@ -1,0 +1,21 @@
+# Saved submission removal and just-created Quick log Undo
+
+## Outline and ownership
+
+Fresh isolated `C:/dev/meri-portfolio-overview-removal-20261011`, branch `codex/portfolio-overview-removal-20261011`, base `2a7b6a9c592178ae6ee09167c69198377ecbfb1f`; frontend remote/main `c8978118a53cc6fc4cc3a553cdafdba4126d2443`. Policy fetched/read at local `b32b4803933760dc0a93fffdcd8fba30a89c3aac`, remote `b2b0ce8c2bf03817b81e671d968b7892985b8d06`, clean ahead3 preserved. Machine map mtime2026-09-30T00:21:48Z. Backend fresh origin/main `fd8765ec01d292013758606204f2c9d886cd31c1`; inspected existing checkout fd6ed6c. No backend edits.
+
+Owned NEW `client-profile/past-performance/**`, `quick-log/**`, focused tests and this checkpoint. Root owns existing Overview/QuickLog/mutations composition. Existing HTTP/cache/auth/Radix/Geist reused; read-only dependency junction, explicit bundled Node24.19; no install/full build/provider/live writes. Figma design-to-code skill loaded and current context/screenshots inspected: CORE128 root411:58348, dialog411:58549 (520px, desktop top200px, 22/28/14 header,18/28 body,16/28 footer); CORE129 root411:43761, toast411:43859 (dark gradient, top84,14/18 padding, View/Undo). No Figma writes or static asset recreation.
+
+Public `PastPerformance({clientId,clientName})` reads at most200 saved rows and exposes explicit removal review. No award-value/agency/role columns or computed win-rate are invented. Public `useQuickLog(clientId,open,onSaved)` returns `{mutation,receipt,clearReceipt,canCreate,uncertain}`; root keeps it mounted across close and renders `QuickLogUndo({receipt,clientName,onDismiss})` only for its verified returned receipt. Root must disable create on `!canCreate` and show uncertain-create explanation; `mutation` receives typed `QuickLogInput` parsed with exported schema. Add the actual timeline anchor for View; no fabricated Workspace route.
+
+## Verified source contracts
+
+- `client-capabilities.controller.ts`263 standard_user;309 GET submission-history passes200;343 DELETE history/:id. `client-capabilities.service.ts`240 list verifies nonarchived tenant/client and returns saved rows;355 deletion checks exact id+tenant+client, deletes only `ClientSubmissionHistory`, returns `{deleted:true}`. Capability/document rows remain. Prisma model3376 fields are saved FY/title/meta/outcome/outcomeType/notes and provenance dates; no award finances.
+- `client-activity.controller.ts`90 standard_user; POST create and DELETE id. `client-activity.service.ts`232 creation binds tenant/client, validates person against same client and sets actorUserId+createdByUserId from authenticatedctx. Returned persisted raw row is the canonical create receipt. Remove318 deletes exact id+tenant+client and returns `{ok:true}`; **does not enforce creator ownership server-side**. This UI restricts Undo to the initiating creator receipt and rechecks fresh session; it does not claim a new server ownership boundary.
+- No raw create acknowledgement or inferred timeline item qualifies for Undo. Created actor/creator/tenant/client/input match must all verify. Before inverse, a fresh bounded500 timeline read must contain the exact recorded row with unchanged supported fields. This is a safety preflight, not CAS or atomic rollback.
+
+## Audit qualifications
+
+**CORE128:** existing contract/frontend composition. Bounded saved history (cap200); exact confirmed removal and acknowledged cache refresh. **CORE129:** client recorded activity only, exact ephemeral receipt; no Directory member-note inverse, follow-up task compensation, objective-link mutation or multi-resource atomic promise. Unknown create response offers no Undo; unknown deletion freezes resend and preserves GET/View inspection. No localStorage or unrelated last-item inference.
+
+Contract limits: current deletes have no version/CAS nor scoped deletion receipt IDs, and create has no idempotency/recovery token. Preflight cannot prevent server changes after GET. A lost receipt remains uncertain; bounded absence alone is not success. No new backend contract required for the implemented client-only inverse; broader Directory/task undo requires separately owned exact contracts. Live mutation acceptance NOT RUN. Focused qualification/evidence follows.
