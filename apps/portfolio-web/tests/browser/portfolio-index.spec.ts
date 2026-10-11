@@ -188,7 +188,7 @@ test("chooser uses native asset geometry and canonical manual intake, restoring 
   });
   await expect(
     chooser.getByRole("button", { name: /Search LDA/ }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await expect(
     chooser.getByRole("button", { name: /Create with Meri/ }),
   ).toBeDisabled();
