@@ -1,13 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
-import {
-  canAdminister,
-  identitySchema,
-  useIdentity,
-} from "@/shared/auth/identity";
+import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Meeting } from "../contracts";
@@ -15,7 +11,7 @@ import {
   MeetingTranscriptUpload,
   type ExtractedMeetingSource,
 } from "../library/public";
-import { usePreparationCapabilities } from "../preparation/public";
+import { usePreparationCapabilities, useDispatchGuard } from "../access/public";
 import { debriefBody, generateDebrief } from "./api";
 
 export function DebriefGeneration({
@@ -26,9 +22,13 @@ export function DebriefGeneration({
   onDraft: (body: string) => void;
 }) {
   const api = useApi();
-  const cache = useQueryClient();
   const identity = useIdentity();
   const capabilities = usePreparationCapabilities();
+  const guard = useDispatchGuard(
+    identity.data?.user.id,
+    identity.data?.tenant?.id,
+    true,
+  );
   const [uploading, setUploading] = useState(false);
   const [source, setSource] = useState<ExtractedMeetingSource>();
   const busy = useRef(false);
@@ -53,34 +53,13 @@ export function DebriefGeneration({
   const mutation = useMutation({
     retry: false,
     mutationFn: async (reviewed: ExtractedMeetingSource) => {
-      const current = cache.getQueryState(["identity"]);
-      const actor = identitySchema.safeParse(current?.data);
-      const runtime = cache.getQueryState<
-        NonNullable<typeof capabilities.data>
-      >(["meeting-preparation", "capabilities"]);
       const scope = lifetime.current;
-      if (
-        !allowed ||
-        !scope ||
-        scope.signal.aborted ||
-        current?.status !== "success" ||
-        current.fetchStatus !== "idle" ||
-        current.error ||
-        !actor.success ||
-        actor.data.user.id !== identity.data?.user.id ||
-        actor.data.tenant?.id !== identity.data?.tenant?.id ||
-        !(
-          actor.data.role === "standard_user" || canAdminister(actor.data.role)
-        ) ||
-        runtime?.status !== "success" ||
-        runtime.fetchStatus !== "idle" ||
-        runtime.error ||
-        runtime.data?.runtime?.externalActionsEnabled !== true
-      )
+      if (!allowed || !scope || scope.signal.aborted)
         throw new ApiError(
           403,
           "Debrief generation is unavailable for this session.",
         );
+      guard();
       const draft = await generateDebrief(
         api,
         meeting.id,
@@ -89,6 +68,7 @@ export function DebriefGeneration({
       );
       if (scope.signal.aborted)
         throw new ApiError(409, "This meeting session is no longer active.");
+      guard();
       return draft;
     },
     onSuccess: (draft) => {

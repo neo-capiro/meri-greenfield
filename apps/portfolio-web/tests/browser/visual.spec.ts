@@ -32,7 +32,7 @@ test("representative feature screens render at desktop/mobile and in dark mode",
         name: "Meri actions",
         exact: true,
       });
-      await expect(action).toBeDisabled();
+      await expect(action).toBeEnabled();
       expect(
         await action.evaluate(
           (element) => getComputedStyle(element).backgroundImage,
