@@ -343,6 +343,49 @@ class FixtureTests(unittest.TestCase):
         self.assertEqual(timeouts,[timedelta(seconds=3),timedelta(seconds=3)])
         self.assertEqual(disconnected,[True,True])
 
+    def test_native_negative_reason_composes_with_supported_opaque_startup_cause(self):
+        _,diagnostics=peer.diagnostic_modules()
+        network=type('NetworkError',(Exception,),{'__module__':'httpcore'})
+        core=type('ConnectError',(network,),{'__module__':'httpcore'})
+        http=type('ConnectError',(Exception,),{'__module__':'httpx'})
+        engine=type('EngineConnectionError',(Exception,),{'__module__':'prisma.engine.errors'})
+        leaf=ConnectionRefusedError(111,'SYNTHETIC_PRIVATE_SYSCALL')
+        attempts=OSError('SYNTHETIC_PRIVATE_CONNECT_ATTEMPTS');attempts.__cause__=leaf
+        core_error=core(attempts);core_error.__cause__=attempts
+        http_error=http('SYNTHETIC_PRIVATE_HTTP');http_error.__cause__=core_error
+        error=engine('SYNTHETIC_PRIVATE_ENGINE');error.__cause__=http_error
+        prefix=('error performing TLS handshake: error:0A000086:SSL routines:'
+            'tls_post_process_server_certificate:certificate verify failed:'
+            '../ssl/statem/statem_clnt.c:2124: ')
+        for case,terminal in (('wrong-ca','self-signed certificate in certificate chain'),
+                              ('wrong-san','hostname mismatch'),('plaintext',None),
+                              ('wrong-password',None)):
+            with self.subTest(case=case):
+                if terminal is not None:
+                    message=prefix+'('+terminal+')'
+                    payload={'is_panic':False,'message':'Error opening a TLS connection: '+message,
+                        'meta':{'message':message},'error_code':'P1011'}
+                    raw=(json.dumps(payload)+'\n').encode()
+                elif case=='plaintext':
+                    raw=self.native_plaintext()
+                else:
+                    host=peer.expected_host(case);user='meri_native_auth_app'
+                    message=(f'Authentication failed against database server at `{host}`, '
+                        f'the provided database credentials for `{user}` are not valid.\n\n'
+                        f'Please make sure to provide valid database credentials for the database server at `{host}`.')
+                    raw=(json.dumps({'is_panic':False,'message':message,'error_code':'P1000',
+                        'meta':{'database_host':host,'database_user':user}})+'\n').encode()
+                result=peer.finish_probe(case,({'case':case,'passed':False},error),raw,
+                    {'complete':True},diagnostics)
+                self.assertTrue(result['exceptionEvidence']['complete'])
+                self.assertFalse(result['exceptionEvidence']['specificRejection'])
+                self.assertTrue(result['nativeEvidence']['specificRejection'])
+                self.assertTrue(result['passed']);self.assertTrue(result['specificRejection'])
+                self.assertNotIn('SYNTHETIC_PRIVATE',json.dumps(result))
+                generic=peer.finish_probe(case,({'case':case,'passed':False},error),
+                    b'SYNTHETIC_PRIVATE_GENERIC_FAILURE\n',{'complete':True},diagnostics)
+                self.assertFalse(generic['passed']);self.assertFalse(generic['specificRejection'])
+
     def test_cleanup_requires_positive_owned_id(self):
         c=capture.DockerCapture(Path('.'),10);calls=[]
         c.inspect=lambda kind,name,owner,image:{'Id':'a'*64}
