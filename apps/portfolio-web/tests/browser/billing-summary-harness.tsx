@@ -29,7 +29,7 @@ export function BillingSummaryHarness() {
     };
   }, [cache]);
   return (
-    <main style={{ maxWidth: 512, margin: "48px auto", padding: 24 }}>
+    <main style={{ maxWidth: 560, margin: "48px auto", padding: 24 }}>
       <h1>Billing summary test</h1>
       <output aria-label="Summary probe identity">
         {identity.isPending

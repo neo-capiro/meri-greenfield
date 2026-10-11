@@ -72,6 +72,12 @@ test("eligible billing admin sees real supplied rows with responsive light/dark 
   await expect(
     region.getByRole("button", { name: /Pay|Continue|Checkout/ }),
   ).toHaveCount(0);
+  expect(
+    await page.evaluate(async () => {
+      const fonts = await document.fonts.load('13px "Geist Test"');
+      return fonts.length > 0 && document.fonts.check('13px "Geist Test"');
+    }),
+  ).toBe(true);
   await region.screenshot({
     path: info.outputPath("billing-summary-desktop-light.png"),
   });
@@ -92,7 +98,8 @@ test("eligible billing admin sees real supplied rows with responsive light/dark 
 for (const denied of [
   { role: "user_admin", billingAdmin: undefined },
   { role: "user_admin", billingAdmin: false },
-  { role: "user_standard", billingAdmin: true },
+  { role: "standard_user", billingAdmin: true },
+  { role: "client_portal_user", billingAdmin: true },
 ])
   test(`denied ${denied.role}/${denied.billingAdmin} makes no financial request`, async ({
     page,

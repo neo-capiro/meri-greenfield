@@ -52,8 +52,8 @@ describe("canonical billing visibility", () => {
     { role: "user_admin", billingAdmin: true, allowed: true },
     { role: "user_admin", billingAdmin: false, allowed: false },
     { role: "user_admin", billingAdmin: undefined, allowed: false },
-    { role: "user_standard", billingAdmin: true, allowed: false },
-    { role: "user_viewer", billingAdmin: true, allowed: false },
+    { role: "standard_user", billingAdmin: true, allowed: false },
+    { role: "client_portal_user", billingAdmin: true, allowed: false },
     { role: "capiro_admin", billingAdmin: false, allowed: true },
     { role: "capiro_admin", billingAdmin: undefined, allowed: true },
   ])(
