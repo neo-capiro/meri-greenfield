@@ -295,6 +295,29 @@ class FixtureTests(unittest.TestCase):
         self.assertIn(('deadline',132.0),seen)
         self.assertEqual(seen[-1],('timer',0));self.assertEqual(output,'')
 
+    def test_real_pipe_capture_nested_inside_text_suppression_restores_and_keeps_bytes_private(self):
+        before=(sys.stdout,sys.stderr)
+        identities=[(os.fstat(fd).st_dev,os.fstat(fd).st_ino,os.fstat(fd).st_mode) for fd in (1,2)]
+        native,diagnostics=peer.diagnostic_modules()
+        raw=self.native_plaintext()
+        with peer.discard_native_output():
+            with native.capture_native_output(peer.time.monotonic()+2) as captured:
+                sys.stderr.write('SYNTHETIC_PRIVATE_PYTHON_TEXT')
+                os.write(1,b'SYNTHETIC_PRIVATE_NATIVE_TRACE')
+                os.write(2,raw)
+            captured.check()
+            stdout_bytes,stderr_bytes=captured.private_bytes()
+            self.assertEqual(stdout_bytes,b'SYNTHETIC_PRIVATE_NATIVE_TRACE')
+            self.assertEqual(stderr_bytes,raw)
+            result=peer.finish_probe('plaintext',({'case':'plaintext','passed':False},self.engine_failure()),
+                stderr_bytes,captured.facts(),diagnostics)
+        self.assertIs(sys.stdout,before[0]);self.assertIs(sys.stderr,before[1])
+        self.assertEqual([(os.fstat(fd).st_dev,os.fstat(fd).st_ino,os.fstat(fd).st_mode) for fd in (1,2)],identities)
+        self.assertTrue(result['passed']);self.assertTrue(result['nativeCapture']['complete'])
+        public=json.dumps(result)
+        for private in ('SYNTHETIC_PRIVATE','Error opening','server does not support'):
+            self.assertNotIn(private,public)
+
     def test_cleanup_requires_positive_owned_id(self):
         c=capture.DockerCapture(Path('.'),10);calls=[]
         c.inspect=lambda kind,name,owner,image:{'Id':'a'*64}
