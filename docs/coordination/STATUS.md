@@ -1,6 +1,6 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 04:40 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
 eight deployment gates, G2–G7 unentered.** The new isolated Linux qualification
 experiment SUCCEEDED: genuine community LiteLLM application import, offline
 Prisma generation and positive removal of the exact owned test container are
@@ -13,14 +13,24 @@ database, authentication, security or Fargate deployment test.
 The fixed browser executor's import boundary is repaired, separately reviewed,
 and passed all nine root offline controls. The dedicated two-resource inert
 workflow/role stack is deployed and read back exactly; zero executions were
-observed. No operational T0, volume or browser host has started. A fixed
-process-tree supervisor is being prepared before actual managed probes.
+observed. No operational T0, volume or browser host has started. The fixed
+process-tree supervisor is independently source reviewed; all14 root local OS
+controls passed. The history timestamp repair and new immutable source packs
+are independently verified and integrated: root54/54 history/bridge checks and
+the complete1020-record promoted-path preflight passed. The bootstrap-only context
+precision fix passed29 JSONata checks, distinct source review and AWS syntax
+validation with no diagnostics. Actual managed composition/probes remain OPEN;
+EC2 payload timestamps and old inert graphs remain unchanged.
 Host/browser AND renderer sandbox, egress, cancellation and physical teardown
-remain OPEN. Source/runtime observations do not pass those checks.
+remain OPEN. Source/local checks do not pass those runtime gates.
 
-Native PostgreSQL/LiteLLM authentication preparation is running in parallel,
-using the pinned PostgreSQL17.11 image and upstream native routes. Exact Prisma
-TLS semantics must be established and measured separately from psycopg TLS.
+Exact pinned Prisma TLS semantics are established from upstream source:
+require/strict/sslcert, with matching host and a mounted CA. Native PostgreSQL
+TLS/negative-control fixture source is awaiting independent review. Executable
+LiteLLM authentication source is reviewed and integrated, with root30/30 pure
+checks and isolated CLI help/missing checks passing. Native schema/views/bootstrap
+and actual Linux TLS/authentication remain unmeasured. The SDK interruption/
+replacement/resume qualification source is now a separate bounded Codex task.
 SDK interrupt/replacement/resume/checkpoint/egress, actual proxy authentication/
 revocation/TLS/usage/durable $10 controls, operation-specific REL-02 and measured
 frozen cohorts still remain. Temporal production design is accepted; full W05

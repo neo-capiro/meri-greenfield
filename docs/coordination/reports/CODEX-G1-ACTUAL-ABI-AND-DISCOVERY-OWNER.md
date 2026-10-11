@@ -1,5 +1,68 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Supervisor source accepted; native TLS and timestamp work — 11 October 2026 05:12 UTC
+
+G1 remains OPEN. Root independently verified exact clean commits, raw owned Git
+and finite sealed references: Prisma TLS DATA4fa4672 (104 files), supervisor
+eded6d2 (1098), timestamp preflight8682b75 (88), native-auth preparation22ba385
+(53). The first three report commits are integrated as5cf137b/1c1e495/72d6729.
+The original native-auth preparation's unreachable HOLD body is superseded by
+executable activatione830092 (66 sealed references independently verified),
+integrated after22ba385 asb43d417/0c188ee. Root30/30 pure checks plus direct
+isolated help0/missing2 passed on the exact candidate. Root then removed a no-op
+cleanup branch and stale comment asbea5c25; all30 and CLI checks passed on the
+combined source. Genuine upstream routes/lifespan remain; no native service ran.
+
+Supervisor14/14 root controls passed against unchanged copied source in a new
+owned namespace, including actual process descendants, timeout, live stream cap,
+controller-loss OS handle, real retained-input drift and never-resumed assignment
+failure. Evidence is g1-browser-managed-probe-supervisor/.task-inputs/
+g1-root-review-20261011-0459/. No operational owner/action/consume was created.
+Acceptance is limited to the reviewed source/local controls. Source hashing can
+stall synchronously; a dead controller cannot emit positive cleanup evidence;
+the Windows Job does not clean up cloud resources.
+
+Pinned Prisma defaults permit fallback/invalid certificates; strict supported
+candidate is sslmode=require&sslaccept=strict&sslcert=/absolute/ca.pem. This adds
+the CA to system trust. Actual native encrypted-peer/SAN/wrong-CA/plaintext/SCRAM
+and native schema/authentication/cleanup are UNRUN. A focused synthetic PG17.11
+fixture and executable native-auth entry are separate bounded Codex tasks.
+
+Root found a second timestamp incompatibility in the bootstrap execution-context
+guard. AWS documents0/3/6/9 fractional digits. Commitb164e156 preserves original
+inert graph bytes and strict EC2 payloads while accepting only those bootstrap
+context forms and refusing submilliseconds beyond original create/current-time
+bounds. Root29/29 actual JSONata checks passed, including the retained original
+products oracle. Canonical AWS validation returned OK/diagnostics[]/truncatedfalse
+and ValidateTemplate accepted (3 read-only calls,0 mutations). Root evidence is
+.task-inputs/browser-context-timestamp-owner-1/checks-1 and
+.task-inputs/browser-managed-bootstrap-owner-1/{compile-3,service-validation-2}.
+Distinct review in9f75544 found no additional scoped blocker in rootb164e156.
+The history repair9f75544 is integrated as390d8c2; root verified1183 sealed
+source/evidence references plus exact owned Git, read the complete diff/report
+and literal-only promotion changes, and ran54/54 relevant combined-source checks.
+Promoted executor closure55e522fc9f35d1a7634425d34477404691b9c751cacd9f3309acf998a91451e1
+and supervisor closurec0a0235aaef32da014fd2546bfd22aea610b05c5001e6e712f6f0cb1fb3ded3f
+are accepted as source/local preparation only. A socket/process-audit-denied root
+preflight loaded the final binding and verified its complete1020-member closure
+and canonical parser without operational action/owner records. Process and Job
+algorithms are unchanged; their prior14 root OS controls remain applicable.
+Root evidence includes checks-2 and promoted-path-check.json in the same new
+context-timestamp owner namespace. The retained wrong nested-Job-path draft and
+corrected first seal's list-count error are preserved, not successful actions.
+[AWS context timestamp contract](https://docs.aws.amazon.com/step-functions/latest/dg/input-output-contextobject.html).
+
+Exact offline native schema initialization and upstream8view/DML-grant paths
+were additionally established from pinned source. This is DATA only; root still
+must compose/measure actual initialization under a separate owner before app
+nonowner startup. The PG TLS source is awaiting review, and finite browser
+publication/history composition and SDK interruption/resume source are parallel
+Codex tasks. No operational T0, fixture volume, browser host, DB, provider request
+or cutover occurred. E4 import acceptance is unchanged; inference remains$0/$10. G2–G7 are
+unentered, sources disabled, all49 current plus5 older findings OPEN, Office
+DEFERRED,75 approved real requests still awaited. These source checks do not
+replace live qualification, operation-specific REL-02 or measured cohorts.
+
 ## Genuine Linux import accepted; inert browser fixture deployed — 11 October 2026 04:40 UTC
 
 G1 remains OPEN. Current Meri/Capiro is untouched; separate Fargate app/control
