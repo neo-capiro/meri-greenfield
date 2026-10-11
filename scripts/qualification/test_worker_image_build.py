@@ -30,7 +30,7 @@ def project():
 
 
 def request():
-    caller = {'Account': build.ACCOUNT, 'Arn': build.authority.PRINCIPAL, 'UserId': 'synthetic-user-id'}
+    caller = {'Account': build.ACCOUNT, 'Arn': 'arn:aws:iam::967807252336:user/hermes-cli', 'UserId': 'synthetic-user-id'}
     auth = {'decision': 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'capturedAt': dt.datetime.now(dt.timezone.utc).isoformat(),
             'caller': caller, 'project': project(), 'authorityRecords': {k: 'f'*64 for k in
                 ('roleTrust', 'inlinePolicy', 'attachedPolicies', 'kmsKey', 'kmsPolicy')}}
@@ -72,9 +72,12 @@ class Controls(unittest.TestCase):
 
     def test_authority_full_identity_and_role(self):
         value = request()['authority']; self.assertEqual(build.validate_authority(value), project())
+        self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
         for field in ('UserId', 'Account', 'Arn'):
             wrong = copy.deepcopy(value); wrong['caller'][field] = ''
             with self.assertRaises(ValueError): build.validate_authority(wrong)
+        old = copy.deepcopy(value); old['caller']['Arn'] = build.authority.PRINCIPAL
+        with self.assertRaises(ValueError): build.validate_authority(old)
         wrong = copy.deepcopy(value); wrong['project']['serviceRole'] = 'foreign'
         with self.assertRaises(ValueError): build.validate_authority(wrong)
 

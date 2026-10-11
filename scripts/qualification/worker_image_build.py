@@ -26,6 +26,7 @@ REFERENCE = '5192c575e78957bd4bc8d2c512a1efb5b455a884'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'
+WORKER_BUILDER_PRINCIPAL = 'arn:aws:iam::967807252336:user/hermes-cli'
 PYTHON = Path('C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 PYTHON_SHA = '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1'
 HELPERS = ('worker_image_build.py', 'worker_image_collect.py', 'worker_context.py',
@@ -107,7 +108,7 @@ def validate_authority(value):
          and value['decision'] == 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'root authority descriptor')
     caller = value['caller']
     need(type(caller) is dict and set(caller) == {'Account', 'Arn', 'UserId'} and caller['Account'] == ACCOUNT
-         and caller['Arn'] == authority.PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
+         and caller['Arn'] == WORKER_BUILDER_PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
     project = authority.project_configuration(value['project'])
     need(project.get('arn') == f'arn:aws:codebuild:{REGION}:{ACCOUNT}:project/{PROJECT}'
          and project.get('name') == PROJECT and project.get('serviceRole') == ROLE and project.get('encryptionKey') == KMS

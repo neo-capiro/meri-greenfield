@@ -1,0 +1,7 @@
+# SDK worker build caller rebind — source-only review
+
+Base `0c6a37608805937154620eba3c62e8b50820c58f` in dedicated branch `task/remote-sdk-builder-caller-20261011`. The user identified `Hermes-cli` as the available caller after a read-only STS check found `arn:aws:iam::967807252336:user/hermes-cli`, account `967807252336`. Both old `capirocli` and current `hermes-cli` users have the same attached `AdministratorAccess` policy on read-only IAM inspection. This is an explicit caller choice for preparation; it is not one-build admission.
+
+The worker-image builder alone owns its exact caller binding. Introduce a worker-specific literal principal in `scripts/qualification/worker_image_build.py`, preserving the shared `host_assets_build.py` principal and all other builder users. The existing full-caller object, fresh STS comparisons, source/role/KMS/project verification, immutable upload, consumed reservation and zero-retry rules remain in force. Update only the worker builder's offline test to use that literal and to reject the old caller for this worker path. Do not add a dynamic identity selector or accept both users.
+
+Run the complete isolated Python 3.12.14 builder suite, exact committed image/source baseline, diff check and local review. No authority descriptor, archive, operational UUID, AWS mutation, build, image admission or SDK task is authorized by this source change. A separate exact request/review and fresh one-build approval remain required.
