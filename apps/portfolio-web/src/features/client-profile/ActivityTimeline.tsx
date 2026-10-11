@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { z } from "zod";
 import { QueryState } from "@/shared/ui/QueryState";
+import { TimelineMailThread } from "@/features/relationships/thread/public";
 import { useActivity } from "./queries";
 import { ActivityFilters } from "./ActivityFilters";
 import { ActivityActions } from "./ActivityActions";
@@ -67,6 +69,16 @@ export function ActivityTimeline({ clientId }: { clientId: string }) {
                   </div>
                   <small>{item.kind}</small>
                   {item.body && <p className={styles.body}>{item.body}</p>}
+                  {item.origin === "derived" &&
+                    item.kind === "email" &&
+                    item.sourceType === "mail_thread" &&
+                    item.sourceId &&
+                    z.uuid().safeParse(item.sourceId).success && (
+                      <TimelineMailThread
+                        clientId={clientId}
+                        threadId={item.sourceId}
+                      />
+                    )}
                   {item.dueAt && (
                     <small>
                       {item.settledAt ? "Settled " : "Due "}
