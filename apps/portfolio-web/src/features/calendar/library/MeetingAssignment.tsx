@@ -10,7 +10,7 @@ import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Meeting } from "../contracts";
 import { AssignmentConflict, assignMeeting } from "./api";
-import { useDispatchGuard } from "./useDispatchGuard";
+import { useDispatchGuard } from "../access/public";
 import styles from "./library.module.css";
 
 export function MeetingAssignment({

@@ -121,10 +121,7 @@ export const prepJobSchema = z.object({
 });
 export type PrepJob = z.infer<typeof prepJobSchema>;
 export type PrepDepth = PrepJob["depth"];
-export const prepCapabilitiesSchema = z.object({
-  meetingPrepComprehensiveEnabled: z.boolean().optional(),
-  runtime: z.object({ externalActionsEnabled: z.boolean() }).optional(),
-});
+export { calendarCapabilitiesSchema as prepCapabilitiesSchema } from "../access/contracts";
 export const boardMappingSchema = z.object({
   clientId: z.string(),
   boardIds: z.array(z.string().regex(/^\d{1,24}$/)).max(20),

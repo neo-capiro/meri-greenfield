@@ -2,7 +2,8 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
-import { prepCapabilitiesSchema, type PrepJob } from "./schema";
+import type { PrepJob } from "./schema";
+export { useCalendarCapabilities as usePreparationCapabilities } from "../access/public";
 import {
   changeJob,
   generatePreparation,
@@ -12,16 +13,6 @@ import {
 
 export const activeJob = (job: PrepJob | null | undefined) =>
   job?.status === "queued" || job?.status === "running";
-export function usePreparationCapabilities() {
-  const api = useApi();
-  return useQuery({
-    queryKey: ["meeting-preparation", "capabilities"],
-    queryFn: ({ signal }) =>
-      api.request("core", "engagement/capabilities", prepCapabilitiesSchema, {
-        signal,
-      }),
-  });
-}
 export function usePreparationJob(meetingId: string, enabled: boolean) {
   const api = useApi();
   const cache = useQueryClient();

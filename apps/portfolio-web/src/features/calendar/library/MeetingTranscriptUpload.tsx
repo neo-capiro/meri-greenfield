@@ -13,9 +13,8 @@ import {
   type UploadAttempt,
 } from "@/features/files/public";
 import type { Meeting } from "../contracts";
-import { usePreparationCapabilities } from "../preparation/public";
+import { usePreparationCapabilities, useDispatchGuard } from "../access/public";
 import { extractMeetingSource } from "./api";
-import { useDispatchGuard } from "./useDispatchGuard";
 import type { ExtractedMeetingSource } from "./contracts";
 import styles from "./library.module.css";
 

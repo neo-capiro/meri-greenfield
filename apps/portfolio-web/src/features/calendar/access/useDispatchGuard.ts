@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { ApiError } from "@/shared/api/http";
 import { canAdminister, identitySchema } from "@/shared/auth/identity";
-import type { usePreparationCapabilities } from "../preparation/public";
+import type { CalendarCapabilities } from "./contracts";
 
 /** Recheck the initiating actor and live gates at each asynchronous dispatch boundary. */
 export function useDispatchGuard(
@@ -24,9 +24,10 @@ export function useDispatchGuard(
     const identity = cache.getQueryState<z.infer<typeof identitySchema>>([
       "identity",
     ]);
-    const capabilities = cache.getQueryState<
-      ReturnType<typeof usePreparationCapabilities>["data"]
-    >(["meeting-preparation", "capabilities"]);
+    const capabilities = cache.getQueryState<CalendarCapabilities>([
+      "meeting-preparation",
+      "capabilities",
+    ]);
     if (
       !mounted.current ||
       !userId ||
