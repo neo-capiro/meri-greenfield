@@ -265,13 +265,11 @@ test("mobile dark review dialogs remain within viewport", async ({
     "Saved focus",
   );
   await page.getByRole("button", { name: "Review client CSV" }).click();
-  await page
-    .getByLabel("Client CSV", { exact: true })
-    .setInputFiles({
-      name: "synthetic.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from("name,description\nAlpha,First\nBeta,Second"),
-    });
+  await page.getByLabel("Client CSV", { exact: true }).setInputFiles({
+    name: "synthetic.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from("name,description\nAlpha,First\nBeta,Second"),
+  });
   await expect(
     page.getByRole("button", { name: "Import 2 clients" }),
   ).toBeEnabled();
