@@ -65,7 +65,7 @@ export function PortfolioIndex({
   );
   return (
     <Shell destinations={destinations}>
-      <div className="page">
+      <div className={`page ${styles.indexPage}`}>
         <header className={`pageHeader ${styles.indexHeader}`}>
           <div className="stack" style={{ gap: 6 }}>
             <p className="eyebrow">Your client portfolio</p>
