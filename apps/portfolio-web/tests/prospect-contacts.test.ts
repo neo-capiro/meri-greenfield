@@ -39,6 +39,12 @@ describe("prospect contact boundary", () => {
         .success,
     ).toBe(false);
     expect(
+      contactInput.parse({
+        ...contactValues(contact),
+        email: "  priya@example.test  ",
+      }).email,
+    ).toBe("priya@example.test");
+    expect(
       contactInput.safeParse({
         ...contactValues(contact),
         notes: "x".repeat(4001),

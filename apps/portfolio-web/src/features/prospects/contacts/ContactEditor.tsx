@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { TextareaField } from "@/shared/ui/TextareaField";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -24,10 +24,12 @@ export function ContactEditor({
   const [initial, setInitial] = useState(contact);
   const [values, setValues] = useState(() => contactValues(contact));
   const [validation, setValidation] = useState("");
+  const [invalidField, setInvalidField] = useState<string>();
+  const validationId = useId();
   const [removing, setRemoving] = useState(false);
   const [latest, setLatest] = useState<ProspectContact>();
   const [requestId] = useState(() => crypto.randomUUID());
-  const nameRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const review = useLatestContact(prospectId);
   const mutation = useContactMutation(prospectId, onClose);
   const conflict =
@@ -48,6 +50,7 @@ export function ContactEditor({
       }}
     >
       <form
+        ref={formRef}
         className={styles.form}
         noValidate
         onSubmit={(event) => {
@@ -58,10 +61,17 @@ export function ContactEditor({
             setValidation(
               result.error.issues[0]?.message ?? "Check the contact details.",
             );
-            nameRef.current?.focus();
+            const field = String(result.error.issues[0]?.path[0] ?? "name");
+            setInvalidField(field);
+            formRef.current
+              ?.querySelector<
+                HTMLInputElement | HTMLTextAreaElement
+              >(`[name="${field}"]`)
+              ?.focus();
             return;
           }
           setValidation("");
+          setInvalidField(undefined);
           mutation.mutate({
             kind: "save",
             values: result.data,
@@ -74,7 +84,11 @@ export function ContactEditor({
           <label>
             Name *
             <input
-              ref={nameRef}
+              name="name"
+              aria-invalid={invalidField === "name"}
+              aria-describedby={
+                invalidField === "name" ? validationId : undefined
+              }
               value={values.name}
               required
               aria-required
@@ -93,6 +107,11 @@ export function ContactEditor({
           <label>
             Title
             <input
+              name="title"
+              aria-invalid={invalidField === "title"}
+              aria-describedby={
+                invalidField === "title" ? validationId : undefined
+              }
               value={values.title}
               maxLength={300}
               disabled={readOnly || pending}
@@ -105,6 +124,11 @@ export function ContactEditor({
             <label>
               Email
               <input
+                name="email"
+                aria-invalid={invalidField === "email"}
+                aria-describedby={
+                  invalidField === "email" ? validationId : undefined
+                }
                 type="email"
                 value={values.email}
                 maxLength={320}
@@ -117,6 +141,11 @@ export function ContactEditor({
             <label>
               Phone
               <input
+                name="phone"
+                aria-invalid={invalidField === "phone"}
+                aria-describedby={
+                  invalidField === "phone" ? validationId : undefined
+                }
                 value={values.phone}
                 maxLength={120}
                 disabled={readOnly || pending}
@@ -127,6 +156,11 @@ export function ContactEditor({
             </label>
           </div>
           <TextareaField
+            name="notes"
+            aria-invalid={invalidField === "notes"}
+            aria-describedby={
+              invalidField === "notes" ? validationId : undefined
+            }
             label="Notes"
             value={values.notes}
             maxLength={4000}
@@ -140,7 +174,7 @@ export function ContactEditor({
             <p role="status">Contacts are read-only for this prospect.</p>
           )}
           {validation && (
-            <p className="error" role="alert">
+            <p id={validationId} className="error" role="alert">
               {validation}
             </p>
           )}

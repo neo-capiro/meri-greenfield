@@ -2,7 +2,11 @@ import { z } from "zod";
 export const contactInput = z.object({
   name: z.string().trim().min(1, "Name is required.").max(300),
   title: z.string().trim().max(300),
-  email: z.union([z.literal(""), z.email()]).transform((value) => value.trim()),
+  email: z
+    .string()
+    .trim()
+    .max(320)
+    .pipe(z.union([z.literal(""), z.email()])),
   phone: z.string().trim().max(120),
   notes: z.string().trim().max(4000),
 });
