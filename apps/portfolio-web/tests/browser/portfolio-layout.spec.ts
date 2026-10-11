@@ -187,6 +187,54 @@ test("portal role never reads or writes the layout catalog", async ({
   ).toBeDisabled();
   expect(calls).toBe(0);
 });
+test("failed latest read cannot reuse the stale conflict receipt", async ({
+  page,
+}) => {
+  await layoutFixtures(page);
+  let reads = 0;
+  await page.route(endpoint, (route) => {
+    if (route.request().method() === "PUT")
+      return route.fulfill({ status: 409, json: { message: "Changed" } });
+    reads++;
+    return reads === 2
+      ? route.fulfill({ status: 503, json: { message: "Latest unavailable" } })
+      : route.fulfill({ json: layoutReceipt(reads > 2 ? 2 : 0, cardIds) });
+  });
+  await page.goto(path);
+  await page.getByRole("button", { name: "Move Aerospace One later" }).click();
+  await page.getByRole("button", { name: "Save order", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Use latest saved order" }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Reload latest saved order" }).click();
+  await expect(
+    page.getByRole("button", { name: "Use latest saved order" }),
+  ).toBeEnabled();
+  await expect(
+    page
+      .getByRole("list", { name: "Latest saved profile order" })
+      .getByRole("listitem"),
+  ).toHaveText(["Aerospace One", "Civic Two", "Energy Three"]);
+});
+test("expired session uses the existing sign-in boundary without a write", async ({
+  page,
+}) => {
+  await layoutFixtures(page);
+  let writes = 0;
+  await page.route(endpoint, (route) => {
+    if (route.request().method() === "PUT") writes++;
+    return route.fulfill({ status: 401, json: { message: "Expired" } });
+  });
+  await page.goto(path);
+  await expect(
+    page.getByRole("heading", { name: "Your session expired" }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+    "href",
+    "/sign-in",
+  );
+  expect(writes).toBe(0);
+});
 test("invalidated identity blocks a pending local draft write", async ({
   page,
 }) => {
