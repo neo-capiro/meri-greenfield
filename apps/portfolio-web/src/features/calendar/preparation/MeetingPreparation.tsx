@@ -332,7 +332,20 @@ function ScopedPreparation({
           <button className="button ghost" onClick={() => setSources(true)}>
             View sources and citations
           </button>
-          <small>Saved {prep.updatedAt ?? prep.createdAt}</small>
+          <small>
+            Saved{" "}
+            <time
+              dateTime={prep.updatedAt ?? prep.createdAt}
+              title={prep.updatedAt ?? prep.createdAt}
+            >
+              {Number.isFinite(Date.parse(prep.updatedAt ?? prep.createdAt))
+                ? new Date(prep.updatedAt ?? prep.createdAt).toLocaleString(
+                    undefined,
+                    { dateStyle: "medium", timeStyle: "short" },
+                  )
+                : "date unavailable"}
+            </time>
+          </small>
         </>
       ) : (
         <p className="empty">No preparation yet.</p>
