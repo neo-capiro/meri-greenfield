@@ -26,11 +26,22 @@ export function useFacilities(clientId: string) {
       api.request(
         "core",
         `clients/${clientId}/facilities`,
-        z.array(facilitySchema),
+        z
+          .array(facilitySchema)
+          .refine((facilities) =>
+            facilities.every((facility) => facility.clientId === clientId),
+          ),
         { signal },
       ),
     refetchInterval: (query) =>
-      query.state.data?.some((f) => f.geocodeStatus === "pending")
+      query.state.data?.some(
+        (f) =>
+          f.geocodeStatus === "pending" ||
+          (f.geocodeNextAttemptAt &&
+            new Date(f.geocodeNextAttemptAt).getTime() >=
+              Date.now() - 120_000 &&
+            new Date(f.geocodeNextAttemptAt).getTime() <= Date.now() + 30_000),
+      )
         ? 5000
         : false,
   });

@@ -32,6 +32,27 @@ export const facilitySchema = z.object({
   geocodeStatus: z.string().nullable().optional(),
   latitude: z.union([z.number(), z.string()]).nullable().optional(),
   longitude: z.union([z.number(), z.string()]).nullable().optional(),
+  stateHouseDistrict: z.string().nullable().optional(),
+  stateSenateDistrict: z.string().nullable().optional(),
+  districtSource: z.string().nullable().optional(),
+  congressionalDistrictCongress: z.number().int().nullable().optional(),
+  geocodedAt: z.string().nullable().optional(),
+  geocodeMatchedAddress: z.string().nullable().optional(),
+  geocodeLastError: z.string().nullable().optional(),
+  geocodeNextAttemptAt: z.string().nullable().optional(),
+  geocodeAttemptCount: z.number().int().nullable().optional(),
+  geocodeCandidates: z
+    .array(
+      z.object({
+        matchedAddress: z.string().nullable(),
+        congressionalDistrict: z.string().nullable(),
+        state: z.string().nullable(),
+        latitude: z.number().nullable(),
+        longitude: z.number().nullable(),
+      }),
+    )
+    .nullable()
+    .optional(),
 });
 export type Facility = z.infer<typeof facilitySchema>;
 export const teamMemberSchema = z.object({

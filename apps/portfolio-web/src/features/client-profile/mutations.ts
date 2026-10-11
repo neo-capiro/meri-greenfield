@@ -17,12 +17,22 @@ export function useSaveFacility(
       api.request(
         "core",
         `clients/${clientId}/facilities${facilityId ? `/${encodeURIComponent(facilityId)}` : ""}`,
-        facilitySchema,
+        facilitySchema.refine(
+          (facility) =>
+            facility.clientId === clientId &&
+            (!facilityId || facility.id === facilityId),
+        ),
         { method: facilityId ? "PATCH" : "POST", body },
       ),
     onSuccess: async () => {
       await cache.invalidateQueries({
         queryKey: profileKey(clientId, "facilities"),
+      });
+      await cache.invalidateQueries({
+        queryKey: profileKey(clientId, "representation"),
+      });
+      await cache.invalidateQueries({
+        queryKey: profileKey(clientId, "district-nexus"),
       });
       onSaved();
     },

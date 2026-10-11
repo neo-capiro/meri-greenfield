@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Facility } from "./contracts";
+import { facilityFormBody } from "./facility-map-model";
 export function FacilityDialog({
   clientId,
   clientName,
@@ -25,21 +26,15 @@ export function FacilityDialog({
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const raw = Object.fromEntries(new FormData(event.currentTarget));
-    const body: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(raw)) {
-      if (typeof value !== "string") continue;
-      if (value.trim()) body[key] = value.trim();
-      else if (facility && key !== "name") body[key] = null;
+    try {
+      const body = facilityFormBody(raw, facility);
+      setValidation("");
+      mutation.mutate(body);
+    } catch (error) {
+      setValidation(
+        error instanceof Error ? error.message : "Review the facility details.",
+      );
     }
-    if (!body.name) {
-      setValidation("Facility name is required.");
-      return;
-    }
-    if (body.state) body.state = String(body.state).toUpperCase();
-    if (body.employeeCount !== undefined && body.employeeCount !== null)
-      body.employeeCount = Number(body.employeeCount);
-    setValidation("");
-    mutation.mutate(body);
   }
   return (
     <Dialog
@@ -111,7 +106,28 @@ export function FacilityDialog({
               defaultValue={facility?.congressionalDistrict ?? ""}
             />
           </label>
+          <label>
+            State House district
+            <input
+              name="stateHouseDistrict"
+              maxLength={64}
+              defaultValue={facility?.stateHouseDistrict ?? ""}
+            />
+          </label>
+          <label>
+            State Senate district
+            <input
+              name="stateSenateDistrict"
+              maxLength={64}
+              defaultValue={facility?.stateSenateDistrict ?? ""}
+            />
+          </label>
         </div>
+        <p className="muted">
+          Use a bare House district number, or 00 for at-large. Leave districts
+          blank to resolve from the address. A later successful geocode can
+          replace manual state districts.
+        </p>
         <TextareaField
           label="Notes"
           name="notes"
@@ -124,6 +140,14 @@ export function FacilityDialog({
         )}
         <QueryState error={mutation.error} />
         <div className="formActions">
+          <button
+            type="button"
+            className="button"
+            disabled={mutation.isPending}
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </button>
           <button className="button primary" disabled={mutation.isPending}>
             {mutation.isPending
               ? "Saving…"
