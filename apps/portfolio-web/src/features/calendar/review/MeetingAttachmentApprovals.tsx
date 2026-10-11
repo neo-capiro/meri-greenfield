@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { QueryState } from "@/shared/ui/QueryState";
+import { signedUrl } from "@/features/files/public";
 import {
   attachmentSnapshot,
   canReviewAttachment,
@@ -61,6 +62,16 @@ function AttachmentReview({ meeting }: { meeting: ReviewMeeting }) {
             </p>
             {file.scanDisclosure && (
               <p className="muted">{file.scanDisclosure}</p>
+            )}
+            {file.usable && signedUrl(file.downloadUrl) && (
+              <a
+                className="button"
+                href={signedUrl(file.downloadUrl)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Review {file.fileName}
+              </a>
             )}
             {file.usable === false && (
               <p role="note">
