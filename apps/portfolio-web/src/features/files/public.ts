@@ -1,5 +1,5 @@
 export { EntityDocuments } from "./EntityDocuments";
-export { filesKey } from "./queries";
+export { filesKey, useFiles } from "./queries";
 export {
   uploadParentFile,
   type UploadParent,
