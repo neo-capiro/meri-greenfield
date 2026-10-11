@@ -1,25 +1,25 @@
 # Meri kickoff status
 
-Current continuation,11 October2026 00:12Z: **G0 accepted/G1 active/OPEN;
-eight deployment gates, G2–G7 unentered.** The browser's
-[new read-only role is created and independently verified](reports/CODEX-G1-BROWSER-SOURCE8-ROLE-OWNER.md).
-Both original CREATE and execute remain consumed; original failures are preserved.
-SOURCE9 recovery paths passed distinct/root source review; fixture actions remain
-unadmitted. KMS/subnet discovery is retained, but fresh authority and bounded
-cleanup admission still precede volume/TestState/host work. No browser host yet.
-Playwright controls Chromium; real browser/renderer sandbox is still unqualified.
-The [first bounded fixed OCI acquisition](reports/CODEX-G1-PROXY-OCI-OWNER.md)
-failed TLS initialization with zero layer bytes and a confirmed empty Job. The
-consumed attempt is preserved. Local diagnostics identify dropped SYSTEMROOT;
-The narrow environment repair has passed distinct/root source review; a fresh
-separate admission still precedes acquisition. Inventory/
-native execution remain UNRUN; Q3 freeze FAILED/import UNRUN. SDK loopback and
-cleanup are accepted; [interruption/resume preparation](reports/CODEX-G1-SDK-INTERRUPTION-PREPARATION.md)
-identifies unfinished durable broker, replacement and fencing. The full planned
-Claude Agent SDK scope is retained; small fixtures do not replace product gates.
-The human requires approval before deviations from the current plan. All49+five
-findings OPEN, Office DEFERRED, sources disabled/current Meri untouched, no cutover,
-model spend$0/$10;75 real requests await the promised location/owner.
+Current continuation,11 October2026 00:34Z: **G0 accepted/G1 active/OPEN;
+eight deployment gates, G2–G7 unentered.** The corrected
+[fixed OCI acquisition succeeded and offline inventory completed](reports/CODEX-G1-PROXY-OCI-INVENTORY-OWNER.md).
+Root/distinct review verified all23 compressed layers. The302-entry inventory
+retains247 content objects and one intentional HOLD for an unresolved inert
+Prisma launcher link. No native/image/community/ABI/license acceptance follows;
+Linux import/auth/TLS/Fargate remain open. Original failed download/consumed slots
+stay preserved; Q3 freeze FAILED/import UNRUN. Browser role/SOURCE9 source remain
+accepted, but [fixture preparation](reports/CODEX-G1-BROWSER-FIXTURE-EXECUTION-PREPARATION.md)
+found no independently armed cleanup for its unattached volume. Fresh authority
+and managed cleanup precede any T0/volume/TestState/host; no browser host exists.
+SDK loopback/cleanup accepted; trusted checkpoint/replacement/fencing remain.
+[Official-store preparation](reports/CODEX-G1-SDK-REFERENCE-STORE-PREPARATION.md)
+confirms native flush attempts and missing complete durable-success verification.
+The [new research comparison](reports/CODEX-G1-RESEARCH-RECONCILIATION.md) supports
+a native session-plus-workspace checkpoint spike, while W05 SessionStore and
+the full SDK scope remain required. No architecture change is approved by the
+pasted recommendations. All49+five findings OPEN/Office DEFERRED, sources disabled,
+current Meri untouched/no cutover/model$0/$10;75 real requests await the promised
+location/owner. Earlier entries retain historical point-in-time outcomes.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native
