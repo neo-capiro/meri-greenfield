@@ -11,6 +11,7 @@ export const identitySchema = z.object({
   }),
   tenant: z.object({ id: z.string(), name: z.string() }).nullable().optional(),
   role: z.string().nullable().optional(),
+  billingAdmin: z.boolean().optional(),
 });
 export function useIdentity() {
   const api = useApi();
