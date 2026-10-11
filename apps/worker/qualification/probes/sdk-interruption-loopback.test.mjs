@@ -123,6 +123,15 @@ test('owner cleanup does not masquerade as native teardown', async () => {
   assert.equal(got.socketClosedBeforeOwnerClose, false);assert.equal(got.responseClosedBeforeOwnerClose, false);
 });
 
+test('owner refusal destruction is not classified as a pre-owner peer close', async () => {
+  const f = fakeHttp(), s = await createInterruptionLoopback({ scenario: scenario(), phase: 'resume', httpModule: f.api });
+  try {
+    f.request(Buffer.from(JSON.stringify(body())));await s.close();const got = s.receipt();
+    assert.equal(got.failure, 'REQUEST_REFUSED');assert.equal(got.forcedSocketCloses, 1);
+    assert.equal(got.socketClosedBeforeOwnerClose, false);assert.equal(got.responseClosedBeforeOwnerClose, false);
+  } finally { await s.close(); }
+});
+
 test('second request or connection refuses even after the first peer closes', async () => {
   for (const secondConnection of [false, true]) {
     const f = fakeHttp(), s = await createInterruptionLoopback({ scenario: scenario(), phase: 'interrupt', httpModule: f.api });

@@ -89,7 +89,7 @@ export async function createInterruptionLoopback({ scenario: input, phase, httpM
   const abort = code => { state.failure ||= code; void close().catch(() => {}); };
   const server = httpModule.createServer((req, res) => {
     if (++state.requestCount !== 1 || closing || Date.now() >= scenario.phaseDeadlineMs) {
-      req.destroy(); res.destroy(); abort('REQUEST_COUNT_OR_DEADLINE'); return;
+      abort('REQUEST_COUNT_OR_DEADLINE'); req.destroy(); res.destroy(); return;
     }
     const chunks = []; let bytes = 0, ended = false;
     const recordRequest = complete => {
@@ -106,7 +106,7 @@ export async function createInterruptionLoopback({ scenario: input, phase, httpM
       if (ended || closing) return;
       if (!Buffer.isBuffer(chunk)) { abort('BODY_CHUNK'); return; }
       bytes += chunk.length;
-      if (bytes > MAX_REQUEST_BYTES) { recordRequest(false); req.destroy(); res.destroy(); abort('BODY_BOUND'); return; }
+      if (bytes > MAX_REQUEST_BYTES) { recordRequest(false); abort('BODY_BOUND'); req.destroy(); res.destroy(); return; }
       chunks.push(chunk);
     });
     req.on('end', () => {
@@ -134,7 +134,7 @@ export async function createInterruptionLoopback({ scenario: input, phase, httpM
         res.flushHeaders?.();
         // One finite write; no accumulating application queue while PhaseA is active.
         if (phase === 'interrupt') res.write(wire); else res.end(wire);
-      } catch { req.destroy(); res.destroy(); abort('REQUEST_REFUSED'); }
+      } catch { abort('REQUEST_REFUSED'); req.destroy(); res.destroy(); }
     });
   });
   server.maxHeadersCount = 64;
