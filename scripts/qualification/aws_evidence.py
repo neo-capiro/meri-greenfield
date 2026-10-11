@@ -35,6 +35,10 @@ OPTIONS = {
               "--ssekms-key-id", "--checksum-algorithm", "--checksum-sha256", "--metadata",
               "--version-id", "--checksum-mode"},
 }
+COMMAND_OPTIONS = {
+    # The scan takes one image; other ECR reads retain their plural vocabulary.
+    ("ecr", "describe-image-scan-findings"): {"--repository-name", "--image-id"},
+}
 ALLOWED = {
     "sts": {"get-caller-identity"},
     "cloudformation": {"validate-template", "create-change-set", "describe-change-set",
@@ -135,7 +139,7 @@ def capture(out, label, arguments, timeout=45, *, profile=PROFILE):
     # History consumers bind each raw service page and its explicit nextToken.
     # Keep all previous callers unchanged; this flag is admitted only for that
     # one read operation and cannot become a global-option escape hatch.
-    options = OPTIONS[arguments[0]]
+    options = COMMAND_OPTIONS.get(tuple(arguments[:2]), OPTIONS[arguments[0]])
     if arguments[:2] == ["stepfunctions", "get-execution-history"]:
         options = options | {"--no-paginate"}
     if arguments.count("--no-paginate") > 1:
@@ -156,6 +160,7 @@ def capture(out, label, arguments, timeout=45, *, profile=PROFILE):
                    and key.upper() not in {"BOTO_CONFIG", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "NO_PROXY",
                                            "REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "SSL_CERT_FILE", "SSL_CERT_DIR"}}
     environment.update(AWS_MAX_ATTEMPTS="1", AWS_RETRY_MODE="standard", AWS_PAGER="",
+                       AWS_CLI_OUTPUT_ENCODING="UTF-8",
                        AWS_IGNORE_CONFIGURED_ENDPOINT_URLS="true",
                        AWS_CONFIG_FILE=str(Path.home() / ".aws" / "config"),
                        AWS_SHARED_CREDENTIALS_FILE=str(Path.home() / ".aws" / "credentials"))

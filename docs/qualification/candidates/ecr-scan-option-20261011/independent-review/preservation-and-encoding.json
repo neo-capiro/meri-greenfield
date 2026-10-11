@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "meri-independent-source-preservation-review/1",
+  "sourceCommit": "42399f0569921eb81e0a91eb06d85353d5745686",
+  "sourceTree": "6be454ef5e4ab0a6ff71c1205ab8a4c64cdd37bd",
+  "observedToolReceipt": {
+    "chunk_id": "94d049",
+    "wall_time_seconds": 0.000026089,
+    "exit_code": 0,
+    "output": "{\"canonicalOtherASTExact\": true, \"unchangedTestAndGuardFiles\": 7, \"upstreamReferenceHash\": \"0a7a41b0f3eb7951eb71d4f50eebbcb3600e6ed5e0ee897342536d74bcf2c1b9\", \"actualExtractedFunctionUTF8\": true, \"allRetainedCheckStreamsHashExact\": true, \"physicalExit\": 0}\n"
+  },
+  "checks": [
+    "Canonical AST equals base after removing only COMMAND_OPTIONS scan override, options lookup and AWS_CLI_OUTPUT_ENCODING keyword.",
+    "Seven unchanged guard/test source files compared against base631aee6 byte-for-byte.",
+    "Retained upstream reference SHA256 matches preservation-and-encoding.json.",
+    "Actual extracted set_preferred_output_encoding executed with real CP1252 TextIOWrapper and supported UTF-8 environment; exact JSON values round-trip and CP1252 0x92 absent.",
+    "Every primary retained suite stdout/stderr byte-count/hash reconciled against checks.json."
+  ],
+  "captureLimit": "Observed unified tool receipt and result proof retained; no independently split binary stream file was created.",
+  "actualWindowsCliExecuted": false,
+  "cloudCalls": false
+}

@@ -1,0 +1,12 @@
+test_existing_ecr_plural_operations_are_unchanged (__main__.EcrTransport.test_existing_ecr_plural_operations_are_unchanged) ... ok
+test_failed_scan_retains_raw_error_without_retry (__main__.EcrTransport.test_failed_scan_retains_raw_error_without_retry) ... ok
+test_incorrect_plural_and_foreign_scan_options_refuse_before_effects (__main__.EcrTransport.test_incorrect_plural_and_foreign_scan_options_refuse_before_effects) ... ok
+test_non_utf8_stdout_is_retained_and_never_transcoded (__main__.EcrTransport.test_non_utf8_stdout_is_retained_and_never_transcoded) ... ok
+test_scan_keeps_profile_and_deadline_refusals (__main__.EcrTransport.test_scan_keeps_profile_and_deadline_refusals) ... ok
+test_singular_option_cannot_escape_to_another_command (__main__.EcrTransport.test_singular_option_cannot_escape_to_another_command) ... ok
+test_singular_scan_keeps_exact_argv_raw_bytes_and_receipt (__main__.EcrTransport.test_singular_scan_keeps_exact_argv_raw_bytes_and_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.040s
+
+OK

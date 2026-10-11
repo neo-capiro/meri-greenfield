@@ -42,10 +42,16 @@ python3 scripts/qualification/aws_evidence.py \
   --out /absolute/fresh/scan-capture --label exact-image-scan -- \
   ecr describe-image-scan-findings \
   --repository-name meri-greenfield/qualification-worker \
-  --image-ids imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac
+  --image-id imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac
 ```
 
 The existing reader retains CLI stdout/stderr and process metadata. Its current ECR path uses CLI aggregation rather than individually exposed raw service pages. The analyzer accepts only a complete retained aggregate whose counts reconcile and whose continuation token is absent/null. It neither performs pagination nor authenticates individual pages; incomplete aggregates are refused. Any future explicit page reader must independently bind each request/token/response and the final complete aggregate rather than weakening this check.
+
+11 October source correction: the scan command takes singular `--image-id`.
+The canonical reader's separately reviewed encoding repair sets
+`AWS_CLI_OUTPUT_ENCODING=UTF-8`; captures retain original binary streams.
+See [the repair report](CODEX-G1-ECR-SCAN-OPTION-20261011.md). The earlier
+parser-failed and CP1252 captures remain separate historical evidence.
 
 Recover the separately recorded immutable build archive with its actual version:
 
