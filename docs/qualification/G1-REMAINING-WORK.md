@@ -1,27 +1,38 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 02:06 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
-[Actual profile-v2 and source acceptance](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
-records 280 selected paths, 242 CAS objects, 23 ELFs and seven HOLDs after one
-fresh offline scan with both Jobs empty. Distinct actual-v2 review and profile3
-selection are now accepted, with 22 root synthetic checks. Obtain actual selected
-library bytes and transitive closure without treating that source as loader proof;
-preserve all old outputs/consumes. Establish actual
-package/notices/community assembly, genuine Linux import, PostgreSQL auth/deny/
-revoke, TLS/ECS identity, usage/durable $10 limit and Fargate. SDK tool
-registration and browser bootstrap are now accepted with independent 12/51
-checks and root exact-commit/seal verification. Finish image public-contract
-package closure, native deferred search/tool-reference/success/unavailable/
-revocation through actual proxy/Bedrock, full SessionStore/checkpoint/workspace/
-fencing and native interruption/replacement/resume. Browser still needs exact
-activated-source/history/probe bridge, actual ASL/wire/IAM/KMS/cost/fresh authority,
-one managed lifecycle/physical absence, then host watchdog/browser AND renderer
-sandbox/egress/teardown. No live T0/volume/TestState/host. Office/security, REL-02/
-RG-08/measured cohorts remain. All 49 current plus five older findings remain
-OPEN; Office is DEFERRED. Sources are disabled, current Meri is untouched, no
-cutover has occurred and model spend is $0 of $10. The 75 requests await the
-promised source. Any plan departure requires prior human approval; W05 and full
-SDK scope are unchanged.
+Current continuation, 11 October 2026 03:05 UTC: **G0 accepted / G1 OPEN;
+eight deployment gates, G2–G7 unentered.** The next critical path is the actual
+isolated Linux proxy build/import, followed by disposable PostgreSQL native
+authentication/revocation and SDK discovery through the trusted proxy/Bedrock.
+The Linux community candidate has passed distinct source review; root verified
+all eight new Git paths, 1,344 author payload/reference files, 321 artifact files
+and all 330 immutable source-archive members. This is preparation, not a native
+import or G1 pass. [Owner evidence](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact accepted commits and limits.
+
+Root's independent SDK public-import checks passed 23/23 and browser managed-
+bootstrap history checks passed 36/36. The worker now packages the exact public
+contracts archive; all 145 previous lock records are unchanged and its retained
+static suite passed 91/91. The new worker recipe has not been built. Exact native
+Prisma engine bytes are recovered; offline generation still may require missing
+target families. Build-log capture defects were fixed and independently reviewed;
+three synthetic failure-bundle checks pass. The first isolated Linux build
+installed all 124 packages and verified Node24.21.0/Python3.13.5, then FAILED
+offline Prisma generation because the unchanged schema also requires the
+unacquired Debian OpenSSL1.1 query engine. The network-none boundary held;
+genuine import is UNRUN. Exact result capture is complete and input bytes stable.
+No import container/database/provider was started. Remaining exact engine DATA
+recovery is next; the failed run is preserved and will not be retried.
+
+G1 requires the bounded interrupt/resume/checkpoint/egress spike, actual-proxy
+native discovery, accepted REL-02, pinned components, Temporal production design
+and measured frozen cohort budgets. Full W05/product integration remains later
+work; it is not a prerequisite to the bounded G1 spike. Remaining G1 evidence
+includes real proxy/DB/TLS/identity/usage/$10 controls, native SDK discovery and
+replacement recovery, browser/renderer sandbox/egress/physical cleanup,
+Office/security disposition and measured cohorts. Sources stay disabled; current
+Meri is untouched. All 49 current plus five older findings remain OPEN; Office
+is DEFERRED. Model spend is $0 of $10. The promised approved location/owner for
+75 real requests is still awaited. No plan departure or cutover is approved.
 
 Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,

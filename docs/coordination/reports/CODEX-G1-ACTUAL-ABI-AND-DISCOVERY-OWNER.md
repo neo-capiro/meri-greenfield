@@ -1,5 +1,106 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Actual first Linux build — 11 October 2026 03:05 UTC
+
+Root admitted one bounded build/import experiment after independent source,
+recipe and owner-dispatch reviews, exact artifact/ZIP checks and pre-invocation
+source/runtime pins. [Dispatch review](CODEX-G1-PROXY-LINUX-OWNER-DISPATCH-REVIEW.md)
+is integrated at1d73214. This is qualification evidence; no runtime is admitted.
+
+CodeBuild `meri-greenfield-qualification-build:0e9dac8a-b69b-408e-af11-77dfc66f8655`
+ran03:00:16–03:01:21UTC and is terminal **FAILED / COMPLETED**, retry limit/number
+both0. The exact source S3 version is`z0F24xm0e_69De0JgKZ_bqPVCJaZSVyv`.
+Fresh STS/full project comparisons passed; upload/versioned HEAD checksum/KMS,
+actual ACK and terminal source/environment/role/cache/log/secondary-source
+configuration were independently checked. All nine enumerated dispatcher,
+canonical helper and trusted executable pins remain stable.
+
+Actual Docker build installed all124 exact Linux wheels and emitted actual
+Node24.21.0/Python3.13.5, dpkg and installed-distribution observations. The next
+RUN failed during genuine Prisma generation: the unchanged five-target schema
+requested `debian-openssl-1.1.x/query-engine.gz.sha256`; with network-none, DNS
+returned EAI_AGAIN. No checksum/schema/target or network bypass was applied.
+The supplied Debian OpenSSL3 pair alone is insufficient for this generation.
+The final image and genuine app import remain UNRUN.
+
+The reviewed finally path uploaded a complete bounded failure capture to the
+fixed result key. Exact result version`guK9wdAqutGfBEEqP3AVqvAZ3q8KXbU8`,13909bytes,
+checksum`rAxe1AsP4IXVzwgbyfx7BVQcqWRScARjmQx9wwmtM/Q=`. Root downloaded that
+version, verified its checksum/KMS/source/archive/build binding and every flat
+capture row's actual bytes/hash. `captureComplete=true`, `inputStable=true`,
+`nativeImportPassed=false`, `containerCreateAttempted=false`; cleanup was
+NOT_NEEDED_NO_CREATE_DISPATCH. No import container, DB/provider or ECR push was
+dispatched. Complete Docker process capture reports an ordinary failed exit,
+not a CLI timeout or truncated output. No external application resource was
+created. CodeBuild's completed lifecycle is recorded without pretending it is
+a separate Docker-daemon absence attestation.
+
+Evidence and owner decision remain under
+`.task-inputs/proxy-linux-owner-build-1/{dispatch-1,observations,actual-result-1}`
+and `actual-build-owner-decision.json`. The first root observation CLI wrapper
+failed its isolated Python sibling import before AWS; its tool traceback remains.
+The corrected explicit helper import captured the actual read-only observation;
+that wrapper failure is not represented as a failed AWS API or native test.
+
+Next recover and verify the other exact Prisma target inputs from already
+retained upstream OCI data, then separately review a new bounded source/attempt.
+The first reservation and result stay consumed/preserved. Distinct actual-DATA
+review and official Linux PostgreSQL17.11 artifact discovery continue in parallel.
+No gate advanced; model spend$0/$10, sources disabled and no cutover.
+
+## Owner continuation — 11 October 2026 02:58 UTC
+
+G0 accepted; G1 OPEN; G2–G7 unentered. Root independently reviewed and integrated
+the following exact source/data sessions. None admits a new runtime or closes G1.
+
+| Author commit | Integration | Scope |
+| --- | --- | --- |
+| 8b75c85 | 3be4399 | Linux community prerequisite discovery |
+| 1ea207d / 0b8243a | 610dc7c / c29043a | SDK public import and independent review |
+| 2bc914e / 9189403 | bd5c2bf / cf0b916 | Managed bootstrap history and independent review |
+| cee1eaa | 2a18470 | Exact retained Prisma engine DATA |
+| 51f59dc | 6919669 | Exact public-package worker assembly |
+| d4f93c6 / aeccd7a / c76e787 | b542904 / 98487a8 / b2d9ab7 | Original capture HOLDs and v3 source repair review |
+| e2a2a26 / 2205216 | d138b9a / ac5ff8d | Linux community assembly and independent review |
+
+Root independently ran SDK23/23 and browser36/36 canonical cases under the
+existing offline restrictions; 3,602 enumerated source/runtime/evidence files
+were rehashed and unchanged. `.task-inputs/discovery-bootstrap-owner-2/` binds
+the decision, both raw test captures, peer decisions and engine DATA decision.
+The SDK packaging session retains91/91 static checks; root separately verified
+874 unique files, eight raw Git paths, 22 protected paths, all145 old non-root
+lock objects and all11 archive members against canonical contracts Git. The
+exact48,823-byte archive is copied/checksummed before npm ci; no new worker image
+has been built and the old image/security evidence does not advance.
+
+The Linux source preserves LiteLLM1.104.2/extras0.4.102.post1/Prisma0.11.0,
+CLI5.4.2 and all five upstream schema targets. Exact Debian OpenSSL3 engine bytes
+are supplied without target relabeling. Root verified1,344 finite author files,
+the eight NEW raw Git paths, 321 context artifacts/219,286,960 bytes and all330
+actual ZIP members. Archive219,762,982 bytes, SHA256
+`77ef8e305ee57cc5886cbdd9c34d78829739f1a4b1680028ef1becdda22de53e`;
+input manifest SHA256`64d887006dd2a05567fdc18b44e7b27e6eb6c8ed9943858928536baeb7de2931`.
+Distinct source review qualifies the removed Docker frontend directive, missing
+non-native engine families and tokenizers notice gap. No install/generation/import
+or authentication is inferred from these DATA observations.
+
+Root's v1/v2 cloud recipe capture defects were found before dispatch and retained.
+V3 reserves payload budget before copying and binds retained partial prefixes.
+Three exact embedded-packer synthetic cases passed: small, oversized prefix and
+injected post-copy OSError. None claims native-import success. Root verified the
+three independent report seals (237/30/109 unique files). The isolated build runner
+and v3 recipe are independently reviewed; their actual cloud dispatch remains
+pending final owner request/authority checks. Operational files and finite owner
+decisions are under `.task-inputs/proxy-linux-owner-build-1/`.
+
+The priority is the actual Linux build/import, then PostgreSQL native auth/revoke,
+actual trusted proxy/Bedrock SDK discovery and bounded recovery/browser spikes.
+G1 is the W02/runtime checkpoint described in the plan, not full W05 or later
+W09 acceptance. Production SessionStore/workspace/fencing, UI/data/skill/approval
+and release integration remain required under their later gates. All old failed
+attempts, native fixture consumes and security holds remain unchanged. G1 is OPEN,
+Office DEFERRED, sources disabled, model spend$0/$10 and no cutover authorized.
+
 Integration-owner checkpoint, 11 October 2026 01:37 UTC. G0 remains accepted;
 G1 is active and OPEN; G2–G7 are unentered. Research supplied by the human helps
 sequence the work but authorizes no departure from the deployment plan. Full
