@@ -6,3 +6,4 @@ export {
   type UploadAttempt,
 } from "./upload";
 export { attachmentSchema, fileValidation, type Attachment } from "./contracts";
+export { UploadDialog } from "./UploadDialog";
