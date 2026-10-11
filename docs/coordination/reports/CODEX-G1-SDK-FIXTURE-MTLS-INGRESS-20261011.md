@@ -1,7 +1,8 @@
 # G1 SDK fixture private mTLS ingress — H2 source review
 
-Status: local source-only review candidate. It is not registered, deployed,
-connected to the H3 registry or backed by S3. It does not qualify G1.
+Codex decision: **ACCEPT as a local source-only transport candidate; G1 HOLD**.
+It is not registered, deployed, connected to the H3 registry or backed by S3.
+It does not qualify G1.
 
 ## Provenance and work boundary
 
