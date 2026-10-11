@@ -249,7 +249,11 @@ describe("runtime-gated extraction", () => {
     await expect(
       extractMeetingSource(
         createApiClient(async () =>
-          Response.json({ attachmentId: id, text: "Source", truncated: "false" }),
+          Response.json({
+            attachmentId: id,
+            text: "Source",
+            truncated: "false",
+          }),
         ),
         id,
       ),
