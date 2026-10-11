@@ -154,7 +154,7 @@ def _reason(code, message):
         unsupported = mentions == 1 and message.rsplit(':', 1)[-1].strip() in no_tls
         certificate = any(text in message for text in ('certificate verify failed', 'unknown issuer',
                                                        'unable to get local issuer', 'self-signed certificate'))
-        if mentions and (not unsupported or hostname or 'certificate' in message):
+        if mentions and (not unsupported or hostname or certificate or 'certificate' in message):
             return None
         if hostname:
             return 'HOSTNAME_REJECTED'

@@ -84,3 +84,31 @@ were stable, denied socket/process events were empty and Prisma was not
 imported. Binary streams and the process envelope are in E3/checks-1.
 The bounded inert suite result is recorded in E3; source qualification requires
 independent review, and actual wrong-CA cause/native TLS/G1 remain unqualified.
+
+
+## Root mixed-issuer correction after E3 SOURCE HOLD
+
+The distinct E3 review found `unknown issuer: server does not support TLS` and
+`unable to get local issuer: server does not support TLS` could pass plaintext:
+the terminal-clause guard omitted the already computed certificate reason.
+Root took the same three paths after the author released ownership. One guard
+now includes that computed reason; one new test method exercises three issuer
+forms across plaintext, wrong-CA and wrong-SAN. All 26 earlier test methods and
+helpers remain AST-exact. Extraction, supported classes, response handling,
+byte/tree/completeness bounds and native-output exclusion are unchanged.
+
+Root ran the 27-method inert suite once under fixed CPython3.12.14 `-I -B`,
+closed stdin, replacement environment and a 60-second external direct-child
+bound. It passed27/27, exit0, 0.110 seconds; source hashes stayed stable,
+no Prisma import and zero socket/process audit attempts. Raw streams, fixed
+child source, prior exact three bodies, outline and receipt are retained in
+`.task-inputs/prisma-error-evidence-4-root/`. E1/E2/E3 and their SOURCE HOLDs
+remain unchanged. Final classifier11499B SHA256
+`406aef930fb9712c7c17ada3205d125113a7894f5ad23419a92a2d759c6d90a2`;
+test17014B SHA256
+`199ad268f9fda65d3547d3520a859ae675728bf281a8235a833f76d81adcb386`.
+
+Distinct final source review and integration-owner acceptance remain required.
+No native parser, peer composition, new Linux run or actual certificate proof
+follows from this repair. The historical wrong-CA cause stays UNKNOWN, its
+build stays FAILED, and G1 remains OPEN.

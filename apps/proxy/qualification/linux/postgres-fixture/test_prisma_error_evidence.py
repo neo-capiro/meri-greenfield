@@ -315,5 +315,12 @@ class EvidenceTests(unittest.TestCase):
                                  'P9999'), case='plaintext')
 
 
+    def test_no_tls_terminal_clause_with_issuer_reason_refuses(self):
+        for issuer in ('unknown issuer', 'unable to get local issuer', 'self-signed certificate'):
+            for case in ('plaintext', 'wrong-ca', 'wrong-san'):
+                with self.subTest(issuer=issuer, case=case):
+                    self.rejected(data_error(issuer + ': server does not support TLS'), case=case)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
