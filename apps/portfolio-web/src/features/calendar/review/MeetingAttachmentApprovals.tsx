@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 import { QueryState } from "@/shared/ui/QueryState";
-import { canReviewAttachment, type ReviewMeeting } from "./contracts";
+import {
+  attachmentSnapshot,
+  canReviewAttachment,
+  type ReviewMeeting,
+} from "./contracts";
 import { useAttachmentApproval } from "./useAttachmentApproval";
 import styles from "./review.module.css";
 
@@ -70,14 +74,18 @@ function AttachmentReview({ meeting }: { meeting: ReviewMeeting }) {
                   <label className={styles.check}>
                     <input
                       type="checkbox"
-                      checked={checked === file.id}
+                      checked={checked === attachmentSnapshot(file)}
                       disabled={Boolean(
                         review.pending ||
                         review.uncertain ||
                         review.query.isFetching,
                       )}
                       onChange={(event) =>
-                        setChecked(event.target.checked ? file.id : undefined)
+                        setChecked(
+                          event.target.checked
+                            ? attachmentSnapshot(file)
+                            : undefined,
+                        )
                       }
                     />
                     I have reviewed {file.fileName}
@@ -85,7 +93,7 @@ function AttachmentReview({ meeting }: { meeting: ReviewMeeting }) {
                   <button
                     className="button"
                     disabled={
-                      checked !== file.id ||
+                      checked !== attachmentSnapshot(file) ||
                       Boolean(
                         review.pending ||
                         review.uncertain ||

@@ -87,9 +87,14 @@ export function useAttachmentApproval(meeting: ReviewMeeting) {
       )
         setUncertain(file.id);
       setError(
-        failure instanceof Error
-          ? failure
-          : new Error("Approval could not be verified."),
+        confirmed
+          ? new AttachmentApprovalError(
+              "Approval may have completed before the session changed. Refresh the attachment status before another action. This attempt will not retry automatically.",
+              true,
+            )
+          : failure instanceof Error
+            ? failure
+            : new Error("Approval could not be verified."),
       );
     } finally {
       setPending(undefined);
