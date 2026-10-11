@@ -1,6 +1,6 @@
 # Actual ABI DATA and discovery source acceptance
 
-## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:05 UTC
+## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:28 UTC
 
 G0 accepted/G1OPEN; G2-G7unentered. All current source acceptances are scoped,
 not security/runtime/G1 admission. Current Meri/Capiro is untouched, sources
@@ -64,8 +64,17 @@ Current independent SOURCE acceptances now also include:
 - SDK interruption driveraee1-c57fbb4:56finite refs,18rootcontrols/help0/missing2;
   loopback24f9808-53ea22a/599650f:137refs/rawGit,16rootinjectedcontrols/help0/missing2.
   Exact earlier PhaseA user history must precede resumed response. No real transport/
-  SDK recovery executed. Packaging checkpoint plus canonical scanner dependencies
-  is a bounded Codex task; durable checkpoint/fencing/two-task composition remains.
+  SDK recovery executed. Packaging38d3779-94a3913 is source-accepted after249refs,
+  rawGit and root16filesystem/3recipe/1inventory/help0/missing2 checks. Exclusive
+  context34files709955B manifest45f8e19066eb2552bfeaf9896e5cffeb1e006f98375f7a3c93dd107219c01edf.
+  Root builder509df40 invokes that fixed assembler before staged Docker context,
+  with45s timeout/5s kill-after and existing postbuildguard/IAM unchanged. Synth
+  and seven security controls pass plus distinct root-delta source review. First
+  source-test regexp matched TERM suffix; retained6/7failure, corrected token
+  anchors and7/7rerun. A raw-console encoding reporting failure after the passing
+  child is retained; saved outcome/source verified without another suite rerun.
+  Fresh archive/image/build/scan/admission and durable fenced two-task recovery
+  remain. No configured builder/stack/runtime invocation follows this source pass.
 - Combined native schema/auth40c98-9b93365/f205c51:82finite refs/rawimplementationGit,
   two documentation finalCRLF differences explicitly reconciled,8composition+11TLS
   rootchecks and separate source review. Sole import conflict retained exact digest
@@ -80,6 +89,13 @@ Current independent SOURCE acceptances now also include:
   Unchanged accepted process/Job reused; author16+4source1/2source2budgetcontrols
   are accurately version-bound. Parent expiry/drift rechecked after runner return;
   no fixtureT0/C reset or cloud-absence inference. No operational action/consume.
+
+Two new Prisma diagnostic candidates remain SOURCE HOLD. Classifier21f5686
+has broadphrase hostname/noTLS false positives; FD capture d10e5113 needs
+conservative post-effect initialization ownership bookkeeping. Both exact old
+commits/seals and distinct reviews remain, with separate bounded corrections
+allocated. Neither is integrated/admitted; native parser/peer composition
+and a fresh actual experiment remain root-owned. WrongCA remains UNKNOWN.
 
 G1 additionally retains host/browser AND renderer sandbox/egress/cancellation/
 physical teardown, trusted proxy authentication/revocation/native discovery/usage/

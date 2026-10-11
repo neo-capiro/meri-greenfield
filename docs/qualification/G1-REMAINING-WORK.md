@@ -1,6 +1,6 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 06:13 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 06:28 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
 
@@ -17,7 +17,11 @@ The narrow stream fixes pass 15 peer and 32 canonical native-auth controls plus
 independent source reviews. Combined native schema/auth source is integrated but
 has not run. SDK interruption driver and transport source pass 18 and 16 root
 controls respectively; actual interruption/replacement/recovery remains untested.
-A bounded Codex session is fixing missing checkpoint and shared-parser packaging.
+Checkpoint and shared-parser packaging is source-accepted, along with its
+canonical builder migration: 16 filesystem, three recipe, one inventory-root
+and seven infrastructure controls pass. A fresh image and actual recovery
+test remain. Two Prisma diagnostic candidates are held for bounded corrections
+after independent reviews; no rejection result has been accepted from them.
 Browser bootstrap and parent supervision source are independently reviewed; no
 operational fixture clock, browser host or browser isolation probe has begun.
 
