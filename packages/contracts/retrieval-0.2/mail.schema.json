@@ -1,0 +1,487 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:mail:0.2.0",
+  "title": "Meri pending mail thread transport contract 0.2.0",
+  "$defs": {
+    "MailThreadInput": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "oneOf": [
+            {
+              "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SubjectRequest/oneOf/0"
+            },
+            {
+              "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SubjectRequest/oneOf/2"
+            }
+          ]
+        },
+        "threadId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "messageId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "messageOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000,
+          "default": 0
+        },
+        "bodyOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000,
+          "default": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "maxCharacters": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6000,
+          "default": 2000
+        }
+      },
+      "required": [
+        "subject",
+        "threadId"
+      ],
+      "additionalProperties": false
+    },
+    "MailThreadSelection": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "oneOf": [
+            {
+              "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SubjectRequest/oneOf/0"
+            },
+            {
+              "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/SubjectRequest/oneOf/2"
+            }
+          ]
+        },
+        "threadId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "messageId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "messageOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000,
+          "default": 0
+        },
+        "bodyOffset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000,
+          "default": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "maxCharacters": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6000,
+          "default": 2000
+        }
+      },
+      "required": [
+        "subject",
+        "threadId",
+        "messageId",
+        "messageOffset",
+        "bodyOffset",
+        "limit",
+        "maxCharacters"
+      ],
+      "additionalProperties": false
+    },
+    "MailThreadSourcePage": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "mail-thread-source-page"
+        },
+        "contractVersion": {
+          "const": "0.2.0"
+        },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "mail.read_thread"
+            },
+            "version": {
+              "const": "0.2.0"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "traceId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "window": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/NormalizedWindow"
+        },
+        "argumentsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "appliedFilters": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/appliedFilters"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/SourceState"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "coverage": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/Coverage"
+        },
+        "selection": {
+          "$ref": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadSelection"
+        },
+        "order": {
+          "const": "sentAt-asc_receivedAt-asc_createdAt-asc_nulls-and-ties-unspecified"
+        },
+        "snapshotVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sourceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z][a-z0-9_.-]*$"
+              },
+              "mailboxId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "threadId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "messageId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "recordVersionId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "citationId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "contentSha256": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"
+                },
+                "minItems": 1,
+                "maxItems": 4096,
+                "uniqueItems": true
+              },
+              "removed": {
+                "const": false
+              },
+              "connectionStatus": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "bodyCompleteness": {
+                "enum": [
+                  "full",
+                  "preview",
+                  "truncated",
+                  "missing",
+                  "unknown"
+                ]
+              },
+              "readHandle": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "section": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000000
+                  },
+                  "endExclusive": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10006000
+                  },
+                  "totalCodeUnits": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "unit": {
+                    "const": "utf16-code-unit"
+                  },
+                  "text": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 0,
+                        "maxLength": 6000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "hasMore": {
+                    "anyOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "start",
+                  "endExclusive",
+                  "totalCodeUnits",
+                  "unit",
+                  "text",
+                  "hasMore"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "sourceId",
+              "mailboxId",
+              "threadId",
+              "messageId",
+              "recordVersionId",
+              "citationId",
+              "contentSha256",
+              "scopes",
+              "removed",
+              "connectionStatus",
+              "bodyCompleteness",
+              "readHandle",
+              "section"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "totalMessages": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hasMoreMessages": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextMessageOffset": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10010
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nextBodyOffsets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "messageId": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "bodyOffset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10006000
+              }
+            },
+            "required": [
+              "messageId",
+              "bodyOffset"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "continuation": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/continuation"
+        },
+        "evidenceReady": {
+          "const": false
+        },
+        "negativeAssertion": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "none"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "contractVersion",
+        "operation",
+        "requestId",
+        "traceId",
+        "binding",
+        "subject",
+        "window",
+        "argumentsSha256",
+        "appliedFilters",
+        "sources",
+        "coverage",
+        "selection",
+        "order",
+        "snapshotVersionId",
+        "messages",
+        "totalMessages",
+        "hasMoreMessages",
+        "nextMessageOffset",
+        "nextBodyOffsets",
+        "continuation",
+        "evidenceReady",
+        "negativeAssertion"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
