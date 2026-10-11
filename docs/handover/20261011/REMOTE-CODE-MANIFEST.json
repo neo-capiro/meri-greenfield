@@ -1,0 +1,77 @@
+{
+  "schema": "meri.remote-code-handoff/1",
+  "repository": "https://github.com/neo-capiro/meri-greenfield.git",
+  "acceptedSourceBaseline": "2f0e03ac656e393165ebc539bf6bfe9209623e2d",
+  "deploymentGate": "G1_OPEN",
+  "checkpoints": [
+    {
+      "branch": "task/g1-parallel-integration",
+      "state": "ACCEPTED_SOURCE_ONLY_BASELINE; G1 OPEN; actual combined runtime unrun",
+      "commit": "2f0e03ac656e393165ebc539bf6bfe9209623e2d",
+      "github": "https://github.com/neo-capiro/meri-greenfield/tree/2f0e03ac656e393165ebc539bf6bfe9209623e2d",
+      "remoteVerified": true
+    },
+    {
+      "branch": "task/g1-rel02-mail-list-search-contract",
+      "state": "PENDING_ROOT_ACCEPTANCE; distinct source-only review recorded; no handler enabled",
+      "commit": "dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6",
+      "github": "https://github.com/neo-capiro/meri-greenfield/tree/dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6",
+      "remoteVerified": true
+    },
+    {
+      "branch": "task/g1-rel02-remaining-capability-metadata",
+      "state": "PENDING_ROOT_REVIEW; metadata documentation only",
+      "commit": "086263abdf1b5c34b502a44d957b5568e837f992",
+      "github": "https://github.com/neo-capiro/meri-greenfield/tree/086263abdf1b5c34b502a44d957b5568e837f992",
+      "remoteVerified": true
+    },
+    {
+      "branch": "handoff/sdk-worker-adapter-wip-20261011",
+      "state": "UNREVIEWED_UNFINISHED_WIP; seven byte-preserved paths; no acceptance or fresh test claim",
+      "commit": "4d33640d9eaadc045c1c1f15dfcceddfe330f3fa",
+      "github": "https://github.com/neo-capiro/meri-greenfield/tree/4d33640d9eaadc045c1c1f15dfcceddfe330f3fa",
+      "remoteVerified": true
+    }
+  ],
+  "sdkWipFiles": [
+    {
+      "path": "docs/qualification/SDK-FIXTURE-CHANNEL.md",
+      "bytes": 11676,
+      "sha256": "eb601b0e65e0ca780721151a4c87ab52a5ebdf52b63e6c241a372313ba43c59b"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "bytes": 7736,
+      "sha256": "30d5db78e13726daf5ed599feccc49c7b7aa480566c005d5eee5eb4a6ed57f06"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "bytes": 9776,
+      "sha256": "7d9fd2ae9e5074005865d0a2902676de596ce201bdae37293bd20f9a7145f595"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-G1-SDK-FIXTURE-WORKER-ADAPTER.md",
+      "bytes": 5788,
+      "sha256": "c0471d81f79d46432e3d2789064c174d69b079245dff36443265581dd4ce4042"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-G1-SDK-FIXTURE-WORKER-ADAPTER.md",
+      "bytes": 2619,
+      "sha256": "bc646148c793d5cc945a482bd3c1868e3229dbc525850049b1c2b41218612262"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "bytes": 1448,
+      "sha256": "be6faaadc4b6d99d4f6a85edac67568cbd1f75bed1debc9599b21e5fa5b0de7b"
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "bytes": 9787,
+      "sha256": "78fac8d9eda27c2261cf63941bd064100bb27256362e67c35dd5a70430889797"
+    }
+  ],
+  "originalSdkWorktreePreserved": true,
+  "wipTestsDuringPublication": "NOT_RUN; preservation/documentation only",
+  "browserSource5": "No committed or uncommitted SOURCE5 diff in allocated worktree at publication; base is 2f0e03a. Next owner must implement it as a new bounded task.",
+  "privateOperationalEvidence": "Not in GitHub; secure transfer or validated existing artifact retrieval required before relying on unavailable raw captures."
+}
