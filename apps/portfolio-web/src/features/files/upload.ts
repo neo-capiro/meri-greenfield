@@ -46,6 +46,7 @@ export async function uploadParentFile(
   onStage: (stage: string) => void,
   source = "manual",
   transport: typeof fetch = fetch,
+  beforeDispatch?: () => void,
 ) {
   const invalid = fileValidation(file);
   if (invalid) throw new Error(invalid);
@@ -69,6 +70,7 @@ export async function uploadParentFile(
   attempt.file = file;
   if (!attempt.bytesUploaded && !attempt.storageUnknown) {
     onStage("Preparing upload");
+    beforeDispatch?.();
     const ticket = await api.request(
       "core",
       "engagement/attachments/upload-url",
@@ -84,6 +86,7 @@ export async function uploadParentFile(
     form.append("file", file);
     onStage("Uploading bytes");
     attempt.ticket = ticket;
+    beforeDispatch?.();
     let response: Response;
     try {
       response = await transport(url, {
@@ -107,6 +110,7 @@ export async function uploadParentFile(
   if (!attempt.ticket)
     throw new Error("Upload confirmation is missing its storage reference.");
   onStage("Confirming upload");
+  beforeDispatch?.();
   const receiptSchema = parent.meetingId
     ? attachmentSchema
         .extend({

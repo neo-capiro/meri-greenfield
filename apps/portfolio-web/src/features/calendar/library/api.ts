@@ -55,6 +55,7 @@ export async function assignMeeting(
   api: ApiClient,
   reviewed: Meeting,
   clientId: string | null,
+  beforeDispatch?: () => void,
 ) {
   const path = `engagement/meetings/${encodeURIComponent(reviewed.id)}`;
   const current = await api.request(
@@ -67,6 +68,7 @@ export async function assignMeeting(
     current.visibility !== reviewed.visibility
   )
     throw new AssignmentConflict(current);
+  beforeDispatch?.();
   return api.request(
     "core",
     path,

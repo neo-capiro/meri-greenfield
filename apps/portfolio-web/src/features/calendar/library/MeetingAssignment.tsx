@@ -10,6 +10,7 @@ import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Meeting } from "../contracts";
 import { AssignmentConflict, assignMeeting } from "./api";
+import { useDispatchGuard } from "./useDispatchGuard";
 import styles from "./library.module.css";
 
 export function MeetingAssignment({
@@ -49,6 +50,10 @@ function AssignmentForm({
   const cache = useQueryClient();
   const identity = useIdentity();
   const clients = useClients();
+  const guard = useDispatchGuard(
+    identity.data?.user.id,
+    identity.data?.tenant?.id,
+  );
   const [reviewed, setReviewed] = useState(meeting);
   const [clientId, setClientId] = useState(meeting.client?.id ?? "");
   const [confirmed, setConfirmed] = useState(false);
@@ -65,6 +70,7 @@ function AssignmentForm({
   const changed = clientId !== (reviewed.client?.id ?? "");
   const mutation = useMutation({
     mutationFn: async () => {
+      guard();
       if (!allowed)
         throw new ApiError(403, "Assignment is unavailable for this role.");
       if (
@@ -76,9 +82,10 @@ function AssignmentForm({
           422,
           "Select an accessible client and review the association change.",
         );
-      return assignMeeting(api, reviewed, clientId || null);
+      return assignMeeting(api, reviewed, clientId || null, guard);
     },
     onSuccess: async (saved) => {
+      guard();
       await Promise.all([
         cache.invalidateQueries({ queryKey: ["calendar"] }),
         cache.invalidateQueries({ queryKey: ["meeting", meeting.id] }),
@@ -86,6 +93,7 @@ function AssignmentForm({
           id ? [cache.invalidateQueries({ queryKey: filesKey(id) })] : [],
         ),
       ]);
+      guard();
       onAssigned?.(saved);
       onOpenChange(false);
     },

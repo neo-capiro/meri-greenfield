@@ -130,6 +130,20 @@ describe("verified meeting library boundary", () => {
   });
 });
 describe("client assignment boundary", () => {
+  it("rechecks the dispatch gate after the preflight before issuing PUT", async () => {
+    const request = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json(meeting));
+    const guard = vi.fn(() => {
+      throw new Error("scope changed");
+    });
+    await expect(
+      assignMeeting(createApiClient(request), meeting, null, guard),
+    ).rejects.toThrow("scope changed");
+    expect(guard).toHaveBeenCalledOnce();
+    expect(request).toHaveBeenCalledOnce();
+    expect(request.mock.calls[0]?.[1]?.method).toBe("GET");
+  });
   it("refuses stale preflight and performs no PUT", async () => {
     const request = vi
       .fn<typeof fetch>()

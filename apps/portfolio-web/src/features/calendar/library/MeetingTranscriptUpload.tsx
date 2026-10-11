@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
-import { ApiError } from "@/shared/api/http";
+import { ApiError, type ApiClient } from "@/shared/api/http";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import {
@@ -15,6 +15,7 @@ import {
 import type { Meeting } from "../contracts";
 import { usePreparationCapabilities } from "../preparation/public";
 import { extractMeetingSource } from "./api";
+import { useDispatchGuard } from "./useDispatchGuard";
 import type { ExtractedMeetingSource } from "./contracts";
 import styles from "./library.module.css";
 
@@ -55,6 +56,11 @@ function TranscriptForm({
   const cache = useQueryClient();
   const identity = useIdentity();
   const capabilities = usePreparationCapabilities();
+  const guard = useDispatchGuard(
+    identity.data?.user.id,
+    identity.data?.tenant?.id,
+    true,
+  );
   const [file, setFile] = useState<File>();
   const [stage, setStage] = useState("");
   const [retryStage, setRetryStage] = useState<
@@ -80,20 +86,31 @@ function TranscriptForm({
   );
   const mutation = useMutation({
     mutationFn: async () => {
+      guard();
       if (!allowed)
         throw new ApiError(
           403,
           "Uploading a source is unavailable for this role.",
         );
       if (!file) throw new Error("Select a source file.");
+      const scopedApi: ApiClient = {
+        request(service, path, schema, options) {
+          guard();
+          return api.request(service, path, schema, options);
+        },
+      };
       if (!confirmed.current) {
         const receipt = await uploadParentFile(
-          api,
+          scopedApi,
           { meetingId: meeting.id, clientId: meeting.client?.id ?? null },
           file,
           attempt.current,
           setStage,
+          "manual",
+          fetch,
+          guard,
         );
+        guard();
         confirmed.current = receipt.id;
         await Promise.all([
           cache.invalidateQueries({ queryKey: ["meeting", meeting.id] }),
@@ -107,20 +124,27 @@ function TranscriptForm({
         ]);
       }
       setStage("Extracting source text");
-      return extractMeetingSource(api, confirmed.current);
+      return extractMeetingSource(scopedApi, confirmed.current);
     },
     onSuccess: (source) => {
+      guard();
       setResult(source);
       setStage("Source extracted. Review it before continuing.");
     },
-    onError: () =>
+    onError: () => {
+      try {
+        guard();
+      } catch {
+        return;
+      }
       setRetryStage(
         confirmed.current
           ? "extract"
           : attempt.current.storageUnknown || attempt.current.bytesUploaded
             ? "confirm"
             : "upload",
-      ),
+      );
+    },
   });
   function selectFile(next: File | undefined) {
     setFile(next);

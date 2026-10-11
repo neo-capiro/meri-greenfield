@@ -33,6 +33,37 @@ const receipt = {
   indexedAt: null,
 };
 describe("canonical uploader meeting extension", () => {
+  it("rechecks after ticket and storage replies before dispatching more writes", async () => {
+    for (const blockAt of [2, 3]) {
+      let checks = 0;
+      const guard = () => {
+        if (++checks === blockAt) throw new Error("scope changed");
+      };
+      const request = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(Response.json(ticket));
+      const storage = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(new Response(null, { status: 204 }));
+      const attempt: UploadAttempt = {};
+      await expect(
+        uploadParentFile(
+          createApiClient(request),
+          { meetingId, clientId },
+          file,
+          attempt,
+          () => {},
+          "manual",
+          storage,
+          guard,
+        ),
+      ).rejects.toThrow("scope changed");
+      expect(request).toHaveBeenCalledOnce();
+      expect(storage).toHaveBeenCalledTimes(blockAt === 2 ? 0 : 1);
+      expect(attempt.ticket?.s3Key).toBe(ticket.s3Key);
+      expect(attempt.storageUnknown).toBeUndefined();
+    }
+  });
   it("binds both parents and preserves actual quarantine without inventing approval", async () => {
     const request = vi
       .fn<typeof fetch>()
