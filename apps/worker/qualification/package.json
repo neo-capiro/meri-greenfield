@@ -8,7 +8,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "test": "node --test probes/static.test.mjs",
+    "test": "node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs",
     "check": "npm test",
     "probe:runtime": "node probes/runtime.mjs",
     "probe:browser": "node probes/browser.mjs",
@@ -22,6 +22,9 @@
     "playwright": "1.64.0-alpha-1790635538000",
     "playwright-core": "1.64.0-alpha-1790635538000",
     "pptxgenjs": "4.0.1",
-    "@capiro/meri-contracts": "file:vendor/capiro-meri-contracts-0.1.0.tgz"
+    "@capiro/meri-contracts": "file:vendor/capiro-meri-contracts-0.1.0.tgz",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "canonicalize": "5.1.0"
   }
 }

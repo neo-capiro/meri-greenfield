@@ -124,8 +124,10 @@ def validate_timeout(arguments, timeout):
         raise ValueError("upload body drift or checksum mismatch")
 
 
-def capture(out, label, arguments, timeout=45):
+def capture(out, label, arguments, timeout=45, *, profile=PROFILE):
     """Run one admitted operation once and retain binary stdout/stderr and envelope."""
+    if type(profile) is not str or profile not in (PROFILE, 'default'):
+        raise ValueError('unapproved AWS profile')
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,79}", label):
         raise ValueError("invalid evidence label")
     if len(arguments) < 2 or arguments[1] not in ALLOWED.get(arguments[0], set()):
@@ -145,9 +147,9 @@ def capture(out, label, arguments, timeout=45):
     validate_timeout(arguments, timeout)
     destination = Path(out).resolve() / label
     destination.mkdir(parents=True, exist_ok=False)
-    argv = [AWS, *arguments, "--profile", PROFILE, "--region", REGION, "--output", "json", "--no-cli-pager",
+    argv = [AWS, *arguments, "--profile", profile, "--region", REGION, "--output", "json", "--no-cli-pager",
             "--cli-connect-timeout", "10", "--cli-read-timeout", "30"]
-    # Only the trusted named local profile supplies identity; ambient endpoint,
+    # Only the validated local profile supplies identity; ambient endpoint,
     # config-file, credential and transport-proxy overrides are removed.
     environment = {key: value for key, value in os.environ.items()
                    if not key.upper().startswith("AWS_")

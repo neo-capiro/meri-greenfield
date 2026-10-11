@@ -176,9 +176,15 @@ ENV PATH="/opt/meri-venv/bin:${PATH}"
 COPY sdk-options.mjs ./
 COPY probes/ ./probes/
 COPY checkpoint/native-session-files.mjs ./checkpoint/native-session-files.mjs
+COPY checkpoint/fixture-channel.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.mjs checkpoint/fixture-transport.test.mjs ./checkpoint/
+COPY checkpoint/resume-admission.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.mjs checkpoint/fixture-sentinel.test.mjs ./checkpoint/
 # Generated inputs preserve byte-exact canonical root modules. Four-parent
 # imports from /opt/meri-worker/probes resolve to /scripts/sdk-capture.
 COPY build-dependencies/sdk-capture/json-records.mjs build-dependencies/sdk-capture/protocol.mjs /scripts/sdk-capture/
+# Preserve the private source's repository-relative imports. The
+# /packages/node_modules link resolves exact locked libraries installed above.
+COPY build-dependencies/contracts/ /packages/contracts/
+RUN ln -s /opt/meri-worker/node_modules /packages/node_modules
 
 # Matched Chromium (revision 1247 / Chrome-for-Testing 155.0.8059.12) via the
 # adopted Playwright CLI. Debian13 maps to the CFT archive
@@ -298,7 +304,7 @@ RUN set -eux; \
       --root /opt/meri-worker --root /opt/meri-venv --root /opt/meri-browsers \
       --root /usr --root /etc --root /var/lib/dpkg \
       --root /bin --root /sbin --root /lib --root /lib64 \
-      --root /root --root /home --root /scripts \
+      --root /root --root /home --root /scripts --root /packages \
       --deadline-ms 120000 --max-entries 300000 --max-events 2000000 \
       --max-manifest-bytes 33554432 --max-hash-bytes 536870912 \
       --allow-suid /opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox \

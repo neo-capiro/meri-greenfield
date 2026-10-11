@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:qualification:sdk-native-evidence:1",
+  "title": "Private signed native lifecycle observation grammar; not recovery acceptance",
+  "description": "Keys are admitted separately by the trusted owner. Records and signatures are qualification evidence, never identity or checkpoint authority.",
+  "$defs": {
+    "NativeInitFacts": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "format": "uuid",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "sdkVersion": {
+          "const": "0.3.295"
+        },
+        "cliVersion": {
+          "const": "2.1.295"
+        },
+        "initMessageSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "sessionId",
+        "sdkVersion",
+        "cliVersion",
+        "initMessageSha256"
+      ],
+      "additionalProperties": false
+    },
+    "NativeInterruptFacts": {
+      "type": "object",
+      "properties": {
+        "activeEventSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "requestedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "acknowledgedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "receipt": {
+          "type": "object",
+          "properties": {
+            "still_queued": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "cancelled": {
+              "type": "array",
+              "maxItems": 0
+            }
+          },
+          "required": [
+            "still_queued"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "activeEventSha256",
+        "requestedAtMs",
+        "acknowledgedAtMs",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "NativeExitFacts": {
+      "type": "object",
+      "properties": {
+        "exitCode": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signal": {
+          "enum": [
+            null,
+            "SIGTERM",
+            "SIGINT"
+          ]
+        },
+        "forced": {
+          "const": false
+        },
+        "exitedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "namespace": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "linux-proc"
+            },
+            "observedAtMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "pidNamespace": {
+              "type": "string",
+              "pattern": "^pid:\\[[1-9][0-9]{0,19}\\]$",
+              "maxLength": 26
+            },
+            "observerPid": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4194304
+            },
+            "otherPids": {
+              "type": "array",
+              "maxItems": 0
+            }
+          },
+          "required": [
+            "method",
+            "observedAtMs",
+            "pidNamespace",
+            "observerPid",
+            "otherPids"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "exitCode",
+        "signal",
+        "forced",
+        "exitedAtMs",
+        "namespace"
+      ],
+      "additionalProperties": false
+    },
+    "NativeDrainFacts": {
+      "type": "object",
+      "properties": {
+        "eventStreamExhausted": {
+          "const": true
+        },
+        "stdout": {
+          "type": "object",
+          "properties": {
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4194304
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "endObserved": {
+              "const": true
+            },
+            "closed": {
+              "const": true
+            },
+            "error": {
+              "const": false
+            }
+          },
+          "required": [
+            "bytes",
+            "sha256",
+            "endObserved",
+            "closed",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        "stderr": {
+          "type": "object",
+          "properties": {
+            "bytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65536
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "endObserved": {
+              "const": true
+            },
+            "closed": {
+              "const": true
+            },
+            "error": {
+              "const": false
+            },
+            "overflow": {
+              "const": false
+            }
+          },
+          "required": [
+            "bytes",
+            "sha256",
+            "endObserved",
+            "closed",
+            "error",
+            "overflow"
+          ],
+          "additionalProperties": false
+        },
+        "capture": {
+          "$ref": "#/$defs/NativeCaptureBinding"
+        }
+      },
+      "required": [
+        "eventStreamExhausted",
+        "stdout",
+        "stderr",
+        "capture"
+      ],
+      "additionalProperties": false
+    },
+    "NativeCaptureBinding": {
+      "type": "object",
+      "properties": {
+        "bundleSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bundleBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50331648
+        },
+        "nativeInventorySha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sentinel": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "const": "qualification/continuity.txt"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65536
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "path",
+            "bytes",
+            "sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "bundleSha256",
+        "bundleBytes",
+        "nativeInventorySha256",
+        "sentinel"
+      ],
+      "additionalProperties": false
+    },
+    "NativeEvidenceRecord": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NativeEvidenceSigningRecord"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "signature": {}
+          },
+          "required": [
+            "signature"
+          ]
+        }
+      ]
+    },
+    "NativeEvidenceSigningRecord": {
+      "type": "object",
+      "properties": {
+        "evidenceVersion": {
+          "const": "sdk-native-evidence/1"
+        },
+        "kind": {
+          "enum": [
+            "init",
+            "interrupt",
+            "exit",
+            "drain"
+          ]
+        },
+        "producer": {
+          "$ref": "urn:meri:qualification:sdk-fixture:1#/$defs/FixtureContext"
+        },
+        "observer": {
+          "$ref": "#/$defs/NativeObserver"
+        },
+        "process": {
+          "$ref": "#/$defs/NativeObservedProcess"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "observedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "facts": {
+          "type": "object"
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "algorithm": {
+              "const": "Ed25519"
+            },
+            "value": {
+              "type": "string",
+              "minLength": 88,
+              "maxLength": 88,
+              "pattern": "^[A-Za-z0-9+/]{86}==$"
+            }
+          },
+          "required": [
+            "algorithm",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "evidenceVersion",
+        "kind",
+        "producer",
+        "observer",
+        "process",
+        "sequence",
+        "observedAtMs",
+        "facts"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "init"
+            },
+            "sequence": {
+              "const": 0
+            },
+            "facts": {
+              "$ref": "#/$defs/NativeInitFacts"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "interrupt"
+            },
+            "sequence": {
+              "const": 1
+            },
+            "facts": {
+              "$ref": "#/$defs/NativeInterruptFacts"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "exit"
+            },
+            "sequence": {
+              "const": 2
+            },
+            "facts": {
+              "$ref": "#/$defs/NativeExitFacts"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "drain"
+            },
+            "sequence": {
+              "const": 3
+            },
+            "facts": {
+              "$ref": "#/$defs/NativeDrainFacts"
+            }
+          }
+        }
+      ]
+    },
+    "NativeEvidenceRecordSet": {
+      "type": "object",
+      "properties": {
+        "init": {
+          "$ref": "#/$defs/NativeEvidenceRecord"
+        },
+        "interrupt": {
+          "$ref": "#/$defs/NativeEvidenceRecord"
+        },
+        "exit": {
+          "$ref": "#/$defs/NativeEvidenceRecord"
+        },
+        "drain": {
+          "$ref": "#/$defs/NativeEvidenceRecord"
+        }
+      },
+      "required": [
+        "init",
+        "interrupt",
+        "exit",
+        "drain"
+      ],
+      "additionalProperties": false
+    },
+    "NativeObserver": {
+      "type": "object",
+      "properties": {
+        "observerId": {
+          "type": "string",
+          "format": "uuid",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "keyId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "observerId",
+        "keyId"
+      ],
+      "additionalProperties": false
+    },
+    "NativeObservedProcess": {
+      "type": "object",
+      "properties": {
+        "instanceId": {
+          "type": "string",
+          "format": "uuid",
+          "minLength": 36,
+          "maxLength": 36
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4194304
+        },
+        "startedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "instanceId",
+        "pid",
+        "startedAtMs"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$comment": "All timestamps and counts must be safe integers; additional semantic checks live in native-evidence.mjs."
+}

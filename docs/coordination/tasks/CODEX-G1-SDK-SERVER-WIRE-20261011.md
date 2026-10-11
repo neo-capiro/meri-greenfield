@@ -1,0 +1,9 @@
+# G1 private fixture request decoder — source allocation
+
+Owner Codex, base `afd66fa60bbd759687892b153b376c700e8de2ec`, branch `task/remote-sdk-server-wire-20261011`, dedicated worktree `C:/dev/meri-greenfield-sdk-server-wire-20261011`. Shared policy `neo-capiro/capiro-agent-ops@b32b4803933760dc0a93fffdcd8fba30a89c3aac`, Windows machine map last modified 2026-09-30 00:21:48 UTC.
+
+Own only `packages/contracts/qualification-sdk/wire.mjs`, `packages/contracts/test/sdk-fixture-wire.test.mjs`, `docs/qualification/SDK-FIXTURE-CHANNEL.md`, this brief and the matching report. No schema, public 0.1 export, registry, worker, image, infrastructure, migration or other contract edit. There is no concurrent writer to these paths.
+
+The existing private wire owns the canonical encoding of worker requests and decoding of service responses. Add its missing trusted-service request decoder, reusing the same bounded strict UTF-8/canonical JSON boundary and the canonical `assertFixtureRequest` shape/integrity validator. Return a parsed request as DATA only; do not authenticate a peer, accept context as authority, grant storage access, or create a server here. Keep imports inert, fixed content-free errors and existing response behavior. Document that a future mTLS ingress must bind an independently authenticated peer and canonical control-plane context and the registry must recheck database-time expiry under lock.
+
+Run the affected private wire and fixture contract suites on pinned Node 24, check unchanged public export surface, source import, diff and worktree status. Test all four operations, malformed/non-Buffer/oversize bytes, invalid UTF-8, BOM, noncanonical whitespace/duplicate/number/escape forms, invalid operation/context and expiry. No AWS, Docker, network install, cloud mutation, provider call, GitHub push/PR, merge or deployment. Record exact checks and limitations in a source-only report; do not claim G1 or live ingress acceptance.

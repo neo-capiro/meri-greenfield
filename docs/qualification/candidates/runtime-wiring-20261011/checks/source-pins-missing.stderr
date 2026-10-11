@@ -1,0 +1,2 @@
+usage: worker_source_pins.py [-h] (--check | --write)
+worker_source_pins.py: error: one of the arguments --check --write is required

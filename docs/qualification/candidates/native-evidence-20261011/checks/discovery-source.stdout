@@ -1,0 +1,31 @@
+✔ discovery composes exact canonical environment with only two flag changes (2.698355ms)
+✔ accepted beta-disabled capture profile remains unchanged (0.689386ms)
+✔ full binding/version/session retained separately; caller mutations cannot alter them (2.842137ms)
+✔ borrowed lifecycle/permission/spawn/server identities preserved without execution (0.304699ms)
+✔ canonical capture session/default restrictions remain explicit partial qualification (0.340842ms)
+✔ canonical RunBinding rejects missing/extra/invalid identity, fence and version/session drift (0.813048ms)
+✔ model/cwd and exact loopback reject route substitution and malformed ports (0.378878ms)
+✔ no caller environment, credentials, beta-disable, SDK options or persistence overrides (0.317528ms)
+✔ records refuse accessors and prototype-based configuration before reading accessors (0.281244ms)
+✔ aborted/missing controller, foreign MCP transports/names and missing callbacks refuse (0.567246ms)
+✔ fixture declares deferred similar/paraphrased tools and unavailable/revoked follow-ups (0.177972ms)
+✔ exact two deferred descriptors and 5000ms borrowed SDK server factory (4.683159ms)
+✔ similar-name and paraphrase tools send distinct literal operations and full context (8.312326ms)
+✔ strict schemas reject extra, wrong-case, missing, foreign and cross-tool inputs before gateway (1.640707ms)
+✔ input accessors, symbols and hidden fields refuse without reading or authorizing (0.406418ms)
+✔ revoked after discovery or prior permission allow denies without execution (0.62408ms)
+✔ only literal gateway true permits execution; denial and exceptions are content-free (1.8941ms)
+✔ gateway execution owns final recheck after authorization and failure stays private (0.396884ms)
+✔ context and callback snapshots resist later caller substitution without freezing borrowed owners (0.537142ms)
+✔ arguments are copied before await and immutable during the authorization/execution gap (2.476779ms)
+✔ canonical scope/version/fence defects fail before constructing any SDK tool (0.584541ms)
+✔ well-shaped foreign scope or stale fence is passed to the canonical gateway and denied (0.47519ms)
+✔ context hazards and missing gateway callbacks fail before SDK registration (0.302956ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 421.784408

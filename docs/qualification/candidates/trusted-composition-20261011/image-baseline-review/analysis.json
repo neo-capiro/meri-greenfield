@@ -1,0 +1,41 @@
+{
+  "status": "ACCEPT_NEW_SOURCE_ONLY_IMAGE_BUILD_HOLD",
+  "baselineTests": 38,
+  "baselinePassed": 34,
+  "baselineFailures": 1,
+  "baselineErrors": 3,
+  "integratedTests": 56,
+  "integratedPassed": 52,
+  "integratedFailures": 1,
+  "integratedErrors": 3,
+  "newAnalyzerTestsPassed": 18,
+  "exactFailureIdentifiersMatch": true,
+  "failureIdentifiers": [
+    [
+      "ERROR",
+      "test_collector_full_source_preflight_and_drift (test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift)"
+    ],
+    [
+      "ERROR",
+      "test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins)"
+    ],
+    [
+      "ERROR",
+      "test_publish_manifest_pins_both_new_sources (test_worker_image_publish.Publication.test_publish_manifest_pins_both_new_sources)"
+    ],
+    [
+      "FAIL",
+      "test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes)"
+    ]
+  ],
+  "baselineContextMembers": 53,
+  "actualNonPublishSourceRows": 56,
+  "historicalRequiredNonPublishRows": 47,
+  "actualPublishSourceRows": 58,
+  "historicalRequiredPublishRows": 49,
+  "actualContextSha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+  "historicalContextSha256": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+  "baselineStderrSha256": "8854c7ab8341f05a52b487d1b19299d62424c96c4ea7245d01d6c805d2068424",
+  "integratedStderrSha256": "a629569ff47d90d379b0cc24c235db7828b094ec4a727cc98798a05296f9c5de",
+  "interpretation": "All four errors/failures reproduce from unchanged base7f files. Historical authority intentionally refuses expanded unadmitted context; fixed Windows Python path refuses Linux. No repins, test changes or waivers applied; image preparation/runtime/G1 remain HOLD."
+}

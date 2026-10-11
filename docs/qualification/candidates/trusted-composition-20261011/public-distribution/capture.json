@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "argv": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "startedAt": "2026-10-11T21:13:00.401870+00:00",
+  "elapsedSeconds": 4.696,
+  "exitCode": 0,
+  "output": {
+    "stdout": {
+      "bytes": 2046,
+      "sha256": "e8f3fbeb2b83dbc7f1512403a0cac1ddbd51660883e2af5a706824b02c7af1e5"
+    },
+    "stderr": {
+      "bytes": 495,
+      "sha256": "1d2e4b8fa2e909d95849309780183545b5157cda35be2b38da2441d8f7032d03"
+    }
+  }
+}

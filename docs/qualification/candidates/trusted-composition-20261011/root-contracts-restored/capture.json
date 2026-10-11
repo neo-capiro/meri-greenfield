@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "argv": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "startedAt": "2026-10-11T21:13:00.394164+00:00",
+  "elapsedSeconds": 2.692,
+  "exitCode": 0,
+  "output": {
+    "stdout": {
+      "bytes": 16890,
+      "sha256": "b3bd154c681f92320749079411586855b21707aecda523ec1e028e0191a8bea2"
+    },
+    "stderr": {
+      "bytes": 99,
+      "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+✔ an authorized client dispatches exactly one canonical response over real mTLS (39.396275ms)
+✔ commit, load and verify dispatch their canonical responses and round-trip on the wire (53.239147ms)
+✔ the authenticated socket certificate, not a header or body field, establishes the peer (19.739889ms)
+✔ an absent or untrusted client certificate never reaches fixture dispatch (24.051932ms)
+✔ an unknown credential or an unbound operation refuses without dispatch (19.690867ms)
+✔ a context outside the credential audience refuses without any stale denial (9.082179ms)
+✔ an audience entry cannot substitute for the operation-bound producer or current context (23.605635ms)
+✔ resolver current and producer must share the same canonical run lineage (21.913156ms)
+✔ response freshness uses a trusted clock reading after handler completion (94.766322ms)
+✔ a stalled credential resolver meets the post-body deadline and sees cancellation (136.033143ms)
+✔ a cooperative resolver abort still reports the deadline, never a credential decision (133.169294ms)
+✔ method, route, query and HTTP-version anomalies refuse before any dispatch (23.815423ms)
+✔ media-type, encoding and header anomalies refuse (24.291064ms)
+✔ malformed and noncanonical bodies refuse without dispatch (19.188347ms)
+✔ the private raw ceiling refuses an oversized declared body without reading it (6.17758ms)
+✔ the streaming ceiling refuses while the body is still arriving (0.35995ms)
+✔ a delivered length that disagrees with the declared length refuses (0.154177ms)
+✔ a bounded body without a declared length is accepted (0.097734ms)
+✔ a request body that never completes times out and closes the socket (307.709193ms)
+✔ a handler failure is a bodyless 500 and cannot fabricate a stale denial (8.628491ms)
+✔ a handler deadline aborts the handler and refuses with 504 (208.51664ms)
+✔ a handler response that violates the canonical contract is refused (9.017914ms)
+✔ an unhandled operation is refused rather than defaulted (5.574992ms)
+✔ a completed request closes its connection and close() unbinds the listener (28.947844ms)
+✔ composition refuses unsafe or unknown options and binds nothing before start() (2.231277ms)
+✔ concurrent start and close during startup leave no listener (1.355747ms)
+✔ the ingress source is inert: no ambient configuration, no implicit listener (0.584431ms)
+✔ A commit and B stale denial/load/verify cross the actual mTLS callback chain (146.413865ms)
+✔ wrong server pin and an untrusted client certificate never dispatch (20.084377ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2267.293826

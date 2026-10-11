@@ -1,0 +1,128 @@
+# Trusted SDK fixture operation composition
+
+`createFixtureServiceHandlers({ registry, checkpointStore, now, decisionId })`
+returns exactly the four handlers expected by the private mTLS ingress. Importing
+or constructing it starts no server, database connection or object operation.
+Trusted control composition must supply the existing `FixtureRegistry`, a real
+immutable object-store capability and the ingress credential resolver. No
+worker receives PostgreSQL or object-store credentials.
+
+The ingress authenticates the TLS client certificate and binds its resolved
+peer and canonical contexts to each request. The service passes a presented
+context only as a claim to the registry. The registry uses PostgreSQL time and
+current row locks for grant/fence/expiry decisions. A historical A credential
+can receive a typed stale denial only when the registry recognizes the exact
+revoked A grant and peer; the full B context in that denial must match the
+locked current row. A stale A commit is refused before storage preparation and
+again by the registry's atomic publication check after preparation.
+
+For the qualification fixture, use the registry's read-only
+`resolveCertificate` method as ingress `resolveCredential`. Its lookup key is
+the SHA-256 fingerprint of the verified socket certificate, stored as the
+grant's `credentialId` by the trusted issuer. It returns only the matching
+grant's audience, and the existing operation transaction rechecks currentness.
+The real PostgreSQL plus two-certificate loopback test uses this resolver;
+certificate creation and ECS task admission are still synthetic/unrun.
+
+The trusted `checkpointStore` port has two methods:
+
+- `prepareCommit({ producer, bundle, fixtureFile, evidence, signal })` returns
+  `{ receipt, readback }`. It must verify native quiescence and evidence,
+  create immutable bundle/workspace/sentinel object versions, independently
+  reread their bytes, and construct the canonical partial receipt. Its
+  `readback` must be the result of that actual reread, never a worker claim.
+- `load({ publication, producer, current, signal })` returns
+  `{ receipt, readback, bundle, fixtureFile }` by rereading the exact immutable
+  versions selected by the registry's publication identity. It must check
+  tenant/policy scope and object integrity. The service compares receipt and
+  bytes with the registry record and canonical private contract. For load, it
+  rechecks the current grant after object I/O and before returning bytes.
+
+Neither method accepts a worker-selected key, URL, bucket or storage privilege.
+The `AbortSignal` requests cancellation; the owning object-store integration
+must supervise any operation that continues after cancellation. A lost
+PostgreSQL COMMIT acknowledgement is reconciled with `readPublication` once;
+an absent or foreign receipt refuses and is never republished.
+
+The current tests use a synthetic storage port plus a real isolated PostgreSQL
+database and two real loopback mTLS client certificates. They prove service
+binding and transaction behavior, not S3 durability, ECS identity, physical
+revocation, native SDK recovery or G1 acceptance. A deployed storage resource,
+native evidence verifier, trusted credential issuance/resolution and the bounded two-task experiment
+remain required before this service is operational.
+
+`createS3FixtureObjects` is the concrete versioned S3 I/O adapter for the
+dedicated qualification checkpoint bucket. It writes only create-if-absent
+objects with a precomputed SHA-256 checksum and the configured KMS key, then
+rereads the returned exact version. Reads bound actual streamed bytes, size,
+checksum, encryption key and version before they can become a receipt readback.
+The default AWS client has one attempt. The injected client is for isolated
+tests; production composition must use task-role credentials and narrow IAM.
+
+The adapter also has a read-only `readEvidence({ producer, kind, reference,
+signal })` operation for `init`, `interrupt`, `exit` and `drain`. It requires
+the producer's tenant/policy scope, exact object version, hash and size, and
+reads only the corresponding fixed run prefix with a 64 KiB ceiling. It does
+not expose evidence upload. Reading these bytes does not validate their native
+meaning or prove quiescence. The private signed-record grammar, admitted-owner
+inspector and observer collector now have source implementations. A trusted
+runtime owner must still bind their real provenance before commit admission.
+
+`createS3CheckpointStore` assembles the partial receipt using that I/O. Its
+mandatory `evidenceInspector.verify` must independently read and qualify the
+four native evidence references and quiescence; a worker's reference or boolean
+is insufficient. It stores bundle, sentinel and receipt under generated IDs
+within the trusted run namespace. Registry publication remains the only
+current-fence authority. Orphaned objects after a failed publication grant no
+recovery authority. The receipt is loaded by the registry's SHA-256 identity;
+the bundle and sentinel are reread by their exact S3 VersionIds.
+
+The approved checkpoint stack reached `CREATE_COMPLETE` on 2026-10-11. Its
+dedicated versioned/locked bucket, KMS key and unused control role were read
+back; see
+`docs/coordination/reports/CODEX-G1-SDK-CHECKPOINT-INFRA-20261011.md` for the
+exact stack and limits. The build bucket must not hold checkpoints. No
+checkpoint object or runtime task was created by that stack deployment. The
+S3 tests exercise command shapes and negative readbacks with a fake client;
+they are not AWS durability evidence.
+
+`createFixtureControl` now assembles the PostgreSQL registry, fixed handlers,
+versioned S3 store and private mTLS ingress. It resolves certificate fingerprints
+from durable grants and exposes the registry only to the trusted owner for A/B
+admission. Construction does not connect or listen. Its `start()` owns the
+listener; `close()` shuts the socket path, waits for tracked operations, then
+releases the owned S3 client. If an operation remains unsettled after the
+bounded wait, closure reports uncertainty and leaves the client available for
+owner reconciliation. A disconnected commit is refused before database
+publication if its abort is visible after object preparation; an already
+dispatched database commit still requires authoritative readback. The
+native evidence inspector remains a mandatory trusted dependency. Its source
+implementation verifies separately admitted Ed25519 observer signatures and
+binds all four observations to the exact submitted capture; passing a test
+inspector is not native quiescence.
+The integrated source test uses two synthetic certificates, isolated local
+PostgreSQL and fake S3 responses. Real S3 object I/O, task-role credentials,
+private endpoint, native evidence, runtime image and two-task recovery remain
+unrun and unadmitted.
+
+The private grammar and canonical encoder live in
+`packages/contracts/qualification-sdk/native-evidence.mjs`. The service's
+`native-evidence.mjs` owns admission and cross-record lifecycle verification.
+`native-evidence-publisher.mjs` owns one-shot publication through the separate
+`createS3NativeEvidenceObjects` capability. The ordinary adapter still cannot
+upload evidence. Both the publisher and the storage capability require current
+authorization; each PUT and exact-version readback rechecks it. Lost replies
+remain uncertain and cannot be retried as another publication.
+
+Supply the inspector with `{producer, observerId, keyId, publicKey}` from the
+trusted owner, never from a record. The observer receives its private KeyObject
+through a separate trusted composition. No default key, credential issuance,
+new network endpoint or second authorization system is introduced. Signing
+authenticates an admitted observer; qualification must still prove its namespace,
+task identity, isolation and observation provenance. Workers receive neither the
+publisher/S3 client nor signing authority through model tools or environment.
+
+Run `npm run check:sdk-evidence` at the repository root after restoring the root,
+contracts, worker and service locked dependencies. These are injected source
+tests. The two integrated PostgreSQL tests need the separately documented local
+database and synthetic certificates; an explicit skip does not qualify them.

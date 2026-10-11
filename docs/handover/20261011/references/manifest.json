@@ -1,0 +1,62 @@
+{
+  "schema": "meri.handover.reference-pack/1",
+  "snapshotUtc": "2026-10-11T12:10:00Z",
+  "backendCanonicalCommit": "f2d6c0b8bdb728bcccc8628538e678711b679c1c",
+  "frontendCanonicalCommit": "28c300093c0886018c49df8764a8e6fac44819eb",
+  "copiedDocuments": [
+    {
+      "sourceId": "S15",
+      "originalCommit": "2f0e03ac656e393165ebc539bf6bfe9209623e2d",
+      "originalPath": "docs/coordination/reports/CODEX-G1-PROXY-RUNTIME4-COLLECTOR.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-PROXY-RUNTIME4-COLLECTOR-report.md",
+      "sha256": "4a742a4d1d6924d3ca93c0cb15521780ad81b84b774365c1ac6ae43d9fae1cdf",
+      "bytes": 9397,
+      "acceptance": "Root accepted source-only; actual collection unrun."
+    },
+    {
+      "sourceId": "S15",
+      "originalCommit": "2f0e03ac656e393165ebc539bf6bfe9209623e2d",
+      "originalPath": "docs/coordination/tasks/CODEX-G1-PROXY-RUNTIME4-COLLECTOR.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-PROXY-RUNTIME4-COLLECTOR-task.md",
+      "sha256": "26e424e06aca9805af57db381fc643cf3b4259da7fe2483f243c8d61fdb87a9a",
+      "bytes": 2032,
+      "acceptance": "Original bounded task; no renewed runtime admission."
+    },
+    {
+      "sourceId": "S21",
+      "originalCommit": "dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6",
+      "originalPath": "docs/coordination/reports/CODEX-G1-REL02-MAIL-LIST-SEARCH-CONTRACT.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-REL02-MAIL-LIST-SEARCH-CONTRACT-report.md",
+      "sha256": "9d150ee1c4f19e14907e360884b06627d2c1f7dea75c978bf79106f0111d4b6d",
+      "bytes": 5383,
+      "acceptance": "Pending root acceptance; distinct source-only review does not integrate this candidate."
+    },
+    {
+      "sourceId": "S21",
+      "originalCommit": "dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6",
+      "originalPath": "docs/coordination/tasks/CODEX-G1-REL02-MAIL-LIST-SEARCH-CONTRACT.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-REL02-MAIL-LIST-SEARCH-CONTRACT-task.md",
+      "sha256": "3bcc2ba114d84bdfac6ca87596882f3354b7921733429cef6d0ddf477d3bdc42",
+      "bytes": 1924,
+      "acceptance": "Original bounded task; no source connection enabled."
+    },
+    {
+      "sourceId": "S22",
+      "originalCommit": "086263abdf1b5c34b502a44d957b5568e837f992",
+      "originalPath": "docs/coordination/reports/CODEX-G1-REL02-REMAINING-CAPABILITY-METADATA.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-REL02-REMAINING-CAPABILITY-METADATA-report.md",
+      "sha256": "bb3fa6df076a7580670f4d0725a096eef4ab980f9782a60522d6163d86327398",
+      "bytes": 28005,
+      "acceptance": "Pending root review; metadata observations only."
+    },
+    {
+      "sourceId": "S22",
+      "originalCommit": "086263abdf1b5c34b502a44d957b5568e837f992",
+      "originalPath": "docs/coordination/tasks/CODEX-G1-REL02-REMAINING-CAPABILITY-METADATA.md",
+      "publishedPath": "docs/handover/20261011/references/CODEX-G1-REL02-REMAINING-CAPABILITY-METADATA-task.md",
+      "sha256": "240a919776e8ee6dc7fcbc7dda775ced5747160517e559db5d89de50b3cf5f89",
+      "bytes": 2381,
+      "acceptance": "Original bounded task; no contract or handler acceptance."
+    }
+  ]
+}

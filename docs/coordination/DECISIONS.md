@@ -1,5 +1,13 @@
 # Integration decisions
 
+## DH20261011 Handover publication and future delegation
+
+Direct human instructions on 11 October 2026 require the detailed handover and every referenced document/plan to be accessible in GitHub. Existing canonical inputs remain byte-preserved at pinned commits; previously local-only candidate report documents are published with exact provenance and pending-acceptance labels. Private raw operational captures and credentials remain outside Git; published status reports explicitly describe those limits. See [the reference index](../handover/20261011/REFERENCE-INDEX.md).
+
+The human also explicitly requested multiple Hermes workers for continued implementation, instructions to continue coordinating with the cleanup session, and Codex validation of all Hermes work at the end of every phase or workstream. This supersedes D010's no-Hermes restriction for future delegated continuation; it does not rewrite earlier authorship, launch a worker during document publication or accept G1. Codex retains sole integration/verification/gate authority and validates every returned commit and the integrated candidate before advancement. Follow [the continuation instructions](../handover/20261011/CONTINUATION-INSTRUCTIONS.md). All existing architecture, source restrictions, isolation, runtime admission and release boundaries remain.
+
+The next execution is on a remote server. Publish accepted/pending code checkpoints and preserve unfinished SDK source in a clearly unreviewed WIP branch so it can resume from GitHub. The active cleanup execution is on another remote server, not this PC; discover and confirm its live locator/owner rather than using a local chat ID. Codex must collect each Hermes handoff, close its owned session/processes promptly on success/failure/cancellation/timeout, verify physical exit and leave no dormant workers. See [remote pickup](../handover/20261011/REMOTE-PICKUP.md).
+
 ## D014 Shared independent product frontend
 
 Accepted10October2026 by the human owner in this chat: create private `neo-capiro/capiro-frontend`, local checkout `C:/dev/main/capiro-frontend`. It owns Meri product UI and the shared application shell, with cohesive feature boundaries for future Portfolio, Modules and Settings. Meri backend, trusted event production, shared wire contracts, agent/runtime and infrastructure remain canonical in `neo-capiro/meri-greenfield`. This supersedes D008's repository placement only. Keep the independent authenticated entry and unavailable destinations disabled until their behavior and authorization contracts are implemented and tested. The approved Next.js/React/AI Elements stack remains selected.

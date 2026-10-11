@@ -1,0 +1,11 @@
+{
+  "sourceCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "status": "SOURCE_ONLY",
+  "workerMembers": 53,
+  "totalBytes": 994107,
+  "manifestSha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+  "sourcePinsVerified": 19,
+  "ownerScriptsInWorkerContext": false,
+  "buildAuthorityChanged": false,
+  "imageBuildAdmitted": false
+}

@@ -1,0 +1,40 @@
+✔ construction is inert and exposes only borrowed observation/publication ports (6.0683ms)
+✔ configuration rejects foreign admission, unsafe cutoff and accessors before capability calls (2.556255ms)
+✔ only four complete owner observations can produce canonical durable references (37.343282ms)
+✔ canonical channel supplies exact owner protocol args before checkpoint persistence (33.896244ms)
+✔ foreign context/capture, renewed deadline and hostile data refuse before effects (19.310297ms)
+✔ admitted original cutoff and input snapshots survive caller mutation (9.745376ms)
+✖ malformed or foreign verification keys refuse before owner ports or observation (2.402288ms)
+✔ revocation and cancellation quarantine publication without retry (23.857335ms)
+✔ pre-abort, cutoff expiry and clock rollback refuse without storage (5.787616ms)
+✔ cancellation and original deadline are rechecked after pending authorization (21.191198ms)
+✔ uncertain writes and concurrent callers cannot publish a second set (15.136959ms)
+✔ deadline aborts an unsettled borrowed write and keeps its attempt quarantined (56.827905ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 11
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 704.138689
+
+✖ failing tests:
+
+test at scripts/qualification/sdk-native-evidence-owner.test.mjs:219:1
+✖ malformed or foreign verification keys refuse before owner ports or observation (2.402288ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-g1-trusted-source/scripts/qualification/sdk-native-evidence-owner.test.mjs:226:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /NATIVE_EVIDENCE_REFUSED/,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -3,6 +3,8 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import posixpath
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -10,6 +12,7 @@ from unittest.mock import patch
 SPEC = importlib.util.spec_from_file_location("worker_context", Path(__file__).with_name("worker_context.py"))
 m = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(m)
+PROJECT_ROOT = m.ROOT
 
 
 class WorkerContextTests(unittest.TestCase):
@@ -36,7 +39,11 @@ class WorkerContextTests(unittest.TestCase):
         path.parent.mkdir()
         path.write_text("synthetic excluded")
         result = m.assemble_context(self.out)
-        self.assertEqual(len(result["members"]), 34)
+        self.assertEqual(len(result["members"]), 53)
+        sources = {row["sourcePath"] for row in result["members"]}
+        self.assertNotIn("scripts/qualification/sdk-stale-worker-challenge.mjs", sources)
+        self.assertIn(m.QUALIFICATION + "checkpoint/resume-admission.mjs", sources)
+        self.assertIn(m.QUALIFICATION + "checkpoint/fixture-sentinel.mjs", sources)
         self.assertEqual(result, m.verify_context(self.out))
         for source, member in m.MEMBERS:
             self.assertEqual((self.root / source).read_bytes(), (self.out / "context" / member).read_bytes())
@@ -152,7 +159,7 @@ class WorkerContextTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "byte drift"):
             m.verify_context(self.out)
         member.write_bytes(raw)
-        self.assertEqual(len(m.verify_context(self.out)["members"]), 34)
+        self.assertEqual(len(m.verify_context(self.out)["members"]), 53)
 
     def test_extra_directory_and_output_file_refused(self):
         m.assemble_context(self.out)
@@ -197,6 +204,41 @@ class WorkerContextTests(unittest.TestCase):
         with patch.object(m, "_read", side_effect=change_earlier_identity):
             with self.assertRaisesRegex(ValueError, "final identity drift"):
                 m.verify_context(self.out)
+
+    def test_real_native_observation_import_closure_is_in_fixed_context(self):
+        """Check image relocation, not just a synthetic copy of member rows."""
+        image_members = {}
+        for source, member in m.MEMBERS:
+            if member.startswith("build-dependencies/contracts/"):
+                image = "/packages/contracts/" + member.removeprefix("build-dependencies/contracts/")
+            elif member.startswith("build-dependencies/sdk-capture/"):
+                image = "/scripts/sdk-capture/" + Path(member).name
+            else:
+                image = "/opt/meri-worker/" + member
+            image_members[image] = source
+        required = {
+            "/opt/meri-worker/probes/native-observations.mjs",
+            "/opt/meri-worker/probes/native-stream-observer.mjs",
+            "/opt/meri-worker/probes/native-namespace-observer.mjs",
+            "/packages/contracts/qualification-sdk/native-evidence.mjs",
+            "/packages/contracts/qualification-sdk/native-evidence.schema.json",
+        }
+        self.assertTrue(required.issubset(image_members))
+        # The owned modules use static ESM imports; external pinned packages and
+        # node builtins are not relocated by this fixed-source assembler.
+        imports = re.compile(r"(?:import|export)\s+(?:[^;]*?\s+from\s*)?['\"]([^'\"]+)['\"]")
+        for image, source in image_members.items():
+            if not image.endswith(".mjs") or image.endswith(".test.mjs"):
+                continue
+            text = (PROJECT_ROOT / source).read_text(encoding="utf-8")
+            for specifier in imports.findall(text):
+                if specifier.startswith("."):
+                    relocated = posixpath.normpath(posixpath.join(posixpath.dirname(image), specifier))
+                    self.assertIn(relocated, image_members, f"{source} -> {specifier}")
+        with patch.object(m, "ROOT", PROJECT_ROOT):
+            actual = m.assemble_context(self.out)
+            self.assertEqual(len(actual["members"]), 53)
+            self.assertEqual(actual, m.verify_context(self.out))
 
 
 if __name__ == "__main__":

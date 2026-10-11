@@ -1,0 +1,982 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:operational-reads:0.2.0",
+  "title": "Meri R2 operational-read contract candidate 0.2.0 (query_tasks, query_action_items)",
+  "description": "SOURCE-ONLY CANDIDATE. Pending transport DTOs derived from frozen producer observations only. Presence of these definitions grants no authorization, no source connectivity, no evidence and no absence claim. Not registered in catalog.json and not wired into retrieval-0.2/validate.mjs.",
+  "$defs": {
+    "TaskStatusSelector": {
+      "type": "string",
+      "enum": ["open", "overdue", "todo", "in_progress", "done", "blocked", "canceled"]
+    },
+    "ActionStatus": {
+      "type": "string",
+      "enum": [
+        "new",
+        "triaged",
+        "assigned",
+        "drafting",
+        "ready_for_review",
+        "sent_to_client",
+        "outreach_completed",
+        "monitoring",
+        "dismissed",
+        "archived"
+      ]
+    },
+    "ActionSort": {
+      "type": "string",
+      "enum": ["deadline", "priority"]
+    },
+    "DeadlineSource": {
+      "type": "string",
+      "enum": ["sam_response", "markup_window", "hearing", "manual"]
+    },
+    "ActionType": {
+      "type": "string",
+      "enum": [
+        "protect_funding",
+        "restore_cut",
+        "add_report_language",
+        "oppose_restriction",
+        "district_one_pager",
+        "monitor_procurement",
+        "client_alert",
+        "schedule_outreach",
+        "escalate_uncertainty",
+        "update_compliance_notes"
+      ]
+    },
+    "ConfidenceBand": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    },
+    "AudienceMember": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["committee", "office", "person_role"] },
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "contactUse": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "outreachEligible": { "type": "boolean" }
+      },
+      "required": ["kind", "id", "label"],
+      "additionalProperties": false
+    },
+    "EvidenceRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["source", "delta", "provision", "opportunity", "program_match"]
+        },
+        "sourceDocumentId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "page": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "deltaId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "provisionId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "programId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "opportunityId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "note": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      },
+      "required": ["kind"],
+      "additionalProperties": false
+    },
+    "ConfidenceBands": {
+      "type": "object",
+      "properties": {
+        "delta": { "$ref": "#/$defs/ConfidenceBand" },
+        "programMatch": { "$ref": "#/$defs/ConfidenceBand" },
+        "peopleMatch": { "$ref": "#/$defs/ConfidenceBand" },
+        "clientRelevance": { "$ref": "#/$defs/ConfidenceBand" }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "TaskReadInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "taskId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "assignedToMe": { "type": "boolean", "default": false },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/TaskStatusSelector" },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "dueBefore": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 25 },
+        "cursor": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4096 },
+            { "type": "null" }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "TaskReadSelection": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "taskId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "ownerUserId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/TaskStatusSelector" },
+            { "type": "null" }
+          ]
+        },
+        "openOnly": { "type": "boolean" },
+        "dueBefore": {
+          "anyOf": [
+            { "type": "string", "format": "date-time", "pattern": "Z$" },
+            { "type": "null" }
+          ]
+        },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "offset": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            { "type": "null" }
+          ]
+        },
+        "cursorApplied": { "type": "boolean" }
+      },
+      "required": [
+        "clientId",
+        "taskId",
+        "ownerUserId",
+        "status",
+        "openOnly",
+        "dueBefore",
+        "limit",
+        "offset",
+        "cursorApplied"
+      ],
+      "additionalProperties": false
+    },
+    "TaskReadScope": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["client", "authorized_tasks"] },
+        "tenantId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "actorUserId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "ownerUserId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "taskId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/TaskStatusSelector" },
+            { "type": "null" }
+          ]
+        },
+        "dueBefore": {
+          "anyOf": [
+            { "type": "string", "format": "date-time", "pattern": "Z$" },
+            { "type": "null" }
+          ]
+        },
+        "offset": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "cursorApplied": { "type": "boolean" }
+      },
+      "required": [
+        "kind",
+        "tenantId",
+        "actorUserId",
+        "ownerUserId",
+        "taskId",
+        "status",
+        "dueBefore",
+        "offset",
+        "limit",
+        "cursorApplied"
+      ],
+      "additionalProperties": false
+    },
+    "TaskLinkedSourceProof": {
+      "type": "object",
+      "properties": {
+        "owner": { "const": "meetings" },
+        "sourceRecordId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "currentClientId": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "sourceVersion": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "required": ["owner", "sourceRecordId", "currentClientId", "sourceVersion", "contentSha256"],
+      "additionalProperties": false
+    },
+    "TaskNativeCompletion": {
+      "type": "object",
+      "properties": {
+        "completed": { "type": "boolean" },
+        "evidence": {
+          "anyOf": [
+            { "const": "native_task_status" },
+            { "type": "null" }
+          ]
+        },
+        "establishesDeliveryOrAcceptance": { "const": false },
+        "note": { "type": "string", "minLength": 1, "maxLength": 500 }
+      },
+      "required": ["completed", "evidence", "establishesDeliveryOrAcceptance", "note"],
+      "additionalProperties": false
+    },
+    "TaskSourceProof": {
+      "type": "object",
+      "properties": {
+        "version": { "const": 1 },
+        "owner": { "const": "engagement_tasks" },
+        "sourceRecordId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "currentClientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "sourceVersion": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "linkedSources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TaskLinkedSourceProof" },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "sourceRecordId",
+        "currentClientId",
+        "sourceVersion",
+        "contentSha256",
+        "linkedSources"
+      ],
+      "additionalProperties": false
+    },
+    "TaskReadRow": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "body": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 20000 },
+            { "type": "null" }
+          ]
+        },
+        "status": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "ownerUserId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "dueDate": {
+          "anyOf": [
+            { "type": "string", "format": "date-time", "pattern": "Z$" },
+            { "type": "null" }
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "clientName": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 500 },
+            { "type": "null" }
+          ]
+        },
+        "meetingId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "meetingTitle": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 1000 },
+            { "type": "null" }
+          ]
+        },
+        "contactId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "mailThreadId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "sourceType": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 100 },
+            { "type": "null" }
+          ]
+        },
+        "sourceId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 256 },
+            { "type": "null" }
+          ]
+        },
+        "createdByUserId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "updatedAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "overdue": { "type": "boolean" },
+        "recordKind": { "const": "native_task" },
+        "recommendation": { "const": false },
+        "nativeCompletion": { "$ref": "#/$defs/TaskNativeCompletion" },
+        "sourceProof": { "$ref": "#/$defs/TaskSourceProof" }
+      },
+      "required": [
+        "id",
+        "title",
+        "body",
+        "status",
+        "ownerUserId",
+        "dueDate",
+        "clientId",
+        "clientName",
+        "meetingId",
+        "meetingTitle",
+        "contactId",
+        "mailThreadId",
+        "sourceType",
+        "sourceId",
+        "createdByUserId",
+        "createdAt",
+        "updatedAt",
+        "recordKind",
+        "recommendation",
+        "nativeCompletion",
+        "sourceProof"
+      ],
+      "additionalProperties": false
+    },
+    "TaskReadPageCoverage": {
+      "type": "object",
+      "properties": {
+        "sourceStatus": { "type": "string", "enum": ["healthy", "degraded"] },
+        "sourceReason": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 200 },
+            { "type": "null" }
+          ]
+        },
+        "complete": { "type": "boolean" },
+        "partial": { "type": "boolean" },
+        "paginationComplete": { "type": "boolean" },
+        "hasMore": { "type": "boolean" },
+        "nextCursor": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4096 },
+            { "type": "null" }
+          ]
+        },
+        "totalIsExactForScope": { "const": true },
+        "absenceSupported": { "type": "boolean" },
+        "note": { "type": "string", "minLength": 1, "maxLength": 500 }
+      },
+      "required": [
+        "sourceStatus",
+        "sourceReason",
+        "complete",
+        "partial",
+        "paginationComplete",
+        "hasMore",
+        "nextCursor",
+        "totalIsExactForScope",
+        "absenceSupported",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "TaskReadPage": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "task-read-page" },
+        "contractVersion": { "const": "0.2.0" },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": { "const": "query_tasks" },
+            "version": { "const": "0.2.0" }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false
+        },
+        "requestId": { "type": "string", "format": "uuid" },
+        "traceId": { "type": "string", "format": "uuid" },
+        "binding": { "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding" },
+        "subject": { "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject" },
+        "window": { "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/NormalizedWindow" },
+        "argumentsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "appliedFilters": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/appliedFilters"
+        },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/SourceState" },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "coverage": { "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/Coverage" },
+        "selection": { "$ref": "#/$defs/TaskReadSelection" },
+        "order": { "const": "owner-order-unconfirmed" },
+        "snapshotVersionId": { "type": "null" },
+        "clientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "scope": { "$ref": "#/$defs/TaskReadScope" },
+        "total": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "returned": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "tasks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TaskReadRow" },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "pageCoverage": { "$ref": "#/$defs/TaskReadPageCoverage" },
+        "continuation": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/continuation"
+        },
+        "evidenceReady": { "const": false },
+        "negativeAssertion": {
+          "type": "object",
+          "properties": { "kind": { "const": "none" } },
+          "required": ["kind"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "contractVersion",
+        "operation",
+        "requestId",
+        "traceId",
+        "binding",
+        "subject",
+        "window",
+        "argumentsSha256",
+        "appliedFilters",
+        "generatedAt",
+        "sources",
+        "coverage",
+        "selection",
+        "order",
+        "snapshotVersionId",
+        "clientId",
+        "scope",
+        "total",
+        "returned",
+        "tasks",
+        "pageCoverage",
+        "continuation",
+        "evidenceReady",
+        "negativeAssertion"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemReadInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "actionItemId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/ActionStatus" },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "sort": {
+          "anyOf": [
+            { "$ref": "#/$defs/ActionSort" },
+            { "type": "null" }
+          ],
+          "default": null
+        },
+        "limit": {
+          "anyOf": [
+            { "type": "integer", "minimum": 1, "maximum": 50 },
+            { "type": "null" }
+          ],
+          "default": 20
+        },
+        "cursor": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4096 },
+            { "type": "null" }
+          ],
+          "default": null
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ActionItemClientScopedSelection": {
+      "type": "object",
+      "properties": {
+        "clientId": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "actionItemId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/ActionStatus" },
+            { "type": "null" }
+          ]
+        },
+        "sort": { "$ref": "#/$defs/ActionSort" },
+        "page": {
+          "anyOf": [
+            { "const": 1 },
+            { "type": "null" }
+          ]
+        },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "cursorApplied": { "type": "boolean" }
+      },
+      "required": [
+        "clientId",
+        "actionItemId",
+        "status",
+        "sort",
+        "page",
+        "limit",
+        "cursorApplied"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemReadScope": {
+      "type": "object",
+      "properties": {
+        "actionItemId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 80 },
+            { "type": "null" }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            { "$ref": "#/$defs/ActionStatus" },
+            { "type": "null" }
+          ]
+        },
+        "sort": { "$ref": "#/$defs/ActionSort" },
+        "page": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+        "cursorApplied": { "type": "boolean" }
+      },
+      "required": ["actionItemId", "status", "sort", "page", "limit", "cursorApplied"],
+      "additionalProperties": false
+    },
+    "ActionItemLinkedSourceProof": {
+      "type": "object",
+      "properties": {
+        "owner": { "const": "source_document" },
+        "sourceRecordId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "sourceVersion": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "required": ["owner", "sourceRecordId", "sourceVersion", "contentSha256"],
+      "additionalProperties": false
+    },
+    "ActionItemNativeCompletion": {
+      "type": "object",
+      "properties": {
+        "completed": { "const": false },
+        "evidence": {
+          "anyOf": [
+            { "const": "recommendation_outcome_only" },
+            { "type": "null" }
+          ]
+        },
+        "establishesDeliveryOrAcceptance": { "const": false },
+        "note": { "type": "string", "minLength": 1, "maxLength": 500 }
+      },
+      "required": ["completed", "evidence", "establishesDeliveryOrAcceptance", "note"],
+      "additionalProperties": false
+    },
+    "ActionItemSourceProof": {
+      "type": "object",
+      "properties": {
+        "version": { "const": 1 },
+        "owner": { "const": "action_recommendation" },
+        "sourceRecordId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "currentClientId": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "sourceVersion": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "contentSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "linkedSources": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ActionItemLinkedSourceProof" },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "version",
+        "owner",
+        "sourceRecordId",
+        "currentClientId",
+        "sourceVersion",
+        "contentSha256",
+        "linkedSources"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemReadRow": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "districtKey": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "clientId": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "clientName": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 500 },
+            { "type": "null" }
+          ]
+        },
+        "peCode": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 64 },
+            { "type": "null" }
+          ]
+        },
+        "programId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 256 },
+            { "type": "null" }
+          ]
+        },
+        "deltaId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 256 },
+            { "type": "null" }
+          ]
+        },
+        "actionType": { "$ref": "#/$defs/ActionType" },
+        "issueTitle": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "whatChanged": { "type": "string", "minLength": 1, "maxLength": 20000 },
+        "whyItMatters": { "type": "string", "minLength": 1, "maxLength": 20000 },
+        "recommendedAction": { "type": "string", "minLength": 1, "maxLength": 20000 },
+        "targetAudience": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/AudienceMember" },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "suggestedArtifactType": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "deadline": {
+          "anyOf": [
+            { "type": "string", "format": "date-time", "pattern": "Z$" },
+            { "type": "null" }
+          ]
+        },
+        "deadlineSource": {
+          "anyOf": [
+            { "$ref": "#/$defs/DeadlineSource" },
+            { "type": "null" }
+          ]
+        },
+        "ownerUserId": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 128 },
+            { "type": "null" }
+          ]
+        },
+        "priority": { "type": "number" },
+        "confidence": { "$ref": "#/$defs/ConfidenceBands" },
+        "uncertainty": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4000 },
+            { "type": "null" }
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EvidenceRef" },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "status": { "$ref": "#/$defs/ActionStatus" },
+        "dismissalReason": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4000 },
+            { "type": "null" }
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4000 },
+            { "type": "null" }
+          ]
+        },
+        "createdAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "updatedAt": { "type": "string", "format": "date-time", "pattern": "Z$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 20000 },
+        "recordKind": { "const": "action_recommendation" },
+        "recommendation": { "const": true },
+        "acceptedAsTask": { "const": false },
+        "nativeCompletion": { "$ref": "#/$defs/ActionItemNativeCompletion" },
+        "sourceProof": { "$ref": "#/$defs/ActionItemSourceProof" }
+      },
+      "required": [
+        "id",
+        "districtKey",
+        "clientId",
+        "clientName",
+        "peCode",
+        "programId",
+        "deltaId",
+        "actionType",
+        "issueTitle",
+        "whatChanged",
+        "whyItMatters",
+        "recommendedAction",
+        "targetAudience",
+        "suggestedArtifactType",
+        "deadline",
+        "deadlineSource",
+        "ownerUserId",
+        "priority",
+        "confidence",
+        "uncertainty",
+        "evidence",
+        "status",
+        "dismissalReason",
+        "outcome",
+        "createdAt",
+        "updatedAt",
+        "title",
+        "body",
+        "recordKind",
+        "recommendation",
+        "acceptedAsTask",
+        "nativeCompletion",
+        "sourceProof"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemClientScopedPageCoverage": {
+      "type": "object",
+      "properties": {
+        "sourceStatus": { "type": "string", "enum": ["healthy", "degraded"] },
+        "sourceReason": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 200 },
+            { "type": "null" }
+          ]
+        },
+        "complete": { "type": "boolean" },
+        "partial": { "type": "boolean" },
+        "paginationComplete": { "type": "boolean" },
+        "hasMore": { "type": "boolean" },
+        "nextCursor": {
+          "anyOf": [
+            { "type": "string", "minLength": 1, "maxLength": 4096 },
+            { "type": "null" }
+          ]
+        },
+        "totalIsExactForScope": { "const": true },
+        "absenceSupported": { "type": "boolean" },
+        "note": { "type": "string", "minLength": 1, "maxLength": 500 }
+      },
+      "required": [
+        "sourceStatus",
+        "sourceReason",
+        "complete",
+        "partial",
+        "paginationComplete",
+        "hasMore",
+        "nextCursor",
+        "totalIsExactForScope",
+        "absenceSupported",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemClientScopedPage": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "action-item-client-scoped-page" },
+        "contractVersion": { "const": "0.2.0" },
+        "operation": {
+          "type": "object",
+          "properties": {
+            "id": { "const": "query_action_items" },
+            "version": { "const": "0.2.0" }
+          },
+          "required": ["id", "version"],
+          "additionalProperties": false
+        },
+        "requestId": { "type": "string", "format": "uuid" },
+        "traceId": { "type": "string", "format": "uuid" },
+        "binding": { "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding" },
+        "subject": { "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject" },
+        "window": { "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/NormalizedWindow" },
+        "argumentsSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "appliedFilters": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/appliedFilters"
+        },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "sources": {
+          "type": "array",
+          "items": { "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/SourceState" },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "coverage": { "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/Coverage" },
+        "selection": { "$ref": "#/$defs/ActionItemClientScopedSelection" },
+        "order": {
+          "type": "string",
+          "enum": [
+            "deadline-asc_nulls-last_priority-desc_id-asc-owner-unconfirmed",
+            "priority-desc_deadline-asc_nulls-last_id-asc-owner-unconfirmed"
+          ]
+        },
+        "snapshotVersionId": { "type": "null" },
+        "clientId": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "scope": { "$ref": "#/$defs/ActionItemReadScope" },
+        "total": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "returned": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "actions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ActionItemReadRow" },
+          "minItems": 0,
+          "maxItems": 50
+        },
+        "pageCoverage": { "$ref": "#/$defs/ActionItemClientScopedPageCoverage" },
+        "continuation": {
+          "$ref": "urn:meri:retrieval:retrieval:0.2.0#/$defs/EvidenceEnvelope/properties/continuation"
+        },
+        "evidenceReady": { "const": false },
+        "negativeAssertion": {
+          "type": "object",
+          "properties": { "kind": { "const": "none" } },
+          "required": ["kind"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "kind",
+        "contractVersion",
+        "operation",
+        "requestId",
+        "traceId",
+        "binding",
+        "subject",
+        "window",
+        "argumentsSha256",
+        "appliedFilters",
+        "generatedAt",
+        "sources",
+        "coverage",
+        "selection",
+        "order",
+        "snapshotVersionId",
+        "clientId",
+        "scope",
+        "total",
+        "returned",
+        "actions",
+        "pageCoverage",
+        "continuation",
+        "evidenceReady",
+        "negativeAssertion"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

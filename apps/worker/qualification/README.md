@@ -66,22 +66,25 @@ docker build --pull --platform linux/amd64 \
   <absolute-fresh-output>/context
 ```
 
-`worker_context.py` has one fixed public-source list and no source-root, member,
+`worker_context.py` has one fixed source list and no source-root, member,
 loader, build or activation option. It reads bounded regular files before
 exclusive output creation, rejects links/hardlinks, preserves raw bytes, and
 emits `context/` plus a sibling `manifest.json`. Existing or partial outputs
 are never repaired, overwritten or deleted. `verify_context(output)` rechecks
 exact files/directories and current source hashes; its manifest is packaging
-DATA, not commit authority or admission. Bounds are 34 files, 2 MiB per file,
+DATA, not commit authority or admission. Bounds are 44 files, 2 MiB per file,
 8 MiB aggregate and a cooperative 30-second deadline. Use an external bound
 and a trusted stable source/output filesystem for an actual build.
 
-The checkpoint adapter remains at `/opt/meri-worker/checkpoint`; the two root
-scanner modules are staged as generated context inputs and copied byte-exact
-to `/scripts/sdk-capture`. The unchanged four-parent loopback import therefore
-resolves in the image. `/scripts` joins the end-of-recipe static inventory.
-Existing probe entry paths, package locks, SDK/CfT pins and old images remain
-unchanged. No new image, interruption/resume result, complete checkpoint,
+The native adapter and private fixture channel/transport remain at
+`/opt/meri-worker/checkpoint`; the root scanner modules are staged at
+`/scripts/sdk-capture`. The private contract/schema/test closure is staged
+at `/packages/contracts` so the existing four-parent imports resolve without
+rewriting canonical source. The worker package declares the exact direct
+`ajv`, `ajv-formats` and `canonicalize` versions; `/packages/node_modules`
+links to its locked install. `/packages` joins the end-of-recipe static
+inventory. The public `0.1.0` archive/exports and SDK/CfT pins are unchanged.
+No new image, interruption/resume result, complete checkpoint,
 SessionStore or G1 acceptance follows from these source checks.
 
 The recipe: immutable base `node:24.21.0-bookworm-slim@sha256:d6aa754f...`
@@ -184,3 +187,32 @@ separation/capabilities; remote opaque-session plus workspace snapshots;
 interrupt/resume/replacement-task restoration and stale-fence rejection; SDK
 mirror_error handling; Temporal production topology; measured startup/memory/
 disk/timings/cost. Local offline results cannot pass these gates.
+# Native observation source candidate (11 October 2026)
+
+`probes/native-observations.mjs` extends the existing SDK phase driver with
+ordered signed init/interrupt/exit/drain observations. It requires an explicit
+trusted signing key and namespace inspector. `native-stream-observer.mjs`
+observes the SDK's consumed stdout without a competing reader, retains
+backpressure and propagates pipe destruction. The phase driver consumes events
+after interruption through iterator exhaustion and refuses mirror errors,
+stream errors, forced cleanup and unobserved exits before capture/publication.
+
+`native-namespace-observer.mjs` provides an explicit bounded Linux procfs
+baseline/exit inspector. Establish the baseline before SDK spawn. This narrow
+fixture requires the trusted supervisor as PID 1 with no other surviving
+process, unchanged namespace/mount/start ticks and complete procfs coverage.
+Trusted spawning must inherit that namespace without `unshare`/`setns`; the
+owner must exclusively control the workspace and all possible writers. Procfs
+samples are not an atomic freeze or proof against later host writers. Actual
+Fargate process inspection and physical task containment remain required.
+
+For future source edits, regenerate fixed SDK fixture source metadata with
+`python scripts/qualification/worker_source_pins.py --write`, then verify it
+with `--check`. Generate a fresh 49-member source-only build context using
+`worker_context.py`. New production modules and private schemas are explicitly
+included in that context and image allow-list. The previous operational build
+helper's context/assembler pins remain unchanged, so it refuses this candidate
+until a separately reviewed source/runtime/build admission is prepared.
+
+No new image digest, native recovery or SessionStore qualification follows from
+these sources. Both partial-checkpoint completeness flags remain false.

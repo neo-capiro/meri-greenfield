@@ -1,0 +1,64 @@
+{
+  "schema": "scan-baseline-independent-review/1",
+  "baseCommit": "7f1d20d2c28db25948ecc02d26545645e87a3e3c",
+  "integratedCommit": "72c8afa5f7854505f99ccbd569c5de8c9e6bd1d9",
+  "sourceArchiveBytes": 3133440,
+  "sourceArchiveSha256": "304392d0d611472c1e5c3eca6728ca49dece6d35a033f12f3b0b79a2c1c67ec3",
+  "moduleComparison": [
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 11723,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+    },
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 30860,
+      "sha256": "955ff2e55fc7f888d1535d94b5e81b629779a7ed1914e70ab45c0c41100e7484"
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 29992,
+      "sha256": "6ac9a55da3343f8a17f6e1f29736baa12c5c57d5f05dfa70a506d3f1f9ded27a"
+    },
+    {
+      "path": "scripts/qualification/worker_image_publish.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 11611,
+      "sha256": "da1cb478d3048c7b102f90203f6bb3080d8002502d18c7a7711cd86dd2f795fa"
+    },
+    {
+      "path": "scripts/qualification/test_worker_image_build.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 28555,
+      "sha256": "4dbda361a98b1e77e935aea41a767b4b97665d031087e8481245b85e66840dfc"
+    },
+    {
+      "path": "scripts/qualification/test_worker_image_publish.py",
+      "baseHeadWorkingBytesEqual": true,
+      "bytes": 19392,
+      "sha256": "4a781049d841991a5e001faed0d06480a663d96b79c38b83915795850d836bdd"
+    }
+  ],
+  "exportedSourceCount": 169,
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-I",
+    "-B",
+    "-S",
+    "-c",
+    "import sys,unittest\nsys.path.insert(0,sys.argv[1])\nsuite=unittest.defaultTestLoader.loadTestsFromNames(['test_worker_image_build','test_worker_image_publish'])\nresult=unittest.TextTestRunner(verbosity=2).run(suite)\nraise SystemExit(0 if result.wasSuccessful() else 1)\n",
+    "/workspace/scratch/853fba62b1f1/meri-g1-trusted-source/.task-inputs/scan-baseline-review-20261011/source/scripts/qualification"
+  ],
+  "pythonVersion": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "elapsedSeconds": 0.18710658999953012,
+  "exitCode": 1,
+  "stdoutBytes": 0,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrBytes": 9819,
+  "stderrSha256": "8854c7ab8341f05a52b487d1b19299d62424c96c4ea7245d01d6c805d2068424",
+  "externalExecution": "none; only isolated unchanged Python offline tests",
+  "physicalChildExit": true
+}

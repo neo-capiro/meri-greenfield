@@ -1,0 +1,20 @@
+✔ construction is inert and exposes only borrowed observation/publication ports (6.418007ms)
+✔ configuration rejects foreign admission, unsafe cutoff and accessors before capability calls (3.411917ms)
+✔ only four complete owner observations can produce canonical durable references (38.306603ms)
+✔ canonical channel supplies exact owner protocol args before checkpoint persistence (33.873261ms)
+✔ foreign context/capture, renewed deadline and hostile data refuse before effects (20.134617ms)
+✔ admitted original cutoff and input snapshots survive caller mutation (9.462032ms)
+✔ a foreign admitted verification key refuses before capture copying or storage (4.138868ms)
+✔ revocation and cancellation quarantine publication without retry (25.476109ms)
+✔ pre-abort, cutoff expiry and clock rollback refuse without storage (5.834797ms)
+✔ cancellation and original deadline are rechecked after pending authorization (18.47295ms)
+✔ uncertain writes and concurrent callers cannot publish a second set (16.007547ms)
+✔ deadline aborts an unsettled borrowed write and keeps its attempt quarantined (54.679088ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 810.114842

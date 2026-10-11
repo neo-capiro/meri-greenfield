@@ -1,0 +1,54 @@
+{
+  "status": "RETAINED_FAILED_CHECKS_NOT_ACCEPTANCE",
+  "records": [
+    {
+      "originalCapture": ".task-inputs/runtime-delta-focused.stdout",
+      "encodedCapture": "precommit-focused.stdout.b64",
+      "encoding": "base64",
+      "decodedBytes": 12329,
+      "decodedSha256": "769eac2862dce63de7975a79dd827b7296905d0f48b3d1def8fdb9ea55add902"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-focused.stderr",
+      "encodedCapture": "precommit-focused.stderr.b64",
+      "encoding": "base64",
+      "decodedBytes": 0,
+      "decodedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-final-20261011/results.json",
+      "encodedCapture": "b5c03b6-results.json.b64",
+      "encoding": "base64",
+      "decodedBytes": 7736,
+      "decodedSha256": "df2d63a5b6f2e3d605e4ed7f70588a9dd8433d11adafdce26e8537fbc2e72f78"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-final-20261011/worker-package.stdout",
+      "encodedCapture": "b5c03b6-worker-package.stdout.b64",
+      "encoding": "base64",
+      "decodedBytes": 22009,
+      "decodedSha256": "17489327cf282bb59d55fdd65308c6abc986692730ff63cf797d758ffc78f022"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-final-20261011/source-context.stderr",
+      "encodedCapture": "b5c03b6-source-context.stderr.b64",
+      "encoding": "base64",
+      "decodedBytes": 1455,
+      "decodedSha256": "ced08a3607bb629bc0da0074a51ec28192e05fa50260724bd689ac5d1d815f83"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-final-20261011-2/results.json",
+      "encodedCapture": "8ecd009-results.json.b64",
+      "encoding": "base64",
+      "decodedBytes": 12473,
+      "decodedSha256": "11230e1b0cebb0ae23b51ff72fba3447091bc8b512415c63d8f1f1c98e3868e0"
+    },
+    {
+      "originalCapture": ".task-inputs/runtime-delta-final-20261011-2/source-context.stderr",
+      "encodedCapture": "8ecd009-source-context.stderr.b64",
+      "encoding": "base64",
+      "decodedBytes": 1538,
+      "decodedSha256": "41decdbc5174d31c89817ce0b70fa58b7c16816491a927cc38f5424f1c7afdc8"
+    }
+  ]
+}

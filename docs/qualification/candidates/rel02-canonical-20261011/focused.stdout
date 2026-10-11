@@ -1,0 +1,42 @@
+✔ upcoming calendar inventory materializes verified defaults without mutating strict input (5.664615ms)
+✔ upcoming calendar inventory rejects coercion, extra authority, bounds and missing trusted clock (1.170975ms)
+✔ bounded calendar page counts returned rows and never claims whole history (39.101692ms)
+✔ debrief list and exact-body modes keep distinct normalized selections and defaults (0.935147ms)
+✔ debrief inputs refuse missing client, foreign fields, mode confusion and cursor substitution (0.499355ms)
+✔ debrief exact body windows, hashes and decisive reads stay exact (24.958072ms)
+✔ debrief list pages cannot claim complete history without a completed body pass (4.595579ms)
+✔ meeting reads keep inventory and exact-source-body modes separate (1.224665ms)
+✔ meeting inputs refuse missing/foreign client scope and mode substitution (0.740882ms)
+✔ meeting inventory discloses restricted, omitted and paginated coverage (36.277522ms)
+✔ exact meeting source bodies bind hash, byte and window provenance (27.725975ms)
+✔ cursor reuse is disclosed but never authenticated by this pending contract (1.956242ms)
+✔ meeting external DTO accessors, cycles and non-finite values refuse before executing getters (0.508028ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (3.423404ms)
+✔ meeting pages enforce canonical single-subject cardinality and roster rules (10.683098ms)
+✔ meeting pages enforce canonical timezone and calendar-week boundaries (15.04964ms)
+✔ meeting source observations retain their pending timestamp boundary (0.852186ms)
+✔ meeting schema objects stay closed and package public exports stay 0.1 only (0.752097ms)
+✔ no catalog operation, descriptor or skill exposes the pending meeting source contract (28.263657ms)
+✔ task read materializes verified defaults without mutating strict input (3.995829ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (15.316047ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (47.84628ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (3.627954ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (3.689876ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (4.959354ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (77.197798ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (6.858481ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (0.756609ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (10.900139ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (2.413439ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (23.321846ms)
+✔ operational source observations retain their pending timestamp boundary (0.942534ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (5.711586ms)
+✔ no catalog operation, descriptor or skill exposes the pending operational-read contracts (27.783113ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3036.038653

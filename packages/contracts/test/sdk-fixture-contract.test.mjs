@@ -4,7 +4,8 @@ import { createHash } from 'node:crypto';
 import canonicalize from 'canonicalize';
 import { canonicalSha256, validateShape as publicShape } from '../validate.mjs';
 import { validateShape, publicSchemaSha256, assertFixtureContext, fixtureReceiptIdentity,
-  assertFixtureReceipt, assertFixtureRequest, assertFixtureResponse } from '../qualification-sdk/validate.mjs';
+  assertFixtureReceipt, assertFixtureRequest, assertFixtureResponse,
+  assertFixtureSentinelPayload } from '../qualification-sdk/validate.mjs';
 
 // Fixed synthetic DATA, never admitted identities or an allocated runtime clock.
 const id = n => `00000000-0000-4000-8000-${n.toString(16).padStart(12, '0')}`;
@@ -142,6 +143,16 @@ test('opaque bytes survive; changed bytes, hash, size and noncanonical base64 re
     r => r.bundle.files[0].bytes = 8388609, r => r.bundle.files = Array(257).fill(r.bundle.files[0])]) {
     const req = request(f, 'commitFixtureCheckpoint'); mutate(req); assert.throws(() => assertFixtureRequest(req, { nowMs: NOW }));
   }
+});
+
+test('private sentinel validation retains fixed path, 64KiB bound and canonical byte integrity', () => {
+  const f = fixture(); assert.equal(assertFixtureSentinelPayload(f.fixtureFile), f.fixtureFile);
+  for (const mutate of [s => s.path = 'other.txt', s => s.bytes = 65537,
+    s => s.base64 += '\n', s => s.sha256 = '0'.repeat(64), s => s.bytes++]) {
+    const value = copy(f.fixtureFile); mutate(value); assert.throws(() => assertFixtureSentinelPayload(value));
+  }
+  const max = file('qualification/continuity.txt', Buffer.alloc(65536, 0x7f));
+  assert.equal(assertFixtureSentinelPayload(max), max);
 });
 
 test('stored object version/hash/readback/inventory substitution refuses after transfer', () => {

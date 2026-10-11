@@ -22,16 +22,34 @@ import worker_context
 import worker_image_collect as collector
 
 ROOT = Path(__file__).resolve().parents[2]
-REFERENCE = 'c8978118a53cc6fc4cc3a553cdafdba4126d2443'
+# Reviewed private wire decoding is part of the immutable worker source baseline.
+REFERENCE = 'f118ff55dfb96ba4b44099953e6c9724064b723d'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'
-PYTHON = Path('C:/Users/neoma/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
+PUBLISH_SCHEMA = 'meri-worker-image-publish-build/1'
+PUBLISH_INPUT_SCHEMA = collector.PUBLISH_SCHEMA
+PUBLISHER = collector.PUBLISHER
+CLEANER = collector.CLEANER
+WORKER_BUILDER_PRINCIPAL = 'arn:aws:iam::967807252336:user/hermes-cli'
+PYTHON = Path('C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
 PYTHON_SHA = '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1'
 HELPERS = ('worker_image_build.py', 'worker_image_collect.py', 'worker_context.py',
            'host_assets_build.py', 'host_assets_source.py', 'aws_evidence.py',
            'teststate_request.py', 'readonly_shapes.py')
 ORIGINAL = tuple(p for p, _ in worker_context.MEMBERS)+(collector.ASSEMBLER,)
+PACKAGING_CHANGES = {
+    'apps/worker/qualification/.dockerignore',
+    'apps/worker/qualification/Dockerfile',
+    'apps/worker/qualification/README.md',
+    'apps/worker/qualification/component-pins.json',
+    'apps/worker/qualification/package.json',
+    'apps/worker/qualification/package-lock.json',
+    'apps/worker/qualification/probes/image-inventory.py',
+    'apps/worker/qualification/probes/image-inventory.test.mjs',
+    'apps/worker/qualification/probes/static.test.mjs',
+    collector.ASSEMBLER,
+}
 need, sha, save, write, encoded, loads, read = (collector.need, collector.digest, collector.save,
                                              collector.write, collector.encoded, collector.loads, collector.read)
 
@@ -80,20 +98,49 @@ def git_files(commit, names, capture=None, prefix='source'):
 
 
 def baseline(commit, capture=None):
-    old = git_files(REFERENCE, ORIGINAL, capture, 'reference')
+    stable = tuple(p for p in ORIGINAL if p not in PACKAGING_CHANGES)
+    old = git_files(REFERENCE, stable, capture, 'reference')
     current = git_files(commit, ORIGINAL+(collector.COLLECTOR,), capture, 'candidate')
-    need(all(current[p] == old[p] == read(ROOT/p, 2*1024*1024) for p in ORIGINAL), 'fixed 35 original sources drift')
+    need(all(current[p] == old[p] for p in stable), 'stable fixture source drift')
+    need(all(current[p] == read(ROOT/p, 2*1024*1024) for p in ORIGINAL), 'candidate Git/current drift')
     need(current[collector.COLLECTOR] == read(ROOT/collector.COLLECTOR, 2*1024*1024), 'collector Git/current drift')
     need(sha(current[collector.ASSEMBLER]) == collector.ASSEMBLER_SHA, 'assembler reference pin')
     return current
 
 
-def validate_authority(value):
-    need(type(value) is dict and set(value) == {'decision', 'capturedAt', 'caller', 'project', 'authorityRecords'}
+def context_manifest_sha(files):
+    """Predict the assembler's canonical manifest from exact candidate Git bytes."""
+    need(set(files) >= {p for p, _ in worker_context.MEMBERS}, 'context source membership')
+    rows = [{'sourcePath': path, 'contextPath': target, 'bytes': len(files[path]),
+             'sha256': sha(files[path])} for path, target in worker_context.MEMBERS]
+    manifest = {'schemaVersion': 1, 'status': 'SOURCE_ONLY', 'commitAuthority': False,
+                'members': rows, 'totalBytes': sum(row['bytes'] for row in rows)}
+    return sha(worker_context._json_bytes(manifest))
+
+
+def validate_repository(value):
+    need(type(value) is dict and set(value) == {'repositories'} and type(value['repositories']) is list
+         and len(value['repositories']) == 1, 'complete single ECR repository response')
+    row = value['repositories'][0]
+    need(type(row) is dict and row.get('registryId') == ACCOUNT
+         and row.get('repositoryName') == authority.REPOSITORY
+         and row.get('repositoryArn') == f'arn:aws:ecr:{REGION}:{ACCOUNT}:repository/{authority.REPOSITORY}'
+         and row.get('repositoryUri') == authority.REPOSITORY_URI
+         and row.get('imageTagMutability') == 'IMMUTABLE'
+         and row.get('imageScanningConfiguration') == {'scanOnPush': True}
+         and row.get('encryptionConfiguration') == {'encryptionType': 'KMS', 'kmsKey': KMS},
+         'fixed immutable KMS scan-on-push repository')
+    return value
+
+
+def validate_authority(value, publish=False):
+    fields = {'decision', 'capturedAt', 'caller', 'project', 'authorityRecords'}
+    if publish: fields.add('repository')
+    need(type(value) is dict and set(value) == fields
          and value['decision'] == 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'root authority descriptor')
     caller = value['caller']
     need(type(caller) is dict and set(caller) == {'Account', 'Arn', 'UserId'} and caller['Account'] == ACCOUNT
-         and caller['Arn'] == authority.PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
+         and caller['Arn'] == WORKER_BUILDER_PRINCIPAL and type(caller['UserId']) is str and 0 < len(caller['UserId']) <= 256, 'full fixed caller')
     project = authority.project_configuration(value['project'])
     need(project.get('arn') == f'arn:aws:codebuild:{REGION}:{ACCOUNT}:project/{PROJECT}'
          and project.get('name') == PROJECT and project.get('serviceRole') == ROLE and project.get('encryptionKey') == KMS
@@ -105,14 +152,33 @@ def validate_authority(value):
          and all(not r['name'].upper().startswith(('AWS_', 'ANTHROPIC_', 'OPENAI_'))
                  and r['name'] not in ('DATABASE_URL', 'LITELLM_MASTER_KEY') for r in env['environmentVariables']), 'builder environment')
     records = value['authorityRecords']
-    need(type(records) is dict and set(records) == {'roleTrust', 'inlinePolicy', 'attachedPolicies', 'kmsKey', 'kmsPolicy'}
+    names = {'roleTrust', 'inlinePolicy', 'attachedPolicies', 'kmsKey', 'kmsPolicy'}
+    if publish:
+        names.add('repository')
+        validate_repository(value['repository'])
+    need(type(records) is dict and set(records) == names
          and all(type(v) is str and re.fullmatch('[a-f0-9]{64}', v) for v in records.values()), 'reviewed role/KMS raw evidence references')
     stamp = dt.datetime.fromisoformat(value['capturedAt']); need(stamp.tzinfo is not None, 'authority UTC offset')
     return project
 
 
-def recipe():
+def recipe(publish=False):
     # Build phase failure still enters post_build. A missing/incomplete bundle is never acceptance.
+    fallback = """if [ ! -e worker-image-result.tar.gz ]; then
+python3 -I -B -S - <<'__PUBLISH_FAILURE__'
+import io,json,os,re,tarfile
+commit=os.environ.get('SOURCE_COMMIT','')
+assert re.fullmatch('[a-f0-9]{40}',commit)
+raw=(json.dumps({'schema':'meri-worker-image-publication-failure/1','status':'PREFLIGHT_OR_BUNDLE_FAILED',
+                 'sourceCommit':commit,'runtimeAdmitted':False,'scanAdmitted':False,'g1Admitted':False},
+                sort_keys=True)+'\\n').encode('ascii')
+with open('worker-image-result.tar.gz','xb') as stream:
+ with tarfile.open(fileobj=stream,mode='w:gz') as archive:
+  item=tarfile.TarInfo('preflight-failure.json');item.size=len(raw)
+  archive.addfile(item,io.BytesIO(raw))
+__PUBLISH_FAILURE__
+fi
+""" if publish else ''
     upload = """set -eu
 test -f worker-image-result.tar.gz
 test ! -L worker-image-result.tar.gz
@@ -120,40 +186,57 @@ checksum=$(python3 -I -B -S -c 'import base64,hashlib; print(base64.b64encode(ha
 timeout --signal=TERM --kill-after=5s 60s aws s3api put-object --bucket meri-greenfield-qual-build-967807252336-us-east-1 --key "$RESULT_KEY" --body worker-image-result.tar.gz --if-none-match '*' --server-side-encryption aws:kms --ssekms-key-id arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042 --checksum-algorithm SHA256 --checksum-sha256 "$checksum" --region us-east-1 --no-cli-pager
 """
     return encoded({'version': '0.2', 'env': {'shell': 'bash', 'variables': {'AWS_MAX_ATTEMPTS': '1', 'AWS_RETRY_MODE': 'standard', 'AWS_PAGER': ''}},
-                    'phases': {'build': {'commands': ['timeout --signal=TERM --kill-after=5s 1560s python3 -I -B -S scripts/qualification/worker_image_collect.py --collect']},
-                               'post_build': {'commands': [upload]}}, 'artifacts': {'files': []}})
+                    'phases': {'build': {'commands': ['timeout --signal=TERM --kill-after=5s '+('1680s' if publish else '1560s')+' python3 -I -B -S scripts/qualification/worker_image_collect.py --collect']},
+                               'post_build': {'commands': [upload.replace('set -eu\n', 'set -eu\n'+fallback, 1)]}}, 'artifacts': {'files': []}})
 
 
-def prepare(commit, path, authority_file, authority_sha):
+def publication(commit, token):
+    return {'repositoryName': authority.REPOSITORY, 'repositoryUri': authority.REPOSITORY_URI,
+            'imageTag': 'sdk-'+commit+'-'+token, 'scanAdmission': 'HOLD'}
+
+
+def prepare(commit, path, authority_file, authority_sha, publish=False):
     authority_raw = read(Path(authority_file).absolute(), 2*1024*1024)
     need(sha(authority_raw) == authority_sha, 'external authority SHA')
-    observed = loads(authority_raw); project = validate_authority(observed)
-    files = baseline(commit); before = pins(); token = str(uuid.uuid4())
+    observed = loads(authority_raw); project = validate_authority(observed, publish)
+    files = baseline(commit)
+    need(context_manifest_sha(files) == collector.CONTEXT_SHA, 'worker context manifest pin')
+    before = pins(); token = str(uuid.uuid4())
     helper_blobs = git_files(commit, tuple('scripts/qualification/'+p for p in HELPERS), prefix='helpers')
     need(all(v == read(ROOT/p, 2*1024*1024) for p, v in helper_blobs.items()), 'helper raw Git/current identity')
-    files['buildspec.json'] = recipe()
-    content = {'schema': collector.SCHEMA, 'sourceCommit': commit, 'runUuid': token,
+    if publish:
+        extra = git_files(commit, (PUBLISHER, CLEANER), prefix='publication')
+        need(all(raw == read(ROOT/name, 2*1024*1024) for name, raw in extra.items()), 'publication Git/current drift')
+        files.update(extra)
+    files['buildspec.json'] = recipe(publish)
+    content = {'schema': PUBLISH_INPUT_SCHEMA if publish else collector.SCHEMA, 'sourceCommit': commit, 'runUuid': token,
                'contextManifestSha256': collector.CONTEXT_SHA,
                'members': [{'path': p, 'bytes': len(raw), 'sha256': sha(raw)} for p, raw in sorted(files.items())]}
+    if publish: content['publication'] = publication(commit, token)
     files['worker-image-input.json'] = encoded(content)
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_STORED) as archive:
         for name, raw in sorted(files.items()):
             item = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0)); item.create_system = 3; item.external_attr = 0o100644 << 16
             archive.writestr(item, raw)
-    packed = buffer.getvalue(); need(len(files) == 38 and len(packed) <= 8*1024*1024, '38-member bounded archive')
-    need(pins() == before and baseline(commit) == {p: v for p, v in files.items() if p not in ('buildspec.json', 'worker-image-input.json')}, 'prepare source stability')
-    request = {'schema': SCHEMA, 'sourceCommit': commit, 'runUuid': token, 'helperFiles': before,
+    packed = buffer.getvalue(); count = 50 if publish else 48
+    need(len(files) == count and len(packed) <= 8*1024*1024, 'bounded exact archive')
+    base_names = ORIGINAL+(collector.COLLECTOR,)
+    need(pins() == before and baseline(commit) == {p: files[p] for p in base_names}, 'prepare source stability')
+    if publish: need(git_files(commit, (PUBLISHER, CLEANER)) == extra, 'publication source stability')
+    request = {'schema': PUBLISH_SCHEMA if publish else SCHEMA, 'sourceCommit': commit, 'runUuid': token, 'helperFiles': before,
                'authority': observed, 'authoritySha256': sha(authority_raw), 'builderProject': project,
-               'inputSha256': sha(files['worker-image-input.json']), 'recipeSha256': sha(recipe()),
-               'archive': {'bytes': len(packed), 'sha256': sha(packed), 'entries': 38,
+               'inputSha256': sha(files['worker-image-input.json']), 'recipeSha256': sha(recipe(publish)),
+               'archive': {'bytes': len(packed), 'sha256': sha(packed), 'entries': count,
                            'key': 'inputs/sdk-worker-image-'+token+'/source.zip'},
                'resultKey': 'results/sdk-worker-image-'+token+'/evidence.tar.gz'}
+    if publish: request['publication'] = content['publication']
     evidence = slot(path, True)
     capture = evidence/'git-prepare'; capture.mkdir()
-    need(baseline(commit, capture) == {p: v for p, v in files.items() if p not in ('buildspec.json', 'worker-image-input.json')}, 'retained Git source drift')
+    need(baseline(commit, capture) == {p: files[p] for p in base_names}, 'retained Git source drift')
     need(git_files(commit, tuple(helper_blobs), capture, 'helpers') == helper_blobs and pins() == before, 'retained Git helper drift')
-    write(evidence/'source.zip', packed); write(evidence/'buildspec.json', recipe())
+    if publish: need(git_files(commit, (PUBLISHER, CLEANER), capture, 'publication') == extra, 'retained publication source drift')
+    write(evidence/'source.zip', packed); write(evidence/'buildspec.json', recipe(publish))
     write(evidence/'worker-image-input.json', files['worker-image-input.json']); write(evidence/'authority.json', authority_raw)
     save(evidence/'request.json', request)
     return {'status': 'PREPARED_NOT_ADMITTED', 'requestSha256': sha(encoded(request)), 'awsCalls': 0}
@@ -161,26 +244,40 @@ def prepare(commit, path, authority_file, authority_sha):
 
 def load(evidence):
     raw = read(evidence/'request.json', 2*1024*1024); request = loads(raw)
-    need(type(request) is dict and set(request) == {'schema', 'sourceCommit', 'runUuid', 'helperFiles', 'authority', 'authoritySha256',
-         'builderProject', 'inputSha256', 'recipeSha256', 'archive', 'resultKey'} and request['schema'] == SCHEMA, 'prepared request')
+    common = {'schema', 'sourceCommit', 'runUuid', 'helperFiles', 'authority', 'authoritySha256',
+              'builderProject', 'inputSha256', 'recipeSha256', 'archive', 'resultKey'}
+    need(type(request) is dict and request.get('schema') in (SCHEMA, PUBLISH_SCHEMA), 'prepared request schema')
+    publish = request['schema'] == PUBLISH_SCHEMA
+    need(set(request) == (common | ({'publication'} if publish else set())), 'prepared request fields')
     token = request['runUuid']; need(type(token) is str and str(uuid.UUID(token)) == token and uuid.UUID(token).version == 4, 'request UUID')
-    need(request['helperFiles'] == pins() and request['builderProject'] == validate_authority(request['authority']), 'execution closure/project drift')
+    need(request['helperFiles'] == pins() and request['builderProject'] == validate_authority(request['authority'], publish), 'execution closure/project drift')
     authority_raw = read(evidence/'authority.json', 2*1024*1024)
     need(sha(authority_raw) == request['authoritySha256'] and loads(authority_raw) == request['authority'], 'authority raw binding')
-    expected_files = baseline(request['sourceCommit']); expected_files['buildspec.json'] = recipe()
+    expected_files = baseline(request['sourceCommit'])
+    need(context_manifest_sha(expected_files) == collector.CONTEXT_SHA, 'worker context manifest pin')
+    if publish:
+        extra = git_files(request['sourceCommit'], (PUBLISHER, CLEANER), prefix='publication-load')
+        need(all(raw == read(ROOT/name, 2*1024*1024) for name, raw in extra.items()), 'publication Git/current drift')
+        expected_files.update(extra)
+        need(request['publication'] == publication(request['sourceCommit'], token), 'fixed publication binding')
+    expected_files['buildspec.json'] = recipe(publish)
     manifest_raw = read(evidence/'worker-image-input.json', 2*1024*1024); content = loads(manifest_raw)
-    need(content == {'schema': collector.SCHEMA, 'sourceCommit': request['sourceCommit'], 'runUuid': token,
+    expected_content = {'schema': PUBLISH_INPUT_SCHEMA if publish else collector.SCHEMA,
+         'sourceCommit': request['sourceCommit'], 'runUuid': token,
          'contextManifestSha256': collector.CONTEXT_SHA,
-         'members': [{'path': p, 'bytes': len(v), 'sha256': sha(v)} for p, v in sorted(expected_files.items())]}, 'exact input rows')
+         'members': [{'path': p, 'bytes': len(v), 'sha256': sha(v)} for p, v in sorted(expected_files.items())]}
+    if publish: expected_content['publication'] = request['publication']
+    need(content == expected_content, 'exact input rows')
     expected_files['worker-image-input.json'] = manifest_raw
     packed = read(evidence/'source.zip', 8*1024*1024)
-    need(request['archive'] == {'bytes': len(packed), 'sha256': sha(packed), 'entries': 38, 'key': 'inputs/sdk-worker-image-'+token+'/source.zip'}
+    count = 50 if publish else 48
+    need(request['archive'] == {'bytes': len(packed), 'sha256': sha(packed), 'entries': count, 'key': 'inputs/sdk-worker-image-'+token+'/source.zip'}
          and request['resultKey'] == 'results/sdk-worker-image-'+token+'/evidence.tar.gz'
-         and request['inputSha256'] == sha(manifest_raw) and request['recipeSha256'] == sha(recipe())
-         and read(evidence/'buildspec.json', 65536) == recipe(), 'fixed archive/recipe/keys')
+         and request['inputSha256'] == sha(manifest_raw) and request['recipeSha256'] == sha(recipe(publish))
+         and read(evidence/'buildspec.json', 65536) == recipe(publish), 'fixed archive/recipe/keys')
     with zipfile.ZipFile(io.BytesIO(packed)) as archive:
         entries = archive.infolist()
-        need(len(entries) == 38 and {e.filename for e in entries} == set(expected_files)
+        need(len(entries) == count and {e.filename for e in entries} == set(expected_files)
              and all((e.external_attr >> 16) == 0o100644 and not e.is_dir() and e.file_size == len(expected_files[e.filename])
                      and archive.read(e) == expected_files[e.filename] for e in entries), 'exact regular ZIP bytes')
     return request, raw
@@ -190,7 +287,7 @@ def check_review(request, raw, review_raw, review_sha):
     need(type(review_sha) is str and re.fullmatch('[a-f0-9]{64}', review_sha) and sha(review_raw) == review_sha, 'external review pin')
     review = loads(review_raw)
     need(type(review) is dict and set(review) == {'decision', 'requestSha256', 'closureSha256', 'authoritySha256', 'reviewer', 'notes'}
-         and review['decision'] == 'APPROVE_ONE_WORKER_IMAGE_BUILD_ONLY'
+         and review['decision'] == ('APPROVE_ONE_WORKER_IMAGE_PUBLISH_BUILD_ONLY' if request.get('schema') == PUBLISH_SCHEMA else 'APPROVE_ONE_WORKER_IMAGE_BUILD_ONLY')
          and review['requestSha256'] == sha(raw) and review['closureSha256'] == sha(encoded(request['helperFiles']))
          and review['authoritySha256'] == request['authoritySha256']
          and all(type(review[k]) is str and 0 < len(review[k]) <= 4000 for k in ('reviewer', 'notes')), 'exact worker-only owner admission')
@@ -202,8 +299,9 @@ def start_input(request, version):
     need(type(version) is str and re.fullmatch('[A-Za-z0-9._~+/=-]{1,1024}', version) and version != 'null' and not version.startswith('-'), 'immutable source version')
     variables = {'SOURCE_COMMIT': request['sourceCommit'], 'SOURCE_ARCHIVE_SHA256': request['archive']['sha256'],
                  'SOURCE_S3_VERSION': version, 'INPUT_MANIFEST_SHA256': request['inputSha256'], 'RESULT_KEY': request['resultKey']}
+    if request.get('schema') == PUBLISH_SCHEMA: variables['WORKER_IMAGE_MODE'] = 'publish'
     return {'projectName': PROJECT, 'sourceTypeOverride': 'S3', 'sourceLocationOverride': BUCKET+'/'+request['archive']['key'],
-            'sourceVersion': version, 'buildspecOverride': recipe().decode('ascii'), 'timeoutInMinutesOverride': 30,
+            'sourceVersion': version, 'buildspecOverride': recipe(request.get('schema') == PUBLISH_SCHEMA).decode('ascii'), 'timeoutInMinutesOverride': 30,
             'queuedTimeoutInMinutesOverride': 5, 'autoRetryLimitOverride': 0, 'idempotencyToken': request['runUuid'],
             'environmentVariablesOverride': [{'name': k, 'value': v, 'type': 'PLAINTEXT'} for k, v in variables.items()]}
 
@@ -236,6 +334,9 @@ def dispatch(evidence, request, raw, review_sha, call):
     """Private synthetic transport seam. Production passes only canonical bounded capture."""
     need(call('caller', ['sts', 'get-caller-identity']) == request['authority']['caller'], 'fresh full caller')
     authority.one_project(call, 'project', request['builderProject'])
+    if request.get('schema') == PUBLISH_SCHEMA:
+        repository_args = ['ecr', 'describe-repositories', '--repository-names', authority.REPOSITORY]
+        need(validate_repository(call('repository', repository_args)) == request['authority']['repository'], 'fresh reviewed ECR repository')
     def complete(label, args):
         value = call(label, args); need('nextToken' not in value and 'NextToken' not in value, 'incomplete activity page'); return value
     need(all(r.get('buildStatus') in {'SUCCEEDED', 'FAILED', 'FAULT', 'STOPPED', 'TIMED_OUT'}
@@ -260,6 +361,8 @@ def dispatch(evidence, request, raw, review_sha, call):
              and head.get('Metadata') == metadata and head.get('ServerSideEncryption') == 'aws:kms' and head.get('SSEKMSKeyId') == KMS, 'exact immutable source HEAD')
         save(evidence/'start-build-input.json', start)
         authority.one_project(call, 'dispatch-project', request['builderProject'])
+        if request.get('schema') == PUBLISH_SCHEMA:
+            need(validate_repository(call('dispatch-repository', repository_args)) == request['authority']['repository'], 'immediate ECR repository readback')
         need(call('dispatch-caller', ['sts', 'get-caller-identity']) == request['authority']['caller'] and request['helperFiles'] == pins()
              and sha(read(evidence/'source.zip', 8*1024*1024)) == request['archive']['sha256'], 'immediate dispatch binding')
         result = mutate('start-build', ['codebuild', 'start-build', '--cli-input-json', 'file://'+str(evidence/'start-build-input.json')])
@@ -276,7 +379,7 @@ def execute(path, review_file, review_sha):
     end = time.monotonic()+600
     def call(label, args):
         remaining = min(45, end-time.monotonic()); need(remaining > 0, 'whole dispatch deadline')
-        value = aws_evidence.capture(evidence, label, args, timeout=remaining)
+        value = aws_evidence.capture(evidence, label, args, timeout=remaining, profile='default')
         need(loads(read(evidence/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         return value
     return dispatch(evidence, request, raw, review_sha, call)
@@ -289,7 +392,7 @@ def reconcile(path):
     end = time.monotonic()+300
     def call(label, args):
         need(end-time.monotonic() > 0, 'readback deadline')
-        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()))
+        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()), profile='default')
         need(loads(read(destination/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         need(type(value) is dict and 'nextToken' not in value and 'NextToken' not in value, 'complete readback'); return value
     need(call('caller', ['sts', 'get-caller-identity']) == request['authority']['caller'], 'readback caller')
@@ -308,12 +411,13 @@ def reconcile(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
-    parser.add_argument('action', choices=['prepare', 'execute', 'reconcile']); parser.add_argument('--evidence', required=True)
+    parser.add_argument('action', choices=['prepare', 'prepare-publish', 'execute', 'reconcile']); parser.add_argument('--evidence', required=True)
     for name in ('source-commit', 'authority-file', 'authority-sha256', 'review-file', 'review-sha256'): parser.add_argument('--'+name)
     args = parser.parse_args()
-    if args.action == 'prepare':
+    if args.action in ('prepare', 'prepare-publish'):
         need(args.source_commit and args.authority_file and args.authority_sha256 and not (args.review_file or args.review_sha256), 'prepare requires exact source and external authority pin')
-        result = prepare(args.source_commit, args.evidence, args.authority_file, args.authority_sha256)
+        result = prepare(args.source_commit, args.evidence, args.authority_file, args.authority_sha256,
+                         publish=args.action == 'prepare-publish')
     elif args.action == 'execute':
         need(args.review_file and args.review_sha256 and not (args.source_commit or args.authority_file or args.authority_sha256), 'execute requires separate review only')
         result = execute(args.evidence, args.review_file, args.review_sha256)

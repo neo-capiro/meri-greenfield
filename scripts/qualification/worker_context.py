@@ -14,10 +14,16 @@ PACKAGE_FILES = (
     ".dockerignore", "Dockerfile", "README.md", "package.json", "package-lock.json",
     "requirements.lock.txt", "component-pins.json", "sdk-options.mjs",
     "vendor/capiro-meri-contracts-0.1.0.tgz", "checkpoint/native-session-files.mjs",
+    "checkpoint/fixture-channel.mjs", "checkpoint/fixture-channel.test.mjs",
+    "checkpoint/fixture-transport.mjs", "checkpoint/fixture-transport.test.mjs",
+    "checkpoint/resume-admission.mjs", "checkpoint/resume-admission.test.mjs",
+    "checkpoint/fixture-sentinel.mjs", "checkpoint/fixture-sentinel.test.mjs",
     "probes/artifacts.mjs", "probes/artifacts.py", "probes/browser.mjs",
     "probes/image-inventory.py", "probes/image-inventory.test.mjs",
     "probes/office-export.mjs", "probes/office-export.test.mjs", "probes/office-reconstruct.mjs",
     "probes/runtime.mjs", "probes/sdk-capture.mjs", "probes/sdk-capture.test.mjs",
+    "probes/native-observations.mjs", "probes/native-stream-observer.mjs",
+    "probes/native-namespace-observer.mjs",
     "probes/sdk-capture-options.mjs", "probes/sdk-discovery-options.mjs",
     "probes/sdk-discovery-options.test.mjs", "probes/sdk-discovery-tools.mjs",
     "probes/sdk-discovery-tools.test.mjs", "probes/sdk-interruption.mjs",
@@ -28,6 +34,14 @@ PACKAGE_FILES = (
 MEMBERS = tuple((QUALIFICATION + p, p) for p in PACKAGE_FILES) + (
     ("scripts/sdk-capture/json-records.mjs", "build-dependencies/sdk-capture/json-records.mjs"),
     ("scripts/sdk-capture/protocol.mjs", "build-dependencies/sdk-capture/protocol.mjs"),
+    ("packages/contracts/validate.mjs", "build-dependencies/contracts/validate.mjs"),
+    ("packages/contracts/meri.schema.json", "build-dependencies/contracts/meri.schema.json"),
+    ("packages/contracts/qualification-sdk/validate.mjs", "build-dependencies/contracts/qualification-sdk/validate.mjs"),
+    ("packages/contracts/qualification-sdk/wire.mjs", "build-dependencies/contracts/qualification-sdk/wire.mjs"),
+    ("packages/contracts/qualification-sdk/fixture.schema.json", "build-dependencies/contracts/qualification-sdk/fixture.schema.json"),
+    ("packages/contracts/qualification-sdk/native-evidence.mjs", "build-dependencies/contracts/qualification-sdk/native-evidence.mjs"),
+    ("packages/contracts/qualification-sdk/native-evidence.schema.json", "build-dependencies/contracts/qualification-sdk/native-evidence.schema.json"),
+    ("packages/contracts/test/sdk-fixture-wire.test.mjs", "build-dependencies/contracts/test/sdk-fixture-wire.test.mjs"),
 )
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_TOTAL_BYTES = 8 * 1024 * 1024

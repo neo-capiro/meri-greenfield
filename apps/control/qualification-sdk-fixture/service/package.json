@@ -1,0 +1,10 @@
+{
+  "name": "@meri/qualification-sdk-fixture-service",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1149.0"
+  }
+}

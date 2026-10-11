@@ -1,0 +1,618 @@
+{
+  "status": "SOURCE_CHECKS_PASS_RUNTIME_HOLD",
+  "sourceCommit": "b797da32a07ac77b0495d25a400626860506dfa8",
+  "sourceTree": "9b5f7505769bff393b96d9b0b380e30a8648e764",
+  "baseCommit": "a5dc95c5940e7403bc1d6a4dcf1d61ed06b2f91f",
+  "sourceRecords": [
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/README.md",
+      "bytes": 8308,
+      "sha256": "ab7a94243f4ff807b211fdf70f7346ad7023b6f0bdf761eebd4ceca818253b8b"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/checkpoint-store.mjs",
+      "bytes": 8744,
+      "sha256": "a6cf5cf9f9086afea593a27e3a81c7d0fbc4679153a5e6a7631ee8582c453890"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/native-evidence-publisher.mjs",
+      "bytes": 5749,
+      "sha256": "d60b34265a8c34379aceb90a0fe6bf5f634508d037382f34543fb201bbf13e64"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/native-evidence.mjs",
+      "bytes": 6768,
+      "sha256": "0db39823876f1d9e4fe10774212707a22ea9b6f18a957d7fb019d632ff1fcb1d"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/s3-objects.mjs",
+      "bytes": 7885,
+      "sha256": "c853ccd4689d81db9c79dbca78ef294fd8fe7c33a8c740f07b9f1566243502f9"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+      "bytes": 13020,
+      "sha256": "c4e20fb150bdefb6ccd36e7d5b658aeffa80c80c056eb2b6deeeeead99452e95"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+      "bytes": 10139,
+      "sha256": "e1b8f9eddfd3aad8f0d64f76126dff9c82cc9f841a2315d4ee71885ba7450c3b"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs",
+      "bytes": 10185,
+      "sha256": "f9211259d2731259733a3ac115f828ec324cd2ec5ba98436a36412ce006c40ec"
+    },
+    {
+      "path": "apps/worker/qualification/.dockerignore",
+      "bytes": 1400,
+      "sha256": "012afc71207ee1bd0656b2218e980404b0b25602e27a93952d1617cef574ce5a"
+    },
+    {
+      "path": "apps/worker/qualification/README.md",
+      "bytes": 13158,
+      "sha256": "c606fd180c1d57461dba0e94310cd4410ac3a051f61f76d92ae9b38a3e2a6a0e"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "bytes": 11385,
+      "sha256": "ef0bc5d3daa2626ac64c00a4bf76f46d324007396b32408b97a76b7745d401ac"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "bytes": 15605,
+      "sha256": "f997de2c3de6fd357bcbc3500f04ca983734c32e53c5eb8ebcf9b85dadd5be1d"
+    },
+    {
+      "path": "apps/worker/qualification/component-pins.json",
+      "bytes": 34632,
+      "sha256": "75d519f5675dcc77423e9bc09eaa3cd07cc3a91be75bef75e2de552b312d1810"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "bytes": 11069,
+      "sha256": "6c4ff8b525c414f93f0d0d29653b1e8a68db5fc520d4f414cf88d0b3e08b23c4"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.test.mjs",
+      "bytes": 10823,
+      "sha256": "e4888c1871f87bbd5a7ab9bf578a95a3c4ba357838088052cfefc7252e91143f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "bytes": 7072,
+      "sha256": "fea49e07f71dccbea3d6c21cab8d1e4502b79a2d1ff05085dbd2a0e2089b2b15"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-observations.test.mjs",
+      "bytes": 10049,
+      "sha256": "5a64c4704acb99a98a6406365b7171da356677c4421ced1a459272515f3402a4"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "bytes": 3459,
+      "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-stream-observer.test.mjs",
+      "bytes": 4718,
+      "sha256": "34bfe89c3ba0b9a3231c951eb500edc0f70ef00838fc50527a357054455b338f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "bytes": 52572,
+      "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "bytes": 62953,
+      "sha256": "4eca411e364d3da83b2e1afe5451f94b69a32e023b5733cf5ad4382008b73f84"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "bytes": 11089,
+      "sha256": "3d8bb8026f1158f9506c245c54eb2150e8e077add743d35f7f390e6b70d2111f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "bytes": 15988,
+      "sha256": "4ab441928092c296d6fbbffa6962f1bbad2d40c45f15e6a6f5ae9e8fb737b79b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/static.test.mjs",
+      "bytes": 66109,
+      "sha256": "b6500cfed125331c2641fb533bc3a06aa31e9e8de718753929a2b592b26cd45d"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-G1-NATIVE-EVIDENCE-COMPLETION-20261011.md",
+      "bytes": 4840,
+      "sha256": "0a4e6b787a66bfacfb2da1ce6629c8e9fe76959482840ee47321cba20853aa9d"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1695,
+      "sha256": "8ac6937d3bcc37d841fd4d750cc6aff9b8c29ae24d5da782f5dcd3667498468b"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "bytes": 3849,
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "bytes": 11751,
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "bytes": 13731,
+      "sha256": "3d4c05f810ee9b88b4f183179ed4dd22a44e4f3d4f8f2532e8e7cf6670f01705"
+    },
+    {
+      "path": "packages/contracts/test/native-evidence-fixture.mjs",
+      "bytes": 3746,
+      "sha256": "f8560005230f043284c4a879a4ab72a8bd115c202d9f407614226e57f5a8e35c"
+    },
+    {
+      "path": "packages/contracts/test/sdk-native-evidence.test.mjs",
+      "bytes": 6919,
+      "sha256": "46aa59d850f26786dd5c8a24eea4c8a3fd573c0b2ce082b85ea45a6e3387a64e"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11565,
+      "sha256": "cf3dc59df3894c4f0a0c1530335dec6ab4c167a6dd5250103c072333c83c7478"
+    },
+    {
+      "path": "scripts/qualification/worker_context_test.py",
+      "bytes": 10831,
+      "sha256": "9b30486a5931a0dd9f18dc7d8805cc7d79e131f5dc28aedce488c5c7e5265fde"
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins.py",
+      "bytes": 4121,
+      "sha256": "ca3f988f994cc127b788999a4632b0d69fadb76b16b3117a23fe1d16a4c8b7c4"
+    },
+    {
+      "path": "scripts/qualification/worker_source_pins_test.py",
+      "bytes": 3322,
+      "sha256": "920f1740f6fe4adb3a6b9300337cb690f78d30baef6800fe1de37550c859e1db"
+    }
+  ],
+  "checks": [
+    {
+      "name": "root-contracts",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 175,
+        "pass": 175,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 16256,
+          "sha256": "1874c1504081ee0064e09fa76d5f27531ed04cf57efc33a1c05cbe538d50ed24"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      ]
+    },
+    {
+      "name": "sdk-evidence",
+      "argv": [
+        "npm",
+        "run",
+        "check:sdk-evidence"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 295,
+        "pass": 295,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 26271,
+          "sha256": "761e27b232e22626d4fcc08dd853f5e15e08ec3cbfa7624dd28551f7aca2b3e5"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      ]
+    },
+    {
+      "name": "public-distribution",
+      "argv": [
+        "npm",
+        "run",
+        "check:contracts:distribution"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 2044,
+          "sha256": "3bce97aa70f364a06dcee80d89633391790f49ccfb1e89af561f632c9ad47976"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 495,
+          "sha256": "1d2e4b8fa2e909d95849309780183545b5157cda35be2b38da2441d8f7032d03"
+        }
+      ]
+    },
+    {
+      "name": "worker-package",
+      "argv": [
+        "npm",
+        "test",
+        "--prefix",
+        "apps/worker/qualification"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 156,
+        "pass": 156,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 15096,
+          "sha256": "c9eabfb9755af6b715c7ed10d11793d764ff3bb5f257632a2d52cd45b49d6920"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      ]
+    },
+    {
+      "name": "control-service",
+      "argv": [
+        "node",
+        "--test",
+        "apps/control/qualification-sdk-fixture/service/test/control.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence-publisher.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/native-evidence.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+        "apps/control/qualification-sdk-fixture/service/test/s3-checkpoint.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 38,
+        "pass": 36,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 2
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 3941,
+          "sha256": "aa25883e2859520ad467b8efd55e4e4f7a98ac34e7a88b6ddd20d25cbd6da793"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "mtls-ingress",
+      "argv": [
+        "node",
+        "--test",
+        "apps/control/qualification-sdk-fixture/ingress/test/ingress.test.mjs",
+        "apps/control/qualification-sdk-fixture/ingress/test/worker-channel-loopback.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 29,
+        "pass": 29,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 2700,
+          "sha256": "3239cc8b2d293e3de5a694c1e7919519a5a43e3190e89346feee2b57073710f1"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "source-context",
+      "argv": [
+        "python",
+        "-m",
+        "unittest",
+        "scripts.qualification.worker_source_pins_test",
+        "scripts.qualification.worker_context_test"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 21
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 120,
+          "sha256": "d8c0ccd61cede434babedb9c72b5c748c41831265c4429e8d0f38262d048dbb6"
+        }
+      ]
+    },
+    {
+      "name": "source-pins",
+      "argv": [
+        "python",
+        "scripts/qualification/worker_source_pins.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {},
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 69,
+          "sha256": "5ce4a94783d137436a403f1f482df95614385c91fd74136973f4d23a26b6025a"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "discovery-source",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+        "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {
+        "tests": 23,
+        "pass": 23,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 2393,
+          "sha256": "f653639e21e55ba2043eeb2910a2f7b53a86d312bf1994e674f5ac85ce40b0b2"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "driver-help",
+      "argv": [
+        "node",
+        "apps/worker/qualification/probes/sdk-interruption.mjs",
+        "--help"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {},
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 113,
+          "sha256": "33bda6b5766c63bbbfc449dc6e40b4c4fdadc1cd6557c007ab05426879adc5e8"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "driver-missing",
+      "argv": [
+        "node",
+        "apps/worker/qualification/probes/sdk-interruption.mjs"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {},
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 100,
+          "sha256": "28c4c95cb8c70bc04b85344c1d351e63336aff0978178cb77cf7b9af0e478ac3"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "source-pins-help",
+      "argv": [
+        "python",
+        "scripts/qualification/worker_source_pins.py",
+        "--help"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {},
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 366,
+          "sha256": "4a368de41442ed11a7d25f42531c939b053ba91dcde87224d3cfe5090535da6c"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "source-pins-missing",
+      "argv": [
+        "python",
+        "scripts/qualification/worker_source_pins.py"
+      ],
+      "exitCode": 2,
+      "expectedExitCode": 2,
+      "status": "PASS",
+      "exitEvidence": "observed subprocess return code in final replay tool output",
+      "counts": {},
+      "environment": {
+        "TMPDIR": "exclusive per-command directory; sdk-evidence runs alone first"
+      },
+      "captures": [
+        {
+          "stream": "stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "stream": "stderr",
+          "bytes": 133,
+          "sha256": "f202a1bd67ccf9abf5f4799e46d2a451d49c7fd3ff0b283e377955daa495484f"
+        }
+      ]
+    }
+  ],
+  "contextManifestSha256": "604d3b6768226fc45cd3345fae790f3088212e20d57093876cc24f9be696ff0d",
+  "contextMembers": 49,
+  "contextBytes": 946994,
+  "limitations": [
+    "PostgreSQL integration two tests explicitly skipped; state registry suite not run",
+    "S3/client/SDK/process/namespace positives are synthetic source fixtures",
+    "Real loopback mTLS and actual procfs refusal only",
+    "No native SDK CLI, paid provider, image build, cloud operation or deployment",
+    "G1 remains OPEN; completeRecoveryCheckpoint:false; sessionStoreQualified:false"
+  ],
+  "retainedPriorFailure": {
+    "sourceCommit": "2f005c92ee1107daa4669243932990b0a2b63fbc",
+    "suite": "sdk-evidence",
+    "result": "294/295; SOURCE_CHANGED under concurrent tempfile activity",
+    "repair": "serial test-file scheduling and exclusive per-command TMPDIR; safety guard/assertions unchanged"
+  },
+  "reportAssemblyRepair": "All 13 commands, source-identity assertions and context verification completed before a transient report formatter accessed an incorrect manifest key. Report assembled from retained capture bytes and observed return codes; tests not rerun for this metadata correction."
+}

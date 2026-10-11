@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "2f005c92ee1107daa4669243932990b0a2b63fbc",
+  "status": "294/295; retained SOURCE_CHANGED failure",
+  "encoding": "base64",
+  "file": "prior-parallel-sdk-evidence.stdout.b64",
+  "decodedFilename": "prior-parallel-sdk-evidence.stdout",
+  "decodedBytes": 28388,
+  "decodedSha256": "b904ac3366854df75f6faea34db5872171099e8a3f87df32aec2c0492eea0c6f",
+  "reason": "Lossless encoding preserves captured trailing whitespace while allowing repository diff checks."
+}
