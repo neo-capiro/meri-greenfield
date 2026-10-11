@@ -1,13 +1,15 @@
 """Owner-only AWS qualification capture; never used by conversation workers."""
 import argparse
+import base64
 import datetime
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import stat
 import subprocess
-from teststate_request import validate_readonly_request
+from teststate_request import strict_object, validate_readonly_request
 
 AWS = r"C:\Program Files\Amazon\AWSCLIV2\aws.exe"
 REGION = "us-east-1"
@@ -54,6 +56,73 @@ ALLOWED = {
     "s3api": {"put-object", "head-object", "get-object"},
 }
 
+UPLOAD_BUCKET = "meri-greenfield-qual-build-967807252336-us-east-1"
+UPLOAD_KMS = "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042"
+
+
+def validate_timeout(arguments, timeout):
+    """Long deadlines belong only to a fully bound conditional qualification ZIP."""
+    if type(timeout) is not int or not 1 <= timeout <= 180:
+        raise ValueError("capture timeout must be an integer within 1..180 seconds")
+    if timeout <= 60:
+        return
+    required = {"--bucket", "--key", "--body", "--if-none-match", "--server-side-encryption",
+                "--ssekms-key-id", "--checksum-algorithm", "--checksum-sha256", "--metadata"}
+    if arguments[:2] != ["s3api", "put-object"] or len(arguments) != 2 + 2 * len(required):
+        raise ValueError("long timeout requires an exact qualification upload")
+    pairs = list(zip(arguments[2::2], arguments[3::2]))
+    if any(type(key) is not str or type(value) is not str for key, value in pairs):
+        raise ValueError("upload options and values must be strings")
+    options = dict(pairs)
+    if len(options) != len(pairs) or set(options) != required:
+        raise ValueError("upload options must be exact and unique")
+    key = re.fullmatch(r"inputs/proxy-linux-import-([0-9a-f]{40})/"
+                       r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.zip",
+                       options["--key"])
+    if (key is None or options["--bucket"] != UPLOAD_BUCKET
+            or options["--if-none-match"] != "*"
+            or options["--server-side-encryption"] != "aws:kms"
+            or options["--ssekms-key-id"] != UPLOAD_KMS
+            or options["--checksum-algorithm"] != "SHA256"):
+        raise ValueError("upload target, conditional create, KMS or checksum differs")
+    metadata = json.loads(options["--metadata"], object_pairs_hook=strict_object)
+    if (type(metadata) is not dict or set(metadata) != {"sourcecommit", "archivesha256"}
+            or metadata["sourcecommit"] != key[1]
+            or type(metadata["archivesha256"]) is not str
+            or not re.fullmatch(r"[0-9a-f]{64}", metadata["archivesha256"])):
+        raise ValueError("upload metadata must bind source commit and archive hash")
+    body = Path(options["--body"])
+    if not body.is_absolute():
+        raise ValueError("upload body must be an absolute regular file")
+    for ancestor in [body.parent, *body.parent.parents]:
+        info = ancestor.lstat()
+        if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+            raise ValueError("upload ancestor is a link or reparse point")
+    before = body.lstat()
+    if (not stat.S_ISREG(before.st_mode) or before.st_nlink != 1
+            or getattr(before, "st_file_attributes", 0) & 0x400
+            or not 0 < before.st_size <= 512 * 1024 * 1024):
+        raise ValueError("upload body must be a bounded single-link regular file")
+    identity = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
+    digest, count = hashlib.sha256(), 0
+    with body.open("rb") as stream:
+        opened = os.fstat(stream.fileno())
+        if identity(before) != identity(opened):
+            raise ValueError("upload body identity changed before read")
+        while block := stream.read(1024 * 1024):
+            count += len(block)
+            if count > 512 * 1024 * 1024:
+                raise ValueError("upload body exceeds bound")
+            digest.update(block)
+        closed = os.fstat(stream.fileno())
+    after = body.lstat()
+    stable = lambda value: (value.st_dev, value.st_ino, value.st_mode, value.st_nlink,
+                            value.st_size, value.st_mtime_ns, value.st_ctime_ns)
+    if (stable(before) != stable(after) or stable(opened) != stable(closed)
+            or count != before.st_size or digest.hexdigest() != metadata["archivesha256"]
+            or options["--checksum-sha256"] != base64.b64encode(digest.digest()).decode("ascii")):
+        raise ValueError("upload body drift or checksum mismatch")
+
 
 def capture(out, label, arguments, timeout=45):
     """Run one admitted operation once and retain binary stdout/stderr and envelope."""
@@ -65,8 +134,7 @@ def capture(out, label, arguments, timeout=45):
         raise ValueError("unrecognized, abbreviated or global CLI option")
     request_validation = (validate_readonly_request(arguments)
                           if arguments[:2] == ["stepfunctions", "test-state"] else None)
-    if not 1 <= timeout <= 60:
-        raise ValueError("capture timeout must be within 1..60 seconds")
+    validate_timeout(arguments, timeout)
     destination = Path(out).resolve() / label
     destination.mkdir(parents=True, exist_ok=False)
     argv = [AWS, *arguments, "--profile", PROFILE, "--region", REGION, "--output", "json", "--no-cli-pager",
