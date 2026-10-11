@@ -30,6 +30,20 @@ export const clientSchema = z.object({
   applicantTypes: z.array(z.string()).optional(),
 });
 export type Client = z.infer<typeof clientSchema>;
+export function clientSectors(client: Client): string[] {
+  const stored = client.intakeData?.sectors;
+  const sectors = Array.isArray(stored)
+    ? stored.filter((value): value is string => typeof value === "string")
+    : [];
+  return [
+    ...new Set(
+      [client.sectorTag, ...sectors]
+        .filter((value): value is string => typeof value === "string")
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  ];
+}
 export function clientLocation(client: Client): string | null {
   const city = client.intakeData?.city;
   const state = client.intakeData?.state;

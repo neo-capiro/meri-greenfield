@@ -1,6 +1,11 @@
 "use client";
 import { LayoutGrid, List } from "lucide-react";
-import { memberName, type Client, type Member } from "./contracts";
+import {
+  clientSectors,
+  memberName,
+  type Client,
+  type Member,
+} from "./contracts";
 import { unassignedOwner, type PortfolioIndexState } from "./filter";
 import styles from "./portfolio.module.css";
 
@@ -23,9 +28,7 @@ export function IndexFilters({
   ownerPending: boolean;
 }) {
   const statuses = [...new Set(clients.map((c) => c.profileStatus))].sort();
-  const sectors = [
-    ...new Set(clients.flatMap((c) => (c.sectorTag ? [c.sectorTag] : []))),
-  ].sort();
+  const sectors = [...new Set(clients.flatMap(clientSectors))].sort();
   const choices = [
     ...new Map(
       Object.values(owners ?? {}).flatMap((a) =>

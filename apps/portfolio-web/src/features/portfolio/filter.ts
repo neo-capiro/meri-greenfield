@@ -1,5 +1,6 @@
 import {
   clientLocation,
+  clientSectors,
   memberName,
   type Client,
   type Member,
@@ -82,11 +83,12 @@ export function filterClients(
   const term = filter.search.trim().toLocaleLowerCase();
   return clients.filter((client) => {
     const location = clientLocation(client);
+    const sectors = clientSectors(client);
     const searchText = [
       client.name,
       client.description,
       client.primaryContactName,
-      client.sectorTag,
+      sectors.join(" "),
       location?.replace(", ", " "),
       location,
       owners[client.id]?.accountOwner
@@ -99,7 +101,7 @@ export function filterClients(
     return (
       (!term || searchText.includes(term)) &&
       (!filter.status || client.profileStatus === filter.status) &&
-      (!filter.sector || client.sectorTag === filter.sector) &&
+      (!filter.sector || sectors.includes(filter.sector)) &&
       (!filter.owner ||
         (filter.owner === unassignedOwner
           ? owners[client.id]?.accountOwnerUserId === null

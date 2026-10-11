@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clientLocation,
   clientSchema,
+  clientSectors,
 } from "../src/features/portfolio/contracts";
 import {
   clearPortfolioFilters,
@@ -18,7 +19,11 @@ const clients = [
     profileStatus: "ACTIVE",
     sectorTag: "Energy",
     primaryContactName: "Ada Test",
-    intakeData: { city: "Seattle", state: "WA" },
+    intakeData: {
+      city: "Seattle",
+      state: "WA",
+      sectors: ["Energy", "Clean tech"],
+    },
   }),
   clientSchema.parse({
     id: "22222222-2222-4222-8222-222222222222",
@@ -26,7 +31,11 @@ const clients = [
     status: "active",
     profileStatus: "ONBOARDING",
     sectorTag: "Aerospace",
-    intakeData: { city: "New York", state: "NY" },
+    intakeData: {
+      city: "New York",
+      state: "NY",
+      sectors: ["Aerospace", "Manufacturing"],
+    },
   }),
 ];
 const owners = {
@@ -46,6 +55,7 @@ describe("Portfolio index contract-backed controls", () => {
   it("combines actual profile fields and primary owner, without matching missing-field placeholders", () => {
     expect(clientLocation(clients[0]!)).toBe("Seattle, WA");
     expect(clientLocation(clients[1]!)).toBe("New York, NY");
+    expect(clientSectors(clients[1]!)).toEqual(["Aerospace", "Manufacturing"]);
     expect(
       filterClients(
         clients,
@@ -71,6 +81,12 @@ describe("Portfolio index contract-backed controls", () => {
     expect(
       filterClients(clients, { ...empty, search: "new york ny" }, owners),
     ).toEqual([clients[1]]);
+    expect(
+      filterClients(clients, { ...empty, search: "manufacturing" }, owners),
+    ).toEqual([clients[1]]);
+    expect(
+      filterClients(clients, { ...empty, sector: "Manufacturing" }, owners),
+    ).toEqual([clients[1]]);
   });
   it("does not render or search a location absent from the client record", () => {
     const noLocation = clientSchema.parse({
@@ -78,9 +94,10 @@ describe("Portfolio index contract-backed controls", () => {
       name: "No Location",
       status: "active",
       profileStatus: "ACTIVE",
-      intakeData: { city: {}, state: null },
+      intakeData: { city: {}, state: null, sectors: [{ value: "fake" }, null] },
     });
     expect(clientLocation(noLocation)).toBeNull();
+    expect(clientSectors(noLocation)).toEqual([]);
     expect(
       filterClients([noLocation], { ...empty, search: "object" }, {}),
     ).toEqual([]);
