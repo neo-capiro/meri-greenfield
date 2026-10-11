@@ -1,10 +1,10 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
-import { acknowledged } from "@/shared/api/http";
 import { objectivesKey } from "./queries";
 import {
   saveObjective,
+  deleteObjective,
   type SaveObjective,
   type ObjectiveAction,
 } from "./writer";
@@ -34,12 +34,7 @@ export function useDeleteObjective(clientId: string, onRemoved: () => void) {
   const cache = useQueryClient();
   return useMutation({
     mutationFn: (objective: Objective) =>
-      api.request(
-        "core",
-        `clients/${clientId}/objectives?objectiveId=${encodeURIComponent(objective.id)}`,
-        acknowledged,
-        { method: "DELETE", body: { expectedVersion: objective.version } },
-      ),
+      deleteObjective(api, clientId, objective),
     onSuccess: async () => {
       await cache.invalidateQueries({ queryKey: objectivesKey(clientId) });
       onRemoved();

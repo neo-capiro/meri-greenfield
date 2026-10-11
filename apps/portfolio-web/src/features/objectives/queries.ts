@@ -1,8 +1,7 @@
 "use client";
-import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
-import { objectiveSchema } from "./contracts";
+import { scopedObjectivesSchema } from "./contracts";
 export const objectivesKey = (clientId: string) =>
   ["objectives", clientId] as const;
 export function useObjectives(clientId: string) {
@@ -13,7 +12,7 @@ export function useObjectives(clientId: string) {
       api.request(
         "core",
         `clients/${clientId}/objectives`,
-        z.array(objectiveSchema),
+        scopedObjectivesSchema(clientId),
         { signal },
       ),
   });

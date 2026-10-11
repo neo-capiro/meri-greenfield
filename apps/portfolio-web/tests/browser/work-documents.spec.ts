@@ -44,7 +44,7 @@ test("client Work opens typed Workspace drafts through the canonical editor rout
   for (const [id, title, status] of [
     [draftId, "Synthetic briefing draft", "Draft"],
     [completeId, "Synthetic completed letter", "Completed"],
-  ]) {
+  ] as const) {
     const row = page.getByRole("row").filter({ hasText: title });
     await expect(row.getByText(status, { exact: true })).toBeVisible();
     await expect(

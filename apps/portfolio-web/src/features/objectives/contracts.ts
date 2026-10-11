@@ -47,6 +47,15 @@ export const objectiveSchema = objectiveFieldsSchema.extend({
   }),
 });
 export type Objective = z.infer<typeof objectiveSchema>;
+export const scopedObjectivesSchema = (clientId: string) =>
+  z
+    .array(objectiveSchema)
+    .refine(
+      (records) =>
+        records.every((record) => record.clientId === clientId) &&
+        new Set(records.map((record) => record.id)).size === records.length,
+      "Objectives do not identify the selected client uniquely",
+    );
 export const statusLabels = {
   draft: "Draft",
   in_review: "In review",

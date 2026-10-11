@@ -14,22 +14,24 @@ test("four-field readiness persists once, transitions, and refreshes the list", 
   const unexpected = await installFixtures(page);
   let writes = 0;
   let ready = false;
+  let savedObjective = objective;
   await page.route(`**/clients/${clientId}/objectives**`, async (route) => {
     if (route.request().method() === "GET")
       return json(
         route,
-        ready ? [{ ...objective, status: "ready", version: 2 }] : [],
+        ready ? [{ ...savedObjective, status: "ready", version: 2 }] : [],
       );
     const body = route.request().postDataJSON();
     writes++;
     if (new URL(route.request().url()).pathname.endsWith("transition")) {
       expect(body).toEqual({ action: "confirm_ready", expectedVersion: 1 });
       ready = true;
-      return json(route, { ...objective, status: "ready", version: 2 });
+      return json(route, { ...savedObjective, status: "ready", version: 2 });
     }
     expect(body.outcome).toBe("Test outcome");
     expect(body.requestId).toMatch(/^[0-9a-f-]{36}$/);
-    return json(route, { ...objective, ...body });
+    savedObjective = { ...objective, ...body };
+    return json(route, savedObjective);
   });
   await page.goto(`/portfolio/${clientId}/objectives?new=1`);
   const editor = page.getByRole("dialog", { name: "New objective" });
