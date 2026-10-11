@@ -32,12 +32,10 @@ async function assertDesktopDialog(
   expect(header.height).toBeLessThanOrEqual(57);
   expect(close.width).toBe(20);
   expect(close.height).toBe(20);
-  await test
-    .info()
-    .attach(`${kind}-desktop-bounds`, {
-      body: JSON.stringify({ kind, bounds, header, close }),
-      contentType: "application/json",
-    });
+  await test.info().attach(`${kind}-desktop-bounds`, {
+    body: JSON.stringify({ kind, bounds, header, close }),
+    contentType: "application/json",
+  });
 }
 async function openMatter(page: Page, id = sourceId) {
   await page.goto(`${route}?matter=${id}`);
