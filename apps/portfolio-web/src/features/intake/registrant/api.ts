@@ -66,6 +66,7 @@ export async function importClients(
   api: ApiClient,
   registrantId: number,
   ids: number[],
+  assertBeforeDispatch?: () => void,
 ) {
   const selected = [...ids];
   try {
@@ -76,6 +77,7 @@ export async function importClients(
         "The linked firm changed. Refresh and review before importing.",
       );
     validateSelection(selected, await fetchCandidates(api, registrantId));
+    assertBeforeDispatch?.();
   } catch (error) {
     // No write has been dispatched during this preflight, including 5xx reads.
     throw new ImportAttemptError(

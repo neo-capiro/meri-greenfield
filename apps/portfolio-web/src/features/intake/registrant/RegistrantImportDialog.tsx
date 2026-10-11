@@ -38,7 +38,8 @@ function RegistrantSession({
     identity.isSuccess &&
     !identity.isFetching &&
     !identity.error &&
-    Boolean(identity.data.tenant?.id);
+    Boolean(identity.data.tenant?.id.trim()) &&
+    Boolean(identity.data.user.id.trim());
   const readable = ready && canReadRegistrant(identity.data?.role);
   const permitted = ready && canAdminister(identity.data?.role);
   const anchor = useRegistrant(readable);
@@ -139,6 +140,15 @@ function RegistrantSession({
           void anchor.refetch();
         }}
       />
+      {identity.isSuccess &&
+        !identity.isFetching &&
+        !identity.error &&
+        !ready && (
+          <p role="alert" className={styles.notice}>
+            Your firm session could not be verified. Refresh your session before
+            importing.
+          </p>
+        )}
       {ready && !permitted && (
         <p role="alert" className={styles.notice}>
           Only firm administrators can link a registrant or import clients.

@@ -23,6 +23,7 @@ async function setup(
   options: {
     linked?: boolean;
     role?: string;
+    userId?: string;
     candidates?: ReturnType<typeof candidate>[];
   } = {},
 ) {
@@ -49,7 +50,10 @@ async function setup(
         json: state.identityFailure
           ? { message: "Session verification unavailable" }
           : {
-              user: { id: "synthetic-user", email: "fixture@example.invalid" },
+              user: {
+                id: options.userId ?? "synthetic-user",
+                email: "fixture@example.invalid",
+              },
               tenant: { id: "synthetic-tenant", name: "Synthetic Firm" },
               role: options.role ?? "user_admin",
             },
@@ -219,6 +223,116 @@ test("stale administrator data never permits writes after identity error", async
     page.getByRole("button", { name: "Import 1 client", exact: true }),
   ).toBeDisabled();
   expect(state.posts).toBe(0);
+});
+
+for (const changed of ["user", "tenant"] as const) {
+  test(`a changed ${changed} during preflight stops the old attempt before POST`, async ({
+    page,
+  }) => {
+    const state = await setup(page);
+    await page
+      .getByRole("checkbox", { name: "Select Saronic Technologies" })
+      .check();
+    let release: (() => void) | undefined;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let preflight = false;
+    await page.route("**/firm/import-candidates", async (route) => {
+      preflight = true;
+      await gate;
+      await route.fulfill({
+        json: {
+          registrantId: 12,
+          registrantName: "Maven Advocacy",
+          candidates: rows,
+        },
+      });
+    });
+    await page
+      .getByRole("button", { name: "Import 1 client", exact: true })
+      .click();
+    await expect.poll(() => preflight).toBe(true);
+    await page.route("**/core/me", (route) =>
+      route.fulfill({
+        json: {
+          user: {
+            id: changed === "user" ? "another-user" : "synthetic-user",
+            email: "fixture@example.invalid",
+          },
+          tenant: {
+            id: changed === "tenant" ? "another-tenant" : "synthetic-tenant",
+            name: "Synthetic Firm",
+          },
+          role: "user_admin",
+        },
+      }),
+    );
+    await page.evaluate("window.__registrantRecheck()");
+    release?.();
+    await expect(
+      page.getByText(
+        "Your session changed. Refresh and review before importing.",
+      ),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Import completion is unconfirmed" }),
+    ).toHaveCount(0);
+    await expect(page.getByTestId("receipts")).toHaveText("0");
+    expect(state.posts).toBe(0);
+  });
+}
+
+test("missing user ID never enables an administrator write", async ({
+  page,
+}) => {
+  const state = await setup(page, { userId: "" });
+  await expect(
+    page.getByText(
+      "Your firm session could not be verified. Refresh your session before importing.",
+    ),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Import \d/ })).toHaveCount(0);
+  await expect(page.getByRole("checkbox")).toHaveCount(0);
+  expect(state.posts).toBe(0);
+  expect(state.puts).toBe(0);
+});
+
+test("an unmounted preflight cannot POST from its stale identity cache", async ({
+  page,
+}) => {
+  const state = await setup(page);
+  await page
+    .getByRole("checkbox", { name: "Select Saronic Technologies" })
+    .check();
+  let release: (() => void) | undefined;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let preflight = false;
+  await page.route("**/firm/import-candidates", async (route) => {
+    preflight = true;
+    await gate;
+    await route.fulfill({
+      json: {
+        registrantId: 12,
+        registrantName: "Maven Advocacy",
+        candidates: rows,
+      },
+    });
+  });
+  await page
+    .getByRole("button", { name: "Import 1 client", exact: true })
+    .click();
+  await expect.poll(() => preflight).toBe(true);
+  await page.evaluate("window.__registrantUnmount()");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  release?.();
+  await expect
+    .poll(() => page.evaluate("window.__registrantPendingWrites()"))
+    .toBe(0);
+  expect(state.posts).toBe(0);
+  await expect(page.getByTestId("receipts")).toHaveText("0");
 });
 
 test("already imported rows are disabled and aliases select one canonical ID", async ({

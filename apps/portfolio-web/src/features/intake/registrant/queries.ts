@@ -1,4 +1,5 @@
 "use client";
+import { useLayoutEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
@@ -23,7 +24,8 @@ function assertWriteAllowed(cache: ReturnType<typeof useQueryClient>) {
     state?.status !== "success" ||
     state.fetchStatus !== "idle" ||
     state.error ||
-    !state.data?.tenant?.id ||
+    !state.data?.tenant?.id.trim() ||
+    !state.data.user.id.trim() ||
     !canAdminister(state.data.role)
   )
     throw new ApiError(
@@ -32,6 +34,7 @@ function assertWriteAllowed(cache: ReturnType<typeof useQueryClient>) {
     );
   if (cache.isMutating({ mutationKey: [...registrantKey, "write"] }) > 1)
     throw new ApiError(409, "Wait for the current firm change to finish.");
+  return { tenantId: state.data.tenant.id, userId: state.data.user.id };
 }
 export function useRegistrant(enabled: boolean) {
   const api = useApi();
@@ -81,6 +84,17 @@ export function useLinkRegistrant() {
 export function useImportClients() {
   const api = useApi();
   const cache = useQueryClient();
+  const lifetime = useRef({ active: false });
+  useLayoutEffect(() => {
+    // An unmounted SessionBoundary can leave this old cache unchanged. Never
+    // resume its preflight under a new authenticated browser session. Layout
+    // cleanup revokes this scope during unmount, before DOM removal/repaint.
+    const scope = { active: true };
+    lifetime.current = scope;
+    return () => {
+      scope.active = false;
+    };
+  }, []);
   return useMutation({
     mutationKey: [...registrantKey, "write"],
     retry: false,
@@ -91,8 +105,23 @@ export function useImportClients() {
       registrantId: number;
       ids: number[];
     }) => {
-      assertWriteAllowed(cache);
-      return importClients(api, registrantId, ids);
+      const scope = lifetime.current;
+      if (!scope.active)
+        throw new ApiError(409, "This import session is no longer active.");
+      const actor = assertWriteAllowed(cache);
+      return importClients(api, registrantId, ids, () => {
+        if (!scope.active)
+          throw new ApiError(409, "This import session is no longer active.");
+        const current = assertWriteAllowed(cache);
+        if (
+          current.tenantId !== actor.tenantId ||
+          current.userId !== actor.userId
+        )
+          throw new ApiError(
+            409,
+            "Your session changed. Refresh and review before importing.",
+          );
+      });
     },
     // Even an ambiguous failure may have committed individual rows.
     onSettled: async () => {

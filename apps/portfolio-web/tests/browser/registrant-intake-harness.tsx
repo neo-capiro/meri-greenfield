@@ -5,6 +5,8 @@ import { RegistrantImportDialog } from "@/features/intake/registrant/public";
 declare global {
   interface Window {
     __registrantRecheck?: () => Promise<void>;
+    __registrantUnmount?: () => void;
+    __registrantPendingWrites?: () => number;
   }
 }
 /** Test-only callback/authority probe; never imported by production routes. */
@@ -15,8 +17,12 @@ export function RegistrantIntakeHarness() {
   useEffect(() => {
     window.__registrantRecheck = () =>
       cache.invalidateQueries({ queryKey: ["identity"] });
+    window.__registrantUnmount = () => setOpen(false);
+    window.__registrantPendingWrites = () => cache.isMutating();
     return () => {
       delete window.__registrantRecheck;
+      delete window.__registrantUnmount;
+      delete window.__registrantPendingWrites;
     };
   }, [cache]);
   return (

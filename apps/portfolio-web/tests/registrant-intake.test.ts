@@ -133,6 +133,35 @@ describe("retained firm LDA intake contract", () => {
     ).rejects.toMatchObject({ uncertain: false, message: "Read disconnected" });
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
+  it("runs the actor gate after read preflight and refuses a changed actor before POST", async () => {
+    const original = { tenantId: "tenant-a", userId: "user-a" };
+    let current = original;
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(Response.json(anchor))
+      .mockImplementationOnce(async () => {
+        current = { tenantId: "tenant-b", userId: "user-a" };
+        return Response.json(feed);
+      });
+    const guard = vi.fn(() => {
+      if (
+        current.tenantId !== original.tenantId ||
+        current.userId !== original.userId
+      )
+        throw new ApiError(409, "Session changed before dispatch");
+    });
+    await expect(
+      importClients(createApiClient(fetcher), 12, [8], guard),
+    ).rejects.toMatchObject({
+      uncertain: false,
+      message: "Session changed before dispatch",
+    });
+    expect(guard).toHaveBeenCalledTimes(1);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(fetcher.mock.calls.every((call) => call[1]?.method !== "POST")).toBe(
+      true,
+    );
+  });
   it("sends bounded exact IDs and returns the verified receipt", async () => {
     const fetcher = vi
       .fn()

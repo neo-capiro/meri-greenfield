@@ -40,6 +40,21 @@ The service's reported alias figures remain separate. Compact USD display follow
 
 ## Validation
 
+### Review follow-up outline
+
+The root reviewer identified that an old attempt could resume after identity/tenant changes during async preflight. Capture the verified user+tenant at mutation start and synchronously assert the same current verified actor immediately before POST. Missing user ID, pending/error identity, changed actor or reduced role must reject before dispatch (`uncertain:false`). Keep the pure adapter's guard optional for focused tests, with the production hook always supplying it. Add source and browser race evidence without changing public UI contracts or unrelated flows. Refreshed policy remains local `b32b4803933760dc0a93fffdcd8fba30a89c3aac` / fetched `b2b0ce8c2bf03817b81e671d968b7892985b8d06`.
+
+`SessionBoundary` replaces the cache on scope changes, so an old cache may retain its old successful identity after unmount. The import hook additionally captures a mount lifetime and revokes it synchronously on layout cleanup; the old attempt cannot pass the dispatch guard even when its old cache has not changed. This uses the documented cleanup-before-removal semantics of [React useLayoutEffect](https://react.dev/reference/react/useLayoutEffect); it performs no layout measurement or state update. The guard protects observed frontend session changes and does not replace server authorization or add the missing atomic expected-registrant backend contract.
+
+### Follow-up qualification
+
+- **21/21** focused unit checks, including the post-read actor gate refusing dispatch as `uncertain:false`.
+- **19/19** isolated browser cases, including changed user and changed tenant while candidate GET is held (zero POST), empty user ID (no write controls), and unmounted old hook/stale cache (zero POST after preflight settles).
+- Full application TypeScript, scoped ESLint, architecture248, touched-file formatting and diff checks pass under explicit Node24.19.0.
+- One launcher failure is retained: absolute Windows `--import C:/...` was rejected by Node before tests started (`ERR_UNSUPPORTED_ESM_URL_SCHEME`, exit1). Rerun used the working task-relative resolver path; source and assertions were unchanged.
+
+### Initial qualification at `0cd36817`
+
 - Node **24.19.0** explicitly: bundled `dependencies/node/bin/node.exe`. Existing installed dependencies borrowed read-only; no install/full build/deployment or backend/provider calls.
 - **20/20** focused unit checks: exact Core routes/bodies, search constraints, link/candidate scope receipts, alias grouping, bounded IDs, complete import ID partition/count, partial skips, observed anchor drift, preflight failure classified as not dispatched, dispatched transport/5xx/foreign receipt ambiguity, slot refusal and truthful readback.
 - **15/15** isolated component browser checks, zero retries: search/link/review/partial receipt; validation/empty/error/query retention; read-only standard-user role; stale identity error fail-closed; alias/imported selection; anchor drift; pending duplicate/close refusal; lost receipt readback; slot error/input retention; empty feed; lost firm-link receipt; foreign receipt; 100-ID cap/filter retention; desktop focus/font/layout; mobile dark overflow/actions.
