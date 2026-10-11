@@ -14,6 +14,10 @@ HOST='meri-native-auth-pg'
 USER='meri_native_auth_app'
 CASES=('positive','wrong-ca','wrong-san','plaintext','wrong-password')
 
+def is_postgres_repo_digest(value):
+    """Docker's full and familiar names identify this one pinned official image."""
+    return type(value) is str and value in (PG_IMAGE, PG_IMAGE.removeprefix('docker.io/library/'))
+
 def require(ok,reason):
     if not ok:raise ValueError(reason)
 

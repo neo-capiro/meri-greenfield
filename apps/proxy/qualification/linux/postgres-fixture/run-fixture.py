@@ -9,7 +9,7 @@ import secrets
 import sys
 import time
 
-from config import CASES,HOST,PG_IMAGE,USER,mount,names,parse,read_owner,require,url
+from config import CASES,HOST,PG_IMAGE,USER,is_postgres_repo_digest,mount,names,parse,read_owner,require,url
 from docker_capture import DockerCapture
 
 HERE=Path(__file__).resolve().parent
@@ -71,7 +71,7 @@ def main(argv=None):
             data,_,_=c.call('image-'+label,['image','inspect',image]);im=json.loads(data)
             require(type(im)is list and len(im)==1 and im[0]['Os']=='linux' and im[0]['Architecture']=='amd64','IMAGE_PLATFORM')
             if label=='proxy':require(im[0]['Id']==image and im[0]['Config']['User']=='10001:10001','FRESH_PROXY_IDENTITY')
-            else:require(PG_IMAGE in im[0].get('RepoDigests',[]),'PINNED_POSTGRES_REPODIGEST')
+            else:require(any(is_postgres_repo_digest(ref) for ref in im[0].get('RepoDigests',[])),'PINNED_POSTGRES_REPODIGEST')
             result[label+'ImageId']=im[0]['Id']
         prospective=[n['client']+'-certs',n['server'],n['plain']]+[n['client']+'-'+case for case in CASES]
         for kind,name in [('network',n['network'])]+[('container',name) for name in prospective]:

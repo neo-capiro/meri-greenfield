@@ -29,6 +29,13 @@ def example():
         'workDeadlineMs':1300000,'cleanupDeadlineMs':1330000,'originalC':1900000}
 
 class FixtureTests(unittest.TestCase):
+    def test_postgres_familiar_name_keeps_exact_repository_and_digest(self):
+        self.assertTrue(config.is_postgres_repo_digest(config.PG_IMAGE))
+        self.assertTrue(config.is_postgres_repo_digest(config.PG_IMAGE.removeprefix('docker.io/library/')))
+        for ref in (None, True, config.PG_IMAGE+'x', 'other/postgres@'+config.PG_IMAGE.split('@')[1],
+                    'postgres@sha256:'+'0'*64, 'docker.io/other/postgres@'+config.PG_IMAGE.split('@')[1]):
+            with self.subTest(ref=ref):self.assertFalse(config.is_postgres_repo_digest(ref))
+
     def test_original_clock_and_new_image(self):
         v=example();self.assertEqual(config.parse(json.dumps(v).encode()),v)
         for key,value in [('originalC',1900001),('t0Ms',True),('proxyImage',config.OLD_IMAGE),('cleanupDeadlineMs',1330001),('workDeadlineMs',1300001)]:
