@@ -1,76 +1,72 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 08:47 UTC: **G0 accepted / G1 OPEN;
-eight gates total, G2-G7 unentered.** Several substantial runtime proofs remain;
-G1 is not close enough to promise a completion time. Codex alone owns this work.
+Current continuation, 11 October 2026 09:35 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2-G7 unentered.** Substantial runtime qualification and
+contract/security work remain. G1 is not close enough to promise a completion
+time. Codex alone owns G0/G1; bounded implementation and independent review
+sessions are active. Current Meri/Capiro remains untouched, source connections
+disabled, and no cutover or model inference is accepted.
 
-The timeout, exact transport causes, whole native certificate grammar and native
-peer composition are independently source reviewed and integrated through
-c8978118a53cc6fc4cc3a553cdafdba4126d2443. Root's final composition checks pass
-27 fixture and 52 classifier controls. The pool-cleared-cause repair is also
-independently source accepted at0621529524de1a668154e0022fb84c768e24cb5e;
-root58/58 offline controls pass with zero audit attempts and no Prisma import.
-Source acceptance does not pass runtime.
+The latest isolated Linux TLS build a88d6125-abdd-4ad8-8520-d602a5134275 at
+21bd3c036f2a5316e1aa66da65da6cf3f0e19a4d remains FAILED. All five controls
+executed once: TLS1.3/nonowner positive passed; four final negatives failed.
+Public evidence reports incomplete ENGINE_CONNECTION -> CONNECT_ERROR ->
+HTTPCORE_CONNECT -> OS_ERROR -> OTHER, and unqualified CA/SAN native reasons.
+Root reconciled the exact immutable source/result versions, 309 tar members,
+308 public payloads and 101 process receipts; the distinct failed-DATA review
+and 495 sealed references are accepted within that scope only. Nine owned
+containers and one network were positively removed/absent within the original
+cleanup deadline. The fixture took 46,200ms. Private native output was neither
+exported nor inspected. Earlier failed namespaces remain immutable.
 
-The fresh namespace5 isolated Linux build0056c94a-88c9-4c0c-9daf-2ceef38df2b1
-executed all five TLS cases and remains FAILED. The genuine TLS1.3/nonowner
-positive passed. All four final negatives remain false: the exception chain now
-reaches HTTPCORE_CONNECT but reports CONFLICTING_EVIDENCE; CA and SAN native
-reasons remain unqualified. Plaintext/password native observations are specific,
-without overriding failed composition. Root reconciled305 public payloads and
-100 process receipts, exact immutable source/result versions and positive absence
-of nine owned containers and one network before the original cleanup deadline.
-The331-record readback and distinct actual DATA review are owner accepted
-within failed-DATA scope only; original fixture elapsed41,910ms.
-The prior failed namespaces/reservations remain immutable and cannot be retried.
+Pinned upstream source supports two narrow verification repairs: the native
+TLS Display can omit the wrapped prefix, and AnyIO can put a builtin aggregate
+ExceptionGroup under an OSError cause. This does not establish actual private
+contents. A separate three-path SOURCE repair is in progress, preserving the
+old strict grammar and 66 tests; a newly admitted actual experiment remains
+required after independent source review.
 
-Upstream httpcore's pool clears an exception cause with raise-from-None. A narrow
-source repair is now accepted; actual private runtime arguments
-were not exported, so the diagnosis is a source-supported inference. Native CA
-and SAN formatting still needs structural diagnosis, with no relaxed acceptance.
+The SDK worker image collector/dispatcher and CLI/JSON/container-identity
+repairs are independently accepted and integrated atomically at
+224191a6c770e39190eb871b18bd231f1d39ee0a. The distinct 25 targeted checks and
+four isolated CLI checks passed; no duplicate broad replay was needed. Root
+accepted the first prepared 38-member archive and 740 helper/runtime records.
+Its authority expired unconsumed. A NEW UUID/slot used a fresh eight-call
+builder-role/KMS authority review, unchanged source and selected build-only
+recipe; it did not reuse or edit the old prepared subject.
 
-The fixed-value native OpenSSL shape diagnostic is independently SOURCE
-accepted at21bd3c036f2a5316e1aa66da65da6cf3f0e19a4d. Root66/66 offline
-controls pass with zero audit attempts/no Prisma import. Qualification
-grammar is unchanged. A fresh namespace6 context is being prepared only;
-no new native experiment is admitted by source acceptance.
+The one new SDK image build a34efcc4-2f20-40f3-b2f2-5fc0ff17200f started on
+immutable source version FZWr4eGu3B8tGMEhTDddLUI15vC_n2f1. Latest read-only
+observation is IN_PROGRESS/BUILD. Dispatch retained CONSUMED_UNKNOWN_NO_RETRY
+because its validator rejects the extra actual AWS autoRetryNumber:0 field.
+Root independently matched the original/current full configuration after
+asserting both retry fields are exact integer zero; this is DATA diagnosis,
+not runtime acceptance. A separate strict response-schema repair is assigned.
+No StartBuild retry, container start, ECR push or provider action is admitted.
+The build outcome, returned artifacts, scans and recovery qualification remain.
 
-The first managed browser wire bootstrap ran once on its exact immutable version.
-Its complete144-event history corroborates one owned empty encrypted1GiB volume
-create and the first delete acknowledgement. Root and a distinct reviewer checked
-the complete raw capture and40 canonical streams. Cleanup remains UNKNOWN and
-physical absence is unproven; Ec2.Ec2Exception is the observed absence error wire.
-The two follow-up read-only probes were not admitted or run: root review and
-final DATA preparation missed the strict entry cutoff within original C900.
-The original clock/consumes are preserved, with no reset/retry/manual mutation.
-The separate post-bootstrap read-only provenance profile is independently
-SOURCE accepted at072a42e0bd334db65ff9ee0aa569ddfb8a4b4030 after root20/20
-offline controls/audit0. The old profile and original clock are unchanged;
-historical cleanup stays UNKNOWN. Stage2 planner/executor binding, fresh
-authority and actual read-only observation remain; no proof clock or
-operational admission was allocated.
+The managed browser wire bootstrap retains its original 144-event history,
+one owned empty encrypted 1GiB volume and delete acknowledgement. Cleanup is
+still UNKNOWN; physical absence is unproven. The expired original clock and
+two unrun follow-up probes were not reset or retried. Separate post-bootstrap
+Stage1 provenance SOURCE is accepted at072a42e0bd334db65ff9ee0aa569ddfb8a4b4030.
+Stage2 implementation candidate92432ba53b9905d2334b2981cc3e82be5746d15c has
+13 distinct inert checks across 14 executions and is under independent source
+review. An ordinary-import/bytecode closure concern is under review. No new
+owner/session/nonce/proof clock/admission/consume or actual observation is
+allocated. Browser host, renderer sandbox, egress, cancellation and teardown
+qualification are still outstanding.
 
-No browser host has launched. Future wire/absence proof, activation handling and
-an armed teardown are required before host/browser/renderer qualification.
-
-The SDK image context is prepared but not dispatchable. Root accepted the focused
-four-path image collector/dispatcher source allocation after33 reference checks;
-a separate Codex implementation session is active. It reuses the canonical
-assembler/capture, accounts for the never-started container and both declared
-anonymous volumes, and requires a new frozen archive/recipe. No image build,
-publication or SDK recovery experiment follows from source preparation alone.
-
-G1 still requires specific native TLS controls, real schema/lifespan/proxy auth,
-revocation/discovery/usage and durable$10 limits in isolated Fargate; real SDK
-interruption, fenced replacement/checkpoint/resume/egress/cleanup; dedicated host
-browser AND renderer sandbox/egress/cancellation/teardown; operation-specific
-REL-02, component/security disposition and measured frozen cohorts. Full SDK,
-96 selected capabilities and later full SessionStore/W05 scope are unchanged.
-
-All49 current plus five older security findings remain OPEN; Office is DEFERRED.
-Inference remains$0/$10. The promised approved location/owner for75 real requests
-is awaited. Sources remain disabled, current Meri/Capiro is untouched, and no
-cutover is approved. Earlier checkpoints below are historical.
+Remaining G1 work includes successful native TLS then combined schema/auth;
+proxy authorization/revocation, durable usage and $10 Bedrock budget enforcement;
+Fargate runtime composition; native SDK interruption/fenced replacement/checkpoint
+recovery and egress cleanup; RG08 native discovery; isolated browser host proof;
+REL02 typed contracts for all 96 selected capabilities; and security/license
+review. All 139 inventory rows remain accounted for (96 selected/43 deferred),
+with no replacement handlers enabled. The approved 75-request baseline location
+and owner are still awaited. Security findings remain open; Office is deferred.
+Temporal production HA/restore and complete SessionStore work retain their
+documented later-gate placement. G1 source fixtures do not pass these live gates.
 
 Historical checkpoint, 11 October 2026 07:34 UTC (retained verbatim):
 
