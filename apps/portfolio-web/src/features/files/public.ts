@@ -5,4 +5,4 @@ export {
   type UploadParent,
   type UploadAttempt,
 } from "./upload";
-export { fileValidation } from "./contracts";
+export { attachmentSchema, fileValidation, type Attachment } from "./contracts";
