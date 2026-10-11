@@ -1,25 +1,21 @@
 # Meri kickoff status
 
-Current continuation,11 October2026 00:34Z: **G0 accepted/G1 active/OPEN;
-eight deployment gates, G2–G7 unentered.** The corrected
-[fixed OCI acquisition succeeded and offline inventory completed](reports/CODEX-G1-PROXY-OCI-INVENTORY-OWNER.md).
-Root/distinct review verified all23 compressed layers. The302-entry inventory
-retains247 content objects and one intentional HOLD for an unresolved inert
-Prisma launcher link. No native/image/community/ABI/license acceptance follows;
-Linux import/auth/TLS/Fargate remain open. Original failed download/consumed slots
-stay preserved; Q3 freeze FAILED/import UNRUN. Browser role/SOURCE9 source remain
-accepted, but [fixture preparation](reports/CODEX-G1-BROWSER-FIXTURE-EXECUTION-PREPARATION.md)
-found no independently armed cleanup for its unattached volume. Fresh authority
-and managed cleanup precede any T0/volume/TestState/host; no browser host exists.
-SDK loopback/cleanup accepted; trusted checkpoint/replacement/fencing remain.
-[Official-store preparation](reports/CODEX-G1-SDK-REFERENCE-STORE-PREPARATION.md)
-confirms native flush attempts and missing complete durable-success verification.
-The [new research comparison](reports/CODEX-G1-RESEARCH-RECONCILIATION.md) supports
-a native session-plus-workspace checkpoint spike, while W05 SessionStore and
-the full SDK scope remain required. No architecture change is approved by the
-pasted recommendations. All49+five findings OPEN/Office DEFERRED, sources disabled,
-current Meri untouched/no cutover/model$0/$10;75 real requests await the promised
-location/owner. Earlier entries retain historical point-in-time outcomes.
+Current continuation,11 October 2026 01:03 UTC: **G0 accepted / G1 active / OPEN;
+eight deployment gates, G2–G7 unentered.** Root independently verified and
+integrated the [Linux ABI reader and partial native session-file adapter](reports/CODEX-G1-RESEARCH-IMPLEMENTATION-OWNER.md),
+with 34 Python + 14 filesystem checks passing. A fresh offline ABI execution pack
+is under preparation; no actual ABI scan/native import/auth acceptance follows.
+The prior 23-layer acquisition/first inventory remain closed DATA with one inert
+Prisma launcher HOLD. W05 SessionStore/full SDK scope remain required; trusted
+workspace/storage/checkpoint/fencing and actual replacement resume remain open.
+The managed browser-fixture source passed root’s 17 offline JSONata checks and
+a distinct nine-case challenge; source and review are integrated. Its literal
+false guard and UNKNOWN absence remain; no T0/volume/TestState/browser host exists. Fresh
+ASL/wire/IAM/KMS/history/admission/physical cleanup and browser/renderer sandbox
+are still required. All 49 current plus five older findings OPEN/Office DEFERRED, sources disabled,
+current Meri untouched/no cutover, model spending $0 of $10; 75 real requests await the promised
+location/owner. Research guides implementation but approves no plan departure.
+Earlier entries retain historical point-in-time outcomes.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native

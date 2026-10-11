@@ -1,27 +1,23 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,11 October2026 00:34Z. **G0 accepted/G1 active/OPEN;
-eight deployment gates, G2–G7 unentered.** Root accepted the
-[actual23-layer OCI acquisition](CODEX-G1-PROXY-OCI-ACTUAL-DOWNLOAD-REVIEW.md)
-after independent82-record reconciliation and104 reviewer-payload checks.
-The [separate once offline inventory](CODEX-G1-PROXY-OCI-INVENTORY-OWNER.md)
-completed with empty Job/stable source and one inert-link HOLD:302 selected
-entries/247 content objects/224,489,968 retained object bytes. Root hashed every
-object and descriptor/diff-ID/result/lifecycle references. No native/runtime
-admission; ABI/notices/community Linux assembly/auth/TLS/Fargate remain. Original
-failed download and Q3 freeze FAILED/import UNRUN stay immutable.
-Root reviewed new SDK-reference and browser-fixture sole-report commits,28+96
-payloads and13 SDK raw Git inputs. [SDK preparation](CODEX-G1-SDK-REFERENCE-STORE-PREPARATION.md)
-identifies the missing trusted persistence/checkpoint seam and confirms internal
-flush attempts without a complete durable-success receipt. [Browser preparation](CODEX-G1-BROWSER-FIXTURE-EXECUTION-PREPARATION.md)
-confirms the unattached fixture lacks independent managed cleanup; existing host
-watchdog cannot DeleteVolume. No T0/volume/TestState/browser host is admitted.
-The [human's new research](CODEX-G1-RESEARCH-RECONCILIATION.md) supports a native
-session-plus-workspace checkpoint spike and Linux-first qualification. W05
-SessionStore/full SDK scope stay required; no architecture departure is approved.
-SDK loopback/cleanup and browser role/SOURCE9 source remain accepted within their
-original scope. All49+five findings OPEN/Office DEFERRED, sources disabled/current
-Meri untouched/no cutover/inference$0/$10;75 real requests await the promised source.
+Current continuation,11 October 2026 01:03 UTC. **G0 accepted / G1 active / OPEN;
+eight deployment gates, G2–G7 unentered.** [Independent root verification](CODEX-G1-RESEARCH-IMPLEMENTATION-OWNER.md)
+accepted/integrated authors 5a87124 (Linux ABI DATA reader) and 6f1bf66 (partial
+native session-file adapter), with 49 + 34 sealed occurrences and exact raw Git.
+Root independently passed34 Python and14 real temporary-filesystem controls;
+retained failures and historical source-byte limitations remain explicit.
+Browser managed-fixture source ee52eca and distinct review 4cbde68 are integrated
+after root’s 17 actual-JSONata controls, 44 author/71 reviewer sealed occurrences
+and exact raw Git. The reviewer’s nine new cases are corroborated; the compiler
+remains inert. No native or cloud admission follows. A fresh
+bounded offline ABI execution pack is being prepared without altering old packs.
+The acquired 23 layers/first inventory remain closed DATA with one launcher HOLD.
+W05 SessionStore/full SDK scope, trusted checkpoint/workspace/fencing/replacement,
+proxy native import/auth/TLS/Fargate, managed browser history/wire/IAM/admission/
+survival/physical absence and real browser/renderer sandbox remain unfinished.
+No volume/TestState/browser host exists. All 49 current plus five older findings OPEN/Office DEFERRED,
+sources disabled/current Meri untouched/no cutover/inference spending $0 of $10; 75 real requests
+await the promised source. Research does not authorize architecture changes.
 
 Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
 eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup
