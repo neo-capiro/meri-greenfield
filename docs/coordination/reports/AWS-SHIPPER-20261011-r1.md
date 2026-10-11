@@ -8,13 +8,13 @@ Result: authenticated read-only preflight and historical archive recovery comple
 | --- | --- | --- |
 | Fresh caller/account/region | PASS | `capiro-dev`, `arn:aws:iam::967807252336:user/capirocli`, account `967807252336`, explicit `us-east-1`; canonical STS envelope in evidence. |
 | Reviewed build-owner principal | FAIL | Historical builder helper requires `hermes-cli`; current caller is `capirocli`. No role substitution performed. |
-| Backend PR7 / frontend PR4 refreshed | PASS | Both OPEN DRAFT, exact requested heads, no reported status checks; GH command envelopes retained. |
+| Backend PR7 / frontend PR4 refreshed | PASS | Both OPEN DRAFT; original requested heads matched. Primary later published accepted read-only replacement `415a558` and that exact head was freshly verified before reacquisition; frontend unchanged. GH envelopes retained. |
 | Scoped live inventory | PASS | Ten stacks, project/roles, four task revisions, buckets/KMS/logs, Meri network and three state machines read. Stored drift metadata only. |
 | Historical archive and source ZIP | PASS | Exact version/size/hash; 96/96 manifest records, 10/10 inner copies, 50/50 source ZIP members verified. |
 | Historical scan recovery | UNKNOWN | Exact 59,678-byte SHA `56a3d5f87336bf8f6a93111ecb8e976a75458f60e42dc5553fb01e460483f415` has no verified immutable locator. Not an archive member; exact result prefix contains only the archive. |
-| Canonical scan command | FAIL | CLI exit 252: plural `--image-ids` is invalid for `describe-image-scan-findings`; singular rejected by canonical allowlist. |
+| Canonical scan command | PASS after accepted repair | Original exit252 preserved. Native Windows reacquisition at accepted `415a558` succeeds with original UTF-8 bytes. |
 | Fresh separate scan retrieval | PASS | Ordinary explicitly authorized read-only CLI, process exit 0; raw bytes and encoding defect retained separately. |
-| Original fresh scan parser | FAIL | CP1252 byte 0x92 at offset 40757 cannot decode as UTF-8; unmodified analyzer exits 2. |
+| Original diagnostic scan parser | FAIL preserved | CP1252 byte0x92 at offset40757 remains rejected; repaired canonical capture/analyzer now PASS without transcoding. |
 | Explicit UTF-8 derivative analyzer | PASS | 47 complete reconciled rows, no continuation tokens, `SOURCE_ONLY_HOLD`; diagnostic derivative has lineage and grants no admission. |
 | Security/license admission | FAIL | Old image PUBLISHED_NOT_ADMITTED; 5 critical, 17 high, 17 medium, 7 low, 1 undefined. Full notice and embedded-component disposition remains primary-owned. |
 | Accepted fresh remediation / action packet | UNKNOWN | No accepted remediation source, runner binding, complete fresh archive, exact action approval or infrastructure cost bound received. |
@@ -76,13 +76,23 @@ Eventual selected Aurora `capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv` is
 
 Build/checkpoint buckets have versioning enabled, SSE-KMS and public-access blocks; checkpoint ObjectLock is seven-day GOVERNANCE. Named build/checkpoint/runtime KMS keys are enabled; scoped logs and current role policies are captured. Intentionally retained stacks, images, versioned evidence, buckets, keys, endpoints and shared Aurora remain untouched.
 
-## Bounded defects returned to primary Codex
+## Bounded defects returned to primary Codex (original outcomes preserved)
 
 All reproductions bind backend `631aee670fcee6efa7170bf969b9f05f90de12e5` and retained UTC process envelopes. Do not patch guards or move execution to Linux to bypass them.
 
-1. Canonical reader command `ecr describe-image-scan-findings --repository-name meri-greenfield/qualification-worker --image-ids imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac` exits252 before a service call: required `--image-id`. Correct singular is outside baseline reader allowlist. Preserve plural for `batch-get-image`; primary is preparing a scoped repair.
+1. Canonical reader command `ecr describe-image-scan-findings --repository-name meri-greenfield/qualification-worker --image-ids imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac` exits252 before a service call: required `--image-id`. Correct singular is outside baseline reader allowlist. Preserve plural for `batch-get-image`; primary subsequently published the accepted scoped repair; native readback below passes.
 2. A separate ordinary read with singular option completes exit0, but its CP1252 stdout cannot pass UTF-8 JSON decoding. Reproduce offline against committed `captures/ecr-native-diagnostic-scan/stdout.bin` using strict UTF-8 decoding; offset40757 is 0x92. Original unmodified scan analyzer exit2 and separately derived diagnostic HOLD exit0 are both retained. Repair strict CLI/output encoding at the owner, not by disguising transformed bytes as original evidence.
 3. Safe inert runner check: `python -I -B -S -c "import sys; sys.path.insert(0, 'scripts/qualification'); import worker_image_build; worker_image_build.pins()"` exits1 `ValueError: fixed owner Python runtime`. Available runner Python3.11.15 differs from bound Administrator path/Python3.12.14/hash; caller differs from bound hermes-cli. No build attempt or principal impersonation occurred. Historical collector/assembler/source-authority pins also require current accepted closure before a new source candidate can build.
+
+## Accepted repair and native Windows readback
+
+Primary published and accepted read-only repair `415a55827b3f6343a0835e1d0e30fa0c69d673e6`, tree `3181f8e0d75299e39fc45a738baff4c41e01463e`, as a direct child of the requested backend baseline. Its canonical acceptance is `docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md`. The shipper fetched and verified a clean separate exact checkout, refreshed PR7 to the accepted head, and used the unmodified canonical reader for fresh STS and the singular exact-digest findings read. The evidence-only branch incorporates this accepted primary source as its base; no application/helper/recipe change was authored by this shipping lane.
+
+Native Windows CLI stdout is **original UTF-8**, 59680 bytes, SHA `3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127`, retained without transformation. Unmodified canonical analyzer PASS: complete47 rows, no continuation tokens, `SOURCE_ONLY_HOLD`, all disposition rows OPEN and all admission flags false. The stored scan timestamp remains18:17:54UTC; no new scan was started. This is separate from both earlier raw captures and the explicit CP1252 derivative. Original command/parser failures remain in the ledger.
+
+See [canonical readback summary](../qualification/aws-shipper-20261011-r1/canonical-repaired-scan-summary.json) and [canonical complete HOLD scaffold](../qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json). Fresh caller is still capirocli/account967807252336/us-east-1. The source-only patch does not repair builder Python/principal/source-authority guards, remediate vulnerabilities, locate historical scan, replenish consumed approval, establish cost bounds or admit build/runtime/G1. Its canonical 53-member worker context source rows remain byte-identical to the originally reproduced context.
+
+Exact raw evidence is stored with `-text` attributes and CR-at-EOL whitespace handling so Git does not normalize command bytes. All distributed Git blobs are checked against the hash index. An initial staging check exposed default CRLF normalization/whitespace noise; nothing was published with normalized bytes. Raw bytes were restored to the index, preserving the failures and original receipts. Documentation whitespace remains checked.
 
 ## Next action, budget and cleanup
 

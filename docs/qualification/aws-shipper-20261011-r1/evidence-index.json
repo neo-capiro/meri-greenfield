@@ -1,7 +1,7 @@
 {
   "schema": "meri-shipper-evidence-index/1",
   "sourceCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
-  "generatedAt": "2026-10-11T22:39:24.989873+00:00",
+  "generatedAt": "2026-10-11T22:43:50.286229+00:00",
   "historicalArchive": {
     "bucket": "meri-greenfield-qual-build-967807252336-us-east-1",
     "key": "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
@@ -64,6 +64,16 @@
       "path": ".gitattributes",
       "bytes": 72,
       "sha256": "308a40fa1d89ae5ea4390b4c9b46a0108b09f171f07898f25d451fa0c69c4e9f"
+    },
+    {
+      "path": "canonical-repaired-scan-hold-scaffold.json",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
+    },
+    {
+      "path": "canonical-repaired-scan-summary.json",
+      "bytes": 1476,
+      "sha256": "6ba45277654c988e1869ff34395077984ea095768cfd58144aa45118a8d7cabd"
     },
     {
       "path": "captures/build-get-bucket-encryption/process.json",
@@ -456,6 +466,21 @@
       "sha256": "fb11d5dc0536e79eeb0f6903629734863d9ab08186d07f47aa6ab172dbeecade"
     },
     {
+      "path": "captures/ecr-canonical-repaired-scan/process.json",
+      "bytes": 1079,
+      "sha256": "78a9fc8a07d34e99f4a3b18e44d81b9636d2de1f92ca3fba146daff5e9364fea"
+    },
+    {
+      "path": "captures/ecr-canonical-repaired-scan/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "captures/ecr-canonical-repaired-scan/stdout.bin",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+    },
+    {
       "path": "captures/ecr-fresh-scan/process.json",
       "bytes": 1080,
       "sha256": "5204e441107d46b94e2a76d724f874dcbde54fb7d64b699dca76c77e3cf23f35"
@@ -662,6 +687,21 @@
     },
     {
       "path": "captures/identity/stdout.bin",
+      "bytes": 133,
+      "sha256": "6875b3013ad0ed8bca5296cb6ff420e80280b50fe34035cad7dc82ec7e857110"
+    },
+    {
+      "path": "captures/identity-repair/process.json",
+      "bytes": 890,
+      "sha256": "b787cb6a76165203899668d72ad3709f6d98226ecb9b4d994b291ad0c0e571eb"
+    },
+    {
+      "path": "captures/identity-repair/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "captures/identity-repair/stdout.bin",
       "bytes": 133,
       "sha256": "6875b3013ad0ed8bca5296cb6ff420e80280b50fe34035cad7dc82ec7e857110"
     },
@@ -1282,8 +1322,8 @@
     },
     {
       "path": "command-ledger.json",
-      "bytes": 130598,
-      "sha256": "43e69676132a4043ecd3cf6d76b0b6904481d102399c1e52d4383809b27b9ae7"
+      "bytes": 136516,
+      "sha256": "ddf121d2f40d642bf39f831f7e5c4143b4a753cd38c86b1ab64ecd208f292bf6"
     },
     {
       "path": "current-context-manifest.json",
@@ -1401,6 +1441,21 @@
       "sha256": "446892b6c1af96e78148c2bac205861e6c23460977214f4637818219469f9674"
     },
     {
+      "path": "local-checks/github-backend-pr7-repair/process.json",
+      "bytes": 897,
+      "sha256": "6f26cd2d0b9af47c534df4d47540ff3ad59c4b02df21aa60e249d066a39f2ba4"
+    },
+    {
+      "path": "local-checks/github-backend-pr7-repair/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "local-checks/github-backend-pr7-repair/stdout.bin",
+      "bytes": 265,
+      "sha256": "c2a1786e4aac9691986c039eef3dcc1890a3491c15249d4b437c610830f5a187"
+    },
+    {
       "path": "local-checks/github-frontend-pr4/process.json",
       "bytes": 796,
       "sha256": "612b918e38b0f472679aa4fc92991224e690d9f4d28a912aaca7a6f3c69ffc82"
@@ -1414,6 +1469,21 @@
       "path": "local-checks/github-frontend-pr4/stdout.bin",
       "bytes": 312,
       "sha256": "ff322ee1245f3cf933a040a73d42111945a5d5be4b80cbf4b52b3ab0bef59975"
+    },
+    {
+      "path": "local-checks/scan-analyzer-canonical-repaired/process.json",
+      "bytes": 1383,
+      "sha256": "5c14dd694509604f1f5496b6c04b704d0ee2dc2f511c2614ac198b75339d937b"
+    },
+    {
+      "path": "local-checks/scan-analyzer-canonical-repaired/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "local-checks/scan-analyzer-canonical-repaired/stdout.bin",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
     },
     {
       "path": "local-checks/scan-analyzer-derived/process.json",
@@ -1447,13 +1517,62 @@
     },
     {
       "path": "next-action-packet.json",
-      "bytes": 6501,
-      "sha256": "22d26dc0fae0cced9b8d1e53a6c8fb8d70967cbef70a1c6c53bd8709525fef17"
+      "bytes": 8650,
+      "sha256": "2823758c690dc998d53e4d9e0dc0efad9f58df112e672c3300859a2805db885a"
     },
     {
       "path": "preflight-read-results.json",
       "bytes": 6742,
       "sha256": "05df0cf138bfa6cf602351a941a7d5c8cf681506ea1d35926cd779ec2f132b35"
     }
-  ]
+  ],
+  "acceptedReadOnlyRepair": {
+    "status": "PASS_READ_ONLY_REACQUISITION",
+    "sourceCommit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+    "sourceTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+    "sourceAcceptance": "docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md",
+    "helperSha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+    "identity": {
+      "UserId": "AIDA6CVOOW5YCNOGMSALQ",
+      "Account": "967807252336",
+      "Arn": "arn:aws:iam::967807252336:user/capirocli"
+    },
+    "region": "us-east-1",
+    "raw": {
+      "path": "captures/ecr-canonical-repaired-scan/stdout.bin",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+      "encoding": "UTF-8",
+      "transformed": false
+    },
+    "findings": 47,
+    "severityCounts": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "INFORMATIONAL": 0,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "complete": true,
+    "nextTokenAbsent": true,
+    "scanMetadata": {
+      "findingSeverityCounts": {
+        "CRITICAL": 5,
+        "HIGH": 17,
+        "LOW": 7,
+        "MEDIUM": 17,
+        "UNDEFINED": 1
+      },
+      "imageScanCompletedAt": "2026-10-11T14:17:54-04:00",
+      "vulnerabilitySourceUpdatedAt": "2026-10-11T14:17:54-04:00"
+    },
+    "historicalScanRecovered": false,
+    "newScanRequested": false,
+    "scanAdmitted": false,
+    "runtimeAdmitted": false,
+    "g1Admitted": false,
+    "buildAuthorized": false,
+    "oldFailuresPreserved": true
+  }
 }
