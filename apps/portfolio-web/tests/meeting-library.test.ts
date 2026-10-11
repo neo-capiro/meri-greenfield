@@ -199,6 +199,25 @@ describe("client assignment boundary", () => {
   });
 });
 describe("runtime-gated extraction", () => {
+  it("accepts the audio transcription contract without inventing completeness", async () => {
+    const source = await extractMeetingSource(
+      createApiClient(async () =>
+        Response.json({
+          attachmentId: id,
+          fileName: "synthetic-memo.webm",
+          contentType: "audio/webm",
+          source: "transcription",
+          text: "Review the audio against this transcript.",
+          contentHash: "synthetic-hash",
+          disclosure: "Audio transcription requires review.",
+        }),
+      ),
+      id,
+    );
+    expect(source.text).toBe("Review the audio against this transcript.");
+    expect(source.truncated).toBeUndefined();
+    expect(source.disclosure).toBe("Audio transcription requires review.");
+  });
   it("binds exact receipt and retains truncation/disclosure", async () => {
     await expect(
       extractMeetingSource(
@@ -227,6 +246,14 @@ describe("runtime-gated extraction", () => {
     ).rejects.toMatchObject({ status: 502 });
   });
   it("does not reinterpret gated/empty extraction as success", async () => {
+    await expect(
+      extractMeetingSource(
+        createApiClient(async () =>
+          Response.json({ attachmentId: id, text: "Source", truncated: "false" }),
+        ),
+        id,
+      ),
+    ).rejects.toMatchObject({ status: 502 });
     await expect(
       extractMeetingSource(
         createApiClient(async () =>

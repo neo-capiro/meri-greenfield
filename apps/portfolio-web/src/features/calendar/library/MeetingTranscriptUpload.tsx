@@ -212,6 +212,12 @@ function TranscriptForm({
                 material before continuing.
               </p>
             )}
+            {result.truncated === undefined && (
+              <p role="status">
+                The service did not report transcript completeness. Review it
+                against the original source before continuing.
+              </p>
+            )}
             {result.disclosure && <p role="status">{result.disclosure}</p>}
             <label>
               Extracted text

@@ -94,7 +94,8 @@ export function materialsLabel(row: LibraryMeeting) {
 export const extractionSchema = z.object({
   attachmentId: z.string().uuid(),
   text: z.string().min(1),
-  truncated: z.boolean(),
+  // Audio transcription omits this field; absence is not proof of completeness.
+  truncated: z.boolean().optional(),
   disclosure: z.string().optional(),
 });
 export type ExtractedMeetingSource = z.infer<typeof extractionSchema>;
