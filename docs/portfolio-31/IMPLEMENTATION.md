@@ -360,6 +360,21 @@ form a matching `live` Clerk key pair under one KMS key. No key value was printe
 or copied. This identifies candidate secret references for the preview; it does
 not prove the preview origin allowlist, JWT behavior or tenant membership.
 
+CodeBuild source attempt `53cd95eb-bb9a-4ea8-b9de-88efea200109` failed before
+checkout because the account's GitHub source credential could not access this
+private branch. The project was changed to a versioned, private S3 ZIP, with
+archive SHA-256 `01491a652136199cd2d1e7fc7b1eb61d93ee2922eef6cab90533fcd8739a8884`
+and S3 version `EnB.6Icr5QKmCpbDpWgQ3HuF4OF51w05` bound to source `dacd184`.
+Run `fd34c028-36d3-465d-9c16-875bff7a8ac4` passed 728 unit and 459
+Playwright cases, production Next compilation and Linux image build/push, but
+the overall job failed on its last ECR read-back command because the role lacked
+`ecr:DescribeImages`. CLI owner read-back found digest
+`sha256:3e513ef137b39e4d5c2650ef853549a79108d6cc5e6818992c83051c42e7ac10`.
+ECR scanning completed with one HIGH `CVE-2026-85091` zlib finding. That finding
+requires disposition before ECS preview admission. No service/DNS traffic alias
+or signed-in production test was created. The failed job remains visible; the
+build-role permission is corrected in the versioned template for the next run.
+
 ## Client lifecycle integration outline — 11 October 2026
 
 Client-intake owns the canonical three-step form, profile mapping/validation,

@@ -11,6 +11,12 @@ archive's exact source SHA and S3 version, runs the full checks, and pushes an
 immutable image only after every check succeeds. The first GitHub-source attempt
 failed in `DOWNLOAD_SOURCE` because the account's CodeBuild credential lacked
 authorization for this private repository; it ran no source command or test.
+The S3-source run on `dacd184` completed 728 unit, 459 browser, Next production
+and Linux image build/push commands, then its final ECR read-back failed because
+the build role lacked `ecr:DescribeImages`. The digest was independently read
+back by the owner. The image scan reported one HIGH zlib finding, so the image
+is not admitted for ECS. The permission is corrected in `build.yml`; a short
+digest-bound container smoke and security disposition remain separate gates.
 
 ## Existing foundation
 
