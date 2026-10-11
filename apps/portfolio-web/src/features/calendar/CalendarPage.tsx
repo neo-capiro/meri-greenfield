@@ -18,6 +18,7 @@ import { CalendarGrid } from "./CalendarGrid";
 import { Agenda } from "./Agenda";
 import { MeetingDetail } from "./MeetingDetail";
 import { MeetingForm } from "./MeetingForm";
+import { MeetingLibrary } from "./library/public";
 import type { CalendarKind } from "./contracts";
 import { deduplicate } from "./feeds";
 import styles from "./calendar.module.css";
@@ -75,6 +76,29 @@ export function CalendarPage({
   const activeFeeds = mixed
     ? Object.entries(feeds)
     : [["meetings", feeds.meetings] as const];
+  const library = params.get("library") === "1";
+  const detail = (
+    <MeetingDetail
+      key={params.get("meeting") ?? "none"}
+      id={params.get("meeting")}
+      onClose={() => update({ meeting: undefined })}
+      zone={zone}
+      destinations={destinations}
+      clientId={scope}
+    />
+  );
+  if (library)
+    return (
+      <>
+        <MeetingLibrary
+          clientId={scope}
+          zone={zone}
+          onMeeting={(id) => update({ meeting: id })}
+          onClose={() => update({ library: undefined })}
+        />
+        {detail}
+      </>
+    );
   return (
     <div className="page">
       <header className="pageHeader">
@@ -84,10 +108,15 @@ export function CalendarPage({
           </p>
           <h1>{clientId ? "Calendar" : "Master Calendar"}</h1>
         </div>
-        <button className="button primary" onClick={() => setCreating(true)}>
-          <Plus size={16} />
-          New meeting
-        </button>
+        <div className="row">
+          <button className="button" onClick={() => update({ library: "1" })}>
+            Meeting library
+          </button>
+          <button className="button primary" onClick={() => setCreating(true)}>
+            <Plus size={16} />
+            New meeting
+          </button>
+        </div>
       </header>
       <div className="toolbar">
         {!clientId && (
@@ -251,14 +280,7 @@ export function CalendarPage({
           onMeeting={(id) => update({ meeting: id })}
         />
       )}
-      <MeetingDetail
-        key={params.get("meeting") ?? "none"}
-        id={params.get("meeting")}
-        onClose={() => update({ meeting: undefined })}
-        zone={zone}
-        destinations={destinations}
-        clientId={clientId}
-      />
+      {detail}
       <MeetingForm
         key={creating || params.get("new") === "meeting" ? "new" : "closed"}
         open={creating || params.get("new") === "meeting"}

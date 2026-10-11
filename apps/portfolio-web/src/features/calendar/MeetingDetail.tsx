@@ -9,6 +9,8 @@ import { useMeeting } from "./queries";
 import { MeetingArtifacts } from "./MeetingArtifacts";
 import { MeetingForm } from "./MeetingForm";
 import { MeetingPreparation } from "./preparation/public";
+import { MeetingAssignment } from "./library/public";
+import { useIdentity } from "@/shared/auth/identity";
 import { formatInstant, type CalendarZone } from "./range";
 import styles from "./calendar.module.css";
 export function MeetingDetail({
@@ -24,10 +26,12 @@ export function MeetingDetail({
   clientId?: string;
 }) {
   const query = useMeeting(id);
+  const identity = useIdentity();
   const [tab, setTab] = useState<
     "information" | "preparation" | "notes" | "debriefs"
   >("information");
   const [editing, setEditing] = useState(false);
+  const [assigning, setAssigning] = useState(false);
   const meeting = query.data;
   const inScope = !clientId || meeting?.client?.id === clientId;
   return (
@@ -42,15 +46,17 @@ export function MeetingDetail({
     >
       <QueryState
         pending={query.isPending}
-        error={query.error}
-        retry={() => void query.refetch()}
+        error={query.error ?? identity.error}
+        retry={() =>
+          void (identity.error ? identity.refetch() : query.refetch())
+        }
       />
       {meeting && !inScope && (
         <p role="alert">
           This meeting is not associated with the selected client.
         </p>
       )}
-      {meeting && inScope && (
+      {meeting && inScope && !query.error && !identity.error && (
         <>
           <div className="row">
             <span className="chip">{meeting.visibility}</span>
@@ -113,11 +119,18 @@ export function MeetingDetail({
               <button className="button" onClick={() => setEditing(true)}>
                 Edit meeting
               </button>
+              <button className="button" onClick={() => setAssigning(true)}>
+                Client assignment
+              </button>
             </div>
           )}
           {tab === "preparation" && <MeetingPreparation meeting={meeting} />}
           {(tab === "notes" || tab === "debriefs") && (
-            <MeetingArtifacts meeting={meeting} kind={tab} />
+            <MeetingArtifacts
+              key={`${tab}:${identity.data?.tenant?.id}:${identity.data?.user.id}:${meeting.client?.id}`}
+              meeting={meeting}
+              kind={tab}
+            />
           )}
           <MeetingForm
             key={editing ? "editing" : "closed"}
@@ -126,6 +139,14 @@ export function MeetingDetail({
             onOpenChange={setEditing}
             zone={zone}
             clientId={clientId}
+          />
+          <MeetingAssignment
+            meeting={meeting}
+            open={assigning}
+            onOpenChange={setAssigning}
+            onAssigned={(saved) => {
+              if (clientId && saved.client?.id !== clientId) onClose();
+            }}
           />
         </>
       )}

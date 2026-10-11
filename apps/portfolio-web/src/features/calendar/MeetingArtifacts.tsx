@@ -6,6 +6,7 @@ import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useMeetingNotes } from "./queries";
 import type { Meeting } from "./contracts";
+import { DebriefGeneration } from "./debrief/public";
 export function MeetingArtifacts({
   meeting,
   kind,
@@ -18,6 +19,7 @@ export function MeetingArtifacts({
     id?: string;
     body: string;
     confidential: boolean;
+    generated?: boolean;
   }>();
   const [sharing, setSharing] = useState<string>();
   const mutation = useChangeMeetingArtifact(meeting.id, kind, () => {
@@ -36,6 +38,14 @@ export function MeetingArtifacts({
           Add {singular}
         </button>
       </div>
+      {kind === "debriefs" && (
+        <DebriefGeneration
+          meeting={meeting}
+          onDraft={(body) =>
+            setEditing({ body, confidential: false, generated: true })
+          }
+        />
+      )}
       <QueryState
         pending={query.isPending}
         error={query.error}
@@ -126,7 +136,11 @@ export function MeetingArtifacts({
         onOpenChange={(open) => {
           if (!open && !mutation.isPending) setEditing(undefined);
         }}
-        title={`${editing?.id ? "Edit" : "Add"} ${singular}`}
+        title={
+          editing?.generated
+            ? "Review generated debrief"
+            : `${editing?.id ? "Edit" : "Add"} ${singular}`
+        }
       >
         <form
           className="stack"
