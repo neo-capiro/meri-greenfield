@@ -22,6 +22,14 @@ admitted B, returned exact stale A denial, authorized/loaded/verified B, and
 refused late A commit before another storage preparation. `pg_ctl stop -m
 fast -w` exited 0; port 55442 listener and owned pidfile were absent.
 
+On exact source commit `1afef8026723ce0d20f90d7ea4dfba2faae8dfcd`, the
+integrated contract suite first passed 160/161; its sole failure was missing
+the contracts package's separate locked `esbuild` development install in this
+fresh worktree. Offline `npm ci` for that package exited 0; the full suite
+then passed 161/161, exit 0. Service/S3 tests passed 8/8 and checkpoint CDK
+synthesis/security tests passed 3/3, both exit 0. This repair changed only
+ignored installed dependencies, not source or lockfiles.
+
 No AWS write, real certificate issuer, ECS task identity, S3 object write,
 image, native SDK run, PR, merge or deployment occurred. The issuer must bind
 fresh unique certificate fingerprints to observed task ARNs and admit them
