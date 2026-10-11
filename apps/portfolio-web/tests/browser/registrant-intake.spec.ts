@@ -481,6 +481,78 @@ test("unknown completion freezes IDs and readback never becomes a fake receipt",
   await expect(page.getByRole("button", { name: /^Import \d/ })).toHaveCount(0);
 });
 
+for (const event of ["invalidate", "unmount"])
+  for (const stage of ["POST", "read-model-refresh"])
+    test(`held ${stage} cannot publish import success after ${event}`, async ({
+      page,
+    }) => {
+      const state = await setup(page);
+      let reached = false,
+        posts = 0,
+        candidateReads = 0;
+      let release!: () => void;
+      const held = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await page.route("**/firm/import-candidates", async (route) => {
+        candidateReads++;
+        // This route starts after setup: one preflight read precedes refresh.
+        if (stage === "read-model-refresh" && candidateReads === 2) {
+          reached = true;
+          await held;
+        }
+        await route.fulfill({
+          json: {
+            registrantId: 12,
+            registrantName: "Maven Advocacy",
+            candidates: rows,
+          },
+        });
+      });
+      await page.route("**/firm/import", async (route) => {
+        posts++;
+        if (stage === "POST") {
+          reached = true;
+          await held;
+        }
+        await route.fulfill({
+          json: {
+            created: 1,
+            items: [
+              {
+                id: "client-created",
+                name: "Saronic Technologies",
+                ldaClientId: 8,
+              },
+            ],
+            skipped: [],
+          },
+        });
+      });
+      await page
+        .getByRole("checkbox", { name: "Select Saronic Technologies" })
+        .check();
+      await page
+        .getByRole("button", { name: "Import 1 client", exact: true })
+        .click();
+      await expect.poll(() => reached).toBe(true);
+      if (event === "unmount")
+        await page.evaluate(() => window.__registrantUnmount?.());
+      else {
+        state.identityFailure = true;
+        await page.evaluate(() => window.__registrantRecheck?.());
+      }
+      release();
+      await expect
+        .poll(() => page.evaluate(() => window.__registrantPendingWrites?.()))
+        .toBe(0);
+      await expect(page.getByTestId("receipts")).toHaveText("0");
+      await expect(
+        page.getByText("1 client profiles created. 0 skipped."),
+      ).toHaveCount(0);
+      expect(posts).toBe(1);
+    });
+
 test("explicit slot refusal retains selected input without a receipt", async ({
   page,
 }) => {

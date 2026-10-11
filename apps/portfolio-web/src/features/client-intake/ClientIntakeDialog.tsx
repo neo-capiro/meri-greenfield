@@ -20,6 +20,7 @@ import { RegistrationStep } from "./RegistrationStep";
 import { SectorStep } from "./SectorStep";
 import { useSaveIntake, useUploadLogo } from "./mutations";
 import { ClientProfileAttemptError } from "./profile-api";
+import { useIntakeAuthority, type IntakeWriteScope } from "./authority";
 import {
   ProfileCapacityStatus,
   useProfileCapacity,
@@ -54,6 +55,8 @@ function IntakeSession({
   const [logo, setLogo] = useState<LogoAttempt>();
   const [logoValidation, setLogoValidation] = useState("");
   const [persisted, setPersisted] = useState<Client>();
+  const persistedScope = useRef<IntakeWriteScope | undefined>(undefined);
+  const [continuationError, setContinuationError] = useState<Error>();
   const fields = useRef<HTMLFieldSetElement>(null);
   useEffect(() => {
     if (Object.keys(errors).length)
@@ -61,14 +64,17 @@ function IntakeSession({
         ?.querySelector<HTMLElement>('[aria-invalid="true"]')
         ?.focus();
   }, [errors]);
-  const save = useSaveIntake(client);
+  const capture = useIntakeAuthority(Boolean(client));
+  const save = useSaveIntake(capture, client);
   const capacity = useProfileCapacity(!client && !persisted);
-  const upload = useUploadLogo();
+  const upload = useUploadLogo(capture);
   const pending = save.isPending || upload.isPending;
   const uncertainCreation =
     !client &&
-    save.error instanceof ClientProfileAttemptError &&
-    save.error.uncertain;
+    ((save.error instanceof ClientProfileAttemptError &&
+      save.error.uncertain) ||
+      (continuationError instanceof ClientProfileAttemptError &&
+        continuationError.uncertain));
   const role = identity.data?.role;
   const permitted = client
     ? canAdminister(role)
@@ -76,13 +82,23 @@ function IntakeSession({
   const set = <K extends IntakeField>(key: K, value: IntakeForm[K]) =>
     setValues((current) => ({ ...current, [key]: value }));
   const finish = (saved: Client) => {
+    persistedScope.current?.assert();
     onSaved(saved);
     onOpenChange(false);
   };
   const close = () => {
     if (pending) return;
-    if (persisted) finish(persisted);
-    else onOpenChange(false);
+    if (persisted) {
+      try {
+        finish(persisted);
+      } catch (error) {
+        setContinuationError(
+          error instanceof Error
+            ? error
+            : new Error("Your profile session changed."),
+        );
+      }
+    } else onOpenChange(false);
   };
   function validate(targetStep?: number) {
     const next = validateIntake(values, client ? initial : undefined);
@@ -110,19 +126,36 @@ function IntakeSession({
     )
       return;
     try {
+      setContinuationError(undefined);
+      const scope = persistedScope.current ?? capture();
+      scope.assert();
       const saved =
         persisted ??
         (await save.mutateAsync({
           values,
           initial: client ? initial : undefined,
         }));
+      try {
+        scope.assert();
+      } catch {
+        throw new ClientProfileAttemptError(
+          "Your profile session changed after saving. Review the client list before continuing.",
+          true,
+        );
+      }
+      persistedScope.current = scope;
       setPersisted(saved);
       finish(
         logo
           ? await upload.mutateAsync({ clientId: saved.id, attempt: logo })
           : saved,
       );
-    } catch {
+    } catch (error) {
+      setContinuationError(
+        error instanceof Error
+          ? error
+          : new Error("The profile could not be confirmed."),
+      );
       /* QueryState renders the operation's error without discarding input. */
     }
   }
@@ -262,7 +295,7 @@ function IntakeSession({
               Check the highlighted fields before continuing.
             </p>
           )}
-          <QueryState error={save.error ?? upload.error} />
+          <QueryState error={save.error ?? upload.error ?? continuationError} />
           {uncertainCreation && (
             <p role="alert">
               Profile creation could not be confirmed. Review the client list

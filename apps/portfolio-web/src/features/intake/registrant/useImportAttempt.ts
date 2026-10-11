@@ -49,7 +49,10 @@ export function useImportAttempt({
     const ids = [...selected];
     let result: ImportReceipt | undefined;
     try {
-      result = await mutation.mutateAsync({ registrantId, ids });
+      const outcome = await mutation.mutateAsync({ registrantId, ids });
+      // onSettled waits for read-model refreshes. Recheck after that final await.
+      outcome.assertCurrent();
+      result = outcome.receipt;
       setReceipt(result);
     } catch (error) {
       if (error instanceof ImportAttemptError && error.uncertain)

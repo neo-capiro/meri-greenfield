@@ -15,6 +15,7 @@ import {
   fetchCandidates,
   fetchRegistrant,
   importClients,
+  ImportAttemptError,
   linkRegistrant,
   searchRegistrants,
 } from "./api";
@@ -103,7 +104,7 @@ export function useImportClients() {
   return useMutation({
     mutationKey: [...registrantKey, "write"],
     retry: false,
-    mutationFn: ({
+    mutationFn: async ({
       registrantId,
       ids,
     }: {
@@ -127,10 +128,22 @@ export function useImportClients() {
             "Your session changed. Refresh and review before importing.",
           );
       };
-      return importClients(api, registrantId, ids, async () => {
+      const result = await importClients(api, registrantId, ids, async () => {
         await verifyProfileCapacity(api, ids.length, guard);
         guard();
       });
+      const assertCurrent = () => {
+        try {
+          guard();
+        } catch {
+          throw new ImportAttemptError(
+            "Your import session changed after dispatch. Review current client state before continuing.",
+            true,
+          );
+        }
+      };
+      assertCurrent();
+      return { receipt: result, assertCurrent };
     },
     // Even an ambiguous failure may have committed individual rows.
     onSettled: async () => {

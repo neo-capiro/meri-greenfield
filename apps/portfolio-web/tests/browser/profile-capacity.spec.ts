@@ -207,9 +207,24 @@ test("unknown create reply freezes repeat creation and retains the completed for
 }) => {
   await installFixtures(page);
   let writes = 0;
+  let committed = false;
   await page.route("**/api/backend/core/clients", (route) => {
-    if (route.request().method() !== "POST") return json(route, [client]);
+    if (route.request().method() !== "POST")
+      return json(
+        route,
+        committed
+          ? [
+              client,
+              {
+                ...client,
+                id: "20000000-0000-4000-8000-000000000002",
+                name: "Capacity Test",
+              },
+            ]
+          : [client],
+      );
     writes++;
+    committed = true;
     return json(route, { message: "Reply unavailable after dispatch" }, 502);
   });
   const dialog = await chooser(page);
@@ -225,7 +240,94 @@ test("unknown create reply freezes repeat creation and retains the completed for
     dialog.getByRole("button", { name: "Create profile", exact: true }),
   ).toBeDisabled();
   expect(writes).toBe(1);
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(page.getByText("Capacity Test", { exact: true })).toBeVisible();
 });
+
+for (const event of ["capacity-invalidate-actor", "capacity-unmount"])
+  for (const heldStage of ["upload-url", "storage", "confirm"])
+    test(`logo ${heldStage} cannot continue after ${event}`, async ({
+      page,
+    }) => {
+      await installFixtures(page);
+      let transfers = 0,
+        confirmations = 0,
+        reached = false;
+      let release!: () => void;
+      const held = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await page.route("**/api/backend/core/clients", (route) =>
+        route.request().method() === "POST"
+          ? json(route, { ...client, ...route.request().postDataJSON() })
+          : json(route, [client]),
+      );
+      await page.route(
+        "**/api/backend/core/clients/*/logo/upload-url",
+        async (route) => {
+          if (heldStage === "upload-url") {
+            reached = true;
+            await held;
+          }
+          await json(route, {
+            url: "https://storage.example.test/upload",
+            s3Key: "stage/key",
+            fields: { key: "stage/key" },
+          });
+        },
+      );
+      await page.route("https://storage.example.test/upload", async (route) => {
+        transfers++;
+        if (heldStage === "storage") {
+          reached = true;
+          await held;
+        }
+        await route.fulfill({
+          status: 204,
+          headers: { "Access-Control-Allow-Origin": "*" },
+        });
+      });
+      await page.route(
+        "**/api/backend/core/clients/*/logo/confirm",
+        async (route) => {
+          confirmations++;
+          if (heldStage === "confirm") {
+            reached = true;
+            await held;
+          }
+          await json(route, client);
+        },
+      );
+      await page.goto("/__test/profile-capacity");
+      await page.getByRole("button", { name: "Start profile test" }).click();
+      const dialog = page.getByRole("dialog", {
+        name: "Add profile",
+        exact: true,
+      });
+      await fillProfile(dialog);
+      await dialog
+        .getByLabel("Upload logo", { exact: true })
+        .setInputFiles({
+          name: "logo.png",
+          mimeType: "image/png",
+          buffer: Buffer.from("Synthetic intercepted bytes"),
+        });
+      await dialog
+        .getByRole("button", { name: "Create profile", exact: true })
+        .click();
+      await expect.poll(() => reached).toBe(true);
+      await page.evaluate(
+        (name) => window.dispatchEvent(new Event(name)),
+        event,
+      );
+      release();
+      await expect
+        .poll(() => page.evaluate(() => window.__capacityPendingWrites?.()))
+        .toBe(0);
+      await expect(page.getByTestId("saved-profiles")).toHaveText("0");
+      expect(transfers).toBe(heldStage === "upload-url" ? 0 : 1);
+      expect(confirmations).toBe(heldStage === "confirm" ? 1 : 0);
+    });
 test("LDA selection must fit fresh capacity and can be reduced without losing the review", async ({
   page,
 }) => {

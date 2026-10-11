@@ -42,9 +42,12 @@ export async function uploadClientLogo(
   clientId: string,
   attempt: LogoAttempt,
   transport: typeof fetch = fetch,
+  assertCurrent?: () => void,
+  signal?: AbortSignal,
 ) {
   const invalid = validateLogo(attempt.file);
   if (invalid) throw new Error(invalid);
+  assertCurrent?.();
   if (!attempt.bytesUploaded) {
     const ticket = await api.request(
       "core",
@@ -52,12 +55,14 @@ export async function uploadClientLogo(
       ticketSchema,
       {
         method: "POST",
+        signal,
         body: {
           contentType: attempt.file.type,
           contentLength: attempt.file.size,
         },
       },
     );
+    assertCurrent?.();
     const form = new FormData();
     for (const [key, value] of Object.entries(ticket.fields))
       form.append(key, value);
@@ -67,22 +72,28 @@ export async function uploadClientLogo(
       body: form,
       credentials: "omit",
       redirect: "error",
-      signal: AbortSignal.timeout(30_000),
+      signal: signal
+        ? AbortSignal.any([signal, AbortSignal.timeout(30_000)])
+        : AbortSignal.timeout(30_000),
     });
     if (!response.ok)
       throw new Error("Logo storage upload failed. Retry the upload.");
     attempt.ticket = ticket;
     attempt.bytesUploaded = true;
   }
+  assertCurrent?.();
   if (!attempt.ticket)
     throw new Error("Logo upload reference is missing. Select the file again.");
-  return api.request(
+  const saved = await api.request(
     "core",
     `clients/${encodeURIComponent(clientId)}/logo/confirm`,
     clientReceipt(clientId),
     {
       method: "POST",
+      signal,
       body: { s3Key: attempt.ticket.s3Key, contentType: attempt.file.type },
     },
   );
+  assertCurrent?.();
+  return saved;
 }

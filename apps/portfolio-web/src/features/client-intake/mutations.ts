@@ -1,12 +1,6 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLayoutEffect, useRef } from "react";
 import { useApi } from "@/shared/api/provider";
-import { ApiError } from "@/shared/api/http";
-import {
-  currentClientWriter,
-  assertClientWriter,
-} from "@/features/client-profile/quick-log/public";
 import {
   billingStateKey,
   verifyProfileCapacity,
@@ -23,16 +17,14 @@ import {
   saveClientProfile,
 } from "./profile-api";
 import { uploadClientLogo, type LogoAttempt } from "./logo";
+import type { IntakeWriteScope } from "./authority";
 
-export function useSaveIntake(client?: Client) {
+export function useSaveIntake(
+  capture: () => IntakeWriteScope,
+  client?: Client,
+) {
   const api = useApi();
   const cache = useQueryClient();
-  const lifetime = useRef<AbortController | null>(null);
-  useLayoutEffect(() => {
-    const controller = new AbortController();
-    lifetime.current = controller;
-    return () => controller.abort();
-  }, []);
   return useMutation({
     retry: false,
     mutationFn: async ({
@@ -42,25 +34,18 @@ export function useSaveIntake(client?: Client) {
       values: IntakeForm;
       initial?: IntakeForm;
     }) => {
-      const scope = lifetime.current;
-      const actor = currentClientWriter(cache);
-      if (!actor || !scope || scope.signal.aborted)
-        throw new ApiError(403, "A current client-writer session is required.");
-      const guard = () => {
-        if (scope.signal.aborted)
-          throw new ApiError(409, "This profile session is no longer active.");
-        assertClientWriter(cache, actor);
-      };
-      if (!client) await verifyProfileCapacity(api, 1, guard, scope.signal);
+      const scope = capture();
+      if (!client)
+        await verifyProfileCapacity(api, 1, scope.assert, scope.signal);
       const saved = await saveClientProfile(
         api,
         values,
         initial,
         client,
-        guard,
+        scope.assert,
       );
       try {
-        guard();
+        scope.assert();
       } catch {
         throw new ClientProfileAttemptError(
           "Your profile session changed after saving. Review the client list before continuing.",
@@ -69,27 +54,51 @@ export function useSaveIntake(client?: Client) {
       }
       return saved;
     },
-    onSuccess: async (saved) => {
+    onSuccess: (saved) => {
       cache.setQueryData(clientKey(saved.id), saved);
-      await cache.invalidateQueries({ queryKey: clientsKey });
     },
-    onSettled: () => cache.invalidateQueries({ queryKey: billingStateKey }),
+    // A committed write can lose its receipt. Refresh read models without replay.
+    onSettled: async () => {
+      await Promise.all([
+        cache.invalidateQueries({ queryKey: billingStateKey }),
+        cache.invalidateQueries({ queryKey: clientsKey }),
+        ...(client
+          ? [cache.invalidateQueries({ queryKey: clientKey(client.id) })]
+          : []),
+      ]);
+    },
   });
 }
-export function useUploadLogo() {
+export function useUploadLogo(capture: () => IntakeWriteScope) {
   const api = useApi();
   const cache = useQueryClient();
   return useMutation({
+    retry: false,
     mutationFn: ({
       clientId,
       attempt,
     }: {
       clientId: string;
       attempt: LogoAttempt;
-    }) => uploadClientLogo(api, clientId, attempt),
-    onSuccess: async (saved) => {
+    }) => {
+      const scope = capture();
+      return uploadClientLogo(
+        api,
+        clientId,
+        attempt,
+        fetch,
+        scope.assert,
+        scope.signal,
+      );
+    },
+    onSuccess: (saved) => {
       cache.setQueryData(clientKey(saved.id), saved);
-      await cache.invalidateQueries({ queryKey: clientsKey });
+    },
+    onSettled: async (_saved, _error, variables) => {
+      await Promise.all([
+        cache.invalidateQueries({ queryKey: clientsKey }),
+        cache.invalidateQueries({ queryKey: clientKey(variables.clientId) }),
+      ]);
     },
   });
 }
