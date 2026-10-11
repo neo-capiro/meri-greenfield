@@ -5,18 +5,24 @@ Updated 11 October 2026. **Work continues; this is not full Portfolio completion
 ## Source and isolation
 
 - Frontend: neo-capiro/meri-greenfield, branch codex/portfolio-31-20261010, checkout C:/dev/meri-greenfield-portfolio-31.
-- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: bbf25e6ab4931886f5a382ee3362593e573c19de. Later delivery documentation commits are identified separately from the compiled code source.
+- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: 2b344249c10a4f8e5933762c4ee7b98c7fc26b67; production build remainsbbf25e6ab4931886f5a382ee3362593e573c19de. Later delivery documentation commits are identified separately from the compiled code source.
 - [Draft frontend PR1](https://github.com/neo-capiro/meri-greenfield/pull/1). No merge, cutover, deployment, shared migration or authentication change.
 - Current remote Meri main845edd0d5a30ad6dd7b22c9102091ce17b544271 inspected: no new overlap in apps/portfolio-web or docs/portfolio-31. Backend contracts rechecked at origin/main fd8765ec01d292013758606204f2c9d886cd31c1.
 - Shared policy:b32b4803933760dc0a93fffdcd8fba30a89c3aac; fetched remote:b2b0ce8c2bf03817b81e671d968b7892985b8d06. Machine map modified2026-09-30T00:21:48.2698715Z.
 
-Checkpoint prepared from checkout `bbf25e6ab4931886f5a382ee3362593e573c19de`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
+Source qualification prepared from clean checkout `2b344249c10a4f8e5933762c4ee7b98c7fc26b67`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
 
 ## Local implementation
 
 Shared shell/navigation, Clerk session/error boundary, validated service configuration, tokens/primitives and deep links support list/cards/filtering, three-step intake/edit/archive, Overview/activity actions, Objectives candidate/readiness, advocacy history, Calendar/meeting information/preparation/notes/debriefs, organization/government Relationships, Work destinations, retained Capabilities, Bill Tracker/watchlist, Opportunities, Files, team and facilities/map. Individual audit details and exact visual acceptance remain partial; a rendered screen does not close every row.
 
 Recent additions:
+
+- Focus tags are composed after the Overview description and before ownership. Fresh intake merge/exact receipt preserves other fields; versionless backend concurrency remains qualified. The profile menu explicitly prepares/reviews/downloads saved JSON, with scoped refusal and partial-source disclosure.
+- Current Engagement pulse white surface/grey statistics spacing matches inspected Figma; missing health/coverage definitions remain unavailable. Portfolio trend revalidation found quarter/thread counting and unresolved caller scope; no unsafe inferred analytics were rendered.
+- Recorded notes support pin/unpin; shared activity mutation coordination now retains uncertain outcomes across dialogs and permits GET-only reconciliation. Backend canonical-wall candidate2384 is separately reviewed and undeployed.
+- Record Voice Memo accepts an audio file through canonical Files/readiness/extraction, reviews the transcript, then explicitly generates a voice-method draft. Actual Calendar browser checks verify separate Save. Missing completeness metadata is disclosed; no microphone capture or live provider operation.
+- CSV parsing/import is component-validated only, pending its current product entry point. Saved-performance placement remains pending too.
 
 - Manual debrief source matches inspected desktop/mobile Figma and calls existing method=manual generation only after explicit submit. Save/approve/share remain separate. Meeting/actor changes discard pending source and late generation.
 - Client Quick log validates its exact new record before showing Undo; fresh unchanged preflight, duplicate fences and uncertain outcome refusal. Toast sits below both client action rows. Saved submission removal remains uncomposed pending current entry placement.
@@ -37,7 +43,11 @@ Recent additions:
 
 ## Verification actually run
 
-Latest source **bbf25e6ab4931886f5a382ee3362593e573c19de**, Node24.19: **400 unit/26 affected browser checks PASS**, TypeScript/lint/format/architecture325 modules/Next17-route build PASS. Five actual Next auth/deep-link checks pass; signed-in acceptance remains blocked. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/. The26 cases cover manual4, library12 and submission/Quick log10; they are not a new complete browser-suite claim.
+Latest clean source **2b344249c10a4f8e5933762c4ee7b98c7fc26b67**, Node24.19: **467 unit/79 affected browser PASS**, TypeScript/lint/format/architecture339 PASS. Affected profile/activity/source checks use intercepted synthetic contracts, not the complete browser suite. Representative actual Overview/menu and voice/Calendar screenshots were opened and reviewed. Evidence: outputs/evidence/portfolio-profile-integration-20261011/qualified-2b34424/.
+
+**Current-source production build NOT RUN:** Cleanup native6278471a is active and disk is near its recovery reserve. Root agreed to defer new builds/installs/Docker allocations. Preview5190 and the last build/auth/deep-link qualification remain atbbf25e6. This does not establish current-source build or signed-in acceptance.
+
+Previous production-qualified source **bbf25e6ab4931886f5a382ee3362593e573c19de**, Node24.19: **400 unit/26 affected browser checks PASS**, TypeScript/lint/format/architecture325 modules/Next17-route build PASS. Five actual Next auth/deep-link checks pass; signed-in acceptance remains blocked. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/. The26 cases cover manual4, library12 and submission/Quick log10; they are not a new complete browser-suite claim.
 
 Previous full regression at6c1c42fad9d66a13043958235d27f8c6e1f9fe65, retained separately:
 
@@ -94,6 +104,7 @@ The existing server proxy obtains the capiro JWT; browser tenant/permission head
 |[Geocode2373](https://github.com/neo-capiro/capirov2/pull/2373),6e5774a|96 checks; strict extracted types; cleanup shared CLI conservation review|Combined final-source/native PostgreSQL/HTTP/provider acceptance|
 |[Client research2382](https://github.com/neo-capiro/capirov2/pull/2382),d394712|Root110 tests; exact original4 writer regressions fail; strict helper/format/diff|Old-worker inventory/drain/upgrade/recovery; owner agreement; strict routes503; broader44 inherited typing diagnostics; live acceptance|
 |[Meeting PDF2383](https://github.com/neo-capiro/capirov2/pull/2383),320878e|Root47 tests; strict8 files/format/diff; proposedDDL immutable guards|Native source/RLS/grants/publication fence and adapters; unapplied/unallocatedSQL; no activation/live acceptance|
+|[ClientActivity wall2384](https://github.com/neo-capiro/capirov2/pull/2384),d75b3c7|Root78 tests; same51 on original40fail; new spec/format/diff PASS;37 inherited type diagnostics unchanged|Responsible service/security owner, atomic revocation/write fence and CAS, full Prisma/RLS/native/live acceptance; no activation|
 |[Brief refresh2378](https://github.com/neo-capiro/capirov2/pull/2378),87de0da|18 tests using actual pinned migration SQL|Module/migration/retention agreement, native/HTTP/live acceptance|
 
 All are drafts. Billing follows the approved inline quote/charge/receipt direction; a stored paid receipt alone grants no client slot. No charges/customer messages were used for validation.
@@ -102,8 +113,8 @@ All are drafts. Billing follows the approved inline quote/charge/receipt directi
 
 ## Traceability and ongoing work
 
-Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 241 partial frontend, 96 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
+Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 246 partial frontend, 91 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
 
-Quick log Undo and manual debrief source are integrated. Saved-performance removal is validated only in its component harness pending the current product entry point. Parallel work continues on profile tools, activity pin/actions and voice source. Preview-only research and reviewed PDF candidates2382/2383 are published; neither is activated. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
+Quick log Undo and manual debrief source are integrated. Saved-performance removal is validated only in its component harness pending the current product entry point. Profile tags/export, activity pin/actions and voice source are integrated and locally qualified. Synced thread expansion/review, public proceeding detail and persisted card ordering are the next bounded slices; native reply remains a verified backend dependency. Preview-only research and reviewed PDF candidates2382/2383 are published; neither is activated. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
 
 Feature folders own contracts/adapters/query/mutation coordination/UI; routes compose public interfaces. Foundations do not import features. Existing Schedule-X/React Flow and Workspace editor are reused; no competing Meri/editor or whole Module rebuild.

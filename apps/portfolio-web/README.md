@@ -71,7 +71,9 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Latest source `bbf25e6ab4931886f5a382ee3362593e573c19de`:400 unit/26 affected browser checks, TypeScript/lint/format/architecture325 modules/Next17-route build and5 actual Next auth/deep-link checks PASS. Manual source and exact client Quick log Undo are integrated. Component checks intercept APIs; signed-in/provider acceptance remains open. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/.
+Latest source `2b344249c10a4f8e5933762c4ee7b98c7fc26b67`:467 unit/79 affected browser checks, TypeScript/lint/format/architecture339 PASS. Overview tags/reviewed export, recorded-note pin and audio-file debrief source are integrated. Current-source production build deferred for Cleanup disk reserve; preview5190 remainsbbf25e6. No signed-in/provider acceptance. Evidence: outputs/evidence/portfolio-profile-integration-20261011/qualified-2b34424/.
+
+Previous production-qualified source `bbf25e6ab4931886f5a382ee3362593e573c19de`:400 unit/26 affected browser checks, TypeScript/lint/format/architecture325 modules/Next17-route build and5 actual Next auth/deep-link checks PASS. Manual source and exact client Quick log Undo are integrated. Component checks intercept APIs; signed-in/provider acceptance remains open. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/.
 
 Previous full regression qualification at `6c1c42fad9d66a13043958235d27f8c6e1f9fe65`
 on Node24.19.0: **384 unit and 233 component browser checks pass**,
