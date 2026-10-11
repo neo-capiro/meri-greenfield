@@ -130,7 +130,15 @@ def capture(out, label, arguments, timeout=45):
         raise ValueError("invalid evidence label")
     if len(arguments) < 2 or arguments[1] not in ALLOWED.get(arguments[0], set()):
         raise ValueError("operation is outside the owner qualification allowlist")
-    if any(arg.startswith("-") and arg not in OPTIONS[arguments[0]] for arg in arguments):
+    # History consumers bind each raw service page and its explicit nextToken.
+    # Keep all previous callers unchanged; this flag is admitted only for that
+    # one read operation and cannot become a global-option escape hatch.
+    options = OPTIONS[arguments[0]]
+    if arguments[:2] == ["stepfunctions", "get-execution-history"]:
+        options = options | {"--no-paginate"}
+    if arguments.count("--no-paginate") > 1:
+        raise ValueError("duplicate history pagination option")
+    if any(arg.startswith("-") and arg not in options for arg in arguments):
         raise ValueError("unrecognized, abbreviated or global CLI option")
     request_validation = (validate_readonly_request(arguments)
                           if arguments[:2] == ["stepfunctions", "test-state"] else None)
