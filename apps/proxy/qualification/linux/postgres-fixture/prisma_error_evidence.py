@@ -7,7 +7,7 @@ import json
 import math
 import types
 
-__all__ = ('classify_exception',)
+__all__ = ('classify_exception', 'classify_native_output')
 CASES = frozenset(('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'))
 MAX_BYTES = 65536
 MAX_CAUSES = 8
@@ -255,5 +255,88 @@ def classify_exception(case, error, *, evidence_complete=True):
     except _Refusal as error:
         result['reason'] = error.args[0]
     except (AttributeError, TypeError, OverflowError, RecursionError):
+        result['reason'] = 'MALFORMED_EVIDENCE'
+    return result
+
+
+def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
+                           evidence_complete=True):
+    """Decode one complete pinned-engine startup KnownError, without I/O.
+
+    Origin, process/config ownership and capture completeness belong to the
+    caller. CA/name candidates are observations, never qualified rejections.
+    No native text, metadata, paths or byte hashes leave this boundary.
+    """
+    result = {'case': case if type(case) is str and case in CASES else 'INVALID',
+              'specificRejection': False, 'reason': 'NO_SPECIFIC_EVIDENCE',
+              'tlsCandidate': 'UNRECOGNIZED', 'source': 'NONE',
+              'recordCount': 0, 'complete': False}
+    try:
+        if type(case) is not str or case not in CASES or type(stderr_bytes) is not bytes:
+            _deny('INVALID_INPUT')
+        for value in (expected_user, expected_host):
+            if (type(value) is not str or not value or len(value) > 256
+                    or any(ord(char) < 33 or ord(char) == 127 or char == '`' for char in value)):
+                _deny('INVALID_EXPECTED_IDENTITY')
+            if len(value.encode('utf-8', 'strict')) > 256:
+                _deny('INVALID_EXPECTED_IDENTITY')
+        if type(evidence_complete) is not bool or not evidence_complete:
+            _deny('INCOMPLETE_EVIDENCE')
+        if len(stderr_bytes) > MAX_BYTES:
+            _deny('BYTE_BOUND')
+        if (not stderr_bytes.endswith(b'\n') or stderr_bytes.count(b'\n') != 1
+                or b'\r' in stderr_bytes or not stderr_bytes.startswith(b'{')
+                or not stderr_bytes.endswith(b'}\n')):
+            _deny('NATIVE_FRAMING_REFUSED')
+        try:
+            payload = json.loads(stderr_bytes[:-1].decode('utf-8', 'strict'),
+                                 object_pairs_hook=_pairs,
+                                 parse_constant=lambda _: _deny('NONFINITE_JSON'))
+        except (ValueError, UnicodeError, RecursionError):
+            _deny('MALFORMED_JSON')
+        _tree(payload, {'bytes': len(stderr_bytes), 'values': 0})
+        if (type(payload) is not dict or set(payload) != {'is_panic', 'message', 'meta', 'error_code'}
+                or payload['is_panic'] is not False or type(payload['message']) is not str
+                or type(payload['error_code']) is not str or type(payload['meta']) is not dict):
+            _deny('NATIVE_KNOWN_SHAPE_REFUSED')
+        code, message, meta = payload['error_code'], payload['message'], payload['meta']
+        if code == 'P1000':
+            if (set(meta) != {'database_user', 'database_host'}
+                    or type(meta['database_user']) is not str or type(meta['database_host']) is not str):
+                _deny('NATIVE_META_REFUSED')
+            if meta['database_user'] != expected_user or meta['database_host'] != expected_host:
+                _deny('NATIVE_IDENTITY_MISMATCH')
+            formatted = (
+                f'Authentication failed against database server at `{expected_host}`, '
+                f'the provided database credentials for `{expected_user}` are not valid.\n\n'
+                f'Please make sure to provide valid database credentials for the database server at `{expected_host}`.')
+            if message != formatted:
+                _deny('NATIVE_FORMATTER_MISMATCH')
+            qualified = 'PASSWORD_REJECTED'
+        elif code == 'P1011':
+            if set(meta) != {'message'} or type(meta['message']) is not str or not meta['message']:
+                _deny('NATIVE_META_REFUSED')
+            if message != 'Error opening a TLS connection: ' + meta['message']:
+                _deny('NATIVE_FORMATTER_MISMATCH')
+            if meta['message'] == 'error performing TLS handshake: server does not support TLS':
+                qualified = 'TLS_UNSUPPORTED'
+            else:
+                candidate = _reason(code, meta['message'].lower())
+                if candidate in ('CERTIFICATE_REJECTED', 'HOSTNAME_REJECTED'):
+                    result['tlsCandidate'] = candidate
+                result.update(source='NATIVE_KNOWN_ERROR', recordCount=1,
+                              complete=True, reason='TLS_REASON_UNQUALIFIED')
+                return result
+        else:
+            _deny('NATIVE_UNKNOWN_CODE')
+        result.update(source='NATIVE_KNOWN_ERROR', recordCount=1, complete=True)
+        if (case == 'wrong-password' and qualified == 'PASSWORD_REJECTED'
+                or case == 'plaintext' and qualified == 'TLS_UNSUPPORTED'):
+            result.update(specificRejection=True, reason=qualified)
+        else:
+            result['reason'] = 'CASE_MISMATCH'
+    except _Refusal as error:
+        result['reason'] = error.args[0]
+    except (AttributeError, TypeError, OverflowError, RecursionError, UnicodeError):
         result['reason'] = 'MALFORMED_EVIDENCE'
     return result

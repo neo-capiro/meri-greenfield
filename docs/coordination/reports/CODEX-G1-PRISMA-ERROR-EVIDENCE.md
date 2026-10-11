@@ -112,3 +112,70 @@ Distinct final source review and integration-owner acceptance remain required.
 No native parser, peer composition, new Linux run or actual certificate proof
 follows from this repair. The historical wrong-CA cause stays UNKNOWN, its
 build stays FAILED, and G1 remains OPEN.
+# Native startup KnownError parser — source-only addition
+
+Base `af5c0304d1779e1a5e686f2b110d85e0ebc4827e`; new branch
+`task/g1-native-diagnostic-parser` in the same clean dedicated worktree. Earlier
+branches, reports and E1–E3/root-correction evidence remain historical.
+
+`classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
+evidence_complete=True)` consumes only complete bounded native fd2 DATA. It
+imports no Prisma/native implementation and performs no I/O. The canonical
+exception classifier and its 27 controls retain their bodies. Both public
+functions are listed in `__all__`; no parallel reason classifier was added.
+
+The result contains only fixed `case`, `specificRejection`, `reason`,
+`tlsCandidate`, `source`, `recordCount`, and `complete` enums/counts/booleans.
+Invalid caller cases become `INVALID`; private user/host/text/path/hash values
+are never returned. One LF-terminated UTF-8 JSON object is required, with exact
+KnownError keys, literal false panic, no duplicate keys, nonfinite values,
+unknown/extra fields, GraphQL envelope, tracing record or extra stderr line.
+Existing 64 KiB aggregate and structure limits are reused conservatively,
+counting raw bytes plus decoded strings. Expected synthetic identity strings
+are ordinary, nonempty bounded strings without whitespace/control/backticks.
+
+Primary public source is pinned Prisma engines commit
+`ac9d7041ed77bcc8a8dbd2ab6616b39013829574`. Root's closed discovery
+`prisma-native-diagnostic-discovery-1/FINDINGS-2.md` and exact raw Rust copies
+establish the renderer and formatters. The renderer writes a serialized
+KnownError to stderr followed by one newline; startup constructors omit
+optional `batch_request_idx`. The exact P1000 formatter in
+`libs/user-facing-errors/src/common.rs` is:
+
+```text
+Authentication failed against database server at `{database_host}`, the provided database credentials for `{database_user}` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `{database_host}`.
+```
+
+P1000 requires exactly `database_user`/`database_host` meta, agreement with both
+caller-supplied expected synthetic identities, and exact formatter equality.
+It can report `PASSWORD_REJECTED` only for the wrong-password case; this does
+not prove SCRAM use or authenticate the process origin.
+
+P1011 requires exactly one `message` meta and exact outer formatter
+`Error opening a TLS connection: {message}`. Only the pinned connector value
+`error performing TLS handshake: server does not support TLS` qualifies
+`TLS_UNSUPPORTED`, only for plaintext. Other P1011 values remain
+`specificRejection=false`, `TLS_REASON_UNQUALIFIED`; `tlsCandidate` may observe
+`CERTIFICATE_REJECTED` or `HOSTNAME_REJECTED` exclusively through existing
+`_reason`, otherwise `UNRECOGNIZED`. No native CA/name wording is accepted as
+qualified, and no DataError is fabricated.
+
+One inert run passed **37/37** (old27 + new10),
+2026-10-11 06:54:21.173061–06:54:21.291300 UTC, 0.125 seconds. Fixed
+Python3.12.14 `-I -B`, shell false, external60-second ceiling, pre/post source
+and runtime pins stable, socket/process audit attempts0, Prisma unimported.
+New controls cover source formatters, case/identity mismatch, CA/name privacy,
+strict framing, duplicate/nonfinite/unknown/panic/GraphQL/log shapes, exact
+meta/outer agreement, incomplete evidence, malformed expected identities,
+byte/depth limits and sanitized output. No parser test failed or was replayed.
+Raw streams/envelope, source/Git reconciliation and public-source copies are
+sealed under `.task-inputs/prisma-native-parser-1`.
+
+Root must separately bind the genuine engine/process/config, complete private
+capture and original deadline, actually caught exception, and non-conflicting
+available evidence before composition. The parser cannot authenticate origin
+from caller bytes or completeness flags. Actual wrong-CA cause remains UNKNOWN;
+native TLS/auth/runtime/security/G1 remain open. No native, network, DB, Docker,
+provider, image or fixture execution occurred in this source session.

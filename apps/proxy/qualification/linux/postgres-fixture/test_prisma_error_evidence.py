@@ -2,7 +2,7 @@
 import json
 import unittest
 
-from prisma_error_evidence import classify_exception
+from prisma_error_evidence import classify_exception, classify_native_output
 
 
 DataError = type('DataError', (Exception,), {'__module__': 'prisma.errors'})
@@ -320,6 +320,145 @@ class EvidenceTests(unittest.TestCase):
             for case in ('plaintext', 'wrong-ca', 'wrong-san'):
                 with self.subTest(issuer=issuer, case=case):
                     self.rejected(data_error(issuer + ': server does not support TLS'), case=case)
+
+
+class NativeEvidenceTests(unittest.TestCase):
+    USER = 'fixture_user'
+    HOST = 'fixture-db'
+    PASSWORD = ('Authentication failed against database server at `fixture-db`, '
+                'the provided database credentials for `fixture_user` are not valid.\n\n'
+                'Please make sure to provide valid database credentials for the database server at `fixture-db`.')
+    NO_TLS = 'error performing TLS handshake: server does not support TLS'
+
+    def native(self, text=None, code='P1011'):
+        text = self.NO_TLS if text is None else text
+        return {'is_panic': False, 'message': 'Error opening a TLS connection: ' + text,
+                'meta': {'message': text}, 'error_code': code}
+
+    def password(self):
+        return {'is_panic': False, 'message': self.PASSWORD, 'error_code': 'P1000',
+                'meta': {'database_user': self.USER, 'database_host': self.HOST}}
+
+    def encoded(self, value):
+        return (json.dumps(value, ensure_ascii=False) + '\n').encode()
+
+    def classify(self, raw, case='plaintext', **kwargs):
+        return classify_native_output(case, raw, expected_user=kwargs.pop('expected_user', self.USER),
+                                      expected_host=kwargs.pop('expected_host', self.HOST), **kwargs)
+
+    def refused(self, raw, case='plaintext', reason=None, **kwargs):
+        result = self.classify(raw, case, **kwargs)
+        self.assertFalse(result['specificRejection'], result)
+        if reason:
+            self.assertEqual(reason, result['reason'])
+        return result
+
+    def test_exact_native_no_tls_is_specific_only_for_plaintext(self):
+        raw = self.encoded(self.native())
+        self.assertEqual(self.classify(raw), {'case': 'plaintext', 'specificRejection': True,
+            'reason': 'TLS_UNSUPPORTED', 'tlsCandidate': 'UNRECOGNIZED',
+            'source': 'NATIVE_KNOWN_ERROR', 'recordCount': 1, 'complete': True})
+        for case in ('positive', 'wrong-ca', 'wrong-san', 'wrong-password'):
+            self.refused(raw, case, 'CASE_MISMATCH')
+
+    def test_exact_password_formatter_and_identity_are_required(self):
+        raw = self.encoded(self.password())
+        result = self.classify(raw, 'wrong-password')
+        self.assertTrue(result['specificRejection'])
+        self.assertEqual('PASSWORD_REJECTED', result['reason'])
+        for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext'):
+            self.refused(raw, case, 'CASE_MISMATCH')
+        self.refused(raw, 'wrong-password', 'NATIVE_IDENTITY_MISMATCH', expected_user='other')
+        self.refused(raw, 'wrong-password', 'NATIVE_IDENTITY_MISMATCH', expected_host='other')
+        payload = self.password()
+        payload['message'] = self.PASSWORD.replace('\n\n', '\n')
+        self.refused(self.encoded(payload), 'wrong-password', 'NATIVE_FORMATTER_MISMATCH')
+
+    def test_ca_and_name_remain_observational_even_for_matching_case(self):
+        for case, text, candidate in (
+                ('wrong-ca', 'certificate verify failed: SECRET_PASSWORD /private/ca.pem', 'CERTIFICATE_REJECTED'),
+                ('wrong-san', 'hostname mismatch: SECRET_HOST', 'HOSTNAME_REJECTED')):
+            result = self.refused(self.encoded(self.native(text)), case, 'TLS_REASON_UNQUALIFIED')
+            self.assertTrue(result['complete'])
+            self.assertEqual(candidate, result['tlsCandidate'])
+            public = json.dumps(result)
+            for private in ('SECRET_PASSWORD', 'SECRET_HOST', '/private/', 'fixture_user', 'fixture-db'):
+                self.assertNotIn(private, public)
+
+    def test_native_reason_vocabulary_is_not_broadened(self):
+        for text in ('server does not support TLS', 'server does not support SSL',
+                     'error performing TLS handshake: server does not support TLSv1.1',
+                     'error performing TLS handshake: server does not support TLS extensions',
+                     'unknown issuer: server does not support TLS',
+                     'certificate expired', 'generic TLS error', 'cert file not found'):
+            result = self.refused(self.encoded(self.native(text)), reason='TLS_REASON_UNQUALIFIED')
+            self.assertEqual('UNRECOGNIZED', result['tlsCandidate'])
+
+    def test_native_requires_one_complete_lf_json_line(self):
+        raw = self.encoded(self.native())
+        for invalid in (b'', raw[:-1], raw.replace(b'\n', b'\r\n'), raw + raw,
+                        b'warning\n' + raw, b' ' + raw, raw[:-1] + b' \n', b'{}\n\n'):
+            self.refused(invalid, reason='NATIVE_FRAMING_REFUSED')
+        self.refused(b'{"message":"\xff"}\n', reason='MALFORMED_JSON')
+
+    def test_native_duplicates_and_nonfinite_refuse(self):
+        raw = self.encoded(self.native())
+        self.refused(raw.replace(b'"is_panic": false', b'"is_panic": false, "is_panic": false'), reason='DUPLICATE_JSON')
+        self.refused(raw.replace(b'"meta": {', b'"meta": {"message": "private", '), reason='DUPLICATE_JSON')
+        self.refused(raw.replace(b'"is_panic": false', b'"is_panic": NaN'), reason='NONFINITE_JSON')
+
+    def test_native_unknown_and_nonstartup_shapes_refuse(self):
+        values = [{'is_panic': False, 'message': 'private', 'backtrace': None},
+                  {'fields': {'error_code': 'P1011'}, 'level': 'ERROR'},
+                  {'errors': [record()]}, self.native(code='P9999')]
+        for value in values:
+            self.refused(self.encoded(value))
+        for key, replacement in (('is_panic', True), ('is_panic', 0), ('meta', None),
+                                 ('message', None), ('error_code', 1011)):
+            value = self.native()
+            value[key] = replacement
+            self.refused(self.encoded(value), reason='NATIVE_KNOWN_SHAPE_REFUSED')
+        value = self.native()
+        value['batch_request_idx'] = 0
+        self.refused(self.encoded(value), reason='NATIVE_KNOWN_SHAPE_REFUSED')
+
+    def test_native_meta_and_outer_formatter_agreement(self):
+        for meta in ({}, {'message': self.NO_TLS, 'extra': 'private'}, {'message': None}, {'message': ''}):
+            value = self.native()
+            value['meta'] = meta
+            self.refused(self.encoded(value), reason='NATIVE_META_REFUSED')
+        value = self.native()
+        value['message'] += ' extra'
+        self.refused(self.encoded(value), reason='NATIVE_FORMATTER_MISMATCH')
+        value = self.password()
+        value['meta']['extra'] = 'private'
+        self.refused(self.encoded(value), 'wrong-password', 'NATIVE_META_REFUSED')
+
+    def test_native_incomplete_invalid_expected_and_byte_bounds(self):
+        raw = self.encoded(self.native())
+        for complete in (False, 1, None):
+            self.refused(raw, reason='INCOMPLETE_EVIDENCE', evidence_complete=complete)
+        for identity in ('', 'host with spaces', '`host`', '\n', 'a' * 257, ['host']):
+            self.refused(raw, reason='INVALID_EXPECTED_IDENTITY', expected_host=identity)
+        self.refused(bytearray(raw), reason='INVALID_INPUT')
+        self.refused(raw, 'caller-secret', 'INVALID_INPUT')
+        self.refused(b'{' + b'x' * 65536 + b'}\n', reason='BYTE_BOUND')
+        deep = {'nested': 'private'}
+        for _ in range(13):
+            deep = {'nested': deep}
+        value = self.native()
+        value['meta'] = deep
+        self.refused(self.encoded(value), reason='STRUCTURE_BOUND')
+
+    def test_native_public_results_contain_only_fixed_sanitized_values(self):
+        for raw in (self.encoded(self.native('private postgresql://secret:password@host')),
+                    self.encoded(self.password()), b'private garbage\n'):
+            result = self.classify(raw, 'wrong-password')
+            self.assertEqual(set(result), {'case', 'specificRejection', 'reason', 'tlsCandidate',
+                                           'source', 'recordCount', 'complete'})
+            self.assertTrue(all(type(value) in (str, bool, int) for value in result.values()))
+            self.assertNotIn('private', json.dumps(result))
+            self.assertNotIn('password@host', json.dumps(result))
 
 
 if __name__ == '__main__':
