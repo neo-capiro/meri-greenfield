@@ -5,9 +5,12 @@ do not modify the existing `capiro-dev` cluster, Capiro ALB/listener, or
 `os.capiro.ai` record. `ecr.yml` and `certificate.yml` were deployed through
 CloudFormation on 11 October 2026. `service.yml` is validated but **not deployed**.
 `build.yml` defines an isolated CodeBuild project with permissions limited to
-logs and pushing this preview repository; it cannot change ECS, DNS or Capiro
-services. Its `buildspec.yml` requires an exact source SHA, runs the full checks,
-and pushes an immutable image only after every check succeeds.
+reading a versioned private source ZIP, logs and pushing this preview repository;
+it cannot change ECS, DNS or Capiro services. Its `buildspec.yml` checks the
+archive's exact source SHA and S3 version, runs the full checks, and pushes an
+immutable image only after every check succeeds. The first GitHub-source attempt
+failed in `DOWNLOAD_SOURCE` because the account's CodeBuild credential lacked
+authorization for this private repository; it ran no source command or test.
 
 ## Existing foundation
 

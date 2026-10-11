@@ -2,6 +2,25 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Bounded isolated CodeBuild verification and image build for Portfolio preview
 
 Resources:
+  BuildSourceBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub capiro-portfolio-preview-source-${AWS::AccountId}-${AWS::Region}
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
   BuildLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -31,6 +50,14 @@ Resources:
                 Action: ecr:GetAuthorizationToken
                 Resource: "*"
               - Effect: Allow
+                Action: s3:GetBucketLocation
+                Resource: !GetAtt BuildSourceBucket.Arn
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                Resource: !Sub ${BuildSourceBucket.Arn}/inputs/portfolio-source.zip
+              - Effect: Allow
                 Action:
                   - ecr:BatchCheckLayerAvailability
                   - ecr:InitiateLayerUpload
@@ -48,12 +75,9 @@ Resources:
       TimeoutInMinutes: 60
       QueuedTimeoutInMinutes: 10
       Source:
-        Type: GITHUB
-        Location: https://github.com/neo-capiro/meri-greenfield.git
-        GitCloneDepth: 1
+        Type: S3
+        Location: !Sub ${BuildSourceBucket}/inputs/portfolio-source.zip
         BuildSpec: apps/portfolio-web/deployment/buildspec.yml
-        ReportBuildStatus: false
-      SourceVersion: refs/heads/codex/portfolio-continuation-20261011
       Artifacts:
         Type: NO_ARTIFACTS
       Environment:
@@ -74,3 +98,5 @@ Resources:
 Outputs:
   BuildProjectName:
     Value: !Ref PortfolioBuildProject
+  SourceBucketName:
+    Value: !Ref BuildSourceBucket

@@ -15,8 +15,8 @@ phases:
     commands:
       - set -euo pipefail
       - test -n "${EXPECTED_SHA:-}"
-      - test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
-      - test "$CODEBUILD_RESOLVED_SOURCE_VERSION" = "$EXPECTED_SHA"
+      - test "$(cat source-commit.txt)" = "$EXPECTED_SHA"
+      - test "$CODEBUILD_SOURCE_VERSION" = "$EXPECTED_S3_VERSION"
       - npm --prefix apps/portfolio-web run typecheck
       - npm --prefix apps/portfolio-web run lint
       - npm --prefix apps/portfolio-web run format:check
