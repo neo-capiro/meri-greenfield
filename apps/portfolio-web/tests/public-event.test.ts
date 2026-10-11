@@ -213,7 +213,7 @@ describe("source date and capture presentation", () => {
     expect(eventWhen(hearing)).toEqual({
       date: "Thu, Oct 8, 2026",
       time: "10:00 AM EDT",
-      warning: "This detail contract does not report start-time precision.",
+      warning: "The source does not report whether this start time is exact.",
     });
     expect(eventWhen({ ...hearing, scheduledStart: null })).toEqual({
       date: "Thu, Oct 8, 2026",

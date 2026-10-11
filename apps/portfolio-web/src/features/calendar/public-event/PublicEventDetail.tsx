@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import type { Destinations } from "@/shared/config/config";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -23,7 +24,11 @@ export function PublicEventDetail({
   clientId,
 }: PublicEventDetailProps) {
   const { query, identity, allowed } = usePublicEvent(eventId, clientId, open);
-  const detail = allowed && !query.error ? query.data : undefined;
+  const opener = useRef<HTMLElement | null>(null);
+  const detail =
+    allowed && query.isSuccess && !query.error && !query.isFetching
+      ? query.data
+      : undefined;
   const when = detail ? eventWhen(detail.hearing) : undefined;
   const href = detail
     ? publicEventHref(destinations.existingApp, detail.hearing.id)
@@ -41,6 +46,18 @@ export function PublicEventDetail({
       onOpenChange={onOpenChange}
       title={detail?.hearing.title ?? "Public proceeding"}
       className={styles.dialog}
+      onOpenAutoFocus={() => {
+        opener.current =
+          document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+      }}
+      onCloseAutoFocus={(event) => {
+        if (opener.current?.isConnected) {
+          event.preventDefault();
+          opener.current.focus();
+        }
+      }}
     >
       <div className={styles.kind}>
         <img src={kindAsset} alt="" width={8} height={8} />
@@ -50,7 +67,11 @@ export function PublicEventDetail({
         </span>
       </div>
       <QueryState
-        pending={identity.isPending || (allowed && query.isPending)}
+        pending={
+          identity.isPending ||
+          identity.isFetching ||
+          (allowed && (query.isPending || query.isFetching))
+        }
         error={identity.error ?? query.error}
         retry={() =>
           void (identity.error ? identity.refetch() : query.refetch())
@@ -113,15 +134,15 @@ export function PublicEventDetail({
           {insufficientCount > 0 && (
             <small role="note">
               Relevance needs additional evidence for {insufficientCount}{" "}
-              authorized {insufficientCount === 1 ? "client" : "clients"}.
+              {insufficientCount === 1 ? "client" : "clients"} in this tenant.
             </small>
           )}
           {detail.attendance && (
             <small role="status">{detail.attendance.message}</small>
           )}
           <small className="muted">
-            Public committee record · client relevance is scoped to your
-            authorized tenant{clientId ? " and selected client" : ""}.
+            Public committee record · client relevance in this organization
+            {clientId ? " for the selected client" : ""}.
           </small>
           <div className={styles.actions}>
             <span className="button" aria-label="Following status">

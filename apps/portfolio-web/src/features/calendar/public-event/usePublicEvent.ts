@@ -1,6 +1,6 @@
 "use client";
 import { useLayoutEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
@@ -26,7 +26,10 @@ export function usePublicEvent(
   open: boolean,
 ) {
   const api = useApi();
+  const cache = useQueryClient();
   const identity = useIdentity();
+  const invalidated =
+    identity.isStale && cache.getQueryState(["identity"])?.isInvalidated;
   const userId = identity.data?.user.id,
     tenantId = identity.data?.tenant?.id;
   const guard = useDispatchGuard(userId, tenantId);
@@ -45,6 +48,7 @@ export function usePublicEvent(
     !identity.isPending &&
     !identity.isFetching &&
     !identity.error &&
+    !invalidated &&
     (identity.data?.role === "standard_user" ||
       canAdminister(identity.data?.role)),
   );

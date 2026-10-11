@@ -45,7 +45,7 @@ export function eventWhen(hearing: PublicEvent["hearing"]) {
     }
   }
   if (!warning && hearing.scheduledStart && !hearing.timePrecision)
-    warning = "This detail contract does not report start-time precision.";
+    warning = "The source does not report whether this start time is exact.";
   return {
     date,
     time:
