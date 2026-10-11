@@ -1,0 +1,1086 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:qualification:sdk-fixture:1",
+  "title": "Private SDK interruption fixture channel — structural DATA only",
+  "$defs": {
+    "Clock": {
+      "type": "object",
+      "properties": {
+        "t0Ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "cleanupDeadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "t0Ms",
+        "deadlineMs",
+        "cleanupDeadlineMs"
+      ],
+      "additionalProperties": false
+    },
+    "Namespace": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "cwd": {
+          "const": "/workspace/conversation"
+        },
+        "projectKey": {
+          "const": "-workspace-conversation"
+        }
+      },
+      "required": [
+        "sessionId",
+        "cwd",
+        "projectKey"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimePins": {
+      "type": "object",
+      "properties": {
+        "sourceCommit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "imageDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "sdkVersion": {
+          "const": "0.3.295"
+        },
+        "cliVersion": {
+          "const": "2.1.295"
+        },
+        "contractsVersion": {
+          "const": "0.1.0"
+        },
+        "contractsSchemaSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "skillsManifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "sourceCommit",
+        "imageDigest",
+        "sdkVersion",
+        "cliVersion",
+        "contractsVersion",
+        "contractsSchemaSha256",
+        "skillsManifestSha256"
+      ],
+      "additionalProperties": false
+    },
+    "IdentityMapping": {
+      "type": "object",
+      "properties": {
+        "mappingId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "grantId": { "type": "string", "format": "uuid" },
+        "admittedAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 },
+        "taskArn": {
+          "type": "string",
+          "pattern": "^arn:aws:ecs:us-east-1:967807252336:task/[A-Za-z0-9_-]{1,255}/[a-f0-9]{32}$",
+          "maxLength": 370
+        },
+        "attempt": {
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "fence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "policyRevision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "canonical": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        }
+      },
+      "required": [
+        "mappingId",
+        "grantId",
+        "admittedAtMs",
+        "expiresAtMs",
+        "taskArn",
+        "attempt",
+        "fence",
+        "policyRevision",
+        "canonical"
+      ],
+      "additionalProperties": false
+    },
+    "FixtureContext": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "runUuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "phase": {
+          "enum": [
+            "interrupt",
+            "resume"
+          ]
+        },
+        "namespace": {
+          "$ref": "#/$defs/Namespace"
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityMapping"
+        },
+        "clock": {
+          "$ref": "#/$defs/Clock"
+        },
+        "pins": {
+          "$ref": "#/$defs/RuntimePins"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "runUuid",
+        "phase",
+        "namespace",
+        "identity",
+        "clock",
+        "pins"
+      ],
+      "additionalProperties": false
+    },
+    "NativeFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8388608
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "base64": {
+          "type": "string",
+          "maxLength": 11184812
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "base64"
+      ],
+      "additionalProperties": false
+    },
+    "NativeBundle": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "meri-native-session-files-v1"
+        },
+        "sdk": {
+          "const": "0.3.295"
+        },
+        "cli": {
+          "const": "2.1.295"
+        },
+        "binding": {
+          "$ref": "#/$defs/Namespace"
+        },
+        "directories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "minItems": 0,
+          "maxItems": 511
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NativeFile"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 33554432
+        }
+      },
+      "required": [
+        "format",
+        "sdk",
+        "cli",
+        "binding",
+        "directories",
+        "files",
+        "totalBytes"
+      ],
+      "additionalProperties": false
+    },
+    "Sentinel": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "const": "qualification/continuity.txt"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65536
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "base64": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 87384
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256",
+        "base64"
+      ],
+      "additionalProperties": false
+    },
+    "FileDigest": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8388608
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "NativeInventory": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "meri-native-session-files-v1"
+        },
+        "directories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "minItems": 0,
+          "maxItems": 511
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FileDigest"
+          },
+          "minItems": 1,
+          "maxItems": 256
+        },
+        "totalBytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 33554432
+        }
+      },
+      "required": [
+        "format",
+        "directories",
+        "files",
+        "totalBytes"
+      ],
+      "additionalProperties": false
+    },
+    "NativeEvidence": {
+      "type": "object",
+      "properties": {
+        "init": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "interrupt": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "exit": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "drain": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        }
+      },
+      "required": [
+        "init",
+        "interrupt",
+        "exit",
+        "drain"
+      ],
+      "additionalProperties": false
+    },
+    "FixtureReceiptIdentity": {
+      "type": "object",
+      "properties": {
+        "receiptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "receiptSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "receiptId",
+        "receiptSha256"
+      ],
+      "additionalProperties": false
+    },
+    "TrustedPublication": {
+      "type": "object",
+      "properties": {
+        "commitId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "publisherId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "committedAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "publication": {
+          "const": "CURRENT_FENCE_COMMITTED"
+        },
+        "publicationFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "bundleReadback": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "workspaceReadbackSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "commitId",
+        "publisherId",
+        "committedAtMs",
+        "publication",
+        "publicationFence",
+        "bundleReadback",
+        "workspaceReadbackSha256"
+      ],
+      "additionalProperties": false
+    },
+    "FixtureCheckpointReceipt": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "completeRecoveryCheckpoint": {
+          "const": false
+        },
+        "sessionStoreQualified": {
+          "const": false
+        },
+        "receiptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "producer": {
+          "$ref": "#/$defs/FixtureContext"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "native": {
+              "const": "declared-transcript-tree"
+            },
+            "workspace": {
+              "const": "one-synthetic-sentinel"
+            }
+          },
+          "required": [
+            "native",
+            "workspace"
+          ],
+          "additionalProperties": false
+        },
+        "bundle": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "nativeInventory": {
+          "$ref": "#/$defs/NativeInventory"
+        },
+        "workspace": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/WorkspaceManifest"
+        },
+        "workspaceSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "evidence": {
+          "$ref": "#/$defs/NativeEvidence"
+        },
+        "commit": {
+          "$ref": "#/$defs/TrustedPublication"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "completeRecoveryCheckpoint",
+        "sessionStoreQualified",
+        "receiptId",
+        "producer",
+        "coverage",
+        "bundle",
+        "nativeInventory",
+        "workspace",
+        "workspaceSha256",
+        "evidence",
+        "commit"
+      ],
+      "additionalProperties": false
+    },
+    "authorizeFixturePhaseRequest": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "operation": {
+          "const": "authorizeFixturePhase"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "context": {
+          "$ref": "#/$defs/FixtureContext"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "operation",
+        "requestId",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "authorizeFixturePhaseResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "authorizeFixturePhase"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "AUTHORIZED"
+            },
+            "decisionId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "checkedAtMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "decisionId",
+            "checkedAtMs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "authorizeFixturePhase"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "ERROR"
+            },
+            "code": {
+              "enum": [
+                "UNAVAILABLE",
+                "TIMEOUT",
+                "INDETERMINATE",
+                "REVOKED",
+                "INVALID_REQUEST"
+              ]
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "code"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "authorizeFixturePhase"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "DENIED_STALE_BINDING"
+            },
+            "decisionId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "checkedAtMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "currentContext": {
+              "$ref": "#/$defs/FixtureContext"
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "decisionId",
+            "checkedAtMs",
+            "currentContext"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "commitFixtureCheckpointRequest": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "operation": {
+          "const": "commitFixtureCheckpoint"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "context": {
+          "$ref": "#/$defs/FixtureContext"
+        },
+        "bundle": {
+          "$ref": "#/$defs/NativeBundle"
+        },
+        "fixtureFile": {
+          "$ref": "#/$defs/Sentinel"
+        },
+        "evidence": {
+          "$ref": "#/$defs/NativeEvidence"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "operation",
+        "requestId",
+        "context",
+        "bundle",
+        "fixtureFile",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "commitFixtureCheckpointResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "commitFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "completeRecoveryCheckpoint": {
+              "const": false
+            },
+            "sessionStoreQualified": {
+              "const": false
+            },
+            "status": {
+              "const": "COMMITTED"
+            },
+            "receipt": {
+              "$ref": "#/$defs/FixtureCheckpointReceipt"
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "completeRecoveryCheckpoint",
+            "sessionStoreQualified",
+            "status",
+            "receipt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "commitFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "ERROR"
+            },
+            "code": {
+              "enum": [
+                "UNAVAILABLE",
+                "TIMEOUT",
+                "INDETERMINATE",
+                "REVOKED",
+                "INVALID_REQUEST"
+              ]
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "loadFixtureCheckpointRequest": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "operation": {
+          "const": "loadFixtureCheckpoint"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "context": {
+          "$ref": "#/$defs/FixtureContext"
+        },
+        "reference": {
+          "$ref": "#/$defs/FixtureReceiptIdentity"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "operation",
+        "requestId",
+        "context",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "loadFixtureCheckpointResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "loadFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "completeRecoveryCheckpoint": {
+              "const": false
+            },
+            "sessionStoreQualified": {
+              "const": false
+            },
+            "status": {
+              "const": "LOADED"
+            },
+            "receipt": {
+              "$ref": "#/$defs/FixtureCheckpointReceipt"
+            },
+            "bundle": {
+              "$ref": "#/$defs/NativeBundle"
+            },
+            "fixtureFile": {
+              "$ref": "#/$defs/Sentinel"
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "completeRecoveryCheckpoint",
+            "sessionStoreQualified",
+            "status",
+            "receipt",
+            "bundle",
+            "fixtureFile"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "loadFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "ERROR"
+            },
+            "code": {
+              "enum": [
+                "UNAVAILABLE",
+                "TIMEOUT",
+                "INDETERMINATE",
+                "REVOKED",
+                "INVALID_REQUEST"
+              ]
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "verifyFixtureCheckpointRequest": {
+      "type": "object",
+      "properties": {
+        "channelVersion": {
+          "const": "sdk-fixture/1"
+        },
+        "profile": {
+          "const": "sdk-interruption-fixture-v1"
+        },
+        "operation": {
+          "const": "verifyFixtureCheckpoint"
+        },
+        "requestId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "context": {
+          "$ref": "#/$defs/FixtureContext"
+        },
+        "reference": {
+          "$ref": "#/$defs/FixtureReceiptIdentity"
+        },
+        "bundle": {
+          "$ref": "#/$defs/NativeBundle"
+        },
+        "fixtureFile": {
+          "$ref": "#/$defs/Sentinel"
+        }
+      },
+      "required": [
+        "channelVersion",
+        "profile",
+        "operation",
+        "requestId",
+        "context",
+        "reference",
+        "bundle",
+        "fixtureFile"
+      ],
+      "additionalProperties": false
+    },
+    "verifyFixtureCheckpointResponse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "verifyFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "completeRecoveryCheckpoint": {
+              "const": false
+            },
+            "sessionStoreQualified": {
+              "const": false
+            },
+            "status": {
+              "const": "VERIFIED"
+            },
+            "receipt": {
+              "$ref": "#/$defs/FixtureCheckpointReceipt"
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "completeRecoveryCheckpoint",
+            "sessionStoreQualified",
+            "status",
+            "receipt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "channelVersion": {
+              "const": "sdk-fixture/1"
+            },
+            "profile": {
+              "const": "sdk-interruption-fixture-v1"
+            },
+            "operation": {
+              "const": "verifyFixtureCheckpoint"
+            },
+            "requestId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "context": {
+              "$ref": "#/$defs/FixtureContext"
+            },
+            "status": {
+              "const": "ERROR"
+            },
+            "code": {
+              "enum": [
+                "UNAVAILABLE",
+                "TIMEOUT",
+                "INDETERMINATE",
+                "REVOKED",
+                "INVALID_REQUEST"
+              ]
+            }
+          },
+          "required": [
+            "channelVersion",
+            "profile",
+            "operation",
+            "requestId",
+            "context",
+            "status",
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

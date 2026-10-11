@@ -1,0 +1,35 @@
+# SDK fixture channel contract — source handoff
+
+Base `e939514122da8ecfb8170eb0380f0b0e1826d6a6`; branch/worktree `task/g1-sdk-fixture-channel-contract` / `C:/dev/main/meri-greenfield-worktrees/g1-sdk-fixture-channel-contract`. The task outline was written before implementation. Exactly six new allocated paths comprise this change: private qualification schema/validator/test, channel documentation, task outline and this report. Existing public 0.1 schema/package/exports/distribution/generator, retrieval0.2, locks, applications and state migrations are unchanged.
+
+The source implements one closed partial `FixtureCheckpointReceipt` and the four fixed authorize/commit/load/verify request-response pairs. It reuses canonical `RunBinding`, `ObjectReference`, `WorkspaceManifest`, hash and path functions. Qualification task ARN/integer attempt have explicit canonical UUID identity mapping. Policy revision, account/region and signed-int fence constraints match the existing qualification grant owner. Original producer and clocks remain immutable; replacement must be fresh, distinct and higher fenced. Native bundle and one synthetic sentinel have exact bounded bytes/hash/inventory/object-version correlation. Only a validated typed stale-binding outcome can support a denial witness; errors and unknown responses throw.
+
+The overriding gate-placement report is followed: this is the W02/G1 durable partial-fixture contract slice. It neither moves full W05 SessionStore into G1 nor replaces full product checkpoint/recovery scope. Mandatory `completeRecoveryCheckpoint:false` and `sessionStoreQualified:false` persist in every receipt/success shape. The public product Checkpoint validator and public package boundary reject this private type/entry.
+
+## Actual checks and retained failures
+
+All receipts, raw stdout/stderr, source pre/post pins, dependency provenance and exact historical contract-source snapshots are retained under `.task-inputs/sdk-fixture-channel-contract-1/` in this worktree. Node is the bundled pinned runtime; the supervisor uses `shell:false`, binary captures, direct 60-second child timeout and 2 MiB post-completion stream caps. This is direct child supervision, not process-tree or OS isolation. No native SDK, listener, network, provider, AWS or storage service was invoked.
+
+| Retained run | Actual result | Qualification |
+| --- | --- | --- |
+| `focused-1` | 15/16 pass, exit 1 | Test mutated an aliased expected producer as well as the candidate receipt, yielding the later workspace refusal. The test was corrected to clone the producer; production did not change for this correction. |
+| `focused-2` | 16/16 pass | Corrected independent foreign-producer assertion. |
+| `focused-3` | 16/16 pass | Source/test alignment changed policy revision to the canonical 64-hex digest. |
+| `focused-4` | 16/16 pass | Final source: exact qualification task account/region and signed-int fence bounds, plus public private-entry refusal. Stdout 3,856 bytes, SHA256 `791a0b71c82217879ba7b0127833aad85ba29a458a333b53c9afab0f40d840a8`; stderr empty. |
+| `public-boundaries-1` | 16/17 pass, exit 1 | Borrowed root dependencies lacked esbuild; final unchanged generated-distribution check could not start. |
+| `public-generated-2` | selected generated check failed | Borrowed contracts dependency junction changed esbuild source-path labels, causing byte drift; public source/dist were not changed. |
+| `public-generated-3` | 17/17 pass | Normal local contract dependency topology restored byte-exact generation. A supervisor label-selection mistake ran all 17 public checks rather than only the blocked generated case, unnecessarily replaying 16 checks. This mistake and both setup failures are retained; no further replay occurred. |
+
+The local setup copied only canonical contracts dependencies from `frontend-ownership-integration/packages/contracts/node_modules`: 2,852 files / 52,819,147 bytes, with borrowed pre/post and owned-copy hashes equal. No install or network occurred. The former local junction was moved into ignored evidence; borrowed dependencies remain untouched. `local-dependencies.json` records the full mapping. The final public run stdout is 3,586 bytes, SHA256 `baf0fdda6f2a6bde3bc3a93d261f2f9cefa9249856e48cabf5aa7b2d95141ff2`; stderr empty. The initial supervisor source had a different label branch; retained envelopes/streams establish outcomes, while only the final supervisor source is sealed. Exact initial/intermediate four contract-source bytes were preserved before subsequent edits.
+
+The 16 focused groups cover roundtrip correlation; incomplete-product flags/public boundary; foreign producer/receipt/hash/pins/identity; clocks and expiry; distinct replacement and original historical producer; paths/parents/namespace/corrupt bytes/bounds; stored inventory and whole bundle; workspace/scopes/readback/publication; explicit stale versus error/unknown; and nonfinite/cyclic/accessor/sparse data. They are deterministic synthetic DATA checks, not evidence of real gateway authorization or durable native recovery.
+
+Before staging, the six allocated files were normalized to repository-required LF line endings. The exact final tested CRLF contract-source bytes are retained in `focused-4/source/`; the explicit byte transformation is recorded in `line-ending-map.json`. No non-newline byte changed and no behavior replay was added for this serialization-only conversion. Commit/raw Git pins identify the LF source, while the test receipt pins identify its retained CRLF predecessor.
+
+## Remaining implementation and limits
+
+Receipt identity is integrity/correlation data, not a signature or authority. Trusted expected producer/reference must come from the service/control plane. Object references, admission timestamps, publisher names and evidence references are claims until independently authenticated/read. The service must authenticate exact peer/current grant, validate actual init/interrupt/exit/drain and fixture quiescence, persist/reread immutable object versions, and atomically fence publication. A strict bounded raw-wire parser is still needed before object validation. Expired/malformed/unknown requests cannot become stale-denial witnesses by catch-all conversion.
+
+No trusted store/channel endpoint, persistence transaction, SDK driver bridge, native two-task interruption/replacement/resume, egress proof or physical cleanup is implemented. Source/image/SDK/CLI/contracts/skills pins are bound as data but this source check does not admit an image or runtime. Full planned W05 SessionStore/workspace recovery and W09 integration remain separate. Root must independently review this commit before allocating the focused trusted service and driver adapter. No runtime, security or G1 acceptance is claimed.
+
+Final exact source/raw Git pins, protected-source comparison, retained check outcomes and finite evidence membership are in the ignored `SOURCE-PINS.json`, `DATA.json`, `commit-readback.json` and `FINAL-MANIFEST.json`. The manifest excludes itself; this report does not self-certify its commit or evidence hash.
