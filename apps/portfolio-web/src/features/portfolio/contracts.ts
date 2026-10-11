@@ -18,6 +18,7 @@ export const clientSchema = z.object({
   intakeData: z
     .object({ profileNotes: z.string().optional() })
     .passthrough()
+    .nullable()
     .optional(),
   submissionTracks: z.array(z.string()).optional(),
   issueCodes: z.array(z.string()).optional(),
