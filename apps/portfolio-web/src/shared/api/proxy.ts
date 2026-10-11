@@ -15,7 +15,7 @@ const permittedRoots: Record<Service, readonly string[]> = {
     "explorer",
   ],
   strategy: ["planner", "strategies"],
-  workspace: ["drafts", "documents", "artifacts"],
+  workspace: ["drafts", "documents", "artifacts", "templates"],
   intelligence: ["clients", "legiwatch", "opportunities", "tracker"],
   meri: [],
 };
@@ -58,6 +58,14 @@ export async function proxyRequest(
     )
   ) {
     return jsonError(400, "Invalid service path.");
+  }
+  if (selected === "workspace" && path[0] === "templates") {
+    // Portfolio reads the existing tenant-visible library and a single preview.
+    // Template authoring and other catalog operations remain in Workspace.
+    if (path.length !== 2)
+      return jsonError(400, "Invalid template catalog path.");
+    if (request.method !== "GET")
+      return jsonError(405, "Template catalog access is read-only.");
   }
   const base = config.services[selected];
   if (!base || !config.authConfigured || config.issues.length)

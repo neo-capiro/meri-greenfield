@@ -239,3 +239,75 @@ describe("HTTP boundary", () => {
     });
   });
 });
+
+describe("Workspace template read boundary", () => {
+  const workspaceConfig = {
+    ...config,
+    services: {
+      ...config.services,
+      workspace: "https://workspace.example.test/workspace-api",
+    },
+  };
+  it.each(["library", "tenant-template-1"])(
+    "reads the permitted %s with the configured tenant-authenticated service",
+    async (id) => {
+      const network = vi
+        .fn<typeof fetch>()
+        .mockResolvedValue(Response.json([]));
+      const response = await proxyRequest(
+        new Request(
+          `http://localhost:5190/api/backend/workspace/templates/${id}`,
+        ),
+        "workspace",
+        ["templates", id],
+        workspaceConfig,
+        async () => "minted",
+        network,
+      );
+      expect(response.status).toBe(200);
+      expect(String(network.mock.calls[0]?.[0])).toBe(
+        `https://workspace.example.test/workspace-api/templates/${id}`,
+      );
+      expect(network.mock.calls[0]?.[1]?.cache).toBe("no-store");
+    },
+  );
+  it.each(["POST", "PUT", "PATCH", "DELETE"])(
+    "rejects %s before minting a token or dispatching a catalog write",
+    async (method) => {
+      const token = vi.fn();
+      const network = vi.fn();
+      const response = await proxyRequest(
+        new Request(
+          "http://localhost:5190/api/backend/workspace/templates/library",
+          {
+            method,
+            headers: { origin: "http://localhost:5190" },
+          },
+        ),
+        "workspace",
+        ["templates", "library"],
+        workspaceConfig,
+        token,
+        network,
+      );
+      expect(response.status).toBe(405);
+      expect(token).not.toHaveBeenCalled();
+      expect(network).not.toHaveBeenCalled();
+    },
+  );
+  it.each([["templates"], ["templates", "tenant-template-1", "publish"]])(
+    "does not expose additional template routes %j",
+    async (...path) => {
+      const token = vi.fn();
+      const response = await proxyRequest(
+        new Request("http://localhost:5190/api/backend/workspace/templates"),
+        "workspace",
+        path,
+        workspaceConfig,
+        token,
+      );
+      expect(response.status).toBe(400);
+      expect(token).not.toHaveBeenCalled();
+    },
+  );
+});
