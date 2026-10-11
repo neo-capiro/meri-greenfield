@@ -5,12 +5,14 @@ import { useRef, useState } from "react";
 import { DropdownMenu } from "radix-ui";
 import type { Client } from "@/features/portfolio/public";
 import { ClientAttendancePreferences } from "@/features/calendar/attendance/public";
+import { ClientEnrichmentDialog } from "./enrichment/public";
 import headerStyles from "./client-header.module.css";
 import styles from "./client-meri-actions.module.css";
 
 export function ClientMeriActions({ client }: { client: Client }) {
   const trigger = useRef<HTMLButtonElement>(null);
   const [preferences, setPreferences] = useState(false);
+  const [enrichment, setEnrichment] = useState(false);
   return (
     <>
       <DropdownMenu.Root>
@@ -29,7 +31,7 @@ export function ClientMeriActions({ client }: { client: Client }) {
             align="end"
             sideOffset={8}
             onCloseAutoFocus={(event) => {
-              if (preferences) event.preventDefault();
+              if (preferences || enrichment) event.preventDefault();
             }}
           >
             <DropdownMenu.Item
@@ -42,13 +44,12 @@ export function ClientMeriActions({ client }: { client: Client }) {
             </DropdownMenu.Item>
             <DropdownMenu.Item
               className={styles.item}
-              disabled
-              title="Profile enrichment review is being connected"
+              onSelect={() => setEnrichment(true)}
             >
               <span>✦ Fill with Meri</span>
               <small>
-                Meri proposes field values from connected sources. Nothing is
-                written until you review each one.
+                Review saved suggestions from connected sources before applying
+                selected findings.
               </small>
             </DropdownMenu.Item>
             <DropdownMenu.Item
@@ -63,6 +64,11 @@ export function ClientMeriActions({ client }: { client: Client }) {
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
+      <ClientEnrichmentDialog
+        clientId={client.id}
+        open={enrichment}
+        onOpenChange={setEnrichment}
+      />
       {preferences && (
         <ClientAttendancePreferences
           clientId={client.id}
