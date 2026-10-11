@@ -1,5 +1,39 @@
 import { test, expect } from "@playwright/test";
 import { client, clientId, installFixtures, json } from "./fixtures";
+
+test("production Add profile chooser opens retained LDA intake, returns and restores focus", async ({
+  page,
+}) => {
+  const unexpected = await installFixtures(page);
+  const writes: string[] = [];
+  await page.route("**/api/backend/core/firm/**", (route) => {
+    if (route.request().method() !== "GET") writes.push(route.request().url());
+    return json(route, { ldaRegistrantId: null, ldaRegistrantName: null });
+  });
+  await page.goto("/portfolio");
+  const add = page
+    .getByRole("button", { name: "Add profile", exact: true })
+    .first();
+  await add.click();
+  await page.getByRole("button", { name: /Search LDA/ }).click();
+  await expect(
+    page.getByRole("dialog", {
+      name: "Find your firm in LDA filings",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "← Back", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Add profile", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Close", exact: true })
+    .click();
+  await expect(add).toBeFocused();
+  expect(writes).toEqual([]);
+  expect(unexpected).toEqual([]);
+});
 async function openCreate(page: import("@playwright/test").Page) {
   await page.goto("/portfolio");
   await page

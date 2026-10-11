@@ -14,6 +14,7 @@ import { ProspectsIndex } from "@/features/prospects/ProspectsIndex";
 import { ProspectDetail } from "@/features/prospects/ProspectDetail";
 import { BillTrackerPage } from "@/features/bill-tracker/BillTrackerPage";
 import { OpportunitiesPage } from "@/features/opportunities/OpportunitiesPage";
+import { RegistrantIntakeHarness } from "./registrant-intake-harness";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -24,6 +25,7 @@ const destinations = {
 };
 function App() {
   const path = usePathname();
+  if (path === "/__test/registrant-intake") return <RegistrantIntakeHarness />;
   const [, , clientId, tab] = path.split("/");
   if (clientId === "prospects")
     return tab ? (

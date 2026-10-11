@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ClientIntakeDialog } from "@/features/client-intake/public";
+import { RegistrantImportDialog } from "@/features/intake/registrant/public";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -22,6 +23,7 @@ function ProfileChoiceSession({
   const router = useRouter();
   const identity = useIdentity();
   const [manual, setManual] = useState(false);
+  const [registrant, setRegistrant] = useState(false);
   const switching = useRef(false);
   const [opener] = useState(() =>
     typeof document !== "undefined" &&
@@ -34,9 +36,24 @@ function ProfileChoiceSession({
     if (opener?.isConnected) opener.focus();
   };
   const permitted =
+    identity.isSuccess &&
+    !identity.isFetching &&
+    Boolean(identity.data?.tenant?.id) &&
     !identity.error &&
     (identity.data?.role === "standard_user" ||
       canAdminister(identity.data?.role));
+  if (registrant)
+    return (
+      <RegistrantImportDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        onBack={() => {
+          switching.current = false;
+          setRegistrant(false);
+        }}
+        onCloseAutoFocus={restoreFocus}
+      />
+    );
   if (manual)
     return (
       <ClientIntakeDialog
@@ -82,22 +99,20 @@ function ProfileChoiceSession({
             description="Fill out the intake form yourself."
           />
         </button>
-        <div className={styles.unavailableChoice}>
-          <button
-            className={styles.profileChoice}
-            disabled
-            aria-describedby="lda-unavailable"
-          >
-            <ChoiceContent
-              icon="search"
-              title="Search LDA"
-              description="Import clients from your firm’s lobbying filings."
-            />
-          </button>
-          <small id="lda-unavailable">
-            LDA import is not available in this preview.
-          </small>
-        </div>
+        <button
+          className={styles.profileChoice}
+          disabled={!permitted}
+          onClick={() => {
+            switching.current = true;
+            setRegistrant(true);
+          }}
+        >
+          <ChoiceContent
+            icon="search"
+            title="Search LDA"
+            description="Import clients from your firm’s lobbying filings."
+          />
+        </button>
         <div className={styles.unavailableChoice}>
           <button
             className={styles.profileChoice}
