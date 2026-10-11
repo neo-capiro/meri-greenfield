@@ -72,7 +72,15 @@ test("actual index saves the complete canonical catalog and restores it after re
     fullPage: true,
   });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.evaluate(() => (document.documentElement.dataset.theme = "dark"));
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(18, 18, 18)",
+  );
+  await expect(page.getByRole("article").first()).toHaveCSS(
+    "background-color",
+    "rgb(27, 27, 27)",
+  );
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
