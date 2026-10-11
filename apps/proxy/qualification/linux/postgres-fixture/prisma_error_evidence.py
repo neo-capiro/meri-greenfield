@@ -146,11 +146,15 @@ def _reason(code, message):
                 'unsupported certificate', 'certificate algorithm', 'signature algorithm')):
             return None
         hostname = any(text in message for text in ('hostname mismatch', 'ip address mismatch'))
-        unsupported = any(text in message for text in ('server does not support tls',
-                'server does not support ssl', 'ssl is not enabled on the server'))
+        no_tls = ('server does not support tls', 'server does not support ssl',
+                  'ssl is not enabled on the server')
+        mentions = sum(message.count(text) for text in no_tls)
+        # Only a complete final clause qualifies; TLSv1.1/extensions are other
+        # failures. A malformed mention cannot fall through to another reason.
+        unsupported = mentions == 1 and message.rsplit(':', 1)[-1].strip() in no_tls
         certificate = any(text in message for text in ('certificate verify failed', 'unknown issuer',
                                                        'unable to get local issuer', 'self-signed certificate'))
-        if unsupported and (hostname or certificate):
+        if mentions and (not unsupported or hostname or 'certificate' in message):
             return None
         if hostname:
             return 'HOSTNAME_REJECTED'

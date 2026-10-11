@@ -290,5 +290,30 @@ class EvidenceTests(unittest.TestCase):
         self.rejected(data_error('server does not support TLS', 'P9999'), case='plaintext')
 
 
+    def test_no_tls_terminal_clause_suffix_collisions_refuse(self):
+        for ending in ('TLSv1.1', 'TLS extensions', 'SSLv3', 'SSL extensions'):
+            message = 'error performing TLS handshake: server does not support ' + ending
+            for case in ('plaintext', 'wrong-san', 'wrong-ca'):
+                with self.subTest(case=case, ending=ending):
+                    self.rejected(data_error(message), case=case)
+        for message in ('SSL is not enabled on the server extension',
+                        'server does not support TLSv1.1: server does not support TLS',
+                        'server does not support TLS; hostname mismatch',
+                        'hostname mismatch: server does not support TLSv1.1',
+                        'certificate verify failed: server does not support TLS extensions',
+                        'certificate detail: server does not support TLS'):
+            for case in ('plaintext', 'wrong-san', 'wrong-ca'):
+                with self.subTest(case=case, message=message):
+                    self.rejected(data_error(message), case=case)
+
+    def test_pinned_handshake_terminal_clause_is_specific(self):
+        result = classify_exception('plaintext', data_error(
+            'error performing TLS handshake: server does not support TLS'))
+        self.assertTrue(result['specificRejection'])
+        self.assertEqual('TLS_UNSUPPORTED', result['reason'])
+        self.rejected(data_error('error performing TLS handshake: server does not support TLS',
+                                 'P9999'), case='plaintext')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

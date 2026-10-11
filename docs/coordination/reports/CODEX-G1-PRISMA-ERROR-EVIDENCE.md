@@ -68,3 +68,19 @@ All20 original test-method bodies remain raw-byte identical. Four new methods co
 New evidence is exclusively `.task-inputs/prisma-error-evidence-2`; it includes original3rawfiles, outline, raw test streams/machine envelope, source AST/body reconciliation, all62 original E1 payload hashes verified unchanged, fresh rawGit/current source binding and a new finite seal. Original report snapshots and FINAL-MANIFEST were never rewritten. Source acceptance still requires distinct independent/root review. Native output capture/parser/peer composition and actual TLS/authentication/G1 remain open; the failed wrong-CA runtime cause remains UNKNOWN.
 
 Before closure, final review made the requested generic invalid-certificate exclusion explicit, including its mixed hostname/server-refusal forms. The same24 methods, with additional literal subcases, passed in a new source-bound run; the first corrected candidate d7cbe0b and its raw checked files/receipt remain retained. There was no failed invocation in this correction session. Final checks are E2/checks-2/process.json; root acceptance remains pending.
+# Terminal-clause correction, E3
+
+Independent review of sealed E2 found that the `server does not support tls`
+substring also accepted TLSv1.1 and TLS extensions. E2 and its HOLD remain
+immutable. E3 changes only `_reason`: a single supported no-TLS mention must
+be the complete terminal colon-delimited clause. Malformed suffixes and mixed
+hostname/certificate mentions refuse before any other positive reason. No
+vocabulary, exception/response layout, native parser, bound or completeness
+policy was added. The two new methods retain all previous 24 test bodies.
+The one bounded inert suite passed 26/26 on 2026-10-11 at
+06:36:22.580945–06:36:22.709214 UTC (0.140 seconds), fixed Python 3.12.14
+`-I -B`, shell false and a 60-second external ceiling. Source/runtime pins
+were stable, denied socket/process events were empty and Prisma was not
+imported. Binary streams and the process envelope are in E3/checks-1.
+The bounded inert suite result is recorded in E3; source qualification requires
+independent review, and actual wrong-CA cause/native TLS/G1 remain unqualified.
