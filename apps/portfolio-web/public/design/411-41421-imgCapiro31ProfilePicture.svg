@@ -1,0 +1,19 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Capiro 3.1/Profile picture">
+<g clip-path="url(#clip0_0_763)">
+<path d="M0 16C0 7.16344 7.16344 0 16 0V0C24.8366 0 32 7.16344 32 16V16C32 24.8366 24.8366 32 16 32V32C7.16344 32 0 24.8366 0 16V16Z" fill="#F5F5F4"/>
+<ellipse id="Shoulders" cx="16" cy="35.5" rx="13" ry="10.5" fill="#57534E"/>
+<rect id="Neck" x="13" y="20" width="6" height="8" fill="#A8A29E"/>
+<ellipse id="Hair silhouette" cx="16" cy="12.5" rx="7.5" ry="8.5" fill="#44403C"/>
+<ellipse id="Face" cx="16" cy="15.5" rx="6" ry="7.5" fill="#A8A29E"/>
+<ellipse id="Hair fringe" cx="16" cy="7.5" rx="7" ry="3.5" fill="#44403C"/>
+<ellipse id="Left ear" cx="10" cy="15" rx="1" ry="2" fill="#A8A29E"/>
+<ellipse id="Right ear" cx="22" cy="15" rx="1" ry="2" fill="#A8A29E"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_763">
+<path d="M0 16C0 7.16344 7.16344 0 16 0V0C24.8366 0 32 7.16344 32 16V16C32 24.8366 24.8366 32 16 32V32C7.16344 32 0 24.8366 0 16V16Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>

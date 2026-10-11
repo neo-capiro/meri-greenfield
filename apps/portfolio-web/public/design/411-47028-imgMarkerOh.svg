@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Marker/OH">
+<circle id="Halo" cx="17" cy="17" r="17" fill="#78716C"/>
+<circle id="Core" cx="17" cy="17" r="8" fill="url(#paint0_linear_0_102)" stroke="#78716C" stroke-width="2"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_102" x1="11.9921" y1="8.78554" x2="22.0079" y2="25.2145" gradientUnits="userSpaceOnUse">
+<stop stop-color="#242424"/>
+<stop offset="1" stop-color="#0A0A0A"/>
+</linearGradient>
+</defs>
+</svg>

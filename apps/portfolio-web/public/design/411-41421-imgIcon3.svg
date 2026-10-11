@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon">
+<path id="Pad" d="M8 2H4.67C3.93 2 3.33 2.6 3.33 3.33V12.67C3.33 13.4 3.93 14 4.67 14H11.33C12.07 14 12.67 13.4 12.67 12.67V8" stroke="#0A0A0A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Pencil" d="M14.3 3.7L12.3 1.7L7.5 8.1L6.7 10.1L8.7 9.3L14.3 3.7Z" stroke="#0A0A0A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>
