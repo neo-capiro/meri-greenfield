@@ -1,9 +1,21 @@
 // Existing STANDARD qualification component; inert proposed CFN, no clients.
 import { FIXTURE as F, fixtureTags, fixtureMachineName, validateFixtureBinding } from './fixture-volume-binding.mjs';
-import { compileFixtureWorkflow } from './fixture-volume-workflow.mjs';
+import { compileFixtureWorkflow, compileFixtureBootstrapWorkflow } from './fixture-volume-workflow.mjs';
+import { validateFixtureBootstrapDescriptor } from './fixture-volume-activation.mjs';
 
 export function compileFixtureTemplate(input) {
   const b = input === undefined ? null : validateFixtureBinding(input);
+  return buildFixtureTemplate(b, compileFixtureWorkflow(input), null);
+}
+
+export function compileFixtureBootstrapTemplate(input) {
+  if (input === undefined) return compileFixtureTemplate();
+  const d = validateFixtureBootstrapDescriptor(input);
+  const b = validateFixtureBinding({ t0Ms: d.clock.t0Ms, createNotAfterMs: d.clock.createNotAfterMs, ownerBindingId: d.ownerBindingId });
+  return buildFixtureTemplate(b, compileFixtureBootstrapWorkflow(d), d);
+}
+
+function buildFixtureTemplate(b, definition, descriptor) {
   const name = b ? fixtureMachineName() : 'MeriGF-BrowserFixture-SOURCE-ONLY';
   const machineArn = `arn:aws:states:${F.region}:${F.account}:stateMachine:${name}`;
   const tagValues = Object.fromEntries(fixtureTags().map(t => [t.Key, t.Value]));
@@ -28,9 +40,10 @@ export function compileFixtureTemplate(input) {
       Condition: { StringEquals: { ...region, 'kms:ViaService': `ec2.${F.region}.amazonaws.com`, 'kms:CallerAccount': F.account },
         Bool: { 'kms:GrantIsForAWSResource': 'true' } } },
   ] } }] : [];
-  return { AWSTemplateFormatVersion: '2010-09-09', Description: 'INERT single-owner empty fixture lifecycle source proposal',
+  return { AWSTemplateFormatVersion: '2010-09-09', Description: descriptor ? 'MANAGED_WIRE_BOOTSTRAP_V1 source proposal; external admission required' : 'INERT single-owner empty fixture lifecycle source proposal',
     Metadata: { runtimeEnabled: false, absenceWireQualified: false, managedSurvivalQualified: false, wireProfile: F.wireProfile,
-      binding: b, localSource9MutationPathExcluded: true, originalCeilingMs: F.ceilingMs },
+      binding: b, localSource9MutationPathExcluded: true, originalCeilingMs: F.ceilingMs,
+      ...(descriptor ? { bootstrapDescriptor: descriptor, externalAdmissionRequired: true } : {}) },
     Resources: {
       FixtureRole: { Type: 'AWS::IAM::Role', Properties: {
         AssumeRolePolicyDocument: { Version: '2012-10-17', Statement: [{ Effect: 'Allow', Principal: { Service: 'states.amazonaws.com' },
@@ -39,7 +52,7 @@ export function compileFixtureTemplate(input) {
       } },
       FixtureLifecycle: { Type: 'AWS::StepFunctions::StateMachine', Properties: {
         StateMachineType: 'STANDARD', StateMachineName: name, RoleArn: { 'Fn::GetAtt': ['FixtureRole', 'Arn'] },
-        Definition: compileFixtureWorkflow(input), Tags: [{ Key: 'Project', Value: 'meri-greenfield' },
+        Definition: definition, Tags: [{ Key: 'Project', Value: 'meri-greenfield' },
           { Key: 'QualificationOnly', Value: 'true' }, { Key: 'QualificationRun', Value: F.runUuid }],
       } },
     } };

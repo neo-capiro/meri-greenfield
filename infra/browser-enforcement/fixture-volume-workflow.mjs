@@ -1,5 +1,6 @@
 // One finite STANDARD execution owns CREATE and first DELETE. Source DATA only.
 import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName, validateFixtureBinding } from './fixture-volume-binding.mjs';
+import { validateFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 const q = JSON.stringify;
 const e = text => `{% ${text} %}`;
 const now = '$toMillis($now())';
@@ -13,7 +14,20 @@ export const fixtureRefusal = () => ({ QueryLanguage: 'JSONata', StartAt: 'Sourc
 
 export function compileFixtureWorkflow(input) {
   if (input === undefined) return fixtureRefusal();
-  const b = validateFixtureBinding(input), s = {};
+  return buildFixtureWorkflow(validateFixtureBinding(input), null);
+}
+
+// Explicit qualification DATA factory; external version/authority/start
+// admission is still mandatory. No caller enable flag, policy or predicate.
+export function compileFixtureBootstrapWorkflow(input) {
+  if (input === undefined) return fixtureRefusal();
+  const d = validateFixtureBootstrapDescriptor(input);
+  const b = validateFixtureBinding({ t0Ms: d.clock.t0Ms, createNotAfterMs: d.clock.createNotAfterMs, ownerBindingId: d.ownerBindingId });
+  return buildFixtureWorkflow(b, d);
+}
+
+function buildFixtureWorkflow(b, descriptor) {
+  const s = {};
   const merge = changes => e(`$merge([$ctx,${changes}])`);
   const pass = (name, changes, next) => { s[name] = { Type: 'Pass', Assign: { ctx: merge(changes) }, Next: next }; };
   const choice = (name, condition, yes, no) => { s[name] = { Type: 'Choice', Choices: [{ Condition: e(condition), Next: yes }], Default: no }; };
@@ -35,10 +49,11 @@ export function compileFixtureWorkflow(input) {
   const security = v => `(${v}.AvailabilityZone=${q(F.az)} and $type(${v}.Size)='number' and ${v}.Size=1 and ${v}.VolumeType='gp3' and ${v}.Encrypted=true and ${v}.KmsKeyId=${q(F.keyArn)} and ($not($exists(${v}.SnapshotId)) or ${v}.SnapshotId='') and $not($exists(${v}.SourceVolumeId)) and ${array(`${v}.Attachments`)} and $count(${v}.Attachments)=0)`;
   const validRow = v => `${owned(v)} and ${security(v)} and ${v}.State in ['creating','available']`;
   const prefix = `arn:aws:states:${F.region}:${F.account}`;
-  const expectedInput = { runUuid: F.runUuid, t0Ms: b.t0Ms, createNotAfterMs: b.createNotAfterMs, ownerBindingId: b.ownerBindingId };
-  choice('AdmissionGuard', 'false', 'GuardExecution', 'SourceOnlyRefusal');
+  const expectedInput = descriptor ? fixtureBootstrapInput(descriptor) : { runUuid: F.runUuid, t0Ms: b.t0Ms, createNotAfterMs: b.createNotAfterMs, ownerBindingId: b.ownerBindingId };
+  const guard = `$type($states.input)='object' and $count($keys($states.input))=${descriptor ? 5 : 4} and $states.input=${q(expectedInput)} and $states.context.Execution.Name=${q(fixtureExecutionName())} and $states.context.Execution.Id=${q(`${prefix}:execution:${fixtureMachineName()}:${fixtureExecutionName()}`)} and $states.context.StateMachine.Id=${q(`${prefix}:stateMachine:${fixtureMachineName()}`)} and (${iso('$states.context.Execution.StartTime')}?($toMillis($states.context.Execution.StartTime)>=${b.t0Ms} and $toMillis($states.context.Execution.StartTime)<=${b.createNotAfterMs} and ${now}>=$toMillis($states.context.Execution.StartTime)):false) and ${now}<=${b.createNotAfterMs}`;
+  choice('AdmissionGuard', descriptor ? guard : 'false', 'GuardExecution', 'SourceOnlyRefusal');
   s.SourceOnlyRefusal = fixtureRefusal().States.SourceOnlyRefusal;
-  choice('GuardExecution', `$type($states.input)='object' and $count($keys($states.input))=4 and $states.input=${q(expectedInput)} and $states.context.Execution.Name=${q(fixtureExecutionName())} and $states.context.Execution.Id=${q(`${prefix}:execution:${fixtureMachineName()}:${fixtureExecutionName()}`)} and $states.context.StateMachine.Id=${q(`${prefix}:stateMachine:${fixtureMachineName()}`)} and (${iso('$states.context.Execution.StartTime')}?($toMillis($states.context.Execution.StartTime)>=${b.t0Ms} and $toMillis($states.context.Execution.StartTime)<=${b.createNotAfterMs} and ${now}>=$toMillis($states.context.Execution.StartTime)):false) and ${now}<=${b.createNotAfterMs}`, 'Initialize', 'SourceOnlyRefusal');
+  choice('GuardExecution', guard, 'Initialize', 'SourceOnlyRefusal');
   s.Initialize = { Type: 'Pass', Assign: { ctx: e(q({ ...b, runUuid: F.runUuid, calls: 0, polls: 0,
     volumeId: null, createAttempted: false, deleteAttempted: false, createOutcome: 'NOT_ATTEMPTED',
     deleteOutcome: 'NOT_ATTEMPTED', result: null, error: null, resultAtMs: null, uncertain: false,
@@ -89,5 +104,5 @@ export function compileFixtureWorkflow(input) {
   pass('CountScanPoll', '{"polls":$ctx.polls+1,"result":null}', 'BeginScan');
   pass('CountAbsentPoll', '{"polls":$ctx.polls+1,"result":null}', 'AbsenceBudget');
   s.Unknown = { Type: 'Pass', Output: e('{"schema":"meri-browser-managed-fixture-result/1","runUuid":$ctx.runUuid,"ownerBindingId":$ctx.ownerBindingId,"t0Ms":$ctx.t0Ms,"C":$ctx.C,"volumeId":$ctx.volumeId,"createAttempted":$ctx.createAttempted,"createOutcome":$ctx.createOutcome,"deleteAttempted":$ctx.deleteAttempted,"deleteOutcome":$ctx.deleteOutcome,"cleanup":"UNKNOWN","absenceWireQualified":false,"qualification":"NOT_ADMITTED","conflict":$ctx.conflict,"observedIds":$ctx.scanIds,"uncertain":$ctx.uncertain,"lastError":$ctx.error,"calls":$ctx.calls,"polls":$ctx.polls}'), End: true };
-  return { QueryLanguage: 'JSONata', Comment: 'INERT single-owner fixture lifecycle. Source9 mutations excluded. Error wire/absence and actual managed survival UNQUALIFIED.', StartAt: 'AdmissionGuard', States: s };
+  return { QueryLanguage: 'JSONata', Comment: descriptor ? 'MANAGED_WIRE_BOOTSTRAP_V1 source DATA; external admission required. Source9 mutations excluded. Wire/absence/survival UNQUALIFIED.' : 'INERT single-owner fixture lifecycle. Source9 mutations excluded. Error wire/absence and actual managed survival UNQUALIFIED.', StartAt: 'AdmissionGuard', States: s };
 }
