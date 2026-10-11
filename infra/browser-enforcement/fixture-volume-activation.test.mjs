@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
-import { FIXTURE as F, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
+import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
 import { createFixtureBootstrapDescriptor, validateFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 import { compileFixtureWorkflow, compileFixtureBootstrapWorkflow, fixtureRefusal } from './fixture-volume-workflow.mjs';
 import { compileFixtureTemplate, compileFixtureBootstrapTemplate } from './fixture-volume-template.mjs';
@@ -87,6 +87,47 @@ test('both bootstrap guards evaluate exact source-profile input, name/context an
   assert.equal(await guard(state,{ms:T0-1}),false);assert.equal(await guard(state,{ms:T0+300001}),false);
  }
 });
+test('bootstrap context accepts documented fractions without extending create or current-time bounds',async()=>{
+ const base=new Date(T0).toISOString().slice(0,19);
+ const end=new Date(T0+300000).toISOString().slice(0,19);
+ for(const state of ['AdmissionGuard','GuardExecution']){
+  for(const tail of ['Z','.000Z','.000000Z','.000000000Z','.000001Z','.000000001Z']){
+   const c=context();c.Execution.StartTime=base+tail;
+   assert.equal(await guard(state,{serviceContext:c}),true,tail);
+  }
+  for(const tail of ['.000001Z','.000000001Z']){
+   const c=context();c.Execution.StartTime=end+tail;
+   assert.equal(await guard(state,{serviceContext:c,ms:T0+300000}),false,'sub-ms beyond create bound');
+   c.Execution.StartTime=base+tail;
+   assert.equal(await guard(state,{serviceContext:c,ms:T0}),false,'sub-ms beyond current time');
+  }
+  for(const tail of ['Z','.000Z','.000000Z','.000000000Z']){
+   const c=context();c.Execution.StartTime=end+tail;
+   assert.equal(await guard(state,{serviceContext:c,ms:T0+300000}),true,'inclusive exact bound');
+  }
+  const c=context();c.Execution.StartTime=new Date(T0-1).toISOString().replace('Z','999999Z');
+  assert.equal(await guard(state,{serviceContext:c}),false,'sub-ms below original T0');
+ }
+});
+
+test('bootstrap context rejects malformed forms and EC2 payload keeps its stricter independent profile',async()=>{
+ const base=new Date(T0).toISOString().slice(0,19);
+ for(const value of [base,base+'+00:00',base+'.0Z',base+'.00Z',base+'.0000Z',base+'.00000Z',
+  base+'.0000000Z',base+'.00000000Z',base+'.0000000000Z',base+'.000z',' '+base+'Z',
+  '2026-02-30T00:00:00Z','2026-13-01T00:00:00.000000Z','2026-10-10T25:00:00.000000000Z',
+  '2026-10-10T00:00:60Z',null,0,false]){
+  const c=context();c.Execution.StartTime=value;
+  for(const state of ['AdmissionGuard','GuardExecution'])assert.equal(await guard(state,{serviceContext:c}),false,String(value));
+ }
+ const volume={VolumeId:'vol-0123456789abcdef0',CreateTime:new Date(T0).toISOString(),Tags:fixtureTags(),
+  Size:1,VolumeType:'gp3',Encrypted:true,KmsKeyId:F.keyArn,AvailabilityZone:F.az,State:'available',Attachments:[],SnapshotId:''};
+ assert.equal(await guard('PageOwnership',{ctx:{result:{Volumes:[volume]}}}),true);
+ for(const tail of ['Z','.000000Z','.000000000Z']){
+  const row={...volume,CreateTime:base+tail};
+  assert.equal(await guard('PageOwnership',{ctx:{result:{Volumes:[row]}}}),false,tail);
+ }
+});
+
 test('bootstrap and inert finite lifecycle share every nonadmission state and identical constrained IAM',()=>{
  const b={...window,ownerBindingId:descriptor.ownerBindingId}, old=compileFixtureWorkflow(b), oldTemplate=compileFixtureTemplate(b);
  assert.deepEqual(Object.keys(graph.States),Object.keys(old.States));

@@ -7,7 +7,7 @@ const now = '$toMillis($now())';
 const array = v => `$type(${v})='array'`;
 // Explicit unqualified wire profile. Validate calendar components BEFORE
 // $toMillis so malformed service DATA cannot throw through an ownership check.
-const iso = v => `($dt:=${v};$type($dt)='string'?($exists($match($dt,/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]\\.[0-9]{3}Z$/))?($y:=$number($substring($dt,0,4));$m:=$number($substring($dt,5,2));$d:=$number($substring($dt,8,2));$days:=[31,($y%4=0 and ($y%100!=0 or $y%400=0))?29:28,31,30,31,30,31,31,30,31,30,31];$d<=$days[$m-1]):false):false)`;
+const iso = (v, fraction = '\\.[0-9]{3}') => `($dt:=${v};$type($dt)='string'?($exists($match($dt,/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]${fraction}Z$/))?($y:=$number($substring($dt,0,4));$m:=$number($substring($dt,5,2));$d:=$number($substring($dt,8,2));$days:=[31,($y%4=0 and ($y%100!=0 or $y%400=0))?29:28,31,30,31,30,31,31,30,31,30,31];$d<=$days[$m-1]):false):false)`;
 export const fixtureRefusal = () => ({ QueryLanguage: 'JSONata', StartAt: 'SourceOnlyRefusal', States: {
   SourceOnlyRefusal: { Type: 'Fail', Error: 'BrowserFixture.NotAdmitted', Cause: 'Source only; exact owner version/input, IAM, fresh authority and managed admission absent' },
 } });
@@ -50,7 +50,12 @@ function buildFixtureWorkflow(b, descriptor) {
   const validRow = v => `${owned(v)} and ${security(v)} and ${v}.State in ['creating','available']`;
   const prefix = `arn:aws:states:${F.region}:${F.account}`;
   const expectedInput = descriptor ? fixtureBootstrapInput(descriptor) : { runUuid: F.runUuid, t0Ms: b.t0Ms, createNotAfterMs: b.createNotAfterMs, ownerBindingId: b.ownerBindingId };
-  const guard = `$type($states.input)='object' and $count($keys($states.input))=${descriptor ? 5 : 4} and $states.input=${q(expectedInput)} and $states.context.Execution.Name=${q(fixtureExecutionName())} and $states.context.Execution.Id=${q(`${prefix}:execution:${fixtureMachineName()}:${fixtureExecutionName()}`)} and $states.context.StateMachine.Id=${q(`${prefix}:stateMachine:${fixtureMachineName()}`)} and (${iso('$states.context.Execution.StartTime')}?($toMillis($states.context.Execution.StartTime)>=${b.t0Ms} and $toMillis($states.context.Execution.StartTime)<=${b.createNotAfterMs} and ${now}>=$toMillis($states.context.Execution.StartTime)):false) and ${now}<=${b.createNotAfterMs}`;
+  // AWS context supports 0/3/6/9 fractional digits. EC2 wire remains exact 3Z.
+  // $toMillis truncates submilliseconds, so retain the tail at upper bounds.
+  const start = '$states.context.Execution.StartTime';
+  const bootstrapTime = `(${iso(start, '(\\.[0-9]{3}([0-9]{3}){0,2})?')}?($start:=$toMillis(${start});$sub:=$length(${start})>24?$number($substring(${start},23,$length(${start})-24))>0:false;$start>=${b.t0Ms} and ($start<${b.createNotAfterMs} or ($start=${b.createNotAfterMs} and $not($sub))) and (${now}>$start or (${now}=$start and $not($sub)))):false)`;
+  const timeGuard = descriptor ? bootstrapTime : `(${iso(start)}?($toMillis(${start})>=${b.t0Ms} and $toMillis(${start})<=${b.createNotAfterMs} and ${now}>=$toMillis(${start})):false)`;
+  const guard = `$type($states.input)='object' and $count($keys($states.input))=${descriptor ? 5 : 4} and $states.input=${q(expectedInput)} and $states.context.Execution.Name=${q(fixtureExecutionName())} and $states.context.Execution.Id=${q(`${prefix}:execution:${fixtureMachineName()}:${fixtureExecutionName()}`)} and $states.context.StateMachine.Id=${q(`${prefix}:stateMachine:${fixtureMachineName()}`)} and ${timeGuard} and ${now}<=${b.createNotAfterMs}`;
   choice('AdmissionGuard', descriptor ? guard : 'false', 'GuardExecution', 'SourceOnlyRefusal');
   s.SourceOnlyRefusal = fixtureRefusal().States.SourceOnlyRefusal;
   choice('GuardExecution', guard, 'Initialize', 'SourceOnlyRefusal');
