@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:federal-market:0.2.0",
+  "title": "Meri candidate federal-market tool input contracts 0.2.0",
+  "description": "CANDIDATE input contract for the five selected federal-market Meri tools. Not a frozen revision: the family contract version remains 0.1.0 until Codex freezes a reviewed integration commit. This document is structural only. It neither authenticates an actor, grants source access, pins client scope, qualifies the tools, nor represents parity or G1 acceptance. Unlike the legacy advertised schemas it is closed on unknown fields, never coerces strings to numbers, and assigns no date format to fields the frozen source types only as string.",
+  "$defs": {
+    "FederalMarketOperationId": {
+      "description": "The five distinct selected federal-market operation IDs. Each maps to exactly one input definition below; no alias, handler or availability mapping exists.",
+      "type": "string",
+      "enum": [
+        "search_federal_contract_awards",
+        "search_federal_subawards",
+        "search_contract_vehicles",
+        "search_procurement_forecasts",
+        "get_district_federal_market"
+      ]
+    },
+    "FederalMarketClientId": {
+      "description": "Optional client identifier carried as inert data. It is never authority: the server binds the effective client scope for the conversation. Passing a value here cannot widen, substitute or prove access.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "FederalMarketQueryText": {
+      "description": "Keyword search over visible fields. Bounded candidate boundary length; the frozen source advertises an unbounded string.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "FederalMarketAgency": {
+      "description": "Agency or office name filter.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "FederalMarketState": {
+      "description": "Two-letter place-of-performance state in normalized uppercase form. The boundary normalizes casing before validating; it does not accept a non-string.",
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "FederalMarketDistrict": {
+      "description": "Congressional district number, or 00/AL for at-large, in normalized uppercase form. The boundary normalizes casing before validating; a numeric argument is not coerced.",
+      "type": "string",
+      "pattern": "^(?:[0-9]{1,2}|00|AL)$"
+    },
+    "FederalMarketFiscalYear": {
+      "description": "Federal fiscal-year filter where the source supplies one.",
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2200
+    },
+    "FederalMarketPage": {
+      "description": "Result page, starting at 1. Absent means 1.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000,
+      "default": 1
+    },
+    "FederalMarketLimit": {
+      "description": "Maximum rows, 1-25. Absent means 10.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25,
+      "default": 10
+    },
+    "FederalMarketRecipient": {
+      "description": "Recipient/contractor or prime/subrecipient name filter.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "FederalMarketDateBound": {
+      "description": "Optional date lower or upper bound. The frozen source types this field only as string, so no date format is asserted here and callers must not infer ISO-8601 acceptance from this contract.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "SearchFederalContractAwardsInput": {
+      "description": "Candidate input for search_federal_contract_awards. Closed on unknown fields; adds a bounded fiscalYear plus recipient and date bounds.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        },
+        "recipient": {
+          "$ref": "#/$defs/FederalMarketRecipient"
+        },
+        "dateFrom": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        },
+        "dateTo": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchFederalSubawardsInput": {
+      "description": "Candidate input for search_federal_subawards. Same shared fields as contract awards; no award-specific date-repair behaviour is claimed.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        },
+        "recipient": {
+          "$ref": "#/$defs/FederalMarketRecipient"
+        },
+        "dateFrom": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        },
+        "dateTo": {
+          "$ref": "#/$defs/FederalMarketDateBound"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchContractVehiclesInput": {
+      "description": "Candidate input for search_contract_vehicles. fiscalYear is deliberately absent from this shape, so a closed object rejects it; the boundary also rejects a present fiscalYear explicitly to preserve the legacy runtime refusal.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SearchProcurementForecastsInput": {
+      "description": "Candidate input for search_procurement_forecasts. Forecasts are global public data: clientId is accepted only so a client-scoped session cannot substitute another client, and it is never used to manufacture a client match. The boundary reports this global query scope explicitly.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "query": {
+          "$ref": "#/$defs/FederalMarketQueryText"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "fiscalYear": {
+          "$ref": "#/$defs/FederalMarketFiscalYear"
+        },
+        "page": {
+          "$ref": "#/$defs/FederalMarketPage"
+        },
+        "limit": {
+          "$ref": "#/$defs/FederalMarketLimit"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GetDistrictFederalMarketInput": {
+      "description": "Candidate input for get_district_federal_market, the only shape with required fields. Geography requires both state and district; fiscalYear is not part of this shape.",
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "$ref": "#/$defs/FederalMarketClientId"
+        },
+        "state": {
+          "$ref": "#/$defs/FederalMarketState"
+        },
+        "district": {
+          "$ref": "#/$defs/FederalMarketDistrict"
+        },
+        "agency": {
+          "$ref": "#/$defs/FederalMarketAgency"
+        }
+      },
+      "required": [
+        "state",
+        "district"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
