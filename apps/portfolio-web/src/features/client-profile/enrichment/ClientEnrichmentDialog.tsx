@@ -2,6 +2,7 @@
 import { useState, type ComponentProps } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
+import { UploadDialog } from "@/features/files/public";
 import {
   canSelectFinding,
   previewOnlyDependency,
@@ -63,6 +64,7 @@ function ClientEnrichmentReview({
     action: ReviewAction;
   }>();
   const [showSetup, setShowSetup] = useState(false);
+  const [upload, setUpload] = useState<{ beforeDispatch: () => void }>();
   const action = useReviewAction(clientId, open, {
     userId: identity.data?.user.id ?? "",
     tenantId: identity.data?.tenant?.id ?? "",
@@ -103,6 +105,16 @@ function ClientEnrichmentReview({
               <span>{setup.data?.website ?? "Saved client sources"}</span>
               <button
                 className="button"
+                disabled={!canEdit || busy}
+                title="Upload saves a client file immediately; it does not start research."
+                onClick={() =>
+                  setUpload({ beforeDispatch: action.createUploadGuard() })
+                }
+              >
+                Upload
+              </button>
+              <button
+                className="button"
                 onClick={() => setShowSetup((v) => !v)}
               >
                 Research setup
@@ -115,6 +127,17 @@ function ClientEnrichmentReview({
                 Run again
               </button>
             </div>
+            <p className={styles.uploadNotice}>
+              Uploading saves a client file immediately. It does not start
+              research or add the file to a run.
+            </p>
+            {upload && canEdit && (
+              <UploadDialog
+                clientId={clientId}
+                beforeDispatch={upload.beforeDispatch}
+                onClose={() => setUpload(undefined)}
+              />
+            )}
             <QueryState
               pending={latest.isPending}
               error={latest.error}
@@ -172,7 +195,9 @@ function ClientEnrichmentReview({
                       )
                     }
                   >
-                    Select all new
+                    {run.findings.filter(canSelectFinding).length > 200
+                      ? "Select first 200 new"
+                      : "Select all new"}
                   </button>
                 </header>
                 {!run.findings.length && (
@@ -180,6 +205,12 @@ function ClientEnrichmentReview({
                     {run.status === "running"
                       ? "Research is still running. Findings will appear as they are saved."
                       : "No findings were saved in this run. This does not establish full source coverage."}
+                  </p>
+                )}
+                {chosen.length > 200 && (
+                  <p className={styles.empty} role="alert">
+                    Apply up to 200 findings at a time. Deselect findings before
+                    continuing.
                   </p>
                 )}
                 {run.findings.map((f) => (

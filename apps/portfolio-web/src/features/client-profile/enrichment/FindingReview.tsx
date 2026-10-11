@@ -38,6 +38,24 @@ export function FindingValue({ value }: { value: JsonValue }) {
     </dl>
   );
 }
+function ComparisonValue({ value }: { value: JsonValue }) {
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    typeof value.title === "string"
+  )
+    return (
+      <>
+        <p>{value.title}</p>
+        <details>
+          <summary>Saved details</summary>
+          <FindingValue value={value} />
+        </details>
+      </>
+    );
+  return <FindingValue value={value} />;
+}
 function MatterChoice({
   clientId,
   onAssign,
@@ -173,11 +191,11 @@ export function FindingReview({
       <div className={styles.comparison}>
         <div>
           <h4>Current</h4>
-          <FindingValue value={finding.currentValue} />
+          <ComparisonValue value={finding.currentValue} />
         </div>
         <div>
           <h4>Proposed</h4>
-          <FindingValue value={finding.proposedValue} />
+          <ComparisonValue value={finding.proposedValue} />
         </div>
       </div>
       <details className={styles.evidence}>

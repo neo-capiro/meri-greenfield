@@ -114,5 +114,20 @@ export function useReviewAction(
       }
     },
   });
-  return { mutation, uncertain, receipt };
+  function createUploadGuard() {
+    const controller = lifetime.current;
+    return () => {
+      if (
+        !open ||
+        !controller ||
+        controller.signal.aborted ||
+        lifetime.current !== controller
+      )
+        throw new Error(
+          "The client review closed or its session changed. Reopen before uploading.",
+        );
+      assertReviewAccess(cache, actor, true);
+    };
+  }
+  return { mutation, uncertain, receipt, createUploadGuard };
 }

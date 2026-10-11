@@ -73,7 +73,8 @@ export function useLatestReview(clientId: string, enabled: boolean) {
         throw new ApiError(502, "The review returned a different client.");
       return run;
     },
-    refetchInterval: (q) => (q.state.data?.status === "running" ? 2000 : false),
+    refetchInterval: (q) =>
+      !q.state.error && q.state.data?.status === "running" ? 2000 : false,
   });
 }
 export function useEnrichmentSetup(clientId: string, enabled: boolean) {

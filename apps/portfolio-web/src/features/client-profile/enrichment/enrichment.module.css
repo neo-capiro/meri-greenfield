@@ -186,6 +186,11 @@
 .empty {
   padding: 24px;
 }
+.uploadNotice {
+  padding: 0 24px 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
 .setup fieldset {
   border: 0;
   padding: 8px 0;
@@ -204,6 +209,9 @@
   font-size: 13px;
 }
 @media (max-width: 480px) {
+  .sourceBar > span {
+    flex-basis: 100%;
+  }
   .sourceBar,
   .ledger,
   .setup,
