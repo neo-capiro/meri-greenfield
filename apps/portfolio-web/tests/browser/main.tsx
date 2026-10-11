@@ -3,6 +3,7 @@ import { DataProvider } from "@/shared/api/provider";
 import { Shell } from "@/shared/shell/Shell";
 import { ClientFrame } from "@/features/client-profile/ClientFrame";
 import { ClientOverview } from "@/features/client-profile/ClientOverview";
+import { PastPerformance } from "@/features/client-profile/past-performance/public";
 import { PortfolioIndex } from "@/features/portfolio/PortfolioIndex";
 import { ObjectivesPage } from "@/features/objectives/ObjectivesPage";
 import { WorkPage } from "@/features/work/WorkPage";
@@ -30,6 +31,15 @@ function App() {
   if (path === "/__test/registrant-intake") return <RegistrantIntakeHarness />;
   if (path === "/__test/email-compose") return <EmailComposeHarness />;
   if (path === "/__test/meeting-documents") return <MeetingDocumentsHarness />;
+  if (path === "/__test/past-performance")
+    return (
+      <Shell destinations={destinations}>
+        <PastPerformance
+          clientId="10000000-0000-4000-8000-000000000001"
+          clientName="Test Aerospace"
+        />
+      </Shell>
+    );
   const [, , clientId, tab] = path.split("/");
   if (clientId === "prospects")
     return tab ? (
