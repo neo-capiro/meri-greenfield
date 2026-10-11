@@ -58,6 +58,14 @@ function EditorSession({
         <p className="status" role="status">
           Saved profile ordering is unavailable in this environment. Profiles
           use their default order.
+          <button className="button" onClick={() => void layout.retry()}>
+            Retry saved order
+          </button>
+        </p>
+      )}
+      {layout.permissionDenied && (
+        <p className="status" role="status">
+          Your role does not allow changing saved profile order.
         </p>
       )}
       {layout.error && !layout.unavailable && (
@@ -161,6 +169,15 @@ function EditorSession({
             The saved order changed. Your unsaved order is retained. Review the
             latest saved order before continuing.
           </p>
+          {layout.latestAvailable && (
+            <ol aria-label="Latest saved profile order">
+              {layout.orderedIds.map((id) => (
+                <li key={id}>
+                  {cards.find((card) => card.id === id)?.name ?? "Profile"}
+                </li>
+              ))}
+            </ol>
+          )}
           <button
             className="button"
             disabled={layout.saving || !layout.latestAvailable}

@@ -70,14 +70,14 @@ describe("saved Portfolio ordering", () => {
     ).toBe(0));
   it("uses the canonical core route and verifies tenant and actor", async () => {
     const { api, calls } = apiFor(receipt);
-    expect(await readPortfolioLayout(api, actor)).toEqual(receipt);
+    expect(await readPortfolioLayout(api, actor, [a, b])).toEqual(receipt);
     expect(calls[0]?.url).toBe("/api/backend/core/me/portfolio-layout");
   });
   it.each(["tenantId", "userId"] as const)(
     "rejects a wrong %s receipt",
     async (field) => {
       const { api } = apiFor({ ...receipt, [field]: a });
-      await expect(readPortfolioLayout(api, actor)).rejects.toThrow(
+      await expect(readPortfolioLayout(api, actor, [a, b])).rejects.toThrow(
         "does not match",
       );
     },
@@ -106,8 +106,45 @@ describe("saved Portfolio ordering", () => {
     expect(resolvesLayoutSave({ ...receipt, version: 2 }, input, [a, b])).toBe(
       false,
     ));
-  it("resolves only matching version and current projected order", () =>
+  it("resolves only matching version and exact requested order", () =>
     expect(resolvesLayoutSave(receipt, input, [a, b])).toBe(true));
+  it.each([
+    { order: [`client:${a}`] },
+    {
+      order: [
+        `client:${b}`,
+        `client:${a}`,
+        "client:40000000-0000-4000-8000-000000000001",
+      ],
+    },
+    { order: [`client:${a}`, "client:40000000-0000-4000-8000-000000000001"] },
+  ])(
+    "rejects an incomplete or foreign catalog receipt %# before read publication",
+    async ({ order }) => {
+      const { api } = apiFor({ ...receipt, order });
+      await expect(readPortfolioLayout(api, actor, [a, b])).rejects.toThrow(
+        "current profile catalog",
+      );
+    },
+  );
+  it("does not confirm a projected partial or extra success order", () => {
+    expect(
+      resolvesLayoutSave({ ...receipt, order: [`client:${b}`] }, input, [a, b]),
+    ).toBe(false);
+    expect(
+      resolvesLayoutSave(
+        {
+          ...receipt,
+          order: [
+            ...receipt.order,
+            "client:40000000-0000-4000-8000-000000000001",
+          ],
+        },
+        input,
+        [a, b],
+      ),
+    ).toBe(false);
+  });
   it("rejects invalid input before transport", async () => {
     const { api, calls } = apiFor(receipt);
     await expect(
@@ -122,7 +159,9 @@ describe("saved Portfolio ordering", () => {
     "preserves canonical error status %i",
     async (status) => {
       const { api } = apiFor({ message: "Unavailable" }, status);
-      await expect(readPortfolioLayout(api, actor)).rejects.toMatchObject({
+      await expect(
+        readPortfolioLayout(api, actor, [a, b]),
+      ).rejects.toMatchObject({
         status,
       });
     },

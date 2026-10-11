@@ -76,7 +76,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
     retry: false,
     queryFn: async ({ signal }) => {
       guard();
-      const receipt = await readPortfolioLayout(api, actor!, signal);
+      const receipt = await readPortfolioLayout(api, actor!, clientIds, signal);
       guard();
       return receipt;
     },
@@ -86,6 +86,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
     const receipt = await readPortfolioLayout(
       api,
       actor!,
+      clientIds,
       lifetime.current!.signal,
     );
     guard();
@@ -132,6 +133,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
     setSaving(true);
     setIssue(null);
     let sent = false;
+    let received = false;
     try {
       guard();
       sent = true;
@@ -142,6 +144,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
         clientIds,
         controller.signal,
       );
+      received = true;
       guard();
       cache.setQueryData(key, receipt);
       return true;
@@ -167,7 +170,8 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
                 : new Error("The latest layout is unavailable."),
             );
         }
-      } else if (sent && ambiguousClientWrite(error)) setUncertain(input);
+      } else if (sent && (received || ambiguousClientWrite(error)))
+        setUncertain(input);
       return false;
     } finally {
       if (!controller.signal.aborted && liveScope.current === scope) {
@@ -214,8 +218,14 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
       clientIds,
     ),
     receipt: actor && !query.error ? query.data : undefined,
-    pending: Boolean(actor) && query.isPending,
-    error: issue ?? query.error,
+    pending: identity.isPending || (Boolean(actor) && query.isPending),
+    error: issue ?? identity.error ?? query.error,
+    permissionDenied:
+      Boolean(identity.data) &&
+      !identity.error &&
+      !["standard_user", "user_admin", "capiro_admin"].includes(
+        identity.data?.role ?? "",
+      ),
     unavailable:
       query.error instanceof ApiError &&
       [404, 503].includes(query.error.status),
@@ -233,7 +243,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
     latestAvailable,
     save,
     reconcile,
-    retry: () => query.refetch(),
+    retry: () => (identity.error ? identity.refetch() : query.refetch()),
     acceptLatest: () => {
       setConflict(false);
       setIssue(null);

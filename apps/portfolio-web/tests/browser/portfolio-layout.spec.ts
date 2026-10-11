@@ -250,6 +250,41 @@ for (const change of [
       await expect(page.getByText("Profile order saved.")).toHaveCount(0);
     }
   });
+test("identity invalidation after dispatch freezes a successful PUT as uncertain", async ({
+  page,
+}) => {
+  await layoutFixtures(page);
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let writes = 0;
+  await page.route(endpoint, async (route) => {
+    if (route.request().method() === "PUT") {
+      writes++;
+      await held;
+      return route.fulfill({
+        json: layoutReceipt(1, [cardIds[1]!, cardIds[0]!, cardIds[2]!]),
+      });
+    }
+    return route.fulfill({ json: layoutReceipt() });
+  });
+  await page.goto(path);
+  await page.getByRole("button", { name: "Move Aerospace One later" }).click();
+  await page.getByRole("button", { name: "Save order", exact: true }).click();
+  await expect.poll(() => writes).toBe(1);
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("layout-authority-invalidate")),
+  );
+  release();
+  await expect(
+    page.getByRole("button", { name: "Check saved order" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Save order", exact: true }),
+  ).toHaveCount(0);
+  expect(writes).toBe(1);
+});
 test("mobile dark layout remains usable without horizontal overflow", async ({
   page,
 }) => {

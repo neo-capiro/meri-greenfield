@@ -6,7 +6,7 @@ import {
   type LayoutReceipt,
   type LayoutSave,
 } from "./contracts";
-import { orderedClientIds, sameOrder } from "./ordering";
+import { sameOrder } from "./ordering";
 
 export function assertLayoutActor(receipt: LayoutReceipt, actor: LayoutActor) {
   if (receipt.tenantId !== actor.tenantId || receipt.userId !== actor.userId)
@@ -19,14 +19,33 @@ export function assertLayoutActor(receipt: LayoutReceipt, actor: LayoutActor) {
 export async function readPortfolioLayout(
   api: ApiClient,
   actor: LayoutActor,
+  clientIds: readonly string[],
   signal?: AbortSignal,
 ) {
-  return assertLayoutActor(
-    await api.request("core", "me/portfolio-layout", layoutReceiptSchema, {
-      signal,
-    }),
-    actor,
+  return assertLayoutCatalog(
+    assertLayoutActor(
+      await api.request("core", "me/portfolio-layout", layoutReceiptSchema, {
+        signal,
+      }),
+      actor,
+    ),
+    clientIds,
   );
+}
+export function assertLayoutCatalog(
+  receipt: LayoutReceipt,
+  clientIds: readonly string[],
+) {
+  const expected = new Set(clientIds.map((id) => `client:${id}`));
+  if (
+    receipt.order.length !== expected.size ||
+    receipt.order.some((id) => !expected.has(id))
+  )
+    throw new ApiError(
+      502,
+      "The saved layout response does not match the current profile catalog. Reload profiles before continuing.",
+    );
+  return receipt;
 }
 export function resolvesLayoutSave(
   receipt: LayoutReceipt,
@@ -35,10 +54,8 @@ export function resolvesLayoutSave(
 ) {
   return (
     receipt.version === input.expectedVersion + 1 &&
-    sameOrder(
-      orderedClientIds(receipt.order, clientIds),
-      orderedClientIds(input.order, clientIds),
-    )
+    receipt.order.length === clientIds.length &&
+    sameOrder(receipt.order, input.order)
   );
 }
 export async function savePortfolioLayout(
@@ -55,13 +72,16 @@ export async function savePortfolioLayout(
     !layoutOrderSchema.safeParse(input.order).success
   )
     throw new ApiError(400, "The saved layout order or version is invalid.");
-  const receipt = assertLayoutActor(
-    await api.request("core", "me/portfolio-layout", layoutReceiptSchema, {
-      method: "PUT",
-      body: input,
-      signal,
-    }),
-    actor,
+  const receipt = assertLayoutCatalog(
+    assertLayoutActor(
+      await api.request("core", "me/portfolio-layout", layoutReceiptSchema, {
+        method: "PUT",
+        body: input,
+        signal,
+      }),
+      actor,
+    ),
+    clientIds,
   );
   if (!resolvesLayoutSave(receipt, input, clientIds))
     throw new ApiError(
