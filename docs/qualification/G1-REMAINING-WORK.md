@@ -1,13 +1,16 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 08:24 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 08:31 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** Several substantial runtime proofs remain;
 G1 is not close enough to promise a completion time. Codex alone owns this work.
 
 The timeout, exact transport causes, whole native certificate grammar and native
 peer composition are independently source reviewed and integrated through
 c8978118a53cc6fc4cc3a553cdafdba4126d2443. Root's final composition checks pass
-27 fixture and 52 classifier controls. Source acceptance does not pass runtime.
+27 fixture and 52 classifier controls. The pool-cleared-cause repair is also
+independently source accepted at0621529524de1a668154e0022fb84c768e24cb5e;
+root58/58 offline controls pass with zero audit attempts and no Prisma import.
+Source acceptance does not pass runtime.
 
 The fresh namespace5 isolated Linux build0056c94a-88c9-4c0c-9daf-2ceef38df2b1
 executed all five TLS cases and remains FAILED. The genuine TLS1.3/nonowner
@@ -17,11 +20,12 @@ reasons remain unqualified. Plaintext/password native observations are specific,
 without overriding failed composition. Root reconciled305 public payloads and
 100 process receipts, exact immutable source/result versions and positive absence
 of nine owned containers and one network before the original cleanup deadline.
-The331-record readback is sealed; distinct actual DATA review is completing.
+The331-record readback and distinct actual DATA review are owner accepted
+within failed-DATA scope only; original fixture elapsed41,910ms.
 The prior failed namespaces/reservations remain immutable and cannot be retried.
 
 Upstream httpcore's pool clears an exception cause with raise-from-None. A narrow
-source repair is in a separate Codex session; actual private runtime arguments
+source repair is now accepted; actual private runtime arguments
 were not exported, so the diagnosis is a source-supported inference. Native CA
 and SAN formatting still needs structural diagnosis, with no relaxed acceptance.
 
