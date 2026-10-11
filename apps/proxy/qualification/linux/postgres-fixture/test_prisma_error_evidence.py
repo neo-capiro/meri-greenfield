@@ -461,5 +461,111 @@ class NativeEvidenceTests(unittest.TestCase):
             self.assertNotIn('password@host', json.dumps(result))
 
 
+class TransportCauseTests(unittest.TestCase):
+    def chain(self):
+        network = type('NetworkError', (Exception,), {'__module__': 'httpcore'})
+        core = type('ConnectError', (network,), {'__module__': 'httpcore'})
+        refused = ConnectionRefusedError(111, 'PRIVATE connection refused')
+        aggregate = OSError('All connection attempts failed')
+        aggregate.__cause__ = refused
+        wrapped = core(aggregate)
+        wrapped.__cause__ = aggregate
+        http = ConnectError('PRIVATE mapped message')
+        http.__cause__ = wrapped
+        engine = EngineConnectionError('Could not connect to the query engine')
+        engine.__cause__ = http
+        return engine, wrapped, aggregate, refused
+
+    def test_pinned_full_chain_is_complete_nonpositive_for_every_case(self):
+        engine, _, _, _ = self.chain()
+        for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'):
+            value = classify_exception(case, engine)
+            self.assertEqual(value, {'case': case, 'specificRejection': False,
+                'reason': 'NO_SPECIFIC_EVIDENCE', 'source': 'NONE',
+                'classes': ['ENGINE_CONNECTION', 'CONNECT_ERROR', 'HTTPCORE_CONNECT',
+                            'OS_ERROR', 'CONNECTION_REFUSED'], 'complete': True})
+
+    def test_httpcore_argument_must_be_identical_to_explicit_cause(self):
+        for change in ('different', 'missing', 'text', 'extra'):
+            engine, core, aggregate, _ = self.chain()
+            if change == 'different':
+                core.args = (OSError('All connection attempts failed'),)
+            elif change == 'missing':
+                core.__cause__ = None
+            elif change == 'text':
+                core.args = ('private',)
+            else:
+                core.args = (aggregate, aggregate)
+            value = classify_exception('wrong-ca', engine)
+            self.assertFalse(value['complete'], value)
+            self.assertFalse(value['specificRejection'])
+
+    def test_opaque_text_cannot_produce_native_or_structured_positivity(self):
+        engine, _, aggregate, _ = self.chain()
+        aggregate.args = ('P1011 certificate verify failed PASSWORD',)
+        self.assertFalse(classify_exception('wrong-ca', engine)['specificRejection'])
+        structured = data_error()
+        structured.__cause__ = engine
+        value = classify_exception('wrong-ca', structured)
+        self.assertEqual('OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE', value['reason'])
+        self.assertFalse(value['specificRejection'])
+
+    def test_custom_namespaces_and_wrong_mro_refuse(self):
+        engine, core, _, _ = self.chain()
+        core.private = 'secret'
+        self.assertEqual('UNKNOWN_SHAPE', classify_exception('wrong-ca', engine)['reason'])
+        forged = type('ConnectError', (Exception,), {'__module__': 'httpcore'})
+        error = forged(OSError('private'))
+        error.__cause__ = error.args[0]
+        self.assertEqual('UNKNOWN_OBJECT_LAYOUT', classify_exception('wrong-ca', error)['reason'])
+
+    def test_builtin_exact_type_slots_and_filename_are_checked(self):
+        class Derived(ConnectionRefusedError):
+            pass
+        for error in (Derived(111, 'private'), ConnectionRefusedError(True, 'private'),
+                      ConnectionRefusedError(0, 'private'), ConnectionRefusedError(65536, 'private'),
+                      ConnectionRefusedError(111, 'private', '/secret'), OSError()):
+            value = classify_exception('wrong-ca', error)
+            self.assertFalse(value['complete'], value)
+            self.assertFalse(value['specificRejection'])
+        error = ConnectionRefusedError(111, 'private')
+        error.errno = 112
+        self.assertEqual('CONFLICTING_EVIDENCE', classify_exception('wrong-ca', error)['reason'])
+        error = OSError('private')
+        error.custom = 1
+        self.assertEqual('UNKNOWN_SHAPE', classify_exception('wrong-ca', error)['reason'])
+
+    def test_unknown_group_cycle_and_bound_still_refuse(self):
+        engine, core, aggregate, _ = self.chain()
+        group = ExceptionGroup('private', [OSError('private')])
+        core.args, core.__cause__ = (group,), group
+        self.assertEqual('UNKNOWN_EXCEPTION_CLASS', classify_exception('wrong-ca', engine)['reason'])
+        engine, _, aggregate, _ = self.chain()
+        aggregate.__cause__ = engine
+        self.assertEqual('CAUSE_CYCLE', classify_exception('wrong-ca', engine)['reason'])
+        engine, _, _, _ = self.chain()
+        for _ in range(4):
+            outer = EngineConnectionError('private')
+            outer.__cause__ = engine
+            engine = outer
+        self.assertEqual('CAUSE_BOUND', classify_exception('wrong-ca', engine)['reason'])
+
+    def test_byte_bound_and_no_exception_string_calls(self):
+        engine, core, aggregate, _ = self.chain()
+        aggregate.args = ('x' * 65537,)
+        self.assertEqual('BYTE_BOUND', classify_exception('wrong-ca', engine)['reason'])
+        engine, core, _, _ = self.chain()
+        type(core).__str__ = lambda _: (_ for _ in ()).throw(AssertionError('str called'))
+        result = classify_exception('wrong-ca', engine)
+        self.assertTrue(result['complete'])
+        self.assertNotIn('PRIVATE', json.dumps(result))
+
+    def test_incomplete_evidence_never_accepts_recognized_transport(self):
+        engine, _, _, _ = self.chain()
+        value = classify_exception('wrong-ca', engine, evidence_complete=False)
+        self.assertEqual('INCOMPLETE_EVIDENCE', value['reason'])
+        self.assertFalse(value['specificRejection'])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

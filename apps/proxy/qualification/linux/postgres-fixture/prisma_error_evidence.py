@@ -181,12 +181,52 @@ def _identity_type(cls):
 
 
 def _class(error):
+    if type(error) is OSError:
+        return 'OS_ERROR'
+    if type(error) is ConnectionRefusedError:
+        return 'CONNECTION_REFUSED'
     return {('prisma.engine.errors', 'EngineConnectionError'): 'ENGINE_CONNECTION',
             ('prisma.engine.errors', 'EngineRequestError'): 'ENGINE_REQUEST',
             ('prisma.errors', 'DataError'): 'PRISMA_DATA',
             ('httpx', 'ConnectError'): 'CONNECT_ERROR',
+            ('httpcore', 'ConnectError'): 'HTTPCORE_CONNECT',
             ('httpx', 'ConnectTimeout'): 'TIMEOUT',
             ('builtins', 'TimeoutError'): 'TIMEOUT'}.get(_identity(error), 'OTHER')
+
+
+def _transport_arguments(error, kind, args, fields, budget):
+    # Pinned httpcore wraps the original exception as its sole argument and
+    # explicit cause. Never stringify that argument or treat its text as proof.
+    if fields:
+        _deny('UNKNOWN_SHAPE')
+    if kind == 'HTTPCORE_CONNECT':
+        mro = type.__getattribute__(type(error), '__mro__')
+        if (len(mro) != 5 or [_identity_type(cls) for cls in mro[:2]] !=
+                [('httpcore', 'ConnectError'), ('httpcore', 'NetworkError')]
+                or mro[2:] != (Exception, BaseException, object)):
+            _deny('UNKNOWN_OBJECT_LAYOUT')
+        cause = BaseException.__cause__.__get__(error)
+        if len(args) != 1 or args[0] is not cause or cause is None:
+            _deny('CONFLICTING_EVIDENCE')
+        return
+    # Only exact builtin syscall shapes are admitted; subclasses, filenames,
+    # custom dictionaries and mutated internal slots remain unqualified.
+    if len(args) == 1 and kind == 'OS_ERROR' and type(args[0]) is str:
+        if OSError.errno.__get__(error) is not None or OSError.strerror.__get__(error) is not None:
+            _deny('CONFLICTING_EVIDENCE')
+        _tree(args[0], budget)
+    elif (len(args) == 2 and type(args[0]) is int and 0 < args[0] <= 65535
+            and type(args[1]) is str):
+        if OSError.errno.__get__(error) != args[0] or OSError.strerror.__get__(error) != args[1]:
+            _deny('CONFLICTING_EVIDENCE')
+        _tree(args[1], budget)
+    else:
+        _deny('UNKNOWN_SHAPE')
+    if OSError.filename.__get__(error) is not None or OSError.filename2.__get__(error) is not None:
+        _deny('UNKNOWN_SHAPE')
+    winerror = type.__getattribute__(OSError, '__dict__').get('winerror')
+    if winerror is not None and winerror.__get__(error) is not None:
+        _deny('UNKNOWN_SHAPE')
 
 
 def classify_exception(case, error, *, evidence_complete=True):
@@ -206,6 +246,7 @@ def classify_exception(case, error, *, evidence_complete=True):
         if type(evidence_complete) is not bool or not evidence_complete:
             _deny('INCOMPLETE_EVIDENCE')
         seen, records, sources = set(), [], set()
+        opaque_transport = False
         current = error
         while current is not None:
             if id(current) in seen:
@@ -218,12 +259,15 @@ def classify_exception(case, error, *, evidence_complete=True):
             if kind == 'OTHER':
                 _deny('UNKNOWN_EXCEPTION_CLASS')
             args = BaseException.args.__get__(current)
-            if len(args) > 1 or any(type(value) is not str for value in args):
-                _deny('UNKNOWN_SHAPE')
-            for value in args:
-                if type(value) is str:
-                    _tree(value, budget)
             fields = _namespace(current)
+            if kind in ('HTTPCORE_CONNECT', 'OS_ERROR', 'CONNECTION_REFUSED'):
+                _transport_arguments(current, kind, args, fields, budget)
+                opaque_transport = True
+            else:
+                if len(args) > 1 or any(type(value) is not str for value in args):
+                    _deny('UNKNOWN_SHAPE')
+                for value in args:
+                    _tree(value, budget)
             if kind == 'PRISMA_DATA':
                 if set(fields) != {'data', 'code', 'meta'}:
                     _deny('UNKNOWN_SHAPE')
@@ -243,6 +287,8 @@ def classify_exception(case, error, *, evidence_complete=True):
             elif kind == 'ENGINE_CONNECTION' and fields:
                 _deny('UNKNOWN_SHAPE')
             current = BaseException.__cause__.__get__(current)
+        if opaque_transport and records:
+            _deny('OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE')
         expected = {'wrong-ca': 'CERTIFICATE_REJECTED', 'wrong-san': 'HOSTNAME_REJECTED',
                     'plaintext': 'TLS_UNSUPPORTED', 'wrong-password': 'PASSWORD_REJECTED'}
         reasons = [_reason(*record) for record in records]
