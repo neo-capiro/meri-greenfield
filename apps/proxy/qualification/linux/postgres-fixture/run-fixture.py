@@ -25,6 +25,23 @@ def common(name,owner,network,user,image):
         '--user',user,'--workdir','/tmp','--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777',
         '--pids-limit','128','--memory','1g','--cpus','1']
 
+def peer_arguments(v,case,client):
+    require(case in CASES,'PEER_CASE')
+    n=names(v)
+    argv=common(n['client']+'-'+case,v['runId'],n['network'],'10001:10001',v['proxyImage'])
+    argv+=['--mount','type=bind,source='+str(client)+',target='+mount(v)+',readonly']
+    for name in ('prisma-peer.py','native_output_capture.py','prisma_error_evidence.py'):
+        argv+=['--mount','type=bind,source='+str(HERE/name)+',target=/run/'+name+',readonly']
+    return argv+['--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],
+        '-I','-B','/run/prisma-peer.py','--run',v['runId'],'--case',case]
+
+def peer_passed(case,value,code,observed_exit):
+    require(type(value)is dict and value.get('case')==case and type(value.get('passed'))is bool
+        and type(code)is int and type(observed_exit)is int and code==observed_exit
+        and code==(0 if value['passed'] else 1),'NATIVE_PEER_OUTCOME')
+    if case=='positive':require(value['passed'],'NATIVE_CONTROL_FAILED_positive')
+    return value['passed']
+
 def create(capture,argv,expected_image,owner,attempts):
     name=argv[argv.index('--name')+1]
     attempts.append((name,expected_image)) # Before dispatch; unknown ACK reconciles unique name.
@@ -134,17 +151,17 @@ def main(argv=None):
             require(b'PG_FIXTURE_SCRAM_READY' in logs,'ACTUAL_SCRAM_BOOTSTRAP_UNPROVEN')
         for case in CASES:
             name=n['client']+'-'+case
-            a=common(name,owner,n['network'],'10001:10001',v['proxyImage'])+['--mount',
-                'type=bind,source='+str(client)+',target='+mount(v)+',readonly','--mount',
-                'type=bind,source='+str(HERE/'prisma-peer.py')+',target=/run/prisma-peer.py,readonly',
-                '--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],'-I','-B','/run/prisma-peer.py','--run',owner,'--case',case]
+            a=peer_arguments(v,case,client)
             cid=create(c,a,v['proxyImage'],owner,attempts)
             data,_,code=c.call('peer-'+case,['start','--attach',cid],allowed=(0,1,2))
             observed=c.inspect('container',cid,owner,v['proxyImage'])
             require(observed['State']['Running'] is False and observed['State']['ExitCode'] in (0,1,2),'NATIVE_TERMINAL')
             value=json.loads(data);result['controls'][case]=value
-            require(value.get('case')==case and value.get('passed') is True and observed['State']['ExitCode']==0,'NATIVE_CONTROL_FAILED_'+case)
-        result['tlsControlsPassed']=True
+            # Collect bounded negative diagnostics after a nonqualifying result;
+            # all five passes remain mandatory before any combined activation.
+            peer_passed(case,value,code,observed['State']['ExitCode'])
+        result['tlsControlsPassed']=all(result['controls'][case]['passed'] is True for case in CASES)
+        require(result['tlsControlsPassed'],'NATIVE_CONTROLS_INCOMPLETE')
         if combined:
             # Genuine schema bootstrap has separate mounted owner authority; the
             # app container never sees that directory/URL/password.

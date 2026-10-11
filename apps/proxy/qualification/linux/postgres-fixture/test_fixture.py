@@ -10,6 +10,7 @@ import subprocess
 import sys
 import types
 import unittest
+from unittest.mock import patch
 from urllib.parse import parse_qsl,urlsplit
 
 HERE=Path(__file__).parent
@@ -127,7 +128,7 @@ class FixtureTests(unittest.TestCase):
         row['owns_database']=True
         self.assertFalse(self.fake_probe(Fake,'positive')['passed'])
 
-    def fake_probe(self,cls,case):
+    def fake_probe(self,cls,case,*,private=False):
         old=sys.modules.get('prisma');oldread=peer.read;oldtimeout=peer.asyncio.timeout
         class FakeTimeout:
             async def __aenter__(self):return self
@@ -139,20 +140,24 @@ class FixtureTests(unittest.TestCase):
             # Immediate fake coroutines need no event loop/self-pipe/network.
             coro=peer.probe(PurePosixPath(config.mount(example())),case)
             try:coro.send(None)
-            except StopIteration as done:return done.value
+            except StopIteration as done:return done.value if private else done.value[0]
             raise AssertionError('fake unexpectedly yielded IO')
         finally:
             peer.read=oldread;peer.asyncio.timeout=oldtimeout
             if old is None:sys.modules.pop('prisma',None)
             else:sys.modules['prisma']=old
 
-    def test_specific_negative_errors_only(self):
+    def test_untyped_negative_strings_never_qualify(self):
         for case,text in [('wrong-ca','TLS certificate verify failed: unable to get local issuer'),('wrong-san','TLS hostname mismatch'),('plaintext','TLS server does not support TLS'),('wrong-password','P1000 password authentication failed')]:
             class Fake:
                 def __init__(self,**kw):pass
                 async def connect(self):raise RuntimeError(text)
                 async def disconnect(self):pass
-            with self.subTest(case=case):self.assertTrue(self.fake_probe(Fake,case)['passed'])
+            with self.subTest(case=case):
+                result,error=self.fake_probe(Fake,case,private=True)
+                self.assertFalse(result['passed']);self.assertIsInstance(error,RuntimeError)
+                self.assertNotIn('errorType',result)
+                self.assertNotIn(text,json.dumps(result))
         class NetworkFailure:
             def __init__(self,**kw):pass
             async def connect(self):raise RuntimeError('connection timeout')
@@ -167,6 +172,128 @@ class FixtureTests(unittest.TestCase):
             async def query_raw(self,sql):return []
             async def disconnect(self):pass
         for case in ('wrong-ca','wrong-san','plaintext','wrong-password'):self.assertFalse(self.fake_probe(Fake,case)['passed'])
+
+    def native_plaintext(self):
+        message='error performing TLS handshake: server does not support TLS'
+        return (json.dumps({'is_panic':False,'message':'Error opening a TLS connection: '+message,
+            'meta':{'message':message},'error_code':'P1011'})+'\n').encode()
+
+    def engine_failure(self):
+        class EngineConnectionError(RuntimeError):
+            __module__='prisma.engine.errors'
+            def __str__(self):raise AssertionError('PRIVATE_EXCEPTION_MUST_NOT_BE_STRINGIFIED')
+        return EngineConnectionError('SYNTHETIC_PRIVATE_SENTINEL')
+
+    def test_native_specific_evidence_composes_without_stringifying_exception(self):
+        _,diagnostics=peer.diagnostic_modules()
+        outcome=({'case':'plaintext','passed':False,'providerCalls':0,'runtimeAdmitted':False},self.engine_failure())
+        result=peer.finish_probe('plaintext',outcome,self.native_plaintext(),{'complete':True},diagnostics)
+        self.assertTrue(result['passed']);self.assertTrue(result['specificRejection'])
+        self.assertEqual(result['nativeEvidence']['reason'],'TLS_UNSUPPORTED')
+        self.assertNotIn('SYNTHETIC_PRIVATE_SENTINEL',json.dumps(result))
+
+    def test_capture_disconnect_and_negative_connection_failures_override_specific_evidence(self):
+        _,diagnostics=peer.diagnostic_modules()
+        for flag in ('negativeConnected','disconnectUnknown','incomplete'):
+            value={'case':'plaintext','passed':False}
+            if flag!='incomplete':value[flag]=True
+            with self.subTest(flag=flag):
+                result=peer.finish_probe('plaintext',(value,self.engine_failure()),self.native_plaintext(),
+                    {'complete':flag!='incomplete'},diagnostics)
+                self.assertFalse(result['passed']);self.assertFalse(result['specificRejection'])
+
+    def test_missing_exception_or_malformed_native_evidence_never_qualifies(self):
+        _,diagnostics=peer.diagnostic_modules()
+        for error,raw in ((None,self.native_plaintext()),(self.engine_failure(),b''),
+                (self.engine_failure(),self.native_plaintext()+b'SYNTHETIC_EXTRA_LOG\n')):
+            with self.subTest(has_error=error is not None,size=len(raw)):
+                result=peer.finish_probe('plaintext',({'case':'plaintext','passed':False},error),raw,{'complete':True},diagnostics)
+                self.assertFalse(result['passed'])
+
+    def test_positive_requires_complete_capture_and_empty_stderr(self):
+        _,diagnostics=peer.diagnostic_modules()
+        for complete,raw,expected in ((True,b'',True),(False,b'',False),(True,b'SYNTHETIC_WARNING\n',False)):
+            with self.subTest(complete=complete,size=len(raw)):
+                result=peer.finish_probe('positive',({'case':'positive','passed':True},None),raw,{'complete':complete},diagnostics)
+                self.assertIs(result['passed'],expected)
+
+    def test_peer_arguments_pin_exact_sources_readonly_and_keep_isolated_python(self):
+        value=example();client=PurePosixPath('/synthetic/private/client')
+        args=runner.peer_arguments(value,'plaintext',client)
+        mounts=[args[index+1] for index,token in enumerate(args) if token=='--mount']
+        self.assertEqual(len(mounts),4)
+        for name in ('prisma-peer.py',*peer.DIAGNOSTIC_SOURCE_NAMES):
+            self.assertEqual(mounts.count('type=bind,source='+str(runner.HERE/name)+',target=/run/'+name+',readonly'),1)
+        self.assertEqual(args[-7:],['-I','-B','/run/prisma-peer.py','--run',value['runId'],'--case','plaintext'])
+        self.assertNotIn('--env',args)
+        with self.assertRaisesRegex(ValueError,'PEER_CASE'):runner.peer_arguments(value,'unknown',client)
+
+    def test_diagnostic_loader_does_not_search_siblings_or_retain_module_names(self):
+        before_path=list(sys.path);before_modules=set(sys.modules)
+        native,diagnostics=peer.diagnostic_modules()
+        self.assertEqual(sys.path,before_path)
+        self.assertTrue(callable(native.capture_native_output));self.assertTrue(callable(diagnostics.classify_native_output))
+        self.assertFalse(any(name.startswith('_meri_tls_') for name in set(sys.modules)-before_modules))
+
+    def test_only_terminal_coherent_negative_failures_allow_further_diagnostics(self):
+        self.assertFalse(runner.peer_passed('wrong-ca',{'case':'wrong-ca','passed':False},1,1))
+        self.assertTrue(runner.peer_passed('wrong-ca',{'case':'wrong-ca','passed':True},0,0))
+        with self.assertRaisesRegex(ValueError,'NATIVE_CONTROL_FAILED_positive'):
+            runner.peer_passed('positive',{'case':'positive','passed':False},1,1)
+        for value,code,observed in (({'case':'wrong-ca','passed':False},0,0),
+                ({'case':'wrong-ca','passed':True},0,1),({'case':'wrong-ca','passed':1},0,0),
+                ({'case':'other','passed':False},1,1),({'status':'PEER_REFUSED'},2,2),([],1,1)):
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'NATIVE_PEER_OUTCOME'):
+                runner.peer_passed('wrong-ca',value,code,observed)
+
+    def injected_main(self,*,expire=False):
+        import contextlib
+        import io
+        _,diagnostics=peer.diagnostic_modules()
+        clock=[100.0];seen=[]
+        class Capture:
+            def __enter__(self):seen.append('enter');return self
+            def __exit__(self,*args):seen.append('drain');return False
+            def check(self):seen.append('check')
+            def facts(self):return {'complete':True}
+            def private_bytes(self):seen.append('private');return b'',b''
+        def capture(deadline):seen.append(('deadline',deadline));return Capture()
+        def initialize():clock[0]+=2;seen.append('modules');return types.SimpleNamespace(capture_native_output=capture),diagnostics
+        def run(coro):
+            coro.close();seen.append('body')
+            if expire:clock[0]=132.0
+            return ({'case':'positive','passed':True,'providerCalls':0,'runtimeAdmitted':False},None)
+        output=io.StringIO()
+        with contextlib.ExitStack() as stack:
+            for obj,name,value in ((peer.sys,'platform','linux'),(peer.sys,'version_info',(3,13,5)),
+                    (peer.sys,'prefix','/opt/meri-proxy-venv'),(peer.sys,'argv',['prisma-peer.py','--run',example()['runId'],'--case','positive']),
+                    (peer.os,'getuid',lambda:10001),(peer.os,'getgid',lambda:10001),
+                    (peer.importlib.metadata,'version',lambda _: '0.11.0'),(peer,'diagnostic_modules',initialize),
+                    (peer.time,'monotonic',lambda:clock[0]),(peer.asyncio,'run',run),
+                    (peer.signal,'SIGALRM',14),(peer.signal,'ITIMER_REAL',0),
+                    (peer.signal,'signal',lambda *_:None),
+                    (peer.signal,'setitimer',lambda kind,value:seen.append(('timer',value)))):
+                stack.enter_context(patch.object(obj,name,value,create=True))
+            stack.enter_context(patch.dict(peer.os.environ,{},clear=True))
+            stack.enter_context(contextlib.redirect_stdout(output))
+            if expire:
+                with self.assertRaisesRegex(TimeoutError,'PEER_DEADLINE'):peer.main()
+            else:self.assertEqual(peer.main(),0)
+        return seen,output.getvalue()
+
+    def test_main_preserves_original_clock_and_disconnect_drain_before_public_output(self):
+        seen,output=self.injected_main()
+        self.assertIn(('deadline',132.0),seen)
+        self.assertLess(seen.index(('timer',32.0)),seen.index('modules'))
+        self.assertLess(seen.index('body'),seen.index('drain'))
+        self.assertLess(seen.index('drain'),seen.index('private'))
+        self.assertEqual(seen[-1],('timer',0))
+        self.assertTrue(json.loads(output)['passed'])
+
+    def test_main_refuses_late_body_even_if_injected_capture_claims_complete(self):
+        seen,output=self.injected_main(expire=True)
+        self.assertIn(('deadline',132.0),seen)
+        self.assertEqual(seen[-1],('timer',0));self.assertEqual(output,'')
 
     def test_cleanup_requires_positive_owned_id(self):
         c=capture.DockerCapture(Path('.'),10);calls=[]

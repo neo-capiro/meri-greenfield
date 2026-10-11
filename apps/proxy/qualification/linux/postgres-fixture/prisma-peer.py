@@ -9,7 +9,45 @@ from pathlib import Path
 import signal
 import stat
 import sys
+import time
+import types
 from urllib.parse import parse_qsl,urlsplit
+
+DIAGNOSTIC_SOURCE_NAMES=('native_output_capture.py','prisma_error_evidence.py')
+
+def diagnostic_modules():
+    # -I excludes sibling lookup; execute only exact read-only mounted sources.
+    # Initialization belongs here, not at import, and no .pyc/search path is used.
+    modules=[]
+    for name in DIAGNOSTIC_SOURCE_NAMES:
+        path=Path(__file__).absolute().with_name(name)
+        before=path.lstat()
+        if (not stat.S_ISREG(before.st_mode) or before.st_nlink!=1
+                or not 0<before.st_size<=65536
+                or getattr(before,'st_file_attributes',0)&0x400):
+            raise ValueError('DIAGNOSTIC_SOURCE_FILE')
+        with path.open('rb') as stream:
+            opened=os.fstat(stream.fileno())
+            raw=stream.read(65537)
+            after=os.fstat(stream.fileno())
+        def identity(value):
+            return (value.st_dev,value.st_ino,value.st_mode,value.st_nlink,
+                    value.st_size,value.st_mtime_ns,value.st_ctime_ns)
+        def cross_identity(value):
+            # Windows lstat reports creation ctime, fstat reports modification
+            # ctime. Same-accessor stability still uses the complete tuple.
+            return identity(value)[:-1] if os.name=='nt' else identity(value)
+        if (cross_identity(before)!=cross_identity(opened) or identity(after)!=identity(opened)
+                or identity(path.lstat())!=identity(before) or len(raw)!=before.st_size):
+            raise ValueError('DIAGNOSTIC_SOURCE_DRIFT')
+        module=types.ModuleType('_meri_tls_'+path.stem)
+        module.__file__=str(path)
+        exec(compile(raw,str(path),'exec'),module.__dict__)
+        modules.append(module)
+    return tuple(modules)
+
+def expected_host(case):
+    return 'meri-native-wrong-san' if case=='wrong-san' else ('meri-native-plain-pg' if case=='plaintext' else 'meri-native-auth-pg')
 
 class Discard:
     def __init__(self,fd,budget):
@@ -17,7 +55,7 @@ class Discard:
         self.fd=fd;self.budget=budget
     def fileno(self):
         # Prisma passes this object to Popen. These descriptors are already
-        # redirected to devnull; never expose the saved original descriptors.
+        # redirected to private capture/devnull; never expose saved descriptors.
         return self.fd
     def write(self,text):
         self.budget[0]+=len(text)
@@ -57,7 +95,7 @@ async def probe(root,case):
     from prisma import Prisma
     url=read(root/(case+'-url')).decode('ascii')
     endpoint=urlsplit(url)
-    host='meri-native-wrong-san' if case=='wrong-san' else ('meri-native-plain-pg' if case=='plaintext' else 'meri-native-auth-pg')
+    host=expected_host(case)
     expected_db='meri_native_auth_'+root.name.replace('-','')
     ca=root/('wrong-ca.pem' if case=='wrong-ca' else 'ca.pem')
     # Validate the generated private mount again before handing anything to native code.
@@ -69,11 +107,14 @@ async def probe(root,case):
     read(ca)
     client=Prisma(datasource={'url':url})
     result={'case':case,'passed':False,'providerCalls':0,'runtimeAdmitted':False}
+    caught=None
     try:
         async with asyncio.timeout(25):
             await client.connect()
             rows=await client.query_raw("SELECT current_user AS who, current_database() AS db, pg_backend_pid() AS pid, s.ssl, s.version, s.cipher, r.rolsuper, r.rolcreatedb, r.rolcreaterole, r.rolreplication, r.rolbypassrls, (d.datdba=r.oid) AS owns_database FROM pg_stat_ssl s JOIN pg_roles r ON r.rolname=current_user JOIN pg_database d ON d.datname=current_database() WHERE s.pid=pg_backend_pid()")
-            if case!='positive':raise ValueError('NEGATIVE_CONNECTED')
+            if case!='positive':
+                result['negativeConnected']=True
+                raise ValueError('NEGATIVE_CONNECTED')
             if len(rows)!=1:raise ValueError('PEER_ROW')
             row=rows[0]
             if not(row['who']=='meri_native_auth_app' and row['db']==expected_db and row['ssl'] is True
@@ -81,19 +122,33 @@ async def probe(root,case):
                 and row['cipher'] and all(row[k] is False for k in ('rolsuper','rolcreatedb','rolcreaterole','rolreplication','rolbypassrls','owns_database'))):raise ValueError('TLS_OR_NONOWNER_ROLE')
             result.update(passed=True,peer=row)
     except Exception as error:
-        # Classification only: never print credential-bearing error/URL/native output.
-        text=str(error).lower();code=getattr(error,'code',None)
-        tls=('p1011' in text or code=='P1011' or 'tls' in text or 'ssl' in text)
-        if case=='wrong-ca':specific=tls and any(x in text for x in ('certificate verify failed','unknown issuer','unable to get local issuer','self-signed certificate'))
-        elif case=='wrong-san':specific=tls and any(x in text for x in ('hostname mismatch','certificate verify failed','not valid for','ip address mismatch'))
-        elif case=='plaintext':specific=tls and any(x in text for x in ('does not support tls','does not support ssl','server does not support','ssl is not enabled'))
-        elif case=='wrong-password':specific=code=='P1000' or 'p1000' in text or 'password authentication failed' in text or 'authentication failed' in text
-        else:specific=False
-        result.update(passed=bool(specific),errorType=type(error).__name__,specificRejection=bool(specific))
+        # Private caller-owned exception; never stringify or put it in result.
+        caught=error
     finally:
         try:
             async with asyncio.timeout(3):await client.disconnect()
         except Exception:result.update(passed=False,disconnectUnknown=True)
+    return result,caught
+
+def finish_probe(case,outcome,stderr_bytes,capture_facts,diagnostics):
+    """Compose sanitized observations only; private exceptions never escape."""
+    result,error=outcome
+    complete=capture_facts.get('complete') is True
+    result['nativeCapture']=capture_facts
+    if case=='positive':
+        result['passed']=result['passed'] is True and error is None and complete and not stderr_bytes
+        return result
+    native=diagnostics.classify_native_output(case,stderr_bytes,
+        expected_user='meri_native_auth_app',expected_host=expected_host(case),evidence_complete=complete)
+    typed=diagnostics.classify_exception(case,error,evidence_complete=complete)
+    result.update(exceptionEvidence=typed,nativeEvidence=native,specificRejection=False)
+    observations=[value for value in (native,typed) if value['specificRejection'] is True]
+    coherent=(typed['complete'] is True and (not stderr_bytes or
+        (native['complete'] is True and native['specificRejection'] is True))
+        and len({value['reason'] for value in observations})==1)
+    passed=(error is not None and complete and coherent and bool(observations)
+        and not result.get('negativeConnected',False) and not result.get('disconnectUnknown',False))
+    result.update(passed=passed,specificRejection=passed)
     return result
 
 def main():
@@ -103,9 +158,25 @@ def main():
     if any(k.upper().startswith(('AWS_','ANTHROPIC_','OPENAI_','AZURE_','DATABASE_URL','PGPASSWORD','PRISMA_','SSL_CERT_')) or k.upper() in ('OPENSSL_CONF','REQUESTS_CA_BUNDLE','HTTPS_PROXY','HTTP_PROXY','ALL_PROXY') for k in os.environ):raise ValueError('SENSITIVE_ENV')
     import uuid
     if str(uuid.UUID(args.run))!=args.run:raise ValueError('RUN_UUID')
-    signal.signal(signal.SIGALRM,lambda *_:(_ for _ in ()).throw(TimeoutError('PEER_DEADLINE')));signal.alarm(32)
-    with discard_native_output():result=asyncio.run(probe(Path('/run/meri-native-auth')/args.run,args.case))
-    signal.alarm(0);print(json.dumps(result,sort_keys=True));return 0 if result['passed'] else 1
+    deadline=time.monotonic()+32
+    signal.signal(signal.SIGALRM,lambda *_:(_ for _ in ()).throw(TimeoutError('PEER_DEADLINE')))
+    signal.setitimer(signal.ITIMER_REAL,max(.000001,deadline-time.monotonic()))
+    try:
+        native,diagnostics=diagnostic_modules()
+        with discard_native_output():
+            with native.capture_native_output(deadline) as captured:
+                outcome=asyncio.run(probe(Path('/run/meri-native-auth')/args.run,args.case))
+                captured.check()
+            # Native child must have disconnected and closed its inherited FDs.
+            captured.check()
+            stdout_bytes,stderr_bytes=captured.private_bytes()
+            del stdout_bytes
+            result=finish_probe(args.case,outcome,stderr_bytes,captured.facts(),diagnostics)
+            del outcome,stderr_bytes
+        if time.monotonic()>=deadline:raise TimeoutError('PEER_DEADLINE')
+    finally:
+        signal.setitimer(signal.ITIMER_REAL,0)
+    print(json.dumps(result,sort_keys=True));return 0 if result['passed'] else 1
 
 if __name__=='__main__':
     try:raise SystemExit(main())
