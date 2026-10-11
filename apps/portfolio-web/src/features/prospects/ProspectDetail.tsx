@@ -19,6 +19,7 @@ import { NextStepEditor } from "./NextStepEditor";
 import { ProspectHistory } from "./ProspectHistory";
 import { StageEditor } from "./StageEditor";
 import { useProspectVisibility } from "./mutations";
+import { ProspectContacts } from "./contacts/public";
 import styles from "./prospects.module.css";
 export function ProspectDetail({
   id,
@@ -148,13 +149,7 @@ export function ProspectDetail({
                     </time>
                   )}
                 </section>
-                <section className="card stack">
-                  <h2>Contacts & research</h2>
-                  <p className="muted">
-                    Contacts, files and proposals are not available for this
-                    prospect yet.
-                  </p>
-                </section>
+                <ProspectContacts prospectId={id} />
                 <button className="button" onClick={() => setArchive(true)}>
                   {record.status === "dismissed"
                     ? "Restore prospect"
