@@ -1,4 +1,9 @@
-import { memberName, type Client, type Member } from "./contracts";
+import {
+  clientLocation,
+  memberName,
+  type Client,
+  type Member,
+} from "./contracts";
 export interface PortfolioFilter {
   search: string;
   status: string;
@@ -76,18 +81,14 @@ export function filterClients(
 ) {
   const term = filter.search.trim().toLocaleLowerCase();
   return clients.filter((client) => {
-    const city = client.intakeData?.city;
-    const state = client.intakeData?.state;
-    const location = [city, state]
-      .filter((part): part is string => typeof part === "string")
-      .filter(Boolean);
+    const location = clientLocation(client);
     const searchText = [
       client.name,
       client.description,
       client.primaryContactName,
       client.sectorTag,
-      location.join(" "),
-      location.join(", "),
+      location?.replace(", ", " "),
+      location,
       owners[client.id]?.accountOwner
         ? memberName(owners[client.id]?.accountOwner)
         : "",

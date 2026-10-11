@@ -30,6 +30,15 @@ export const clientSchema = z.object({
   applicantTypes: z.array(z.string()).optional(),
 });
 export type Client = z.infer<typeof clientSchema>;
+export function clientLocation(client: Client): string | null {
+  const city = client.intakeData?.city;
+  const state = client.intakeData?.state;
+  const parts = [city, state]
+    .filter((part): part is string => typeof part === "string")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return parts.length ? parts.join(", ") : null;
+}
 export const memberSchema = z.object({
   id: z.string(),
   email: z.string(),

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import {
+  clientLocation,
   initials,
   memberName,
   safeWebsite,
@@ -91,6 +92,7 @@ export function ProfileCard({
   ownership?: { accountOwner: Member | null };
 }) {
   const owner = ownership?.accountOwner;
+  const location = clientLocation(client);
   return (
     <article className={styles.profileCard}>
       <Link
@@ -101,7 +103,10 @@ export function ProfileCard({
         <ProfileLogo client={client} />
         <div className={styles.cardIdentity}>
           <h3>{client.name}</h3>
-          <small>{client.sectorTag ?? "Sector not supplied"}</small>
+          <small>
+            {client.sectorTag ?? "Sector not supplied"}
+            {location && ` · ${location}`}
+          </small>
         </div>
       </Link>
       <div className={styles.cardBottom}>

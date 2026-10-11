@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { clientSchema } from "../src/features/portfolio/contracts";
+import {
+  clientLocation,
+  clientSchema,
+} from "../src/features/portfolio/contracts";
 import {
   clearPortfolioFilters,
   filterClients,
@@ -41,6 +44,8 @@ const owners = {
 const empty = { search: "", status: "", sector: "", owner: "" };
 describe("Portfolio index contract-backed controls", () => {
   it("combines actual profile fields and primary owner, without matching missing-field placeholders", () => {
+    expect(clientLocation(clients[0]!)).toBe("Seattle, WA");
+    expect(clientLocation(clients[1]!)).toBe("New York, NY");
     expect(
       filterClients(
         clients,
@@ -66,6 +71,19 @@ describe("Portfolio index contract-backed controls", () => {
     expect(
       filterClients(clients, { ...empty, search: "new york ny" }, owners),
     ).toEqual([clients[1]]);
+  });
+  it("does not render or search a location absent from the client record", () => {
+    const noLocation = clientSchema.parse({
+      id: "33333333-3333-4333-8333-333333333333",
+      name: "No Location",
+      status: "active",
+      profileStatus: "ACTIVE",
+      intakeData: { city: {}, state: null },
+    });
+    expect(clientLocation(noLocation)).toBeNull();
+    expect(
+      filterClients([noLocation], { ...empty, search: "object" }, {}),
+    ).toEqual([]);
   });
   it("distinguishes known unassigned from missing owner receipts", () => {
     expect(

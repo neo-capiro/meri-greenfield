@@ -119,6 +119,9 @@ test("real fields drive search/status/sector/known unassigned; no matching resul
     .selectOption("unassigned");
   await expect(page.getByRole("article")).toHaveCount(1);
   await expect(page.getByRole("article")).toContainText("Alpha Energy");
+  await expect(page.getByRole("article")).toContainText(
+    "Energy · New York, NY",
+  );
   await page.getByLabel("Search profiles").fill("New York, NY");
   await expect(page.getByRole("article")).toHaveCount(1);
   await expect(page.getByRole("article")).toContainText("Alpha Energy");
