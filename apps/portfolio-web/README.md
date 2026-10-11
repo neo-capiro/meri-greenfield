@@ -59,8 +59,9 @@ app or reuse Meri qualification resources. The reproducible build and runtime
 commands above are ready for that isolated target; its server environment must
 map each service explicitly. The human designated capiro-internal and neo@capiro.ai;
 live core reads verify https://os.capiro.ai/api. The production Clerk application
-rejects localhost; development keys or an approved preview origin are required
-for signed-in browser acceptance. No shared backend change or migration is applied.
+rejects localhost. Existing development keys are configured locally, but matching
+backend issuer trust, tenant membership and JWT template or an approved isolated
+production-auth hostname are still required for signed-in product acceptance. No shared backend change or migration is applied.
 
 ## Structure and verification
 
@@ -70,20 +71,29 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Current combined source qualification at `936c7247893a84885b8106fd11b17b9d115508cc`
-on Node 24.19.0: 167 unit checks, 91 synthetic browser checks, TypeScript,
-formatting, architecture (226 modules) and production build (17 routes) pass.
-The subsequent GET-only template proxy has eight additional focused boundary cases.
-ESLint passes with one static SVG image
-warning. Representative screens were reviewed against current Figma, including
-desktop and phone dark captures; full workflow/visual acceptance remains open.
-The actual Next production server also passes setup/deep-link/fail-closed proxy
-checks without configured credentials. These checks do not establish live
-authentication or mutation acceptance. Thirteen authorized core read projections
-passed against capiro-internal. Structured meeting preparation was corrected
-from live evidence; native Clerk initialization failure now has a retry screen.
-The previous dependency audit found zero
-production advisories; ESLint's development-only braces advisory remains open.
+Current combined source qualification at `6c1c42fad9d66a13043958235d27f8c6e1f9fe65`
+on Node24.19.0: **384 unit and 233 component browser checks pass**,
+zero failed/pending/skipped/flaky. TypeScript, formatting, architecture
+(312 modules) and Next production build (17 routes) pass. ESLint passes with one
+existing static-image warning. Actual Next production-server development-auth,
+deep-link and unauthenticated proxy checks pass (five checks). Sign-in rendering
+does not establish signed-in product acceptance.
+
+Source-bound results are retained in the task's
+outputs/evidence/portfolio-integration-review-flows-20261011. Earlier failed
+email/font/geometry/fixture results, screenshots and traces remain preserved.
+The empty personIds payload regression was fixed; uncertain delivery remains
+blocked from automatic retry. These are intercepted component checks, separate
+from authorized live reads and task-owned synthetic CRUD reported below.
+
+Saved enrichment review, advocacy corrections, guarded client/meeting attendance,
+recipient/attachment email review and saved meeting document preview are composed.
+New enrichment start/retry remain unavailable pending a preview-only backend
+contract and worker activation agreement. Native Print / Save as PDF preserves
+saved rich/Unicode content; incompatible server PDF preparation is refused.
+Prepared PDFs open the existing composer and can reopen the original attachment
+without duplicate file creation; its scan/readiness is checked again before send.
+No live bot, provider email, PDF creation, conversion or billing acceptance is claimed.
 
 The local preview now uses existing Capiro development keys saved outside Git.
 Its real sign-in form loads, and an unauthenticated core proxy call returns 401.
