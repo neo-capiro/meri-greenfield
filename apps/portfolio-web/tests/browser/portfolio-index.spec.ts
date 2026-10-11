@@ -32,6 +32,22 @@ async function indexFixtures(page: Page) {
   return unexpected;
 }
 
+test("wordmark opens the configured Dashboard while Portfolio stays in its workspace", async ({
+  page,
+}) => {
+  const unexpected = await indexFixtures(page);
+  await page.goto("/portfolio");
+  await expect(
+    page.getByRole("link", { name: "Capiro dashboard" }),
+  ).toHaveAttribute("href", "http://127.0.0.1:5191/existing/");
+  await expect(
+    page.getByRole("navigation", { name: "Workspace" }).getByRole("link", {
+      name: "Portfolio",
+    }),
+  ).toHaveAttribute("href", "/portfolio");
+  expect(unexpected).toEqual([]);
+});
+
 test("deep links restore combined filters and legacy layout; clearing preserves chosen presentation", async ({
   page,
 }) => {

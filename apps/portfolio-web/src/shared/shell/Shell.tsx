@@ -37,18 +37,33 @@ export function Shell({
         >
           <Menu size={18} />
         </button>
-        <Link
-          className={styles.brand}
-          href="/portfolio"
-          aria-label="Capiro home"
-        >
-          <img
-            src={asset("imgCapiroWordmark.png")}
-            alt="Capiro"
-            width={77}
-            height={26}
-          />
-        </Link>
+        {destinations.existingApp ? (
+          <a
+            className={styles.brand}
+            href={`${destinations.existingApp}/`}
+            aria-label="Capiro dashboard"
+          >
+            <img
+              src={asset("imgCapiroWordmark.png")}
+              alt="Capiro"
+              width={77}
+              height={26}
+            />
+          </a>
+        ) : (
+          <Link
+            className={styles.brand}
+            href="/portfolio"
+            aria-label="Portfolio home"
+          >
+            <img
+              src={asset("imgCapiroWordmark.png")}
+              alt="Capiro"
+              width={77}
+              height={26}
+            />
+          </Link>
+        )}
         <WorkspaceSwitcher destinations={destinations} />
         <nav className={styles.actions} aria-label="Global actions">
           <Link
