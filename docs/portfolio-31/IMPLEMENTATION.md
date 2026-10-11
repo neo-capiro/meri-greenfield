@@ -318,6 +318,29 @@ checks while that deployment/access boundary remains unresolved.
 Sources: https://clerk.com/docs/guides/development/managing-environments and
 https://clerk.com/docs/guides/development/troubleshooting/using-production-keys-in-development.
 
+## Isolated AWS CLI preview preparation — 11 October 2026
+
+The human authorized use of the existing `hermes-cli` AWS identity and requested
+AWS CLI rather than console operation. This preparation does not deploy a service,
+change shared routing, or approve live product writes.
+
+- `apps/portfolio-web/Dockerfile` owns the immutable Node 24 Linux build and a
+  non-root standalone Next.js runtime. The build context is this application only;
+  no Meri backend or current Capiro source is copied.
+- `src/app/healthz/route.ts` owns an unauthenticated process health response. It
+  contains no tenant or backend data; the ALB health check uses this route.
+- Next output tracing owns the runtime file set. Public assets and static build
+  output are copied explicitly. Server-side configuration and Clerk secret keys
+  enter only at runtime through a reviewed ECS task definition/secret reference.
+- A separate preview VPC, ECS cluster/service, target group, ALB, certificate and
+  DNS record are proposed. They require an exact built/scanned image digest, live
+  backend/auth mapping, an independently reviewed infrastructure diff and an
+  owner-designated signed-in test scope. Existing `web-vnext` routing stays intact.
+- Verification before deployment: current-head type/lint/architecture/unit and
+  full browser checks, Linux image build, anonymous health/setup/proxy checks,
+  image scan, and review of network/secret boundaries. Signed-in acceptance is a
+  separate bounded production test after the preview is reachable.
+
 ## Client lifecycle integration outline — 11 October 2026
 
 Client-intake owns the canonical three-step form, profile mapping/validation,

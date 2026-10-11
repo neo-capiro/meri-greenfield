@@ -10,4 +10,6 @@ export default function proxy(request: NextRequest, event: NextFetchEvent) {
   if (!readConfig(process.env).authConfigured) return NextResponse.next();
   return clerk(request, event);
 }
-export const config = { matcher: ["/((?!_next|.*\\..*).*)", "/api/(.*)"] };
+export const config = {
+  matcher: ["/((?!_next|healthz|.*\\..*).*)", "/api/(.*)"],
+};

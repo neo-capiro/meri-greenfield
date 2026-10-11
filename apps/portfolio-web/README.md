@@ -63,6 +63,13 @@ rejects localhost. Existing development keys are configured locally, but matchin
 backend issuer trust, tenant membership and JWT template or an approved isolated
 production-auth hostname are still required for signed-in product acceptance. No shared backend change or migration is applied.
 
+The pending AWS CLI preview uses this application directory as its Docker build
+context, the pinned Node 24 image in `Dockerfile`, and `/healthz` for process
+health. Next's standalone output serves on port 5188 as a non-root user. Build,
+scan and run the exact source image before provisioning ECS; inject the matching
+Clerk keys and backend URLs through reviewed runtime configuration. The current
+draft PR has no image digest or deployed preview yet.
+
 ## Structure and verification
 
 Thin App Router pages compose feature public interfaces. Features own focused
