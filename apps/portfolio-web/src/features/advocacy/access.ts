@@ -4,8 +4,10 @@ export function useAdvocacyAccess() {
   const identity = useIdentity();
   const ready =
     !identity.isPending &&
+    !identity.isFetching &&
     !identity.error &&
-    Boolean(identity.data?.tenant?.id);
+    Boolean(identity.data?.tenant?.id.trim()) &&
+    Boolean(identity.data?.user.id.trim());
   return {
     identity,
     canRead:

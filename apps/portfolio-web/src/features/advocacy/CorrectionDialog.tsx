@@ -213,12 +213,18 @@ export function CorrectionDialog({
               disabled={pending || !canEdit}
               onClick={() => reconcile.mutate()}
             >
-              {pending ? "Checking…" : "Check current result"}
+              {mutation.isPending
+                ? "Saving…"
+                : pending
+                  ? "Checking…"
+                  : "Check current result"}
             </button>
           ) : (
             <button
               className="button primary"
-              disabled={pending || !canEdit || !operation}
+              disabled={
+                pending || !canEdit || !operation || Boolean(mutation.error)
+              }
             >
               {pending ? "Saving…" : actions[context.kind]}
             </button>

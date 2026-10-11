@@ -25,8 +25,10 @@ export async function prepareCorrection(
   api: ApiClient,
   clientId: string,
   correction: Correction,
+  signal?: AbortSignal,
 ) {
-  const list = await loadMatters(api, clientId);
+  signal?.throwIfAborted();
+  const list = await loadMatters(api, clientId, signal);
   const source = correction.source;
   const target = "target" in correction ? correction.target : null;
   for (const matter of [source, target]) {
@@ -36,7 +38,9 @@ export async function prepareCorrection(
         409,
         "A selected matter is no longer available. Reload and review the current records.",
       );
-    if (!sameSnapshot(matter, await loadMatter(api, clientId, matter.id)))
+    if (
+      !sameSnapshot(matter, await loadMatter(api, clientId, matter.id, signal))
+    )
       throw new ApiError(
         409,
         "The selected matter changed. Reload and review the current records before correcting it.",
@@ -47,7 +51,7 @@ export async function prepareCorrection(
   if (correction.kind !== "merge") {
     const current = source
       ? source.records.some((record) => record.id === correction.recordId)
-      : (await loadTimeline(api, clientId)).some(
+      : (await loadTimeline(api, clientId, signal)).some(
           (entry) =>
             entry.kind === "record" &&
             entry.id === correction.recordId &&
@@ -64,6 +68,7 @@ export async function prepareCorrection(
     )
       throw new ApiError(400, "Reason must be at most 1000 characters.");
   }
+  signal?.throwIfAborted();
   return correction;
 }
 
@@ -71,14 +76,20 @@ export function submitCorrection(
   api: ApiClient,
   clientId: string,
   correction: Correction,
+  signal?: AbortSignal,
 ) {
+  signal?.throwIfAborted();
   const root = advocacyPath(clientId);
   if (correction.kind === "merge")
     return api.request(
       "core",
       `${root}/${encodeURIComponent(correction.target.id)}/merge`,
       z.null(),
-      { method: "POST", body: { sourceMatterId: correction.source.id } },
+      {
+        method: "POST",
+        body: { sourceMatterId: correction.source.id },
+        signal,
+      },
     );
   return api.request(
     "core",
@@ -86,6 +97,7 @@ export function submitCorrection(
     z.null(),
     {
       method: "POST",
+      signal,
       ...(correction.kind === "reassign"
         ? { body: { targetMatterId: correction.target.id } }
         : correction.kind === "not-advocacy"
@@ -99,15 +111,23 @@ export async function checkCorrection(
   api: ApiClient,
   clientId: string,
   correction: Correction,
+  options: { signal?: AbortSignal; acknowledged?: boolean } = {},
 ) {
+  const { signal } = options;
+  signal?.throwIfAborted();
   if (correction.kind === "merge") {
-    const list = await loadMatters(api, clientId);
+    const list = await loadMatters(api, clientId, signal);
     if (
       list.some((row) => row.id === correction.source.id) ||
       !list.some((row) => row.id === correction.target.id)
     )
       return false;
-    const target = await loadMatter(api, clientId, correction.target.id);
+    const target = await loadMatter(
+      api,
+      clientId,
+      correction.target.id,
+      signal,
+    );
     return (
       correction.source.records.every((record) =>
         target.records.some(
@@ -123,7 +143,12 @@ export async function checkCorrection(
     );
   }
   if (correction.kind === "reassign") {
-    const target = await loadMatter(api, clientId, correction.target.id);
+    const target = await loadMatter(
+      api,
+      clientId,
+      correction.target.id,
+      signal,
+    );
     if (
       !target.records.some(
         (row) => row.id === correction.recordId && row.matterLocked === true,
@@ -132,12 +157,12 @@ export async function checkCorrection(
       return false;
     return (
       !correction.source ||
-      !(await loadMatter(api, clientId, correction.source.id)).records.some(
-        (row) => row.id === correction.recordId,
-      )
+      !(
+        await loadMatter(api, clientId, correction.source.id, signal)
+      ).records.some((row) => row.id === correction.recordId)
     );
   }
-  const timeline = await loadTimeline(api, clientId);
+  const timeline = await loadTimeline(api, clientId, signal);
   const entry = timeline.find(
     (row) => row.kind === "record" && row.id === correction.recordId,
   );
@@ -147,10 +172,11 @@ export async function checkCorrection(
       : Boolean(entry)
   )
     return false;
+  if (correction.kind === "not-advocacy" && !options.acknowledged) return false;
   return (
     !correction.source ||
-    !(await loadMatter(api, clientId, correction.source.id)).records.some(
-      (row) => row.id === correction.recordId,
-    )
+    !(
+      await loadMatter(api, clientId, correction.source.id, signal)
+    ).records.some((row) => row.id === correction.recordId)
   );
 }

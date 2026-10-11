@@ -48,13 +48,16 @@ export function AdvocacyHistory({ clientId }: { clientId: string }) {
         </button>
       </header>
       <QueryState
-        pending={identity.isPending}
+        pending={identity.isPending || identity.isFetching}
         error={identity.error}
         retry={() => void identity.refetch()}
       />
-      {!identity.isPending && !identity.error && !canRead && (
-        <p className="status">This account cannot access advocacy history.</p>
-      )}
+      {!identity.isPending &&
+        !identity.isFetching &&
+        !identity.error &&
+        !canRead && (
+          <p className="status">This account cannot access advocacy history.</p>
+        )}
       {notice && (
         <p className="status" role="status">
           {notice}
@@ -109,7 +112,7 @@ export function AdvocacyHistory({ clientId }: { clientId: string }) {
         }}
       />
       <Dialog
-        open={Boolean(selected)}
+        open={Boolean(selected) && !correction}
         onOpenChange={(open) => {
           if (!open) setSelected(null);
         }}

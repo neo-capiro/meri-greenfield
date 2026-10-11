@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
@@ -21,6 +21,16 @@ export function useCorrection(clientId: string, onSaved: () => void) {
     tenantId: actor.data?.tenant?.id,
   }));
   const attempted = useRef<Correction | null>(null);
+  const acknowledged = useRef(false);
+  const lifetime = useRef<AbortController | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    lifetime.current = controller;
+    return () => {
+      controller.abort();
+      if (lifetime.current === controller) lifetime.current = null;
+    };
+  }, [cache, clientId]);
   const [submitted, setSubmitted] = useState(false);
   const inFlight = useRef(false);
   function assertCurrentAccess() {
@@ -30,6 +40,8 @@ export function useCorrection(clientId: string, onSaved: () => void) {
       state?.status !== "success" ||
       state.fetchStatus === "fetching" ||
       !identity.success ||
+      !identity.data.user.id.trim() ||
+      !identity.data.tenant?.id.trim() ||
       !canAdminister(identity.data.role) ||
       identity.data.user.id !== reviewActor.userId ||
       identity.data.tenant?.id !== reviewActor.tenantId
@@ -39,13 +51,33 @@ export function useCorrection(clientId: string, onSaved: () => void) {
         "Your current role cannot correct advocacy history.",
       );
   }
-  async function verify(correction: Correction) {
-    if (!(await checkCorrection(api, clientId, correction)))
+  function activeSignal() {
+    const controller = lifetime.current;
+    if (!controller)
+      throw new DOMException("Review is no longer open.", "AbortError");
+    controller.signal.throwIfAborted();
+    return controller.signal;
+  }
+  async function verify(correction: Correction, signal: AbortSignal) {
+    const reflected = await checkCorrection(api, clientId, correction, {
+      signal,
+      acknowledged: acknowledged.current,
+    });
+    signal.throwIfAborted();
+    assertCurrentAccess();
+    if (correction.kind === "not-advocacy" && !acknowledged.current)
+      throw new ApiError(
+        409,
+        "The server did not acknowledge this correction. Absence from the latest 500 entries cannot confirm it; an authoritative rejected-record or audit receipt is required.",
+      );
+    if (!reflected)
       throw new ApiError(
         409,
         "The submitted correction is not confirmed by current records. Check the result before attempting another correction.",
       );
     await cache.invalidateQueries({ queryKey: ["advocacy", clientId] });
+    signal.throwIfAborted();
+    assertCurrentAccess();
     onSaved();
   }
   const mutation = useMutation({
@@ -63,18 +95,30 @@ export function useCorrection(clientId: string, onSaved: () => void) {
         );
       inFlight.current = true;
       try {
-        await prepareCorrection(api, clientId, correction);
+        const signal = activeSignal();
+        assertCurrentAccess();
+        await prepareCorrection(api, clientId, correction, signal);
+        signal.throwIfAborted();
         assertCurrentAccess();
         attempted.current = correction;
         setSubmitted(true);
-        await submitCorrection(api, clientId, correction);
-        await verify(correction);
+        await submitCorrection(api, clientId, correction, signal);
+        signal.throwIfAborted();
+        acknowledged.current = true;
+        await verify(correction, signal);
       } finally {
         inFlight.current = false;
       }
     },
-    onSettled: () =>
-      cache.invalidateQueries({ queryKey: ["advocacy", clientId] }),
+    onSettled: async () => {
+      if (!lifetime.current || lifetime.current.signal.aborted) return;
+      try {
+        assertCurrentAccess();
+      } catch {
+        return;
+      }
+      await cache.invalidateQueries({ queryKey: ["advocacy", clientId] });
+    },
   });
   const reconcile = useMutation({
     retry: false,
@@ -85,7 +129,7 @@ export function useCorrection(clientId: string, onSaved: () => void) {
           "A permitted submitted correction is required.",
         );
       assertCurrentAccess();
-      await verify(attempted.current);
+      await verify(attempted.current, activeSignal());
     },
   });
   return {

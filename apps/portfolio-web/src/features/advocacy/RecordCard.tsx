@@ -35,6 +35,13 @@ export function RecordCard({
           "Date not supplied"
         )}{" "}
         · {record.recordType.replaceAll("_", " ")}
+        {record.status ? ` · ${record.status.replaceAll("_", " ")}` : ""}
+        {" · "}
+        {new Intl.NumberFormat(undefined, {
+          style: "percent",
+          maximumFractionDigits: 1,
+        }).format(record.confidence)}{" "}
+        confidence
       </small>
       {record.summary && <p>{record.summary}</p>}
       {record.outcome && (
@@ -50,6 +57,11 @@ export function RecordCard({
       {record.metadata?.presentation?.sourceTitle && (
         <small>
           Original source title: {record.metadata.presentation.sourceTitle}
+        </small>
+      )}
+      {record.metadata?.presentation?.sourceStatus && (
+        <small>
+          Original source status: {record.metadata.presentation.sourceStatus}
         </small>
       )}
       {sourceUrl ? (

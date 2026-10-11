@@ -283,16 +283,33 @@ describe("advocacy scoped corrections", () => {
     ).toBe(false);
   });
   it("keeps rejection readback limited to visible absence, not an invented audit receipt", async () => {
+    const responses = {
+      [`${root}/timeline`]: [],
+      [`${root}/${sourceId}`]: { ...source, records: [] },
+    };
+    const correction: Correction = { kind: "not-advocacy", source, recordId };
     expect(
-      await checkCorrection(
-        apiFor({
-          [`${root}/timeline`]: [],
-          [`${root}/${sourceId}`]: { ...source, records: [] },
-        }).api,
-        clientId,
-        { kind: "not-advocacy", source, recordId },
-      ),
+      await checkCorrection(apiFor(responses).api, clientId, correction),
+    ).toBe(false);
+    expect(
+      await checkCorrection(apiFor(responses).api, clientId, correction, {
+        acknowledged: true,
+      }),
     ).toBe(true);
+  });
+  it("never dispatches an already aborted correction", async () => {
+    const { api, fetcher } = apiFor({});
+    const controller = new AbortController();
+    controller.abort();
+    expect(() =>
+      submitCorrection(
+        api,
+        clientId,
+        { kind: "detach", source, recordId },
+        controller.signal,
+      ),
+    ).toThrow();
+    expect(fetcher).not.toHaveBeenCalled();
   });
   it.each([
     "javascript:alert(1)",

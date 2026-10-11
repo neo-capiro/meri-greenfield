@@ -2,7 +2,11 @@
   min-width: 0;
 }
 .matterButton {
+  display: grid;
+  width: 100%;
+  gap: 8px;
   align-items: stretch;
+  justify-content: stretch;
   text-align: left;
 }
 .detail {
