@@ -13,6 +13,7 @@ const permittedRoots: Record<Service, readonly string[]> = {
     "intelligence",
     "directory",
     "explorer",
+    "firm",
   ],
   strategy: ["planner", "strategies"],
   workspace: ["drafts", "documents", "artifacts", "templates"],
@@ -66,6 +67,18 @@ export async function proxyRequest(
       return jsonError(400, "Invalid template catalog path.");
     if (request.method !== "GET")
       return jsonError(405, "Template catalog access is read-only.");
+  }
+  if (selected === "core" && path[0] === "firm") {
+    const methods: Readonly<Record<string, readonly string[]>> = {
+      "lda-registrants": ["GET"],
+      registrant: ["GET", "PUT"],
+      "import-candidates": ["GET"],
+      import: ["POST"],
+    };
+    const allowed = path.length === 2 ? methods[path[1] ?? ""] : undefined;
+    if (!allowed) return jsonError(400, "Invalid firm intake path.");
+    if (!allowed.includes(request.method))
+      return jsonError(405, "Method not allowed for firm intake.");
   }
   const base = config.services[selected];
   if (!base || !config.authConfigured || config.issues.length)
