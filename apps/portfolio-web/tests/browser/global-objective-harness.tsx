@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { GlobalObjectiveClientPicker } from "@/features/objectives/global-create/public";
@@ -10,6 +10,7 @@ export function GlobalObjectiveHarness() {
   const router = useRouter();
   const [open, setOpen] = useState(true);
   const [shown, setShown] = useState(true);
+  const trigger = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const actor = () =>
       cache.setQueryData(["identity"], {
@@ -53,13 +54,17 @@ export function GlobalObjectiveHarness() {
   return (
     <main className="page">
       <h1>Objective client selection</h1>
-      <button className="button" onClick={() => setOpen(true)}>
+      <button ref={trigger} className="button" onClick={() => setOpen(true)}>
         Open client picker
       </button>
       {shown && (
         <GlobalObjectiveClientPicker
           open={open}
           onOpenChange={setOpen}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            trigger.current?.focus();
+          }}
           onContinue={(clientId) =>
             router.push(`/portfolio/${clientId}/objectives?new=1`)
           }
