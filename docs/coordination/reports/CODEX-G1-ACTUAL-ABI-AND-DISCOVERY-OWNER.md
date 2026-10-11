@@ -1,5 +1,93 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Actual generation success, import failure and positive cleanup — 11 October 2026 04:10 UTC
+
+G1 remains OPEN. The full SDK and separate Fargate application/control placement
+remain required; only the previously approved dedicated browser host is an exception.
+These observations do not admit production use, source access, paid tests or cutover.
+
+| Author | Integration | Bounded acceptance / root verification |
+| --- | --- | --- |
+| 4be69844 | 1d2e2d2 | Restricted upload deadline; 10/10 independent root offline checks |
+| 2d21436c | e38f280 | Deadline/dispatcher independent review; 82 unique sealed references |
+| dba85a6e | 4b850ea | Unexposed managed-planner source; 112 unique references, author 10 groups |
+| 1424ed0b | e0102fc | Planner independent review; 14 unique references, no live admission |
+| a2299579 | adf512d | Actual second build review; 287 unique payload/report references |
+| e5578525 | 1b31317 | SoundFile prerequisite DATA; 58 unique payload/source references |
+
+Every closed handoff above has exact source/clean HEAD/owned raw-Git checks and
+finite hash validation. Source-review counts include DATA/stability records, not
+that many distinct semantic tests. Root did not replay the planner's 10 groups.
+The fixed managed executor remains a separate source task; no managed TestState,
+browser host, browser sandbox or teardown has yet been accepted.
+
+Root E3 is `.task-inputs/proxy-linux-owner-build-3/`. It borrows the exact immutable
+E2 ZIP/manifest/runner/recipe and source822193ce; only fresh keys/reservation and
+the reviewed conditional-upload deadline differ. Its UUID is
+`5dc90ae1-5a9b-42e9-a52f-12ddfbf74a60`. The conditional KMS/SHA256 upload succeeded
+03:53:41.938750–03:54:55.650040UTC (73.711s), with a complete ACK and exact-version
+HEAD. Source version is `XcpYp81HgXgS9qS6lBw6lQxWAa80lJeC`. Fresh canonical
+caller/project/KMS/role/trust/policy evidence matches approved qualification
+authority; no managed policies or environment secret values were supplied.
+
+The one actual build is
+`meri-greenfield-qualification-build:b32822ce-9ccf-405a-b5dd-f0c9740dda56`,
+03:55:00.035–03:57:58.784UTC, terminal FAILED/COMPLETED, retry limit/number0.
+Docker build itself exited0, and image ID is
+`sha256:dd6fbf9f0d48377e33592f4767f5d1da54aeb18d3c571b8c753bf32be7e763a2`.
+The complete build log emits genuine generated-client observations, a real class
+and all four exact query-engine paths/body hashes. This establishes build-time
+generation with the unchanged five schema targets, not engine queries or DB auth.
+
+The genuine application import exited1 after11.6758s. Full stdout1115B/SHA256
+`f4df012a9151d68cf44dc198cffaed79af776467c1601de119e3b16a6593f2dd`
+records IMPORT_REFUSED/OSError, with sanitized final frame soundfile.py:192.
+The error message was not retained; a specific loader root cause is not proven.
+The generatedPrismaPresent false default was never updated because app import
+failed first. Six audit denials, three blocked remote cost-map attempts and the
+asyncio destructor diagnostic remain visible. No guard was relaxed.
+
+Actual container ID is
+`c71debccd1981ab70230dbf941c95270c57d3504e8f22a6c014f8fadfe9164ab`.
+Both genuine inspections bind that ID/image, UID/GID10001:10001, network none,
+read-only root, drop ALL, NNP, no binds/devices/added caps, pids64/2GiB/2CPUs.
+Exact-ID rm exited0 and returned that ID; fresh inspect exited1/[] with No such
+container. This proves this owned cleanup path. It does not prove controller-loss
+cleanup or separately attest absence of the builder daemon. No DB/model/ECR action
+ran in this recipe, and the image remains unscanned/unpushed.
+
+The versioned result is `mQH6RU_lcW1HGiRHgnxO08UwS5_ThDq9`,25266B/SHA256
+`0fd0eb63670aa35964828ae1d6fdce51017db9f58542ce8f54f21bcc1859551c`.
+Root and reviewer verified all30 flat regular members and complete stream hashes,
+exact build/source/result/KMS bindings, input stability and nine enumerated
+invocation pins. `actual-build-owner-decision.json` retains the original decision
+with peer review pending; the now-closed review and owner check supplement it.
+The original observation named terminal is IN_PROGRESS; terminal-2 is the actual
+terminal result. Root's first DATA check incorrectly expected three inspections;
+the actual failed-import path has two. The reviewer first expected340 ZIP members;
+actual339 includes337 context+manifest+runner, with recipe external. Both corrected
+DATA checks retain failures/reasons and performed no native/cloud replay.
+
+SoundFile0.12.1 selected universal wheel has no bundled native library. The exact
+same-version manylinux candidate is1174746B/SHA256
+`074247b771a181859d2bc1f98b5ebf6d5153d2c397b86ee9e29ba602a8dfe2a6`,
+with byte-identical Python/METADATA and bundled libsndfile1.2.0. This is a bounded
+qualification candidate; LGPL/source/codec notice mapping and security are OPEN.
+Pinned LiteLLM supports literal LITELLM_LOCAL_MODEL_COST_MAP=True, returning its
+bundled map before the HTTP/retry path. It does not promise all audit denials vanish.
+A separately allocated source repair preserves123 other wheels/all engines/schema
+and unchanged import controls, followed by a fresh reviewed context/admission.
+No old upload/build reservation is reset. The root SoundFile DATA reader initially
+misresolved worktree-relative .task-inputs paths as seal-relative; a new explicitly
+corrected DATA reader verified all58 references/raw Git without executing the wheel.
+
+G1 still requires actual proxy lifespan/auth/revocation/TLS/accounting and durable
+$10 controls, SDK discovery/recovery spike, real browser/renderer sandbox and
+egress/cleanup, REL-02 freeze, Office/security dispositions and measured cohorts.
+Temporal design is accepted; later deployment/restore work remains. Inference is
+$0/$10,75 approved real-request location/owner is awaited, sources remain disabled,
+current Meri is untouched and cutover remains unapproved.
+
 ## Cache repair acceptance and pre-build upload failure — 11 October 2026 03:45 UTC
 
 Root independently accepted and integrated these closed sessions:

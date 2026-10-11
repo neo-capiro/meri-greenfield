@@ -1,37 +1,40 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 03:45 UTC: **G0 accepted / G1 OPEN; eight
-deployment gates, G2–G7 unentered.** The first actual Linux build remains terminal
-FAILED: all124 packages installed, but offline Prisma generation lacked three
-query-engine targets. Those exact upstream inputs and the focused cache repair
-are now independently reviewed and integrated. Root verifies all321 old artifact
-records, all124 wheel selections and all18 old test cases remain;24/24 inert
-checks pass. Native generation and genuine application import remain UNRUN.
+Current continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
+eight deployment gates, G2–G7 unentered.** The second actual Linux experiment
+built the community proxy image and completed genuine offline Prisma generation.
+All four concrete generated engine paths/hashes match the accepted pins. The
+genuine application import then FAILED with OSError at soundfile.py:192. The
+exact owned non-root, network-none import container was removed and a fresh
+inspect returned No such container. Root and a separate Codex reviewer reconciled
+the complete 30-member result; these successful build/cleanup observations do
+not pass native import, database/authentication, security or G1.
 
-The new frozen context contains330 artifacts/271935624bytes, with337 source and
-artifact files and339 verified ZIP members. The second dispatch attempt stopped
-BEFORE StartBuild: its217387189-byte conditional S3 upload hit the existing60s
-capture deadline without an ACK. A genuine read-only HEAD returned404 for that
-new input key. The failed reservation/raw receipts remain preserved; no second
-build or import container started. A narrow qualification-upload deadline fix
-is under separate implementation/review, followed by a fresh attempt.
+The prior upload failure and consumed reservations remain preserved. A narrow
+qualification-only upload deadline repair is integrated with 10/10 root offline
+checks and separate review. A fresh conditional upload succeeded in 73.711s
+under the 180s bound, followed by one build with zero automatic retries. The
+new image remains unscanned and unpushed. SoundFile DATA discovery identifies an
+exact same-version Linux wheel with a bundled native library and the supported
+local model-cost-map setting. A focused qualification source repair is underway;
+native compatibility, LGPL/source/codec notices and security remain unqualified.
 
-Official Linux/amd64 PostgreSQL17.11 metadata is pinned; DB layers/runtime are
-not admitted. The pure managed browser probe provenance bridge is integrated
-with12/12 root offline checks; actual managed probes and host/sandbox/physical
-cleanup remain open. SDK public import23/23, browser history36/36 and retained
-worker packaging91/91 are limited source evidence. The new worker image has
-not been built. [Owner evidence](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact bindings and limits.
+The managed browser planner boundary and independent source review are integrated.
+They remain an unexposed source seam; a fixed executor is under bounded development.
+Actual managed probes, host/browser AND renderer sandbox, egress, cancellation and
+physical teardown remain open. Official Linux/amd64 PostgreSQL17.11 metadata is
+pinned; DB layers/runtime are not admitted. SDK public import23/23, browser
+history36/36 and retained worker packaging91/91 are limited source evidence.
+The new worker image has not been built. [Owner evidence](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact bindings/limits.
 
 G1 still requires the bounded interrupt/resume/checkpoint/egress spike, actual
 proxy discovery/authentication/revocation/TLS/usage/$10 controls, accepted REL-02,
-qualified components, Temporal production design and measured frozen cohorts.
-Full W05/product integration remains later work. Browser AND renderer sandbox,
-egress and physical cleanup, Office/security disposition and cohort results
-remain open. All49 current plus five older findings remain OPEN; Office is
-DEFERRED. Inference remains$0/$10. The approved location/owner for75 real requests
-is still awaited. Sources stay disabled, current Meri is untouched, and no plan
-departure or cutover is approved.
+qualified components and measured frozen cohorts. Temporal production design is
+accepted; its later deployment/HA/restore checks are not thereby complete. Full
+W05/product integration remains later work. All49 current plus five older security
+findings remain OPEN; Office is DEFERRED. Inference remains $0/$10. The approved
+location/owner for75 real requests is still awaited. Sources stay disabled,
+current Meri is untouched, and no plan departure or cutover is approved.
 
 Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
 eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup
