@@ -1,5 +1,63 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Cache repair acceptance and pre-build upload failure — 11 October 2026 03:45 UTC
+
+Root independently accepted and integrated these closed sessions:
+
+| Author | Integration | Scope / root verification |
+| --- | --- | --- |
+| 0ecda372 | 58ea5ad | Windows-safe freeze helper review,75 unique sealed records |
+| e10b3d13 | 516e865 | Pure browser probe bridge,119 unique records/raw Git;12/12 root checks |
+| 822193ce | 1cec925 | Four-target offline cache repair,693 unique records/raw Git;24/24 root checks |
+| 94d2f98b | b04f23d | Independent repair review,799 unique sealed records |
+| ec3b445b | f0c9f3b | Second dispatcher review,74 unique sealed records |
+
+The original321 artifact records/relative order,124 wheel selections and18 test
+ASTs remain exact; nine recovered engine body/sidecar records extend the context.
+The unchanged five schema targets resolve to four concrete generated query paths.
+Root additionally read the pinned Prisma wheel's generated path type as DATA.
+No checksum bypass, generation network access, native engine override or schema
+reduction was introduced. Source and isolated mock checks do not prove generation,
+import, database auth, security or G1.
+
+The pure browser bridge validates genuine managed-bootstrap provenance using the
+canonical decoder and emits only two fixed read-only probe intents. It performs
+no AWS/native execution and does not fabricate an OWNER_REVIEWED local fixture.
+Actual wire/host/runtime admission and positive physical cleanup are outstanding.
+The next bounded source session addresses this explicit planner boundary.
+
+The exact E2 archive is217387189bytes/SHA256
+`93ea4b10aa2e604436eca04fe7c1542742cdaa64ff6dec9fcb22c2d235c93507`,
+339 members,337 input records and330 artifacts/271935624bytes. Its source candidate
+is822193ce11bd1693f17604efd6d0dda555af4b97. Root streaming verifies every ZIP member,
+full archive/manifest/runner/recipe and the exact nine invocation pins. The peer
+dispatch review verified metadata/source delta, explicitly without ZIP rehash.
+The root admission DATA-reader initially used the wrong freeze-proof field;
+it failed before output/allocation/AWS, and its original source/tool trace remain.
+The corrected reader checks the actual sole-report proof field; no review is
+invented or weakened. Fresh seven read-only authority calls confirm approved
+caller/project/KMS/role/trust/inline policy/no attached policies, with0 mutations.
+
+The admitted dispatcher reserved NEW UUIDe1c11eb9-4d6c-4683-9a36-2488609e5901,
+then attempted one conditional KMS/SHA256 input PutObject. Actual capture timed
+out at60s,03:40:46.656–03:41:46.695UTC, with empty binary stdout/stderr and no ACK.
+The invocation has no StartBuild-attempted marker or acknowledged build handle.
+A separate canonical read-only HeadObject at03:42:04–06UTC returned254/404
+Not Found, zero automatic retries, for that exact key. This is the actual absence
+observation at that time; it is not an upload success or permission to rerun the
+consumed dispatcher. No second build/container/database/provider/ECR action ran.
+The prior failed build remains consumed and terminal; E2 remains preserved.
+
+Evidence is `.task-inputs/proxy-linux-owner-build-2/` including frozen-input,
+source/review owner checks, invocation-pins, owner-admission, dispatch-1 and
+observations/upload-recovery-head. The217MB transfer exceeding60s is an operational
+deadline issue; a narrowly restricted180s qualification-input upload deadline is
+under separate source implementation and independent review. Other call deadlines,
+retry behavior, approved architecture and placement remain unchanged. A fresh
+attempt will require exact source/closure pins, current authority and deliberate
+root admission; no automatic retry/reset is authorized. G1 remains OPEN,$0/$10,
+current Meri untouched and no cutover.
+
 ## Independent failure review and engine recovery — 11 October 2026 03:18 UTC
 
 Root independently verified and integrated three closed report-only sessions:

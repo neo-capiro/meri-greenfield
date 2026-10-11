@@ -1,40 +1,37 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 03:18 UTC: **G0 accepted / G1 OPEN; eight
-deployment gates, G2–G7 unentered.** The first isolated Linux build installed all
-124 selected packages and emitted Node24.21.0/Python3.13.5, then FAILED offline
-Prisma generation on an unprovided Debian OpenSSL1.1 query engine. Independent
-actual-DATA review confirms terminal failure/zero retries and genuine app import
-UNRUN. The failed reservation, original source and complete returned failure
-capture remain preserved. No import container, database or provider was started.
+Current continuation, 11 October 2026 03:45 UTC: **G0 accepted / G1 OPEN; eight
+deployment gates, G2–G7 unentered.** The first actual Linux build remains terminal
+FAILED: all124 packages installed, but offline Prisma generation lacked three
+query-engine targets. Those exact upstream inputs and the focused cache repair
+are now independently reviewed and integrated. Root verifies all321 old artifact
+records, all124 wheel selections and all18 old test cases remain;24/24 inert
+checks pass. Native generation and genuine application import remain UNRUN.
 
-The three missing target-specific query engines and six checksum files are now
-recovered from retained verified upstream OCI layers. Root independently checked
-114 sealed payload/reference files, exact distinct body hashes/sidecars/package
-copies and the retained generated client's four concrete platform paths. This
-accepts DATA acquisition only. A bounded Codex session is repairing the unchanged
-five-target schema's offline cache and generated-path validation; the next build
-requires distinct source/context review and a fresh frozen attempt. Its owner
-freeze preparation is under separate review. No second build has started.
+The new frozen context contains330 artifacts/271935624bytes, with337 source and
+artifact files and339 verified ZIP members. The second dispatch attempt stopped
+BEFORE StartBuild: its217387189-byte conditional S3 upload hit the existing60s
+capture deadline without an ACK. A genuine read-only HEAD returned404 for that
+new input key. The failed reservation/raw receipts remain preserved; no second
+build or import container started. A narrow qualification-upload deadline fix
+is under separate implementation/review, followed by a fresh attempt.
 
-The exact official Linux/amd64 PostgreSQL17.11-trixie artifact is selected from
-verified public metadata; no DB image layers or runtime are admitted. Browser
-managed bootstrap/history source is accepted offline, and its pure managed probe
-predecessor bridge is being implemented separately. SDK public import23/23,
-browser history36/36 and retained worker packaging91/91 remain limited source
-evidence; the newly packaged worker image has not been built. [Owner evidence](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
-records exact accepted commits and limits.
+Official Linux/amd64 PostgreSQL17.11 metadata is pinned; DB layers/runtime are
+not admitted. The pure managed browser probe provenance bridge is integrated
+with12/12 root offline checks; actual managed probes and host/sandbox/physical
+cleanup remain open. SDK public import23/23, browser history36/36 and retained
+worker packaging91/91 are limited source evidence. The new worker image has
+not been built. [Owner evidence](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact bindings and limits.
 
-G1 still requires the bounded interrupt/resume/checkpoint/egress spike, actual-
-proxy native discovery, accepted REL-02, pinned components, Temporal production
-design and measured frozen cohort budgets. Full W05/product integration remains
-later work. Remaining runtime evidence includes proxy/DB/TLS/authentication/
-revocation/usage/$10 controls, native SDK discovery and replacement recovery,
-browser/renderer sandbox/egress/physical cleanup, Office/security disposition
-and measured cohorts. All49 current plus five older findings remain OPEN; Office
-is DEFERRED. Inference remains$0/$10. The promised approved location/owner for75
-real requests is still awaited. Source connections stay disabled, current Meri
-is untouched, and no plan departure or cutover is approved.
+G1 still requires the bounded interrupt/resume/checkpoint/egress spike, actual
+proxy discovery/authentication/revocation/TLS/usage/$10 controls, accepted REL-02,
+qualified components, Temporal production design and measured frozen cohorts.
+Full W05/product integration remains later work. Browser AND renderer sandbox,
+egress and physical cleanup, Office/security disposition and cohort results
+remain open. All49 current plus five older findings remain OPEN; Office is
+DEFERRED. Inference remains$0/$10. The approved location/owner for75 real requests
+is still awaited. Sources stay disabled, current Meri is untouched, and no plan
+departure or cutover is approved.
 
 Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,
