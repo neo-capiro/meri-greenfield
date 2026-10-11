@@ -2,6 +2,12 @@ import type { QueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/shared/api/http";
 import { identitySchema } from "@/shared/auth/identity";
 export type ClientWriter = { userId: string; tenantId: string };
+export function ambiguousClientWrite(error: unknown) {
+  return !(
+    error instanceof ApiError &&
+    [400, 401, 403, 404, 409, 422].includes(error.status)
+  );
+}
 export function currentClientWriter(
   cache: QueryClient,
 ): ClientWriter | undefined {

@@ -4,7 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useIdentity } from "@/shared/auth/identity";
 import { useApi } from "@/shared/api/provider";
 import { profileKey } from "../queries";
-import { assertClientWriter, currentClientWriter } from "./authority";
+import {
+  assertClientWriter,
+  currentClientWriter,
+  ambiguousClientWrite,
+} from "./authority";
 import { undoQuickLog } from "./actions";
 import type { QuickLogReceipt } from "./contracts";
 import styles from "./quick-log.module.css";
@@ -58,7 +62,7 @@ export function QuickLogUndo({
         );
         setRemoved(true);
       } catch (error) {
-        if (sent) setUncertain(true);
+        if (sent && ambiguousClientWrite(error)) setUncertain(true);
         throw error;
       } finally {
         if (sent)

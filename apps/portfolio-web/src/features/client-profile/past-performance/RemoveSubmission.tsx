@@ -4,7 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useIdentity } from "@/shared/auth/identity";
 import { useApi } from "@/shared/api/provider";
 import { Dialog } from "@/shared/ui/Dialog";
-import { assertClientWriter, currentClientWriter } from "../quick-log/public";
+import {
+  assertClientWriter,
+  currentClientWriter,
+  ambiguousClientWrite,
+} from "../quick-log/public";
 import { submissionKey } from "./queries";
 import { removeSubmission } from "./actions";
 import type { SavedSubmission } from "./contracts";
@@ -56,7 +60,8 @@ export function RemoveSubmission({
         });
         onRemoved();
       } catch (error) {
-        if (sent) setUncertain((ids) => [...ids, item.id]);
+        if (sent && ambiguousClientWrite(error))
+          setUncertain((ids) => [...ids, item.id]);
         throw error;
       } finally {
         if (sent)

@@ -4,7 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { useIdentity } from "@/shared/auth/identity";
 import { profileKey } from "../queries";
-import { assertClientWriter, currentClientWriter } from "./authority";
+import {
+  assertClientWriter,
+  currentClientWriter,
+  ambiguousClientWrite,
+} from "./authority";
 import { createQuickLog } from "./actions";
 import type { QuickLogInput, QuickLogReceipt } from "./contracts";
 export function useQuickLog(
@@ -60,7 +64,7 @@ export function useQuickLog(
         onSaved();
         return value;
       } catch (error) {
-        if (sent) setUncertain(true);
+        if (sent && ambiguousClientWrite(error)) setUncertain(true);
         throw error;
       } finally {
         if (sent)

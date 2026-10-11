@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { QueryClient } from "@tanstack/react-query";
-import { createApiClient } from "../src/shared/api/http";
+import { createApiClient, ApiError } from "../src/shared/api/http";
 import {
   createQuickLog,
   undoQuickLog,
@@ -8,6 +8,7 @@ import {
 import {
   currentClientWriter,
   assertClientWriter,
+  ambiguousClientWrite,
 } from "../src/features/client-profile/quick-log/authority";
 import { quickLogReceiptSchema } from "../src/features/client-profile/quick-log/contracts";
 import { removeSubmission } from "../src/features/client-profile/past-performance/actions";
@@ -21,6 +22,11 @@ const userId = "10000000-0000-4000-8000-000000000002";
 const tenantId = "10000000-0000-4000-8000-000000000003";
 const id = "10000000-0000-4000-8000-000000000004";
 const actor = { userId, tenantId };
+it("only explicit known rejection permits a reviewed retry; ambiguous failures freeze", () => {
+  expect(ambiguousClientWrite(new ApiError(400, "Rejected"))).toBe(false);
+  expect(ambiguousClientWrite(new ApiError(502, "Wrong receipt"))).toBe(true);
+  expect(ambiguousClientWrite(new Error("Lost response"))).toBe(true);
+});
 const input = { kind: "note" as const, title: "Saved note", body: "Details" };
 const receipt = quickLogReceiptSchema.parse({
   id,
