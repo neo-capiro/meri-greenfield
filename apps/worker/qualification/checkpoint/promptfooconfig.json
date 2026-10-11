@@ -1,0 +1,88 @@
+{
+  "description": "Deterministic SessionStore source safety qualification; no model/native/Fargate acceptance",
+  "prompts": [
+    "{{scenario}}"
+  ],
+  "providers": [
+    "file://./session-store-eval-provider.mjs"
+  ],
+  "tests": [
+    {
+      "vars": {
+        "scenario": "opaque-resume"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.errors.length === 0 && r.main.length === 3 && JSON.stringify(r.main[0].compact.unknown) === JSON.stringify(['verbatim',7,null]) && r.main[1].mode === r.main[2].mode && r.child[0].future.opaque === true && r.verification.kind === 'session-mirror-readback-only' && r.verification.transcripts === 2 && r.verification.entries === 4 && r.verification.durableReceiptId === undefined; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "dropped-marker"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.errors.length === 1 && r.errors[0] === 'SESSION_SNAPSHOT_CONTENT'; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "omitted-subagent"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.errors.length === 1 && r.errors[0] === 'SESSION_SNAPSHOT_SUBKEYS'; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "foreign-session"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.writes === 0 && r.errors.length === 1 && r.errors[0] === 'SESSION_KEY_SCOPE'; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "stale-generation"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.writes === 0 && r.errors.length === 2 && r.errors.every(e => e === 'SESSION_TRANSPORT_FAILED') && r.state.uncertain === false; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "uncertain-commit"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.writes === 1 && r.errors.length === 2 && r.errors.every(e => e === 'SESSION_TRANSPORT_UNCERTAIN') && r.state.uncertain === true; })()"
+        }
+      ]
+    },
+    {
+      "vars": {
+        "scenario": "late-write"
+      },
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "(() => { const r = JSON.parse(output); return r.writes === 2 && r.errors[0] === 'SESSION_MIRROR_CLOSED' && r.state.closed && r.state.rejectedAppends === 1 && r.state.mirrorErrors === 1; })()"
+        }
+      ]
+    }
+  ]
+}
