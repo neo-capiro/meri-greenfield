@@ -1,6 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { installFixtures } from "./fixtures";
-import { fullThread, threadId, threadTenantId } from "../thread-mail-fixture";
+import {
+  fullThread,
+  threadId,
+  threadTenantId,
+  threadClientId,
+} from "../thread-mail-fixture";
 async function setup(
   page: Page,
   options: {
@@ -8,6 +13,7 @@ async function setup(
     status?: number;
     role?: string;
     hold?: Promise<void>;
+    actual?: boolean;
   } = {},
 ) {
   await installFixtures(page);
@@ -45,9 +51,55 @@ async function setup(
     }
     if (path === "me/email-signature")
       return route.fulfill({ json: { html: null, enabled: false } });
+    if (path === `clients/${threadClientId}/activity`)
+      return route.fulfill({
+        json: [
+          {
+            id: `email:${threadId}`,
+            kind: "email",
+            title: "Synthetic policy discussion",
+            body: "Stored preview",
+            occurredAt: "2026-10-11T14:00:00Z",
+            sourceType: "mail_thread",
+            sourceId: threadId,
+            origin: "derived",
+            dueAt: null,
+            settledAt: null,
+            pinned: false,
+          },
+          {
+            id: "40000000-0000-4000-8000-000000000001",
+            kind: "email",
+            title: "Recorded email is not a synced thread",
+            body: "Manually logged synthetic note",
+            occurredAt: "2026-10-11T13:00:00Z",
+            sourceType: "mail_thread",
+            sourceId: threadId,
+            origin: "recorded",
+            dueAt: null,
+            settledAt: null,
+            pinned: false,
+          },
+          {
+            id: "email:invalid",
+            kind: "email",
+            title: "Invalid synced source is not opened",
+            body: null,
+            occurredAt: "2026-10-11T12:00:00Z",
+            sourceType: "mail_thread",
+            sourceId: "provider-message-id-not-thread-uuid",
+            origin: "derived",
+            dueAt: null,
+            settledAt: null,
+            pinned: false,
+          },
+        ],
+      });
     return route.fallback();
   });
-  await page.goto("/__test/thread-mail");
+  await page.goto(
+    options.actual ? `/portfolio/${threadClientId}` : "/__test/thread-mail",
+  );
   await expect(
     page.getByRole("button", { name: "Expand email thread" }),
   ).toBeVisible();
@@ -335,4 +387,93 @@ test("mobile dark expansion wraps without overflow", async ({ page }, info) => {
     path: info.outputPath("thread-mobile-dark.png"),
     fullPage: true,
   });
+});
+test("actual Overview expands only a valid derived synced source and reviews Reply all", async ({
+  page,
+}, info) => {
+  const fixture = await setup(page, { actual: true });
+  const timeline = page.getByRole("region", {
+    name: "Activity timeline",
+    exact: true,
+  });
+  await expect(
+    timeline.getByText("Recorded email is not a synced thread", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    timeline.getByText("Invalid synced source is not opened", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    timeline.getByRole("button", { name: "Expand email thread" }),
+  ).toHaveCount(1);
+  expect(fixture.reads()).toBe(0);
+  await expand(page);
+  await expect(
+    timeline.getByText("Earlier outgoing message.", { exact: true }),
+  ).toBeVisible();
+  const replyAll = timeline.getByRole("button", {
+    name: "Reply all",
+    exact: true,
+  });
+  const less = timeline.getByRole("button", { name: "Show less", exact: true });
+  const replyBox = await replyAll.boundingBox();
+  const lessBox = await less.boundingBox();
+  expect(replyBox && lessBox && Math.abs(replyBox.y - lessBox.y) < 2).toBe(
+    true,
+  );
+  await timeline.scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: info.outputPath("actual-overview-thread-desktop.png"),
+  });
+  await replyAll.click();
+  const dialog = page.getByRole("dialog", { name: "Reply", exact: true });
+  await expect(dialog.getByLabel("Cc", { exact: true })).toHaveValue(
+    "colleague@example.test, copied@example.test",
+  );
+  await dialog
+    .getByLabel("Message", { exact: true })
+    .fill("Actual Overview recipient review.");
+  await dialog.getByRole("button", { name: "Review email" }).click();
+  const review = page.getByRole("dialog", {
+    name: "Review reply",
+    exact: true,
+  });
+  await expect(
+    review.getByText("To: taylor@example.test", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    review.getByRole("button", { name: "Sending unavailable", exact: true }),
+  ).toBeDisabled();
+  expect(fixture.reads()).toBe(1);
+  expect(fixture.writes).toEqual([]);
+});
+test("actual Overview thread fits mobile dark with inline collapse", async ({
+  page,
+}, info) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "dark" });
+  const fixture = await setup(page, { actual: true });
+  await expand(page);
+  const timeline = page.getByRole("region", {
+    name: "Activity timeline",
+    exact: true,
+  });
+  await expect(
+    timeline.getByText("Earlier outgoing message.", { exact: true }),
+  ).toBeVisible();
+  await timeline.scrollIntoViewIfNeeded();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: info.outputPath("actual-overview-thread-mobile-dark.png"),
+  });
+  await timeline.getByRole("button", { name: "Show less" }).click();
+  await expect(
+    timeline.getByText("Earlier outgoing message.", { exact: true }),
+  ).toHaveCount(0);
+  expect(fixture.writes).toEqual([]);
 });

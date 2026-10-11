@@ -134,6 +134,14 @@ function ThreadSession({
                 >
                   Reply all
                 </button>
+                <button
+                  className="button ghost"
+                  aria-expanded={true}
+                  aria-controls={id}
+                  onClick={() => setExpanded(false)}
+                >
+                  Show less
+                </button>
               </div>
               <small className="muted">
                 Stored active message text, newest first. This is not a live
@@ -145,14 +153,16 @@ function ThreadSession({
             </>
           )}
           {error && <p role="alert">{error}</p>}
-          <button
-            className="button ghost"
-            aria-expanded={true}
-            aria-controls={id}
-            onClick={() => setExpanded(false)}
-          >
-            Show less
-          </button>
+          {!thread && (
+            <button
+              className="button ghost"
+              aria-expanded={true}
+              aria-controls={id}
+              onClick={() => setExpanded(false)}
+            >
+              Show less
+            </button>
+          )}
         </div>
       )}
       {draft && thread && (
