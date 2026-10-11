@@ -61,7 +61,15 @@ function FocusTagSession({ clientId }: { clientId: string }) {
       current.signal.throwIfAborted();
       if (controller.current !== current)
         throw new Error("The tag editor closed.");
-      assertTagWriter(cache, initiating);
+      try {
+        assertTagWriter(cache, initiating);
+      } catch (failure) {
+        if (sent)
+          throw new Error(
+            "Your session changed after the tag write was dispatched. Inspect the current profile before another change.",
+          );
+        throw failure;
+      }
     };
     try {
       await addFocusTag(

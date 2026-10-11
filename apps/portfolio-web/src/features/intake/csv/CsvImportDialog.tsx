@@ -122,7 +122,15 @@ export function CsvImportDialog({
       current.signal.throwIfAborted();
       if (controller.current !== current)
         throw new Error("The import dialog closed.");
-      assertClientWriter(cache, initiating);
+      try {
+        assertClientWriter(cache, initiating);
+      } catch (failure) {
+        if (sent)
+          throw new Error(
+            "Your session changed after the import was dispatched. Inspect Portfolio before another import.",
+          );
+        throw failure;
+      }
     };
     try {
       const result = await importCsvClients(

@@ -41,6 +41,7 @@ export async function installProfileTools(
     wrongIntel?: boolean;
     heldRead?: () => Promise<void>;
     csvUnknown?: boolean;
+    heldWrite?: () => Promise<void>;
   } = {},
 ) {
   const unexpected = await installFixtures(page);
@@ -62,6 +63,7 @@ export async function installProfileTools(
   await page.route(`**/api/backend/core/clients/${clientId}`, async (route) => {
     if (route.request().method() === "PUT") {
       calls.puts++;
+      if (options.heldWrite) await options.heldWrite();
       const body = route.request().postDataJSON();
       calls.bodies.push(body);
       if (options.tagStatus)
@@ -98,8 +100,9 @@ export async function installProfileTools(
           );
     },
   );
-  await page.route("**/api/backend/core/clients/bulk-import", (route) => {
+  await page.route("**/api/backend/core/clients/bulk-import", async (route) => {
     calls.imports++;
+    if (options.heldWrite) await options.heldWrite();
     calls.bodies.push(route.request().postDataJSON());
     return options.csvUnknown
       ? json(route, { message: "Synthetic lost receipt" }, 503)

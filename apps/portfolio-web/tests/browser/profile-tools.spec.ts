@@ -7,6 +7,62 @@ import {
   toolsIntelligence,
 } from "./profile-tools-fixtures";
 const route = "/__test/profile-tools";
+test("a local authority failure after a dispatched CSV receipt cannot permit resend", async ({
+  page,
+}) => {
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const fixture = await installProfileTools(page, { heldWrite: () => held });
+  await page.goto(route);
+  await page.getByRole("button", { name: "Review client CSV" }).click();
+  await page.getByLabel("Client CSV", { exact: true }).setInputFiles({
+    name: "synthetic.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from("name\nAlpha\nBeta"),
+  });
+  await page.getByRole("button", { name: "Import 2 clients" }).click();
+  await expect.poll(() => fixture.calls.imports).toBe(1);
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("profile-tools-authority-invalidate")),
+  );
+  release();
+  await expect(
+    page.getByText("The import outcome is unknown.", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Import 2 clients" }),
+  ).toBeDisabled();
+  expect(fixture.calls.imports).toBe(1);
+});
+test("a local authority failure after a dispatched tag receipt remains uncertain", async ({
+  page,
+}) => {
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const fixture = await installProfileTools(page, { heldWrite: () => held });
+  await page.goto(route);
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await page
+    .getByRole("textbox", { name: "Focus tag" })
+    .fill("Dispatched draft");
+  await page.getByRole("button", { name: "Add tag", exact: true }).click();
+  await expect.poll(() => fixture.calls.puts).toBe(1);
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("profile-tools-authority-invalidate")),
+  );
+  release();
+  await expect(
+    page.getByText("The save outcome is unknown.", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Add tag", exact: true }),
+  ).toBeDisabled();
+  expect(fixture.calls.puts).toBe(1);
+});
 test("client prop change discards an open old draft and prevents held-preflight late save", async ({
   page,
 }) => {
