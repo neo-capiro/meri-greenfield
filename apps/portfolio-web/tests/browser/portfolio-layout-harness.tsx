@@ -4,7 +4,7 @@ import {
   PortfolioLayoutEditor,
   usePortfolioLayout,
 } from "@/features/portfolio/layout/public";
-import { ProfileResults } from "@/features/portfolio/ProfileResults";
+import { ProfileCard } from "@/features/portfolio/ProfileResults";
 import { clientSchema } from "@/features/portfolio/contracts";
 export const layoutClients = ["Aerospace One", "Civic Two", "Energy Three"].map(
   (name, index) =>
@@ -67,12 +67,10 @@ function Ordering({ cards }: { cards: typeof layoutClients }) {
     <PortfolioLayoutEditor
       cards={cards}
       layout={layout}
-      renderCard={(id) => (
-        <ProfileResults
-          rows={cards.filter((card) => card.id === id)}
-          view="cards"
-        />
-      )}
+      renderCard={(id) => {
+        const client = cards.find((card) => card.id === id);
+        return client ? <ProfileCard client={client} /> : null;
+      }}
     />
   );
 }

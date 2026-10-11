@@ -1,5 +1,5 @@
 "use client";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
@@ -21,6 +21,16 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
   const api = useApi();
   const cache = useQueryClient();
   const identity = useIdentity();
+  // Query result fields can remain unchanged on invalidation; keep controls in
+  // sync with the same live cache authority used at the dispatch boundary.
+  const identityInvalidated = useSyncExternalStore(
+    (notify) =>
+      cache.getQueryCache().subscribe((event) => {
+        if (event.query.queryKey[0] === "identity") notify();
+      }),
+    () => Boolean(cache.getQueryState(["identity"])?.isInvalidated),
+    () => true,
+  );
   const actor = currentClientWriter(cache);
   const scope = JSON.stringify([
     identity.data?.tenant?.id,
@@ -231,6 +241,7 @@ export function usePortfolioLayout(clientIds: readonly string[]) {
       [404, 503].includes(query.error.status),
     allowed:
       Boolean(actor) &&
+      !identityInvalidated &&
       !identity.isPending &&
       !identity.isFetching &&
       !identity.error &&

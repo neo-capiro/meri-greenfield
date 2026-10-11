@@ -52,6 +52,7 @@ test("keyboard reorder saves canonical versioned order and reloads", async ({
   await expect
     .poll(() => positions(page))
     .toEqual([cardIds[1], cardIds[0], cardIds[2]]);
+  await page.screenshot({ path: "work/layout-desktop.png", fullPage: true });
 });
 test("pointer rearrangement and cancel are local until Save", async ({
   page,
@@ -341,8 +342,8 @@ test("mobile dark layout remains usable without horizontal overflow", async ({
     route.fulfill({ json: layoutReceipt() }),
   );
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto(path);
-  await page.evaluate(() => (document.documentElement.dataset.theme = "dark"));
   await expect(
     page.getByRole("button", { name: "Move Aerospace One later" }),
   ).toBeEnabled();
@@ -351,6 +352,10 @@ test("mobile dark layout remains usable without horizontal overflow", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(18, 18, 18)",
+  );
   await page.screenshot({
     path: "work/layout-mobile-dark.png",
     fullPage: true,

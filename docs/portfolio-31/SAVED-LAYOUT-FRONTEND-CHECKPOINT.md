@@ -33,3 +33,19 @@ CAS detects layout writer conflicts; it does not make catalog/membership revocat
 ## Verification and remaining dependency
 
 Explicit Node v24.19.0; read-only installed dependencies borrowed from root. No installs, full build, live calls, migrations, cloud or provider writes. Focused unit/type/lint/browser evidence is recorded in this worktree's `work/` and final source-bound output package. Initial static failures remain preserved; no assertions are weakened. Browser fixture qualification proves component behavior with intercepted synthetic contracts, not activated backend persistence. Root owns independent acceptance, shared browser entry composition and live/deployed qualification after backend owner approval.
+
+Final focused qualification: **27 unit cases and 16 actual-component browser cases PASS**, full source TypeScript check has zero diagnostics, focused ESLint/format and the 356-module architecture check pass. Root integration `99fdee443087c575e9a89f14bd13eb1c788745c9` is cherry-picked locally as `ece77d0`; its only conflict was unrelated preceding public-event context in the shared test main. The local resolution preserved the pinned main and applied only the two intended layout entry lines. The harness renders the canonical exported `ProfileCard` directly.
+
+Preserved failures: initial hook lifecycle lint diagnostics; an incorrectly parameterized new test case; first browser setup resolving two installed Playwright versions; and the first actual browser run (15/16) exposing visually enabled controls after identity invalidation. That UI defect was fixed with a narrow invalidated-state subscription to the same Query identity cache used by the canonical authority guard, followed by focused 1/1 and full 16/16 reruns. No checks or assertions were disabled. The second-run screenshot/trace and original result remain available separately.
+
+Desktop and 390px dark mobile captures were opened and visually reviewed: two-column desktop / single-column mobile organization cards, existing card tokens/avatars, visible move controls, legible footer and no horizontal overflow. Dark mode is verified through the actual color-scheme media query and background assertion. No new static design asset is introduced; the supplied canonical card owns its dynamic imagery. These are component-surface captures with synthetic names and a small test heading, not a claim of whole-screen Figma parity; root owns the integrated Portfolio shell comparison.
+
+Reproduction from this checkout (test server strict loopback `5193`, owned process exits with Playwright):
+
+```powershell
+$node24 = 'C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe'
+$deps = 'C:/dev/meri-greenfield-portfolio-31/apps/portfolio-web/node_modules'
+& $node24 "$deps/vitest/vitest.mjs" run --config work/vitest.config.mjs tests/portfolio-layout.test.ts
+& $node24 "$deps/typescript/bin/tsc" --project work/tsconfig.json --noEmit
+& $node24 --require C:/dev/meri-portfolio-layout-261011/work/test-resolution.cjs "$deps/@playwright/test/cli.js" test --config work/playwright.config.cjs
+```
