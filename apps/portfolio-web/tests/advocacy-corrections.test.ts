@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { QueryClient } from "@tanstack/react-query";
+import { assertAdvocacyCorrectionAccess } from "../src/features/advocacy/access";
 import { createApiClient } from "../src/shared/api/http";
 import { matterDetailSchema } from "../src/features/advocacy/contracts";
 import { advocacySourceUrl } from "../src/features/advocacy/source";
@@ -78,6 +80,34 @@ const before = () => ({
 });
 
 describe("advocacy scoped corrections", () => {
+  it("refuses a previously successful identity after real cache invalidation until refreshed", async () => {
+    const cache = new QueryClient();
+    const identity = {
+      user: { id: "synthetic-user", email: "test@example.test" },
+      tenant: { id: "synthetic-tenant", name: "Synthetic tenant" },
+      role: "user_admin",
+    };
+    const actor = { userId: identity.user.id, tenantId: identity.tenant.id };
+    cache.setQueryData(["identity"], identity);
+    expect(() => assertAdvocacyCorrectionAccess(cache, actor)).not.toThrow();
+    await cache.invalidateQueries({
+      queryKey: ["identity"],
+      refetchType: "none",
+    });
+    expect(cache.getQueryState(["identity"])?.status).toBe("success");
+    expect(() => assertAdvocacyCorrectionAccess(cache, actor)).toThrow(
+      "Your current role cannot correct advocacy history.",
+    );
+    cache.setQueryData(["identity"], identity);
+    expect(() => assertAdvocacyCorrectionAccess(cache, actor)).not.toThrow();
+    expect(() =>
+      assertAdvocacyCorrectionAccess(cache, {
+        ...actor,
+        userId: "different-user",
+      }),
+    ).toThrow();
+    cache.clear();
+  });
   it("preflights same-client selected matters and source evidence before a merge", async () => {
     const { api, fetcher } = apiFor(before());
     const correction: Correction = { kind: "merge", source, target };

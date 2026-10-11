@@ -3,8 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
-import { useAdvocacyAccess } from "./access";
-import { canAdminister, identitySchema } from "@/shared/auth/identity";
+import { assertAdvocacyCorrectionAccess, useAdvocacyAccess } from "./access";
 import {
   checkCorrection,
   prepareCorrection,
@@ -34,22 +33,7 @@ export function useCorrection(clientId: string, onSaved: () => void) {
   const [submitted, setSubmitted] = useState(false);
   const inFlight = useRef(false);
   function assertCurrentAccess() {
-    const state = cache.getQueryState(["identity"]);
-    const identity = identitySchema.safeParse(cache.getQueryData(["identity"]));
-    if (
-      state?.status !== "success" ||
-      state.fetchStatus === "fetching" ||
-      !identity.success ||
-      !identity.data.user.id.trim() ||
-      !identity.data.tenant?.id.trim() ||
-      !canAdminister(identity.data.role) ||
-      identity.data.user.id !== reviewActor.userId ||
-      identity.data.tenant?.id !== reviewActor.tenantId
-    )
-      throw new ApiError(
-        403,
-        "Your current role cannot correct advocacy history.",
-      );
+    assertAdvocacyCorrectionAccess(cache, reviewActor);
   }
   function activeSignal() {
     const controller = lifetime.current;
