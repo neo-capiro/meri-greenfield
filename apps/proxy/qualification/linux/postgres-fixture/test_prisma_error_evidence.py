@@ -848,5 +848,315 @@ class PoolClearedCauseTests(unittest.TestCase):
         self.assertFalse(value['specificRejection'])
 
 
+class DirectOpenSSLTests(unittest.TestCase):
+    def direct(self, terminal='hostname mismatch', function='tls_post_process_server_certificate'):
+        return ('error:0A000086:SSL routines:' + function + ':certificate verify failed:'
+                '../ssl/statem/statem_clnt.c:2125: (' + terminal + ')')
+
+    def result(self, message, case='wrong-san'):
+        return OpenSSLVerificationTests().result(message, case)
+
+    def test_direct_display_expected_or_empty_function_matches_only_exact_case(self):
+        for terminal, case, reason in (
+                ('unable to get local issuer certificate', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('self-signed certificate', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('self-signed certificate in certificate chain', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('hostname mismatch', 'wrong-san', 'OPENSSL_X509_NAME_MISMATCH'),
+                ('IP address mismatch', 'wrong-san', 'OPENSSL_X509_NAME_MISMATCH')):
+            for function in ('tls_post_process_server_certificate', ''):
+                for path in ('ssl/statem/statem_clnt.c', './ssl/statem/statem_clnt.c', '../ssl/statem/statem_clnt.c'):
+                    for line in ('2124', '2125'):
+                        text = self.direct(terminal, function).replace('../ssl/statem/statem_clnt.c', path).replace(':2125:', ':' + line + ':')
+                        value = self.result(text, case)
+                        self.assertTrue(value['specificRejection'], value)
+                        self.assertEqual(reason, value['reason'])
+                        self.assertTrue(value['complete'])
+                        self.assertNotIn('opensslShape', value)
+                for other in ('positive', 'plaintext', 'wrong-password', 'wrong-ca', 'wrong-san'):
+                    if other != case:
+                        value = self.result(self.direct(terminal, function), other)
+                        self.assertFalse(value['specificRejection'])
+                        self.assertEqual('CASE_MISMATCH', value['reason'])
+
+    def test_direct_route_keeps_every_fixed_field_and_whole_record_required(self):
+        text = self.direct()
+        for old, new in (('error:', 'ERROR:'), ('0A000086', '0A000085'),
+                ('0A000086', '0a000086'), ('SSL routines', 'private library'),
+                ('tls_post_process_server_certificate', 'private function'),
+                ('certificate verify failed', 'certificate expired'),
+                ('../ssl/', '/private/ssl/'), ('../ssl/', '../../ssl/'),
+                (':2125:', ':2126:'), (':2125:', ':02125:'),
+                (': (hostname', ':private (hostname')):
+            self.assertFalse(self.result(text.replace(old, new))['specificRejection'], (old, new))
+        for altered in ('warning: ' + text, ' ' + text, text + ' ', text + ':',
+                        text + ', ' + text, text + '; private', text + '\nprivate',
+                        text.replace('hostname mismatch', 'hostname mismatch; certificate expired'),
+                        text.replace('hostname mismatch', 'unable to get local issuer certificate; hostname mismatch')):
+            self.assertFalse(self.result(altered)['specificRejection'])
+
+    def test_direct_empty_function_does_not_change_wrapped_empty_function_refusal(self):
+        text = self.direct(function='')
+        self.assertTrue(self.result(text)['specificRejection'])
+        wrapped = 'error performing TLS handshake: ' + text
+        value = self.result(wrapped)
+        self.assertFalse(value['specificRejection'])
+        self.assertEqual(value['opensslShape']['function'], 'EMPTY')
+        self.assertEqual('TLS_REASON_UNQUALIFIED', value['reason'])
+
+    def test_direct_unknown_terminal_and_identity_or_framing_mismatch_refuse(self):
+        for terminal in ('certificate has expired', 'certificate is not yet valid',
+                         'unsuitable certificate purpose', 'unsupported signature algorithm',
+                         'unable to verify the first certificate', 'hostname mismatch (private)',
+                         'server does not support TLS', 'unknown'):
+            self.assertFalse(self.result(self.direct(terminal))['specificRejection'])
+        helper = NativeEvidenceTests()
+        payload = helper.native(self.direct())
+        payload['message'] += ' private'
+        self.assertEqual(helper.classify(helper.encoded(payload), 'wrong-san')['reason'], 'NATIVE_FORMATTER_MISMATCH')
+        raw = helper.encoded(helper.native(self.direct()))
+        for invalid in (raw + raw, raw[:-1]):
+            self.assertFalse(helper.classify(invalid, 'wrong-san')['specificRejection'])
+        self.assertFalse(helper.classify(raw, 'wrong-san', evidence_complete=False)['specificRejection'])
+
+    def test_direct_results_and_nonmatches_export_only_original_fixed_enums(self):
+        for text in (self.direct(), self.direct(function=''),
+                     self.direct().replace(':2125:', ':PRIVATE-LINE:'),
+                     self.direct().replace('../ssl/statem/statem_clnt.c', 'PRIVATE-PATH')):
+            value = self.result(text)
+            for private in ('PRIVATE', 'statem', '2125', '0A000086', 'hostname mismatch', 'sha256', 'length'):
+                self.assertNotIn(private, json.dumps(value))
+
+
+class AnyIOGroupTests(unittest.TestCase):
+    def grouped(self, count=2, pooled=False):
+        engine, core, aggregate, _ = TransportCauseTests().chain()
+        leaves = [ConnectionRefusedError(111, 'PRIVATE failed address') for _ in range(count)]
+        group = ExceptionGroup('multiple connection attempts failed', leaves)
+        aggregate.__cause__ = group
+        if pooled:
+            core.__cause__ = None
+            core.__suppress_context__ = True
+        return engine, core, aggregate, group, leaves
+
+    def refused(self, engine, reason=None):
+        value = classify_exception('wrong-ca', engine)
+        self.assertFalse(value['complete'], value)
+        self.assertFalse(value['specificRejection'])
+        if reason:
+            self.assertEqual(reason, value['reason'])
+        return value
+
+    def test_exact_flat_builtin_group_completes_opaque_transport_only(self):
+        for count in (2, 3):
+            for pooled in (False, True):
+                engine, _, _, _, _ = self.grouped(count, pooled)
+                for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'):
+                    value = classify_exception(case, engine)
+                    self.assertTrue(value['complete'], value)
+                    self.assertFalse(value['specificRejection'])
+                    self.assertEqual('NO_SPECIFIC_EVIDENCE', value['reason'])
+                    self.assertEqual('NONE', value['source'])
+                    self.assertEqual(['ENGINE_CONNECTION', 'CONNECT_ERROR', 'HTTPCORE_CONNECT',
+                                      'OS_ERROR', 'EXCEPTION_GROUP'] + ['CONNECTION_REFUSED'] * count,
+                                     value['classes'])
+
+    def test_group_requires_original_aggregate_and_httpcore_position(self):
+        engine, core, aggregate, group, _ = self.grouped()
+        self.refused(group, 'UNKNOWN_EXCEPTION_CLASS')
+        self.refused(aggregate, 'CONFLICTING_EVIDENCE')
+        core.args, core.__cause__ = (group,), group
+        self.refused(engine, 'UNKNOWN_EXCEPTION_CLASS')
+        engine, _, aggregate, _, _ = self.grouped()
+        aggregate.args = ('different opaque aggregate',)
+        self.refused(engine, 'CONFLICTING_EVIDENCE')
+        engine, _, aggregate, _, _ = self.grouped()
+        aggregate.__suppress_context__ = False
+        self.refused(engine, 'CONFLICTING_EVIDENCE')
+        engine, _, aggregate, _, _ = self.grouped()
+        aggregate.__context__ = ValueError('private')
+        self.refused(engine, 'CONFLICTING_EVIDENCE')
+
+    def test_group_subclasses_custom_fields_or_contradictory_cause_refuse(self):
+        class Derived(ExceptionGroup):
+            pass
+        for change in ('subclass', 'custom', 'cause', 'context', 'suppression'):
+            engine, _, aggregate, group, leaves = self.grouped()
+            if change == 'subclass':
+                aggregate.__cause__ = Derived('multiple connection attempts failed', leaves)
+            elif change == 'custom':
+                group.private = 'secret'
+            elif change == 'cause':
+                group.__cause__ = ValueError('private')
+            elif change == 'context':
+                group.__context__ = ValueError('private')
+            else:
+                group.__suppress_context__ = True
+            self.refused(engine)
+
+    def test_group_args_must_match_readonly_builtin_children_and_message(self):
+        for change in ('message', 'argument', 'list-drift', 'extra'):
+            engine, _, _, group, leaves = self.grouped()
+            if change == 'message':
+                group.args = ('different', leaves)
+            elif change == 'argument':
+                group.args = ('multiple connection attempts failed', object())
+            elif change == 'list-drift':
+                group.args[1][0] = OSError('different')
+            else:
+                group.args += ('extra',)
+            self.refused(engine, 'UNKNOWN_SHAPE')
+
+    def test_nested_foreign_structured_and_nonordinary_leaves_refuse(self):
+        class Derived(OSError):
+            pass
+        for leaf in (Derived('private'), ValueError('private'), data_error(),
+                     ExceptionGroup('private', [OSError('private')]),
+                     ConnectionRefusedError(111, 'private', '/private')):
+            engine, _, aggregate, _, leaves = self.grouped()
+            aggregate.__cause__ = ExceptionGroup('multiple connection attempts failed', [leaves[0], leaf])
+            self.refused(engine)
+        for change in ('cause', 'context', 'errno', 'custom'):
+            engine, _, _, _, leaves = self.grouped()
+            if change == 'cause':
+                leaves[0].__cause__ = data_error()
+            elif change == 'context':
+                leaves[0].__context__ = data_error()
+            elif change == 'errno':
+                leaves[0].errno = 112
+            else:
+                leaves[0].private = 'secret'
+            self.refused(engine)
+
+    def test_group_node_leaf_byte_and_identity_bounds_are_global(self):
+        self.refused(self.grouped(4)[0], 'CAUSE_BOUND')
+        self.refused(self.grouped(5)[0], 'UNKNOWN_SHAPE')
+        engine, _, aggregate, _, leaves = self.grouped()
+        aggregate.__cause__ = ExceptionGroup('multiple connection attempts failed', [leaves[0], leaves[0]])
+        self.refused(engine, 'CAUSE_CYCLE')
+        engine, _, aggregate, _, leaves = self.grouped()
+        aggregate.__cause__ = ExceptionGroup('multiple connection attempts failed', [leaves[0]])
+        self.refused(engine, 'UNKNOWN_SHAPE')
+        engine, _, _, _, leaves = self.grouped()
+        leaves[0].args = (111, 'x' * 65537)
+        leaves[0].strerror = leaves[0].args[1]
+        self.refused(engine, 'BYTE_BOUND')
+        engine, _, _, group, leaves = self.grouped()
+        leaves[0].__cause__ = group
+        self.refused(engine, 'CONFLICTING_EVIDENCE')
+
+    def test_group_never_merges_structured_positive_or_exports_private_values(self):
+        engine, _, _, _, _ = self.grouped()
+        structured = data_error()
+        structured.__cause__ = engine
+        self.refused(structured, 'OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE')
+        value = classify_exception('wrong-ca', engine)
+        self.assertTrue(value['complete'])
+        for private in ('PRIVATE', 'multiple connection', 'address', '111', 'sha256', 'length'):
+            self.assertNotIn(private, json.dumps(value))
+        self.assertEqual('INCOMPLETE_EVIDENCE',
+                         classify_exception('wrong-ca', engine, evidence_complete=False)['reason'])
+
+
+class AnyIOClearedGroupTests(unittest.TestCase):
+    def finally_chain(self, pooled=False, leaves=None):
+        oserrors = leaves if leaves is not None else [
+            ConnectionRefusedError(111, 'PRIVATE first address'),
+            ConnectionRefusedError(111, 'PRIVATE second address')]
+        original = oserrors
+        try:
+            try:
+                cause = ExceptionGroup('multiple connection attempts failed', oserrors)
+                raise OSError('All connection attempts failed') from cause
+            finally:
+                oserrors.clear()
+        except OSError as aggregate:
+            engine, core, _, _ = TransportCauseTests().chain()
+            core.args = (aggregate,)
+            core.__cause__ = aggregate
+            if pooled:
+                core.__cause__ = None
+                core.__suppress_context__ = True
+            return engine, core, aggregate, aggregate.__cause__, original
+
+    def test_literal_anyio_raise_from_finally_clear_preserves_opaque_evidence(self):
+        for pooled in (False, True):
+            engine, _, aggregate, group, original = self.finally_chain(pooled)
+            self.assertIs(group.args[1], original)
+            self.assertEqual([], original)
+            self.assertEqual(2, len(group.exceptions))
+            self.assertTrue(aggregate.__suppress_context__)
+            self.assertIsNone(aggregate.__context__)
+            for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'):
+                value = classify_exception(case, engine)
+                self.assertTrue(value['complete'], value)
+                self.assertFalse(value['specificRejection'])
+                self.assertEqual('NO_SPECIFIC_EVIDENCE', value['reason'])
+                self.assertEqual('NONE', value['source'])
+                self.assertEqual(['ENGINE_CONNECTION', 'CONNECT_ERROR', 'HTTPCORE_CONNECT',
+                                  'OS_ERROR', 'EXCEPTION_GROUP', 'CONNECTION_REFUSED',
+                                  'CONNECTION_REFUSED'], value['classes'])
+
+    def test_only_exact_empty_list_is_a_cleared_argument_surrogate(self):
+        class DerivedList(list):
+            pass
+        for argument in ((), DerivedList(), '', None, object()):
+            engine, _, _, group, _ = self.finally_chain()
+            group.args = ('multiple connection attempts failed', argument)
+            AnyIOGroupTests().refused(engine, 'UNKNOWN_SHAPE')
+
+    def test_nonempty_repopulated_list_requires_exact_children(self):
+        for change in ('different', 'short', 'long'):
+            engine, _, _, group, original = self.finally_chain()
+            original.extend(group.exceptions)
+            if change == 'different':
+                original[0] = OSError('PRIVATE substituted')
+            elif change == 'short':
+                original.pop()
+            else:
+                original.append(OSError('PRIVATE extra'))
+            AnyIOGroupTests().refused(engine, 'UNKNOWN_SHAPE')
+
+    def test_authoritative_tuple_still_rejects_foreign_nested_and_leaf_drift(self):
+        for leaf in (ValueError('PRIVATE foreign'), data_error(),
+                     ExceptionGroup('PRIVATE nested', [OSError('PRIVATE')])):
+            engine, _, _, _, _ = self.finally_chain(leaves=[OSError('PRIVATE'), leaf])
+            AnyIOGroupTests().refused(engine)
+        for change in ('cause', 'context', 'errno', 'custom'):
+            engine, _, _, group, _ = self.finally_chain()
+            leaf = group.exceptions[0]
+            if change == 'cause':
+                leaf.__cause__ = group
+            elif change == 'context':
+                leaf.__context__ = data_error()
+            elif change == 'errno':
+                leaf.errno = 112
+            else:
+                leaf.private = 'PRIVATE'
+            AnyIOGroupTests().refused(engine)
+
+    def test_cleared_list_never_bypasses_position_node_or_identity_bounds(self):
+        engine, core, aggregate, group, _ = self.finally_chain()
+        AnyIOGroupTests().refused(group, 'UNKNOWN_EXCEPTION_CLASS')
+        AnyIOGroupTests().refused(aggregate, 'CONFLICTING_EVIDENCE')
+        core.args, core.__cause__ = (group,), group
+        AnyIOGroupTests().refused(engine, 'UNKNOWN_EXCEPTION_CLASS')
+        for count, reason in ((4, 'CAUSE_BOUND'), (5, 'UNKNOWN_SHAPE')):
+            leaves = [OSError('PRIVATE address') for _ in range(count)]
+            AnyIOGroupTests().refused(self.finally_chain(leaves=leaves)[0], reason)
+        leaf = OSError('PRIVATE repeated')
+        AnyIOGroupTests().refused(self.finally_chain(leaves=[leaf, leaf])[0], 'CAUSE_CYCLE')
+
+    def test_cleared_group_stays_private_incomplete_and_nonpositive_when_mixed(self):
+        engine, _, _, _, _ = self.finally_chain()
+        structured = data_error()
+        structured.__cause__ = engine
+        AnyIOGroupTests().refused(structured, 'OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE')
+        self.assertEqual('INCOMPLETE_EVIDENCE',
+                         classify_exception('wrong-ca', engine, evidence_complete=False)['reason'])
+        value = classify_exception('wrong-ca', engine)
+        for private in ('PRIVATE', 'address', '111', 'multiple connection', 'sha256', 'length'):
+            self.assertNotIn(private, json.dumps(value))
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

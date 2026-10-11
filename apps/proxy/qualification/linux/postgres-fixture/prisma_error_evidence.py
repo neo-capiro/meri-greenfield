@@ -13,6 +13,7 @@ __all__ = ('classify_exception', 'classify_native_output')
 CASES = frozenset(('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'))
 MAX_BYTES = 65536
 MAX_CAUSES = 8
+MAX_GROUP_LEAVES = 4
 MAX_DEPTH = 12
 MAX_VALUES = 2048
 
@@ -238,6 +239,51 @@ def _transport_arguments(error, kind, args, fields, budget):
     return BaseException.__cause__.__get__(error)
 
 
+def _anyio_group(error, seen, budget, classes):
+    # AnyIO creates this flat builtin group from its failed address attempts;
+    # it is not raised, and its message/children are ordinary stored values.
+    # Only the caller's checked OSError aggregate may select this path.
+    if type(error) is not ExceptionGroup or _namespace(error):
+        _deny('UNKNOWN_OBJECT_LAYOUT')
+    if (BaseException.__cause__.__get__(error) is not None
+            or BaseException.__context__.__get__(error) is not None
+            or BaseException.__suppress_context__.__get__(error) is not False):
+        _deny('CONFLICTING_EVIDENCE')
+    message = BaseExceptionGroup.message.__get__(error)
+    children = BaseExceptionGroup.exceptions.__get__(error)
+    args = BaseException.args.__get__(error)
+    if (type(message) is not str or message != 'multiple connection attempts failed'
+            or type(children) is not tuple or not 2 <= len(children) <= MAX_GROUP_LEAVES
+            or len(args) != 2 or type(args[0]) is not str or args[0] != message
+            or type(args[1]) not in (list, tuple)):
+        _deny('UNKNOWN_SHAPE')
+    # AnyIO clears its original oserrors list in finally after constructing
+    # the group. The builtin readonly tuple retains the authoritative children.
+    cleared_original_list = type(args[1]) is list and not args[1]
+    if not cleared_original_list and (len(args[1]) != len(children)
+            or any(a is not b for a, b in zip(args[1], children))):
+        _deny('UNKNOWN_SHAPE')
+    _tree(message, budget)
+    for current in (error, *children):
+        if id(current) in seen:
+            _deny('CAUSE_CYCLE')
+        if len(seen) >= MAX_CAUSES:
+            _deny('CAUSE_BOUND')
+        seen.add(id(current))
+        if current is error:
+            classes.append('EXCEPTION_GROUP')
+            continue
+        if type(current) not in (OSError, ConnectionRefusedError):
+            _deny('UNKNOWN_EXCEPTION_CLASS')
+        kind = _class(current)
+        classes.append(kind)
+        cause = _transport_arguments(current, kind, BaseException.args.__get__(current),
+                                     _namespace(current), budget)
+        if (cause is not None or BaseException.__context__.__get__(current) is not None
+                or BaseException.__suppress_context__.__get__(current) is not False):
+            _deny('CONFLICTING_EVIDENCE')
+
+
 def classify_exception(case, error, *, evidence_complete=True):
     """Return fixed, secret-free evidence enums; never perform I/O or retries.
 
@@ -257,6 +303,7 @@ def classify_exception(case, error, *, evidence_complete=True):
         seen, records, sources = set(), [], set()
         opaque_transport = False
         current = error
+        previous_kind = None
         while current is not None:
             if id(current) in seen:
                 _deny('CAUSE_CYCLE')
@@ -273,6 +320,14 @@ def classify_exception(case, error, *, evidence_complete=True):
             if kind in ('HTTPCORE_CONNECT', 'OS_ERROR', 'CONNECTION_REFUSED'):
                 next_cause = _transport_arguments(current, kind, args, fields, budget)
                 opaque_transport = True
+                if type(next_cause) is ExceptionGroup and kind == 'OS_ERROR':
+                    if (previous_kind != 'HTTPCORE_CONNECT'
+                            or args != ('All connection attempts failed',)
+                            or BaseException.__suppress_context__.__get__(current) is not True
+                            or BaseException.__context__.__get__(current) is not None):
+                        _deny('CONFLICTING_EVIDENCE')
+                    _anyio_group(next_cause, seen, budget, result['classes'])
+                    next_cause = None
             else:
                 if len(args) > 1 or any(type(value) is not str for value in args):
                     _deny('UNKNOWN_SHAPE')
@@ -296,7 +351,7 @@ def classify_exception(case, error, *, evidence_complete=True):
                 sources.add('BUFFERED_RESPONSE')
             elif kind == 'ENGINE_CONNECTION' and fields:
                 _deny('UNKNOWN_SHAPE')
-            current = next_cause
+            previous_kind, current = kind, next_cause
         if opaque_transport and records:
             _deny('OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE')
         expected = {'wrong-ca': 'CERTIFICATE_REJECTED', 'wrong-san': 'HOSTNAME_REJECTED',
@@ -320,7 +375,11 @@ def classify_exception(case, error, *, evidence_complete=True):
 def _openssl_parse(message):
     # One whole display parser, shared by qualification and nonmatch DATA.
     # At most ten fields are retained locally; unknown contents never escape.
-    fields = message.split(':', 9)
+    # Quaint extracts native_tls::Error before tokio-postgres's outer Display.
+    # That direct Display has no handshake wrapper. Normalize only this exact
+    # prefix locally, leaving the wrapped route's comparisons unchanged.
+    direct = message.startswith('error:')
+    fields = (('error performing TLS handshake: ' + message) if direct else message).split(':', 9)
     def field(index):
         return fields[index] if index < len(fields) else None
     # Empty OpenSSL error data followed by native-tls's exact verify-result.
@@ -347,8 +406,9 @@ def _openssl_parse(message):
         'terminal': ('CA' if terminal == 'OPENSSL_X509_CA_UNTRUSTED'
                      else 'NAME' if terminal == 'OPENSSL_X509_NAME_MISMATCH' else 'OTHER'),
     }
-    qualified = (terminal if shape['handshakePrefix'] and shape['errorCode']
-                 and shape['sslLibrary'] and shape['function'] == 'EXPECTED'
+    qualified = (terminal if (direct or shape['handshakePrefix']) and shape['errorCode']
+                 and shape['sslLibrary'] and (shape['function'] == 'EXPECTED'
+                     or direct and shape['function'] == 'EMPTY')
                  and shape['verifyReason'] and shape['colonFields'] == 'EXPECTED'
                  and shape['sourceFile'] and shape['sourceLine'] else None)
     return qualified, shape
