@@ -387,11 +387,13 @@ test('enforces the paged-result paging boundary established by the frozen pageRe
     const tool = schema.$defs[def].properties.tool.const;
     const item = positiveOutputs[tool].items[0];
     const value = overrides => pageOutput(tool, item, overrides);
-    // hasMore false is the only state with a null continuation.
+    // With no further rows, the continuation is null.
     assert.throws(() => validateFederalMarketShape(def, value({ hasMore: false, nextPage: 2 })), /nextPage must be null/);
     assert.equal(validateFederalMarketShape(def, value({ hasMore: false, nextPage: null })).nextPage, null);
-    // paginationLimitReached implies more rows and no continuation.
-    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: false, nextPage: null, paginationLimitReached: true })), /requires hasMore/);
+    // The page-limit flag is exactly the producer's hasMore && page >= 10000.
+    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: false, nextPage: null, paginationLimitReached: true })), /must match the page limit/);
+    assert.throws(() => validateFederalMarketShape(def, value({ page: 4, nextPage: null, paginationLimitReached: true })), /must match the page limit/);
+    assert.throws(() => validateFederalMarketShape(def, value({ page: 10000, nextPage: 10001, paginationLimitReached: false })), /must match the page limit/);
     assert.throws(() => validateFederalMarketShape(def, value({ page: 10000, nextPage: 10001, paginationLimitReached: true })), /nextPage must be null/);
     assert.equal(validateFederalMarketShape(def, value({ page: 10000, nextPage: null, paginationLimitReached: true })).paginationLimitReached, true);
     // While rows remain below the limit, the continuation is exactly page + 1.

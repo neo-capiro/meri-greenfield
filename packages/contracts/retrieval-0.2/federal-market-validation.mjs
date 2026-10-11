@@ -66,7 +66,10 @@ const PAGED_OUTPUT_DEFINITIONS = Object.freeze(Object.entries(schema.$defs)
 function assertPagedOutputConsistency(definition, value) {
   const { page, hasMore, nextPage, paginationLimitReached } = value;
   if (hasMore === false && nextPage !== null) fail(`${definition}: nextPage must be null when hasMore is false`);
-  if (paginationLimitReached === true && hasMore !== true) fail(`${definition}: paginationLimitReached requires hasMore`);
+  // The frozen producer sets this flag exactly when rows remain at its
+  // MAX_TOOL_PAGE boundary, not merely as a one-way implication.
+  if (paginationLimitReached !== (hasMore && page >= 10000))
+    fail(`${definition}: paginationLimitReached must match the page limit`);
   if (paginationLimitReached === true && nextPage !== null) fail(`${definition}: nextPage must be null at the pagination limit`);
   if (hasMore === true && paginationLimitReached === false && nextPage !== page + 1) fail(`${definition}: nextPage must continue at page + 1`);
 }
