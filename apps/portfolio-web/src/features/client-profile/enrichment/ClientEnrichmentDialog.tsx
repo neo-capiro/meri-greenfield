@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import {
@@ -16,15 +16,18 @@ import { useReviewAction } from "./useReviewAction";
 import type { ReviewAction } from "./actions";
 import { FindingReview } from "./FindingReview";
 import { ResearchSetup } from "./ResearchSetup";
+import { RunLedger } from "./RunLedger";
 import styles from "./enrichment.module.css";
 export function ClientEnrichmentDialog({
   clientId,
   open,
   onOpenChange,
+  onCloseAutoFocus,
 }: {
   clientId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCloseAutoFocus?: ComponentProps<typeof Dialog>["onCloseAutoFocus"];
 }) {
   const access = useEnrichmentAccess();
   return (
@@ -33,6 +36,7 @@ export function ClientEnrichmentDialog({
       clientId={clientId}
       open={open}
       onOpenChange={onOpenChange}
+      onCloseAutoFocus={onCloseAutoFocus}
       access={access}
     />
   );
@@ -42,11 +46,13 @@ function ClientEnrichmentReview({
   open,
   onOpenChange,
   access,
+  onCloseAutoFocus,
 }: {
   clientId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   access: ReturnType<typeof useEnrichmentAccess>;
+  onCloseAutoFocus?: ComponentProps<typeof Dialog>["onCloseAutoFocus"];
 }) {
   const { identity, canRead, canEdit } = access;
   const latest = useLatestReview(clientId, open && canRead);
@@ -78,6 +84,7 @@ function ClientEnrichmentReview({
       onOpenChange={onOpenChange}
       title="Fill with Meri"
       className={styles.drawer}
+      onCloseAutoFocus={onCloseAutoFocus}
     >
       <div className={styles.scroll}>
         <QueryState
@@ -146,96 +153,11 @@ function ClientEnrichmentReview({
             )}
             {run && (
               <>
-                <section className={styles.ledger} aria-label="Task ledger">
-                  <div className="row between">
-                    <h3>{run.stage ?? run.status}</h3>
-                    <span className={styles.badge}>{run.status}</span>
-                  </div>
-                  <p className="muted">
-                    Started{" "}
-                    <time dateTime={run.startedAt}>
-                      {new Date(run.startedAt).toLocaleString()}
-                    </time>
-                  </p>
-                  {run.error && <p role="alert">{run.error}</p>}
-                  {run.tasks?.map((task) => (
-                    <div className={styles.task} key={task.id}>
-                      <span aria-hidden="true">
-                        {task.status === "completed"
-                          ? "✓"
-                          : task.status === "running"
-                            ? "●"
-                            : "○"}
-                      </span>
-                      <div>
-                        {task.taskType}
-                        <small>
-                          Attempt {task.attempt} of {task.maxAttempts}
-                          {task.errorMessage ? ` · ${task.errorMessage}` : ""}
-                        </small>
-                      </div>
-                      <span>{task.status}</span>
-                      {task.status === "failed" && (
-                        <button
-                          className="button"
-                          disabled
-                          title={previewOnlyDependency}
-                        >
-                          Retry unavailable
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  {!run.tasks?.length && (
-                    <p className="muted">
-                      This saved run has no task ledger. Source outcomes remain
-                      available below.
-                    </p>
-                  )}
-                  <details>
-                    <summary>Saved scope and source outcomes</summary>
-                    <p>
-                      Sources:{" "}
-                      {run.requestedSources.join(", ") ||
-                        "No connected sources"}
-                    </p>
-                    <p>
-                      Documents:{" "}
-                      {
-                        (run.attachmentIds ?? run.setup?.attachmentIds ?? [])
-                          .length
-                      }
-                      ; saved LDA identities:{" "}
-                      {(
-                        run.selectedLdaIds ??
-                        run.setup?.selectedLdaIds ??
-                        []
-                      ).join(", ") || "None recorded"}
-                    </p>
-                    {Object.entries(run.sourceStates).map(([source, state]) => (
-                      <p key={source}>
-                        {source}:{" "}
-                        {typeof state === "string"
-                          ? state
-                          : state &&
-                              typeof state === "object" &&
-                              !Array.isArray(state) &&
-                              typeof state.status === "string"
-                            ? state.status
-                            : "See saved run"}
-                      </p>
-                    ))}
-                  </details>
-                  {run.status === "running" && (
-                    <button
-                      className="button"
-                      disabled={busy}
-                      onClick={() => request({ kind: "cancel" })}
-                    >
-                      Cancel run
-                    </button>
-                  )}
-                </section>
+                <RunLedger
+                  run={run}
+                  busy={busy}
+                  onCancel={() => request({ kind: "cancel" })}
+                />
                 <header className={styles.findingsHead}>
                   <h3>Findings · {run.findings.length}</h3>
                   <button

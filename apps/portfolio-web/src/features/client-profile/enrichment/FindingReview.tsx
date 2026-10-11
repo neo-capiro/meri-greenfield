@@ -204,6 +204,12 @@ export function FindingReview({
               </p>
               {e.excerpt && <p>{e.excerpt}</p>}
               {e.source && <cite>{e.source}</cite>}
+              {e.metadata && (
+                <details>
+                  <summary>Source metadata</summary>
+                  <FindingValue value={e.metadata} />
+                </details>
+              )}
               {e.observedAt && (
                 <p>
                   Observed: <time dateTime={e.observedAt}>{e.observedAt}</time>

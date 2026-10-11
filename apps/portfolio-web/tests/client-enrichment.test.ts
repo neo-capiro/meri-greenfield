@@ -95,6 +95,12 @@ describe("enrichment contracts and scoped actions", () => {
     const f = review().findings[0]!;
     expect(canSelectFinding(f)).toBe(true);
     expect(canSelectFinding({ ...f, kind: "district_nexus" })).toBe(false);
+    for (const kind of [
+      "lda_history",
+      "program_element",
+      "bill_recommendation",
+    ])
+      expect(canSelectFinding({ ...f, kind })).toBe(false);
     expect(canSelectFinding({ ...f, kind: "future_kind" })).toBe(false);
     expect(canSelectFinding({ ...f, status: "informational" })).toBe(false);
   });
