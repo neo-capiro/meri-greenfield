@@ -12,9 +12,11 @@ const labels = {
 export function Agenda({
   items,
   onMeeting,
+  onPublicEvent,
 }: {
   items: CalendarItem[];
   onMeeting: (id: string) => void;
+  onPublicEvent: (id: string) => void;
 }) {
   const sorted = [...items].sort(
     (a, b) =>
@@ -41,6 +43,13 @@ export function Agenda({
                     <button
                       className={styles.titleButton}
                       onClick={() => onMeeting(item.sourceId)}
+                    >
+                      {item.title}
+                    </button>
+                  ) : item.kind === "hearing" ? (
+                    <button
+                      className={styles.titleButton}
+                      onClick={() => onPublicEvent(item.sourceId)}
                     >
                       {item.title}
                     </button>

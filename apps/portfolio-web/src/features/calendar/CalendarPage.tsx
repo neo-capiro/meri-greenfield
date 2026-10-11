@@ -19,6 +19,7 @@ import { Agenda } from "./Agenda";
 import { MeetingDetail } from "./MeetingDetail";
 import { MeetingForm } from "./MeetingForm";
 import { MeetingLibrary } from "./library/public";
+import { PublicEventDetail } from "./public-event/public";
 import type { CalendarKind } from "./contracts";
 import { deduplicate } from "./feeds";
 import styles from "./calendar.module.css";
@@ -266,7 +267,11 @@ export function CalendarPage({
         private calendars.
       </p>
       {view === "agenda" ? (
-        <Agenda items={items} onMeeting={(id) => update({ meeting: id })} />
+        <Agenda
+          items={items}
+          onMeeting={(id) => update({ meeting: id, hearing: undefined })}
+          onPublicEvent={(id) => update({ hearing: id, meeting: undefined })}
+        />
       ) : (
         <CalendarGrid
           key={`${view}:${date}:${zone}`}
@@ -281,6 +286,15 @@ export function CalendarPage({
         />
       )}
       {detail}
+      <PublicEventDetail
+        key={JSON.stringify([params.get("hearing"), scope ?? null])}
+        eventId={params.get("hearing")}
+        open={mixed && Boolean(params.get("hearing"))}
+        onOpenChange={(open) => {
+          if (!open) update({ hearing: undefined });
+        }}
+        destinations={destinations}
+      />
       <MeetingForm
         key={creating || params.get("new") === "meeting" ? "new" : "closed"}
         open={creating || params.get("new") === "meeting"}
