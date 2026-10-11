@@ -66,3 +66,60 @@ export function prepareManagedFixtureVolumeProbes(options) {
     ],
   });
 }
+
+/**
+ * Separate post-bootstrap READONLY observation DATA, not an extension of C.
+ * The proof clock is an external owner proposal; this pure function neither
+ * observes current time nor authenticates its issuer or permits dispatch.
+ */
+export function preparePostBootstrapReadOnlyWireProof(options) {
+  if (!ownData(options, ['capture', 'expected', 'originalClock', 'volumeId', 'proofClock'])) refuse('exact post-bootstrap options');
+  const { capture, expected, originalClock, volumeId, proofClock } = options;
+  if (!ownData(expected, identityKeys) || !ownData(originalClock, ['t0Ms', 'createNotAfterMs', 'C']) ||
+      !ownData(proofClock, ['kind', 'proofSessionId', 'approvedAtMs', 'expiresAtMs'])) refuse('post-bootstrap identity/clock DATA');
+  if (proofClock.kind !== 'POST_BOOTSTRAP_READONLY_WIRE_V1' ||
+      typeof proofClock.proofSessionId !== 'string' || proofClock.proofSessionId.length !== 36 ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(proofClock.proofSessionId) ||
+      proofClock.proofSessionId === F.runUuid || !Number.isSafeInteger(proofClock.approvedAtMs) ||
+      !Number.isSafeInteger(proofClock.expiresAtMs) || proofClock.approvedAtMs <= 0 ||
+      proofClock.expiresAtMs <= proofClock.approvedAtMs || proofClock.expiresAtMs - proofClock.approvedAtMs > 600000) {
+    refuse('separate bounded read-only proof clock');
+  }
+  // Reconstruct through the same canonical raw history owner. No CLI ACK,
+  // caller/nonce, alternate graph/parser or local receipt is manufactured.
+  const history = decodeFixtureBootstrapVolumeHistory(capture);
+  for (const key of identityKeys) {
+    const observed = key === 'ownerBindingId' ? history.ownerBindingId : capture.pins[key];
+    if (expected[key] !== observed) refuse('post-bootstrap external identity mismatch');
+  }
+  for (const key of ['t0Ms', 'createNotAfterMs', 'C']) {
+    if (originalClock[key] !== history.clock[key]) refuse('post-bootstrap original clock mismatch');
+  }
+  if (typeof volumeId !== 'string' || volumeId !== history.volumeId) refuse('post-bootstrap retained volume identity');
+  if (history.firstDeleteAttempt?.outcome !== 'TaskSucceeded') refuse('successful managed first-delete ACK required');
+  if (proofClock.approvedAtMs < history.firstDeleteAttempt.completedAtMs) refuse('proof approval precedes managed delete ACK');
+  return freeze({
+    schema: 'meri-browser-post-bootstrap-readonly-proof-preparation/1',
+    profile: 'POST_BOOTSTRAP_READONLY_WIRE_V1', provenance: 'MANAGED',
+    evidenceOnly: true, status: 'PREPARED_NOT_ADMITTED', runtimeAdmitted: false,
+    absenceWireQualified: false, physicalAbsenceProven: false, freshApiAbsenceObserved: false,
+    originalDeadlineCleanupProven: false, historicalCleanup: 'UNKNOWN', cleanup: 'UNKNOWN',
+    runUuid: F.runUuid, volumeId, originalClock: { ...history.clock }, proofClock: { ...proofClock },
+    externalIdentity: { ...expected }, history: structuredClone(history), directInstance: null,
+    plannerBoundary: 'SEPARATE_POST_BOOTSTRAP_READONLY_EXECUTOR_AND_CANONICAL_PLANNER_REQUIRED',
+    requestIntents: [
+      { case: 'DescribeInVpc', readOnly: true, service: 'ec2', operation: 'describeInstances',
+        arguments: { Filters: [{ Name: 'vpc-id', Values: [F.vpc] }, { Name: 'owner-id', Values: [F.account] }], MaxResults: 5 } },
+      { case: 'DescribeRetainedVolumeByFilter', readOnly: true, service: 'ec2', operation: 'describeVolumes',
+        arguments: { Filters: [{ Name: 'volume-id', Values: [volumeId] }], MaxResults: 5 } },
+    ],
+    limitations: [
+      'External source/version/raw pins and proof clock are owner DATA, not authenticated origin or permission',
+      'Later dispatch must separately recheck actual time, current authority, admission, source and remaining proof budget',
+      'Original fixture t0/C and historical UNKNOWN are unchanged; later reads cannot prove cleanup before original C',
+      'Managed delete success is retained history, not a fabricated SOURCE9 CLI/STS/nonce/delete receipt or absence proof',
+      'Filtered response, typed pagination and actual service wire remain unqualified; no response is inferred here',
+      'No resource mutation, managed survival, host, runtime, security or G1 admission',
+    ],
+  });
+}

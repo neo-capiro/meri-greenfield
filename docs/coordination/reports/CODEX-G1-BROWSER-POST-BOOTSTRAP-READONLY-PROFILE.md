@@ -1,0 +1,33 @@
+# Browser post-bootstrap read-only profile — SOURCE only
+
+The new `preparePostBootstrapReadOnlyWireProof` prepares two fixed read-only intents from canonical, complete managed fixture history. It accepts a separately bounded observation-clock proposal after the original fixture window expires, while retaining the original clock and historical cleanup `UNKNOWN`. It cannot dispatch a request, allocate a clock, authenticate owner permission or admit runtime.
+
+Base: `77a423f0f5ec1b4c3f8a2a0fbab8a8209abf9fd2`. Dedicated branch: `task/g1-browser-post-bootstrap-readonly`. Exactly three paths are owned: the existing provenance module/test and this report. No private planner/executor, role, graph, shared contract or historical evidence was modified. This is Stage 1; Stage 2 source and any live observation require separate allocation and review.
+
+## Canonical behavior and boundaries
+
+`infra/browser-enforcement/fixture-volume-probe-provenance.mjs` remains a pure evidence-preparation module. The new export accepts exactly `{capture, expected, originalClock, volumeId, proofClock}`. It calls the existing `decodeFixtureBootstrapVolumeHistory` for raw UTF-8/hash/profile/source/version/input/execution, contiguous complete history, original clock, mutation ordering, retained identity and complete pre-delete ownership reconstruction. It adds no second history parser or resource lifecycle.
+
+The expected source/version/input/definition/role/execution/owner-binding identities must equal the reconstructed capture. The original clock and retained volume ID must match exactly. A successful recorded managed first-delete outcome is required; an absent, failed or ambiguous delete cannot be relabeled an ACK. A lost create response may remain uncertain if canonical complete ownership and the subsequent successful first-delete record exist. In every case historical cleanup remains `UNKNOWN`; no raw CLI/STScaller/nonce/CREATED/delete receipt is fabricated.
+
+`proofClock` contains exactly `kind`, `proofSessionId`, `approvedAtMs`, `expiresAtMs`. Its kind is `POST_BOOTSTRAP_READONLY_WIRE_V1`; its canonical lowercase UUID is distinct from the resource run UUID. Safe positive ordered integer times permit at most 600,000 ms, and approval cannot precede the recorded successful delete completion. The pure API does not read actual time or authenticate these fields. A later executor must verify current owner admission, time, authority, immutable inputs and remaining budget. This source does not allocate or populate an actual observation session. The new clock is never substituted for fixture t0/C or emitted under the old `clock` field.
+
+The only intents are the existing VPC/owner-filtered `DescribeInVpc` and `DescribeRetainedVolumeByFilter`. The latter has precisely one `volume-id` filter containing the reconstructed retained ID and `MaxResults:5`; no tag/state/AZ predicate can hide a still-existing resource. There is no `VolumeIds` argument or caller-selected operation, graph, role, resource or filter. Actual service casing, typed empty-result/pagination semantics and TestState authority remain unqualified; this API constructs neither requests nor responses.
+
+The detached deeply frozen output is evidence only, `PREPARED_NOT_ADMITTED`, with `runtimeAdmitted`, `absenceWireQualified`, `physicalAbsenceProven`, `freshApiAbsenceObserved` and `originalDeadlineCleanupProven` all false. Both `cleanup` and `historicalCleanup` are `UNKNOWN`. Complete canonical history and its old uncertainty are retained. These labels and external hashes are not service-origin proof or permission.
+
+## Verification actually run
+
+On 2026-10-11, the targeted provenance suite ran once under pinned Node 24.19.0, SHA256 `3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237`: **20/20 passed**, 106.5724 ms reported test duration. An external 60-second direct-child supervisor captured raw stdout/stderr and the machine receipt; actual elapsed was 0.375 s, exit 0, stdout 2,263 bytes, stderr empty. Node permissions withheld child/addon/worker privileges; a preload denied child-process, socket/listener, DNS, fetch and WebSocket operations. Audit recorded zero attempts. This is an offline source check, not a hostile-JavaScript sandbox or a descendant-tree/service-survival qualification.
+
+All 12 original cases remained unchanged. Eight new cases cover expired history while the old API still refuses; the two literal filter intents; proof-window bounds/session/type substitutions; every external identity, original-clock and retained-ID substitution; missing/ambiguous/duplicate delete evidence; corrupt/truncated/incomplete/duplicate-JSON/token-ambiguous/foreign ownership history; extra fields/nonfinite DATA/accessors without getter invocation; and detached frozen, non-authoritative outputs. Synthetic timestamps and session IDs are fixtures, not allocated operational values.
+
+Separate DATA-only Git comparison proved that the entire original 4,377-byte production prefix (SHA256 `532b6b750fb6cce58d77fa8061529eb836e14574044333627ed9f0b56c74cc9b`) is unchanged. The original test/helper byte prefix is unchanged except for the one new import. Thus the existing `prepareManagedFixtureVolumeProbes` and original-C expiry semantics were preserved. Source/runtime/guard records matched before and after the suite; `git diff --check` passed. No failed test or rerun occurred.
+
+Evidence is the ignored `.task-inputs/browser-post-bootstrap-readonly-source-1/` namespace in this dedicated worktree: outline, fixed supervisor/guard, raw streams, process receipt, source-before/after, original-preservation DATA and raw Git captures. The final finite seal and commit readback are supplied separately to avoid self-referential hashes.
+
+## Remaining holds
+
+No AWS, TestState, resource mutation, new clock/admission, private-pack execution, host, provider/model or native operation occurred. The expired bootstrap's actual `Ec2.Ec2Exception` and cleanup `UNKNOWN` remain immutable. Old unissued follow-up slots are not reset or reused. A later observation cannot prove original-900-second cleanup.
+
+Stage 2 must bind this exact source to the canonical browser pure planner and a separately named bounded read-only executor/owner namespace. Actual typed filter output, complete pagination and fresh role/caller authority still require an independently admitted read-only experiment. The host watchdog remains literal false; future managed/host graph and decoder changes are not included. No architecture/component/placement departure is introduced. Runtime, browser sandbox, security findings and G1 remain open.

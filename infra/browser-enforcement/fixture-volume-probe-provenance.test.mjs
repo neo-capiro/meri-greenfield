@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { prepareManagedFixtureVolumeProbes as prepare } from './fixture-volume-probe-provenance.mjs';
+import { preparePostBootstrapReadOnlyWireProof as preparePost } from './fixture-volume-probe-provenance.mjs';
 import { createFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 import { compileFixtureBootstrapWorkflow, compileFixtureWorkflow } from './fixture-volume-workflow.mjs';
 import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
@@ -163,4 +164,133 @@ test('stale pre-delete proof and foreign actual delete parameters cannot be prom
   for (const e of g.events) { if (e.type === 'TaskStateEntered') active = e.stateEnteredEventDetails.name;
     if (active === 'DeleteVolume' && e.type === 'TaskScheduled') e.taskScheduledEventDetails.parameters = JSON.stringify({ VolumeId: OTHER }); }
   g.pack(); refused(g);
+});
+
+// This synthetic observation clock is DATA only; no Date.now, live session or
+// root-issued admission is allocated by these fixtures.
+function postOptions(f = fixture()) {
+  const { probeAtMs: _unused, ...options } = f.options;
+  return { ...options, proofClock: { kind: 'POST_BOOTSTRAP_READONLY_WIRE_V1',
+    proofSessionId: '12345678-1234-4234-9234-123456789abc',
+    approvedAtMs: T + 1000000, expiresAtMs: T + 1600000 } };
+}
+
+test('post-bootstrap proof accepts expired owned history without extending original C or the old profile', () => {
+  const f = fixture(); f.options.probeAtMs = T + 1000000; refused(f);
+  const options = postOptions(f), value = preparePost(options);
+  assert.equal(value.schema, 'meri-browser-post-bootstrap-readonly-proof-preparation/1');
+  assert.equal(value.profile, 'POST_BOOTSTRAP_READONLY_WIRE_V1');
+  assert.deepEqual(value.originalClock, { t0Ms: T, createNotAfterMs: T + 300000, C: T + 900000 });
+  assert.deepEqual(value.history.clock, value.originalClock);
+  assert.deepEqual(value.proofClock, { kind: 'POST_BOOTSTRAP_READONLY_WIRE_V1',
+    proofSessionId: '12345678-1234-4234-9234-123456789abc', approvedAtMs: T + 1000000, expiresAtMs: T + 1600000 });
+  for (const key of ['cleanup', 'historicalCleanup', 'history']) {
+    assert.equal(key === 'history' ? value.history.cleanup : value[key], 'UNKNOWN');
+  }
+  for (const key of ['runtimeAdmitted', 'absenceWireQualified', 'physicalAbsenceProven',
+    'freshApiAbsenceObserved', 'originalDeadlineCleanupProven']) assert.equal(value[key], false);
+  assert.equal(value.evidenceOnly, true); assert.equal(value.status, 'PREPARED_NOT_ADMITTED');
+});
+
+test('post-bootstrap intents are exactly VPC read and sole retained volume-id filter without hiding predicates', () => {
+  const value = preparePost(postOptions());
+  assert.deepEqual(value.requestIntents, [
+    { case: 'DescribeInVpc', readOnly: true, service: 'ec2', operation: 'describeInstances', arguments: {
+      Filters: [{ Name: 'vpc-id', Values: ['vpc-06e1941747e798f0a'] }, { Name: 'owner-id', Values: ['967807252336'] }], MaxResults: 5 } },
+    { case: 'DescribeRetainedVolumeByFilter', readOnly: true, service: 'ec2', operation: 'describeVolumes',
+      arguments: { Filters: [{ Name: 'volume-id', Values: ['vol-0123456789abcdef0'] }], MaxResults: 5 } },
+  ]);
+  assert.equal(value.directInstance, null);
+  assert.equal(Object.hasOwn(value.requestIntents[1].arguments, 'VolumeIds'), false);
+});
+
+test('proof clock has exact finite bounded distinct-session DATA with no original-clock substitution', () => {
+  for (const patch of [
+    { kind: 'MANAGED_WIRE_BOOTSTRAP_V1' }, { proofSessionId: F.runUuid }, { proofSessionId: 'new-session' },
+    { proofSessionId: '12345678-1234-4234-9234-123456789abc\n' }, { proofSessionId: true },
+    { approvedAtMs: NaN }, { approvedAtMs: Infinity }, { approvedAtMs: true }, { approvedAtMs: 0 },
+    { approvedAtMs: T }, { approvedAtMs: T + 1000000.5 }, { expiresAtMs: NaN }, { expiresAtMs: true },
+    { expiresAtMs: Number.MAX_SAFE_INTEGER + 1 }, { expiresAtMs: T + 1000000 },
+    { expiresAtMs: T + 999999 }, { expiresAtMs: T + 1600001 }, { C: T + 1600000 },
+  ]) {
+    const options = postOptions(); Object.assign(options.proofClock, patch);
+    assert.throws(() => preparePost(options));
+  }
+  const oneMs = postOptions(); oneMs.proofClock.expiresAtMs = oneMs.proofClock.approvedAtMs + 1;
+  assert.equal(preparePost(oneMs).proofClock.expiresAtMs, T + 1000001);
+  const copiedOriginal = postOptions(); copiedOriginal.proofClock = { ...copiedOriginal.originalClock };
+  assert.throws(() => preparePost(copiedOriginal));
+});
+
+test('post-bootstrap still binds every external pin, retained ID and original clock through canonical history', () => {
+  for (const key of ['sourceCommit', 'versionArn', 'roleArn', 'definitionSha256', 'inputSha256', 'executionArn', 'ownerBindingId']) {
+    const options = postOptions(); options.expected[key] += 'x'; assert.throws(() => preparePost(options));
+  }
+  for (const key of ['t0Ms', 'createNotAfterMs', 'C']) {
+    const options = postOptions(); options.originalClock[key]++; assert.throws(() => preparePost(options));
+  }
+  for (const volumeId of [null, undefined, OTHER, true, ID + '\n']) {
+    const options = postOptions(); options.volumeId = volumeId; assert.throws(() => preparePost(options));
+  }
+  const f = fixture(); f.options.capture.pins.sourceCommit = 'c'.repeat(40);
+  assert.throws(() => preparePost(postOptions(f)));
+});
+
+test('post-bootstrap requires genuine recorded successful first-delete outcome, never ambiguous or absent ACK', () => {
+  for (const settings of [{ noDelete: true }, { ambiguousDelete: true }, { duplicateDelete: true }, { duplicateCreate: true }]) {
+    assert.throws(() => preparePost(postOptions(fixture(settings))));
+  }
+  const value = preparePost(postOptions(fixture({ lostCreate: true })));
+  assert.equal(value.history.createAttempt.outcome, 'TaskTimedOut');
+  assert.equal(value.history.firstDeleteAttempt.outcome, 'TaskSucceeded');
+  assert.equal(value.history.uncertain, true); assert.equal(value.cleanup, 'UNKNOWN');
+});
+
+test('post-bootstrap refuses corrupt, truncated, incomplete, token-ambiguous and foreign owned raw history', () => {
+  const truncated = fixture(); truncated.events[0].executionStartedEventDetails.inputDetails.truncated = true; truncated.pack();
+  assert.throws(() => preparePost(postOptions(truncated)));
+  const missing = fixture(); missing.events.pop(); missing.pack(); assert.throws(() => preparePost(postOptions(missing)));
+  for (const token of [null, false, 'unconsumed']) {
+    const f = fixture(), c = f.options.capture; c.pages[0].responseRaw = raw({ events: f.events, nextToken: token });
+    c.pins.pages[0].responseSha256 = sha(c.pages[0].responseRaw); assert.throws(() => preparePost(postOptions(f)));
+  }
+  const duplicateJson = fixture(), c = duplicateJson.options.capture;
+  c.pages[0].responseRaw = Buffer.from('{"events":[],"events":[]}');
+  c.pins.pages[0].responseSha256 = sha(c.pages[0].responseRaw); assert.throws(() => preparePost(postOptions(duplicateJson)));
+  const foreign = fixture(); changeOutput(foreign, 'DescribeOwned', out => ({ Volumes: [{ ...out.Volumes[0], Tags: [] }] }));
+  assert.throws(() => preparePost(postOptions(foreign)));
+});
+
+test('post-bootstrap extras, nonfinite raw history and accessors refuse without invoking their getter', () => {
+  for (const extra of [{ admission: true }, { runtimeAdmitted: true }, { probeAtMs: T + 1 }, { caller: {} }, { rawCreate: {} }]) {
+    const options = postOptions(); Object.assign(options, extra); assert.throws(() => preparePost(options));
+  }
+  let touched = 0;
+  for (const [location, key] of [['options', 'capture'], ['proofClock', 'approvedAtMs'], ['expected', 'sourceCommit'],
+    ['originalClock', 'C'], ['capture', 'pages']]) {
+    const options = postOptions(), target = location === 'options' ? options : options[location];
+    Object.defineProperty(target, key, { get() { touched++; return 'untrusted'; } });
+    assert.throws(() => preparePost(options));
+  }
+  assert.equal(touched, 0);
+  const f = fixture(), c = f.options.capture;
+  c.pages[0].responseRaw = Buffer.from('{"events":[],"extra":1e309}');
+  c.pins.pages[0].responseSha256 = sha(c.pages[0].responseRaw); assert.throws(() => preparePost(postOptions(f)));
+});
+
+test('post-bootstrap result is detached frozen evidence and produces no source9 receipt, raw capture or authority', () => {
+  const options = postOptions(), value = preparePost(options);
+  options.proofClock.expiresAtMs++; options.expected.sourceCommit = 'c'.repeat(40);
+  options.capture.pages[0].responseRaw.fill(0);
+  assert.equal(value.proofClock.expiresAtMs, T + 1600000);
+  assert.equal(value.externalIdentity.sourceCommit, 'b'.repeat(40));
+  assert.ok(Object.isFrozen(value.proofClock)); assert.ok(Object.isFrozen(value.history.ownership.direct.volume.Tags));
+  assert.ok(Object.isFrozen(value.requestIntents[1].arguments.Filters[0].Values));
+  for (const key of ['nonce', 'caller', 'rawCreate', 'deleteAck', 'ownerInput', 'definition', 'admission', 'capture']) {
+    assert.equal(Object.hasOwn(value, key), false);
+  }
+  assert.equal(Object.hasOwn(value, 'clock'), false); // never relabel the proof clock as fixture clock
+  assert.equal(Object.hasOwn(value.history, 'pages'), false);
+  assert.match(value.limitations.join(' '), /actual time/);
+  assert.match(value.limitations.join(' '), /cannot prove cleanup before original C/);
 });
