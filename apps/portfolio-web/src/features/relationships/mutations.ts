@@ -16,11 +16,16 @@ export function usePersonMutation(clientId: string, onSaved?: () => void) {
   const api = useApi();
   const cache = useQueryClient();
   const identity = useIdentity();
-  return useMutation({
+  const mutation = useMutation({
     mutationKey: peopleWriteKey(clientId),
     retry: false,
     mutationFn: async (change: PersonChange) => {
-      if (!canManageContacts(identity.data?.role))
+      if (
+        !identity.isSuccess ||
+        identity.isFetching ||
+        identity.error ||
+        !canManageContacts(identity.data?.role)
+      )
         throw new ApiError(
           403,
           "Your role cannot change organization contacts.",
@@ -44,4 +49,11 @@ export function usePersonMutation(clientId: string, onSaved?: () => void) {
       await cache.invalidateQueries({ queryKey: peopleKey(clientId) });
     },
   });
+  return {
+    ...mutation,
+    mutate: (...args: Parameters<typeof mutation.mutate>) => {
+      if (cache.isMutating({ mutationKey: peopleWriteKey(clientId) }) === 0)
+        mutation.mutate(...args);
+    },
+  };
 }

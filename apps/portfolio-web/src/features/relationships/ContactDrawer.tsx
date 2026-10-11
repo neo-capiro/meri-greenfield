@@ -36,7 +36,11 @@ export function ContactDrawer({
       : null,
   );
   const identity = useIdentity();
-  const permitted = canManageContacts(identity.data?.role);
+  const permitted =
+    identity.isSuccess &&
+    !identity.isFetching &&
+    !identity.error &&
+    canManageContacts(identity.data?.role);
   const [remove, setRemove] = useState(false);
   const [note, setNote] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -60,6 +64,7 @@ export function ContactDrawer({
         if (!value) close();
       }}
       title={person?.name ?? "Add contact"}
+      description={person?.title ?? undefined}
       drawer
       className={styles.drawer}
       onCloseAutoFocus={(event) => {
@@ -70,14 +75,16 @@ export function ContactDrawer({
       }}
     >
       <div className={`${styles.viewport} stack`} aria-busy={busy}>
-        {person?.title && <p className="muted">{person.title}</p>}
         <QueryState
           error={identity.error}
           retry={() => void identity.refetch()}
         />
-        {identity.isSuccess && !permitted && (
-          <p role="status">Your role cannot change organization contacts.</p>
-        )}
+        {identity.isSuccess &&
+          !identity.isFetching &&
+          !identity.error &&
+          !permitted && (
+            <p role="status">Your role cannot change organization contacts.</p>
+          )}
         <ContactForm
           id={formId}
           person={person}

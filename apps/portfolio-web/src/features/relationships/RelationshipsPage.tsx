@@ -31,7 +31,11 @@ export function RelationshipsPage({
 function OrganizationRelationships({ clientId }: { clientId: string }) {
   const query = usePeople(clientId);
   const identity = useIdentity();
-  const permitted = canManageContacts(identity.data?.role);
+  const permitted =
+    identity.isSuccess &&
+    !identity.isFetching &&
+    !identity.error &&
+    canManageContacts(identity.data?.role);
   const people = query.data ?? [];
   const params = useSearchParams();
   const router = useRouter();
@@ -76,9 +80,12 @@ function OrganizationRelationships({ clientId }: { clientId: string }) {
         error={identity.error}
         retry={() => void identity.refetch()}
       />
-      {identity.isSuccess && !permitted && (
-        <p role="status">Your role cannot change organization contacts.</p>
-      )}
+      {identity.isSuccess &&
+        !identity.isFetching &&
+        !identity.error &&
+        !permitted && (
+          <p role="status">Your role cannot change organization contacts.</p>
+        )}
       <QueryState
         pending={query.isPending}
         error={query.error}
