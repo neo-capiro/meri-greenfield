@@ -71,7 +71,7 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Latest source `7e2b89430744574a0da6c0d357c652f7b56c4f88`:600unit and15affected Objective chooser browser checks PASS; TS/lint/format/architecture367 PASS,3static-image warnings. Saved ordering, thread review, public proceeding detail, Calendar sync review and native Work links are composed. Latest full browser run at e7978a4 retained349PASS/2FAIL, corrected in affected checks; no new complete green-suite claim. Current build deferred for Cleanup recovery reserve; preview5190 remainsbbf25e6. Evidence: outputs/evidence/portfolio-integrated-20261011/.
+Latest source `aa316e0a83ea83556a2ab2b9faa9c449b6ae68e2`:726unit and42affected browser checks PASS; TS/lint/format/architecture394 PASS. Billing-read proxy, capacity/summary, member notes and saved-note/attachment review are composed. Prior1c0b18a:674unit/79affected PASS. Latest full browser run e7978a4 retains349PASS/2FAIL; affected corrections pass, no new full green-suite claim. Current build deferred for Cleanup evidence/disk reserve; preview5190 remainsbbf25e6. Live auth/provider acceptance remains open. Evidence: outputs/evidence/portfolio-integrated-20261011/.
 
 Previous production-qualified source `bbf25e6ab4931886f5a382ee3362593e573c19de`:400 unit/26 affected browser checks, TypeScript/lint/format/architecture325 modules/Next17-route build and5 actual Next auth/deep-link checks PASS. Manual source and exact client Quick log Undo are integrated. Component checks intercept APIs; signed-in/provider acceptance remains open. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/.
 
