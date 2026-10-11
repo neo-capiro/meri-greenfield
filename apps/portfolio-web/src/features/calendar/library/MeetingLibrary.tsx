@@ -162,7 +162,7 @@ export function MeetingLibrary({
           />
         </label>
       </div>
-      <div className="row between">
+      <div className={`row between ${styles.scope}`}>
         <small className="muted">
           {clientId
             ? `Client scope · ${clientName ?? "Selected client"}`
