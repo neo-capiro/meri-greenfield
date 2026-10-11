@@ -1,74 +1,82 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 10:31 UTC: **G0 accepted / G1 OPEN;
-eight gates total, G2-G7 unentered.** G1 has substantial live qualification,
-typed capability contracts and security work remaining; no reliable completion
-time is established. Codex alone owns G0/G1 using bounded implementation and
-independent review sessions. Current Meri/Capiro remains untouched, source
-connections disabled, no cutover, and actual model inference remains $0.
+Current continuation, 11 October 2026 11:30 UTC: **G0 accepted / G1 OPEN.
+Eight gates total; G2-G7 remain unentered.** Substantial runtime, capability,
+measurement and security work remains. No reliable completion estimate is
+established. Codex alone owns G0/G1 through bounded implementation sessions and
+independent review. Current Meri/Capiro remains untouched, source connections
+remain disabled, no cutover has occurred and actual model inference remains $0.
 
-The native TLS prerequisite is now accepted for its bounded scope. Build
-6baed94e-1d9f-4e5e-bf56-dce4f9b0e660 SUCCEEDED/COMPLETED at source
-8e7a502c031e07608636f4fd3c95c1b5291dbf61. Root and a distinct reviewer
-reconciled the immutable result: 306 tar members, 305 public payloads,
-100 process receipts/200 complete streams, 355 source ZIP members/351 context
-rows and 13 raw-Git fixture files. The genuine nonowner query used TLS1.3;
-wrong CA, wrong SAN, plaintext and wrong password each produced the required
-specific native rejection. Nine owned containers and one network were removed
-and observed absent by T0+41,996ms within the original cleanup clock.
-Private native classifications and private-file removal remain trusted
-source-bound producer observations; independent physical host absence is not
-proved. Native schema/lifespan/key authorization has NOT run. Prior failed
-namespaces and consumed reservations remain preserved. A bounded combined
-schema/auth SOURCE recipe is now being implemented; actual dispatch requires
-its separate review, exact context/runtime pins and root admission.
+The native TLS prerequisite is accepted for its bounded scope. Build
+6baed94e-1d9f-4e5e-bf56-dce4f9b0e660 passed the genuine encrypted nonowner query
+and specific wrong-CA, wrong-SAN, plaintext and wrong-password controls. Nine
+owned containers and one network were removed and observed absent within the
+original cleanup clock. Private native classifications and file deletion remain
+source-bound trusted observations, not independent physical host proof.
+Canonical revoked-owner classification and isolated diagnostic packaging are
+accepted after distinct source review and integrated as 25a1558/6f669a7; the
+combined source preparation is integrated as 9998ade. All four expected runtime
+body hashes are now established from frozen artifacts and accepted as DATA only
+(bf79717, integrated as 13036c0). Actual final-image measurement still needs a
+fixed read-only collector; its bounded implementation is in progress. Complete
+context/archive/recipe, fresh root policy, combined schema/views/lifespan/key
+authorization and revocation remain UNRUN. The original 60-second authorization
+start feasibility is unmeasured; no clock has been extended or reset.
 
-The SDK image's actual static packaging evidence remains accepted, with
-26,886 inventory entries, four binary pins and owned-container/two-volume
-cleanup reconciled. The new image is unscanned, unpushed and runtime-unadmitted;
-actual interruption, replacement and recovery remain UNRUN. Root accepted the
-additive gate-placement correction: G1 requires a genuinely durable, fenced
-partial fixture checkpoint/resume spike. The complete product SessionStore
-and Checkpoint remain W05/W09; the earlier design's contrary prerequisite is
-retained as corrected history. A dedicated qualification receipt/four-operation
-channel contract is now being implemented, always declaring
-completeRecoveryCheckpoint:false and sessionStoreQualified:false. Trusted
-storage, authenticated channel composition and real two-task recovery remain.
+The SDK image's static packaging is accepted; its scan, publication and runtime
+admission remain open. The private four-operation partial-fixture contract's
+original timing defect is repaired: a stale-denial decision cannot predate its
+named replacement's admission. All original 16 tests/helpers are preserved;
+the affected 17 checks PASS with zero denied-effect attempts and stable source/
+dependencies. A separate review accepted the corrected pair; root reverified
+187 review payloads, 2,893 references and six raw Git paths, then integrated
+them as accf7ca/878ee87. The original HOLD and witness remain historical. The
+earlier CRLF narrative is corrected: final tested snapshots were already LF.
+Trusted service/channel, immutable durable readback, atomic current-fence
+publication and actual two-task interrupt/replacement/resume/old-credential
+denial still require implementation and live verification. G1 requires this
+durable partial fixture; full SessionStore/Checkpoint remain W05/W09. Mandatory
+completeRecoveryCheckpoint:false and sessionStoreQualified:false remain.
 
-Browser Stage2/import repair remains SOURCE-accepted with 16 focused checks.
-The clock-free preparation is now accepted: six actual staged provenance
-files, the full canonical graph and two exact request hashes; its one pure
-planner invocation passed with all 1,031 source/runtime pins stable. Root
-copied the six files into the fixed new owner namespace and issued the
-clock-free source decision. No new proof UUID/nonce/clock, admission, consume
-or read-only pair dispatch exists yet. The canonical current-role chain and
-two fixed TestState calls still need execution and independent wire decoding.
-Historical bootstrap retains 144 events/delete ACK, expired original clock
-and cleanup UNKNOWN. Dedicated isolated browser host, real browser AND renderer
-sandbox, egress, cancellation and teardown still require live qualification.
+Browser OWNER1's local AWS startup failure and OWNER2's actual InvalidDefinition
+failure are terminal, sealed and preserved. SOURCE4's minimal graph repair is
+accepted after distinct review: constant-false entry branches make the fixed
+diagnostic states structurally reachable while ordinary execution still refuses.
+Root then admitted one fresh read-only OWNER3 proof
+76ecc118-e818-4814-9ef7-d48e161a41c0. All 11 fixed CLI calls succeeded, including
+the seven-call current-role chain, fresh STS before each of two TestState calls,
+and both diagnostic states. Raw output and inspected results agree on empty
+Reservations and Volumes arrays with no continuation. Parent exit was 0 after
+17.36 seconds, with tree/readers empty and source input stable. Root verified
+all 65 subject files; independent actual-capture review is pending. These are
+current fixed-filter observations: original expired-clock cleanup remains
+UNKNOWN, with no retroactive cleanup, absence-wire or browser-host admission.
+No host was launched. A new isolated host still needs genuine nonroot browser
+AND renderer sandbox, egress, cancellation, watchdog and teardown qualification.
 
-Root accepted the exact legacy mail metadata at frozen Capiro commit fd8765ec:
-thread defaults 3 messages/2,000 characters, UTF-16 code-unit offsets,
-sentAt/receivedAt/createdAt ascending with unspecified null/tie order, stored
-read eligibility across connection statuses and a 48-hour coverage threshold.
-Legacy schema version1 is not an immutable snapshot. The first get_email_thread
-contract/catalog slice is now being implemented with these characterized
-semantics and transport-only incomplete bodies; the full-read evidence
-invariant remains unchanged. No handler or public 0.2 export is enabled.
-REL02 still requires typed contracts/catalog/skill mapping for ALL 96 selected
-capabilities. All 139 original IDs/96 selected/43 deferred remain accounted for.
+The first mail.read_thread transport contract is independently accepted and
+integrated as 867a9e1 after root's 55/55 checks, zero effect attempts and stable
+source/dependencies. Its reporter-parser correction reused retained successful
+streams as DATA, without candidate replay. All 139 original IDs, 96 selected and
+43 deferred remain exact. The list/search behavioral metadata and bounded outline
+are now root accepted; strict list/search contracts and a focused mail-validation
+module are being completed in a separate session. Its initial 65/65 checks PASS;
+the final commit and integration review are still pending. No handler, skill or
+public 0.2 export is enabled. Preview/full-read and unknown-version limits remain.
+REL02 still requires typed contracts, catalog and skill mapping for all 96
+selected capabilities; partial mail progress does not close that requirement.
 
-Remaining G1 work: combined genuine native schema/auth; proxy authorization,
-revocation, durable usage and enforced $10 Bedrock test budget; isolated
-Fargate runtime composition; genuine SDK interrupt, fresh fenced replacement,
-durable partial fixture recovery and egress cleanup; RG08 native discovery and
-measured cohorts; isolated browser proof; all selected operation contracts;
-and security/license dispositions. The 49 recorded image findings and five
-older vendor-open findings remain unresolved; Office remains deferred and the
-new SDK image lacks an accepted scan. The approved 75-real-request baseline
-location/owner is still awaited. Temporal production HA/restore and complete
-W05 SessionStore retain their documented later-gate placement. Source checks
-and partial fixtures do not close these deployment gates.
+Remaining G1 work includes the combined proxy authorization/revocation test and
+durable budget enforcement; isolated Fargate composition; live SDK recovery,
+egress and cleanup; isolated browser qualification; remaining capability
+contracts; RG08 native discovery and measured cohorts; security/license
+dispositions. The 49 recorded image findings and five older vendor findings
+remain OPEN. Office is deferred; the new SDK image has no accepted scan.
+The approved 75-real-request baseline location/owner is still awaited and has
+already been requested; synthetic data cannot replace it. Temporal production
+topology/HA/restore remain accepted DESIGN, not observed production deployment.
+Frontend 28c300 remains unchanged. No planned component, execution placement,
+capability scope or release approval has changed.
 
 Historical checkpoint, 11 October 2026 07:34 UTC (retained verbatim):
 
