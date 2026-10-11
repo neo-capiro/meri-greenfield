@@ -1,38 +1,40 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 03:05 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2–G7 unentered.** The next critical path is the actual
-isolated Linux proxy build/import, followed by disposable PostgreSQL native
-authentication/revocation and SDK discovery through the trusted proxy/Bedrock.
-The Linux community candidate has passed distinct source review; root verified
-all eight new Git paths, 1,344 author payload/reference files, 321 artifact files
-and all 330 immutable source-archive members. This is preparation, not a native
-import or G1 pass. [Owner evidence](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact accepted commits and limits.
+Current continuation, 11 October 2026 03:18 UTC: **G0 accepted / G1 OPEN; eight
+deployment gates, G2–G7 unentered.** The first isolated Linux build installed all
+124 selected packages and emitted Node24.21.0/Python3.13.5, then FAILED offline
+Prisma generation on an unprovided Debian OpenSSL1.1 query engine. Independent
+actual-DATA review confirms terminal failure/zero retries and genuine app import
+UNRUN. The failed reservation, original source and complete returned failure
+capture remain preserved. No import container, database or provider was started.
 
-Root's independent SDK public-import checks passed 23/23 and browser managed-
-bootstrap history checks passed 36/36. The worker now packages the exact public
-contracts archive; all 145 previous lock records are unchanged and its retained
-static suite passed 91/91. The new worker recipe has not been built. Exact native
-Prisma engine bytes are recovered; offline generation still may require missing
-target families. Build-log capture defects were fixed and independently reviewed;
-three synthetic failure-bundle checks pass. The first isolated Linux build
-installed all 124 packages and verified Node24.21.0/Python3.13.5, then FAILED
-offline Prisma generation because the unchanged schema also requires the
-unacquired Debian OpenSSL1.1 query engine. The network-none boundary held;
-genuine import is UNRUN. Exact result capture is complete and input bytes stable.
-No import container/database/provider was started. Remaining exact engine DATA
-recovery is next; the failed run is preserved and will not be retried.
+The three missing target-specific query engines and six checksum files are now
+recovered from retained verified upstream OCI layers. Root independently checked
+114 sealed payload/reference files, exact distinct body hashes/sidecars/package
+copies and the retained generated client's four concrete platform paths. This
+accepts DATA acquisition only. A bounded Codex session is repairing the unchanged
+five-target schema's offline cache and generated-path validation; the next build
+requires distinct source/context review and a fresh frozen attempt. Its owner
+freeze preparation is under separate review. No second build has started.
 
-G1 requires the bounded interrupt/resume/checkpoint/egress spike, actual-proxy
-native discovery, accepted REL-02, pinned components, Temporal production design
-and measured frozen cohort budgets. Full W05/product integration remains later
-work; it is not a prerequisite to the bounded G1 spike. Remaining G1 evidence
-includes real proxy/DB/TLS/identity/usage/$10 controls, native SDK discovery and
-replacement recovery, browser/renderer sandbox/egress/physical cleanup,
-Office/security disposition and measured cohorts. Sources stay disabled; current
-Meri is untouched. All 49 current plus five older findings remain OPEN; Office
-is DEFERRED. Model spend is $0 of $10. The promised approved location/owner for
-75 real requests is still awaited. No plan departure or cutover is approved.
+The exact official Linux/amd64 PostgreSQL17.11-trixie artifact is selected from
+verified public metadata; no DB image layers or runtime are admitted. Browser
+managed bootstrap/history source is accepted offline, and its pure managed probe
+predecessor bridge is being implemented separately. SDK public import23/23,
+browser history36/36 and retained worker packaging91/91 remain limited source
+evidence; the newly packaged worker image has not been built. [Owner evidence](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+records exact accepted commits and limits.
+
+G1 still requires the bounded interrupt/resume/checkpoint/egress spike, actual-
+proxy native discovery, accepted REL-02, pinned components, Temporal production
+design and measured frozen cohort budgets. Full W05/product integration remains
+later work. Remaining runtime evidence includes proxy/DB/TLS/authentication/
+revocation/usage/$10 controls, native SDK discovery and replacement recovery,
+browser/renderer sandbox/egress/physical cleanup, Office/security disposition
+and measured cohorts. All49 current plus five older findings remain OPEN; Office
+is DEFERRED. Inference remains$0/$10. The promised approved location/owner for75
+real requests is still awaited. Source connections stay disabled, current Meri
+is untouched, and no plan departure or cutover is approved.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native

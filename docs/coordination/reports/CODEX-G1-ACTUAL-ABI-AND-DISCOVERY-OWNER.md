@@ -1,5 +1,52 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Independent failure review and engine recovery — 11 October 2026 03:18 UTC
+
+Root independently verified and integrated three closed report-only sessions:
+
+| Author | Integration | Scope / root DATA check |
+| --- | --- | --- |
+| 9c48d82 | f913762 | Official Linux PostgreSQL17.11 metadata,44unique sealed files |
+| ff88205 | 85619d4 | Actual first failed Linux build review,170unique sealed files |
+| c45f67e | afb8438 | Remaining exact Prisma engines,114unique sealed files |
+
+Each author HEAD/clean tree/sole raw-Git report and complete finite seal was
+checked. The failed build review independently binds14actual AWS envelopes,
+eight flat result archive members/13909bytes,124installed distribution rows and
+99dpkg observations. It confirms FAILED/COMPLETED/zero retries and no import
+container dispatch. Nested generator diagnostics are only summary/at-most1MiB
+stderr prefix; one CloudWatch page is corroboration, not complete history. The
+reviewer's original zero-length-tar DATA-reader failure/correction is retained.
+No failed operation was retried or retrospectively accepted.
+
+Recovered cache comprises9files/52648664bytes: distinct Debian1.1/musl/musl3
+query-engine bodies and two64ASCII checksum sidecars per target. Root additionally
+rehashed every body, compared uncompressed checksum text and retained package
+copies, inspected ELF headers and AST-decoded the exact retained client's four
+concrete BINARY_PATHS platforms. All23compressed layer and decompressed diff-id
+checks are retained author DATA observations, not replayed native qualification.
+Compressed engine payloads were not acquired; gzip sidecar text is not verification
+of such payloads. No nonnative schema engine is invented; native Debian3 pair and
+all five original schema targets remain. The author Git.exe hardlink seal refusal
+and narrow trusted-Git DATA exception are preserved.
+
+The official PostgreSQL17.11-trixie amd64 manifest is
+`sha256:3cec7eb015ba8adb28139fa5c83b8489cdf0e666e53dfdf20f598ae0cc8739e3`.
+Only index/manifest/config and official packaging/docs metadata are acquired.
+DefaultUser is absent and TLS-only is not default; future explicit nonroot999,
+verified TLS, grants/schema, package/security/notices and physical cleanup remain
+unqualified. No layer fetch/DB admission follows.
+
+Root proofs are `.task-inputs/proxy-linux-owner-build-1/`
+`postgres-discovery-owner-check.json`, `first-build-review-owner-check.json`,
+`remaining-engine-data-owner-check.json` and
+`remaining-engine-binding-owner-check.json`. Current bounded Codex allocations
+repair the Linux cache/pins, build the pure managed browser probe predecessor
+and independently review root's NEW build2freeze preparation. Exact reviewed
+runner/recipe are reused by bytes; a new source/context/archive/attempt is still
+required before any second build. G1 OPEN, all security/Office/native gates and
+full plan unchanged, inference$0/$10, current Meri untouched.
+
 ## Actual first Linux build — 11 October 2026 03:05 UTC
 
 Root admitted one bounded build/import experiment after independent source,
