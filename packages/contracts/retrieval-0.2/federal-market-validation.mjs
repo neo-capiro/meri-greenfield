@@ -18,15 +18,15 @@ export const FEDERAL_MARKET_OPERATION_IDS = Object.freeze([
   'get_district_federal_market',
 ]);
 
-// Explicit per-tool rules. `queryScope: 'global'` marks the forecast boundary,
-// which queries global public data and must not use clientId for matching.
+// Explicit per-tool rules. Forecasts query global public data. All other
+// effective scopes remain server-resolved; a clientId argument grants nothing.
 // `paged: false` marks the district geography shape, which has no page/limit.
 const RULES = Object.freeze({
-  search_federal_contract_awards: Object.freeze({ definition: 'SearchFederalContractAwardsInput', queryScope: 'client', geography: false, paged: true }),
-  search_federal_subawards: Object.freeze({ definition: 'SearchFederalSubawardsInput', queryScope: 'client', geography: false, paged: true }),
-  search_contract_vehicles: Object.freeze({ definition: 'SearchContractVehiclesInput', queryScope: 'client', geography: false, paged: true }),
-  search_procurement_forecasts: Object.freeze({ definition: 'SearchProcurementForecastsInput', queryScope: 'global', geography: false, paged: true }),
-  get_district_federal_market: Object.freeze({ definition: 'GetDistrictFederalMarketInput', queryScope: 'client', geography: true, paged: false }),
+  search_federal_contract_awards: Object.freeze({ definition: 'SearchFederalContractAwardsInput', queryScope: 'server_resolved', geography: false, paged: true }),
+  search_federal_subawards: Object.freeze({ definition: 'SearchFederalSubawardsInput', queryScope: 'server_resolved', geography: false, paged: true }),
+  search_contract_vehicles: Object.freeze({ definition: 'SearchContractVehiclesInput', queryScope: 'server_resolved', geography: false, paged: true }),
+  search_procurement_forecasts: Object.freeze({ definition: 'SearchProcurementForecastsInput', queryScope: 'global_public', geography: false, paged: true }),
+  get_district_federal_market: Object.freeze({ definition: 'GetDistrictFederalMarketInput', queryScope: 'server_resolved', geography: true, paged: false }),
 });
 
 // Fields typed as integers in the contract. A numeric string is refused rather
@@ -56,9 +56,8 @@ export function validateFederalMarketShape(definition, value) {
 }
 
 export function federalMarketInputDefinition(operationId) {
-  const rule = RULES[operationId];
-  if (!rule) fail(`Unknown federal-market operation ID: ${String(operationId)}`);
-  return rule.definition;
+  if (!Object.hasOwn(RULES, operationId)) fail(`Unknown federal-market operation ID: ${String(operationId)}`);
+  return RULES[operationId].definition;
 }
 
 // Inputs are inert JSON data: no accessors, hidden keys, prototypes or non-finite

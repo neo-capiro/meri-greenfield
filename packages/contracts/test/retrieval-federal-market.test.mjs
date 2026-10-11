@@ -41,6 +41,9 @@ test('exposes five distinct operation IDs each pinned to one schema definition',
   assert.equal(new Set(definitions).size, 5, 'definitions must stay distinct per operation');
   for (const definition of definitions) assert.ok(Object.hasOwn(schema.$defs, definition), `${definition} missing from schema`);
   assert.throws(() => federalMarketInputDefinition('search_federal_awards'), /Unknown federal-market operation ID/);
+  for (const inherited of ['__proto__', 'constructor', 'toString']) {
+    assert.throws(() => federalMarketInputDefinition(inherited), /Unknown federal-market operation ID/);
+  }
   // The schema documents the same five IDs and stays closed on every input shape.
   assert.deepEqual(schema.$defs.FederalMarketOperationId.enum, [...FEDERAL_MARKET_OPERATION_IDS]);
   for (const definition of definitions) assert.equal(schema.$defs[definition].additionalProperties, false);
@@ -157,11 +160,11 @@ test('clientId is inert data and never authority', () => {
 
 test('keeps the forecast global-query boundary explicit', () => {
   const forecast = normalizeFederalMarketInput('search_procurement_forecasts', { clientId: 'client-synthetic', query: 'cloud' });
-  assert.equal(forecast.queryScope, 'global');
+  assert.equal(forecast.queryScope, 'global_public');
   // clientId is echoed as data only; it is not authority and does not scope a match.
   assert.equal(forecast.clientScope.authoritative, false);
   for (const id of ['search_federal_contract_awards', 'search_federal_subawards', 'search_contract_vehicles', 'get_district_federal_market']) {
-    assert.equal(normalizeFederalMarketInput(id, positive[id]).queryScope, 'client');
+    assert.equal(normalizeFederalMarketInput(id, positive[id]).queryScope, 'server_resolved');
   }
 });
 
