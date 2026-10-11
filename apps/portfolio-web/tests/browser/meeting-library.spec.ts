@@ -42,6 +42,11 @@ async function setup(page: Page) {
   );
   await page.route("**/core/engagement/meetings**", async (route) => {
     const url = new URL(route.request().url());
+    if (
+      route.request().method() === "GET" &&
+      url.pathname.endsWith("/notetaker")
+    )
+      return json(route, null);
     if (route.request().method() === "PUT") {
       state.puts++;
       const body = route.request().postDataJSON();

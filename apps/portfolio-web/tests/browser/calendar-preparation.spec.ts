@@ -44,14 +44,12 @@ test("Master calendar accepts saved structured prep and renders its text without
       },
     ],
   };
-  await page.route("**/core/engagement/meetings**", (route) =>
-    json(
-      route,
-      new URL(route.request().url()).pathname.endsWith(meeting.id)
-        ? meeting
-        : [meeting],
-    ),
-  );
+  await page.route("**/core/engagement/meetings**", (route) => {
+    const path = new URL(route.request().url()).pathname;
+    if (route.request().method() === "GET" && path.endsWith("/notetaker"))
+      return json(route, null);
+    return json(route, path.endsWith(meeting.id) ? meeting : [meeting]);
+  });
   await page.goto(
     `/calendar?view=agenda&date=2026-10-15&zone=UTC&meeting=${meeting.id}`,
   );

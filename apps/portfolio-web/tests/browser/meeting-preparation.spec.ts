@@ -72,6 +72,8 @@ async function fixture(page: Page, empty = false) {
   );
   await page.route("**/core/engagement/meetings**", (route) => {
     const path = new URL(route.request().url()).pathname;
+    if (route.request().method() === "GET" && path.endsWith("/notetaker"))
+      return json(route, null);
     if (path.endsWith("/prep-jobs/latest")) return json(route, null);
     if (path.endsWith(meetingId)) return json(route, meeting);
     return json(route, [meeting]);
