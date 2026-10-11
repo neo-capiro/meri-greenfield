@@ -238,6 +238,54 @@ class EvidenceTests(unittest.TestCase):
                 raise AssertionError('class accessor called')
         self.rejected(Unknown(), reason='INVALID_INPUT')
 
+    def test_certificate_validity_purpose_algorithm_are_not_san_or_plaintext(self):
+        messages = ('certificate is not valid for the current date',
+                    'certificate has expired', 'certificate is not yet valid',
+                    'certificate is not valid yet', 'certificate is not valid for server purpose',
+                    'unsuitable certificate purpose', 'invalid purpose',
+                    'server does not support this certificate algorithm',
+                    'server does not support TLS certificate algorithm',
+                    'unsupported certificate signature algorithm')
+        for message in messages:
+            for case in ('wrong-san', 'plaintext'):
+                with self.subTest(case=case, message=message):
+                    self.rejected(data_error('TLS: ' + message), case=case)
+
+    def test_generic_server_support_or_certificate_wording_does_not_qualify(self):
+        for message in ('server does not support this feature', 'does not support TLS',
+                        'SSL is not enabled for this certificate',
+                        'certificate is not valid for host.example',
+                        'server does not support this certificate algorithm'):
+            for case in ('wrong-san', 'plaintext'):
+                with self.subTest(case=case, message=message):
+                    self.rejected(data_error(message), case=case)
+
+    def test_mixed_validity_and_specific_reason_refuse(self):
+        for message in ('hostname mismatch; certificate has expired',
+                        'hostname mismatch; certificate is not yet valid',
+                        'IP address mismatch; unsuitable certificate purpose',
+                        'server does not support TLS; signature algorithm unsupported',
+                        'server does not support SSL; certificate is not valid for current date',
+                        'hostname mismatch; server does not support TLS'):
+            for case in ('wrong-san', 'plaintext'):
+                with self.subTest(case=case, message=message):
+                    self.rejected(data_error(message), case=case,
+                                  reason='CONFLICTING_OR_UNSPECIFIC_EVIDENCE')
+
+    def test_specific_hostname_ip_and_server_refusals_still_match_exact_cases(self):
+        for case, message, reason in (
+                ('wrong-san', 'TLS hostname mismatch', 'HOSTNAME_REJECTED'),
+                ('wrong-san', 'TLS IP address mismatch', 'HOSTNAME_REJECTED'),
+                ('plaintext', 'server does not support TLS', 'TLS_UNSUPPORTED'),
+                ('plaintext', 'server does not support SSL', 'TLS_UNSUPPORTED'),
+                ('plaintext', 'SSL is not enabled on the server', 'TLS_UNSUPPORTED')):
+            with self.subTest(case=case, message=message):
+                result = classify_exception(case, data_error(message))
+                self.assertTrue(result['specificRejection'])
+                self.assertEqual(reason, result['reason'])
+        self.rejected(data_error('hostname mismatch', 'P9999'), case='wrong-san')
+        self.rejected(data_error('server does not support TLS', 'P9999'), case='plaintext')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

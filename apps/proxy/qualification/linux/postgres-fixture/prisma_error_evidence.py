@@ -138,9 +138,15 @@ def _reason(code, message):
         # Missing/unreadable CA or generic TLS failures must not qualify.
         if any(text in message for text in ('cert file not found', 'no such file', 'permission denied')):
             return None
-        hostname = any(text in message for text in ('hostname mismatch', 'not valid for', 'ip address mismatch'))
-        unsupported = any(text in message for text in ('does not support tls', 'does not support ssl',
-                                                       'server does not support', 'ssl is not enabled'))
+        # Certificate validity/purpose/algorithm failures are not evidence of
+        # hostname mismatch or a server refusing TLS. Mixed reasons refuse.
+        if any(text in message for text in ('expired', 'not yet valid', 'not valid yet',
+                'not valid for', 'invalid purpose', 'unsuitable certificate purpose',
+                'unsupported certificate', 'certificate algorithm', 'signature algorithm')):
+            return None
+        hostname = any(text in message for text in ('hostname mismatch', 'ip address mismatch'))
+        unsupported = any(text in message for text in ('server does not support tls',
+                'server does not support ssl', 'ssl is not enabled on the server'))
         certificate = any(text in message for text in ('certificate verify failed', 'unknown issuer',
                                                        'unable to get local issuer', 'self-signed certificate'))
         if unsupported and (hostname or certificate):
