@@ -22,6 +22,7 @@ import { useProspectVisibility } from "./mutations";
 import { ProspectContacts } from "./contacts/public";
 import { ProspectClientLink } from "./conversion/public";
 import { ProspectBrief } from "./brief/public";
+import { ProspectProposals } from "./proposals/public";
 import styles from "./prospects.module.css";
 export function ProspectDetail({
   id,
@@ -126,6 +127,10 @@ export function ProspectDetail({
                   </p>
                 </section>
                 <ProspectBrief prospectId={id} />
+                <ProspectProposals
+                  prospectId={id}
+                  workspaceUrl={destinations.workspace}
+                />
                 <ProspectHistory id={id} />
               </div>
               <div className="stack">
