@@ -291,7 +291,7 @@ def execute(path, review_file, review_sha):
     end = time.monotonic()+600
     def call(label, args):
         remaining = min(45, end-time.monotonic()); need(remaining > 0, 'whole dispatch deadline')
-        value = aws_evidence.capture(evidence, label, args, timeout=remaining)
+        value = aws_evidence.capture(evidence, label, args, timeout=remaining, profile='default')
         need(loads(read(evidence/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         return value
     return dispatch(evidence, request, raw, review_sha, call)
@@ -304,7 +304,7 @@ def reconcile(path):
     end = time.monotonic()+300
     def call(label, args):
         need(end-time.monotonic() > 0, 'readback deadline')
-        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()))
+        value = aws_evidence.capture(destination, label, args, timeout=min(45, end-time.monotonic()), profile='default')
         need(loads(read(destination/label/'stdout.bin', 8*1024*1024)) == value, 'strict captured API JSON')
         need(type(value) is dict and 'nextToken' not in value and 'NextToken' not in value, 'complete readback'); return value
     need(call('caller', ['sts', 'get-caller-identity']) == request['authority']['caller'], 'readback caller')
