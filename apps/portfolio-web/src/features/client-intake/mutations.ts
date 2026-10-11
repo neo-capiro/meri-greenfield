@@ -2,12 +2,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import {
-  clientSchema,
   clientsKey,
   clientKey,
   type Client,
 } from "@/features/portfolio/public";
-import { intakePayload, type IntakeForm } from "./form";
+import type { IntakeForm } from "./form";
+import { archiveClient, saveClientProfile } from "./profile-api";
 import { uploadClientLogo, type LogoAttempt } from "./logo";
 
 export function useSaveIntake(client?: Client) {
@@ -21,18 +21,7 @@ export function useSaveIntake(client?: Client) {
       values: IntakeForm;
       initial?: IntakeForm;
     }) => {
-      const path = client
-        ? `clients/${encodeURIComponent(client.id)}`
-        : "clients";
-      const latest = client
-        ? await api.request("core", path, clientSchema)
-        : undefined;
-      const body = intakePayload(values, initial, latest);
-      if (latest && !Object.keys(body).length) return latest;
-      return api.request("core", path, clientSchema, {
-        method: client ? "PUT" : "POST",
-        body,
-      });
+      return saveClientProfile(api, values, initial, client);
     },
     onSuccess: async (saved) => {
       cache.setQueryData(clientKey(saved.id), saved);
@@ -61,10 +50,7 @@ export function useArchiveClient(onArchived: () => void) {
   const api = useApi();
   const cache = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) =>
-      api.request("core", `clients/${encodeURIComponent(id)}`, clientSchema, {
-        method: "DELETE",
-      }),
+    mutationFn: (id: string) => archiveClient(api, id),
     onSuccess: async (saved) => {
       cache.removeQueries({ queryKey: clientKey(saved.id) });
       await Promise.all([

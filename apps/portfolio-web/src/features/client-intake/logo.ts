@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ApiClient } from "@/shared/api/http";
-import { clientSchema } from "@/features/portfolio/public";
+import { clientReceipt } from "./profile-api";
 
 export const logoTypes = [
   "image/png",
@@ -67,6 +67,7 @@ export async function uploadClientLogo(
       body: form,
       credentials: "omit",
       redirect: "error",
+      signal: AbortSignal.timeout(30_000),
     });
     if (!response.ok)
       throw new Error("Logo storage upload failed. Retry the upload.");
@@ -78,7 +79,7 @@ export async function uploadClientLogo(
   return api.request(
     "core",
     `clients/${encodeURIComponent(clientId)}/logo/confirm`,
-    clientSchema,
+    clientReceipt(clientId),
     {
       method: "POST",
       body: { s3Key: attempt.ticket.s3Key, contentType: attempt.file.type },

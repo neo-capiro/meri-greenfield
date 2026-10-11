@@ -11,6 +11,10 @@ import {
 } from "../src/features/client-intake/catalog";
 import { createApiClient } from "../src/shared/api/http";
 import {
+  archiveClient,
+  saveClientProfile,
+} from "../src/features/client-intake/profile-api";
+import {
   maxLogoBytes,
   uploadClientLogo,
   validateLogo,
@@ -176,6 +180,68 @@ describe("client intake domain", () => {
     expect(certifications).not.toContain("SBA");
   });
 });
+describe("client mutation receipts", () => {
+  const other = { ...client, id: "20000000-0000-4000-8000-000000000002" };
+  it("rejects a wrong-client fresh read before issuing PUT", async () => {
+    const methods: string[] = [];
+    const api = createApiClient(async (_path, options) => {
+      methods.push(options?.method ?? "GET");
+      return Response.json(other);
+    });
+    const initial = clientToIntake(client);
+    await expect(
+      saveClientProfile(api, { ...initial, name: "Edited" }, initial, client),
+    ).rejects.toThrow("unexpected response");
+    expect(methods).toEqual(["GET"]);
+  });
+  it("rejects a successful PUT receipt for another client", async () => {
+    const api = createApiClient(async (_path, options) =>
+      Response.json(options?.method === "PUT" ? other : client),
+    );
+    const initial = clientToIntake(client);
+    await expect(
+      saveClientProfile(api, { ...initial, name: "Edited" }, initial, client),
+    ).rejects.toThrow("unexpected response");
+  });
+  it.each([other, client])(
+    "rejects archive receipts without matching identity and archived status",
+    async (receipt) => {
+      const api = createApiClient(async () =>
+        Response.json({
+          ...receipt,
+          status: receipt === other ? "archived" : "active",
+        }),
+      );
+      await expect(archiveClient(api, client.id)).rejects.toThrow(
+        "unexpected response",
+      );
+    },
+  );
+  it("accepts only the requested archived client", async () => {
+    const api = createApiClient(async () =>
+      Response.json({ ...client, status: "archived" }),
+    );
+    await expect(archiveClient(api, client.id)).resolves.toMatchObject({
+      id: client.id,
+      status: "archived",
+    });
+  });
+  it("rejects logo confirmation for another client", async () => {
+    const api = createApiClient(async () => Response.json(other));
+    const attempt: LogoAttempt = {
+      file: new File(["x"], "logo.png", { type: "image/png" }),
+      bytesUploaded: true,
+      ticket: {
+        url: "https://storage.example.test/upload",
+        fields: { key: "stage/key" },
+        s3Key: "stage/key",
+      },
+    };
+    await expect(uploadClientLogo(api, client.id, attempt)).rejects.toThrow(
+      "unexpected response",
+    );
+  });
+});
 describe("client logo contract", () => {
   it("enforces supported MIME and the signed endpoint's 2 MiB bound", () => {
     expect(
@@ -217,6 +283,7 @@ describe("client logo contract", () => {
         credentials: "omit",
         redirect: "error",
       });
+      expect(options?.signal).toBeInstanceOf(AbortSignal);
       expect(options?.body).toBeInstanceOf(FormData);
       expect((options?.body as FormData).get("key")).toBe("stage/key");
       return new Response(null, { status: 204 });
