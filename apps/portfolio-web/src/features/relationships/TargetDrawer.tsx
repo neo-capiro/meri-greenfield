@@ -13,6 +13,7 @@ import {
 import { useTargetContact } from "./directory-queries";
 import { useTargetMutation } from "./target-queries";
 import { ContactMail } from "./ContactMail";
+import { MemberNoteForm } from "./member-notes/public";
 export function TargetDrawer({
   clientId,
   target,
@@ -140,6 +141,22 @@ export function TargetDrawer({
           this target record.
         </p>
       </section>
+      {target.sourceDirectory === "congress" &&
+        details.isSuccess &&
+        !details.error && (
+          <section className="card stack" aria-label="Member Directory note">
+            <h3>Directory note</h3>
+            <p className="muted">
+              This note is shared in Directory. It is not linked to this client.
+            </p>
+            <MemberNoteForm
+              member={{
+                id: target.memberId,
+                name: target.memberName ?? target.memberId,
+              }}
+            />
+          </section>
+        )}
       <div className="formActions">
         <button className="button" onClick={() => setRemoving(true)}>
           Remove target
