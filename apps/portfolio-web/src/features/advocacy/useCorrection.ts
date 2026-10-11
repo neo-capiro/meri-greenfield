@@ -21,6 +21,7 @@ export function useCorrection(clientId: string, onSaved: () => void) {
     tenantId: actor.data?.tenant?.id,
   }));
   const attempted = useRef<Correction | null>(null);
+  const [submitted, setSubmitted] = useState(false);
   const inFlight = useRef(false);
   function assertCurrentAccess() {
     const state = cache.getQueryState(["identity"]);
@@ -65,6 +66,7 @@ export function useCorrection(clientId: string, onSaved: () => void) {
         await prepareCorrection(api, clientId, correction);
         assertCurrentAccess();
         attempted.current = correction;
+        setSubmitted(true);
         await submitCorrection(api, clientId, correction);
         await verify(correction);
       } finally {
@@ -89,7 +91,7 @@ export function useCorrection(clientId: string, onSaved: () => void) {
   return {
     mutation,
     reconcile,
-    submitted: Boolean(attempted.current),
+    submitted,
     canEdit,
   };
 }
