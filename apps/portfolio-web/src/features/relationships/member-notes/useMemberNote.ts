@@ -32,8 +32,12 @@ export function useMemberNote(
     () => undefined,
   );
   const actor = currentClientWriter(cache);
+  // Bind draft scope even during a same-scope identity refresh; only the
+  // canonical currentClientWriter below can grant execution authority.
   const [session] = useState<ClientWriter | undefined>(() =>
-    currentClientWriter(cache),
+    identity.data?.tenant?.id && identity.data.user.id
+      ? { tenantId: identity.data.tenant.id, userId: identity.data.user.id }
+      : undefined,
   );
   const sameActor = Boolean(
     actor &&
