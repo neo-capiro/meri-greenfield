@@ -1,0 +1,150 @@
+.picker {
+  width: min(560px, calc(100vw - 32px));
+  padding: 0;
+  gap: 0;
+  border-radius: 14px;
+  box-shadow:
+    0 16px 40px -12px #0000002e,
+    0 2px 6px #0000000d;
+}
+.picker > header {
+  padding: 22px 28px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.picker > header h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.picker > header > button {
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+}
+.picker > p {
+  margin: 0;
+  padding: 18px 28px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.body {
+  padding: 18px 28px;
+  display: grid;
+  gap: 16px;
+}
+.field {
+  display: grid;
+  gap: 6px;
+}
+.label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.search {
+  position: relative;
+}
+.search input {
+  width: 100%;
+  border-radius: 8px;
+  padding: 9px 34px 9px 12px;
+  font-size: 14px;
+  border-color: var(--border-strong);
+}
+.search > svg {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--muted-foreground);
+}
+.options {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+  max-height: min(340px, 40dvh);
+  overflow-y: auto;
+}
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.option > input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.option:focus-within {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+.selected {
+  border-color: var(--foreground);
+  background: var(--muted);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--muted);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.details {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+.details strong {
+  font-size: 13px;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+.details > span {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+.refresh {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+@media (max-width: 480px) {
+  .picker > header {
+    padding: 18px 20px 14px;
+  }
+  .picker > p {
+    padding: 16px 20px 0;
+  }
+  .body {
+    padding: 16px 20px;
+  }
+  .footer {
+    padding: 16px 20px;
+  }
+}

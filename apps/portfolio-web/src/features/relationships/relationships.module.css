@@ -1,0 +1,84 @@
+.container {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.container > :global(.toolbar) {
+  padding: 16px 20px;
+  margin: 0;
+}
+.review {
+  display: flex;
+  gap: 12px;
+  padding: 12px 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: color-mix(in srgb, #8a6a2f 14%, var(--card));
+}
+.review span {
+  flex: 1;
+  min-width: 160px;
+}
+.legend {
+  padding: 16px 20px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.chart {
+  height: 720px;
+  background: var(--background);
+}
+.person {
+  width: 228px;
+  min-height: 148px;
+  display: grid;
+  gap: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+}
+.person :global(.row) {
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+.person :global(.monogram) {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  font-size: 12px;
+}
+.person :global(.eyebrow) {
+  font-size: 11px;
+}
+.person p,
+.person small {
+  font-size: 12px;
+}
+.person :global(.react-flow__handle) {
+  border: 0;
+  background: none;
+  width: 8px;
+  height: 8px;
+}
+.warning {
+  border-color: #8a6a2f;
+  background: color-mix(in srgb, #8a6a2f 10%, var(--card));
+}
+.chart :global(.react-flow__controls-button) {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+@media (max-width: 680px) {
+  .chart {
+    height: 500px;
+  }
+  .chart :global(.react-flow__minimap) {
+    display: none;
+  }
+}

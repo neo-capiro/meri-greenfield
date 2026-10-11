@@ -1,0 +1,117 @@
+.panel {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding-block: 4px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.content {
+  display: grid;
+  gap: 20px;
+  overflow-wrap: anywhere;
+}
+.content section {
+  display: grid;
+  gap: 8px;
+}
+.content h3 {
+  font-size: 14px;
+  font-weight: 500;
+}
+.content p,
+.content ul {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+.content ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.content li + li {
+  margin-top: 4px;
+}
+.panel textarea {
+  min-height: 46px;
+  font-size: 13px;
+}
+.panel > button {
+  justify-self: start;
+}
+.progress {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--muted);
+  overflow-wrap: anywhere;
+}
+.progress > button {
+  justify-self: start;
+}
+.form {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.form label {
+  font-size: 12px;
+  font-weight: 500;
+}
+.form textarea {
+  min-height: 46px;
+  font-size: 13px;
+  line-height: 1.45;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+}
+.form input,
+.form select {
+  width: 100%;
+  font-size: 13px;
+  padding: 12px;
+  border-radius: 8px;
+}
+.dialog {
+  width: min(660px, calc(100vw - 32px));
+  gap: 16px;
+}
+.dialog h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+.dialog > p {
+  font-size: 13px;
+}
+.source {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+.source blockquote {
+  margin: 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--border-strong);
+  color: var(--muted-foreground);
+}
+@media (max-width: 600px) {
+  .dialog {
+    width: calc(100vw - 24px);
+    padding: 20px;
+  }
+  .actions {
+    gap: 8px;
+  }
+}

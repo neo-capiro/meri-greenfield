@@ -1,0 +1,57 @@
+.dialog {
+  width: min(660px, calc(100vw - 32px));
+  max-width: 660px;
+  padding: 24px;
+  gap: 16px;
+}
+.dialog h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  font-weight: 500;
+}
+.dialog p {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.body {
+  display: grid;
+  gap: 12px;
+}
+.body label {
+  font-size: 12px;
+  gap: 8px;
+}
+.body input[type="url"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.body .consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+.consent input {
+  accent-color: var(--foreground);
+  flex-shrink: 0;
+  margin: 3px 0 0;
+}
+.panel {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  padding: 16px;
+}
+@media (max-width: 600px) {
+  .dialog {
+    padding: 16px;
+    gap: 12px;
+  }
+}

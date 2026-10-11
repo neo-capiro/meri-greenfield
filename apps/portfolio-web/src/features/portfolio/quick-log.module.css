@@ -1,0 +1,42 @@
+.dialog {
+  width: min(640px, calc(100vw - 32px));
+  padding: 26px 28px;
+  gap: 18px;
+}
+.dialog > header h2 {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+.dialog > header > button {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+.modes {
+  display: grid;
+  gap: 8px;
+}
+.modes > div {
+  display: flex;
+  gap: 8px;
+}
+.mode {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.mode[aria-pressed="true"] {
+  background: var(--dark-gradient);
+  color: white;
+}
+@media (max-width: 600px) {
+  .dialog {
+    padding: 20px;
+  }
+}

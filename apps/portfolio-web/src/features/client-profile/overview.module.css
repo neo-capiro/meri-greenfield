@@ -1,0 +1,160 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.column {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.identity {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.identity h1 {
+  font-size: 22px;
+  letter-spacing: -0.44px;
+}
+.profileMeta {
+  display: flex;
+  gap: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  align-items: center;
+}
+.pulse:global(.card) {
+  padding: 16px 20px;
+}
+.pulse h2 {
+  font-size: 14px;
+  letter-spacing: -0.07px;
+}
+.pulse a {
+  font-size: 13px;
+}
+.pulse small {
+  color: var(--muted-foreground);
+}
+.pulseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.pulseGrid > div {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.pulseGrid strong {
+  font-size: 22px;
+  letter-spacing: -0.44px;
+  line-height: 1.2;
+}
+.timeline {
+  list-style: none;
+  padding: 0 0 0 16px;
+  margin: 0;
+  max-height: 420px;
+  overflow: auto;
+}
+.timeline li {
+  position: relative;
+  padding: 0 8px 24px 24px;
+  border-left: 1px solid var(--border);
+}
+.timeline li:last-child {
+  padding-bottom: 0;
+}
+.timeline li > div {
+  gap: 5px;
+}
+.timeline time {
+  font-size: 11px;
+}
+.timelineDot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  left: -5px;
+  top: 5px;
+  background: var(--border-strong);
+  border: 2px solid var(--card);
+}
+.body {
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 258px;
+  overflow: hidden;
+  background: var(--muted);
+  border-radius: 12px;
+}
+.map img {
+  flex-shrink: 0;
+}
+.facilityList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.facilityList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+.facilityList button {
+  text-align: left;
+  justify-content: flex-start;
+  max-width: 100%;
+  padding-left: 0;
+}
+.block {
+  display: block;
+  font-weight: 400;
+}
+.objectiveLink {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.objectiveLink:last-child {
+  border: 0;
+}
+.objectiveLink p {
+  font-size: 13px;
+  margin-top: 6px;
+}
+.fullWidth {
+  grid-column: 1/-1;
+}
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .map {
+    min-height: 258px;
+  }
+}
+@media (max-width: 680px) {
+  .identity {
+    align-items: flex-start;
+  }
+  .profileMeta {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

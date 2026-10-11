@@ -1,0 +1,68 @@
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.summary > div {
+  display: grid;
+  gap: 8px;
+  padding: 16px 20px;
+  border-right: 1px solid var(--border);
+}
+.summary > div:last-child {
+  border: 0;
+}
+.summary strong {
+  font-size: 22px;
+  font-weight: 500;
+}
+.summary small {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.titleCell {
+  min-width: 200px;
+  max-width: 360px;
+}
+.titleCell small {
+  display: block;
+}
+.board {
+  display: flex;
+  overflow: auto;
+  gap: 16px;
+  align-items: flex-start;
+}
+.lane {
+  flex: 0 0 260px;
+  display: grid;
+  gap: 12px;
+  border-radius: 12px;
+  background: var(--muted);
+  padding: 12px;
+}
+.lane h3 {
+  font-size: 14px;
+}
+.billCard {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  font-size: 13px;
+}
+@media (max-width: 680px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+  .summary > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}

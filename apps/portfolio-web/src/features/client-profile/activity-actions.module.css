@@ -1,0 +1,123 @@
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.trigger {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.pinned {
+  color: var(--warning-text, #6c5226);
+  font-size: 12px;
+  white-space: nowrap;
+}
+@media (prefers-color-scheme: dark) {
+  .pinned {
+    color: var(--warning-text, #d6b274);
+  }
+}
+.trigger:hover {
+  background: var(--muted);
+}
+.menu {
+  z-index: 70;
+  min-width: 190px;
+  padding: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+.menu [role="menuitem"] {
+  padding: 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+.menu [data-highlighted] {
+  background: var(--muted);
+}
+.menu [data-disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
+.review {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--muted);
+  color: var(--foreground);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.error:empty {
+  display: none;
+}
+.error > :global(.status) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--destructive-subtle);
+  color: var(--destructive-text);
+  font-size: 13px;
+  text-align: left;
+}
+.removeDialog {
+  width: min(520px, calc(100vw - 32px));
+  padding: 0;
+  gap: 0;
+  border-radius: 14px;
+  box-shadow:
+    0 16px 40px -12px #0c0a092e,
+    0 2px 6px #0c0a090d;
+}
+.removeDialog > header {
+  padding: 22px 28px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.removeDialog > header h2 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.removeDialog > header :global(.iconButton) {
+  min-height: 20px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  color: var(--muted-foreground);
+}
+.removeDialog > p {
+  padding: 18px 28px 0;
+}
+.removeBody {
+  padding: 16px 28px 18px;
+  display: grid;
+  gap: 16px;
+  font-size: 13px;
+}
+.removeFooter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+}

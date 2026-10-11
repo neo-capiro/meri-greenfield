@@ -1,0 +1,66 @@
+.meetingDrawer {
+  align-content: start;
+}
+.grid {
+  height: 750px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: auto;
+  --sx-color-primary: #0a0a0a;
+  --sx-color-on-primary: #fff;
+  --sx-color-primary-container: #e7e5e4;
+  --sx-color-on-primary-container: #0a0a0a;
+  --sx-font-family: var(--font-geist-sans);
+}
+.grid :global(.sx-react-calendar-wrapper) {
+  width: 100%;
+  height: 100%;
+  min-width: 540px;
+}
+.grid :global(.sx__calendar-header) {
+  display: none;
+}
+.scopeNote {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  margin: 12px 0 20px;
+}
+.agendaRow {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 16px;
+  align-items: start;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.agendaRow > div {
+  gap: 6px;
+}
+.titleButton {
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 0;
+  font: inherit;
+}
+.titleButton:hover {
+  text-decoration: underline;
+}
+@media (prefers-color-scheme: dark) {
+  .grid {
+    --sx-color-primary: #e7e5e4;
+    --sx-color-on-primary: #0a0a0a;
+    --sx-color-primary-container: #34312f;
+    --sx-color-on-primary-container: #f5f5f4;
+  }
+}
+@media (max-width: 680px) {
+  .grid {
+    height: 600px;
+  }
+  .agendaRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

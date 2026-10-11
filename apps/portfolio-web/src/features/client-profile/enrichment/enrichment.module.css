@@ -1,0 +1,237 @@
+.drawer {
+  width: min(620px, 100vw);
+  padding: 0;
+  gap: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.drawer > header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+.drawer > header h2 {
+  font-size: 15px;
+  line-height: 20px;
+}
+.drawer > header button {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+}
+.scroll {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+}
+.sourceBar {
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.sourceBar > span {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.ledger,
+.setup {
+  padding: 10px 24px 20px;
+}
+.ledger h3,
+.setup h3 {
+  font-size: 13px;
+  line-height: 20px;
+}
+.task {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+}
+.task > div {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.task small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.badge {
+  background: var(--muted);
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+.findingsHead {
+  background: var(--muted);
+  padding: 8px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.findingsHead h3,
+.comparison h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 500;
+}
+.finding {
+  padding: 12px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+.findingHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.findingHeader label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.findingHeader strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.findingHeader input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--foreground);
+}
+.findingHeader button {
+  min-height: 24px;
+  padding: 2px 6px;
+  font-size: 13px;
+}
+.comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 12px;
+  padding: 6px 0 4px 26px;
+  overflow-wrap: anywhere;
+}
+.comparison h4 {
+  margin-bottom: 3px;
+}
+.comparison > div:first-child {
+  color: var(--muted-foreground);
+}
+.valueList {
+  padding-left: 18px;
+}
+.valueObject {
+  display: grid;
+  gap: 4px;
+}
+.valueObject dt {
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.valueObject dd {
+  margin: 0;
+}
+.evidence {
+  margin: 6px 0 0 26px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+.evidence blockquote {
+  margin: 8px 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--border);
+}
+.reviewControls,
+.confirm {
+  padding: 16px;
+  background: var(--muted);
+  border-radius: 8px;
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+.confirm {
+  margin: 16px 24px;
+}
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: none;
+}
+.footer > span {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  flex: 1;
+}
+.empty {
+  padding: 24px;
+}
+.uploadNotice {
+  padding: 0 24px 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.setup fieldset {
+  border: 0;
+  padding: 8px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.setup label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.setup p {
+  margin: 10px 0;
+  font-size: 13px;
+}
+@media (max-width: 480px) {
+  .sourceBar > span {
+    flex-basis: 100%;
+  }
+  .sourceBar,
+  .ledger,
+  .setup,
+  .finding,
+  .findingsHead,
+  .footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .comparison {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 26px;
+  }
+  .footer > span {
+    flex-basis: 100%;
+  }
+  .drawer > header {
+    padding: 20px 16px;
+  }
+  .task {
+    flex-wrap: wrap;
+  }
+}

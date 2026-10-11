@@ -1,0 +1,104 @@
+.columns {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 24px;
+  align-items: start;
+}
+.columns > * {
+  min-width: 0;
+}
+.columns > :global(.card) {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: none;
+  gap: 12px;
+}
+.columns header {
+  padding: 2px 4px 6px;
+}
+.columns h2 {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.07px;
+}
+.columns header a {
+  font-size: 13px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+.stats > div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 14px 20px;
+}
+.stats > div + div {
+  border-left: 1px solid var(--border);
+}
+.stats strong {
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.44px;
+  overflow-wrap: anywhere;
+}
+.item {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+.item h3 {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.item p,
+.item details,
+.health {
+  font-size: 13px;
+}
+.item details ul,
+.health ul {
+  padding-left: 20px;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.meta strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.meta > :last-child {
+  margin-left: auto;
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .columns {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stats > div {
+    padding: 12px;
+  }
+  .stats strong {
+    font-size: 18px;
+  }
+}

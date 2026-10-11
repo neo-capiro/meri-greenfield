@@ -1,0 +1,69 @@
+# Prospect proposals checkpoint
+
+## Pinned scope and outline before coding
+
+- Checkout `C:\dev\meri-portfolio-proposals-20261011`; branch `codex/portfolio-proposals-20261011`; pinned root base `936c7247893a84885b8106fd11b17b9d115508cc`. Earlier brief branch/evidence preserved. Remote meri-greenfield main fetched (`4fab7d0`); this delegated root base is intentionally used.
+- Shared policy `b32b4803933760dc0a93fffdcd8fba30a89c3aac`, clean ahead 3 after fetch; machine map revision `2026-09-30T00:21:48.2698715Z`. Repository/app instructions and implementation standards read. Bundled Node v24.19.0; existing dependencies borrowed through an approved read-only junction, no install/copy/dependency mutation. C: free 19.9 GiB at start, preserve 8 GiB reserve.
+- Mandatory Figma design-to-code skill read and applied. High-fidelity context/screenshots inspected for `411:66653` create, `411:65367` proposal editor, `411:66790` send and `411:66899` receipt. Existing shared shell/assets are reused by parent; the new catalog uses text from real services, no fixture assets or fake financial/document content.
+- Backend reference `C:\dev\cap-portfolio-prospect-stages-20261011`, commit `fd6ed6c017ae91ab774fd34f74475a746de13b68`; root confirms current main service baseline `fd8765ec01d292013758606204f2c9d886cd31c1`. Read Workspace templates/controller/service, draft DTO/controller/service, schema, Template Studio controller, Engagement mail controller and BD controller. `WsAgentProposal` represents document edit/outline revisions, not a prospect sales proposal.
+- Own new `features/prospects/proposals/**`, `tests/prospect-proposals.test.ts`, `tests/browser/prospect-proposals.spec.ts`, this checkpoint. Root owns ProspectDetail, shared contracts/proxy/config/fixtures/lockfiles and composition.
+- Existing exact unblocked contract is a tenant-visible Workspace template catalog and section preview: GET `templates/library`, GET `templates/:id`, service `workspace`. No verified sales proposal record, prospect association, typed fee/start-date, saved version list, idempotent generation/send, stage/send receipt or reply-aware reminder contract exists. A generic client label is not a prospect foreign key. No calls to fabricated routes or generic draft/mail writes will conceal this gap.
+- Public interface `ProspectProposals({prospectId,workspaceUrl?})`: truthful proposal availability card and authorized generic template browsing. Modules: canonical template schema/filter + API adapter; identity/tenant-scoped server-state hooks; small proposal card, catalog dialog and section preview. Root permits exact template GET routes in the proxy. Cache keys include verified tenant, selected IDs; cancellation prevents obsolete selection display. Backend TenantGuard remains the authority; no new role restrictions on generic template reads.
+- Use existing HTTP client/cache/identity, Radix Dialog, form primitives and tokens. Read failures never become empty catalogs or cached successful-looking data. No new editor, Meri generation rule, prices/stages, local persistence, mail send or reminder implementation.
+- Verify receipt mismatch, unsafe/duplicate metadata, search/product semantics, 401/403/404/failure retry and cancellation with focused units; actual parent-composed browser cases and final Figma visual review, including mobile dark. Full build/live acceptance remain root gates.
+
+## Audit qualification and smallest proposed contracts
+
+| IDs | Current verified support | Specific dependency |
+| --- | --- | --- |
+| PROS-024 | Workspace has an existing rich document editor and PATCH persistence. | No authoritative prospect-to-draft/document relation. Open the existing Workspace experience; do not create a second editor in Portfolio. |
+| PROS-025 | Generic Workspace comments/collaborators/share-links exist. | Same missing actual document/draft association; no safe brief/prospect ID substitution. |
+| PROS-026 | Local template structure preview is implemented; Workspace has draft exports. | Actual associated Workspace draft/document identity, authorized export orchestration and correct binary transport. Template preview is not proposal PDF preview. |
+| PROS-027 | Implemented complete tenant-visible generic catalog, search/product filters and receipt-bound section preview with GET `templates/library` and `templates/:id`. | Current catalog response has no ownership/version/publication metadata or proposal-specific restriction. Blueprint create/publish/import and Meri past-proposal generation stay in existing Workspace owner scope. |
+| PROS-028 | Generic draft creation only accepts industry/product/client display label/docTitle. | No typed proposal persistence, fee/currency/start/team/brief-version association or idempotent generation contract. Generic draft creation cannot truthfully complete this flow. |
+| PROS-029 | Connected mail can send authorized email/attachment IDs. | No verified proposal PDF/appendix export-upload-binding, selected prospect-contact association, send idempotency/reconciliation or proposal activity receipt. No send attempted or send control exposed. |
+| PROS-030 | Prospect stage mutation exists separately. | No exact send-stage-history operation, provider ambiguity reconciliation or conditional version-bound undo. Frontend does not patch stage after an unrelated send. |
+| PROS-031 | Generic tasks/scheduled sends are unrelated primitives. | Correlated original mail thread/message plus incoming-reply semantics and durable cancellation are absent. Reply-aware reminder stays blocked; no generic task substitute. |
+
+### Smallest coherent proposed backend boundary (not an implemented/approved contract)
+
+1. Establish a tenant/prospect-owned proposal relation pointing to actual authorized Workspace draft/document IDs and immutable revision/content hashes. A client display label or browser-supplied config cannot establish this relation. Read must return the relation, lifecycle/version, source brief ID/version/hash, source template/blueprint ID/version/hash and creator/permissions; list all versions with stable paging where bounded backend data requires it.
+2. Creating or saving a proposal must validate standard firm-member BD authority plus Workspace owner/collaborator edit authority, the exact prospect/brief/template references and an expected proposal version. Define fee as explicit user-entered decimal+currency+fee basis and start date as a calendar date; product owns allowed values and section mapping. Do not infer prices or copy financial calculations. Freeze an idempotency key with the exact input fingerprint; ambiguous responses resolve to the same durable operation/draft, not another generation.
+3. Reuse Workspace's editor and export service. A reviewed send intent must pin the immutable proposal revision/hash, optional appendix brief revision/hash, current prospect-contact IDs/email addresses, caller-owned connected account and reviewed subject/body. Attachments must be authorized exported/uploaded content with hashes, not fixture file labels. Validation checks their current relationship and rejects changed revisions/recipients.
+4. The server must persist a send operation and provider correlation before dispatch, serialize dispatch, and distinguish queued/dispatching/accepted/rejected/unknown. An unknown provider outcome reconciles; it is never blindly resent. Provider acknowledgement is not recipient delivery. Only an authoritative accepted-send receipt may record proposal activity and transition the current prospect stage under an expected version. Report partial consistency as pending/reconciliation, not “Proposal sent”.
+5. Undo must bind the receipt and expected current prospect stage/version, restore only the recorded prior stage, reject intervening stage edits and explicitly leave the sent email intact. Product/stage owner must approve transition and conflict semantics before registration/deployment.
+6. Reply-aware reminders require an authoritative stored sent-thread/message correlation, incoming reply definition (including aliases/forwarded/auto replies), due date/time zone and a durable race-safe suppression check. Until defined and authorized, do not offer conditional reminder scheduling.
+
+Root/backend/Workspace owners must agree on placement, persistence and DTOs before implementation/activation; no migration, backend deployment, auth/shared settings change or provider send is authorized by this draft boundary.
+
+## Validation and delivery evidence
+
+Initial feature commit `f970098b237e20f3063fa062f1c532760ee3df7c` is integrated by root as `1fe2c69`. Root's real ProspectDetail composition `e178fe12651e851f57a7a7046cc9eaa0a7a993e0` is local `d2c51b3`; it passes only the validated Workspace destination and does not invent a draft/document route. Root separately owns GET-only template proxy boundary `efdb2820022fd6942dc4f55018557467e68b64f8` and its method/path authorization tests.
+
+Final focused qualification completed `2026-10-11 06:29:57 UTC` with explicit bundled Node `v24.19.0`, executable `C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe`. Browser children use `process.execPath`. No global PATH change. C: remains approximately 19.8 GiB free, above the 8 GiB reserve.
+
+| Check | Actual result |
+| --- | --- |
+| TypeScript `--noEmit --incremental false` | PASS, exit 0 |
+| ESLint allocated feature/unit/browser paths | PASS, exit 0 |
+| Vitest focused tests, `--cache=false --configLoader runner` | PASS, 10/10, exit 0 |
+| Architecture | PASS, 233 modules, exit 0 |
+| Prettier allocated source/tests | PASS, exit 0 |
+| Actual ProspectDetail component-browser scenarios | PASS, 7/7, no skips/flaky, exit 0 |
+| Full Next build / signed-in isolated production browser | NOT RUN by this agent; root integrated gates |
+
+Browser evidence uses the canonical app component harness and Clerk stub/intercepted synthetic APIs on temporary port 5194; the committed spec also runs under the parent's canonical harness. Temporary qualification config/server only set a small app-owned Vite cache and exact borrowed Geist-font allow path; neither source architecture nor dependencies are copied or changed. Temporary files are outside the source commit. The final browser asserts Geist loaded, exact template section text stays plain (including markup), no nonexistent generation/send controls, real search/product filters, filter reset, 503 explicit retry, forbidden-versus-empty distinction, wrong-detail receipt rejection/retry, identity failure/missing-tenant fail closed, Escape focus restoration to the initiating controls, mobile dark/no horizontal overflow, and cancellation/late-response isolation after switching preview selections.
+
+The first browser pass was **FAIL: 5 passed / 1 failed**, because Escape from the nested template preview did not restore focus. Fixed within the allocated components using shared Dialog's existing `onCloseAutoFocus` interface and explicit initiating-button refs. The failed trace/screenshot/JSON remain in `first-failed-qualification`; assertions were preserved. That first pass also exposed a qualification-only font realpath restriction from the read-only dependency junction; the temporary server now allows only the borrowed Geist font directory, and final font loading is asserted. Subsequent 6/6 and final 7/7 runs pass. No checks or visual baselines were weakened.
+
+Runtime setup deviation: the initial Vitest invocation used the default bundled config loader, which touched the borrowed `node_modules/.vite-temp` directory timestamp at 06:23:20 UTC. The directory is empty on final read-back; installed package source/lockfiles were not edited and no install occurred. No borrowed resource was removed. Final Vitest uses `--configLoader runner --cache=false` to avoid that temporary bundling path, and the browser uses only the task-owned app cache directory. Root was notified.
+
+Final screenshots `prospect-proposals-catalog.png`, `prospect-proposals-preview.png`, `prospect-proposals-mobile-dark.png` were visually inspected. Catalog/preview use the Figma 600px modal width, 20px heading, 24px body spacing, 12px list rounding, tokens, Geist and responsive dark behavior. This is an expressly limited generic template review experience: the inspected full proposal/create/send screens remain unavailable because their required contracts are missing. No fixture radio/template badges, prices, generated proposal content or sent receipts are introduced. Existing shell/static assets remain parent-owned and reused.
+
+Evidence directory: `C:\Users\Administrator\Documents\Codex\2026-10-10\implement-capiro-3-1-portfolio-in\outputs\evidence\prospect-proposals-20261011`. Contains final raw browser JSON, logs/results, three synthetic screenshots, preserved failed artifacts and this checkpoint.
+
+### Independently produced live GET-only evidence
+
+Root verified the canonical adapters against the approved `capiro-internal` / `neo@capiro.ai` account at `2026-10-11T06:26:44.216Z`, source `e178fe12651e851f57a7a7046cc9eaa0a7a993e0`, Node v24.19.0. I read back the resulting JSON/log: `/api/me` 200, `/workspace-api/templates/library` 200 with **20 records** passing the full schema/unique-ID validation, and a visible `/workspace-api/templates/:id` 200 passing exact identity/schema with **4 sections**. Names/content/session values were not retained. No template/draft/proposal/email/billing mutation occurred. Evidence stays separate in `outputs/evidence/portfolio-integration-20261011/live-workspace-templates.json` and `.log`; this agent did not overwrite it. This proves authorized template API reads, not signed-in isolated browser acceptance or proposal CRUD/send behavior.
+
+Original baseline remains read-only. PROS-027 remains partial; generic catalog/preview does not complete proposal creation, editing, sending, sharing or stage workflows.

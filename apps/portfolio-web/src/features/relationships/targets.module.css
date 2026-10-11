@@ -1,0 +1,145 @@
+.priority {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.priority > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.result {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.result > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.result p,
+.result small {
+  font-size: 13px;
+}
+@media (max-width: 1000px) {
+  .priority {
+    grid-template-columns: 1fr;
+  }
+}
+.prioritySection {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+.prioritySection h2 {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.07px;
+}
+.priorityCard {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.targetIdentity {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.targetIdentity > div {
+  min-width: 0;
+  flex: 1;
+}
+.targetIdentity h3 {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.targetIdentity p {
+  font-size: 13px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--dark-gradient);
+  color: #fff;
+  font-size: 12px;
+}
+.tier {
+  font-size: 12px;
+  background: var(--muted);
+  border-radius: 6px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.targetMeta {
+  margin: 0;
+  font-size: 13px;
+}
+.targetMeta > div {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+.targetMeta dd {
+  margin: 0;
+}
+.openTarget:global(.button) {
+  justify-self: end;
+  min-height: 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 400;
+}
+.targetTable {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.targetTable > header {
+  padding: 12px 20px;
+}
+.targetTable h2 {
+  font-size: 11px;
+  font-weight: 500;
+}
+.targetTable :global(.button) {
+  font-size: 13px;
+}
+.tableScroll {
+  overflow: auto;
+}
+.tableScroll table {
+  min-width: 650px;
+}
+.tableScroll th {
+  padding: 8px 20px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.tableScroll td {
+  padding: 12px 20px;
+  font-size: 13px;
+}
+.tableScroll td:first-child :global(.button) {
+  padding: 0;
+  justify-content: flex-start;
+  text-align: left;
+}

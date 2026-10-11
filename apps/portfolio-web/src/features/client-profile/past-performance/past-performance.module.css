@@ -1,0 +1,104 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.list li {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--border);
+  padding: 16px 0;
+}
+.list li > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.list h3 {
+  font-size: 14px;
+  margin: 4px 0;
+}
+.list p {
+  font-size: 13px;
+  margin: 4px 0;
+}
+.dialog {
+  width: min(520px, calc(100vw - 32px));
+  padding: 0;
+  gap: 0;
+  border-radius: 14px;
+}
+.dialog > header {
+  padding: 22px 28px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.dialog > header h2 {
+  font-size: 14px;
+  line-height: 20px;
+}
+.dialog > header button {
+  min-height: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+.dialog > p {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.body {
+  padding: 18px 28px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.body > p {
+  margin: 0;
+}
+.body > p + p {
+  margin-top: 16px;
+}
+.error {
+  background: var(--destructive-subtle, #f3e7e5);
+  color: var(--destructive-text, #652424);
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.footer {
+  display: flex;
+  justify-content: end;
+  gap: 10px;
+  padding: 16px 28px;
+  background: var(--muted);
+  border-top: 1px solid var(--border);
+}
+.footer button {
+  border-radius: 8px;
+}
+@media (min-width: 700px) and (min-height: 650px) {
+  .dialog {
+    top: 200px;
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 600px) {
+  .body {
+    padding: 18px 20px;
+  }
+  .dialog > header,
+  .footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .footer {
+    flex-wrap: wrap;
+  }
+  .list li {
+    gap: 8px;
+  }
+}

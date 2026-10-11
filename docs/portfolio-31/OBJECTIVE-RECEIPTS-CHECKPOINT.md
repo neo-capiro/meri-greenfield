@@ -1,0 +1,11 @@
+# Objective operation receipts
+
+The existing Objectives adapter remains responsible for persistence and lifecycle. This change validates the selected client, immutable request identity, saved objective identity, field values, owner, expected next version and requested state before publishing success. List responses must contain only the selected client's unique objective IDs. Delete requires the exact `{id, deleted:true, version:expectedVersion+1}` receipt from candidate capirov2 PR2362.
+
+Create remains idempotent by its original requestId. A replay may return a later ready version with unchanged reviewed fields. A changed-source replay is refused instead of transitioning another actor's newer fields. A saved record is retained before lifecycle dispatch, preserving retry of a failed transition without another create. No financial, readiness or review-owner policy was added: readiness remains the four approved fields.
+
+Independent original-source comparison: twenty new save-receipt cases returned **19 failed / 1 passed**, exit1, before the adapter changed. The affected domain/unit suite subsequently passed **35/35**. The first browser run passed7/8: a test attempted to find a background accessible control while the deletion modal correctly made the page inert. Its original error/PNG/trace remain preserved. The assertion now closes the failed dialog and verifies the original card is still visible before reopening it. All ten affected Objectives/Portfolio/Work browser cases then passed. An initial Work test tuple typing error was fixed with a readonly tuple; strict application TypeScript rerun passed. Root's combined frozen-source qualification supersedes these development checks.
+
+The four-field browser fixture now retains the actual generated requestId and saved fields through the lifecycle response, matching the candidate service instead of returning an unrelated fixture requestId.
+
+This is local response validation, not backend authorization or live acceptance. Current candidate backend PR2362 uses tenant-only client lookup; a separately allocated authorization follow-up is preparing canonical memory-wall checks. Its SQL is not deployed. No session, auth/CORS, shared database, provider or production configuration changed. No production build was run while Cleanup evidence recovery needed the disk reserve.
