@@ -5,6 +5,24 @@ import {
   installGovernmentFixtures,
 } from "./government-fixtures";
 
+const renderErrors = new WeakMap<Page, string[]>();
+test.beforeEach(async ({ page }) => {
+  const errors: string[] = [];
+  renderErrors.set(page, errors);
+  page.on("console", (message) => {
+    if (
+      message.type() === "error" &&
+      /Cannot update a component|Maximum update depth|Rendered (more|fewer) hooks/.test(
+        message.text(),
+      )
+    )
+      errors.push(message.text());
+  });
+});
+test.afterEach(async ({ page }) => {
+  expect(renderErrors.get(page)).toEqual([]);
+});
+
 const member = { id: "member-42", name: "Sen. Synthetic Member" };
 const noteText = "Reviewed the public briefing.";
 const noteEndpoint = `**/api/backend/core/directory/contacts/${member.id}/notes`;

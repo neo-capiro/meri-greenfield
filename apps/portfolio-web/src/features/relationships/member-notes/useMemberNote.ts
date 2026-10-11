@@ -1,6 +1,10 @@
 "use client";
 import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  notifyManager,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { useIdentity } from "@/shared/auth/identity";
 import {
@@ -24,10 +28,13 @@ export function useMemberNote(
   const cache = useQueryClient();
   const identity = useIdentity();
   useSyncExternalStore(
-    (notify) =>
-      cache.getQueryCache().subscribe((event) => {
-        if (event.query.queryKey[0] === "identity") notify();
-      }),
+    (notify) => {
+      const batched = notifyManager.batchCalls(notify);
+      return cache.getQueryCache().subscribe((event) => {
+        if (event.type === "updated" && event.query.queryKey[0] === "identity")
+          batched();
+      });
+    },
     () => cache.getQueryState(["identity"]),
     () => undefined,
   );
