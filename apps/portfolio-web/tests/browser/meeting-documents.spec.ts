@@ -1,4 +1,9 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type TestInfo } from "@playwright/test";
+import path from "node:path";
+function documentCapture(testInfo: TestInfo, name: string) {
+  const directory = process.env.PORTFOLIO_DOCUMENT_SCREENSHOTS;
+  return directory ? path.join(directory, name) : testInfo.outputPath(name);
+}
 const id = "20000000-0000-4000-8000-000000000001";
 const prep = {
   id,
@@ -150,13 +155,13 @@ async function setup(
 }
 test("preparation preview prints persisted rich Unicode content and safe source links", async ({
   page,
-}) => {
+}, testInfo) => {
   await setup(page, { rich: true });
   await page.getByRole("button", { name: "Preview preparation" }).click();
   await expect(page.getByText("Evidence-linked agenda")).toBeVisible();
   await expect(page.getByText("Email evidence retained")).toBeVisible();
   await page.screenshot({
-    path: `${process.env.PORTFOLIO_DOCUMENT_SCREENSHOTS}/preparation-desktop-light.png`,
+    path: documentCapture(testInfo, "preparation-desktop-light.png"),
   });
   await page.evaluate(() => {
     const original = window.open.bind(window);
@@ -200,7 +205,7 @@ test("popup refusal keeps preview and saved content available", async ({
 });
 test("debrief preview preserves saved body and light reference geometry", async ({
   page,
-}) => {
+}, testInfo) => {
   await setup(page);
   await page.getByRole("button", { name: "Preview debrief" }).click();
   await expect(
@@ -211,12 +216,12 @@ test("debrief preview preserves saved body and light reference geometry", async 
     .evaluate((element) => element.getBoundingClientRect().width);
   expect(width).toBe(660);
   await page.screenshot({
-    path: `${process.env.PORTFOLIO_DOCUMENT_SCREENSHOTS}/debrief-desktop-light.png`,
+    path: documentCapture(testInfo, "debrief-desktop-light.png"),
   });
 });
 test("mobile dark preparation fits viewport and loads Geist", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.setViewportSize({ width: 390, height: 844 });
   await setup(page, { rich: true });
@@ -238,7 +243,7 @@ test("mobile dark preparation fits viewport and loads Geist", async ({
     ),
   ).toBeGreaterThan(0);
   await page.screenshot({
-    path: `${process.env.PORTFOLIO_DOCUMENT_SCREENSHOTS}/preparation-mobile-dark.png`,
+    path: documentCapture(testInfo, "preparation-mobile-dark.png"),
   });
 });
 test("restricted debrief never renders or prints private content", async ({

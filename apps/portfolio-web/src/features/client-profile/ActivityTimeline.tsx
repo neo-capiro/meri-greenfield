@@ -20,6 +20,7 @@ export function ActivityTimeline({ clientId }: { clientId: string }) {
   const rows = filterActivity(activity.data ?? [], filters, zone);
   return (
     <section
+      id="activity-timeline"
       ref={timeline}
       tabIndex={-1}
       className="card stack"

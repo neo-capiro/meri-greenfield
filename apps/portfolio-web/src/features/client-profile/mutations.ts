@@ -38,23 +38,6 @@ export function useSaveFacility(
     },
   });
 }
-export function useLogActivity(clientId: string, onSaved: () => void) {
-  const api = useApi();
-  const cache = useQueryClient();
-  return useMutation({
-    mutationFn: (body: Record<string, unknown>) =>
-      api.request("core", `clients/${clientId}/activity`, acknowledged, {
-        method: "POST",
-        body,
-      }),
-    onSuccess: async () => {
-      await cache.invalidateQueries({
-        queryKey: profileKey(clientId, "activity"),
-      });
-      onSaved();
-    },
-  });
-}
 export function useSaveProfileNotes(clientId: string, onSaved: () => void) {
   const api = useApi();
   const cache = useQueryClient();
