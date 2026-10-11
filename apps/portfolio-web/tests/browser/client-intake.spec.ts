@@ -6,6 +6,10 @@ async function openCreate(page: import("@playwright/test").Page) {
     .getByRole("button", { name: "Add profile", exact: true })
     .first()
     .click();
+  await page
+    .getByRole("dialog", { name: "Add profile", exact: true })
+    .getByRole("button", { name: /Manual entry/ })
+    .click();
   return page.getByRole("dialog", { name: "Add profile", exact: true });
 }
 async function company(dialog: import("@playwright/test").Locator) {
