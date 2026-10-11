@@ -3,7 +3,8 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { scanJsonKeys } from '../../scripts/sdk-capture/json-records.mjs';
 import { FIXTURE as F, fixtureMachineName, fixtureExecutionName, validateFixtureBinding } from './fixture-volume-binding.mjs';
-import { compileFixtureWorkflow } from './fixture-volume-workflow.mjs';
+import { compileFixtureWorkflow, compileFixtureBootstrapWorkflow } from './fixture-volume-workflow.mjs';
+import { validateFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 
 const fail = reason => { throw new Error(`Managed fixture history refused: ${reason}`); };
 const hash = raw => createHash('sha256').update(raw).digest('hex');
@@ -42,6 +43,22 @@ export function decodeFixtureHistoryCapture(options) {
   if(!exact(options,['binding','pins','definitionRaw','inputRaw','pages']))fail('exact decoder options');
   const { binding, pins, definitionRaw, inputRaw, pages }=options;
   const b = validateFixtureBinding(binding), graph = compileFixtureWorkflow(binding);
+  const input = { runUuid:F.runUuid, t0Ms:b.t0Ms, createNotAfterMs:b.createNotAfterMs, ownerBindingId:b.ownerBindingId };
+  return decodeHistoryCapture({pins,definitionRaw,inputRaw,pages}, b, graph, input);
+}
+
+/** Explicit bootstrap profile DATA only; descriptor/hash inputs are not authority. */
+export function decodeFixtureBootstrapHistoryCapture(options) {
+  if(!exact(options,['descriptor','pins','definitionRaw','inputRaw','pages']))fail('exact bootstrap decoder options');
+  const { descriptor, pins, definitionRaw, inputRaw, pages }=options;
+  const d = validateFixtureBootstrapDescriptor(descriptor);
+  const b = validateFixtureBinding({t0Ms:d.clock.t0Ms,createNotAfterMs:d.clock.createNotAfterMs,ownerBindingId:d.ownerBindingId});
+  const capture = decodeHistoryCapture({pins,definitionRaw,inputRaw,pages}, b,
+    compileFixtureBootstrapWorkflow(d), fixtureBootstrapInput(d));
+  return {...capture, bootstrapDescriptor:d};
+}
+
+function decodeHistoryCapture({pins,definitionRaw,inputRaw,pages}, b, graph, expectedInput) {
   const machine = `arn:aws:states:${F.region}:${F.account}:stateMachine:${fixtureMachineName()}`;
   const execution = `arn:aws:states:${F.region}:${F.account}:execution:${fixtureMachineName()}:${fixtureExecutionName()}`;
   if (!exact(pins, ['sourceCommit','definitionSha256','inputSha256','versionArn','executionArn','roleArn','pages']) ||
@@ -50,7 +67,7 @@ export function decodeFixtureHistoryCapture(options) {
   const definition = pinned(definitionRaw, pins.definitionSha256, 1048576);
   if (!isDeepStrictEqual(definition, graph)) fail('canonical immutable definition');
   const input = pinned(inputRaw, pins.inputSha256, 4096);
-  if (!isDeepStrictEqual(input, { runUuid:F.runUuid, t0Ms:b.t0Ms, createNotAfterMs:b.createNotAfterMs, ownerBindingId:b.ownerBindingId })) fail('original input/run/clock');
+  if (!isDeepStrictEqual(input, expectedInput)) fail('original input/run/clock');
   if (!Array.isArray(pages) || pages.length < 1 || pages.length > 32 || !Array.isArray(pins.pages) || pins.pages.length !== pages.length) fail('page inventory bounds');
   const events = [], rawHashes = [], tokens = new Set(); let next, bytes = 0;
   pages.forEach((page, index) => {

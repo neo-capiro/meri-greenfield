@@ -1,7 +1,8 @@
 // Managed fixture Task/ownership reconstruction. No IO, clients or admission.
 import { isDeepStrictEqual } from 'node:util';
 import { FIXTURE as F, fixtureTags } from './fixture-volume-binding.mjs';
-import { decodeFixtureHistoryCapture, decodeFixtureTaskPayload, fixtureHistoryTimestamp as timestamp } from './fixture-volume-history-wire.mjs';
+import { decodeFixtureHistoryCapture, decodeFixtureBootstrapHistoryCapture, decodeFixtureTaskPayload, fixtureHistoryTimestamp as timestamp } from './fixture-volume-history-wire.mjs';
+import { FIXTURE_BOOTSTRAP_PROFILE } from './fixture-volume-activation.mjs';
 
 const fail = reason => { throw new Error(`Managed fixture history refused: ${reason}`); };
 const object = x => x !== null && typeof x === 'object' && !Array.isArray(x) && Object.getPrototypeOf(x)===Object.prototype;
@@ -22,7 +23,16 @@ function volume(row, b, states) {
 
 /** SOURCE-only managed evidence; owner must separately verify capture origin. */
 export function decodeFixtureVolumeHistory(options) {
-  const {binding:b,graph,events,execution,rawHashes,pins,terminalAtMs:previousTime}=decodeFixtureHistoryCapture(options);
+  return reconstructFixtureVolumeHistory(decodeFixtureHistoryCapture(options));
+}
+
+/** Bootstrap observed Task/ownership evidence, not a full ASL execution replay. */
+export function decodeFixtureBootstrapVolumeHistory(options) {
+  return reconstructFixtureVolumeHistory(decodeFixtureBootstrapHistoryCapture(options));
+}
+
+function reconstructFixtureVolumeHistory(capture) {
+  const {binding:b,graph,events,execution,rawHashes,pins,terminalAtMs:previousTime}=capture;
   const calls=[]; let active=null, lastState=null, createRecord=null, deleteRecord=null,pendingTask=false;
   for(const ev of events.slice(1,-1)) {
     if(ev.type.endsWith('StateEntered')) {
@@ -94,11 +104,18 @@ export function decodeFixtureVolumeHistory(options) {
   }
   if(!known||!proof||!direct)fail('missing complete ownership proof');
   if(!deleted&&previousTime-direct.completedAtMs>15000)fail('stale terminal ownership');
-  return {schema:'meri-browser-MANAGED-fixture-history-source/1',provenance:'MANAGED',runtimeAdmitted:false,sourceGuardLiteralFalse:true,
+  const result = {schema:'meri-browser-MANAGED-fixture-history-source/1',provenance:'MANAGED',runtimeAdmitted:false,sourceGuardLiteralFalse:true,
     absenceWireQualified:false,physicalAbsenceProven:false,cleanup:'UNKNOWN',runUuid:F.runUuid,clock:{t0Ms:b.t0Ms,createNotAfterMs:b.createNotAfterMs,C:b.C},
     externallyPinnedSourceCommit:pins.sourceCommit,definitionSha256:pins.definitionSha256,versionArn:pins.versionArn,executionArn:execution,inputSha256:pins.inputSha256,
     rawPages:rawHashes,eventCount:events.length,createAttempt:{recordEventId:createRecord.id,recordAtMs:timestamp(createRecord.timestamp),...creates[0]},volumeId:known,uncertain,
     ownership:{inventory:proof,direct},firstDeleteAttempt:deletes.length?{recordEventId:deleteRecord.id,recordAtMs:timestamp(deleteRecord.timestamp),...deletes[0]}:null,
     errors:calls.filter(c=>c.error).map(c=>({state:c.state,eventId:c.terminalEventId,error:c.error})),
     limitations:['External hashes are owner inputs, not authenticated origin','No actual lifecycle can pass the current literal-false guard','Not a SOURCE9 CLI/STScaller/nonce receipt','No service/runtime/G1 acceptance']};
+  if (!capture.bootstrapDescriptor) return result;
+  return {...result, schema:'meri-browser-MANAGED-bootstrap-fixture-history-source/1',
+    profile:FIXTURE_BOOTSTRAP_PROFILE, descriptor:capture.bootstrapDescriptor,
+    ownerBindingId:capture.bootstrapDescriptor.ownerBindingId, sourceGuardLiteralFalse:false,
+    limitations:['External hashes and descriptor identity are owner inputs, not authenticated origin or admission',
+      'Partial observed Task/ownership reconstruction, not complete ASL replay',
+      'Not a SOURCE9 CLI/STScaller/nonce receipt','No physical absence, managed survival, service/runtime/G1 acceptance']};
 }

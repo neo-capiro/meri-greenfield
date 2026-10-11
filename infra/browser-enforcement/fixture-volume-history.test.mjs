@@ -1,9 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { decodeFixtureVolumeHistory } from './fixture-volume-history.mjs';
+import { decodeFixtureVolumeHistory, decodeFixtureBootstrapVolumeHistory } from './fixture-volume-history.mjs';
+import { decodeFixtureBootstrapHistoryCapture } from './fixture-volume-history-wire.mjs';
 import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
-import { compileFixtureWorkflow } from './fixture-volume-workflow.mjs';
+import { compileFixtureWorkflow, compileFixtureBootstrapWorkflow } from './fixture-volume-workflow.mjs';
+import { createFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 
 // Explicit synthetic raw service-shaped DATA. This never invokes Step Functions.
 const T=1791660000000,ID='vol-0123456789abcdef0',OTHER='vol-1123456789abcdef0';
@@ -145,4 +147,113 @@ test('raw bounds, nonfinite JSON and omitted pins refuse before reconstruction',
   const f=fixture();f.x.definitionRaw=Buffer.alloc(1048577);refused(f);
   const g=fixture();g.x.inputRaw=Buffer.from('{"x":1e309}');g.x.pins.inputSha256=sha(g.x.inputRaw);refused(g);
   const h=fixture();h.x.pins.pages=[];refused(h);
+});
+
+// The old synthetic lifecycle builder stays unchanged. Only the explicit
+// profile definition/input/descriptor are rebound; no real service is invoked.
+const bootstrapDescriptor=createFixtureBootstrapDescriptor({t0Ms:T,createNotAfterMs:T+300000});
+function setDefinitionInput(f,definition,input){
+  f.x.definitionRaw=raw(definition);f.x.pins.definitionSha256=sha(f.x.definitionRaw);
+  f.x.inputRaw=raw(input);f.x.pins.inputSha256=sha(f.x.inputRaw);
+  f.events[0].executionStartedEventDetails.input=f.x.inputRaw.toString();f.packageEvents();
+}
+function bootstrapFixture(options){
+  const f=fixture(options);delete f.x.binding;f.x.descriptor=structuredClone(bootstrapDescriptor);
+  setDefinitionInput(f,compileFixtureBootstrapWorkflow(bootstrapDescriptor),fixtureBootstrapInput(bootstrapDescriptor));return f;
+}
+const bootstrapRefused=f=>assert.throws(()=>decodeFixtureBootstrapVolumeHistory(f.x),/Managed fixture history refused|Exact fixed bootstrap descriptor DATA required/);
+
+test('bootstrap raw capture binds canonical descriptor, graph, input and detached identity',()=>{
+  const f=bootstrapFixture(),v=decodeFixtureBootstrapHistoryCapture(f.x);
+  assert.deepEqual(v.graph,compileFixtureBootstrapWorkflow(bootstrapDescriptor));
+  assert.deepEqual(v.bootstrapDescriptor,bootstrapDescriptor);assert.notEqual(v.bootstrapDescriptor,f.x.descriptor);
+  assert.ok(Object.isFrozen(v.bootstrapDescriptor.clock));assert.equal(v.binding.ownerBindingId,bootstrapDescriptor.ownerBindingId);
+  assert.equal(v.events.length,f.events.length);assert.equal(v.execution,execution);
+});
+test('bootstrap reconstruction has fixed separate profile and never claims cleanup/admission',()=>{
+  const f=bootstrapFixture(),v=decodeFixtureBootstrapVolumeHistory(f.x);
+  assert.equal(v.schema,'meri-browser-MANAGED-bootstrap-fixture-history-source/1');
+  assert.equal(v.profile,'MANAGED_WIRE_BOOTSTRAP_V1');assert.equal(v.provenance,'MANAGED');
+  assert.equal(v.sourceGuardLiteralFalse,false);assert.equal(v.ownerBindingId,bootstrapDescriptor.ownerBindingId);
+  assert.deepEqual(v.descriptor,bootstrapDescriptor);assert.equal(v.clock.C,T+900000);
+  assert.equal(v.volumeId,ID);assert.equal(v.firstDeleteAttempt.parameters.VolumeId,ID);
+  for(const key of ['runtimeAdmitted','absenceWireQualified','physicalAbsenceProven'])assert.equal(v[key],false);
+  assert.equal(v.cleanup,'UNKNOWN');assert.match(v.limitations.join(' '),/not complete ASL replay/);
+});
+test('bootstrap lost ACK, complete paging, ambiguous delete and no-delete retain measured outcomes only',()=>{
+  const f=bootstrapFixture({lost:true,paged:true,deleteFailure:true});f.packageEvents([10,25,f.events.length]);
+  const v=decodeFixtureBootstrapVolumeHistory(f.x);assert.equal(v.rawPages.length,3);
+  assert.equal(v.createAttempt.outcome,'TaskTimedOut');assert.equal(v.firstDeleteAttempt.outcome,'TaskTimedOut');
+  assert.equal(v.uncertain,true);assert.equal(v.cleanup,'UNKNOWN');assert.equal(v.ownership.inventory.eventIds.length,2);
+  const n=decodeFixtureBootstrapVolumeHistory(bootstrapFixture({noDelete:true}).x);
+  assert.equal(n.firstDeleteAttempt,null);assert.equal(n.physicalAbsenceProven,false);
+});
+test('explicit decoder option shapes refuse cross-profile bindings, flags, factories and getters',()=>{
+  assert.throws(()=>decodeFixtureBootstrapHistoryCapture());
+  assert.throws(()=>decodeFixtureBootstrapHistoryCapture(fixture().x));
+  assert.throws(()=>decodeFixtureVolumeHistory(bootstrapFixture().x));
+  for(const extra of [{binding},{profile:'MANAGED_WIRE_BOOTSTRAP_V1'},{graph:{}},{compile:compileFixtureBootstrapWorkflow},{runtimeAdmitted:true}]){
+    const f=bootstrapFixture();Object.assign(f.x,extra);bootstrapRefused(f);
+  }
+  const f=bootstrapFixture();let read=0;Object.defineProperty(f.x,'descriptor',{get(){read++;return bootstrapDescriptor;}});
+  bootstrapRefused(f);assert.equal(read,0);
+});
+test('definitions refuse cross-profile replacement even with coherent new raw hashes',()=>{
+  const b={t0Ms:T,createNotAfterMs:T+300000,ownerBindingId:bootstrapDescriptor.ownerBindingId};
+  const f=bootstrapFixture();setDefinitionInput(f,compileFixtureWorkflow(b),fixtureBootstrapInput(bootstrapDescriptor));bootstrapRefused(f);
+  const g=fixture();g.x.binding=b;setDefinitionInput(g,compileFixtureBootstrapWorkflow(bootstrapDescriptor),{runUuid:F.runUuid,...b});refused(g);
+  const h=bootstrapFixture(),d=JSON.parse(h.x.definitionRaw);d.States.AdmissionGuard.Choices[0].Condition='{% true %}';
+  setDefinitionInput(h,d,fixtureBootstrapInput(bootstrapDescriptor));bootstrapRefused(h);
+});
+test('bootstrap exact input refuses legacy, extra or foreign values after coherent hash rebinding',()=>{
+  for(const input of [{runUuid:F.runUuid,t0Ms:T,createNotAfterMs:T+300000,ownerBindingId:bootstrapDescriptor.ownerBindingId},
+    {...fixtureBootstrapInput(bootstrapDescriptor),profile:'foreign'},
+    {...fixtureBootstrapInput(bootstrapDescriptor),ownerBindingId:'f'.repeat(64)},
+    {...fixtureBootstrapInput(bootstrapDescriptor),admitted:true}]){
+    const f=bootstrapFixture();setDefinitionInput(f,compileFixtureBootstrapWorkflow(bootstrapDescriptor),input);bootstrapRefused(f);
+  }
+});
+test('bootstrap descriptor mutations cannot supply environment, authority or a different original window',()=>{
+  for(const patch of [d=>d.environment.account='000000000000',d=>d.resource.attachments='ALLOW',d=>d.ownerBindingId='0'.repeat(64),
+    d=>d.clock.C++,d=>d.limits.maxCalls++,d=>d.admission=true]){
+    const f=bootstrapFixture();patch(f.x.descriptor);bootstrapRefused(f);
+  }
+  const f=bootstrapFixture();f.x.descriptor=createFixtureBootstrapDescriptor({t0Ms:T+1,createNotAfterMs:T+300000});bootstrapRefused(f);
+});
+test('bootstrap immutable version, source, execution, role and alias/redrive provenance refuse',()=>{
+  for(const key of ['sourceCommit','versionArn','executionArn','roleArn']){const f=bootstrapFixture();f.x.pins[key]='foreign';bootstrapRefused(f);}
+  const f=bootstrapFixture();f.events[0].executionStartedEventDetails.stateMachineAliasArn=machine+':alias';f.packageEvents();bootstrapRefused(f);
+  const g=bootstrapFixture();g.events[0].executionStartedEventDetails.stateMachineVersionArn=machine+':2';g.packageEvents();bootstrapRefused(g);
+  const h=bootstrapFixture();h.events[2]={...h.events[2],type:'ExecutionRedriven',executionRedrivenEventDetails:{}};h.packageEvents();bootstrapRefused(h);
+});
+test('bootstrap history preserves original T0, create window, ceiling and direct freshness',()=>{
+  for(const mutate of [f=>f.events[0].timestamp=(T-1)/1000,
+    f=>f.events.forEach(e=>e.timestamp+=301),f=>f.events.at(-1).timestamp=(T+900001)/1000]){
+    const f=bootstrapFixture();mutate(f);f.packageEvents();bootstrapRefused(f);
+  }
+  const f=bootstrapFixture({noDelete:true});f.events.at(-1).timestamp+=16;f.packageEvents();bootstrapRefused(f);
+});
+test('bootstrap history paging stays complete, contiguous, hashed and strictly typed',()=>{
+  for(const token of [null,false,0,'','pending']){
+    const f=bootstrapFixture(),out=JSON.parse(f.x.pages[0].responseRaw);out.nextToken=token;
+    f.x.pages[0].responseRaw=raw(out);f.x.pins.pages[0].responseSha256=sha(f.x.pages[0].responseRaw);bootstrapRefused(f);
+  }
+  const f=bootstrapFixture();f.events.splice(4,1);f.packageEvents();bootstrapRefused(f);
+  const g=bootstrapFixture();g.x.pages[0].responseRaw=Buffer.from('{"events":[],"events":[]}');g.x.pins.pages[0].responseSha256=sha(g.x.pages[0].responseRaw);
+  assert.throws(()=>decodeFixtureBootstrapVolumeHistory(g.x),{name:'DuplicateKeyError',message:'duplicate JSON member'});
+});
+test('bootstrap same ownership core refuses foreign, attached, conflicting and duplicate mutations',()=>{
+  for(const patch of [{Tags:[]},{Attachments:[{}]},{KmsKeyId:'foreign'},{VolumeId:OTHER}]){
+    const f=bootstrapFixture();output(f,'DescribeOwned',o=>({Volumes:[{...o.Volumes[0],...patch}]}));bootstrapRefused(f);
+  }
+  for(const options of [{duplicateCreate:true},{duplicateDelete:true}])bootstrapRefused(bootstrapFixture(options));
+  const f=bootstrapFixture();output(f,'ListFirst',o=>({Volumes:[o.Volumes[0],o.Volumes[0]]}));bootstrapRefused(f);
+});
+test('bootstrap absent/error observation never becomes physical absence or a SOURCE9 receipt',()=>{
+  const f=bootstrapFixture(),v=decodeFixtureBootstrapVolumeHistory(f.x);
+  assert.equal(v.errors[0].state,'ReadAbsent');assert.equal(v.cleanup,'UNKNOWN');
+  assert.equal(Object.hasOwn(v,'nonce'),false);assert.equal(Object.hasOwn(v,'caller'),false);
+  const g=bootstrapFixture();const ev=g.events.find(e=>e.type==='TaskTimedOut');ev.type='TaskSucceeded';
+  ev.taskSucceededEventDetails={resourceType:'aws-sdk:ec2',resource:'describeVolumes',output:'{"Volumes":[]}',outputDetails:{truncated:false}};
+  delete ev.taskTimedOutEventDetails;g.packageEvents();bootstrapRefused(g);
 });
