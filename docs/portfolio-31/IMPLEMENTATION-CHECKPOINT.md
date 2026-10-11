@@ -5,18 +5,21 @@ Updated 11 October 2026. **Work continues; this is not full Portfolio completion
 ## Source and isolation
 
 - Frontend: neo-capiro/meri-greenfield, branch codex/portfolio-31-20261010, checkout C:/dev/meri-greenfield-portfolio-31.
-- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: 6c1c42fad9d66a13043958235d27f8c6e1f9fe65. Later delivery documentation commits are identified separately from the compiled code source.
+- Start:351be38b19279bbf8159b6da6ffc674239ac8ecf. Qualified implementation source: bbf25e6ab4931886f5a382ee3362593e573c19de. Later delivery documentation commits are identified separately from the compiled code source.
 - [Draft frontend PR1](https://github.com/neo-capiro/meri-greenfield/pull/1). No merge, cutover, deployment, shared migration or authentication change.
-- Current remote Meri main c8978118a53cc6fc4cc3a553cdafdba4126d2443 inspected: no new overlap in apps/portfolio-web or docs/portfolio-31. Backend contracts rechecked at origin/main fd8765ec01d292013758606204f2c9d886cd31c1.
+- Current remote Meri main845edd0d5a30ad6dd7b22c9102091ce17b544271 inspected: no new overlap in apps/portfolio-web or docs/portfolio-31. Backend contracts rechecked at origin/main fd8765ec01d292013758606204f2c9d886cd31c1.
 - Shared policy:b32b4803933760dc0a93fffdcd8fba30a89c3aac; fetched remote:b2b0ce8c2bf03817b81e671d968b7892985b8d06. Machine map modified2026-09-30T00:21:48.2698715Z.
 
-Checkpoint prepared from checkout `6c1c42fad9d66a13043958235d27f8c6e1f9fe65`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
+Checkpoint prepared from checkout `bbf25e6ab4931886f5a382ee3362593e573c19de`. A delivery manifest records subsequent documentation commits separately. Test evidence is bound to the qualified implementation source above.
 
 ## Local implementation
 
 Shared shell/navigation, Clerk session/error boundary, validated service configuration, tokens/primitives and deep links support list/cards/filtering, three-step intake/edit/archive, Overview/activity actions, Objectives candidate/readiness, advocacy history, Calendar/meeting information/preparation/notes/debriefs, organization/government Relationships, Work destinations, retained Capabilities, Bill Tracker/watchlist, Opportunities, Files, team and facilities/map. Individual audit details and exact visual acceptance remain partial; a rendered screen does not close every row.
 
 Recent additions:
+
+- Manual debrief source matches inspected desktop/mobile Figma and calls existing method=manual generation only after explicit submit. Save/approve/share remain separate. Meeting/actor changes discard pending source and late generation.
+- Client Quick log validates its exact new record before showing Undo; fresh unchanged preflight, duplicate fences and uncertain outcome refusal. Toast sits below both client action rows. Saved submission removal remains uncomposed pending current entry placement.
 
 - Reviewed advocacy merge/reassignment/detach/exclusion/history edits, with current actor/lifetime checks and GET-only reconciliation after an uncertain reply. No atomic CAS/idempotency contract exists.
 - Organization/government email includes selected-client recipients, To/Cc/Bcc deduplication, canonical Files upload/readiness and a separate send review. Unknown delivery freezes the intent. Backend reply and outbound attachment ACL candidates still require integration.
@@ -34,7 +37,9 @@ Recent additions:
 
 ## Verification actually run
 
-At 6c1c42fad9d66a13043958235d27f8c6e1f9fe65 on explicit **Node24.19.0**:
+Latest source **bbf25e6ab4931886f5a382ee3362593e573c19de**, Node24.19: **400 unit/26 affected browser checks PASS**, TypeScript/lint/format/architecture325 modules/Next17-route build PASS. Five actual Next auth/deep-link checks pass; signed-in acceptance remains blocked. Evidence: outputs/evidence/portfolio-manual-debrief-20261011/final/. The26 cases cover manual4, library12 and submission/Quick log10; they are not a new complete browser-suite claim.
+
+Previous full regression at6c1c42fad9d66a13043958235d27f8c6e1f9fe65, retained separately:
 
 |Check|Result|
 |---|---|
@@ -61,7 +66,7 @@ Authorized real services, neo@capiro.ai in capiro-internal:
 
 Use Node24/npm11 in apps/portfolio-web: npm ci; copy .env.example to ignored .env.local; configure matching Clerk/backend environment; npm run dev (5188), npm run build, npm run start. On this machine use bundled Node24 explicitly: bare node is22. Keys stay in the approved machine secret store.
 
-Task preview: **[localhost:5190](http://localhost:5190)**, isolated Next production server from6c1c42fad9d66a13043958235d27f8c6e1f9fe65. Real Clerk development sign-in renders. Signed-in product acceptance is blocked: development Clerk lacks the approved tenant/JWT template and backend trust; production Clerk rejects localhost. A matching development backend or approved isolated production-auth hostname is needed. No hosted preview exists.
+Task preview: **[localhost:5190](http://localhost:5190)**, isolated Next production server frombbf25e6ab4931886f5a382ee3362593e573c19de. Real Clerk development sign-in renders. Signed-in product acceptance is blocked: development Clerk lacks the approved tenant/JWT template and backend trust; production Clerk rejects localhost. A matching development backend or approved isolated production-auth hostname is needed. No hosted preview exists.
 
 |Configuration|Verified target / responsibility|
 |---|---|
@@ -87,6 +92,8 @@ The existing server proxy obtains the capiro JWT; browser tenant/permission head
 |[Billing2370](https://github.com/neo-capiro/capirov2/pull/2370),7fcd3cb|Original37 +13 actual-DDL/store PGlite; strict scoped types|Global publication fence, dispatch recovery, invoice policy/cancellation/compensation, single-use conversion receipt, owner/grants/migration, Stripe sandbox|
 |[Contacts2371](https://github.com/neo-capiro/capirov2/pull/2371)|11 PGlite/DTO/guard checks|Registration/schema, atomic conversion carry-over, native/live acceptance|
 |[Geocode2373](https://github.com/neo-capiro/capirov2/pull/2373),6e5774a|96 checks; strict extracted types; cleanup shared CLI conservation review|Combined final-source/native PostgreSQL/HTTP/provider acceptance|
+|[Client research2382](https://github.com/neo-capiro/capirov2/pull/2382),d394712|Root110 tests; exact original4 writer regressions fail; strict helper/format/diff|Old-worker inventory/drain/upgrade/recovery; owner agreement; strict routes503; broader44 inherited typing diagnostics; live acceptance|
+|[Meeting PDF2383](https://github.com/neo-capiro/capirov2/pull/2383),320878e|Root47 tests; strict8 files/format/diff; proposedDDL immutable guards|Native source/RLS/grants/publication fence and adapters; unapplied/unallocatedSQL; no activation/live acceptance|
 |[Brief refresh2378](https://github.com/neo-capiro/capirov2/pull/2378),87de0da|18 tests using actual pinned migration SQL|Module/migration/retention agreement, native/HTTP/live acceptance|
 
 All are drafts. Billing follows the approved inline quote/charge/receipt direction; a stored paid receipt alone grants no client slot. No charges/customer messages were used for validation.
@@ -95,8 +102,8 @@ All are drafts. Billing follows the approved inline quote/charge/receipt directi
 
 ## Traceability and ongoing work
 
-Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 238 partial frontend, 99 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
+Workbook/JSON/CSV preserve 345 IDs and historical evidence. Read-only comparison verified six baseline tabs, 7,613 values, six formulas and all IDs. Current classifications: 241 partial frontend, 96 queued, 7 obsolete/legacy, 1 disabled billing candidate. These are progress categories, not completed-workflow counts.
 
-Parallel work: Overview saved-performance removal and exact QuickLog Undo composition; preview-only research and stored-PDF fidelity/operation candidates. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
+Quick log Undo and manual debrief source are integrated. Saved-performance removal is validated only in its component harness pending the current product entry point. Parallel work continues on profile tools, activity pin/actions and voice source. Preview-only research and reviewed PDF candidates2382/2383 are published; neither is activated. Outbound ACL candidate2381 is published for review. Remaining scope includes proposal persistence/generation/reviewed send/reminders, conversion carry-over, objective lifecycle/work links, saved layouts, missing analytics definitions and final live/visual acceptance.
 
 Feature folders own contracts/adapters/query/mutation coordination/UI; routes compose public interfaces. Foundations do not import features. Existing Schedule-X/React Flow and Workspace editor are reused; no competing Meri/editor or whole Module rebuild.
