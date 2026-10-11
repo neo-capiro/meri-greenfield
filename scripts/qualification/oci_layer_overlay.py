@@ -83,7 +83,10 @@ class Counted:
 
 
 class Overlay:
-    def __init__(self, limits=Limits(), deadline=None):
+    def __init__(self, limits=Limits(), deadline=None, *, selection=selected):
+        if not callable(selection):
+            raise Refusal('selection predicate required')
+        self.selection = selection
         self.limits, self.deadline = limits, deadline
         self.entries, self.objects, self.layers = {}, {}, []
         self.expanded = self.member_count = self.selected_bytes = 0
@@ -146,7 +149,7 @@ class Overlay:
                         if not isinstance(member.linkname, str) or len(member.linkname) > 4096 or '\x00' in member.linkname:
                             raise Refusal('malformed inert link metadata')
                         row['target'] = member.linkname
-                    if selected(name):
+                    if self.selection(name):
                         if kind == 'special':
                             raise Refusal('unsupported selected entry')
                         if kind == 'file':
@@ -212,7 +215,7 @@ class Overlay:
                             'whiteouts':removed, 'opaqueDirectories':opaque})
 
     def inventory(self):
-        rows = [{'path':p, **r} for p,r in sorted(self.entries.items()) if selected(p)]
+        rows = [{'path':p, **r} for p,r in sorted(self.entries.items()) if self.selection(p)]
         holds = [{'path':r['path'], 'reason':'INERT_LINK_IDENTITY_NOT_RESOLVED'} for r in rows
                  if r['kind'] in ('symlink', 'hardlink')]
         for required in ('app/schema.prisma', 'app/.venv/lib/python3.13/site-packages/prisma/client.py',
