@@ -8,10 +8,12 @@ import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import {
   fileValidation,
+  filesKey,
   uploadParentFile,
   type UploadAttempt,
 } from "@/features/files/public";
 import type { Meeting } from "../contracts";
+import { usePreparationCapabilities } from "../preparation/public";
 import { extractMeetingSource } from "./api";
 import type { ExtractedMeetingSource } from "./contracts";
 import styles from "./library.module.css";
@@ -52,6 +54,7 @@ function TranscriptForm({
   const api = useApi();
   const cache = useQueryClient();
   const identity = useIdentity();
+  const capabilities = usePreparationCapabilities();
   const [file, setFile] = useState<File>();
   const [stage, setStage] = useState("");
   const [retryStage, setRetryStage] = useState<
@@ -63,7 +66,15 @@ function TranscriptForm({
   const confirmed = useRef<string | undefined>(undefined);
   const allowed = Boolean(
     identity.data &&
+    identity.data.user.id &&
+    identity.data.tenant?.id &&
+    !identity.isPending &&
+    !identity.isFetching &&
     !identity.error &&
+    !capabilities.isPending &&
+    !capabilities.isFetching &&
+    !capabilities.error &&
+    capabilities.data?.runtime?.externalActionsEnabled === true &&
     (identity.data.role === "standard_user" ||
       canAdminister(identity.data.role)),
   );
@@ -86,7 +97,13 @@ function TranscriptForm({
         confirmed.current = receipt.id;
         await Promise.all([
           cache.invalidateQueries({ queryKey: ["meeting", meeting.id] }),
-          cache.invalidateQueries({ queryKey: ["files"] }),
+          ...(meeting.client
+            ? [
+                cache.invalidateQueries({
+                  queryKey: filesKey(meeting.client.id),
+                }),
+              ]
+            : []),
         ]);
       }
       setStage("Extracting source text");
@@ -100,7 +117,7 @@ function TranscriptForm({
       setRetryStage(
         confirmed.current
           ? "extract"
-          : attempt.current.storageUnknown
+          : attempt.current.storageUnknown || attempt.current.bytesUploaded
             ? "confirm"
             : "upload",
       ),
@@ -131,9 +148,13 @@ function TranscriptForm({
           MiB. The current service does not accept .vtt/.srt transcript types.
         </p>
         <QueryState
-          pending={identity.isPending}
-          error={identity.error}
-          retry={() => void identity.refetch()}
+          pending={
+            identity.isPending || identity.isFetching || capabilities.isPending
+          }
+          error={identity.error ?? capabilities.error}
+          retry={() =>
+            void (identity.error ? identity.refetch() : capabilities.refetch())
+          }
         />
         <label>
           Selected file
@@ -148,8 +169,12 @@ function TranscriptForm({
         {file && <small>{file.name}</small>}
         {validation && <p role="alert">{validation}</p>}
         {stage && <p role="status">{stage}</p>}
-        {!allowed && identity.isSuccess && (
-          <p role="alert">You do not have permission to upload a source.</p>
+        {!allowed && identity.isSuccess && !identity.isFetching && (
+          <p role="alert">
+            {capabilities.data?.runtime?.externalActionsEnabled !== true
+              ? "Source extraction is unavailable in this environment."
+              : "You do not have permission to upload a source."}
+          </p>
         )}
         <QueryState error={mutation.error} />
         {result && (
@@ -187,6 +212,7 @@ function TranscriptForm({
           {result ? (
             <button
               className="button primary"
+              disabled={!allowed}
               onClick={() => {
                 onExtracted(result);
                 onOpenChange(false);

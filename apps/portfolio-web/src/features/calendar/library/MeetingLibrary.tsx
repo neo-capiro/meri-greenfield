@@ -33,6 +33,10 @@ export function MeetingLibrary({
   const parsed = readLibraryFilters(params);
   const allowed = Boolean(
     identity.data &&
+    identity.data.user.id &&
+    identity.data.tenant?.id &&
+    !identity.isPending &&
+    !identity.isFetching &&
     (identity.data.role === "standard_user" ||
       canAdminister(identity.data.role)) &&
     !identity.error,
@@ -42,6 +46,7 @@ export function MeetingLibrary({
     zone,
     clientId,
     allowed,
+    `${identity.data?.tenant?.id}:${identity.data?.user.id}`,
   );
   const filters = parsed.success ? parsed.data : undefined;
   function update(values: Partial<LibraryFilters>, clear = false) {
@@ -62,7 +67,7 @@ export function MeetingLibrary({
     (client) => client.id === clientId,
   )?.name;
   const denied =
-    identity.isSuccess && !allowed
+    identity.isSuccess && !identity.isFetching && !allowed
       ? new ApiError(
           403,
           "Meeting library access is unavailable for this role.",
@@ -171,7 +176,9 @@ export function MeetingLibrary({
       {!parsed.success && <p role="alert">{parsed.error.issues[0]?.message}</p>}
       <QueryState
         pending={
-          identity.isPending || (allowed && query.isPending && Boolean(filters))
+          identity.isPending ||
+          identity.isFetching ||
+          (allowed && query.isPending && Boolean(filters))
         }
         error={identity.error ?? denied ?? query.error}
         retry={() =>

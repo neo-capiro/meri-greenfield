@@ -11,10 +11,11 @@ export function useMeetingLibrary(
   zone: CalendarZone,
   clientId: string | undefined,
   allowed: boolean,
+  actorScope: string,
 ) {
   const api = useApi();
   return useQuery({
-    queryKey: [...libraryKey, clientId ?? null, zone, filters],
+    queryKey: [...libraryKey, actorScope, clientId ?? null, zone, filters],
     enabled: allowed && Boolean(filters),
     queryFn: ({ signal }) => {
       if (!filters) throw new ApiError(422, "Choose valid library filters.");

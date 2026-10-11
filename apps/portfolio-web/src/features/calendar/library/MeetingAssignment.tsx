@@ -5,6 +5,7 @@ import { useApi } from "@/shared/api/provider";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { ApiError } from "@/shared/api/http";
 import { useClients } from "@/features/portfolio/public";
+import { filesKey } from "@/features/files/public";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Meeting } from "../contracts";
@@ -53,6 +54,10 @@ function AssignmentForm({
   const [confirmed, setConfirmed] = useState(false);
   const allowed = Boolean(
     identity.data &&
+    identity.data.user.id &&
+    identity.data.tenant?.id &&
+    !identity.isPending &&
+    !identity.isFetching &&
     !identity.error &&
     (identity.data.role === "standard_user" ||
       canAdminister(identity.data.role)),
@@ -77,7 +82,9 @@ function AssignmentForm({
       await Promise.all([
         cache.invalidateQueries({ queryKey: ["calendar"] }),
         cache.invalidateQueries({ queryKey: ["meeting", meeting.id] }),
-        cache.invalidateQueries({ queryKey: ["files"] }),
+        ...[reviewed.client?.id, saved.client?.id].flatMap((id) =>
+          id ? [cache.invalidateQueries({ queryKey: filesKey(id) })] : [],
+        ),
       ]);
       onAssigned?.(saved);
       onOpenChange(false);
@@ -101,7 +108,9 @@ function AssignmentForm({
         }}
       >
         <QueryState
-          pending={identity.isPending || clients.isPending}
+          pending={
+            identity.isPending || identity.isFetching || clients.isPending
+          }
           error={identity.error ?? clients.error}
           retry={() =>
             void (identity.error ? identity.refetch() : clients.refetch())
