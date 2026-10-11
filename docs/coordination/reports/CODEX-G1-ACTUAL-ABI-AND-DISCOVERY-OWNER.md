@@ -1,6 +1,6 @@
 # Actual ABI DATA and discovery source acceptance
 
-## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:48 UTC
+## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 07:13 UTC
 
 G0 accepted/G1OPEN; G2-G7unentered. All current source acceptances are scoped,
 not security/runtime/G1 admission. Current Meri/Capiro is untouched, sources
@@ -114,11 +114,43 @@ Read-only exact upstream Prisma engine discovery is independently hash-verified:
 55files817506B, seal fa1471ed88c1f38bf4210fa81e28053ffb2166425b2f11e366a53de495cd8046.
 It identifies startup JSON on native fd2 separately from exception/HTTP framing;
 this is public-source discovery, not native runtime evidence. Native private
-bytes/text/hashes must not be exported. Native-output parsing and peer composition
-remain unimplemented; preserve Python-I, private diagnostics, original clocks
-and exact mounted source membership. No new cloud/model/runtime action followed
-these source acceptances. A fresh isolated Linux experiment remains required;
-the historical wrongCA remains UNKNOWN and its original build remains FAILED.
+bytes/text/hashes must not be exported. Native startup parser bd56c30/28cbec09
+is source-accepted (integrated a64c504/23adc16): root60original+37documentation
+finite refs/rawGit,37inert checks and distinct final review seal
+28df8eda50770190ad6a5f881a4c104ad925103cc71367b866757e1e5e6a1244.
+Only exact source-backed noTLS and expected-identity credentials qualify through
+native output; CA/name candidate enums stay observational/false specificity.
+
+Root peer composition992fb92/8d577d1 is source-accepted after25distinct fixture
+checks (24plus one appended real local pipe/thread control),37classifier and
+8bootstrap checks, isolated Windows Python-I layout/help0/missing2 and distinct
+source review. Its54payloads164101B/rawGit and four-source delta were independently
+verified; review seal7a2c2aac9e06d1db187569c463129fd97e31791bd020ff075562782b850060ad.
+The reviewer authored the accepted capture dependency, not root composition.
+The first22fixture checks had5errors from a Windows lstat/fstat ctime comparison;
+that failure and precise correction/rerun reasons are retained. Same-accessor
+identity stays full; Linux cross identity stays full. Prior24methods/helpers
+are unchanged across the single appended pipe test. These local injected/pipes/
+layout checks are not genuine Linux/Prisma or physical cleanup evidence.
+
+One private capture is nested inside text suppression; private caught exceptions
+never enter JSON or str(). Original32s clock starts before module initialization
+and is checked after body/drain. Only fixed reviewed sibling source is executed,
+with Python-I/B and no sys.path/pyc lookup. Three source mounts are read-only.
+Bounded well-formed failed negatives can continue for diagnostic coverage, but
+all five actual passes remain required before combined activation or exit0.
+
+Fresh public preparation .task-inputs/proxy-linux-native-tls-owner-build-4/ binds
+source8d577d1,13fixture/351context/355ZIP members,218600579B archive
+b0ce117839d04721d8599a7470836cee6842f8f93d9b757c1bf2e46f59082720;
+UUIDc1dc1663-fa26-4069-9b34-4c8def0e2d9f is fresh/unconsumed. Root verified every
+archive byte/member, exact E4base and five offline exporter/cleanup controls.
+Independent public preparation review is finishing; no dispatch is admitted.
+Seven fresh canonical read-only AWS captures match prior authority after removing
+onlyRoleLastUsed telemetry;12invocation pins and13rawGit fixture files are bound.
+No new model/native/runtime action followed source acceptance; inference stays0.
+Actual Linux controls and physical cleanup remain required; historical wrongCA
+stays UNKNOWN and its original build remains FAILED.
 
 G1 additionally retains host/browser AND renderer sandbox/egress/cancellation/
 physical teardown, trusted proxy authentication/revocation/native discovery/usage/

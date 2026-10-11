@@ -1,6 +1,6 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 06:48 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 07:13 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
 
@@ -22,8 +22,11 @@ canonical builder migration: 16 filesystem, three recipe, one inventory-root
 and seven infrastructure controls pass. A fresh image and actual recovery
 test remain. Private native-output capture and typed-exception diagnostics are
 now source-accepted and integrated after distinct reviews: 17 and 27 root controls
-pass respectively. Native-output parsing, peer composition and a fresh isolated
-Linux experiment remain; no certificate-rejection result has been accepted.
+pass respectively. Native startup parsing and peer composition are now separately
+source-accepted: 37 classifier, 25 distinct fixture and eight bootstrap checks
+pass. Real local pipe nesting and isolated Python layout also pass. A fresh
+immutable Linux diagnostic package is prepared; actual execution remains pending.
+CA/name observations remain unqualified, with no certificate-rejection acceptance.
 Browser bootstrap and parent supervision source are independently reviewed; no
 operational fixture clock, browser host or browser isolation probe has begun.
 
