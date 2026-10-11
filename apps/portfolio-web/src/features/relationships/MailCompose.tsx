@@ -89,14 +89,15 @@ export function MailCompose({
             if (locked || !authority.ready || attachments.blocked) return;
             try {
               const selected = recipients(to, cc, bcc);
+              const personIds = selected.to.flatMap((item) =>
+                item.personId ? [item.personId] : [],
+              );
               setValidation("");
               setReview({
                 text: body,
                 input: {
                   clientId,
-                  personIds: selected.to.flatMap((item) =>
-                    item.personId ? [item.personId] : [],
-                  ),
+                  ...(personIds.length ? { personIds } : {}),
                   ...selected,
                   subject: subject.trim(),
                   bodyHtml: plainMailHtml(body),
@@ -260,6 +261,12 @@ export function MailCompose({
           </div>
         )}
         <QueryState error={send.error} />
+        {uncertain && (
+          <p role="alert">
+            Sending may have completed. Check your mailbox Sent Items before
+            starting another email. This reviewed attempt cannot be sent again.
+          </p>
+        )}
         <button
           className="button primary"
           disabled={send.isPending || uncertain || !authority.ready || !review}

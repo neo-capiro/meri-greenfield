@@ -119,7 +119,8 @@ test("mail is reviewed and a provider error remains visible without automatic re
   await expect(review).toContainText("Test provider unavailable");
   await expect(
     review.getByRole("button", { name: "Send email" }),
-  ).toBeEnabled();
+  ).toBeDisabled();
+  await expect(review.getByText(/Sending may have completed/)).toBeVisible();
   expect(attempts).toBe(1);
   expect(unexpected).toEqual([]);
 });
