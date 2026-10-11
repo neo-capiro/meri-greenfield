@@ -1,6 +1,6 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 06:28 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 06:48 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
 
@@ -20,8 +20,10 @@ controls respectively; actual interruption/replacement/recovery remains untested
 Checkpoint and shared-parser packaging is source-accepted, along with its
 canonical builder migration: 16 filesystem, three recipe, one inventory-root
 and seven infrastructure controls pass. A fresh image and actual recovery
-test remain. Two Prisma diagnostic candidates are held for bounded corrections
-after independent reviews; no rejection result has been accepted from them.
+test remain. Private native-output capture and typed-exception diagnostics are
+now source-accepted and integrated after distinct reviews: 17 and 27 root controls
+pass respectively. Native-output parsing, peer composition and a fresh isolated
+Linux experiment remain; no certificate-rejection result has been accepted.
 Browser bootstrap and parent supervision source are independently reviewed; no
 operational fixture clock, browser host or browser isolation probe has begun.
 

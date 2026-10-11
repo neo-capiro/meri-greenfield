@@ -1,6 +1,6 @@
 # Actual ABI DATA and discovery source acceptance
 
-## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:28 UTC
+## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:48 UTC
 
 G0 accepted/G1OPEN; G2-G7unentered. All current source acceptances are scoped,
 not security/runtime/G1 admission. Current Meri/Capiro is untouched, sources
@@ -16,8 +16,9 @@ narrow repaired peer8aa0044 (integrated1b5193f/71cbc43),99sealed source/evidence
 refs, rawGit,15rootcontrols and distinct source review. Shared2MiB text counter
 is an intentional tightening for peer. Root canonical native-auth repair3ed3134
 covers both redirect sites and passes32rootchecks/help0/missing2 and distinct
-source review. No TLS/deadline assertions changed. Native fd writes remain
-uncounted devnull output; Python limits count characters per nested context.
+source review. No TLS/deadline assertions changed. The actual-run peer still
+discards native fd writes; the new capture module is not yet composed into it.
+Python limits count characters per nested context.
 
 Fresh buildfe9f54bd-8e36-4290-a580-eaa329767dd7 used source2201364be32bc99a5abe68ce96c4d1e18d1a1e8c,
 UUIDd4dbf6ea-ce69-4fe1-a93a-1a6208a9f903, sourceversionk0TQL0Mmp4xhZqtWqi6SDWTEwjMrJvTJ.
@@ -90,12 +91,34 @@ Current independent SOURCE acceptances now also include:
   are accurately version-bound. Parent expiry/drift rechecked after runner return;
   no fixtureT0/C reset or cloud-absence inference. No operational action/consume.
 
-Two new Prisma diagnostic candidates remain SOURCE HOLD. Classifier21f5686
-has broadphrase hostname/noTLS false positives; FD capture d10e5113 needs
-conservative post-effect initialization ownership bookkeeping. Both exact old
-commits/seals and distinct reviews remain, with separate bounded corrections
-allocated. Neither is integrated/admitted; native parser/peer composition
-and a fresh actual experiment remain root-owned. WrongCA remains UNKNOWN.
+Private native-output capture fd172019 is SOURCE ACCEPTED and integrated as
+eee553f/a45010d. Root verified39finite refs/rawGit and17offline controls; the
+distinct final source review passes. Aggregate native bytes are bounded at2MiB;
+private bytes are available only after complete drain/restoration. It is one
+serialized capture per disposable fixture process, not a formal guarantee for
+every asynchronous interruption/allocation. The peer must check its original
+deadline after capture, and the outer owner must prove physical cleanup. The
+earlier post-effect initialization HOLD and corrections remain preserved.
+
+Typed exception evidence0f245751 is SOURCE ACCEPTED and integrated through
+f85949a/4f68a2c/4f2f006/623a472/768d2c6. Root verified15final finite refs/rawGit,
+retained27/27inert controls and the distinct final SOURCE DELTA PASS. Exact
+review seal a668f468f76906d62da760c93d72d57b76e09aec952f628705fed2ddbfc8909d.
+The final one-guard correction refuses mixed issuer/noTLS evidence; all26prior
+test bodies/helper and the prior report prefix are unchanged. E1-E3 source
+HOLDs, failed checks and corrections remain immutable. Representation of a
+supported exception is not authenticated origin. The reported60s test bound is
+owner-reported, not independently reconstructed by the distinct reviewer.
+
+Read-only exact upstream Prisma engine discovery is independently hash-verified:
+55files817506B, seal fa1471ed88c1f38bf4210fa81e28053ffb2166425b2f11e366a53de495cd8046.
+It identifies startup JSON on native fd2 separately from exception/HTTP framing;
+this is public-source discovery, not native runtime evidence. Native private
+bytes/text/hashes must not be exported. Native-output parsing and peer composition
+remain unimplemented; preserve Python-I, private diagnostics, original clocks
+and exact mounted source membership. No new cloud/model/runtime action followed
+these source acceptances. A fresh isolated Linux experiment remains required;
+the historical wrongCA remains UNKNOWN and its original build remains FAILED.
 
 G1 additionally retains host/browser AND renderer sandbox/egress/cancellation/
 physical teardown, trusted proxy authentication/revocation/native discovery/usage/
