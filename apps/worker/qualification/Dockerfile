@@ -144,7 +144,14 @@ RUN set -eux; \
 # Node candidate packages: one locked install from the nested lockfile,
 # including optional platform binaries (the SDK's linux-x64 CLI). No fallback.
 COPY package.json package-lock.json ./
-RUN set -eux; npm ci --no-audit --no-fund --include=optional
+COPY vendor/capiro-meri-contracts-0.1.0.tgz ./vendor/capiro-meri-contracts-0.1.0.tgz
+# The sole local public package must match reviewed bytes BEFORE dependency install.
+RUN set -eux; \
+    archive="vendor/capiro-meri-contracts-0.1.0.tgz"; \
+    test -f "$archive"; test ! -L "$archive"; \
+    test "$(stat -c '%s' "$archive")" = 48823; \
+    printf '%s  %s\n' '2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee' "$archive" | sha256sum --check --strict -; \
+    npm ci --no-audit --no-fund --include=optional
 
 # Build-time byte verification of the pinned SDK Linux binary against its
 # component-pins.json checksum (no binary execution, no model call).

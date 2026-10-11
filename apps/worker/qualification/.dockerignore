@@ -11,3 +11,5 @@
 !probes/*.py
 !README.md
 !.dockerignore
+!vendor/
+!vendor/capiro-meri-contracts-0.1.0.tgz

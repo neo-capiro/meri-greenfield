@@ -8,7 +8,8 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, lstatSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -46,6 +47,7 @@ const browsers = readJson('node_modules/playwright-core/browsers.json');
 test('package.json pins the exact qualification dependency versions', () => {
   assert.deepEqual(pkg.dependencies, {
     '@anthropic-ai/claude-agent-sdk': '0.3.295',
+    '@capiro/meri-contracts': 'file:vendor/capiro-meri-contracts-0.1.0.tgz',
     '@modelcontextprotocol/sdk': '1.32.1',
     '@playwright/mcp': '0.0.83',
     'pdfjs-dist': '6.4.299',
@@ -61,7 +63,8 @@ test('package-lock.json locks the same exact versions with integrity', () => {
   for (const [name, version] of Object.entries(pkg.dependencies)) {
     const entry = lock.packages[`node_modules/${name}`];
     assert.ok(entry, `lock missing ${name}`);
-    assert.equal(entry.version, version, `${name} lock version`);
+    const expectedVersion = name === '@capiro/meri-contracts' ? '0.1.0' : version;
+    assert.equal(entry.version, expectedVersion, `${name} lock version`);
     assert.match(entry.integrity || '', /^sha512-/, `${name} integrity`);
   }
 });
@@ -70,13 +73,86 @@ test('component-pins.json agrees with package.json, lock and tests', () => {
   assert.equal(pins.assembledImageDigest, null, 'image digest must stay unbuilt');
   const npmByName = Object.fromEntries(pins.npm.map((p) => [p.name, p]));
   for (const [name, version] of Object.entries(pkg.dependencies)) {
-    assert.equal(npmByName[name].version, version, `${name} pins version`);
+    const expectedVersion = name === '@capiro/meri-contracts' ? '0.1.0' : version;
+    assert.equal(npmByName[name].version, expectedVersion, `${name} pins version`);
     assert.match(npmByName[name].integrity, /^sha512-/, `${name} pins integrity`);
     assert.ok(npmByName[name].license, `${name} license recorded`);
   }
   assert.equal(npmByName['@anthropic-ai/claude-agent-sdk'].bundledCli.version, '2.1.295');
   assert.equal(pins.chromium.revision, '1247');
   assert.equal(pins.chromium.browserVersion, '155.0.8059.12');
+});
+
+test('the sole local public contracts archive is exact reviewed regular-file DATA', () => {
+  const rel = 'vendor/capiro-meri-contracts-0.1.0.tgz';
+  const info = lstatSync(join(PKG, rel));
+  assert.equal(info.isFile(), true);
+  assert.equal(info.isSymbolicLink(), false);
+  assert.equal(info.size, 48823);
+  const bytes = readFileSync(join(PKG, rel));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee');
+  assert.equal(`sha512-${createHash('sha512').update(bytes).digest('base64')}`, 'sha512-gsJpKHbwliWB2jVP1jVoaH+t9RNrIC334+VkU3hYN7MrkCF7INS9YES+prCSD7SfVn7gIsp7eTwM1kCHwfQ3EA==');
+  assert.deepEqual(Object.entries(pkg.dependencies).filter(([, value]) => value.startsWith('file:')),
+    [['@capiro/meri-contracts', `file:${rel}`]]);
+});
+
+test('public package lock adds only its exact local record and canonicalize closure', () => {
+  const entry = lock.packages['node_modules/@capiro/meri-contracts'];
+  assert.deepEqual(entry, {
+    version: '0.1.0', resolved: 'file:vendor/capiro-meri-contracts-0.1.0.tgz',
+    integrity: 'sha512-gsJpKHbwliWB2jVP1jVoaH+t9RNrIC334+VkU3hYN7MrkCF7INS9YES+prCSD7SfVn7gIsp7eTwM1kCHwfQ3EA==',
+    license: 'UNLICENSED', dependencies: { ajv: '8.20.0', 'ajv-formats': '3.0.1', canonicalize: '5.1.0' },
+    engines: { node: '>=24 <25' },
+  });
+  assert.deepEqual(lock.packages[''].dependencies, pkg.dependencies);
+  assert.equal(lock.packages['node_modules/canonicalize'].version, '5.1.0');
+  assert.equal(lock.packages['node_modules/canonicalize'].integrity, 'sha512-bab9+WefZljqQ8jT0qRwVmTyzAUU63K97QIQD3agynIBrb6sa5M2eAy8Hv8K3p4V9+ONVYZKtGYl4Dg+/5Gumw==');
+  assert.equal(lock.packages['node_modules/ajv'].version, '8.20.0');
+  assert.equal(lock.packages['node_modules/ajv-formats'].version, '3.0.1');
+  const originalRecords = Object.entries(lock.packages).filter(([key]) => ![
+    '', 'node_modules/@capiro/meri-contracts', 'node_modules/canonicalize',
+  ].includes(key));
+  assert.equal(originalRecords.length, 145);
+  assert.equal(Object.keys(lock.packages).length, 148);
+  // Full original lock-record objects/order, not just versions or selected fields.
+  assert.equal(createHash('sha256').update(JSON.stringify(originalRecords)).digest('hex'),
+    'd298ba95e3b9919d3738d4bb1b4ce81b4009f0fb8e666f12e2c8be934b1895a9');
+});
+
+test('public contracts provenance stays versioned source DATA without image admission', () => {
+  const entry = pins.npm.find(({ name }) => name === '@capiro/meri-contracts');
+  assert.equal(entry.version, '0.1.0');
+  assert.equal(entry.license, 'UNLICENSED');
+  assert.equal(entry.specifier, pkg.dependencies['@capiro/meri-contracts']);
+  assert.equal(entry.integrity, lock.packages['node_modules/@capiro/meri-contracts'].integrity);
+  assert.equal(entry.sourceCommit, '8586f6279eac5a43132d4df3a7dbb6962c808009');
+  assert.equal(entry.publicExport, '@capiro/meri-contracts/node');
+  assert.deepEqual(entry.archive, { path: 'vendor/capiro-meri-contracts-0.1.0.tgz', bytes: 48823,
+    sha256: '2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee', members: 11, unpackedBytes: 536413 });
+  assert.equal(pins.assembledImageDigest, null);
+});
+
+test('Docker copies and size/hash-verifies the exact public archive before npm ci', () => {
+  const copy = 'COPY vendor/capiro-meri-contracts-0.1.0.tgz ./vendor/capiro-meri-contracts-0.1.0.tgz';
+  const size = `test "$(stat -c '%s' "$archive")" = 48823`;
+  const sha = "'2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee' \"$archive\" | sha256sum --check --strict -";
+  const install = 'npm ci --no-audit --no-fund --include=optional';
+  for (const text of [copy, size, sha, 'test -f "$archive"; test ! -L "$archive"']) assert.ok(dockerfile.includes(text), text);
+  assert.ok(dockerfile.indexOf(copy) < dockerfile.indexOf(size));
+  assert.ok(dockerfile.indexOf(size) < dockerfile.indexOf(sha));
+  assert.ok(dockerfile.indexOf(sha) < dockerfile.indexOf(install));
+  assert.equal(dockerfile.split(install).length - 1, 1);
+  assert.doesNotMatch(dockerfile, /^COPY[^\n]*(?:\.\.\/|--from=)/m);
+  assert.doesNotMatch(dockerfile, /^COPY\s+(?:\.\s|vendor\/\s)/m);
+});
+
+test('Docker context admits exactly the one selected vendor archive', () => {
+  const rules = read('.dockerignore').split(/\r?\n/).filter((line) => line && !line.startsWith('#'));
+  assert.equal(rules[0], '**');
+  assert.deepEqual(rules.filter((line) => line.startsWith('!vendor')),
+    ['!vendor/', '!vendor/capiro-meri-contracts-0.1.0.tgz']);
+  assert.equal(rules.includes('!node_modules/'), false);
+  assert.equal(rules.includes('!../packages/contracts/'), false);
 });
 
 test('SDK bundle manifest declares CLI 2.1.295 and the pinned linux-x64 checksum', () => {

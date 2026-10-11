@@ -52,6 +52,23 @@
   },
   "npm": [
     {
+      "name": "@capiro/meri-contracts",
+      "version": "0.1.0",
+      "specifier": "file:vendor/capiro-meri-contracts-0.1.0.tgz",
+      "integrity": "sha512-gsJpKHbwliWB2jVP1jVoaH+t9RNrIC334+VkU3hYN7MrkCF7INS9YES+prCSD7SfVn7gIsp7eTwM1kCHwfQ3EA==",
+      "license": "UNLICENSED",
+      "archive": {
+        "path": "vendor/capiro-meri-contracts-0.1.0.tgz",
+        "bytes": 48823,
+        "sha256": "2f15ade9458cbffe960b7cc36c6fb77cb54cc2a0eca4bc7c0f918b77cfacd4ee",
+        "members": 11,
+        "unpackedBytes": 536413
+      },
+      "sourceCommit": "8586f6279eac5a43132d4df3a7dbb6962c808009",
+      "publicExport": "@capiro/meri-contracts/node",
+      "provenance": "Already packed canonical backend public contracts, exact11 source/Git members; sdk-discovery-public-import-2/packed-consumer.json; no repack, image build or runtime admission."
+    },
+    {
       "name": "@anthropic-ai/claude-agent-sdk",
       "version": "0.3.295",
       "integrity": "sha512-GaLZbMAqyT4ZCtDQYq2p26bjpqqRfoobVxCK+Ao283I12sGyw2ttMvjdCXclS9VKhs+/IIu8/AtjqyrX73FZ/g==",
