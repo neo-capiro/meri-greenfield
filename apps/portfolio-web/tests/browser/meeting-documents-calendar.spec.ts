@@ -36,7 +36,7 @@ async function fixture(page: Page) {
   const unexpected = await installFixtures(page);
   let currentPrep = { ...prep };
   let pdfs = 0,
-    reads = 0,
+    clientAttachmentReads = 0,
     sends = 0;
   page.on("request", (request) => {
     if (request.method() === "POST" && request.url().includes("/mail/send"))
@@ -84,7 +84,12 @@ async function fixture(page: Page) {
     },
   );
   await page.route("**/core/engagement/attachments?**", (route) => {
-    reads++;
+    // The open Calendar drawer separately reads meeting attachments for its
+    // approval panel. Count only the composer’s client-scoped scan preflight.
+    if (
+      new URL(route.request().url()).searchParams.get("clientId") === clientId
+    )
+      clientAttachmentReads++;
     return json(route, [
       {
         ...file,
@@ -113,7 +118,7 @@ async function fixture(page: Page) {
     unexpected,
     open,
     pdfs: () => pdfs,
-    reads: () => reads,
+    clientAttachmentReads: () => clientAttachmentReads,
     sends: () => sends,
     changePreparation: () => {
       currentPrep = {
@@ -163,11 +168,11 @@ test("Calendar explicit PDF preparation opens existing composer with unverified 
     composer.getByText("Saved meeting preparation.pdf", { exact: true }),
   ).toBeVisible();
   expect(flow.pdfs()).toBe(1);
-  expect(flow.reads()).toBe(0);
+  expect(flow.clientAttachmentReads()).toBe(0);
   await composer
     .getByRole("button", { name: "Check scan status", exact: true })
     .click();
-  await expect.poll(flow.reads).toBe(1);
+  await expect.poll(flow.clientAttachmentReads).toBe(1);
   await expect(
     composer.getByText("Ready to attach", { exact: true }),
   ).toBeVisible();
@@ -245,7 +250,7 @@ test("Calendar reopens the already prepared PDF after composer cancellation with
     composer.getByText("Ready to attach", { exact: true }),
   ).toBeVisible();
   expect(flow.pdfs()).toBe(1);
-  expect(flow.reads()).toBe(2);
+  expect(flow.clientAttachmentReads()).toBe(2);
   expect(flow.sends()).toBe(0);
   expect(flow.unexpected).toEqual([]);
 });
