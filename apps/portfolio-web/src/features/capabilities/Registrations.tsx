@@ -5,7 +5,7 @@ import { useIdentity, canAdminister } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useSaveRegistrations } from "./registration-mutations";
-const certifications = ["8A", "SDVOSB", "VOSB", "WOSB", "EDWOSB", "HUBZONE"];
+import { certifications } from "@/features/client-intake/public";
 const tokens = (value: FormDataEntryValue | null) => [
   ...new Set(
     String(value ?? "")
@@ -103,7 +103,9 @@ export function Registrations({
             <fieldset>
               <legend>Held certifications</legend>
               {data.setAsideCertifications
-                ?.filter((code) => !certifications.includes(code))
+                ?.filter(
+                  (code) => !certifications.some((known) => known === code),
+                )
                 .map((code) => (
                   <div key={code}>
                     <input type="hidden" name="certification" value={code} />

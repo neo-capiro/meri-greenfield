@@ -109,6 +109,17 @@
   outline: none;
   border-radius: 6px;
 }
+.menuItem {
+  display: block;
+  padding: 10px;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.menuItem[data-disabled] {
+  opacity: 0.5;
+  cursor: default;
+}
 .menu [data-highlighted] {
   background: var(--muted);
   text-decoration: none;

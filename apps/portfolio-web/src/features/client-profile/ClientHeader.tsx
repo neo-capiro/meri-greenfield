@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { DropdownMenu } from "radix-ui";
 import { clientViews } from "@/shared/shell/client-views";
 import { type Client, initials } from "@/features/portfolio/public";
+import { ClientProfileActions } from "./ClientProfileActions";
 import styles from "./client-header.module.css";
 const asset = (name: string) => `/design/411-55991-${name}.svg`;
 export function ClientHeader({ client }: { client: Client }) {
@@ -101,6 +102,7 @@ export function ClientHeader({ client }: { client: Client }) {
             <span>Meri actions</span>
             <img src={asset("imgChevron1")} alt="" />
           </button>
+          <ClientProfileActions client={client} />
         </div>
       </header>
       {view.suffix && (
