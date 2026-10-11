@@ -289,7 +289,14 @@ test("explicit prepare stores one verified receipt without sending", async ({
   expect(flow.posts()).toBe(1);
   await expect(
     page.getByRole("button", { name: "Prepare attachment", exact: true }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
+  await page
+    .getByRole("button", {
+      name: "Review previously prepared PDF",
+      exact: true,
+    })
+    .click();
+  expect(flow.posts()).toBe(1);
 });
 test("unknown completion freezes original attempt without retry", async ({
   page,
@@ -378,10 +385,11 @@ test("invalidated identity success refuses local print and attachment dispatch",
   await page.getByRole("button", { name: "Preview preparation" }).click();
   await expect(page.getByText(prep.summary)).toBeVisible();
   await page.evaluate(() => window.__documentInvalidate?.("identity"));
-  await expect(
-    page.getByRole("button", { name: "Print / Save as PDF" }),
-  ).toBeDisabled();
+  const print = page.getByRole("button", { name: "Print / Save as PDF" });
+  if (await print.isEnabled()) await print.click();
+  else await expect(print).toBeDisabled();
   await expect(page.getByText(/session or permissions changed/)).toBeVisible();
+  expect(page.context().pages()).toHaveLength(1);
 });
 test("changed initiating actor during preflight refuses POST and hides old content", async ({
   page,

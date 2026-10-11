@@ -51,7 +51,7 @@ export function PreparationPdfAttachmentReview({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<Error>();
   const [uncertain, setUncertain] = useState(false);
-  const [completed, setCompleted] = useState(false);
+  const [completed, setCompleted] = useState<PreparationPdfReceipt>();
   const dispatched = useRef(false);
   const prep =
     saved.data?.document.kind === "preparation"
@@ -87,7 +87,7 @@ export function PreparationPdfAttachmentReview({
       );
       stored = true;
       assert();
-      setCompleted(true);
+      setCompleted(receipt);
       void cache.invalidateQueries({
         queryKey: filesKey(meeting.client?.id ?? ""),
       });
@@ -117,6 +117,20 @@ export function PreparationPdfAttachmentReview({
       if (!unknown) dispatched.current = false;
     } finally {
       setPending(false);
+    }
+  }
+  function resume() {
+    if (!completed || pending || uncertain || !authority.allowed) return;
+    try {
+      authority.capture()();
+      setError(undefined);
+      onPrepared(completed);
+    } catch (failure) {
+      setError(
+        failure instanceof Error
+          ? failure
+          : new Error("The saved PDF could not be opened for email review."),
+      );
     }
   }
   return (
@@ -158,8 +172,9 @@ export function PreparationPdfAttachmentReview({
       )}
       {completed && (
         <p role="status">
-          PDF attachment created. Review its availability in the email composer
-          before sending.
+          Previously prepared file: {completed.fileName}. This is the original
+          saved PDF; later preparation changes are not included. Recheck its
+          availability in the email composer before sending.
         </p>
       )}
       <p className="muted">
@@ -172,13 +187,23 @@ export function PreparationPdfAttachmentReview({
         <button className="button" disabled={pending} onClick={onClose}>
           {uncertain ? "Close and check Files" : completed ? "Close" : "Cancel"}
         </button>
-        <button
-          className="button primary"
-          disabled={!ready || pending || uncertain || completed}
-          onClick={() => void prepare()}
-        >
-          {pending ? "Preparing…" : "Prepare attachment"}
-        </button>
+        {completed ? (
+          <button
+            className="button primary"
+            disabled={!authority.allowed || pending || uncertain}
+            onClick={resume}
+          >
+            Review previously prepared PDF
+          </button>
+        ) : (
+          <button
+            className="button primary"
+            disabled={!ready || pending || uncertain}
+            onClick={() => void prepare()}
+          >
+            {pending ? "Preparing…" : "Prepare attachment"}
+          </button>
+        )}
       </footer>
     </Dialog>
   );
