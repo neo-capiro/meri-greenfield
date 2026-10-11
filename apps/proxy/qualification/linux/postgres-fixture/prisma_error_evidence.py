@@ -317,18 +317,12 @@ def classify_exception(case, error, *, evidence_complete=True):
     return result
 
 
-def _openssl_verification(message):
-    # One complete native-tls/rust-openssl/OpenSSL 3.5.7 display. File/line
-    # identify the reviewed source call, never the origin of caller bytes.
-    prefix = ('error performing TLS handshake: error:0A000086:SSL routines:'
-              'tls_post_process_server_certificate:certificate verify failed:')
-    if not message.startswith(prefix):
-        return None
-    fields = message[len(prefix):].split(':')
-    if (len(fields) != 3 or fields[0] not in ('ssl/statem/statem_clnt.c',
-            './ssl/statem/statem_clnt.c', '../ssl/statem/statem_clnt.c')
-            or fields[1] not in ('2124', '2125')):
-        return None
+def _openssl_parse(message):
+    # One whole display parser, shared by qualification and nonmatch DATA.
+    # At most ten fields are retained locally; unknown contents never escape.
+    fields = message.split(':', 9)
+    def field(index):
+        return fields[index] if index < len(fields) else None
     # Empty OpenSSL error data followed by native-tls's exact verify-result.
     outcomes = {
         ' (unable to get local issuer certificate)': 'OPENSSL_X509_CA_UNTRUSTED',
@@ -337,7 +331,32 @@ def _openssl_verification(message):
         ' (hostname mismatch)': 'OPENSSL_X509_NAME_MISMATCH',
         ' (IP address mismatch)': 'OPENSSL_X509_NAME_MISMATCH',
     }
-    return outcomes.get(fields[2])
+    terminal = outcomes.get(field(8)) if len(fields) == 9 else None
+    function = field(4)
+    shape = {
+        'handshakePrefix': message.startswith('error performing TLS handshake: error:'),
+        'errorCode': field(2) == '0A000086',
+        'sslLibrary': field(3) == 'SSL routines',
+        'function': ('EXPECTED' if function == 'tls_post_process_server_certificate'
+                     else 'EMPTY' if function == '' else 'OTHER'),
+        'verifyReason': field(5) == 'certificate verify failed',
+        'colonFields': 'EXPECTED' if len(fields) == 9 else 'OTHER',
+        'sourceFile': field(6) in ('ssl/statem/statem_clnt.c',
+                                  './ssl/statem/statem_clnt.c', '../ssl/statem/statem_clnt.c'),
+        'sourceLine': field(7) in ('2124', '2125'),
+        'terminal': ('CA' if terminal == 'OPENSSL_X509_CA_UNTRUSTED'
+                     else 'NAME' if terminal == 'OPENSSL_X509_NAME_MISMATCH' else 'OTHER'),
+    }
+    qualified = (terminal if shape['handshakePrefix'] and shape['errorCode']
+                 and shape['sslLibrary'] and shape['function'] == 'EXPECTED'
+                 and shape['verifyReason'] and shape['colonFields'] == 'EXPECTED'
+                 and shape['sourceFile'] and shape['sourceLine'] else None)
+    return qualified, shape
+
+
+def _openssl_verification(message):
+    # The original private API retains its exact qualified result semantics.
+    return _openssl_parse(message)[0]
 
 
 def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
@@ -402,15 +421,16 @@ def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
                 _deny('NATIVE_FORMATTER_MISMATCH')
             if meta['message'] == 'error performing TLS handshake: server does not support TLS':
                 qualified = 'TLS_UNSUPPORTED'
-            elif _openssl_verification(meta['message']) is not None:
-                qualified = _openssl_verification(meta['message'])
             else:
-                candidate = _reason(code, meta['message'].lower())
-                if candidate in ('CERTIFICATE_REJECTED', 'HOSTNAME_REJECTED'):
-                    result['tlsCandidate'] = candidate
-                result.update(source='NATIVE_KNOWN_ERROR', recordCount=1,
-                              complete=True, reason='TLS_REASON_UNQUALIFIED')
-                return result
+                qualified, shape = _openssl_parse(meta['message'])
+                if qualified is None:
+                    candidate = _reason(code, meta['message'].lower())
+                    if candidate in ('CERTIFICATE_REJECTED', 'HOSTNAME_REJECTED'):
+                        result['tlsCandidate'] = candidate
+                    result.update(source='NATIVE_KNOWN_ERROR', recordCount=1,
+                                  complete=True, reason='TLS_REASON_UNQUALIFIED',
+                                  opensslShape=shape)
+                    return result
         else:
             _deny('NATIVE_UNKNOWN_CODE')
         result.update(source='NATIVE_KNOWN_ERROR', recordCount=1, complete=True)

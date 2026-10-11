@@ -454,9 +454,16 @@ class NativeEvidenceTests(unittest.TestCase):
         for raw in (self.encoded(self.native('private postgresql://secret:password@host')),
                     self.encoded(self.password()), b'private garbage\n'):
             result = self.classify(raw, 'wrong-password')
-            self.assertEqual(set(result), {'case', 'specificRejection', 'reason', 'tlsCandidate',
-                                           'source', 'recordCount', 'complete'})
-            self.assertTrue(all(type(value) in (str, bool, int) for value in result.values()))
+            original = {'case', 'specificRejection', 'reason', 'tlsCandidate',
+                        'source', 'recordCount', 'complete'}
+            expected = original | ({'opensslShape'} if result['reason'] == 'TLS_REASON_UNQUALIFIED' else set())
+            self.assertEqual(set(result), expected)
+            self.assertTrue(all(type(result[key]) in (str, bool, int) for key in original))
+            if 'opensslShape' in result:
+                self.assertEqual(result['opensslShape'], {
+                    'handshakePrefix': False, 'errorCode': False, 'sslLibrary': False,
+                    'function': 'OTHER', 'verifyReason': False, 'colonFields': 'OTHER',
+                    'sourceFile': False, 'sourceLine': False, 'terminal': 'OTHER'})
             self.assertNotIn('private', json.dumps(result))
             self.assertNotIn('password@host', json.dumps(result))
 
@@ -652,6 +659,107 @@ class OpenSSLVerificationTests(unittest.TestCase):
         self.assertTrue(all(type(item) in (str, bool, int) for item in value.values()))
         for private in ('statem', '2125', '0A000086', 'fixture-db', 'fixture_user', 'hostname mismatch'):
             self.assertNotIn(private, json.dumps(value))
+
+
+class NativeOpenSSLShapeTests(unittest.TestCase):
+    def message(self):
+        return OpenSSLVerificationTests().message()
+
+    def result(self, text, case='wrong-san'):
+        return OpenSSLVerificationTests().result(text, case)
+
+    def test_known_line_nonmatch_has_only_fixed_shape_comparisons(self):
+        value = self.result(self.message().replace(':2125:', ':2126:'))
+        self.assertEqual(value['opensslShape'], {
+            'handshakePrefix': True, 'errorCode': True, 'sslLibrary': True,
+            'function': 'EXPECTED', 'verifyReason': True, 'colonFields': 'EXPECTED',
+            'sourceFile': True, 'sourceLine': False, 'terminal': 'NAME'})
+        self.assertEqual(value['reason'], 'TLS_REASON_UNQUALIFIED')
+        self.assertFalse(value['specificRejection'])
+
+    def test_independent_fixed_fields_and_empty_function_are_diagnostic_only(self):
+        cases = (
+            ('error performing TLS handshake', 'private handshake', 'handshakePrefix', False),
+            ('0A000086', '0A000085', 'errorCode', False),
+            ('SSL routines', 'private library', 'sslLibrary', False),
+            ('tls_post_process_server_certificate', '', 'function', 'EMPTY'),
+            ('tls_post_process_server_certificate', 'private function', 'function', 'OTHER'),
+            ('certificate verify failed', 'certificate expired', 'verifyReason', False),
+            ('../ssl/statem/statem_clnt.c', '/private/source.c', 'sourceFile', False),
+            ('2125', 'private-line', 'sourceLine', False),
+            ('hostname mismatch', 'private terminal', 'terminal', 'OTHER'),
+        )
+        for old, new, key, expected in cases:
+            value = self.result(self.message().replace(old, new))
+            self.assertFalse(value['specificRejection'])
+            self.assertEqual(value['opensslShape'][key], expected)
+            self.assertNotIn('private', json.dumps(value))
+
+    def test_extra_missing_or_embedded_colons_never_qualify(self):
+        for text in (self.message() + ':private', self.message().replace(':2125:', ':'),
+                     self.message().replace('hostname mismatch', 'hostname:private mismatch'),
+                     'private'):
+            value = self.result(text)
+            self.assertFalse(value['specificRejection'])
+            self.assertEqual(value['opensslShape']['colonFields'], 'OTHER')
+            self.assertEqual(value['opensslShape']['terminal'], 'OTHER')
+        empty = self.result('')
+        self.assertEqual(empty['reason'], 'NATIVE_META_REFUSED')
+        self.assertFalse(empty['specificRejection'])
+        self.assertNotIn('opensslShape', empty)
+
+    def test_shape_is_case_independent_and_does_not_change_qualified_crosscase(self):
+        text = self.message().replace(':2125:', ':private:')
+        expected = self.result(text)['opensslShape']
+        for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'):
+            value = self.result(text, case)
+            self.assertEqual(value['opensslShape'], expected)
+            self.assertFalse(value['specificRejection'])
+            qualified = self.result(self.message(), case)
+            self.assertNotIn('opensslShape', qualified)
+            self.assertEqual(qualified['specificRejection'], case == 'wrong-san')
+
+    def test_unknown_values_never_export_text_hashes_or_lengths(self):
+        private = 'PRIVATE-NATIVE-SENTINEL-' * 100
+        value = self.result(self.message().replace('../ssl/statem/statem_clnt.c', private))
+        shape = value['opensslShape']
+        self.assertEqual(set(shape), {'handshakePrefix', 'errorCode', 'sslLibrary', 'function',
+            'verifyReason', 'colonFields', 'sourceFile', 'sourceLine', 'terminal'})
+        self.assertTrue(all(type(item) is bool or item in ('EXPECTED', 'EMPTY', 'OTHER', 'CA', 'NAME')
+                            for item in shape.values()))
+        for forbidden in ('PRIVATE', 'statem', '2125', '0A000086', 'sha256', 'length', 'fixture'):
+            self.assertNotIn(forbidden, json.dumps(value))
+        huge = self.result('x' * 65537)
+        self.assertEqual(huge['reason'], 'BYTE_BOUND')
+        self.assertNotIn('opensslShape', huge)
+
+    def test_unqualified_expiry_purpose_algorithm_and_file_cases_stay_false(self):
+        for terminal in ('certificate has expired', 'unsuitable certificate purpose',
+                         'unsupported signature algorithm', 'cert file not found',
+                         'hostname mismatch; certificate expired',
+                         'unable to get local issuer certificate; hostname mismatch'):
+            value = self.result(self.message().replace('hostname mismatch', terminal))
+            self.assertFalse(value['specificRejection'])
+            self.assertEqual(value['opensslShape']['terminal'], 'OTHER')
+
+    def test_original_private_matcher_keeps_exact_result_api(self):
+        from prisma_error_evidence import _openssl_verification
+        self.assertEqual(_openssl_verification(self.message()), 'OPENSSL_X509_NAME_MISMATCH')
+        self.assertEqual(_openssl_verification(self.message().replace('hostname mismatch',
+            'self-signed certificate')), 'OPENSSL_X509_CA_UNTRUSTED')
+        for text in (self.message() + ' ', self.message().replace(':2125:', ':02125:'),
+                     self.message().replace('SSL routines', ''), 'hostname mismatch'):
+            self.assertIsNone(_openssl_verification(text))
+
+    def test_incomplete_malformed_and_non_p1011_results_have_no_shape(self):
+        helper = NativeEvidenceTests()
+        raw = helper.encoded(helper.native('hostname mismatch'))
+        for value in (helper.classify(raw, evidence_complete=False),
+                      helper.classify(b'private\n'),
+                      helper.classify(helper.encoded(helper.password()), 'wrong-password'),
+                      helper.classify(helper.encoded(helper.native())),
+                      helper.classify(raw.replace(b'hostname mismatch', b'\xff'))):
+            self.assertNotIn('opensslShape', value)
 
 
 class PoolClearedCauseTests(unittest.TestCase):
