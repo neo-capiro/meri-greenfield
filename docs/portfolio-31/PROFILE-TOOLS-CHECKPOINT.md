@@ -1,5 +1,7 @@
 # CSV import, focus tags and profile JSON
 
+**Subsequent scope decision (11 October 2026):** The user confirmed that CSV import is not required. CORE-018 remains in the historical packet for traceability but is excluded from the current Portfolio release/acceptance scope. The already tested component stays uncomposed; no product CSV entry is planned. The qualification below records work completed before that decision.
+
 ## Source and ownership
 
 - Isolated frontend checkout `C:\dev\meri-portfolio-profile-tools-20261011`, branch `codex/portfolio-profile-tools-20261011`, starting root integration `bc9cff8ac0d76738975a5ef5eca88c421cce35f1`. Prior `576d199` and its evidence remain untouched.
@@ -12,7 +14,7 @@
 
 | Audit ID | Verified current design / contract | Qualification |
 | --- | --- | --- |
-| CORE-018 | Historical row has no Figma reference. Fresh context and screenshot for current chooser `411:44629` show Manual entry, Search LDA, Create with Meri, Add prospect; no CSV choice. `ClientsController:352` and `ClientsService:1261` implement typed-row bulk import. | CSV parser/mapping/review/result component exists behind an explicit public interface; **uncomposed** pending product placement. No added chooser item. |
+| CORE-018 | Historical row has no Figma reference. Fresh context and screenshot for current chooser `411:44629` show Manual entry, Search LDA, Create with Meri, Add prospect; no CSV choice. `ClientsController:352` and `ClientsService:1261` implement typed-row bulk import. | CSV parser/mapping/review/result component exists behind an explicit public interface; **uncomposed**. The later user scope decision removed its product placement and release requirement. |
 | CORE-024 | Fresh Overview `411:47010`, exact Focus row `411:47039` and `+ Add` `411:47047` inspected using required Figma design-to-code skill. Geist 11px eyebrow, 12px tags, 6px gap, 8px radius and dashed Add retained. PUT client requires user_admin or capiro_admin. | Fresh-read merge preserves unrelated intake fields; exact client/tenant/tags receipt required. Whole-intake replacement remains versionless; this is not an atomic tag operation. |
 | CORE-025 | Historical row references Overview `411:47010`; no standalone export state in that frame. Revalidated legacy composition of GET client plus GET intelligence/client-profile. Root owns existing profile-actions placement. | JSON review/download preserves source values and attribution. Explicit reviewed partial download only for non-authentication intelligence failure. No PDF/export-pack endpoint invented. |
 

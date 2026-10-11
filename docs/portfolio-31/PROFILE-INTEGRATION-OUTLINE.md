@@ -6,7 +6,7 @@ The integration owner composes the separately reviewed profile tag/export and vo
 
 - Add FocusTags after the Overview description, before account ownership, matching inspected current Figma `411:47039` within `411:47010`.
 - Add reviewed JSON export to the existing client profile actions menu, preserving explicit prepare/download and focus restoration.
-- Keep CSV import in the test harness pending the current-design placement decision for CORE-018.
+- Keep the existing CSV import component in its test harness. On 11 October 2026 the user confirmed that CSV import is not required for the current Portfolio scope, so do not add a product entry or count CORE-018 toward release acceptance.
 - Correct the Engagement pulse card surface and statistics spacing from inspected `411:47144`; retain current service values and explicit unavailable analytics. Do not invent 30-day, reply, overdue or weekly definitions.
 - Compose the audio-file review interface into debrief generation with the verified `voice` method. No microphone capture, second uploader or external provider client.
 - Keep product scope/actor state and ambiguous writes within feature sessions. Existing Clerk SessionBoundary clears the complete cache when the actual auth session changes.

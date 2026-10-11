@@ -33,7 +33,7 @@ Recent additions:
 - Current Engagement pulse white surface/grey statistics spacing matches inspected Figma; missing health/coverage definitions remain unavailable. Portfolio trend revalidation found quarter/thread counting and unresolved caller scope; no unsafe inferred analytics were rendered.
 - Recorded notes support pin/unpin; shared activity mutation coordination now retains uncertain outcomes across dialogs and permits GET-only reconciliation. Backend canonical-wall candidate2384 is separately reviewed and undeployed.
 - Record Voice Memo accepts an audio file through canonical Files/readiness/extraction, reviews the transcript, then explicitly generates a voice-method draft. Actual Calendar browser checks verify separate Save. Missing completeness metadata is disclosed; no microphone capture or live provider operation.
-- CSV parsing/import is component-validated only, pending its current product entry point. Saved-performance placement remains pending too.
+- CSV parsing/import was component-validated only and had no product entry. The user subsequently confirmed on 11 October 2026 that CSV import is not required in the current Portfolio scope. Saved-performance placement remains pending.
 
 - Manual debrief source matches inspected desktop/mobile Figma and calls existing method=manual generation only after explicit submit. Save/approve/share remain separate. Meeting/actor changes discard pending source and late generation.
 - Client Quick log validates its exact new record before showing Undo; fresh unchanged preflight, duplicate fences and uncertain outcome refusal. Toast sits below both client action rows. Saved submission removal remains uncomposed pending current entry placement.
