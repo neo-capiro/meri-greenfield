@@ -1,4 +1,5 @@
 import type { Page, Route } from "@playwright/test";
+import type { Prospect } from "../../src/features/prospects/contracts";
 export const clientId = "10000000-0000-4000-8000-000000000001";
 export const personId = "20000000-0000-4000-8000-000000000001";
 export const opportunity = {
@@ -58,7 +59,7 @@ export const opportunitySearch = {
 export const objectiveId = "30000000-0000-4000-8000-000000000001";
 export const capabilityId = "40000000-0000-4000-8000-000000000001";
 export const prospectId = "70000000-0000-4000-8000-000000000001";
-export const prospect = {
+export const prospect: Prospect = {
   id: prospectId,
   displayName: "Test Prospect",
   domain: "prospect.test",
@@ -282,6 +283,8 @@ export async function installFixtures(page: Page) {
     };
     if (path === "core/business-development/prospect-stages")
       return json(route, { message: "New stages unavailable" }, 404);
+    if (path === `core/business-development/prospects/${prospectId}/contacts`)
+      return json(route, { message: "Contacts unavailable" }, 404);
     if (path in responses) return json(route, responses[path]);
     unexpected.push(`${method} ${path}`);
     await json(route, { message: "No fixture for this contract" }, 500);

@@ -20,6 +20,7 @@ import { ProspectHistory } from "./ProspectHistory";
 import { StageEditor } from "./StageEditor";
 import { useProspectVisibility } from "./mutations";
 import { ProspectContacts } from "./contacts/public";
+import { ProspectClientLink } from "./conversion/public";
 import styles from "./prospects.module.css";
 export function ProspectDetail({
   id,
@@ -66,6 +67,7 @@ export function ProspectDetail({
               </div>
               <div className="row">
                 <span className="chip">{stageLabel(record.stage)}</span>
+                <ProspectClientLink record={record} />
                 <button
                   className="button primary"
                   onClick={() => setEditing(true)}
@@ -121,14 +123,6 @@ export function ProspectDetail({
                       ? "Stage changes are recorded in activity. Conversion and billing require separate actions."
                       : "Stage updates are currently unavailable. Your existing stage is preserved."}
                   </p>
-                  {record.linkedClientId && (
-                    <Link
-                      className="button"
-                      href={`/portfolio/${record.linkedClientId}`}
-                    >
-                      Open linked client ↗
-                    </Link>
-                  )}
                 </section>
                 <ProspectHistory id={id} />
               </div>

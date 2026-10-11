@@ -317,3 +317,41 @@ checks while that deployment/access boundary remains unresolved.
 
 Sources: https://clerk.com/docs/guides/development/managing-environments and
 https://clerk.com/docs/guides/development/troubleshooting/using-production-keys-in-development.
+
+## Client lifecycle integration outline — 11 October 2026
+
+Client-intake owns the canonical three-step form, profile mapping/validation,
+fresh-read dirty-field merge, logo staging/confirmation and soft archive adapters.
+Client-profile composes its public edit/archive dialogs from a focused actions
+menu in the shared header. Role-gated entries reuse the existing identity query;
+API authorization remains authoritative. Radix manages keyboard/menu/dialog focus
+with explicit return to the originating control. Capabilities reuses the public
+certification vocabulary, avoiding a second private list. Verify the actual
+ClientFrame composition, validation, preserved remote fields, scoped receipts,
+partial logo success/retry, permissions, archive confirmation and cache refresh.
+No second application, editor or persistent page-level UI store is introduced.
+
+## Facility target composition outline — 11 October 2026
+
+Relationships exposes a focused AddGovernmentTargetButton through its public
+interface for representatives resolved by Facilities. It reuses the canonical
+target query/mutation, validates the saved client/member/directory association,
+waits for identity and current targets, prevents duplicate pending writes and
+reports server failures. Facilities supplies only its client and resolved member;
+it does not copy target persistence. Existing backend role and tenant guards
+remain authoritative. Validate the real facility detail composition, already
+saved targets, failed add/retry, permissions and cache refresh in the browser.
+
+## Explicit prospect/client linking outline — 11 October 2026
+
+Prospects owns a focused conversion subfeature for the verified link-existing
+path: server-scoped client search, explicit selection/confirmation, scoped
+conversion receipt and cache invalidation. It reuses the canonical Prospect
+schema, HTTP/session boundary, identity and Radix Dialog. The endpoint owns
+tenant authorization, canonical identity conflicts and locked idempotency.
+An existing-client link must return created:false and matching prospect/client
+identities; a lost reply triggers readback, never an automatic second POST.
+Linking does not charge, create a client or claim asset carry-over. New-client
+conversion stays separate until inline billing and durable carry-over are
+integrated. Verify search encoding, pending refusal, failures, mismatched
+receipts, permissions, expiry and lost-reply readback in the actual components.
