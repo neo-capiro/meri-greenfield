@@ -200,6 +200,17 @@ test('authorization decisions are correlated, time bounded and not accepted for 
   assert.throws(() => assertFixtureResponse(req, response(f, req), options(f)), /STABLE/);
 });
 
+test('stale denial cannot predate its named replacement admission', () => {
+  const f = fixture(), req = request(f, 'authorizeFixturePhase');
+  const res = { ...response(f, req), status: 'DENIED_STALE_BINDING', currentContext: copy(f.current) };
+  res.checkedAtMs = T + 10000;
+  assert.throws(() => assertFixtureResponse(req, res, options(f)), /FIXTURE_DECISION_FRESHNESS/);
+  for (const checkedAtMs of [f.current.identity.admittedAtMs, f.current.identity.admittedAtMs + 1, NOW]) {
+    res.checkedAtMs = checkedAtMs;
+    assert.equal(assertFixtureResponse(req, res, options(f)), 'STALE_BINDING_DENIED');
+  }
+});
+
 test('unknown operations, phase confusion and missing product-incomplete flags refuse', () => {
   for (const mutate of [r => r.operation = 'session.persist', r => r.context.phase = 'resume', r => r.storageUrl = 'https://foreign.invalid']) {
     const f = fixture(), req = request(f, 'commitFixtureCheckpoint'); mutate(req); assert.throws(() => assertFixtureRequest(req, { nowMs: NOW }));

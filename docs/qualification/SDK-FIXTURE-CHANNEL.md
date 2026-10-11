@@ -23,7 +23,7 @@ All requests and responses carry the closed protocol/profile, fixed operation, r
 
 `assertFixtureRequest` validates a request at caller-supplied trusted `nowMs`. `assertFixtureResponse` additionally requires the trusted original producer. Load/verify require a fresh replacement context and the previously trusted receipt identity. `assertFixtureReceipt` requires both trusted expected producer and receipt identity; deriving both from the same untrusted response proves no authenticity. `fixtureReceiptIdentity` calculates correlation data only.
 
-Response validation returns status strings. Only the explicit, validated stale-binding response returns `STALE_BINDING_DENIED`; errors, malformed/foreign/expired data and unknown outcomes throw fixed errors. A caller must never convert every exception to a false authorization witness. The 30-second decision-age bound is a protocol check, not measured continuous revocation evidence.
+Response validation returns status strings. Only the explicit, validated stale-binding response returns `STALE_BINDING_DENIED`; errors, malformed/foreign/expired data and unknown outcomes throw fixed errors. Its decision timestamp must be at or after the named current replacement's admission. A caller must never convert every exception to a false authorization witness. The 30-second decision-age bound is a protocol check, not measured continuous revocation evidence.
 
 ## Bytes, clocks and declared coverage
 

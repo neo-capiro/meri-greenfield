@@ -1,0 +1,9 @@
+# SDK fixture denial timing correction
+
+Base: `07b94470336de9972f9cd02cf81e48acdbf32ecb`. Integration owner Codex owns this dedicated `task/g1-sdk-fixture-channel-timing-repair` worktree, bounded to 20 minutes. The original author and independent review namespaces stay immutable.
+
+Own exactly the existing private SDK fixture validator, its focused test, `docs/qualification/SDK-FIXTURE-CHANNEL.md`, the existing SDK fixture source report, this new brief and matching new report. No schema/public export/lockfile/driver/ledger/migration changes. Ignored evidence is `.task-inputs/sdk-fixture-timing-repair-1`.
+
+Independent review found a typed stale-binding denial could report a decision before its named replacement was admitted. Add the missing relation `checkedAtMs >= currentContext.identity.admittedAtMs` in the existing authorize-response branch. Keep existing correlation, current replacement, immutable producer, expiry and 30-second decision-age checks. No second authorization owner or runtime implementation is introduced. Correct the source report's inaccurate CRLF predecessor statement using exact retained LF source bytes; do not alter retained evidence.
+
+Verification: preserve all original 16 focused tests verbatim; add an observable pre-admission denial rejection and equality/later positive cases. Run the affected private 17-group suite once with the existing offline effect guard, pinned Node and read-only borrowed canonical dependencies; retain argv, external 60-second direct-child bound, binary streams and source/dependency pre/post hashes. No broad public-suite replay, service/network/storage/native/AWS/Docker/model actions or operational identities/clocks. Review the exact diff, commit six scoped paths and seal finite evidence. A distinct Codex reviewer must review the correction before integration. Source success does not establish trusted-channel authorization, durable storage, native recovery or G1 acceptance.

@@ -175,6 +175,7 @@ export function assertFixtureResponse(request, response, { producer, nowMs }) {
         response.checkedAtMs < request.context.identity.admittedAtMs) fail('FIXTURE_DECISION_FRESHNESS');
     if (response.status === 'DENIED_STALE_BINDING') {
       replacement(request.context, response.currentContext, nowMs, request.context.identity.admittedAtMs);
+      if (response.checkedAtMs < response.currentContext.identity.admittedAtMs) fail('FIXTURE_DECISION_FRESHNESS');
       return 'STALE_BINDING_DENIED';
     }
     return 'AUTHORIZED';

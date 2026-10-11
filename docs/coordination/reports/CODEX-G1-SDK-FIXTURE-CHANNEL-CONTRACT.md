@@ -24,7 +24,7 @@ The local setup copied only canonical contracts dependencies from `frontend-owne
 
 The 16 focused groups cover roundtrip correlation; incomplete-product flags/public boundary; foreign producer/receipt/hash/pins/identity; clocks and expiry; distinct replacement and original historical producer; paths/parents/namespace/corrupt bytes/bounds; stored inventory and whole bundle; workspace/scopes/readback/publication; explicit stale versus error/unknown; and nonfinite/cyclic/accessor/sparse data. They are deterministic synthetic DATA checks, not evidence of real gateway authorization or durable native recovery.
 
-Before staging, the six allocated files were normalized to repository-required LF line endings. The exact final tested CRLF contract-source bytes are retained in `focused-4/source/`; the explicit byte transformation is recorded in `line-ending-map.json`. No non-newline byte changed and no behavior replay was added for this serialization-only conversion. Commit/raw Git pins identify the LF source, while the test receipt pins identify its retained CRLF predecessor.
+Independent review corrected the original report's line-ending claim: the final `focused-4/source/` schema, validator and test snapshots were already LF and byte-identical to their original committed source. They contained no CRLF predecessor or serialization change. The retained `line-ending-map.json` describes an identity mapping for those three files; it is not evidence that a normalization occurred. Original commit/test pins and all evidence remain intact. The later timing correction has its own source and test receipt.
 
 ## Remaining implementation and limits
 
