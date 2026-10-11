@@ -279,6 +279,7 @@ Resources:
     Properties:
       Cluster: !Ref PreviewCluster
       ServiceName: capiro-portfolio-preview
+      TaskDefinition: !Ref PreviewTaskDefinition
       LaunchType: FARGATE
       DesiredCount: 1
       HealthCheckGracePeriodSeconds: 90
