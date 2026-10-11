@@ -186,10 +186,9 @@ test("settlement requires a due date, retains permission errors, prevents duplic
       name: "Activity actions: Staff call recap",
     }),
   ).toBeDisabled();
-  await expect.poll(() => writes).toEqual([
-    { settled: true },
-    { settled: true },
-  ]);
+  await expect
+    .poll(() => writes)
+    .toEqual([{ settled: true }, { settled: true }]);
   await expect.poll(() => Boolean(release)).toBe(true);
   release?.();
   await expect(
@@ -201,11 +200,9 @@ test("settlement requires a due date, retains permission errors, prevents duplic
   await expect(
     timeline.getByRole("button", { name: "Settle", exact: true }),
   ).toBeVisible();
-  await expect.poll(() => writes).toEqual([
-    { settled: true },
-    { settled: true },
-    { settled: false },
-  ]);
+  await expect
+    .poll(() => writes)
+    .toEqual([{ settled: true }, { settled: true }, { settled: false }]);
   expect(unexpected).toEqual([]);
 });
 
