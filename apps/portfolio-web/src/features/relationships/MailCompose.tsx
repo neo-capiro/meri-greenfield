@@ -25,12 +25,15 @@ export function MailCompose({
   thread,
   onClose,
   initialDraft,
+  sendBlockedReason,
 }: {
   person: MailContact;
   clientId: string;
   thread?: { id: string; subject: string };
   onClose: () => void;
   initialDraft?: MailInitialDraft;
+  /** A verified contract gap: review is available, dispatch/upload/rewrite are not. */
+  sendBlockedReason?: string;
 }) {
   const [subject, setSubject] = useState(
     initialDraft?.subject ??
@@ -43,17 +46,20 @@ export function MailCompose({
     text: string;
   } | null>(null);
   const [to, setTo] = useState<Recipient[]>(
-    person.email
-      ? [
-          {
-            email: person.email.trim().toLowerCase(),
-            name: person.name,
-            ...(person.personId ? { personId: person.personId } : {}),
-          },
-        ]
-      : [],
+    initialDraft?.to ??
+      (person.email
+        ? [
+            {
+              email: person.email.trim().toLowerCase(),
+              name: person.name,
+              ...(person.personId ? { personId: person.personId } : {}),
+            },
+          ]
+        : []),
   );
-  const [cc, setCc] = useState("");
+  const [cc, setCc] = useState(
+    initialDraft?.cc?.map((item) => item.email).join(", ") ?? "",
+  );
   const [bcc, setBcc] = useState("");
   const [validation, setValidation] = useState("");
   const [rewriteWarning, setRewriteWarning] = useState("");
@@ -72,8 +78,13 @@ export function MailCompose({
         if (!open && !send.isPending && !attachments.busy) onClose();
       }}
       title={thread ? "Reply" : "New email"}
-      description="Sends through your own connected mailbox. Backend permissions and connection policy apply."
+      description={
+        sendBlockedReason
+          ? "Review this reply. Sending is unavailable for this thread."
+          : "Sends through your own connected mailbox. Backend permissions and connection policy apply."
+      }
     >
+      {sendBlockedReason && <p role="note">{sendBlockedReason}</p>}
       {send.isSuccess ? (
         <div className="stack">
           <p role="status">Email sent.</p>
@@ -148,7 +159,11 @@ export function MailCompose({
             type="button"
             className="button"
             disabled={
-              locked || !authority.ready || rewrite.isPending || !body.trim()
+              locked ||
+              !authority.ready ||
+              rewrite.isPending ||
+              !body.trim() ||
+              Boolean(sendBlockedReason)
             }
             onClick={async () => {
               const result = await rewrite
@@ -197,10 +212,12 @@ export function MailCompose({
               ? "Your saved signature is appended by the server."
               : "No saved signature is available."}
           </small>
-          <AttachmentFields
-            state={attachments}
-            disabled={send.isPending || uncertain || !authority.ready}
-          />
+          {!sendBlockedReason && (
+            <AttachmentFields
+              state={attachments}
+              disabled={send.isPending || uncertain || !authority.ready}
+            />
+          )}
           {validation && <p role="alert">{validation}</p>}
           {!authority.ready && (
             <p role="alert">
@@ -241,6 +258,7 @@ export function MailCompose({
       >
         {review && (
           <div className="stack">
+            {sendBlockedReason && <p role="note">{sendBlockedReason}</p>}
             <p>To: {review.input.to.map((item) => item.email).join(", ")}</p>
             {Boolean(review.input.cc?.length) && (
               <p>Cc: {review.input.cc?.map((item) => item.email).join(", ")}</p>
@@ -269,9 +287,21 @@ export function MailCompose({
         )}
         <button
           className="button primary"
-          disabled={send.isPending || uncertain || !authority.ready || !review}
+          disabled={
+            send.isPending ||
+            uncertain ||
+            !authority.ready ||
+            !review ||
+            Boolean(sendBlockedReason)
+          }
           onClick={() => {
-            if (!review || send.isPending || uncertain || !authority.ready)
+            if (
+              !review ||
+              send.isPending ||
+              uncertain ||
+              !authority.ready ||
+              sendBlockedReason
+            )
               return;
             send.mutate(review.input, { onSuccess: () => setReview(null) });
           }}

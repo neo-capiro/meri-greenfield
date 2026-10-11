@@ -1,0 +1,75 @@
+.thread {
+  min-width: 0;
+}
+.expanded {
+  display: grid;
+  gap: 10px;
+}
+.messages {
+  display: grid;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  max-height: 420px;
+  overflow: auto;
+}
+.message {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.039px;
+}
+.message + .message {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.message header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-wrap: anywhere;
+}
+.message time {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.message p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--muted-foreground);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.actions small {
+  color: var(--muted-foreground);
+}
+.actions button {
+  min-height: 31px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+@media (max-width: 600px) {
+  .message header {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .actions small {
+    flex-basis: 100%;
+  }
+  .messages {
+    padding: 12px;
+  }
+}

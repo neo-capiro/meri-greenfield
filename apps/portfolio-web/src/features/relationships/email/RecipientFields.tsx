@@ -27,7 +27,7 @@ export function RecipientFields({
   const roster = usePeople(clientId);
   const [picker, setPicker] = useState(false);
   const [search, setSearch] = useState("");
-  const [showCc, setShowCc] = useState(false);
+  const [showCc, setShowCc] = useState(Boolean(cc));
   const [showBcc, setShowBcc] = useState(false);
   const selected = new Set(to.map((item) => item.email.toLowerCase()));
   const seen = new Set<string>();
