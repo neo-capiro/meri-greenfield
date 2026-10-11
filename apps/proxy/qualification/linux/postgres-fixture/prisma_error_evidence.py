@@ -195,8 +195,9 @@ def _class(error):
 
 
 def _transport_arguments(error, kind, args, fields, budget):
-    # Pinned httpcore wraps the original exception as its sole argument and
-    # explicit cause. Never stringify that argument or treat its text as proof.
+    # Pinned httpcore wraps the original exception as its sole argument.
+    # The async pool can then rethrow it from None, clearing explicit cause.
+    # Never stringify that argument or treat its text as proof.
     if fields:
         _deny('UNKNOWN_SHAPE')
     if kind == 'HTTPCORE_CONNECT':
@@ -206,9 +207,16 @@ def _transport_arguments(error, kind, args, fields, budget):
                 or mro[2:] != (Exception, BaseException, object)):
             _deny('UNKNOWN_OBJECT_LAYOUT')
         cause = BaseException.__cause__.__get__(error)
-        if len(args) != 1 or args[0] is not cause or cause is None:
+        if len(args) != 1:
             _deny('CONFLICTING_EVIDENCE')
-        return
+        if cause is not None:
+            if args[0] is not cause:
+                _deny('CONFLICTING_EVIDENCE')
+            return cause
+        if (BaseException.__suppress_context__.__get__(error) is not True
+                or type(args[0]) not in (OSError, ConnectionRefusedError)):
+            _deny('CONFLICTING_EVIDENCE')
+        return args[0]
     # Only exact builtin syscall shapes are admitted; subclasses, filenames,
     # custom dictionaries and mutated internal slots remain unqualified.
     if len(args) == 1 and kind == 'OS_ERROR' and type(args[0]) is str:
@@ -227,6 +235,7 @@ def _transport_arguments(error, kind, args, fields, budget):
     winerror = type.__getattribute__(OSError, '__dict__').get('winerror')
     if winerror is not None and winerror.__get__(error) is not None:
         _deny('UNKNOWN_SHAPE')
+    return BaseException.__cause__.__get__(error)
 
 
 def classify_exception(case, error, *, evidence_complete=True):
@@ -260,8 +269,9 @@ def classify_exception(case, error, *, evidence_complete=True):
                 _deny('UNKNOWN_EXCEPTION_CLASS')
             args = BaseException.args.__get__(current)
             fields = _namespace(current)
+            next_cause = BaseException.__cause__.__get__(current)
             if kind in ('HTTPCORE_CONNECT', 'OS_ERROR', 'CONNECTION_REFUSED'):
-                _transport_arguments(current, kind, args, fields, budget)
+                next_cause = _transport_arguments(current, kind, args, fields, budget)
                 opaque_transport = True
             else:
                 if len(args) > 1 or any(type(value) is not str for value in args):
@@ -286,7 +296,7 @@ def classify_exception(case, error, *, evidence_complete=True):
                 sources.add('BUFFERED_RESPONSE')
             elif kind == 'ENGINE_CONNECTION' and fields:
                 _deny('UNKNOWN_SHAPE')
-            current = BaseException.__cause__.__get__(current)
+            current = next_cause
         if opaque_transport and records:
             _deny('OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE')
         expected = {'wrong-ca': 'CERTIFICATE_REJECTED', 'wrong-san': 'HOSTNAME_REJECTED',

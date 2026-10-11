@@ -492,6 +492,7 @@ class TransportCauseTests(unittest.TestCase):
                 core.args = (OSError('All connection attempts failed'),)
             elif change == 'missing':
                 core.__cause__ = None
+                core.__suppress_context__ = False
             elif change == 'text':
                 core.args = ('private',)
             else:
@@ -651,6 +652,92 @@ class OpenSSLVerificationTests(unittest.TestCase):
         self.assertTrue(all(type(item) in (str, bool, int) for item in value.values()))
         for private in ('statem', '2125', '0A000086', 'fixture-db', 'fixture_user', 'hostname mismatch'):
             self.assertNotIn(private, json.dumps(value))
+
+
+class PoolClearedCauseTests(unittest.TestCase):
+    def pooled(self):
+        engine, core, aggregate, refused = TransportCauseTests().chain()
+        # Exact pinned pool cleanup statement, using harmless synthetic errors.
+        try:
+            try:
+                raise core
+            except BaseException as error:
+                raise error from None
+        except Exception as error:
+            self.assertIs(error, core)
+        self.assertIsNone(core.__cause__)
+        self.assertTrue(core.__suppress_context__)
+        self.assertIs(core.args[0], aggregate)
+        return engine, core, aggregate, refused
+
+    def test_pool_raise_from_none_is_complete_and_nonpositive_in_every_case(self):
+        engine, _, _, _ = self.pooled()
+        for case in ('positive', 'wrong-ca', 'wrong-san', 'plaintext', 'wrong-password'):
+            value = classify_exception(case, engine)
+            self.assertEqual(value, {'case': case, 'specificRejection': False,
+                'reason': 'NO_SPECIFIC_EVIDENCE', 'source': 'NONE',
+                'classes': ['ENGINE_CONNECTION', 'CONNECT_ERROR', 'HTTPCORE_CONNECT',
+                            'OS_ERROR', 'CONNECTION_REFUSED'], 'complete': True})
+
+    def test_exact_direct_refused_argument_is_checked_without_stringification(self):
+        engine, core, _, refused = self.pooled()
+        core.args = (refused,)
+        type(core).__str__ = lambda _: (_ for _ in ()).throw(AssertionError('str called'))
+        value = classify_exception('wrong-password', engine)
+        self.assertTrue(value['complete'])
+        self.assertFalse(value['specificRejection'])
+        self.assertEqual('CONNECTION_REFUSED', value['classes'][-1])
+
+    def test_false_suppression_or_contradictory_explicit_cause_refuses(self):
+        for change in ('unsuppressed', 'different-cause'):
+            engine, core, _, _ = self.pooled()
+            if change == 'unsuppressed':
+                core.__suppress_context__ = False
+            else:
+                core.__cause__ = OSError('different opaque cause')
+            value = classify_exception('wrong-ca', engine)
+            self.assertEqual('CONFLICTING_EVIDENCE', value['reason'])
+            self.assertFalse(value['complete'])
+            self.assertFalse(value['specificRejection'])
+
+    def test_cleared_argument_requires_exact_builtin_and_valid_slots(self):
+        class Derived(OSError):
+            pass
+        for argument in ('opaque text', Exception('opaque'), Derived('opaque'),
+                         ExceptionGroup('opaque', [OSError('opaque')]),
+                         ConnectionRefusedError(111, 'opaque', '/private')):
+            engine, core, _, _ = self.pooled()
+            core.args = (argument,)
+            value = classify_exception('wrong-ca', engine)
+            self.assertFalse(value['complete'])
+            self.assertFalse(value['specificRejection'])
+
+    def test_cleared_traversal_preserves_cycle_byte_and_cause_bounds(self):
+        for change, reason in (('cycle', 'CAUSE_CYCLE'), ('bytes', 'BYTE_BOUND'),
+                               ('depth', 'CAUSE_BOUND')):
+            engine, _, aggregate, _ = self.pooled()
+            if change == 'cycle':
+                aggregate.__cause__ = engine
+            elif change == 'bytes':
+                aggregate.args = ('x' * 65537,)
+            else:
+                for _ in range(4):
+                    outer = EngineConnectionError('opaque')
+                    outer.__cause__ = engine
+                    engine = outer
+            value = classify_exception('wrong-ca', engine)
+            self.assertEqual(reason, value['reason'])
+            self.assertFalse(value['complete'])
+
+    def test_cleared_transport_cannot_mix_with_structured_positive_evidence(self):
+        engine, _, aggregate, _ = self.pooled()
+        aggregate.args = ('P1011 certificate verify failed password authentication failed',)
+        self.assertFalse(classify_exception('wrong-ca', engine)['specificRejection'])
+        structured = data_error()
+        structured.__cause__ = engine
+        value = classify_exception('wrong-ca', structured)
+        self.assertEqual('OPAQUE_TRANSPORT_WITH_STRUCTURED_EVIDENCE', value['reason'])
+        self.assertFalse(value['specificRejection'])
 
 
 if __name__ == '__main__':
