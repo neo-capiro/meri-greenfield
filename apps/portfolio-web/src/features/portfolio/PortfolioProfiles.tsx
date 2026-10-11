@@ -11,12 +11,14 @@ export function PortfolioProfiles({
   state,
   filtered,
   owners,
+  onRefreshCatalog,
 }: {
   catalog: Client[];
   rows: Client[];
   state: PortfolioIndexState;
   filtered: boolean;
   owners?: Record<string, { accountOwner: Member | null }>;
+  onRefreshCatalog: () => void;
 }) {
   const layout = usePortfolioLayout(catalog.map(({ id }) => id));
   const byId = new Map(rows.map((client) => [client.id, client]));
@@ -27,18 +29,27 @@ export function PortfolioProfiles({
           return client ? [client] : [];
         })
       : rows;
-  return state.view === "cards" && state.sort === "saved" && !filtered ? (
-    <PortfolioLayoutEditor
-      cards={catalog.map(({ id, name }) => ({ id, name }))}
-      layout={layout}
-      renderCard={(id) => {
-        const client = byId.get(id);
-        return client ? (
-          <ProfileCard client={client} ownership={owners?.[id]} />
-        ) : null;
-      }}
-    />
-  ) : (
-    <ProfileResults rows={ordered} view={state.view} owners={owners} />
+  return (
+    <>
+      {layout.error && (
+        <button className="button" onClick={onRefreshCatalog}>
+          Refresh profiles
+        </button>
+      )}
+      {state.view === "cards" && state.sort === "saved" && !filtered ? (
+        <PortfolioLayoutEditor
+          cards={catalog.map(({ id, name }) => ({ id, name }))}
+          layout={layout}
+          renderCard={(id) => {
+            const client = byId.get(id);
+            return client ? (
+              <ProfileCard client={client} ownership={owners?.[id]} />
+            ) : null;
+          }}
+        />
+      ) : (
+        <ProfileResults rows={ordered} view={state.view} owners={owners} />
+      )}
+    </>
   );
 }

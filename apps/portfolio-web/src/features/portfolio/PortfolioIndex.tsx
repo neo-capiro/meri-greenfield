@@ -189,6 +189,7 @@ export function PortfolioIndex({
                         state={state}
                         filtered={activeFilters}
                         owners={owners.error ? undefined : owners.data}
+                        onRefreshCatalog={() => void clients.refetch()}
                       />
                     ) : (
                       <div className="status">
