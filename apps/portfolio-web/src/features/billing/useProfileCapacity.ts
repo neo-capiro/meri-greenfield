@@ -1,6 +1,6 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { notifyManager, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { useIdentity } from "@/shared/auth/identity";
 import { currentClientWriter } from "@/features/client-profile/quick-log/public";
@@ -15,14 +15,17 @@ export function useProfileCapacity(enabled: boolean, quantity = 1) {
   const key = [...billingStateKey, actor?.tenantId, actor?.userId] as const;
   // Invalidation can change authority without changing the identity object.
   useSyncExternalStore(
-    (notify) =>
-      cache.getQueryCache().subscribe((event) => {
+    (notify) => {
+      const batchedNotify = notifyManager.batchCalls(notify);
+      return cache.getQueryCache().subscribe((event) => {
         if (
-          event.query.queryKey[0] === "identity" ||
-          event.query.queryKey[0] === "billing"
+          event.type === "updated" &&
+          (event.query.queryKey[0] === "identity" ||
+            event.query.queryKey[0] === "billing")
         )
-          notify();
-      }),
+          batchedNotify();
+      });
+    },
     () =>
       `${cache.getQueryState(["identity"])?.isInvalidated}:${cache.getQueryState(["identity"])?.fetchStatus}:${cache.getQueryState(key)?.isInvalidated}`,
     () => "true:fetching",

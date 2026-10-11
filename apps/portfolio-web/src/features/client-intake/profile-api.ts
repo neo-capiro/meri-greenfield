@@ -8,12 +8,13 @@ export function clientReceipt(id: string) {
     "Client receipt does not match the requested profile.",
   );
 }
-export class ClientProfileAttemptError extends Error {
+export class ClientProfileAttemptError extends ApiError {
   constructor(
     message: string,
     public readonly uncertain: boolean,
+    status = 0,
   ) {
-    super(message);
+    super(status, message);
     this.name = "ClientProfileAttemptError";
   }
 }
@@ -44,6 +45,7 @@ export async function saveClientProfile(
         error instanceof ApiError &&
         [400, 401, 402, 403, 404, 409, 422].includes(error.status)
       ),
+      error instanceof ApiError ? error.status : 0,
     );
   }
 }

@@ -9,6 +9,23 @@ const state = {
   trialEndsAt: null,
   onboardingFlowVersion: 1,
 };
+const renderErrors = new WeakMap<Page, string[]>();
+test.beforeEach(async ({ page }) => {
+  const errors: string[] = [];
+  renderErrors.set(page, errors);
+  page.on("console", (message) => {
+    if (
+      message.type() === "error" &&
+      /Cannot update a component|Maximum update depth|Rendered (more|fewer) hooks/.test(
+        message.text(),
+      )
+    )
+      errors.push(message.text());
+  });
+});
+test.afterEach(async ({ page }) => {
+  expect(renderErrors.get(page)).toEqual([]);
+});
 async function chooser(page: Page) {
   await page.goto("/portfolio");
   await page
@@ -56,7 +73,7 @@ test("tenant slot count blocks client creation and leaves prospect and LDA brows
     path: info.outputPath("profile-capacity-desktop.png"),
   });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.evaluate(() => (document.documentElement.dataset.theme = "dark"));
+  await page.emulateMedia({ colorScheme: "dark" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
     "rgb(18, 18, 18)",
