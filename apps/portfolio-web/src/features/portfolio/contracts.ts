@@ -34,16 +34,13 @@ export type Client = z.infer<typeof clientSchema>;
 export function clientSectors(client: Client): string[] {
   const stored = client.intakeData?.sectors;
   const sectors = Array.isArray(stored)
-    ? stored.filter((value): value is string => typeof value === "string")
-    : [];
-  return [
-    ...new Set(
-      [client.sectorTag, ...sectors]
+    ? stored
         .filter((value): value is string => typeof value === "string")
         .map((value) => value.trim())
-        .filter(Boolean),
-    ),
-  ];
+        .filter(Boolean)
+    : [];
+  const fallback = client.sectorTag?.trim();
+  return [...new Set(sectors.length ? sectors : fallback ? [fallback] : [])];
 }
 export function clientSectorLabel(client: Client): string | null {
   const primary = clientSectors(client)[0];

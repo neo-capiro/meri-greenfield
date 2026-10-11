@@ -119,6 +119,25 @@ describe("Portfolio index contract-backed controls", () => {
     expect(
       filterClients([coded], { ...empty, sector: "HOMELAND_SECURITY" }, {}),
     ).toEqual([coded]);
+    const staleTag = clientSchema.parse({
+      ...coded,
+      sectorTag: "HEALTH",
+      intakeData: { sectors: ["DEFENSE", "HOMELAND_SECURITY"] },
+    });
+    expect(clientSectors(staleTag)).toEqual(["DEFENSE", "HOMELAND_SECURITY"]);
+    expect(clientSectorLabel(staleTag)).toBe("Defense");
+    expect(
+      filterClients([staleTag], { ...empty, sector: "HEALTH" }, {}),
+    ).toEqual([]);
+    expect(
+      clientSectors(
+        clientSchema.parse({
+          ...coded,
+          sectorTag: "DEFENSE",
+          intakeData: { sectors: [" "] },
+        }),
+      ),
+    ).toEqual(["DEFENSE"]);
   });
   it("distinguishes known unassigned from missing owner receipts", () => {
     expect(
