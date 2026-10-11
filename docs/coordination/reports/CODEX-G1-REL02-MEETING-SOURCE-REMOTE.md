@@ -210,9 +210,9 @@ Explicitly **open / pending** (no invented fields):
   client{id,name}, attendees{name,email,role,responseStatus}` but the Prisma `Meeting`/attendee model
   and any DTO are not in the retained set. Those fields are modelled as typed-or-null unions and the
   owner is the missing Prisma/DTO metadata. `startsAt` is required non-null because the frozen
-  `where` clause (`gte now`, `lt until`) only matches valued rows; `status` is required to be a
-  non-`cancelled` string, and whether a SQL `NULL` status could satisfy Prisma `not: 'cancelled'` is
-  **unresolved**.
+  `where` clause (`gte now`, `lt until`) only matches valued rows. The `status` key is required;
+  its value may be null in this pending DTO because whether SQL `NULL` can satisfy Prisma
+  `not: 'cancelled'` is **unresolved**. A non-null status must be a non-`cancelled` string.
 - **Source registry identity.** `sourceId` is constrained by the canonical `SourceState` pattern but
   deliberately not pinned (the fixture uses the synthetic `"meeting"`); the catalog/source-registry
   owner allocates the real id when the operation is registered. `adapterVersion` is likewise
@@ -279,3 +279,16 @@ alter REL-02, G1, security or runtime-parity status.
 
 All three code artifacts were re-run and re-measured at these bytes; the report file is updated in the
 same commit as the final handoff text.
+
+## 8. Independent Codex review (2026-10-11 UTC)
+
+Codex reviewed the four changed paths and the five mode validators against the frozen
+`meri-tools.service.ts` producer spans through Git objects. The three code-file SHA256 values above
+matched the committed files. The worker process exited 0 and its PID and parent were absent before
+its registry was marked CLOSED. Pinned Node 24 ran the 16 focused synthetic cases and the complete
+`check:contracts` suite: **133/133 passed**. The nullable `status` caveat above corrects the handoff
+wording to match the candidate schema; it does not establish the missing Prisma type or SQL result.
+
+Review disposition: **ACCEPT AS INERT SOURCE CANDIDATE ONLY**. Catalog registration, shared-validator
+wiring, cursor authority, source registry identity, live owner checks, authentication, and G1 evidence
+remain open. This review makes no release, acceptance, connection, or historical-data claim.
