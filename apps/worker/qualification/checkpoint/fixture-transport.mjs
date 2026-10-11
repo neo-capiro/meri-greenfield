@@ -59,8 +59,8 @@ function fixedTarget(endpoint, approvedPorts) {
       url.search !== '' || url.hash !== '' || url.pathname !== '/' || url.hostname === '' ||
       !Number.isInteger(port) || !ports.includes(port)) fail(CODES.CONFIG);
   const path = endpoint.path;
-  if (!path.startsWith('/') || /[\\?#\s]/.test(path) ||
-      path.split('/').some(part => part === '.' || part === '..')) fail(CODES.CONFIG);
+  if (!/^\/[A-Za-z0-9._/-]+$/.test(path) || path.length > 256 ||
+      path.includes('//') || path.split('/').some(part => part === '.' || part === '..')) fail(CODES.CONFIG);
   // SNI is the fixed hostname unless the host is an address literal.
   const literal = /^\d{1,3}(?:\.\d{1,3}){3}$/.test(url.hostname) || url.hostname.includes(':');
   return { hostname: url.hostname, port, path, servername: literal ? undefined : url.hostname };
@@ -96,8 +96,8 @@ function fixedLimits(limits) {
 }
 
 function fixedContentType(value) {
-  if (typeof value !== 'string' || !/^[a-z]+\/[a-z0-9.+-]+$/i.test(value)) fail(CODES.CONFIG);
-  return value.toLowerCase();
+  if (value !== 'application/json') fail(CODES.CONFIG);
+  return value;
 }
 
 /** Envelope + canonical byte equality only. The full fixture schema stays with the wire owner. */
@@ -140,10 +140,13 @@ export function createFixtureHttpsTransport(options = {}) {
   const expectedType = fixedContentType(contentType);
   // The default hostname check is preserved and the pin is added on top; both
   // failures collapse to one fixed content-free error.
-  const checkServerIdentity = (host, cert) => (
-    cert && String(cert.fingerprint256 ?? '').replace(/:/g, '').toLowerCase() === pin &&
-    checkHostIdentity(host, cert) === undefined
-  ) ? undefined : new Error(CODES.IDENTITY);
+  const checkServerIdentity = (host, cert) => {
+    try {
+      if (cert && String(cert.fingerprint256 ?? '').replace(/:/g, '').toLowerCase() === pin &&
+          checkHostIdentity(host, cert) === undefined) return undefined;
+    } catch { /* malformed peer identity is a fixed refusal */ }
+    return new Error(CODES.IDENTITY);
+  };
   const base = Object.freeze({
     protocol: 'https:', hostname: target.hostname, port: target.port, path: target.path,
     method: FIXTURE_TRANSPORT_METHOD, agent: false, rejectUnauthorized: true,
@@ -163,7 +166,7 @@ export function createFixtureHttpsTransport(options = {}) {
     assertCanonicalProfile(requestBytes, operation);
     let started;
     try { started = now(); } catch { fail(CODES.BUDGET); }
-    if (!Number.isSafeInteger(started) || started >= deadlineMs) fail(CODES.BUDGET);
+    if (!Number.isSafeInteger(started) || started >= deadlineMs || deadlineMs - started > 60000) fail(CODES.BUDGET);
     if (signal !== undefined && signal.aborted) fail(CODES.BUDGET);
     const timeoutMs = deadlineMs - started;
 
@@ -173,7 +176,7 @@ export function createFixtureHttpsTransport(options = {}) {
       // credential material are never disposed.
       function closeOwned() {
         if (timer !== undefined) { clearTimeout(timer); timer = undefined; }
-        if (signal !== undefined) signal.removeEventListener('abort', onAbort);
+        if (signal !== undefined) { try { signal.removeEventListener('abort', onAbort); } catch { /* owned cleanup continues */ } }
         if (response !== undefined) { try { response.destroy(); } catch { /* owned */ } }
         if (request !== undefined) { try { request.destroy(); } catch { /* owned */ } }
       }
@@ -193,12 +196,11 @@ export function createFixtureHttpsTransport(options = {}) {
         }
         const media = String(headers['content-type'] ?? '').split(';')[0].trim().toLowerCase();
         if (media !== expectedType) { settle(false, new Error(CODES.CONTENT_TYPE)); return; }
-        const declared = headers['content-length'];
-        if (declared !== undefined) {
-          const length = Number(String(declared).trim());
-          if (!Number.isSafeInteger(length) || length < 0 || length > caps.responseBytes) {
-            settle(false, new Error(CODES.RESPONSE_BOUND)); return;
-          }
+        const rawLength = headers['content-length'];
+        const declared = rawLength === undefined ? null : String(rawLength);
+        if (declared !== null && (!/^(?:0|[1-9][0-9]*)$/.test(declared) ||
+            !Number.isSafeInteger(Number(declared)) || Number(declared) > caps.responseBytes)) {
+          settle(false, new Error(CODES.RESPONSE_BOUND)); return;
         }
         // Streaming budget applies during receipt, before any aggregation.
         const chunks = []; let received = 0;
@@ -212,18 +214,29 @@ export function createFixtureHttpsTransport(options = {}) {
         stream.on('aborted', () => settle(false, new Error(CODES.CLOSED)));
         stream.on('error', () => settle(false, new Error(CODES.CLOSED)));
         stream.on('close', () => settle(false, new Error(CODES.CLOSED)));
-        stream.on('end', () => settle(true, Buffer.concat(chunks, received)));
+        stream.on('end', () => {
+          if (declared !== null && received !== Number(declared)) {
+            settle(false, new Error(CODES.RESPONSE_BOUND)); return;
+          }
+          settle(true, Buffer.concat(chunks, received));
+        });
       }
       timer = setTimeout(() => settle(false, new Error(CODES.TIMEOUT)), timeoutMs);
-      if (signal !== undefined) signal.addEventListener('abort', onAbort, { once: true });
+      if (signal !== undefined) {
+        try { signal.addEventListener('abort', onAbort, { once: true }); }
+        catch { settle(false, new Error(CODES.INPUT)); return; }
+      }
       try {
         request = httpsModule.request({ ...base, headers: {
           'content-type': expectedType, accept: expectedType,
           'content-length': String(requestBytes.length),
         } }, onResponse);
       } catch { settle(false, new Error(CODES.DISPATCH)); return; }
-      request.on('error', () => settle(false, new Error(CODES.DISPATCH)));
-      try { request.end(requestBytes); } catch { settle(false, new Error(CODES.DISPATCH)); }
+      if (settled) { closeOwned(); return; }
+      try {
+        request.on('error', () => settle(false, new Error(CODES.DISPATCH)));
+        request.end(requestBytes);
+      } catch { settle(false, new Error(CODES.DISPATCH)); }
     });
   };
 }

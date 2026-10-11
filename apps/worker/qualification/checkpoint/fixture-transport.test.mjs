@@ -111,6 +111,7 @@ const CONFIG_CASES = [
   ['a relative request path', { endpoint: { origin: ORIGIN, path: 'sdk-fixture/v1' } }],
   ['a request path carrying a query, fragment or backslash', { endpoint: { origin: ORIGIN, path: `${PATH}?a=1` } }],
   ['a request path with traversal segments', { endpoint: { origin: ORIGIN, path: '/a/../b' } }],
+  ['an encoded or double-slash request path', { endpoint: { origin: ORIGIN, path: '/sdk/%2e%2e//v1' } }],
   ['a missing or malformed peer pin', { identity: { pinSha256: 'not-a-fingerprint' } }],
   ['a missing certificate, key or CA', { mtls: { cert: MATERIAL.cert, key: MATERIAL.key } }],
   ['empty certificate material', { mtls: { cert: '', key: MATERIAL.key, ca: MATERIAL.ca } }],
@@ -118,6 +119,7 @@ const CONFIG_CASES = [
   ['non-integer or oversized limits', { limits: { requestBytes: 0, responseBytes: 1024 } }],
   ['an oversized limit above the fixed ceiling', { limits: { requestBytes: FIXTURE_TRANSPORT_MAX_LIMIT_BYTES + 1, responseBytes: 1024 } }],
   ['a missing or parameterised content type', { contentType: 'application/json; charset=utf-8' }],
+  ['a non-JSON content type', { contentType: 'text/plain' }],
   ['an https boundary without request()', { httpsModule: {} }],
   ['a non-function clock', { now: 1 }],
 ];
@@ -214,6 +216,7 @@ test('an expired budget or an already-aborted signal refuses before dispatch', a
   const { fake, transport } = composition();
   await refusal(transport({ ...call('authorizeFixturePhase'), deadlineMs: NOW }), 'FIXTURE_TRANSPORT_BUDGET');
   await refusal(transport({ ...call('authorizeFixturePhase'), deadlineMs: NOW - 1 }), 'FIXTURE_TRANSPORT_BUDGET');
+  await refusal(transport({ ...call('authorizeFixturePhase'), deadlineMs: NOW + 60001 }), 'FIXTURE_TRANSPORT_BUDGET');
   const signal = spySignal(); signal.abort();
   await refusal(transport({ ...call('authorizeFixturePhase'), signal }), 'FIXTURE_TRANSPORT_BUDGET');
   assert.equal(fake.state.options.length, 0);
@@ -295,6 +298,8 @@ const RESPONSE_CASES = [
   ['a missing content type', { headers: {} }, 'FIXTURE_TRANSPORT_CONTENT_TYPE'],
   ['a declared length over the cap', { headers: { 'content-type': 'application/json', 'content-length': '2048' } }, 'FIXTURE_TRANSPORT_RESPONSE_BOUND'],
   ['a malformed declared length', { headers: { 'content-type': 'application/json', 'content-length': 'lots' } }, 'FIXTURE_TRANSPORT_RESPONSE_BOUND'],
+  ['a nondecimal declared length', { headers: { 'content-type': 'application/json', 'content-length': '1e2' } }, 'FIXTURE_TRANSPORT_RESPONSE_BOUND'],
+  ['a noncanonical declared length', { headers: { 'content-type': 'application/json', 'content-length': '01' } }, 'FIXTURE_TRANSPORT_RESPONSE_BOUND'],
   ['a chunked parameterised content type', { headers: { 'content-type': 'Application/JSON; charset=utf-8' } }, null],
 ];
 
@@ -310,6 +315,17 @@ test('redirects, non-200, compression, wrong types and declared oversize refuse 
     assert.equal(response.destroyed, 1, `${label}: owned response destroyed`);
     assert.equal(fake.state.destroyed, 1, `${label}: owned request destroyed`);
   }
+});
+
+test('declared response length must equal the bytes actually received', async () => {
+  const { fake, transport } = composition();
+  const pending = transport(call('authorizeFixturePhase'));
+  const response = fakeResponse({ headers: { 'content-type': 'application/json', 'content-length': '3' },
+    chunks: [Buffer.from('{}')] });
+  fake.state.respond(response); response.plan();
+  await refusal(pending, 'FIXTURE_TRANSPORT_RESPONSE_BOUND');
+  assert.equal(response.destroyed, 1);
+  assert.equal(fake.state.destroyed, 1);
 });
 
 test('the streaming cap applies during receipt, before aggregation', async () => {
@@ -394,6 +410,19 @@ test('an abort during flight rejects with a fixed error without disposing the bo
   assert.equal(signal.listeners.size, 0, 'the transport removes its own listener');
   assert.equal(fake.state.destroyed, 1, 'owned request destroyed on abort');
   assert.equal(fake.state.options.length, 1, 'no retry after abort');
+});
+
+test('listener registration and malformed request objects fail without an owned timer leak', async () => {
+  const { fake, transport } = composition();
+  const before = process.getActiveResourcesInfo().filter(resource => resource === 'Timeout').length;
+  const signal = { aborted: false, addEventListener() { throw new Error(PRIVATE); },
+    removeEventListener() { throw new Error(PRIVATE); } };
+  await refusal(transport({ ...call('authorizeFixturePhase'), signal }), 'FIXTURE_TRANSPORT_INPUT');
+  assert.equal(fake.state.options.length, 0);
+  const invalid = composition({ httpsModule: { request() { return {}; } } });
+  await refusal(invalid.transport(call('authorizeFixturePhase')), 'FIXTURE_TRANSPORT_DISPATCH');
+  const after = process.getActiveResourcesInfo().filter(resource => resource === 'Timeout').length;
+  assert.ok(after <= before, 'failed setup clears owned timers');
 });
 
 test('borrowed credentials, the injected module and the caller buffers are never disposed or mutated', async () => {
