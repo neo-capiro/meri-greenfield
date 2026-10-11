@@ -1,7 +1,10 @@
 "use client";
 import { z } from "zod";
+import { useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
+import { MailSendError, sendReviewedMail, type SendInput } from "./email/send";
+import { useMailAuthority } from "./email/authority";
 const recipientSchema = z.object({
   email: z.string(),
   name: z.string().nullable().optional(),
@@ -92,36 +95,41 @@ export function useSignature() {
       ),
   });
 }
-type SendInput = {
-  clientId: string;
-  personIds?: string[];
-  to: { email: string; name: string }[];
-  subject: string;
-  bodyHtml: string;
-  appendSignature: boolean;
-  threadId?: string;
-};
 export type MailContact = {
   personId?: string;
   name: string;
   title: string | null;
   email: string | null;
 };
-export function useSendMail() {
+export function useSendMail(clientId?: string) {
   const api = useApi();
   const cache = useQueryClient();
+  const authority = useMailAuthority(clientId);
+  const pending = useRef(false);
+  const uncertain = useRef(false);
   return useMutation({
-    mutationFn: (body: SendInput) =>
-      api.request(
-        "core",
-        "engagement/mail/send",
-        z.object({
-          ok: z.literal(true),
-          threadId: z.string().uuid(),
-          messageId: z.string().uuid(),
-        }),
-        { method: "POST", body },
-      ),
+    retry: false,
+    mutationFn: async (body: SendInput) => {
+      if (
+        pending.current ||
+        uncertain.current ||
+        (clientId && body.clientId !== clientId)
+      )
+        throw new MailSendError(
+          "This email attempt is pending, uncertain, or belongs to another client.",
+          uncertain.current,
+        );
+      pending.current = true;
+      try {
+        return await sendReviewedMail(api, body, authority.capture());
+      } catch (error) {
+        if (error instanceof MailSendError && error.uncertain)
+          uncertain.current = true;
+        throw error;
+      } finally {
+        pending.current = false;
+      }
+    },
     onSuccess: async () => {
       await Promise.all([
         cache.invalidateQueries({ queryKey: ["contact-mail"] }),

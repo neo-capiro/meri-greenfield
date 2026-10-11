@@ -1,6 +1,15 @@
 "use client";
 import { TextareaField } from "@/shared/ui/TextareaField";
 import { useState } from "react";
+import { RecipientFields } from "./email/RecipientFields";
+import { AttachmentFields } from "./email/AttachmentFields";
+import { useMailAttachments } from "./email/useMailAttachments";
+import { useMailAuthority } from "./email/authority";
+import { recipients, type Recipient } from "./email/recipients";
+import { MailSendError, type SendInput } from "./email/send";
+import styles from "./email/email.module.css";
+import type { MailInitialDraft } from "./email/draft";
+export type { MailInitialDraft } from "./email/draft";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { type MailContact } from "./email";
@@ -15,28 +24,52 @@ export function MailCompose({
   clientId,
   thread,
   onClose,
+  initialDraft,
 }: {
   person: MailContact;
   clientId: string;
   thread?: { id: string; subject: string };
   onClose: () => void;
+  initialDraft?: MailInitialDraft;
 }) {
   const [subject, setSubject] = useState(
-    thread ? `Re: ${thread.subject.replace(/^Re:\s*/i, "")}` : "",
+    initialDraft?.subject ??
+      (thread ? `Re: ${thread.subject.replace(/^Re:\s*/i, "")}` : ""),
   );
-  const [body, setBody] = useState("");
+  const [body, setBody] = useState(initialDraft?.body ?? "");
   const [append, setAppend] = useState<boolean | null>(null);
-  const [review, setReview] = useState(false);
+  const [review, setReview] = useState<{
+    input: SendInput;
+    text: string;
+  } | null>(null);
+  const [to, setTo] = useState<Recipient[]>(
+    person.email
+      ? [
+          {
+            email: person.email.trim().toLowerCase(),
+            name: person.name,
+            ...(person.personId ? { personId: person.personId } : {}),
+          },
+        ]
+      : [],
+  );
+  const [cc, setCc] = useState("");
+  const [bcc, setBcc] = useState("");
+  const [validation, setValidation] = useState("");
   const [rewriteWarning, setRewriteWarning] = useState("");
-  const send = useSendMail();
+  const send = useSendMail(clientId);
   const rewrite = useRewriteMail();
   const signature = useSignature();
+  const authority = useMailAuthority(clientId);
+  const attachments = useMailAttachments(clientId, initialDraft?.attachments);
+  const uncertain = send.error instanceof MailSendError && send.error.uncertain;
+  const locked = send.isPending || attachments.busy || uncertain;
   const signatureEnabled = append ?? signature.data?.enabled ?? false;
   return (
     <Dialog
       open
       onOpenChange={(open) => {
-        if (!open && !send.isPending) onClose();
+        if (!open && !send.isPending && !attachments.busy) onClose();
       }}
       title={thread ? "Reply" : "New email"}
       description="Sends through your own connected mailbox. Backend permissions and connection policy apply."
@@ -53,22 +86,51 @@ export function MailCompose({
           className="stack"
           onSubmit={(event) => {
             event.preventDefault();
-            setReview(true);
+            if (locked || !authority.ready || attachments.blocked) return;
+            try {
+              const selected = recipients(to, cc, bcc);
+              setValidation("");
+              setReview({
+                text: body,
+                input: {
+                  clientId,
+                  personIds: selected.to.flatMap((item) =>
+                    item.personId ? [item.personId] : [],
+                  ),
+                  ...selected,
+                  subject: subject.trim(),
+                  bodyHtml: plainMailHtml(body),
+                  appendSignature: signatureEnabled,
+                  attachmentIds: attachments.ids,
+                  ...(thread ? { threadId: thread.id } : {}),
+                },
+              });
+            } catch (error) {
+              setValidation(
+                error instanceof Error && !error.message.startsWith("[")
+                  ? error.message
+                  : "Enter valid, unique recipient addresses. To allows 1–50; Cc and Bcc allow up to 10 each.",
+              );
+            }
           }}
         >
-          <label>
-            To
-            <input
-              value={`${person.name} <${person.email ?? "No email"}>`}
-              readOnly
-            />
-          </label>
+          <RecipientFields
+            clientId={clientId}
+            to={to}
+            onTo={setTo}
+            cc={cc}
+            onCc={setCc}
+            bcc={bcc}
+            onBcc={setBcc}
+            disabled={locked}
+          />
           <label>
             Subject
             <input
               required
               maxLength={300}
               value={subject}
+              disabled={locked}
               onChange={(e) => setSubject(e.target.value)}
             />
           </label>
@@ -77,13 +139,16 @@ export function MailCompose({
             required
             maxLength={8000}
             value={body}
+            disabled={locked}
             onChange={(e) => setBody(e.target.value)}
             rows={9}
           />
           <button
             type="button"
             className="button"
-            disabled={rewrite.isPending || !body.trim()}
+            disabled={
+              locked || !authority.ready || rewrite.isPending || !body.trim()
+            }
             onClick={async () => {
               const result = await rewrite
                 .mutateAsync({
@@ -131,18 +196,32 @@ export function MailCompose({
               ? "Your saved signature is appended by the server."
               : "No saved signature is available."}
           </small>
+          <AttachmentFields
+            state={attachments}
+            disabled={send.isPending || uncertain || !authority.ready}
+          />
+          {validation && <p role="alert">{validation}</p>}
+          {!authority.ready && (
+            <p role="alert">
+              A verified mailbox session is required before sending or
+              uploading.
+            </p>
+          )}
+          <QueryState error={authority.error} />
           <QueryState error={send.error} />
-          {send.error && (
+          {uncertain && (
             <p role="alert">
               Delivery may be uncertain. Check your Sent Items before sending
-              again.
+              again. This attempt cannot be retried here.
             </p>
           )}
           <button
             className="button primary"
             disabled={
-              !person.email ||
-              send.isPending ||
+              !to.length ||
+              locked ||
+              !authority.ready ||
+              attachments.blocked ||
               signature.isPending ||
               rewrite.isPending
             }
@@ -152,33 +231,42 @@ export function MailCompose({
         </form>
       )}
       <Dialog
-        open={review}
+        open={Boolean(review)}
         onOpenChange={(value) => {
-          if (!send.isPending) setReview(value);
+          if (!value && !send.isPending) setReview(null);
         }}
         title="Send email"
-        description={`Send “${subject}” to ${person.email}?`}
+        description={`Send “${review?.input.subject ?? ""}” through your connected mailbox?`}
       >
-        <p style={{ whiteSpace: "pre-wrap" }}>{body}</p>
-        {signatureEnabled && <small>Includes your saved signature.</small>}
+        {review && (
+          <div className="stack">
+            <p>To: {review.input.to.map((item) => item.email).join(", ")}</p>
+            {Boolean(review.input.cc?.length) && (
+              <p>Cc: {review.input.cc?.map((item) => item.email).join(", ")}</p>
+            )}
+            {Boolean(review.input.bcc?.length) && (
+              <p>
+                Bcc: {review.input.bcc?.map((item) => item.email).join(", ")}
+              </p>
+            )}
+            <p className={styles.review}>{review.text}</p>
+            <small>
+              {review.input.attachmentIds?.length ?? 0} attachment(s), rechecked
+              before sending.
+            </small>
+            {review.input.appendSignature && (
+              <small>Includes your saved signature.</small>
+            )}
+          </div>
+        )}
         <QueryState error={send.error} />
         <button
           className="button primary"
-          disabled={send.isPending || !person.email}
+          disabled={send.isPending || uncertain || !authority.ready || !review}
           onClick={() => {
-            if (!person.email) return;
-            send.mutate(
-              {
-                clientId,
-                ...(person.personId ? { personIds: [person.personId] } : {}),
-                to: [{ email: person.email, name: person.name }],
-                subject: subject.trim(),
-                bodyHtml: plainMailHtml(body),
-                appendSignature: signatureEnabled,
-                ...(thread ? { threadId: thread.id } : {}),
-              },
-              { onSuccess: () => setReview(false) },
-            );
+            if (!review || send.isPending || uncertain || !authority.ready)
+              return;
+            send.mutate(review.input, { onSuccess: () => setReview(null) });
           }}
         >
           {send.isPending ? "Sending…" : "Send email"}
