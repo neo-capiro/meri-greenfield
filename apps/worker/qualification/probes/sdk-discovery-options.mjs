@@ -1,7 +1,7 @@
 // Inert deferred-tool qualification configuration. No SDK import or execution.
 // RunBinding validation is shape checking; the caller must inject trusted context
 // and gateway-owned permission/execution callbacks. Discovery never grants access.
-import { validateShape, contractVersion } from '../../../../packages/contracts/validate.mjs';
+import { validateShape, contractVersion } from '@capiro/meri-contracts/node';
 import {
   buildCaptureEnv, buildCaptureOptions, validateCaptureOptions,
   CAPTURE_CWD, CAPTURE_MODEL, WIRE_SERVER_NAME,

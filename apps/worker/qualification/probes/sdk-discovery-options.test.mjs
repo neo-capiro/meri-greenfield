@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { validateShape } from '@capiro/meri-contracts/node';
 import { buildDiscoveryOptions, DISCOVERY_FIXTURE } from './sdk-discovery-options.mjs';
 import {
   buildCaptureEnv, buildCaptureOptions, validateCaptureOptions,
@@ -91,6 +92,12 @@ test('canonical RunBinding rejects missing/extra/invalid identity, fence and ver
     (x) => { x.sessionId = 'not-a-uuid'; },
   ];
   for (const mutate of mutations) { const x = input(); mutate(x); assert.throws(() => buildDiscoveryOptions(x)); }
+  const invalidFence = input();
+  invalidFence.runBinding.writerFence = 0;
+  let canonicalError;
+  try { validateShape('RunBinding', invalidFence.runBinding); } catch (error) { canonicalError = error; }
+  assert.ok(canonicalError instanceof Error);
+  assert.throws(() => buildDiscoveryOptions(invalidFence), { message: canonicalError.message });
 });
 
 test('model/cwd and exact loopback reject route substitution and malformed ports', () => {
