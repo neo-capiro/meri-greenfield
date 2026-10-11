@@ -44,6 +44,9 @@
   min-height: 28px;
 }
 .correction {
+  top: 160px;
+  transform: translateX(-50%);
+  max-height: calc(100dvh - 192px);
   padding: 0;
   gap: 0;
   border-radius: 14px;
@@ -59,8 +62,21 @@
   line-height: 1.35;
   letter-spacing: -0.07px;
 }
+.correction > header > button {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  flex: 0 0 20px;
+  padding: 0;
+  border: 0;
+  color: var(--muted-foreground);
+}
 .merge {
   width: min(560px, calc(100vw - 32px));
+}
+.detach {
+  top: 200px;
+  max-height: calc(100dvh - 232px);
 }
 .form {
   min-width: 0;
@@ -101,5 +117,12 @@
   }
   .detail {
     padding: 18px;
+  }
+}
+@media (max-height: 760px), (max-width: 680px) {
+  .correction {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    max-height: calc(100dvh - 32px);
   }
 }

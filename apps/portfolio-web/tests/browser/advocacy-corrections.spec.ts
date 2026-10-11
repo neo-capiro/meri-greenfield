@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type Locator } from "@playwright/test";
 import { clientId, json } from "./fixtures";
 import {
   installAdvocacy,
@@ -10,6 +10,35 @@ import {
   recordTitle,
 } from "./advocacy-correction-fixtures";
 const route = `/portfolio/${clientId}/objectives`;
+async function assertDesktopDialog(
+  dialog: Locator,
+  kind: string,
+  width: number,
+  top: number,
+) {
+  const bounds = await dialog.boundingBox();
+  const header = await dialog.getByRole("banner").boundingBox();
+  const close = await dialog
+    .getByRole("banner")
+    .getByRole("button", { name: "Close", exact: true })
+    .boundingBox();
+  if (!bounds || !header || !close)
+    throw new Error("Correction geometry unavailable");
+  expect(bounds.x).toBe((1440 - width) / 2);
+  expect(bounds.y).toBe(top);
+  expect(bounds.width).toBe(width);
+  // Figma's ~56px header includes its inside stroke. CSS layout adds a 1px divider.
+  expect(header.height).toBeGreaterThanOrEqual(56);
+  expect(header.height).toBeLessThanOrEqual(57);
+  expect(close.width).toBe(20);
+  expect(close.height).toBe(20);
+  await test
+    .info()
+    .attach(`${kind}-desktop-bounds`, {
+      body: JSON.stringify({ kind, bounds, header, close }),
+      contentType: "application/json",
+    });
+}
 async function openMatter(page: Page, id = sourceId) {
   await page.goto(`${route}?matter=${id}`);
   const drawer = page.getByRole("dialog", {
@@ -98,6 +127,7 @@ test("merge explicitly reviews source into kept destination, guards pending and 
   );
   await dialog.getByLabel("Source matter").selectOption(sourceId);
   await expect(dialog).toContainText("permanently removed");
+  await assertDesktopDialog(dialog, "merge", 560, 160);
   expect(state.posts).toEqual([]);
   await page.screenshot({
     path: "work/advocacy-evidence/merge-review-desktop-light.png",
@@ -146,6 +176,11 @@ test("reassign moves exact reviewed record and refreshes both matter views", asy
   const { state, unexpected } = await installAdvocacy(page);
   const dialog = await correct(page, "Reassign");
   await dialog.getByLabel("Matter", { exact: true }).selectOption(targetId);
+  await assertDesktopDialog(dialog, "reassign", 520, 160);
+  await page.screenshot({
+    path: "work/advocacy-evidence/reassign-review-desktop-light.png",
+    fullPage: true,
+  });
   await dialog.getByRole("button", { name: "Reassign", exact: true }).click();
   await expect(dialog).not.toBeVisible();
   expect(state.posts).toEqual([
@@ -170,6 +205,11 @@ test("detach preserves a scoped unassigned record that can be reassigned later",
   const dialog = await correct(page, "Detach");
   expect(state.posts).toHaveLength(0);
   await expect(dialog).toContainText("left unassigned");
+  await assertDesktopDialog(dialog, "detach", 520, 200);
+  await page.screenshot({
+    path: "work/advocacy-evidence/detach-review-desktop-light.png",
+    fullPage: true,
+  });
   await dialog.getByRole("button", { name: "Detach", exact: true }).click();
   await expect(dialog).not.toBeVisible();
   await page
@@ -209,6 +249,11 @@ test("not advocacy reviews optional bounded reason and refreshes the visible his
     "1000",
   );
   expect(state.posts).toHaveLength(0);
+  await assertDesktopDialog(dialog, "not-advocacy", 520, 160);
+  await page.screenshot({
+    path: "work/advocacy-evidence/not-advocacy-review-desktop-light.png",
+    fullPage: true,
+  });
   await dialog
     .getByRole("button", { name: "Mark not advocacy", exact: true })
     .click();
@@ -451,11 +496,29 @@ test("mobile dark correction keeps draft, readable review and keyboard cancel wi
   ).toBe(true);
   await page.screenshot({
     path: "work/advocacy-evidence/not-advocacy-mobile-dark.png",
-    fullPage: true,
+    fullPage: false,
   });
   await dialog.getByRole("button", { name: "Cancel", exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(dialog).not.toBeVisible();
+  expect(state.posts).toHaveLength(0);
+  await page.setViewportSize({ width: 1440, height: 480 });
+  const shortDialog = await correct(page, "Detach");
+  const shortBounds = await shortDialog.boundingBox();
+  if (!shortBounds)
+    throw new Error("Short viewport correction geometry missing");
+  expect(shortBounds.y).toBeGreaterThanOrEqual(16);
+  expect(shortBounds.y + shortBounds.height).toBeLessThanOrEqual(464);
+  expect(shortBounds.y + shortBounds.height / 2).toBeCloseTo(240, 0);
+  await page.screenshot({
+    path: "work/advocacy-evidence/detach-short-viewport-dark.png",
+    fullPage: false,
+  });
+  await shortDialog
+    .getByRole("button", { name: "Cancel", exact: true })
+    .focus();
+  await page.keyboard.press("Enter");
+  await expect(shortDialog).not.toBeVisible();
   expect(state.posts).toHaveLength(0);
   expect(unexpected).toEqual([]);
 });

@@ -97,7 +97,7 @@ export function CorrectionDialog({
         if (!open && !pending) onClose();
       }}
       title={titles[context.kind]}
-      className={`${styles.correction} ${context.kind === "merge" ? styles.merge : ""}`}
+      className={`${styles.correction} ${context.kind === "merge" ? styles.merge : context.kind === "detach" ? styles.detach : ""}`}
     >
       <form
         className={styles.form}
