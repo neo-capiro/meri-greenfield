@@ -5,8 +5,10 @@ import { useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useMeetingNotes } from "./queries";
-import type { Meeting } from "./contracts";
+import { type Meeting, type noteSchema } from "./contracts";
+import type { z } from "zod";
 import { DebriefGeneration } from "./debrief/public";
+import { SavedMeetingDocumentPreview } from "./documents/public";
 export function MeetingArtifacts({
   meeting,
   kind,
@@ -22,6 +24,7 @@ export function MeetingArtifacts({
     generated?: boolean;
   }>();
   const [sharing, setSharing] = useState<string>();
+  const [preview, setPreview] = useState<z.infer<typeof noteSchema>>();
   const mutation = useChangeMeetingArtifact(meeting.id, kind, () => {
     setEditing(undefined);
     setSharing(undefined);
@@ -71,6 +74,11 @@ export function MeetingArtifacts({
                 {item.body ?? "No content."}
               </p>
               <div className="row">
+                {kind === "debriefs" && (
+                  <button className="button" onClick={() => setPreview(item)}>
+                    Export PDF
+                  </button>
+                )}
                 <button
                   className="button"
                   disabled={mutation.isPending}
@@ -130,6 +138,13 @@ export function MeetingArtifacts({
         </article>
       ))}
       {query.data?.length === 0 && <p className="empty">No {kind} yet.</p>}
+      {preview && (
+        <SavedMeetingDocumentPreview
+          meeting={meeting}
+          document={{ kind: "debrief", debrief: preview }}
+          onClose={() => setPreview(undefined)}
+        />
+      )}
       <QueryState error={mutation.error} />
       <Dialog
         open={Boolean(editing)}

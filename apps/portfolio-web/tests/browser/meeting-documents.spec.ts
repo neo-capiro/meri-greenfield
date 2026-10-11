@@ -132,7 +132,7 @@ async function setup(
     }
     return json({ message: `Unexpected synthetic route ${path}` }, 404);
   });
-  await page.goto("/");
+  await page.goto("/__test/meeting-documents");
   return {
     posts: () => posts,
     reads: () => reads,

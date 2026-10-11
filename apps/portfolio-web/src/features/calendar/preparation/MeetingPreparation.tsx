@@ -17,6 +17,7 @@ import { PreparationEditor } from "./PreparationEditor";
 import { PreparationSettings } from "./PreparationSettings";
 import { PreparationProgress } from "./PreparationProgress";
 import { PreparationContent, PreparationSources } from "./PreparationContent";
+import { PreparationDocumentActions } from "./PreparationDocumentActions";
 import styles from "./preparation.module.css";
 
 export type PreparationMeeting = Pick<
@@ -329,6 +330,12 @@ function ScopedPreparation({
       {prep ? (
         <>
           <PreparationContent prep={prep} />
+          <PreparationDocumentActions
+            key={prep.id}
+            meeting={meeting}
+            preparation={prep}
+            canPrepare={allowed && !institutional && !busy}
+          />
           <button className="button ghost" onClick={() => setSources(true)}>
             View sources and citations
           </button>

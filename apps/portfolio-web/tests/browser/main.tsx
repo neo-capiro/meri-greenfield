@@ -16,6 +16,7 @@ import { BillTrackerPage } from "@/features/bill-tracker/BillTrackerPage";
 import { OpportunitiesPage } from "@/features/opportunities/OpportunitiesPage";
 import { RegistrantIntakeHarness } from "./registrant-intake-harness";
 import { EmailComposeHarness } from "./email-compose-harness";
+import { MeetingDocumentsHarness } from "./meeting-documents-harness";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -28,6 +29,7 @@ function App() {
   const path = usePathname();
   if (path === "/__test/registrant-intake") return <RegistrantIntakeHarness />;
   if (path === "/__test/email-compose") return <EmailComposeHarness />;
+  if (path === "/__test/meeting-documents") return <MeetingDocumentsHarness />;
   const [, , clientId, tab] = path.split("/");
   if (clientId === "prospects")
     return tab ? (
