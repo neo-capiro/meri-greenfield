@@ -1,23 +1,23 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,11 October 2026 01:03 UTC. **G0 accepted / G1 active / OPEN;
-eight deployment gates, G2–G7 unentered.** [Independent root verification](CODEX-G1-RESEARCH-IMPLEMENTATION-OWNER.md)
-accepted/integrated authors 5a87124 (Linux ABI DATA reader) and 6f1bf66 (partial
-native session-file adapter), with 49 + 34 sealed occurrences and exact raw Git.
-Root independently passed34 Python and14 real temporary-filesystem controls;
-retained failures and historical source-byte limitations remain explicit.
-Browser managed-fixture source ee52eca and distinct review 4cbde68 are integrated
-after root’s 17 actual-JSONata controls, 44 author/71 reviewer sealed occurrences
-and exact raw Git. The reviewer’s nine new cases are corroborated; the compiler
-remains inert. No native or cloud admission follows. A fresh
-bounded offline ABI execution pack is being prepared without altering old packs.
-The acquired 23 layers/first inventory remain closed DATA with one launcher HOLD.
-W05 SessionStore/full SDK scope, trusted checkpoint/workspace/fencing/replacement,
-proxy native import/auth/TLS/Fargate, managed browser history/wire/IAM/admission/
-survival/physical absence and real browser/renderer sandbox remain unfinished.
-No volume/TestState/browser host exists. All 49 current plus five older findings OPEN/Office DEFERRED,
-sources disabled/current Meri untouched/no cutover/inference spending $0 of $10; 75 real requests
-await the promised source. Research does not authorize architecture changes.
+Current continuation,11 October 2026 01:37 UTC. **G0 accepted / G1 active / OPEN;
+eight deployment gates, G2–G7 unentered.** [Owner acceptance](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+integrates seven exact returned commits: original ABI preparation/review, Windows
+audit repair, browser history plus focused wire extraction, composed SDK discovery
+options and actual ABI DATA reconciliation. Root verified1,077 preparation/1,283
+actual/784 browser-SDK record occurrences and exact Git. One actual offline scan
+completed with both Jobs empty:275selected/241CAS,21ELFs/nineHOLDs. The old audit
+failure remains consumed. No native runtime compatibility follows. Root's24
+browser/11SDK checks passed; initial root reporter-parser error retained without
+replaying successful browser tests. Node's measured1,412,444-byte string table,
+lexical alias resolution and literal zlib target repair are allocated separately.
+Browser activation and native SDK discovery assembly proposals are bounded in
+parallel. W05SessionStore/fullSDKscope, trusted checkpoint/workspace/fencing/
+replacement, real communityLinux proxy/auth/TLS/Fargate, actual browser wire/IAM/
+KMS/history/physical absence/host/browser-renderer sandbox remain open. Guard is
+literal false/noT0/volume/TestState/host. All49+five findings OPEN/Office DEFERRED,
+sourcesdisabled/currentMeriuntouched/nocutover/inference$0/$10;75realrequests
+await promised location/owner. Research does not authorize plan departures.
 
 Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
 eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup

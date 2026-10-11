@@ -1,21 +1,22 @@
 # Meri kickoff status
 
-Current continuation,11 October 2026 01:03 UTC: **G0 accepted / G1 active / OPEN;
-eight deployment gates, G2–G7 unentered.** Root independently verified and
-integrated the [Linux ABI reader and partial native session-file adapter](reports/CODEX-G1-RESEARCH-IMPLEMENTATION-OWNER.md),
-with 34 Python + 14 filesystem checks passing. A fresh offline ABI execution pack
-is under preparation; no actual ABI scan/native import/auth acceptance follows.
-The prior 23-layer acquisition/first inventory remain closed DATA with one inert
-Prisma launcher HOLD. W05 SessionStore/full SDK scope remain required; trusted
-workspace/storage/checkpoint/fencing and actual replacement resume remain open.
-The managed browser-fixture source passed root’s 17 offline JSONata checks and
-a distinct nine-case challenge; source and review are integrated. Its literal
-false guard and UNKNOWN absence remain; no T0/volume/TestState/browser host exists. Fresh
-ASL/wire/IAM/KMS/history/admission/physical cleanup and browser/renderer sandbox
-are still required. All 49 current plus five older findings OPEN/Office DEFERRED, sources disabled,
-current Meri untouched/no cutover, model spending $0 of $10; 75 real requests await the promised
-location/owner. Research guides implementation but approves no plan departure.
-Earlier entries retain historical point-in-time outcomes.
+Current continuation,11 October 2026 01:37 UTC: **G0 accepted / G1 active / OPEN;
+eight deployment gates, G2–G7 unentered.** [Owner verification](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+now accepts actual offline ABI DATA:23 layers,275 selected paths/241 CAS objects,
+both completed Jobs empty, with nine native/profile/package-notice HOLDs retained.
+The first Windows audit-contract dispatch failed before its ABI child; its
+consumes remain. A separately reviewed repair passed actual audit controls and
+one fresh scan; no native image/proxy/SDK binary ran. A measured Node string-table
+and lexical-library-profile repair is under preparation, with package/notices
+and genuine Linux import/auth/TLS/Fargate still open. Source-only managed history
+is integrated after24 root checks, split into wire and lifecycle modules. SDK
+search options compose canonical owners and passed11 root checks; real native
+search/tool-reference/registration/revocation remains unrun. W05 SessionStore,
+full SDK/checkpoint/workspace/fencing/replacement remain required. Browser guard
+is literal false; no operational T0/volume/TestState/host exists. All49 current
+plus five older findings OPEN/Office DEFERRED, sources disabled/current Meri
+untouched/no cutover, spending$0/$10. The75 real requests await the promised
+location/owner. Research approves no plan departure. Earlier entries are history.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native

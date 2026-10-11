@@ -1,23 +1,24 @@
 # G1 remaining scope and sequence
 
-Current continuation,11 October 2026 01:03 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
-[Root-verified source work](../coordination/reports/CODEX-G1-RESEARCH-IMPLEMENTATION-OWNER.md)
-now includes the bounded Linux ABI reader (34 checks) and partial native session
-file capture/restore (14 checks). Review the fresh execution pack, separately
-admit the offline ABI scan, inspect actual dependency/notices, then qualify the
-community Linux build/genuine import, disposable PostgreSQL key auth/deny/revoke,
-TLS/ECS/accounting/durable $10/Fargate. Original failures and first-stage HOLD stay.
-The transcript adapter does not establish full native state/quiescence/workspace
-or durability. Finish trusted canonical checkpoint/storage/fencing, W05
-SessionStore, native interrupt/replacement/resume and complete SDK features.
-The managed browser-fixture source and distinct review are integrated after
-root’s 17 offline checks and the reviewer’s nine new checks. No operational admission/T0/volume/
-TestState/host exists. Complete actual ASL/wire/IAM/KMS, managed-history provenance,
-fresh authority, one managed lifecycle and physical absence, then host watchdog,
-real browser AND renderer sandbox/egress/teardown. SOURCE9 local mutations remain
-excluded for the managed path. Office/security, REL-02/RG-08 and measured cohorts
-remain. Sources disabled, model spending $0 of $10; 75 real requests await the promised location/
-owner. Any plan departure requires prior human approval; research is not approval.
+Current continuation,11 October 2026 01:37 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
+[Actual ABI and source acceptance](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+records one completed offline23-layer scan with241 objects and nine HOLDs. Fix
+measured Node DT_STRSZ/profile/lexical alias gaps in a new reviewed source version;
+retain old results/consumes. Establish package/notices/community assembly, genuine
+Linux app import, disposable PostgreSQL key auth/deny/revoke, TLS/ECS authority,
+usage/durable$10 and Fargate. Source-only SDK discovery options passed11 root
+checks; real server registration/native search/tool-reference/success/unavailable/
+revocation and proxy/Bedrock wire remain. Complete W05 SessionStore, full native
+state/quiescence/workspace, canonical checkpoint/storage/fencing and actual
+interrupt/replacement/resume. Browser managed-history decoder passed24 root
+checks with focused wire/lifecycle modules; its graph remains literal-false and
+synthetic history is not feasible live provenance. Finish noncircular activation,
+actual ASL/wire/IAM/KMS/history/probe bridge, fresh authority and one managed
+lifecycle/physical absence before watchdog/browser AND renderer sandbox/egress/
+teardown. No T0/volume/TestState/host exists. All49+five security findings OPEN,
+Office DEFERRED; REL-02/RG-08/measured cohorts remain. Sources disabled/currentMeri
+untouched/no cutover/spending$0/$10;75 requests await promised source. Plan
+departures require prior human approval; no research recommendation changes W05.
 
 Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,
