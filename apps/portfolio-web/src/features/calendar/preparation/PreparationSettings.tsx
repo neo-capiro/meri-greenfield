@@ -167,7 +167,13 @@ export function PreparationSettings({
           </button>
           <button
             className="button primary"
-            disabled={!canGenerate || dirty || save.isPending}
+            disabled={
+              !canGenerate ||
+              dirty ||
+              save.isPending ||
+              save.isError ||
+              (comprehensive && Boolean(client) && !query.isSuccess)
+            }
             onClick={onGenerate}
           >
             Generate with Meri

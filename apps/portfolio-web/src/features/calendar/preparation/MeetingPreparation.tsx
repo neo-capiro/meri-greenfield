@@ -15,10 +15,14 @@ import {
 } from "./hooks";
 import { PreparationEditor } from "./PreparationEditor";
 import { PreparationSettings } from "./PreparationSettings";
+import { PreparationProgress } from "./PreparationProgress";
 import { PreparationContent, PreparationSources } from "./PreparationContent";
 import styles from "./preparation.module.css";
 
-export type PreparationMeeting = Pick<Meeting, "id" | "client" | "status"> & {
+export type PreparationMeeting = Pick<
+  Meeting,
+  "id" | "client" | "status" | "subject" | "attendees"
+> & {
   preps: Preparation[];
 };
 export function MeetingPreparation({
@@ -37,6 +41,7 @@ export function MeetingPreparation({
       allowed={allowed}
       identityPending={identity.isPending}
       identityError={identity.error}
+      retryIdentity={() => void identity.refetch()}
     />
   );
 }
@@ -45,11 +50,13 @@ function ScopedPreparation({
   allowed,
   identityPending,
   identityError,
+  retryIdentity,
 }: {
   meeting: PreparationMeeting;
   allowed: boolean;
   identityPending: boolean;
   identityError: Error | null;
+  retryIdentity: () => void;
 }) {
   const capabilities = usePreparationCapabilities();
   const comprehensive =
@@ -58,7 +65,10 @@ function ScopedPreparation({
     meeting.id,
     allowed && capabilities.isSuccess && comprehensive,
   );
-  const generate = useGeneratePreparation(meeting.id);
+  const generate = useGeneratePreparation(
+    meeting.id,
+    meeting.client?.id ?? null,
+  );
   const change = useChangePreparationJob(meeting.id);
   const [focus, setFocus] = useState("");
   const [depth, setDepth] = useState<PrepDepth>("standard");
@@ -66,7 +76,17 @@ function ScopedPreparation({
   const [editing, setEditing] = useState<Preparation>();
   const [settings, setSettings] = useState(false);
   const [sources, setSources] = useState(false);
+  const [progressOpen, setProgressOpen] = useState(false);
   const prep = meeting.preps[0];
+  const institutional =
+    prep?.generatedFrom?.schemaVersion ===
+    "research_portfolio_institutional_v1";
+  function updateJob(action: "cancel" | "resume") {
+    const currentJob = job.data;
+    if (!currentJob || !allowed || change.isPending) return;
+    if (action === "resume") setProgressOpen(true);
+    change.mutate({ jobId: currentJob.jobId, action });
+  }
   const active = activeJob(job.data);
   const busy = active || generate.isPending || change.isPending;
   const cancelled = ["cancelled", "canceled", "deleted"].includes(
@@ -74,6 +94,7 @@ function ScopedPreparation({
   );
   const canGenerate =
     allowed &&
+    !institutional &&
     !cancelled &&
     !busy &&
     capabilities.isSuccess &&
@@ -89,6 +110,7 @@ function ScopedPreparation({
     };
     setRequest(input);
     setSettings(false);
+    setProgressOpen(true);
     generate.mutate(input);
   }
   async function refresh() {
@@ -99,16 +121,29 @@ function ScopedPreparation({
       <div className="row between">
         <span className="chip">{prep?.status ?? "Not started"}</span>
         <small>
-          {prep?.sharedAt ? "Shared preparation" : "Private until shared"}
+          {prep?.sharedAt === undefined
+            ? ""
+            : prep.sharedAt
+              ? "Shared preparation"
+              : "Private until shared"}
         </small>
       </div>
       <QueryState
         pending={identityPending || capabilities.isPending}
         error={identityError ?? capabilities.error}
-        retry={() => void capabilities.refetch()}
+        retry={
+          identityError ? retryIdentity : () => void capabilities.refetch()
+        }
       />
       {!identityPending && !allowed && (
         <p role="note">Your role does not allow preparation changes.</p>
+      )}
+      {institutional && (
+        <p role="note">
+          This institutional preparation uses its originating Research Portfolio
+          review workflow. Review state:{" "}
+          {prep.generatedFrom?.reviewStatus ?? "Unavailable"}.
+        </p>
       )}
       {cancelled && (
         <p role="note">
@@ -129,21 +164,12 @@ function ScopedPreparation({
         />
       )}
       <div className={styles.actions}>
-        {allowed && (
-          <>
-            <button className="button" disabled={!canGenerate} onClick={begin}>
-              {prep ? "Regenerate" : "Generate with Meri"}
-            </button>
-            <button
-              className="button"
-              disabled={busy || !capabilities.isSuccess || generate.isError}
-              onClick={() => setSettings(true)}
-            >
-              Prep settings
-            </button>
-          </>
+        {allowed && !institutional && (
+          <button className="button" disabled={!canGenerate} onClick={begin}>
+            {prep ? "Regenerate" : "Generate with Meri"}
+          </button>
         )}
-        {allowed && prep && (
+        {allowed && !institutional && prep && (
           <button
             className="button"
             disabled={busy}
@@ -152,8 +178,17 @@ function ScopedPreparation({
             Edit prep
           </button>
         )}
+        {allowed && !institutional && (
+          <button
+            className="button"
+            disabled={busy || !capabilities.isSuccess || generate.isError}
+            onClick={() => setSettings(true)}
+          >
+            Prep settings
+          </button>
+        )}
       </div>
-      {allowed && (
+      {allowed && !institutional && (
         <TextareaField
           label="Refine preparation"
           placeholder="Add context for Meri to use when regenerating…"
@@ -200,9 +235,7 @@ function ScopedPreparation({
               <button
                 className="button"
                 disabled={change.isPending}
-                onClick={() =>
-                  change.mutate({ jobId: job.data!.jobId, action: "cancel" })
-                }
+                onClick={() => updateJob("cancel")}
               >
                 Cancel preparation
               </button>
@@ -215,17 +248,19 @@ function ScopedPreparation({
               </p>
               {job.data.errorCode && <code>{job.data.errorCode}</code>}
               {allowed &&
+                !institutional &&
                 job.data.errorCode !== "PREP_BUDGET_EXHAUSTED" && (
                   <div>
                     <button
                       className="button"
-                      disabled={change.isPending || generate.isPending}
-                      onClick={() =>
-                        change.mutate({
-                          jobId: job.data!.jobId,
-                          action: "resume",
-                        })
+                      disabled={
+                        change.isPending ||
+                        generate.isPending ||
+                        cancelled ||
+                        capabilities.data?.runtime?.externalActionsEnabled !==
+                          true
                       }
+                      onClick={() => updateJob("resume")}
                     >
                       Resume preparation
                     </button>
@@ -234,10 +269,19 @@ function ScopedPreparation({
             </>
           ) : job.data.status === "cancelled" ? (
             <p>Your previous briefing is unchanged.</p>
-          ) : job.data.prepId && prep?.id !== job.data.prepId ? (
-            <p>The new preparation is saved. Refresh the meeting to load it.</p>
-          ) : (
+          ) : job.data.prepId && prep?.id === job.data.prepId ? (
             <p>The saved briefing is ready to use.</p>
+          ) : (
+            <>
+              <p>
+                {job.data.prepId
+                  ? "The new preparation is saved, but it has not loaded yet."
+                  : "The service reported completion without a saved preparation reference."}
+              </p>
+              <button className="button" onClick={() => void refresh()}>
+                Check preparation status
+              </button>
+            </>
           )}
         </div>
       )}
@@ -289,6 +333,7 @@ function ScopedPreparation({
       {editing && (
         <PreparationEditor
           meetingId={meeting.id}
+          clientId={meeting.client?.id ?? null}
           prep={editing}
           onClose={() => setEditing(undefined)}
         />
@@ -306,8 +351,26 @@ function ScopedPreparation({
         />
       )}
       {sources && prep && (
-        <PreparationSources prep={prep} onClose={() => setSources(false)} />
+        <PreparationSources
+          prep={prep}
+          meeting={meeting}
+          onClose={() => setSources(false)}
+        />
       )}
+      {comprehensive &&
+        progressOpen &&
+        (generate.isPending || active || change.isPending) && (
+          <PreparationProgress
+            saved={active}
+            stage={job.data?.stage}
+            canCancel={active && !change.isPending}
+            onClose={() => setProgressOpen(false)}
+            onCancel={() => {
+              updateJob("cancel");
+              setProgressOpen(false);
+            }}
+          />
+        )}
     </section>
   );
 }

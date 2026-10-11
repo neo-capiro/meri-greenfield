@@ -16,11 +16,13 @@ import {
   saveBoards,
   savePreparation,
 } from "../src/features/calendar/preparation/api";
+import { emailEvidenceSourceUrl } from "../src/features/calendar/preparation/email-evidence";
 
 const meetingId = "meeting/synthetic";
 const prep = preparationSchema.parse({
   id: "prep-one",
   meetingId,
+  clientId: "client-one",
   status: "approved",
   summary: "Original summary",
   agenda: [{ text: "Retain evidence", factIds: ["fact-one"] }],
@@ -56,6 +58,72 @@ function client(result: unknown, status = 200) {
   return { api, requests };
 }
 describe("preparation edits and source settings", () => {
+  it("validates saved structured email evidence without losing its source attribution", () => {
+    const evidence = {
+      summary: "Synthetic saved exchange",
+      sourceId: "synthetic-email-one",
+      sourceUrl: "https://example.test/mail/one",
+    };
+    const structured = preparationSchema.parse({
+      ...prep,
+      emailEvidence: ["Legacy text", evidence],
+    });
+    expect(structured.emailEvidence).toEqual(["Legacy text", evidence]);
+    const values = editValues(structured);
+    expect(values.emailEvidence).toBe("Legacy text\nSynthetic saved exchange");
+    values.summary = "Unrelated change";
+    expect(editedBody(structured, values)).toEqual({
+      summary: "Unrelated change",
+    });
+    expect(structured.emailEvidence[1]).toEqual(evidence);
+    values.emailEvidence = "Attribution would be lost";
+    expect(() => editedBody(structured, values)).toThrow("source attribution");
+    expect(
+      preparationSchema.safeParse({
+        ...prep,
+        emailEvidence: [{ summary: "Missing required source fields" }],
+      }).success,
+    ).toBe(false);
+  });
+  it("exposes only absolute HTTP(S) source links without credentials", () => {
+    expect(emailEvidenceSourceUrl("https://example.test/mail/one")).toBe(
+      "https://example.test/mail/one",
+    );
+    expect(emailEvidenceSourceUrl("http://example.test/mail/one")).toBe(
+      "http://example.test/mail/one",
+    );
+    for (const value of [
+      "javascript:alert(1)",
+      "data:text/html,test",
+      "/relative/mail",
+      "https://user:secret@example.test/mail",
+      "not a URL",
+    ])
+      expect(emailEvidenceSourceUrl(value)).toBeUndefined();
+  });
+  it("preserves known institutional provenance and does not fabricate omitted sharing state", () => {
+    const institutional = preparationSchema.parse({
+      ...prep,
+      sharedAt: undefined,
+      generatedFrom: {
+        schemaVersion: "research_portfolio_institutional_v1",
+        briefing: true,
+        reviewStatus: "unreviewed_draft",
+      },
+    });
+    expect(institutional.generatedFrom).toEqual({
+      schemaVersion: "research_portfolio_institutional_v1",
+      briefing: true,
+      reviewStatus: "unreviewed_draft",
+    });
+    expect(institutional.sharedAt).toBeUndefined();
+    expect(
+      preparationSchema.safeParse({
+        ...prep,
+        generatedFrom: { briefing: true },
+      }).success,
+    ).toBe(false);
+  });
   it("sends only changed fields and preserves unedited evidence-linked sections", () => {
     const values = editValues(prep);
     values.summary = "Updated summary";
@@ -172,6 +240,30 @@ describe("verified preparation API boundaries", () => {
         summary: "Edited",
       }),
     ).rejects.toThrow("unexpected response");
+  });
+  it("rejects an otherwise valid preparation written to a different client", async () => {
+    const wrongClient = client({ ...prep, clientId: "client-other" });
+    await expect(
+      savePreparation(
+        wrongClient.api,
+        meetingId,
+        prep.id,
+        { summary: "Edited" },
+        "client-one",
+      ),
+    ).rejects.toThrow("did not match");
+    await expect(
+      generatePreparation(
+        client({ ...prep, clientId: "client-other" }).api,
+        meetingId,
+        {
+          requestKey: "client-bound-key",
+          depth: "standard",
+          additionalContext: "",
+        },
+        "client-one",
+      ),
+    ).rejects.toThrow("did not match");
   });
   it("rejects stale board mapping and a mismatched saved selection", async () => {
     await expect(

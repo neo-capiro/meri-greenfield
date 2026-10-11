@@ -50,13 +50,16 @@ export function usePreparationJob(meetingId: string, enabled: boolean) {
     },
   };
 }
-export function useGeneratePreparation(meetingId: string) {
+export function useGeneratePreparation(
+  meetingId: string,
+  clientId: string | null,
+) {
   const api = useApi();
   const cache = useQueryClient();
   return useMutation({
     retry: false,
     mutationFn: (input: GenerateInput) =>
-      generatePreparation(api, meetingId, input),
+      generatePreparation(api, meetingId, input, clientId),
     onSuccess: async (result) => {
       if (result && "jobId" in result)
         cache.setQueryData(["meeting-preparation", meetingId, "job"], result);

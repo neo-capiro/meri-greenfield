@@ -40,6 +40,9 @@
   min-height: 46px;
   font-size: 13px;
 }
+.panel > button {
+  justify-self: start;
+}
 .progress {
   display: grid;
   gap: 12px;
@@ -49,7 +52,7 @@
   background: var(--muted);
   overflow-wrap: anywhere;
 }
-.progress .button {
+.progress > button {
   justify-self: start;
 }
 .form {

@@ -1,5 +1,6 @@
 import type { Preparation } from "./schema";
 import type { EditPreparation } from "./api";
+import { emailEvidenceText } from "./email-evidence";
 export const prepFields = {
   summary: "Summary",
   agenda: "Agenda",
@@ -21,7 +22,7 @@ export function editValues(prep: Preparation): Record<PrepField, string> {
     talkingPoints: prep.talkingPoints.map(itemText).join("\n"),
     risks: prep.risks.map(itemText).join("\n"),
     followUps: prep.followUps.map(itemText).join("\n"),
-    emailEvidence: prep.emailEvidence.join("\n"),
+    emailEvidence: prep.emailEvidence.map(emailEvidenceText).join("\n"),
   };
 }
 // Only changed sections are sent: untouched evidence-linked items retain their shape.
@@ -33,6 +34,13 @@ export function editedBody(
   const body: EditPreparation = {};
   for (const key of Object.keys(prepFields) as PrepField[]) {
     if (values[key] === prior[key]) continue;
+    if (
+      key === "emailEvidence" &&
+      prep.emailEvidence.some((item) => typeof item !== "string")
+    )
+      throw new Error(
+        "Structured email evidence retains its source attribution and cannot be edited here.",
+      );
     if (key === "summary") body.summary = values.summary.trim() || null;
     else {
       const lines = values[key]

@@ -2,6 +2,25 @@ import type { Preparation } from "./schema";
 import { Dialog } from "@/shared/ui/Dialog";
 import { prepFields } from "./editing";
 import styles from "./preparation.module.css";
+import type { Meeting } from "../contracts";
+import { emailEvidenceSourceUrl, type EmailEvidence } from "./email-evidence";
+
+function EmailEvidenceContent({ item }: { item: EmailEvidence }) {
+  if (typeof item === "string") return item;
+  const href = emailEvidenceSourceUrl(item.sourceUrl);
+  return (
+    <>
+      <p>{item.summary}</p>
+      {href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          Source {item.sourceId}
+        </a>
+      ) : (
+        <span>Source {item.sourceId}</span>
+      )}
+    </>
+  );
+}
 
 const sectionLabels: Record<string, string> = {
   recentDevelopments: "Recent developments",
@@ -17,7 +36,7 @@ export function PreparationContent({ prep }: { prep: Preparation }) {
   const briefing = !prep.generatedFrom?.grounding?.contentEdited
     ? prep.generatedFrom?.briefing
     : undefined;
-  if (briefing)
+  if (briefing && typeof briefing === "object")
     return (
       <div className={styles.content}>
         <section>
@@ -76,6 +95,8 @@ export function PreparationContent({ prep }: { prep: Preparation }) {
                 <li key={index}>
                   {typeof item === "string" ? (
                     item
+                  ) : "summary" in item ? (
+                    <EmailEvidenceContent item={item} />
                   ) : "text" in item ? (
                     item.text
                   ) : (
@@ -98,9 +119,11 @@ export function PreparationContent({ prep }: { prep: Preparation }) {
 }
 export function PreparationSources({
   prep,
+  meeting,
   onClose,
 }: {
   prep: Preparation;
+  meeting: Pick<Meeting, "subject" | "client" | "attendees">;
   onClose: () => void;
 }) {
   const grounding = prep.generatedFrom?.grounding;
@@ -112,14 +135,25 @@ export function PreparationSources({
         if (!open) onClose();
       }}
       title="Preparation sources and citations"
-      description="Source evidence saved with this preparation."
+      description="The evidence used for this meeting’s prep."
+      className={styles.dialog}
     >
+      <section className={styles.content}>
+        <h3>Meeting context</h3>
+        <p>
+          Client: {meeting.client?.name ?? "No client"} ·{" "}
+          {meeting.attendees.length} attendees · {meeting.subject}
+        </p>
+      </section>
       {grounding?.contentEdited && (
         <p role="note">
           Preparation text has been edited. Saved evidence describes the
           original generated briefing; it does not independently verify edits.
         </p>
       )}
+      <div className={styles.content}>
+        <h3>Recent client activity</h3>
+      </div>
       {grounding?.sources.length ? (
         grounding.sources.map((source) => (
           <article className={styles.source} key={source.id}>
@@ -129,21 +163,57 @@ export function PreparationSources({
               {source.observedAt && ` · ${source.observedAt}`}
             </small>
             <p>{source.excerpt}</p>
-            {briefing?.facts
-              .filter((fact) => fact.sourceId === source.id)
-              .map((fact) => (
-                <blockquote key={fact.id}>{fact.quote}</blockquote>
+            {grounding.references
+              .filter((reference) => reference.sourceIds.includes(source.id))
+              .map((reference, index) => (
+                <small key={index}>
+                  Referenced in{" "}
+                  {sectionLabels[reference.section] ??
+                    Object.entries(prepFields).find(
+                      ([field]) => field === reference.section,
+                    )?.[1] ??
+                    reference.section}
+                  , item {reference.itemIndex + 1}
+                </small>
               ))}
+            {briefing &&
+              typeof briefing === "object" &&
+              briefing.facts
+                .filter((fact) => fact.sourceId === source.id)
+                .map((fact) => (
+                  <blockquote key={fact.id}>{fact.quote}</blockquote>
+                ))}
           </article>
         ))
       ) : (
-        <p>No saved source metadata is available for this preparation.</p>
+        <p>No additional generated-source metadata is available.</p>
+      )}
+      {prep.emailEvidence.length > 0 && (
+        <section className={styles.content}>
+          <h3>Email evidence</h3>
+          <ul>
+            {prep.emailEvidence.map((item, index) => (
+              <li key={index}>
+                <EmailEvidenceContent item={item} />
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       {grounding?.limitations.map((value, index) => (
         <p role="note" key={index}>
           {value}
         </p>
       ))}
+      <p className="muted">
+        Review the saved evidence and any coverage limitations before relying on
+        the briefing.
+      </p>
+      <footer>
+        <button className="button" onClick={onClose}>
+          Cancel
+        </button>
+      </footer>
     </Dialog>
   );
 }

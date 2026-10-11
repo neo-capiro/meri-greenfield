@@ -27,10 +27,12 @@ export function checkPreparation(
   prep: Preparation,
   meetingId: string,
   prepId?: string,
+  clientId?: string | null,
 ) {
   if (
     (prep.meetingId && prep.meetingId !== meetingId) ||
-    (prepId && prep.id !== prepId)
+    (prepId && prep.id !== prepId) ||
+    (clientId !== undefined && prep.clientId !== clientId)
   )
     throw new ApiError(
       502,
@@ -62,6 +64,7 @@ export async function generatePreparation(
   api: ApiClient,
   meetingId: string,
   input: GenerateInput,
+  clientId?: string | null,
 ) {
   const body = { ...input, additionalContext: input.additionalContext.trim() };
   const result = await api.request(
@@ -69,13 +72,16 @@ export async function generatePreparation(
     `${meetingPath(meetingId)}/prep`,
     z.union([
       prepJobSchema,
-      preparationSchema.extend({ meetingId: z.string() }),
+      preparationSchema.extend({
+        meetingId: z.string(),
+        clientId: z.string().nullable(),
+      }),
     ]),
     { method: "POST", body },
   );
   return "jobId" in result
     ? checkJob(result, meetingId)
-    : checkPreparation(result, meetingId);
+    : checkPreparation(result, meetingId, undefined, clientId);
 }
 export async function changeJob(
   api: ApiClient,
@@ -108,16 +114,21 @@ export async function savePreparation(
   meetingId: string,
   prepId: string,
   body: EditPreparation,
+  clientId?: string | null,
 ) {
   return checkPreparation(
     await api.request(
       "core",
       `engagement/meeting-preps/${encodeURIComponent(prepId)}`,
-      preparationSchema.extend({ meetingId: z.string() }),
+      preparationSchema.extend({
+        meetingId: z.string(),
+        clientId: z.string().nullable(),
+      }),
       { method: "PATCH", body },
     ),
     meetingId,
     prepId,
+    clientId,
   );
 }
 export async function readBoards(
