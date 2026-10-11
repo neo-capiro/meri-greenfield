@@ -2,8 +2,10 @@
 import asyncio
 import importlib.util
 import json
+import os
 from pathlib import Path,PurePosixPath
 import socket
+import stat
 import subprocess
 import sys
 import types
@@ -29,6 +31,36 @@ def example():
         'workDeadlineMs':1300000,'cleanupDeadlineMs':1330000,'originalC':1900000}
 
 class FixtureTests(unittest.TestCase):
+    def test_suppressed_streams_supply_only_current_native_descriptors(self):
+        before=(sys.stdout,sys.stderr)
+        with peer.discard_native_output():
+            self.assertEqual((sys.stdout.fileno(),sys.stderr.fileno()),(1,2))
+            self.assertIsNot(sys.stdout,sys.stderr)
+            self.assertTrue(stat.S_ISCHR(os.fstat(sys.stdout.fileno()).st_mode))
+            self.assertTrue(stat.S_ISCHR(os.fstat(sys.stderr.fileno()).st_mode))
+            for stream in (sys.stdout,sys.stderr):
+                self.assertEqual(stream.write('SYNTHETIC_PYTHON_SUPPRESSED'),27)
+                stream.flush()
+                self.assertEqual(os.write(stream.fileno(),b'SYNTHETIC_NATIVE_SUPPRESSED'),27)
+        self.assertIs(sys.stdout,before[0]);self.assertIs(sys.stderr,before[1])
+
+    def test_suppression_restores_python_and_native_descriptors_after_error(self):
+        before=(sys.stdout,sys.stderr)
+        identities=[(os.fstat(fd).st_dev,os.fstat(fd).st_ino,os.fstat(fd).st_mode) for fd in (1,2)]
+        with self.assertRaisesRegex(RuntimeError,'SYNTHETIC_BODY_FAILURE'):
+            with peer.discard_native_output():raise RuntimeError('SYNTHETIC_BODY_FAILURE')
+        self.assertIs(sys.stdout,before[0]);self.assertIs(sys.stderr,before[1])
+        self.assertEqual([(os.fstat(fd).st_dev,os.fstat(fd).st_ino,os.fstat(fd).st_mode) for fd in (1,2)],identities)
+
+    def test_discard_preserves_per_stream_write_bound(self):
+        for fd in (1,2):
+            sink=peer.Discard(fd)
+            self.assertEqual(sink.write('x'*(2*1024*1024)),2*1024*1024)
+            with self.assertRaisesRegex(ValueError,'UPSTREAM_OUTPUT_BOUND'):sink.write('x')
+            self.assertEqual(sink.fileno(),fd)
+        for fd in (None,True,0,3,'1'):
+            with self.subTest(fd=fd),self.assertRaisesRegex(ValueError,'OUTPUT_DESCRIPTOR'):peer.Discard(fd)
+
     def test_postgres_familiar_name_keeps_exact_repository_and_digest(self):
         self.assertTrue(config.is_postgres_repo_digest(config.PG_IMAGE))
         self.assertTrue(config.is_postgres_repo_digest(config.PG_IMAGE.removeprefix('docker.io/library/')))
