@@ -151,6 +151,25 @@ or resource cleanup, merge or release, get a fresh exact path-by-path
 agreement. GitHub PR #2391 alone is not proof of a live session or its
 current status. No Capiro source was imported into this repo.
 
+**Coordination update, 19:18 UTC:** the Cleanup1 integration owner reports
+that [draft capirov2 PR #2392](https://github.com/neo-capiro/capirov2/pull/2392)
+contains Cleanup1 `b27` integrated with Capiro main `4be` at
+`fd7f944824bfd12df684040bf907b6fbd61e465c`. Independent GitHub readback
+confirmed that exact OPEN/DRAFT head and showed no reported checks. The owner
+says the native diagnostic R8 is still running on prior `b27`, with
+final-source native and visual repeats, historical-case proof, and CI open;
+no merge or deployment is scheduled. The Cleanup1 work itself concerns
+tests, harness and CI; this integration also carries main's admin-gated
+contact display. Per the owner, it uses neither Aurora nor shared database
+migrations. These are owner-reported scope and gate claims, not Meri release
+authorization. Current Meri work is in separate repositories and has no
+scheduled merge/deploy. Coordinate the exact `capirov2`, `os.capiro.ai`,
+shared-infrastructure and timing boundary before either release; refresh
+both PR heads and Cleanup1's current gate result then. The Meri `main`
+branch also moved to `97d0e7ffa8626ac38b3fa88371fc395acfd2975d`
+(Portfolio preview ECS task-definition binding) after this handoff branch
+forked; review that change before any backend integration.
+
 ## Gate status and next execution sequence
 
 1. **Native SDK evidence:** implement a trusted producer and validator for
