@@ -38,7 +38,7 @@ prove live authentication, tenant access, provider writes or deployed behavior.
 | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | CORE_API_BASE_URL                                           | Clients, people, facilities, team, advocacy, Objectives candidate, Engagement meetings/mail/files, hearings/deadlines |
 | STRATEGY_API_BASE_URL                                       | Strategies and paginated Planner tasks                                                                                |
-| WORKSPACE_API_BASE_URL                                      | Existing Workspace drafts/documents/artifacts                                                                         |
+| WORKSPACE_API_BASE_URL                                      | Existing Workspace drafts/documents/artifacts and read-only template catalog                                           |
 | INTELLIGENCE_API_BASE_URL                                   | Intel Bill Tracker board, paginated search and versioned watchlist configuration                                      |
 | TRACKER_BACKEND                                             | Explicit `core` or `intelligence` owner; no automatic fallback between services                                        |
 | MERI_API_BASE_URL                                           | Reserved; no alternate Meri implementation                                                                            |
@@ -70,13 +70,16 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Current local evidence: 67 unit checks, 28 synthetic browser checks, TypeScript,
-architecture and production build pass. ESLint passes with one static SVG image
+Current combined source qualification at `936c7247893a84885b8106fd11b17b9d115508cc`
+on Node 24.19.0: 167 unit checks, 91 synthetic browser checks, TypeScript,
+formatting, architecture (226 modules) and production build (17 routes) pass.
+The subsequent GET-only template proxy has eight additional focused boundary cases.
+ESLint passes with one static SVG image
 warning. Representative screens were reviewed against current Figma, including
 desktop and phone dark captures; full workflow/visual acceptance remains open.
 The actual Next production server also passes setup/deep-link/fail-closed proxy
 checks without configured credentials. These checks do not establish live
-authentication or mutation acceptance. Nine authorized core read projections
+authentication or mutation acceptance. Thirteen authorized core read projections
 passed against capiro-internal. Structured meeting preparation was corrected
 from live evidence; native Clerk initialization failure now has a retry screen.
 The previous dependency audit found zero
@@ -92,7 +95,10 @@ records already fetched. They do not imply a complete historical calendar feed.
 Recorded history entries support title/details editing, due-item settlement/reopening
 and confirmed removal. Derived meeting/file/mail entries remain source-owned.
 Failures retain input; 401 uses the shared session boundary. Keyboard focus and
-pending duplicate refusal are browser checked. Live mutations remain unverified.
+pending duplicate refusal are browser checked. Canonical intake, organization
+contacts and facility CRUD passed against a newly created task-owned synthetic
+client; contact/facility rows were removed and the client archived with read-back.
+These API checks do not establish signed-in browser, provider or meeting privacy acceptance.
 
 ## Current feature boundaries
 
