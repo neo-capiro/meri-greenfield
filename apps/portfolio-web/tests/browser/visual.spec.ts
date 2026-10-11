@@ -53,15 +53,16 @@ test("representative feature screens render at desktop/mobile and in dark mode",
       ).toBe(true);
     }
     if (path === `/${clientId}`) {
-      const pulse = page
-        .locator("section")
-        .filter({ hasText: "Engagement pulse" })
-        .first();
-      expect(
-        await pulse.evaluate(
-          (element) => getComputedStyle(element).backgroundImage,
-        ),
-      ).toContain("linear-gradient");
+      // Current Figma 411:47144 uses the card token; the gradient belongs to
+      // its latest weekly bar and Meri actions, not the entire pulse surface.
+      const pulse = page.getByRole("region", { name: "Engagement pulse" });
+      await expect(pulse).toHaveCSS("background-image", "none");
+      await expect(pulse).toHaveCSS("background-color", "rgb(255, 255, 255)");
+      await expect(pulse).toHaveCSS("padding", "16px 20px");
+      await expect(pulse.locator("strong").first().locator("..")).toHaveCSS(
+        "background-color",
+        "rgb(245, 245, 244)",
+      );
       await expect(pulse.getByText("0", { exact: true })).toHaveCount(2);
     }
     await expect(page.getByRole("alert")).toHaveCount(0);
@@ -100,6 +101,14 @@ test("representative feature screens render at desktop/mobile and in dark mode",
       JSON.stringify({ path, ...geometry }),
     ).toBeLessThanOrEqual(geometry.width);
     await page.emulateMedia({ colorScheme: "dark" });
+    if (path === `/${clientId}`) {
+      const pulse = page.getByRole("region", { name: "Engagement pulse" });
+      await expect(pulse).toHaveCSS("background-color", "rgb(27, 27, 27)");
+      await expect(pulse.locator("strong").first().locator("..")).toHaveCSS(
+        "background-color",
+        "rgb(18, 18, 18)",
+      );
+    }
     await page.screenshot({
       path: testInfo.outputPath(`${name}-mobile-dark.png`),
       fullPage: true,
