@@ -132,7 +132,11 @@ KnownError keys, literal false panic, no duplicate keys, nonfinite values,
 unknown/extra fields, GraphQL envelope, tracing record or extra stderr line.
 Existing 64 KiB aggregate and structure limits are reused conservatively,
 counting raw bytes plus decoded strings. Expected synthetic identity strings
-are ordinary, nonempty bounded strings without whitespace/control/backticks.
+are ordinary nonempty strings of at most 256 code points and 256 UTF-8 bytes;
+the code rejects characters with `ord < 33`, DEL (`ord == 127`) and backtick.
+It does not reject every Unicode whitespace/control character. Root must bind
+these values to the trusted fixed synthetic fixture identity; these lexical
+bounds and caller-supplied strings do not authenticate identity or origin.
 
 Primary public source is pinned Prisma engines commit
 `ac9d7041ed77bcc8a8dbd2ab6616b39013829574`. Root's closed discovery

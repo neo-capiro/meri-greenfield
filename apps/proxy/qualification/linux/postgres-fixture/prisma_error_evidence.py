@@ -1,7 +1,9 @@
-"""Pure, positive-only Prisma exception evidence for the fixed TLS fixture.
+"""Pure Prisma diagnostic DATA for the fixed TLS fixture.
 
-This does not authenticate an exception's origin or parse native engine output.
-Only explicit causes, ordinary DataError data and buffered HTTP bytes are read.
+Typed exceptions and one complete native startup KnownError are distinct
+representations. Neither authenticates origin. Exception decoding reads only
+explicit causes, ordinary DataError data and buffered HTTP bytes; native
+decoding reads only caller-supplied complete bytes and trusted synthetic scope.
 """
 import json
 import math
