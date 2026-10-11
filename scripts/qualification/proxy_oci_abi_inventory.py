@@ -14,9 +14,9 @@ import tarfile
 import time
 import zlib
 
-PINS = {'oci_layer_overlay.py':'835082c6e70bb983f53c9d20227f804c6c930ef8eeb88b6ce8ea99d131abb86c', 'elf_inventory.py':'768bb8ff46f328fd08372a0611c101edc21fd1aeb19f51d58873563d7021ffcd',
+PINS = {'oci_layer_overlay.py':'835082c6e70bb983f53c9d20227f804c6c930ef8eeb88b6ce8ea99d131abb86c', 'elf_inventory.py':'959d60f5e363763d7d48b586cbebb2f37cdfdb9f342b7a749ae4cbd9668be73d',
         'proxy_oci_inventory.py':'ce6031a05b608b27eef56f4894bd797be362de3742988af9e71328421388264c'}
-PROFILE = 'meri-proxy-linux-amd64-node-prisma-abi/1'
+PROFILE = 'meri-proxy-linux-amd64-node-prisma-abi/2'
 ENGINE = 'opt/prisma/.cache/prisma/master/ac9d7041ed77bcc8a8dbd2ab6616b39013829574/debian-openssl-3.0.x/'
 CLI = 'opt/prisma/binaries/node_modules/'
 LIBRARY_NAMES = ('ld-linux-x86-64.so.2','libc.so.6','libm.so.6','libpthread.so.0',
@@ -24,6 +24,7 @@ LIBRARY_NAMES = ('ld-linux-x86-64.so.2','libc.so.6','libm.so.6','libpthread.so.0
                  'libstdc++.so.6','libssl.so.3','libcrypto.so.3','libz.so.1','libzstd.so.1',
                  'libbrotlidec.so.1','libbrotlicommon.so.1','libcares.so.2','libnghttp2.so.14','libuv.so.1')
 LIBRARY_ROOTS = ('lib','lib64','usr/lib','usr/lib64')
+LITERAL_LIBRARY_TARGETS = ('libz.so.1.3.2.1-motley',)
 NOTICE_PACKAGES = ('glibc','libgcc','libstdc++','nodejs','nodejs-18','nodejs-20','nodejs-22',
                    'nodejs-24','openssl','openssl-provider-default','zlib','zstd','brotli','c-ares','nghttp2','libuv')
 REQUIRED = ('usr/bin/node','app/schema.prisma','app/.venv/lib/python3.13/site-packages/prisma/client.py',
@@ -33,6 +34,8 @@ REQUIRED = ('usr/bin/node','app/schema.prisma','app/.venv/lib/python3.13/site-pa
 
 
 def selected(name):
+    if name in LIBRARY_ROOTS:
+        return True  # Preserve actually observed alias/directory metadata.
     if name in REQUIRED or name in ('etc/os-release','usr/lib/os-release','lib/apk/db/installed','var/lib/apk/db/installed','usr/bin/nodejs'):
         return True
     if name.startswith(('app/.venv/lib/python3.13/site-packages/prisma/',
@@ -45,7 +48,7 @@ def selected(name):
         return True
     parent,_,base=name.rpartition('/')
     if parent in LIBRARY_ROOTS:
-        return any(base==n or (base.startswith(n+'.') and len(base)-len(n)<=32 and all(c in '.0123456789' for c in base[len(n):])) for n in LIBRARY_NAMES)
+        return base in LITERAL_LIBRARY_TARGETS or any(base==n or (base.startswith(n+'.') and len(base)-len(n)<=32 and all(c in '.0123456789' for c in base[len(n):])) for n in LIBRARY_NAMES)
     return False
 
 
@@ -80,9 +83,12 @@ def analyze(overlay, elf):
         overlay.check_time()
         path=row['path']
         if row['kind'] in ('symlink','hardlink'):
-            value=elf.resolve_virtual(path,overlay.entries);links.append({'path':path,**value})
+            value=elf.resolve_virtual(path,overlay.entries)
+            links.append({'path':path,'kind':row['kind'],'target':row['target'],
+                          'resolvedTarget':value.get('path'),**{k:v for k,v in value.items() if k!='path'}})
             # Even a lexical target is inert DATA, not dynamic-loader/host-link proof.
-            if value['status']!='REGULAR_VIRTUAL_TARGET' or 'sha256' not in overlay.entries[value.get('path','')]:
+            # Library-root aliases resolve directories, not executable file bytes.
+            if path not in LIBRARY_ROOTS and (value['status']!='REGULAR_VIRTUAL_TARGET' or 'sha256' not in overlay.entries[value.get('path','')]):
                 holds.append({'path':path,'reason':'LINK_TARGET_BYTES_UNESTABLISHED'})
         if row['kind']!='file' or 'sha256' not in row:continue
         raw=overlay.objects[row['sha256']]
@@ -127,7 +133,7 @@ def analyze(overlay, elf):
             'elf':elfs,'links':links,'apkPackageMetadata':packages,'holds':holds,
             'originalFirstStageHoldCleared':False,'nativeExecution':False,'runtimeAdmitted':False,
             'libraryCandidatesAreLoaderProof':False,'enterprisePaths':[p for p in sorted(overlay.entries) if p=='app/enterprise' or p.startswith('app/enterprise/')],
-            'profileDefinition':{'requiredRegular':list(REQUIRED),'libraryRoots':list(LIBRARY_ROOTS),'libraryNames':list(LIBRARY_NAMES),'noticePackages':list(NOTICE_PACKAGES)}}
+            'profileDefinition':{'requiredRegular':list(REQUIRED),'libraryRoots':list(LIBRARY_ROOTS),'libraryNames':list(LIBRARY_NAMES),'literalLibraryTargets':list(LITERAL_LIBRARY_TARGETS),'noticePackages':list(NOTICE_PACKAGES)}}
 
 
 def inventory(manifest,config,blob_dir,new_output):

@@ -2,6 +2,7 @@
 import posixpath
 import struct
 
+MAX_STRING_TABLE = 2 * 1024**2
 
 class ElfRefusal(ValueError):
     pass
@@ -56,7 +57,7 @@ def inspect_elf(raw):
     strings=[x for x in tags if x[0] in (1,14,15,29)]
     if not strings:return result
     table=[v for t,v in tags if t==5];sizes=[v for t,v in tags if t==10]
-    if len(table)!=1 or len(sizes)!=1 or not 0<sizes[0]<=1024**2 or len(strings)>256:
+    if len(table)!=1 or len(sizes)!=1 or not 0<sizes[0]<=MAX_STRING_TABLE or len(strings)>256:
         raise ElfRefusal('dynamic string table identity/limit')
     locations=[offset+(table[0]-va) for va,size,offset in loads if va<=table[0] and table[0]-va<=size and sizes[0]<=size-(table[0]-va)]
     if len(locations)!=1:raise ElfRefusal('ambiguous/unmapped dynamic string table')
@@ -80,27 +81,60 @@ def inspect_elf(raw):
 
 
 def resolve_virtual(path, entries):
-    """Return only lexical image identity; no filesystem calls or link materialization."""
-    if type(path) is not str or not path or path.startswith('/') or len(path)>4096 or any(c in path for c in ('\\','\x00',':')) or any(x in ('','.','..') for x in path.split('/')):
+    """Resolve file/directory symlinks only in the inert final-image map.
+
+    Missing intermediate entries may be implicit directories, but an observed
+    non-directory ancestor is never ignored. Hardlinks used as directory parents
+    or targeting symlink parents are ambiguous final-map inode evidence: HOLD.
+    """
+    def valid(value):
+        return (type(value) is str and value and not value.startswith('/') and len(value)<=4096
+                and not any(c in value for c in ('\\','\x00',':'))
+                and not any(x in ('','.','..') for x in value.split('/')))
+    if not valid(path):
         return {'status':'HOLD','reason':'INVALID_VIRTUAL_PATH','chain':[]}
-    seen=[]
+    seen=[];hardlink_target=False
+    def hold(reason):return {'status':'HOLD','reason':reason,'chain':list(seen)}
     for _ in range(32):
         if path in seen:return {'status':'HOLD','reason':'LINK_CYCLE','chain':seen+[path]}
-        seen.append(path);row=entries.get(path)
-        if row is None:return {'status':'HOLD','reason':'TARGET_MISSING','chain':seen}
-        if row['kind']=='file':return {'status':'REGULAR_VIRTUAL_TARGET','path':path,'chain':seen}
-        if row['kind'] not in ('symlink','hardlink'):return {'status':'HOLD','reason':'TARGET_NOT_REGULAR','chain':seen}
+        seen.append(path);components=path.split('/');link=None
+        for index in range(1,len(components)+1):
+            prefix='/'.join(components[:index]);row=entries.get(prefix)
+            final=index==len(components)
+            if row is None:
+                if final:return hold('TARGET_MISSING')
+                continue
+            kind=row.get('kind')
+            if not final:
+                if kind=='directory':continue
+                if kind=='hardlink':return hold('AMBIGUOUS_HARDLINK_PARENT')
+                if kind!='symlink':return hold('ANCESTOR_NOT_DIRECTORY')
+                if hardlink_target:return hold('AMBIGUOUS_HARDLINK_PARENT')
+            elif kind=='file':
+                return {'status':'REGULAR_VIRTUAL_TARGET','path':path,'chain':seen}
+            elif kind not in ('symlink','hardlink'):return hold('TARGET_NOT_REGULAR')
+            elif hardlink_target and kind=='symlink':return hold('AMBIGUOUS_HARDLINK_TARGET')
+            link=(prefix,row,components[index:]);break
+        prefix,row,suffix=link
         target=row.get('target')
         if type(target) is not str or not target or len(target)>4096 or '\\' in target or '\x00' in target or ':' in target:
-            return {'status':'HOLD','reason':'UNSUPPORTED_LINK_TARGET','chain':seen}
+            return hold('UNSUPPORTED_LINK_TARGET')
         if row['kind']=='hardlink' and target.startswith('/'):
-            return {'status':'HOLD','reason':'UNSUPPORTED_HARDLINK_ROOT','chain':seen}
-        parts=[] if target.startswith('/') or row['kind']=='hardlink' else [p for p in posixpath.dirname(path).split('/') if p]
+            return hold('UNSUPPORTED_HARDLINK_ROOT')
+        hardlink_target=hardlink_target or row['kind']=='hardlink'
+        parts=[] if target.startswith('/') or row['kind']=='hardlink' else [p for p in posixpath.dirname(prefix).split('/') if p]
         for part in target.lstrip('/').split('/'):
             if part in ('','.'):continue
             if part=='..':
-                if not parts:return {'status':'HOLD','reason':'LINK_ESCAPES_IMAGE','chain':seen}
+                if not parts:return hold('LINK_ESCAPES_IMAGE')
+                # Collapsing link/../ lexically would silently change POSIX
+                # meaning. Leave that inode/ancestor ambiguity unqualified.
+                for count in range(1,len(parts)+1):
+                    parent=entries.get('/'.join(parts[:count]))
+                    if parent is not None and parent.get('kind')!='directory':
+                        return hold('AMBIGUOUS_LINK_PARENT_TRAVERSAL')
                 parts.pop()
             else:parts.append(part)
-        path='/'.join(parts)
+        path='/'.join(parts+suffix)
+        if not valid(path):return hold('INVALID_VIRTUAL_PATH')
     return {'status':'HOLD','reason':'LINK_DEPTH','chain':seen}

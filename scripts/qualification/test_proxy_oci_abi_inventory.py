@@ -35,6 +35,22 @@ def binary():
     return bytes(raw)
 
 
+def large_string_table(size, count=15):
+    """Synthetic measured-size layout, never a copied/native Node executable."""
+    names=[f'libfixture{i}.so' for i in range(count)]
+    table=b'\0';offsets=[]
+    for name in names:
+        offsets.append(len(table));table+=name.encode()+b'\0'
+    if len(table)>size:raise ValueError('synthetic table too small')
+    base=8192;raw=bytearray(binary());raw.extend(b'\0'*(base+size-len(raw)))
+    raw[base:base+len(table)]=table
+    struct.pack_into('<Q',raw,96,len(raw));struct.pack_into('<Q',raw,104,len(raw))
+    dynamic=[(5,0x400000+base),(10,size),*[(1,i) for i in offsets],(0,0)]
+    struct.pack_into('<Q',raw,152,len(dynamic)*16);struct.pack_into('<Q',raw,160,len(dynamic)*16)
+    for i,pair in enumerate(dynamic):struct.pack_into('<qQ',raw,512+16*i,*pair)
+    return bytes(raw),names
+
+
 def archive(rows):
     out=io.BytesIO()
     with tarfile.open(fileobj=out,mode='w') as tar:
@@ -44,6 +60,15 @@ def archive(rows):
 
 
 class ElfTests(unittest.TestCase):
+    def test_reported_node_string_table_size_and_fixed_boundary(self):
+        for size in (1412444,2*1024**2):
+            raw,names=large_string_table(size)
+            self.assertEqual(elf.inspect_elf(raw)['needed'],names)
+        raw,_=large_string_table(2*1024**2+1)
+        with self.assertRaisesRegex(elf.ElfRefusal,'string table identity/limit'):elf.inspect_elf(raw)
+        raw,_=large_string_table(16384,257)
+        with self.assertRaisesRegex(elf.ElfRefusal,'string table identity/limit'):elf.inspect_elf(raw)
+
     def test_real_fields_from_synthetic_headers(self):
         value=elf.inspect_elf(binary());self.assertEqual(value['needed'],['libc.so.6']);self.assertEqual(value['interpreter'],'/lib64/ld-linux-x86-64.so.2');self.assertEqual(value['machine'],62)
 
@@ -76,8 +101,76 @@ class ElfTests(unittest.TestCase):
         self.assertEqual(elf.resolve_virtual('../x',entries)['reason'],'INVALID_VIRTUAL_PATH')
         self.assertEqual(elf.resolve_virtual('missing',entries)['reason'],'TARGET_MISSING')
 
+    def test_directory_symlinks_relative_absolute_and_nested(self):
+        entries={'lib64':{'kind':'symlink','target':'usr/lib'},
+                 'usr/lib':{'kind':'directory'},'usr/lib/loader':{'kind':'file'},
+                 'alias':{'kind':'symlink','target':'/lib64'},
+                 'relative':{'kind':'symlink','target':'usr'},
+                 'usr/lib/z':{'kind':'symlink','target':'loader'}}
+        for path in ('lib64/loader','alias/loader','relative/lib/z'):
+            value=elf.resolve_virtual(path,entries)
+            self.assertEqual(value['status'],'REGULAR_VIRTUAL_TARGET')
+            self.assertEqual(value['path'],'usr/lib/loader')
+            self.assertEqual(value['chain'][0],path)
+        # Directory aliases cannot manufacture bytes for absent descendants.
+        self.assertEqual(elf.resolve_virtual('lib64/absent',entries)['reason'],'TARGET_MISSING')
+
+    def test_ancestor_cycle_depth_escape_and_nondirectory_refusals(self):
+        examples=[({'a':{'kind':'symlink','target':'b'},'b':{'kind':'symlink','target':'a'}},'a/x','LINK_CYCLE'),
+                  ({'a':{'kind':'symlink','target':'../../outside'}},'a/x','LINK_ESCAPES_IMAGE'),
+                  ({'a':{'kind':'file'},'a/x':{'kind':'file'}},'a/x','ANCESTOR_NOT_DIRECTORY'),
+                  ({'a':{'kind':'hardlink','target':'b'},'a/x':{'kind':'file'}},'a/x','AMBIGUOUS_HARDLINK_PARENT')]
+        for entries,path,reason in examples:
+            with self.subTest(reason=reason):self.assertEqual(elf.resolve_virtual(path,entries)['reason'],reason)
+        chain={f'a{i}':{'kind':'symlink','target':f'a{i+1}'} for i in range(33)}
+        chain['a33/x']={'kind':'file'}
+        self.assertEqual(elf.resolve_virtual('a0/x',chain)['reason'],'LINK_DEPTH')
+
+    def test_hardlink_final_map_ambiguity_stays_hold(self):
+        entries={'usr/lib/regular':{'kind':'file'},'lib':{'kind':'symlink','target':'usr/lib'},
+                 'direct':{'kind':'hardlink','target':'usr/lib/regular'},
+                 'alias':{'kind':'hardlink','target':'lib/regular'},
+                 'link':{'kind':'symlink','target':'usr/lib/regular'},
+                 'indirect':{'kind':'hardlink','target':'link'}}
+        self.assertEqual(elf.resolve_virtual('direct',entries)['path'],'usr/lib/regular')
+        self.assertEqual(elf.resolve_virtual('alias',entries)['reason'],'AMBIGUOUS_HARDLINK_PARENT')
+        self.assertEqual(elf.resolve_virtual('indirect',entries)['reason'],'AMBIGUOUS_HARDLINK_TARGET')
+
+    def test_parent_traversal_never_collapses_through_observed_link_or_file(self):
+        for kind in ('symlink','hardlink','file'):
+            entries={'a':{'kind':kind,'target':'elsewhere'},
+                     'link':{'kind':'symlink','target':'a/../regular'},'regular':{'kind':'file'}}
+            self.assertEqual(elf.resolve_virtual('link',entries)['reason'],'AMBIGUOUS_LINK_PARENT_TRAVERSAL')
+        entries={'a':{'kind':'directory'},'link':{'kind':'symlink','target':'a/../regular'},'regular':{'kind':'file'}}
+        self.assertEqual(elf.resolve_virtual('link',entries)['path'],'regular')
+
 
 class ProfileTests(unittest.TestCase):
+    def test_literal_motley_target_and_alias_metadata_only(self):
+        for name in (*abi.LIBRARY_ROOTS,'usr/lib/libz.so.1.3.2.1-motley'):
+            self.assertTrue(abi.selected(name))
+        for name in ('usr/lib/libz.so.1.3.2.2-motley','usr/lib/libz.so.1.3.2.1-motley.evil',
+                     'usr/lib/private-motley.so','usr/lib64/anything'):
+            self.assertFalse(abi.selected(name))
+        self.assertEqual(abi.PROFILE,'meri-proxy-linux-amd64-node-prisma-abi/2')
+        self.assertFalse(layer.selected('usr/lib/libz.so.1.3.2.1-motley'))
+
+    def test_link_report_retains_original_identity_and_observed_resolution(self):
+        overlay=layer.Overlay(selection=abi.selected)
+        compressed,diff=archive([('usr/lib/libz.so.1.3.2.1-motley',b'zlib')])
+        overlay.add_layer(io.BytesIO(compressed),diff,1)
+        overlay.entries['usr/lib/libz.so.1']={'kind':'symlink','target':'libz.so.1.3.2.1-motley'}
+        overlay.entries['lib64']={'kind':'symlink','target':'usr/lib'}
+        value=abi.analyze(overlay,elf)
+        row=next(x for x in value['links'] if x['path']=='usr/lib/libz.so.1')
+        self.assertEqual(row['target'],'libz.so.1.3.2.1-motley')
+        self.assertEqual(row['resolvedTarget'],'usr/lib/libz.so.1.3.2.1-motley')
+        self.assertEqual(row['kind'],'symlink')
+        self.assertFalse(value['runtimeAdmitted']);self.assertFalse(value['nativeExecution'])
+        self.assertEqual(value['status'],'HOLD')
+        # No fixture /lib64 loader bytes exist: resolution must stay missing.
+        self.assertEqual(elf.resolve_virtual('lib64/ld-linux-x86-64.so.2',overlay.entries)['reason'],'TARGET_MISSING')
+
     def test_selection_is_finite_and_default_unchanged(self):
         for name in ('usr/lib/libc.so.6','usr/lib/libstdc++.so.6.0.34','var/lib/apk/db/installed',abi.CLI+'prisma/build/index.js'):
             self.assertTrue(abi.selected(name))
