@@ -1,5 +1,6 @@
 import { useId, type ChangeEvent, type InputHTMLAttributes } from "react";
 import type { IntakeForm, IntakeField } from "./form";
+import { Popover } from "radix-ui";
 import styles from "./intake.module.css";
 export interface StepProps {
   values: IntakeForm;
@@ -23,6 +24,7 @@ export function TextField({
   const id = useId();
   const common = {
     id,
+    "aria-required": label.endsWith("*"),
     "aria-invalid": Boolean(error),
     "aria-describedby": error ? `${id}-error` : undefined,
     value: input.value,
@@ -85,5 +87,50 @@ export function ChoiceList({
         ))}
       </div>
     </fieldset>
+  );
+}
+export function ChoiceSelect({
+  label,
+  options,
+  value,
+  onChange,
+}: Parameters<typeof ChoiceList>[0]) {
+  return (
+    <div className={styles.field}>
+      <span>{label}</span>
+      <Popover.Root>
+        <Popover.Trigger
+          className={`button ${styles.choiceTrigger}`}
+          aria-label={label}
+        >
+          <span>
+            {value.length
+              ? value
+                  .map(
+                    (key) =>
+                      options.find(([value]) => value === key)?.[1] ?? key,
+                  )
+                  .join(", ")
+              : `Select ${label.toLowerCase()}`}
+          </span>
+          <span aria-hidden="true">⌄</span>
+        </Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Content
+            className={styles.choicePopup}
+            align="start"
+            sideOffset={6}
+          >
+            <ChoiceList
+              label={label}
+              options={options}
+              value={value}
+              onChange={onChange}
+            />
+            <Popover.Close className="button">Done</Popover.Close>
+          </Popover.Content>
+        </Popover.Portal>
+      </Popover.Root>
+    </div>
   );
 }

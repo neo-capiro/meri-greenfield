@@ -89,6 +89,12 @@
   background: var(--muted);
   font-weight: 600;
 }
+.logoImage {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 10px;
+}
 .choices {
   border: 0;
   padding: 0;
@@ -117,6 +123,32 @@
 }
 .choices input {
   flex: 0 0 auto;
+}
+.choiceTrigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 400;
+}
+.choiceTrigger > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.choicePopup {
+  z-index: 60;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  width: min(640px, calc(100vw - 32px));
+  max-height: 320px;
+  overflow: auto;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 16px;
 }
 .actions {
   display: flex;

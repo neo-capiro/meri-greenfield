@@ -1,11 +1,11 @@
 import { TokenInput } from "@/shared/ui/TokenInput";
 import { sectors, tracks } from "./catalog";
-import { ChoiceList, TextField, type StepProps } from "./Fields";
+import { ChoiceList, ChoiceSelect, TextField, type StepProps } from "./Fields";
 import styles from "./intake.module.css";
 export function SectorStep({ values, set, errors }: StepProps) {
   return (
     <div className={styles.fields}>
-      <ChoiceList
+      <ChoiceSelect
         label="Sector tags"
         options={sectors}
         value={values.sectors}

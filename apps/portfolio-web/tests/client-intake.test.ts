@@ -146,9 +146,43 @@ describe("client intake domain", () => {
       client,
     );
     expect(body.intakeData?.sbClassification).toMatchObject({
-      sb: false,
       wosb: true,
       unknownLegacyFlag: true,
+    });
+    expect(body.intakeData?.sbClassification).not.toHaveProperty("sb");
+  });
+  it("merges only dirty business flags and retains concurrent known and unknown flags", () => {
+    const initial = clientToIntake(client);
+    const latest = clientSchema.parse({
+      ...client,
+      intakeData: {
+        ...client.intakeData,
+        sbClassification: {
+          sb: true,
+          wosb: true,
+          hubzone: true,
+          unknownLegacyFlag: "remote",
+        },
+      },
+    });
+    const body = intakePayload(
+      {
+        ...initial,
+        sbClassification: { ...initial.sbClassification, sb: false },
+      },
+      initial,
+      latest,
+    );
+    expect(body.intakeData?.sbClassification).toEqual({
+      wosb: true,
+      hubzone: true,
+      unknownLegacyFlag: "remote",
+    });
+    expect(latest.intakeData?.sbClassification).toEqual({
+      sb: true,
+      wosb: true,
+      hubzone: true,
+      unknownLegacyFlag: "remote",
     });
   });
   it("normalizes canonical codes, primary sector and EIN while retaining exact organization identifiers", () => {

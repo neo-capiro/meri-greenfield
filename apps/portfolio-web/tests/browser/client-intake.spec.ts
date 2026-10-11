@@ -48,7 +48,11 @@ test("three intake steps validate, preserve input, send canonical fields and exp
   await dialog.getByLabel("NAICS codes", { exact: true }).fill("541330");
   await dialog.getByLabel("NAICS codes", { exact: true }).press("Enter");
   await dialog.getByLabel("8A", { exact: true }).check();
-  await dialog.getByLabel("Small business", { exact: true }).check();
+  await dialog
+    .getByRole("button", { name: "Organization types", exact: true })
+    .click();
+  await page.getByLabel("Small business", { exact: true }).check();
+  await page.getByRole("button", { name: "Done", exact: true }).click();
   await dialog.getByRole("button", { name: "Back", exact: true }).click();
   await expect(dialog.getByLabel("Legal name *", { exact: true })).toHaveValue(
     "Test Intake Organization",
@@ -58,7 +62,11 @@ test("three intake steps validate, preserve input, send canonical fields and exp
     "12-3456789",
   );
   await dialog.getByRole("button", { name: "Next", exact: true }).click();
-  await dialog.getByLabel("Defense", { exact: true }).check();
+  await dialog
+    .getByRole("button", { name: "Sector tags", exact: true })
+    .click();
+  await page.getByLabel("Defense", { exact: true }).check();
+  await page.getByRole("button", { name: "Done", exact: true }).click();
   await dialog
     .getByLabel("NDAA Authorization Request", { exact: true })
     .check();
@@ -69,6 +77,15 @@ test("three intake steps validate, preserve input, send canonical fields and exp
   await dialog
     .getByLabel("Internal notes", { exact: true })
     .fill("Isolated synthetic notes");
+  await dialog.screenshot({
+    path: "test-results/client-intake-sector-bottom-desktop.png",
+  });
+  await dialog
+    .locator("fieldset")
+    .first()
+    .evaluate((element) => {
+      element.scrollTop = 0;
+    });
   await dialog.screenshot({
     path: "test-results/client-intake-sector-desktop.png",
   });
@@ -179,13 +196,11 @@ test("logo confirmation failure retries without duplicate profile creation or st
   );
   const dialog = await openCreate(page);
   await company(dialog);
-  await dialog
-    .getByLabel("Upload logo", { exact: true })
-    .setInputFiles({
-      name: "test-logo.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("Synthetic image bytes; storage is intercepted"),
-    });
+  await dialog.getByLabel("Upload logo", { exact: true }).setInputFiles({
+    name: "test-logo.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("Synthetic image bytes; storage is intercepted"),
+  });
   await dialog
     .getByRole("button", { name: "3. Sector & Tracks", exact: true })
     .click();
@@ -200,4 +215,174 @@ test("logo confirmation failure retries without duplicate profile creation or st
     transfers: 1,
     confirmations: 2,
   });
+});
+
+test("client header edit merges fresh remote siblings, preserves unchanged fields and returns focus", async ({
+  page,
+}) => {
+  const unexpected = await installFixtures(page);
+  const original = {
+    ...client,
+    primaryContactEmail: "original@example.test",
+    intakeData: { profileNotes: "Original", oldSibling: "Retain" },
+  };
+  let reads = 0;
+  let saved: Record<string, unknown> | undefined;
+  await page.route(`**/api/backend/core/clients/${clientId}`, (route) => {
+    if (route.request().method() === "PUT") {
+      saved = route.request().postDataJSON();
+      return json(route, { ...original, ...saved, name: "Remote rename" });
+    }
+    reads++;
+    return json(
+      route,
+      reads === 1
+        ? original
+        : {
+            ...original,
+            name: "Remote rename",
+            primaryContactEmail: "remote@example.test",
+            intakeData: {
+              ...original.intakeData,
+              profileNotes: "Remote update",
+              newSibling: "Fresh",
+            },
+          },
+    );
+  });
+  await page.goto(`/portfolio/${clientId}`);
+  const trigger = page.getByRole("button", {
+    name: `More actions for ${client.name}`,
+    exact: true,
+  });
+  await trigger.click();
+  await page
+    .getByRole("menuitem", { name: "Edit client profile", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog", {
+    name: "Edit client details",
+    exact: true,
+  });
+  await dialog
+    .getByRole("button", { name: "3. Sector & Tracks", exact: true })
+    .click();
+  await dialog
+    .getByLabel("Internal notes", { exact: true })
+    .fill("Local wizard note");
+  await dialog
+    .getByRole("button", { name: "Save changes", exact: true })
+    .click();
+  await expect(dialog).not.toBeVisible();
+  expect(reads).toBe(2);
+  expect(saved).toEqual({
+    intakeData: {
+      profileNotes: "Remote update",
+      oldSibling: "Retain",
+      newSibling: "Fresh",
+      internalNotes: "Local wizard note",
+    },
+  });
+  await expect(
+    page.getByRole("button", {
+      name: "More actions for Remote rename",
+      exact: true,
+    }),
+  ).toBeFocused();
+  expect(unexpected).toEqual([]);
+});
+
+test("rejected client edit remains open with entered data and unchanged profile", async ({
+  page,
+}) => {
+  await installFixtures(page);
+  await page.route(`**/api/backend/core/clients/${clientId}`, (route) =>
+    route.request().method() === "PUT"
+      ? json(route, { message: "Denied" }, 403)
+      : json(route, client),
+  );
+  await page.goto(`/portfolio/${clientId}`);
+  await page
+    .getByRole("button", {
+      name: `More actions for ${client.name}`,
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("menuitem", { name: "Edit client profile", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog", {
+    name: "Edit client details",
+    exact: true,
+  });
+  await dialog
+    .getByLabel("Legal name *", { exact: true })
+    .fill("Unsaved rename");
+  await dialog
+    .getByRole("button", { name: "3. Sector & Tracks", exact: true })
+    .click();
+  await dialog
+    .getByRole("button", { name: "Save changes", exact: true })
+    .click();
+  await expect(dialog.getByRole("alert")).toContainText(
+    "do not have permission",
+  );
+  await dialog
+    .getByRole("button", { name: "1. Company Info", exact: true })
+    .click();
+  await expect(dialog.getByLabel("Legal name *", { exact: true })).toHaveValue(
+    "Unsaved rename",
+  );
+  await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: client.name, exact: true }),
+  ).toBeVisible();
+});
+
+test("standard member cannot edit but can confirm archive; rejected receipt never navigates", async ({
+  page,
+}) => {
+  await installFixtures(page);
+  await page.route("**/api/backend/core/me", (route) =>
+    json(route, {
+      user: { id: "user-test", email: "test@example.test" },
+      role: "standard_user",
+    }),
+  );
+  let archives = 0;
+  await page.route(`**/api/backend/core/clients/${clientId}`, (route) => {
+    if (route.request().method() !== "DELETE") return json(route, client);
+    archives++;
+    return json(route, {
+      ...client,
+      status: archives === 1 ? "active" : "archived",
+    });
+  });
+  await page.goto(`/portfolio/${clientId}`);
+  await page
+    .getByRole("button", {
+      name: `More actions for ${client.name}`,
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole("menuitem", { name: "Edit client profile", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("menuitem", { name: "Archive client", exact: true })
+    .click();
+  const dialog = page.getByRole("dialog", {
+    name: "Archive client",
+    exact: true,
+  });
+  expect(archives).toBe(0);
+  await dialog
+    .getByRole("button", { name: "Archive client", exact: true })
+    .click();
+  await expect(dialog.getByRole("alert")).toContainText("unexpected response");
+  await expect(page).toHaveURL(new RegExp(`/portfolio/${clientId}$`));
+  await dialog
+    .getByRole("button", { name: "Archive client", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/portfolio$/);
+  expect(archives).toBe(2);
 });

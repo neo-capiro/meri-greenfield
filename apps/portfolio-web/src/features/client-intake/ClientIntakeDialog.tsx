@@ -1,9 +1,13 @@
 "use client";
-import { useState, type ComponentProps } from "react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
-import { initials, type Client } from "@/features/portfolio/public";
+import {
+  initials,
+  safeWebsite,
+  type Client,
+} from "@/features/portfolio/public";
 import {
   clientToIntake,
   stepFields,
@@ -45,6 +49,13 @@ function IntakeSession({
   const [logo, setLogo] = useState<LogoAttempt>();
   const [logoValidation, setLogoValidation] = useState("");
   const [persisted, setPersisted] = useState<Client>();
+  const fields = useRef<HTMLFieldSetElement>(null);
+  useEffect(() => {
+    if (Object.keys(errors).length)
+      fields.current
+        ?.querySelector<HTMLElement>('[aria-invalid="true"]')
+        ?.focus();
+  }, [errors]);
   const save = useSaveIntake(client);
   const upload = useUploadLogo();
   const pending = save.isPending || upload.isPending;
@@ -99,6 +110,7 @@ function IntakeSession({
     }
   }
   const stepProps = { values, set, errors };
+  const logoUrl = safeWebsite(client?.logoUrl);
   return (
     <Dialog
       open={open}
@@ -153,12 +165,23 @@ function IntakeSession({
           ))}
         </nav>
         <fieldset
+          ref={fields}
           className={styles.scroll}
           disabled={pending || !permitted || Boolean(persisted)}
         >
           <div className={styles.logo}>
             <span className={styles.initials}>
-              {initials(values.name || "Client")}
+              {logoUrl ? (
+                // Signed, service-provided branding URL; no optimizer proxy or inline SVG.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={styles.logoImage}
+                  src={logoUrl}
+                  alt="Current client logo"
+                />
+              ) : (
+                initials(values.name || "Client")
+              )}
             </span>
             <div>
               <strong>Company logo</strong>

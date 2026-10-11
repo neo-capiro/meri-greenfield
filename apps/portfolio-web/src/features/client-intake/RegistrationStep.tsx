@@ -1,6 +1,6 @@
 import { TokenInput } from "@/shared/ui/TokenInput";
 import { certifications, organizationTypes, samStatuses } from "./catalog";
-import { ChoiceList, TextField, type StepProps } from "./Fields";
+import { ChoiceList, ChoiceSelect, TextField, type StepProps } from "./Fields";
 import styles from "./intake.module.css";
 export function RegistrationStep({ values, set, errors }: StepProps) {
   return (
@@ -67,7 +67,7 @@ export function RegistrationStep({ values, set, errors }: StepProps) {
           onChange={(v) => set("pscCodes", v)}
         />
       </div>
-      <ChoiceList
+      <ChoiceSelect
         label="Organization types"
         options={organizationTypes}
         value={values.applicantTypes}

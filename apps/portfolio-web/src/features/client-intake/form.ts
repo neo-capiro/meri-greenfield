@@ -248,12 +248,24 @@ export function intakePayload(
         /^\d{2}-?\d{7}$/.test(value)
       )
         value = value.replace("-", "");
-      if (key === "sbClassification")
-        value = {
-          ...record(intake.sbClassification),
-          ...values.sbClassification,
-        };
-      if (value === "" || (Array.isArray(value) && !value.length))
+      if (key === "sbClassification") {
+        const merged = { ...record(intake.sbClassification) };
+        for (const [flag] of businessFlags) {
+          if (
+            initial &&
+            values.sbClassification[flag] === initial.sbClassification[flag]
+          )
+            continue;
+          if (values.sbClassification[flag]) merged[flag] = true;
+          else delete merged[flag];
+        }
+        value = Object.keys(merged).length ? merged : undefined;
+      }
+      if (
+        value === undefined ||
+        value === "" ||
+        (Array.isArray(value) && !value.length)
+      )
         delete intake[key];
       else intake[key] = value;
     }
