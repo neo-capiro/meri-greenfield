@@ -1,23 +1,23 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,11 October 2026 01:37 UTC. **G0 accepted / G1 active / OPEN;
-eight deployment gates, G2–G7 unentered.** [Owner acceptance](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
-integrates seven exact returned commits: original ABI preparation/review, Windows
-audit repair, browser history plus focused wire extraction, composed SDK discovery
-options and actual ABI DATA reconciliation. Root verified1,077 preparation/1,283
-actual/784 browser-SDK record occurrences and exact Git. One actual offline scan
-completed with both Jobs empty:275selected/241CAS,21ELFs/nineHOLDs. The old audit
-failure remains consumed. No native runtime compatibility follows. Root's24
-browser/11SDK checks passed; initial root reporter-parser error retained without
-replaying successful browser tests. Node's measured1,412,444-byte string table,
-lexical alias resolution and literal zlib target repair are allocated separately.
-Browser activation and native SDK discovery assembly proposals are bounded in
-parallel. W05SessionStore/fullSDKscope, trusted checkpoint/workspace/fencing/
-replacement, real communityLinux proxy/auth/TLS/Fargate, actual browser wire/IAM/
-KMS/history/physical absence/host/browser-renderer sandbox remain open. Guard is
-literal false/noT0/volume/TestState/host. All49+five findings OPEN/Office DEFERRED,
-sourcesdisabled/currentMeriuntouched/nocutover/inference$0/$10;75realrequests
-await promised location/owner. Research does not authorize plan departures.
+Current continuation, 11 October 2026 01:54 UTC. **G0 accepted / G1 active / OPEN;
+eight deployment gates, G2–G7 unentered.** [Owner record](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+adds independently reviewed profile2 source 697d311→07e9ea4, two bounded design
+reports and new execution preparation a897/a055→d3b1fd8/deb527f. Root verified 73
+repair/111 design/2344 pack/1543 actual record occurrences. Nineteen repair tests
+passed; CRLF-wrapper and report/seal-transition refusals remain explicit. One
+fresh actual v2 scan completed with both Jobs empty: 280 selected paths, 242 CAS
+objects, 23 ELFs and seven HOLDs. Loader alias/motley/Node parser gaps are resolved
+as data; five unselected Node library families/package/notices/native qualification
+remain. Distinct actual review and finite profile3 expansion are allocated. SDK
+registration 087fc1f and browser bootstrap d3c25af returned 12/51 author checks and
+await root review; no native or cloud admission follows. Full SDK/W05 SessionStore/
+checkpoint/storage/workspace/fencing/replacement, actual proxy/auth/usage/budget/Fargate, browser
+wire/IAM/KMS/absence/host/renderer sandbox, Office/security/cohorts remain.
+No live T0/volume/TestState/host. All 49 current plus five older findings remain OPEN;
+Office is DEFERRED. Sources are disabled, current Meri is untouched, no cutover
+has occurred and model spend is $0 of $10. The 75 real requests await the promised
+source. Research does not approve plan departures. Earlier entries retain historical scope.
 
 Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
 eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup

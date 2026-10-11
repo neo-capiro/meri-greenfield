@@ -1,22 +1,23 @@
 # Meri kickoff status
 
-Current continuation,11 October 2026 01:37 UTC: **G0 accepted / G1 active / OPEN;
+Current continuation, 11 October 2026 01:54 UTC: **G0 accepted / G1 active / OPEN;
 eight deployment gates, G2–G7 unentered.** [Owner verification](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
-now accepts actual offline ABI DATA:23 layers,275 selected paths/241 CAS objects,
-both completed Jobs empty, with nine native/profile/package-notice HOLDs retained.
-The first Windows audit-contract dispatch failed before its ABI child; its
-consumes remain. A separately reviewed repair passed actual audit controls and
-one fresh scan; no native image/proxy/SDK binary ran. A measured Node string-table
-and lexical-library-profile repair is under preparation, with package/notices
-and genuine Linux import/auth/TLS/Fargate still open. Source-only managed history
-is integrated after24 root checks, split into wire and lifecycle modules. SDK
-search options compose canonical owners and passed11 root checks; real native
-search/tool-reference/registration/revocation remains unrun. W05 SessionStore,
-full SDK/checkpoint/workspace/fencing/replacement remain required. Browser guard
-is literal false; no operational T0/volume/TestState/host exists. All49 current
-plus five older findings OPEN/Office DEFERRED, sources disabled/current Meri
-untouched/no cutover, spending$0/$10. The75 real requests await the promised
-location/owner. Research approves no plan departure. Earlier entries are history.
+now includes actual offline ABI profile-v2 data: 280 selected paths, 242 CAS objects,
+23 decoded ELFs, and both completed Jobs empty. Node's measured parser limit and
+observed lib64/zlib resolution gaps are repaired; seven HOLDs remain, including
+five additional unselected Node library families and package/notices/native
+qualification. This is not image incompatibility or native acceptance. All old
+consumes/results remain. Root's 19 repair checks passed; CRLF review-wrapper and
+late seal/report refusals are retained without test replay or failed-slot reset.
+Managed history (24 root checks) and discovery options (11 root checks) are accepted
+source. New tools registration (12 author checks) and explicit browser bootstrap
+(51 author checks) await root review. No live browser T0/volume/TestState/host;
+fresh wire/IAM/KMS/absence/sandbox and real native proxy/SDK tests remain. Full
+SDK/W05 SessionStore/checkpoint/workspace/fencing/replacement scope is required.
+All 49 current plus five older findings remain OPEN; Office is DEFERRED. Sources
+are disabled, current Meri is untouched, and no cutover has occurred. Model spend
+is $0 of $10; 75 real requests await the promised source/owner. Research
+authorizes no plan departure. Earlier entries are historical.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native

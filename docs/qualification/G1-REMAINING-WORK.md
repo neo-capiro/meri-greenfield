@@ -1,24 +1,26 @@
 # G1 remaining scope and sequence
 
-Current continuation,11 October 2026 01:37 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
-[Actual ABI and source acceptance](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
-records one completed offline23-layer scan with241 objects and nine HOLDs. Fix
-measured Node DT_STRSZ/profile/lexical alias gaps in a new reviewed source version;
-retain old results/consumes. Establish package/notices/community assembly, genuine
-Linux app import, disposable PostgreSQL key auth/deny/revoke, TLS/ECS authority,
-usage/durable$10 and Fargate. Source-only SDK discovery options passed11 root
-checks; real server registration/native search/tool-reference/success/unavailable/
-revocation and proxy/Bedrock wire remain. Complete W05 SessionStore, full native
-state/quiescence/workspace, canonical checkpoint/storage/fencing and actual
-interrupt/replacement/resume. Browser managed-history decoder passed24 root
-checks with focused wire/lifecycle modules; its graph remains literal-false and
-synthetic history is not feasible live provenance. Finish noncircular activation,
-actual ASL/wire/IAM/KMS/history/probe bridge, fresh authority and one managed
-lifecycle/physical absence before watchdog/browser AND renderer sandbox/egress/
-teardown. No T0/volume/TestState/host exists. All49+five security findings OPEN,
-Office DEFERRED; REL-02/RG-08/measured cohorts remain. Sources disabled/currentMeri
-untouched/no cutover/spending$0/$10;75 requests await promised source. Plan
-departures require prior human approval; no research recommendation changes W05.
+Current continuation, 11 October 2026 01:54 UTC: G0 accepted / G1 OPEN / G2–G7 unentered.
+[Actual profile-v2 and source acceptance](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+records 280 selected paths, 242 CAS objects, 23 ELFs and seven HOLDs after one
+fresh offline scan with both Jobs empty. Review distinct actual-v2 output and
+extend only the measured
+Node library selection; preserve all old outputs/consumes. Establish actual
+package/notices/community assembly, genuine Linux import, PostgreSQL auth/deny/
+revoke, TLS/ECS identity, usage/durable $10 limit and Fargate. Review returned SDK
+tool registration and browser bootstrap source (reported 12/51 checks); their parent
+source/options/history remain accepted offline. Finish image public-contract
+package closure, native deferred search/tool-reference/success/unavailable/
+revocation through actual proxy/Bedrock, full SessionStore/checkpoint/workspace/
+fencing and native interruption/replacement/resume. Browser still needs exact
+activated-source/history/probe bridge, actual ASL/wire/IAM/KMS/cost/fresh authority,
+one managed lifecycle/physical absence, then host watchdog/browser AND renderer
+sandbox/egress/teardown. No live T0/volume/TestState/host. Office/security, REL-02/
+RG-08/measured cohorts remain. All 49 current plus five older findings remain
+OPEN; Office is DEFERRED. Sources are disabled, current Meri is untouched, no
+cutover has occurred and model spend is $0 of $10. The 75 requests await the
+promised source. Any plan departure requires prior human approval; W05 and full
+SDK scope are unchanged.
 
 Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,

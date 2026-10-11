@@ -116,3 +116,75 @@ wire/IAM/KMS/physical absence/sandbox/egress and Office/security remain open.
 All49 current plus five older findings remain OPEN; Office DEFERRED. Source
 connections disabled, current Meri untouched, no cutover or Docker action, model
 spending$0/$10. The75 approved real requests await the promised location/owner.
+
+## Profile-v2 continuation, 01:54 UTC
+
+Root fully reviewed repair697d311 and integrated it as07e9ea4. The fixed2MiB
+DT_STRSZ limit is justified by measured Node DATA; other limits are unchanged.
+Observed directory aliases are resolved lexically, the literal motley target is
+selected and original link identity is separate from resolvedTarget. Root
+verified73 sealed record occurrences and ran19 focused tests once (all12 original
+cases plus seven groups). The successful raw unittest capture was CRLF; root's
+LF-only receipt assertion and its first salvage regex refused. Corrected DATA
+decoding reused the retained capture without replaying tests. The original
+wrapper exited1 before saving a process envelope; candidate exit/source-stability
+terms were reached before the terminator assertion, but no original structured
+candidate-exit receipt exists. Current identities were reverified. A shell
+sequence applied the source cherry-pick after the first salvage refusal; this
+coordination mistake is retained, and no action occurred until final pack review.
+
+The two design reports (2bdc11a→02cc79a and c944da2→0207f70) passed111 root
+sealed-record checks plus exact Git. They are bounded implementation proposals,
+not native SDK or browser activation authority. The tools registration candidate
+087fc1f (12 reported offline checks) and browser bootstrap candidate d3c25af
+(51 reported offline checks) have returned and still await root acceptance.
+
+New pack a897e36/a0554eb is integrated asd3b1fd8/deb527f. It preserves all prior
+failed and successful-HOLD namespaces. Root's first review refused when the
+report changed during a late clarification; no admission/action was allocated.
+The final current report and versioned FINAL-MANIFEST-2 were then independently
+verified, including2,344 record occurrences,981 frozen records/969 runtime files,
+269 protected prior files and the same23 compressed blobs. Three helpers change
+only fixed path/source/pin binding; outer3 is the exact five-literal rebinding
+of outer2. Author seal instrumentation also had a retained stat_result comparison
+refusal, corrected without changing an operational helper; its specific atime
+cause is inferred, not proved. Old seals and raw report bytes remain intact.
+
+Root issued a separate fresh600-second offline-only admission and ran outer3
+once. At01:51:36–01:51:45 UTC, outerPID43568 exited0 in9.235s and innerPID45748
+exited0 in9.046s. Both Jobs were empty, readers/source checks completed, no
+timeout/capture/cleanup error occurred and admission remained stable. No image
+binary, Node/engine, SDK/proxy/database/cloud/provider or Docker ran.
+
+Actual v2 result:196697B, SHA256
+`8adf37f71af5df2c77525404416225faf96352e5913ddf73aea18122e22c8c66`.
+Root independently reconciled1,543 record occurrences and all242 CAS objects
+(184666866B):280 selected paths,249 files/21 directories/10 links,23 decoded ELFs,
+23 compressed descriptors and reported expanded identity/byte totals, nested
+raw receipts/streams/admissions/consumes/source freezes and retained prior files.
+No archive scan was repeated by this review. Node is now parsed, lib64→usr/lib
+and the motley regular zlib target are observed DATA. The seven remaining HOLDs
+are five unselected Node dependency families (libbrotlienc.so.1, libcrypto.so.4,
+libssl.so.4, libicui18n.so.78, libicuuc.so.78), missing package identity/license
+mapping and the unconditional native-loader/complete-notice qualification hold.
+These are selected-byte gaps, not whole-image absence or compatibility failure.
+The original first-stage HOLD remains. originalFirstStageHoldCleared,
+nativeExecution and runtimeAdmitted remain false.
+Distinct actual-v2 review and a finite library-profile expansion are allocated;
+no native compatibility, community adoption or G1 advance follows.
+
+Additional root proofs under ignored `.task-inputs/`:
+
+| Proof | Bytes | SHA256 |
+|---|---:|---|
+| abi-profile-source-owner-review-1/decision.json | 21028 | `36cbc89a643321602cb2a651a848ee9f744d882a76ab3c12412adee997635879` |
+| followup-designs-owner-review-1/decision.json | 31961 | `8b5577fd8f9890c20ea4400936764d38431ac4de3207c82d7a7700d54af34233` |
+| abi-v2-preparation-owner-review-2/decision.json | 621679 | `2c75c46e30e1cb7fe924abd213487635f46801976736eaa70f88eec62c71416e` |
+| actual-abi-v2-owner-review-1/decision.json | 441115 | `2f39a45285dd85f0861cbb79620c194ae3f5508e00672f1ec6dc02d6ae141a86` |
+
+G0 accepted/G1 OPEN/G2–G7 unentered. Full SDK/W05 SessionStore, native checkpoint/
+workspace/storage/fencing/replacement, actual-proxy discovery/auth/accounting,
+community Linux/package/notices, browser wire/IAM/KMS/physical absence/sandbox/
+egress, Office/security and measured cohorts remain required. All49+five findings
+OPEN/Office DEFERRED; sources disabled/current Meri untouched/no cutover/$0 of$10
+model spend. The75 real requests still await the promised approved location/owner.
