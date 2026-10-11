@@ -26,7 +26,7 @@ const drafts = [
 
 test("client Work opens typed Workspace drafts through the canonical editor route", async ({
   page,
-}) => {
+}, testInfo) => {
   const unexpected = await installFixtures(page);
   await page.route("**/workspace/drafts?scope=all", (route) =>
     json(route, {
@@ -65,6 +65,25 @@ test("client Work opens typed Workspace drafts through the canonical editor rout
   }
   await expect(page.getByRole("row")).toHaveCount(3);
   await expect(page.getByRole("textbox")).toHaveCount(0);
+  await page.screenshot({
+    path: testInfo.outputPath("client-work-desktop.png"),
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(18, 18, 18)",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: testInfo.outputPath("client-work-mobile-dark.png"),
+    fullPage: true,
+  });
   expect(unexpected).toEqual([]);
 });
 
