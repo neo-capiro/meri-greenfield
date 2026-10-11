@@ -1,0 +1,9 @@
+# Browser SOURCE4 structural graph repair
+
+This bounded Codex source allocation starts from 867a9e1e7a35bc248f3ff7d232798a5e8fa7d1a9. Ownership is this task, its matching report, and the new ignored `.task-inputs/browser-post-bootstrap-readonly-source-4/` pack only. SOURCE3 and both consumed owner attempts remain immutable.
+
+Before implementation: copy the closed SOURCE3 finite source pack; change only the private canonical planner's `_build_requests` entry composition to a Choice with literal-false branches to its fixed diagnostic Tasks and an unconditional default to the original refusal. Preserve Task/Catch/terminal definitions, filters, role, timeouts, no-retry semantics, call budget, original bootstrap clock, fixed USERPROFILE, safe loaders and Windows Job. Mechanically rebind the new pack and future OWNER3 paths, then regenerate the nested source10/full1031/parent closures. Stage the six existing provenance products only inside this preparation.
+
+Verification will preserve the original 16 tests, explicitly changing only their old StartAt assertion; add structural reachability, fixed-false all-input refusal, unchanged wire/state and source/pin controls. Execute only bounded offline checks under process/socket denial, retain binary output and pre/post source pins, and verify historical evidence as DATA. No AWS CLI, native execution, authority/admission, operational UUID/nonce/clock, consume, OWNER3 write, or service action is authorized. Root independently reviews before any new authority.
+
+The AWS TestState documentation explicitly supports a complete definition with `stateName`: https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html . This is a design input, not operational permission. Offline checks cannot establish service validation or actual wire compatibility, absence, cleanup, or G1 completion.
