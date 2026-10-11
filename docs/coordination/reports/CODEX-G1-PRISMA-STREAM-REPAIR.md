@@ -8,8 +8,9 @@ G1. Root independently reviews this candidate and owns any new experiment.
 Dedicated worktree: `C:/dev/main/meri-greenfield-worktrees/g1-proxy-prisma-stream-repair`.
 Base: `f205c510518837a29ad8eb3da19e9af18ea56076`. Exactly three tracked paths
 are owned: `prisma-peer.py`, `test_fixture.py` in the existing postgres-fixture
-directory and this report. The proportionate outline and retained evidence are
-under `.task-inputs/prisma-stream-repair-1`.
+directory and this report. The proportionate outline and first retained evidence
+are under `.task-inputs/prisma-stream-repair-1`; the explicit aggregate-budget
+follow-up is independently retained under `.task-inputs/prisma-stream-repair-2`.
 
 ## Established defect and retained actual failure
 
@@ -49,17 +50,25 @@ retained as DATA without importing Prisma or executing any engine.
 
 ## Minimal repair and preserved ownership
 
-`Discard(fd)` now accepts only exact integer1 or2 and returns that descriptor
+`Discard(fd,budget)` now accepts only exact integer1 or2 and returns that descriptor
 from fileno. The surrounding canonical context still duplicates and saves the
 borrowed standard descriptors, redirects1/2 to devnull with dup2, restores them
 in finally and closes only its duplicate/null descriptors. Python stdout uses
-Discard(1); stderr uses a distinct Discard(2). No saved original descriptor is
+Discard(1,budget); stderr uses a distinct Discard(2,budget). No saved original descriptor is
 exposed. There is no general-purpose stream wrapper, isatty/encoding expansion,
 new resource owner or changed subprocess/Prisma implementation.
 
-The same original per-stream Python write counter still raises after two MiB.
+Both instances share one private Python write counter and refuse an aggregate
+stdout+stderr total greater than two MiB. Root explicitly requested this after
+the first candidate was sealed. The original peer actually used two independent
+Discard instances; this aggregate bound is a deliberate tightening, matching
+the original canonical native-auth shared-sink budget. The first candidate and
+its14PASS evidence remain immutable at commit
+`3e20b16058c92d00368dda606c6cd1a74b7b9d62` and the original finite seal. Its
+closed-copies/Git blobs retain old bytes; live source references in that historical
+seal are superseded by version2, rather than asserted current after this change.
 Native FD output remains suppressed into devnull rather than retained or counted
-by that Python counter. The write counter was and remains a text-length bound;
+by the Python counter. The write counter remains a text-length bound;
 it is not a native byte-stream limit. Original signal32s/async25s/disconnect3s
 bounds, strict URL/CA handling, TLS predicates, content-free error classification
 and final structured result output are unchanged. DATA reconciliation proves
@@ -78,7 +87,7 @@ has no instance of this particular missing-fileno defect.
 
 ## Checks actually run
 
-One focused run on2026-10-11, 05:45:56.440763-05:45:56.618510 UTC:
+First focused run on2026-10-11, 05:45:56.440763-05:45:56.618510 UTC:
 
 `python.exe -I -B apps/proxy/qualification/linux/postgres-fixture/test_fixture.py -v`
 
@@ -98,19 +107,33 @@ before/after records are equal. The supervisor collects PIPE output before its
 size check; it is not a live memory cap or a Windows Job/process-tree proof.
 These are small fixed audit-denied local tests, not an operational supervisor.
 
-The source-only reconciliation helper verified old test bodies and unchanged
-peer domain functions, wheel RECORD members and the retained stream contract.
-Git diff/check was inspected. No local check failed or was retried in this
-repair. The actual failed native experiment remains explicit above. Git and
+After the owner's aggregate-budget clarification, only the four affected sink
+groups ran on the final source at05:51:08.362796-05:51:08.531191 UTC with the
+same pinned Python flags/audit restrictions and60-second direct-child ceiling:
+the first three sink groups plus combined stdout+stderr overflow. **4/4 PASS**.
+The new control writes one MiB through each stream, then proves the next
+stderr character is refused; both streams restore afterward. stdout is empty;
+stderr683 bytes/SHA256
+`6990743c6d2da488af2928155174f648ce9973ce800f1acb8408262810f56881`.
+Source pre/post and all48 historical payloads are exact. Thus there are15
+distinct groups across the two runs, with18 test executions; no claim is made
+that a fresh final15-group canonical suite ran. The11 existing domain groups
+remain raw-body unchanged and were not unnecessarily replayed.
+
+The source-only reconciliation verified old test bodies and unchanged peer
+domain functions, wheel RECORD members and the retained stream contract.
+Git diff/check was inspected. No local check failed. The second targeted run
+was justified by the newly requested aggregate behavior. The actual failed
+native experiment remains explicit above. Git and
 Python DATA/test children ran; no SDK/Prisma/native engine, Docker, database,
 server, AWS, network, provider or image-build action ran.
 
 ## Handoff limits
 
-The peer source is6970 bytes/SHA256
-`68bc8f8311d30541b17da5c180e2983c6867708d5aabb48ed62ef4968fec1d41`;
-test source is9654 bytes/SHA256
-`56cd5760f63cc37043aa8c20b9fa4c306041c7f26efc979e95bfcf4b039fc7aa`.
+The final peer source is7024 bytes/SHA256
+`ea826de23646a2b20fb4e429cd32852dd7ac2c626f32a3250346b5dd8601f4d9`;
+test source is10135 bytes/SHA256
+`9fc40be0f39f5d2d49e48c0f3b43550ee9320d8fc296a44e880b50a257de0566`.
 The final finite manifest is separate from this report to avoid a self-hash
 claim. Independent source review, canonical native-auth sink repair, refreshed
 complete context/source admission and a newly authorized actual experiment are

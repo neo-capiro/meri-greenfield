@@ -12,16 +12,16 @@ import sys
 from urllib.parse import parse_qsl,urlsplit
 
 class Discard:
-    def __init__(self,fd):
+    def __init__(self,fd,budget):
         if type(fd)is not int or fd not in (1,2):raise ValueError('OUTPUT_DESCRIPTOR')
-        self.fd=fd;self.count=0
+        self.fd=fd;self.budget=budget
     def fileno(self):
         # Prisma passes this object to Popen. These descriptors are already
         # redirected to devnull; never expose the saved original descriptors.
         return self.fd
     def write(self,text):
-        self.count+=len(text)
-        if self.count>2*1024*1024:raise ValueError('UPSTREAM_OUTPUT_BOUND')
+        self.budget[0]+=len(text)
+        if self.budget[0]>2*1024*1024:raise ValueError('UPSTREAM_OUTPUT_BOUND')
         return len(text)
     def flush(self):pass
 
@@ -31,7 +31,8 @@ def discard_native_output():
     saved=[os.dup(1),os.dup(2)];sink=os.open(os.devnull,os.O_WRONLY)
     try:
         os.dup2(sink,1);os.dup2(sink,2)
-        with contextlib.redirect_stdout(Discard(1)),contextlib.redirect_stderr(Discard(2)):yield
+        budget=[0]
+        with contextlib.redirect_stdout(Discard(1,budget)),contextlib.redirect_stderr(Discard(2,budget)):yield
     finally:
         os.dup2(saved[0],1);os.dup2(saved[1],2)
         for fd in (*saved,sink):os.close(fd)

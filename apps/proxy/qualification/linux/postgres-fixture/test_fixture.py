@@ -54,12 +54,20 @@ class FixtureTests(unittest.TestCase):
 
     def test_discard_preserves_per_stream_write_bound(self):
         for fd in (1,2):
-            sink=peer.Discard(fd)
+            sink=peer.Discard(fd,[0])
             self.assertEqual(sink.write('x'*(2*1024*1024)),2*1024*1024)
             with self.assertRaisesRegex(ValueError,'UPSTREAM_OUTPUT_BOUND'):sink.write('x')
             self.assertEqual(sink.fileno(),fd)
         for fd in (None,True,0,3,'1'):
-            with self.subTest(fd=fd),self.assertRaisesRegex(ValueError,'OUTPUT_DESCRIPTOR'):peer.Discard(fd)
+            with self.subTest(fd=fd),self.assertRaisesRegex(ValueError,'OUTPUT_DESCRIPTOR'):peer.Discard(fd,[0])
+
+    def test_combined_stdout_stderr_share_two_mib_budget(self):
+        before=(sys.stdout,sys.stderr)
+        with peer.discard_native_output():
+            self.assertEqual(sys.stdout.write('x'*(1024*1024)),1024*1024)
+            self.assertEqual(sys.stderr.write('x'*(1024*1024)),1024*1024)
+            with self.assertRaisesRegex(ValueError,'UPSTREAM_OUTPUT_BOUND'):sys.stderr.write('x')
+        self.assertIs(sys.stdout,before[0]);self.assertIs(sys.stderr,before[1])
 
     def test_postgres_familiar_name_keeps_exact_repository_and_digest(self):
         self.assertTrue(config.is_postgres_repo_digest(config.PG_IMAGE))
