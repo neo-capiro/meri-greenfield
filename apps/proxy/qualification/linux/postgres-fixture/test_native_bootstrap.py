@@ -1,5 +1,7 @@
 """Pure composition controls; no Docker, Prisma engine, DB or network."""
 import importlib.util
+import contextlib
+import io
 import json
 from pathlib import Path
 import sys
@@ -12,6 +14,7 @@ def deny(event,args):
 sys.addaudithook(deny);sys.path.insert(0,str(HERE))
 import config
 import native_bootstrap as b
+import prisma_error_evidence as diagnostics
 
 def inputs():
     v={'schema':'meri.postgres.native-combined/1','runId':'11111111-1111-4111-8111-111111111111','proxyImage':'sha256:'+'a'*64,
@@ -112,15 +115,13 @@ class CompositionTests(unittest.TestCase):
         async def views(db):self.assertIsInstance(db,Fake);calls.append('GENUINE_HELPER_CALL_FAKE')
         replacements={'prisma':types.SimpleNamespace(Prisma=Fake),'litellm.proxy.db.create_views':types.SimpleNamespace(create_missing_views=views)}
         old={k:sys.modules.get(k) for k in replacements};sys.modules.update(replacements)
-        capture=b.capture_native_output
-        b.capture_native_output=lambda deadline:FakeCapture(owner_error_bytes() if reconnect=='P1000 password authentication failed' else b'')
+        native=types.SimpleNamespace(capture_native_output=lambda deadline:FakeCapture(owner_error_bytes() if reconnect=='P1000 password authentication failed' else b''))
         try:
-            coro=b.views_and_grants('UNUSED_FAKE_MOUNTED_OWNER_URL',123.0)
+            coro=b.views_and_grants('UNUSED_FAKE_MOUNTED_OWNER_URL',123.0,native,diagnostics)
             try:coro.send(None)
             except StopIteration:return calls
             raise AssertionError('fake yielded IO')
         finally:
-            b.capture_native_output=capture
             for key,value in old.items():
                 if value is None:sys.modules.pop(key,None)
                 else:sys.modules[key]=value
@@ -136,8 +137,8 @@ class CompositionTests(unittest.TestCase):
             with self.subTest(message=message),self.assertRaisesRegex(ValueError,'CREDENTIAL_NOT_REVOKED'):self.run_grants(reconnect=message)
 
     def reconnect(self,raw,*,error=EngineConnectionError('opaque'),complete=True,stdout=b'',disconnect_error=False):
-        calls=[];capture=b.capture_native_output
-        b.capture_native_output=lambda deadline:(calls.append(('deadline',deadline)) or FakeCapture(raw,complete,stdout))
+        calls=[]
+        native=types.SimpleNamespace(capture_native_output=lambda deadline:(calls.append(('deadline',deadline)) or FakeCapture(raw,complete,stdout)))
         class Check:
             async def connect(self):
                 calls.append('connect')
@@ -145,13 +146,11 @@ class CompositionTests(unittest.TestCase):
             async def disconnect(self):
                 calls.append('disconnect')
                 if disconnect_error:raise RuntimeError('fixed synthetic disconnect failure')
-        try:
-            coro=b.revoked_owner_reconnect(Check(),123.0)
-            try:coro.send(None)
-            except StopIteration:pass
-            else:raise AssertionError('fake yielded IO')
-            return calls
-        finally:b.capture_native_output=capture
+        coro=b.revoked_owner_reconnect(Check(),123.0,native,diagnostics)
+        try:coro.send(None)
+        except StopIteration:pass
+        else:raise AssertionError('fake yielded IO')
+        return calls
 
     def test_complete_owner_p1000_uses_original_deadline_and_disconnect(self):
         self.assertEqual(self.reconnect(owner_error_bytes()),[('deadline',123.0),'connect','disconnect'])
@@ -174,5 +173,25 @@ class CompositionTests(unittest.TestCase):
         data_error.data=payload;data_error.code='P1011';data_error.meta=payload['user_facing_error']['meta']
         with self.assertRaisesRegex(ValueError,'CREDENTIAL_NOT_REVOKED'):
             self.reconnect(owner_error_bytes(),error=data_error)
+
+    def test_fixed_diagnostic_sources_pinned_before_private_compile(self):
+        pins={n:b.sha((HERE/n).read_bytes()) for n in b.DIAGNOSTIC_NAMES}
+        native,parsed=b.diagnostic_modules(HERE,pins)
+        self.assertTrue(callable(native.capture_native_output))
+        self.assertTrue(parsed.classify_native_output('wrong-password',owner_error_bytes(),
+            expected_user='meri_fixture_owner',expected_host='meri-native-auth-pg')['specificRejection'])
+        for changed in ({},dict(pins,extra='a'*64),{**pins,'prisma_error_evidence.py':'a'*64}):
+            with self.assertRaises(ValueError):b.diagnostic_modules(HERE,changed)
+        folder=Path.cwd()/'diagnostic-source-fixture';folder.mkdir(exist_ok=False)
+        (folder/b.DIAGNOSTIC_NAMES[0]).write_bytes((HERE/b.DIAGNOSTIC_NAMES[0]).read_bytes())
+        with self.assertRaises(FileNotFoundError):b.diagnostic_modules(folder,pins)
+        (folder/b.DIAGNOSTIC_NAMES[1]).write_bytes(b'raise AssertionError("untrusted code must not execute")\n')
+        with self.assertRaisesRegex(ValueError,'SOURCE_HASH'):b.diagnostic_modules(folder,pins)
+
+    def test_bootstrap_help_and_missing_are_preallocation(self):
+        for argv,code in [(['--help'],0),([],2)]:
+            with self.subTest(argv=argv),contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as caught:b.main(argv)
+                self.assertEqual(caught.exception.code,code)
 
 if __name__=='__main__':unittest.main()

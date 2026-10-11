@@ -169,11 +169,14 @@ def main(argv=None):
             owner_root=private/'native-owner';owner_root.mkdir(mode=0o700);os.chown(owner_root,10001,10001)
             owner_mount='/run/meri-native-owner/'+owner
             write(owner_root/'database-url',owner_url(v,owner_password),10001);write(owner_root/'ca.pem',(certs/'ca.pem').read_bytes(),10001)
-            write(owner_root/'bootstrap.json',json.dumps({'runtimeSha256':admitted['runtimeSha256'],'deadlineMs':v['startDeadlineMs']},sort_keys=True).encode(),10001)
+            diagnostic_pins={name:native_bootstrap.sha((HERE/name).read_bytes()) for name in native_bootstrap.DIAGNOSTIC_NAMES}
+            write(owner_root/'bootstrap.json',json.dumps({'runtimeSha256':admitted['runtimeSha256'],'diagnosticSha256':diagnostic_pins,'deadlineMs':v['startDeadlineMs']},sort_keys=True).encode(),10001)
             a=common(n['client']+'-schema',owner,n['network'],'10001:10001',v['proxyImage'])+['--mount',
                 'type=bind,source='+str(owner_root)+',target='+owner_mount+',readonly','--mount',
-                'type=bind,source='+str(HERE/'native_bootstrap.py')+',target=/run/native_bootstrap.py,readonly',
-                '--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],'-I','-B','/run/native_bootstrap.py','--run',owner,'--deadline-ms',str(v['startDeadlineMs'])]
+                'type=bind,source='+str(HERE/'native_bootstrap.py')+',target=/run/native_bootstrap.py,readonly']
+            for name in native_bootstrap.DIAGNOSTIC_NAMES:
+                a+=['--mount','type=bind,source='+str(HERE/name)+',target=/run/'+name+',readonly']
+            a+=['--entrypoint','/opt/meri-proxy-venv/bin/python',v['proxyImage'],'-I','-B','/run/native_bootstrap.py','--run',owner,'--deadline-ms',str(v['startDeadlineMs'])]
             cid=create(c,a,v['proxyImage'],owner,attempts);schema_raw,_,_=c.call('native-schema',['start','--attach',cid])
             schema_result=json.loads(schema_raw);result['nativeSchema']=schema_result
             observed=c.inspect('container',cid,owner,v['proxyImage']);require(observed['State']['Running'] is False and observed['State']['ExitCode']==0,'SCHEMA_TERMINAL')

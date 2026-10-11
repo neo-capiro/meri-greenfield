@@ -14,10 +14,9 @@ import sys
 import time
 import types
 from urllib.parse import urlsplit,parse_qsl
-from native_output_capture import capture_native_output
-from prisma_error_evidence import classify_exception,classify_native_output
 
 SOURCE_NAMES=('fixture_config.py','native_auth_probe.py')
+DIAGNOSTIC_NAMES=('native_output_capture.py','prisma_error_evidence.py')
 RUNTIME={'schema':'/opt/meri-proxy/schema.prisma',
  'cli':'/opt/prisma/binaries/node_modules/prisma/build/index.js',
  'engine':'/opt/prisma/binaries/node_modules/@prisma/engines/schema-engine-debian-openssl-3.0.x',
@@ -66,6 +65,15 @@ def native_config_module(folder,a):
     try:exec(compile(raw,module.__file__,'exec'),module.__dict__)
     finally:sys.modules.pop(name,None)
     return module
+
+def diagnostic_modules(folder,pins):
+    # Fixed private descriptor hashes, no -I sibling search or bytecode lookup.
+    hashes(pins,DIAGNOSTIC_NAMES);modules=[]
+    for name in DIAGNOSTIC_NAMES:
+        path=folder/name;raw=raw_source(path,pins[name],65536)
+        module=types.ModuleType('_meri_owner_'+path.stem);module.__file__=str(path)
+        exec(compile(raw,str(path),'exec'),module.__dict__);modules.append(module)
+    return tuple(modules)
 
 def measured_evidence(controls,schema_result):
     records={name:json.dumps(controls[case],sort_keys=True,separators=(',',':')).encode() for name,case in (
@@ -119,10 +127,10 @@ def grant_sql():
      'GRANT USAGE ON SCHEMA public TO meri_native_auth_app','GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO meri_native_auth_app',
      'GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO meri_native_auth_app')
 
-async def revoked_owner_reconnect(check,deadline):
+async def revoked_owner_reconnect(check,deadline,native,diagnostics):
     """Require complete specific private P1000 evidence, never generic failure."""
     caught=None
-    with capture_native_output(deadline) as captured:
+    with native.capture_native_output(deadline) as captured:
         try:await check.connect()
         except Exception as error:caught=error
         finally:await check.disconnect()
@@ -130,19 +138,19 @@ async def revoked_owner_reconnect(check,deadline):
     captured.check();facts=captured.facts()
     stdout_bytes,stderr_bytes=captured.private_bytes()
     try:
-        native=classify_native_output('wrong-password',stderr_bytes,
+        evidence=diagnostics.classify_native_output('wrong-password',stderr_bytes,
             expected_user='meri_fixture_owner',expected_host='meri-native-auth-pg',
             evidence_complete=facts['complete'] is True)
-        typed=classify_exception('wrong-password',caught,evidence_complete=facts['complete'] is True)
+        typed=diagnostics.classify_exception('wrong-password',caught,evidence_complete=facts['complete'] is True)
         require(caught is not None and not stdout_bytes and facts['complete'] is True
-            and native['complete'] is True and native['specificRejection'] is True
-            and native['reason']=='PASSWORD_REJECTED' and typed['complete'] is True
+            and evidence['complete'] is True and evidence['specificRejection'] is True
+            and evidence['reason']=='PASSWORD_REJECTED' and typed['complete'] is True
             and 'TIMEOUT' not in typed['classes']
             and (typed['specificRejection'] is False or typed['reason']=='PASSWORD_REJECTED'),
             'OLD_OWNER_CREDENTIAL_NOT_REVOKED')
     finally:del stdout_bytes,stderr_bytes,caught
 
-async def views_and_grants(owner_url,deadline):
+async def views_and_grants(owner_url,deadline,native,diagnostics):
     from prisma import Prisma
     from litellm.proxy.db.create_views import create_missing_views
     db=Prisma(datasource={'url':owner_url});await db.connect()
@@ -161,14 +169,15 @@ async def views_and_grants(owner_url,deadline):
         await db.execute_raw('ALTER ROLE meri_fixture_owner PASSWORD NULL')
     finally:await db.disconnect()
     check=Prisma(datasource={'url':owner_url})
-    await revoked_owner_reconnect(check,deadline)
+    await revoked_owner_reconnect(check,deadline,native,diagnostics)
 
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__,allow_abbrev=False);p.add_argument('--run',required=True);p.add_argument('--deadline-ms',type=int,required=True);args=p.parse_args(argv)
     require(sys.platform=='linux' and os.getuid()==10001 and re.fullmatch('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}',args.run),'FIXED_LINUX_UID_RUN')
     root=Path('/run/meri-native-owner')/args.run;desc=data(read_mount(root/'bootstrap.json'))
-    require(type(desc)is dict and set(desc)=={'runtimeSha256','deadlineMs'} and type(desc['deadlineMs'])is int and desc['deadlineMs']==args.deadline_ms,'BOOTSTRAP_DESCRIPTOR')
+    require(type(desc)is dict and set(desc)=={'runtimeSha256','diagnosticSha256','deadlineMs'} and type(desc['deadlineMs'])is int and desc['deadlineMs']==args.deadline_ms,'BOOTSTRAP_DESCRIPTOR')
     hashes(desc['runtimeSha256'],RUNTIME)
+    native,diagnostics=diagnostic_modules(Path(__file__).absolute().parent,desc['diagnosticSha256'])
     for key,path in RUNTIME.items():raw_source(Path(path),desc['runtimeSha256'][key],64*1024*1024)
     require(importlib.metadata.version('prisma')=='0.11.0' and importlib.metadata.version('litellm')=='1.104.2','RUNTIME_VERSION')
     owner=read_mount(root/'database-url').decode('ascii');parsed=urlsplit(owner)
@@ -186,7 +195,7 @@ def main(argv=None):
         # Fresh disposable process, no ambient provider authority. No schema copy/SQL view clone.
         os.environ.clear();os.environ.update({k:v for k,v in env.items() if k!='DATABASE_URL'})
         async def bounded():
-            async with asyncio.timeout(remaining()):await views_and_grants(owner,deadline)
+            async with asyncio.timeout(remaining()):await views_and_grants(owner,deadline,native,diagnostics)
         asyncio.run(bounded())
         remaining()
     print(json.dumps({'schemaInitialized':True,'viewsVerified':8,'grantsVerified':True,'ownerCredentialRevoked':True,'runtimeAdmitted':False},sort_keys=True));return 0
