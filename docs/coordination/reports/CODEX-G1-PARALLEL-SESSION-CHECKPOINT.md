@@ -1,7 +1,47 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2–G7 unentered.** The new isolated Linux qualification
+Current continuation, 11 October 2026 06:07 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2Ã¢â‚¬â€œG7 unentered.** G1 still has substantial live verification
+remaining; no reliable completion time is established.
+
+The repaired isolated Linux run established a genuine Prisma TLS 1.3 connection
+with a non-owner application role. The overall run FAILED: the wrong-CA case
+returned a generic engine connection error without specific certificate-rejection
+evidence. Wrong-SAN, plaintext and wrong-password checks remain UNRUN. Root
+verified the complete returned bundle and positive absence of all six owned
+containers and the network, runner-reported private-file destruction and the
+original cleanup deadline. Distinct actual DATA review is accepted within that scope. The earlier AttributeError
+failure is preserved; neither consumed reservation will be retried.
+
+The narrow stream fixes pass 15 peer and 32 canonical native-auth controls plus
+independent source reviews. Combined native schema/auth source is integrated but
+has not run. SDK interruption driver and transport source pass 18 and 16 root
+controls respectively; actual interruption/replacement/recovery remains untested.
+A bounded Codex session is fixing missing checkpoint and shared-parser packaging.
+Browser bootstrap and parent supervision source are independently reviewed; no
+operational fixture clock, browser host or browser isolation probe has begun.
+
+G1 still requires:
+
+- Specific native TLS rejection controls; real schema/lifespan/authentication,
+  revocation, discovery, usage and durable $10 limits in the isolated Fargate path.
+- Native SDK interruption, fenced task replacement, durable partial checkpoint,
+  verified resume and physical cleanup. Full SessionStore/W05 scope remains.
+- Dedicated host, browser AND renderer sandbox, egress, cancellation and teardown.
+- Operation-specific REL-02 coverage, component/security disposition and measured
+  frozen cohorts. All 139 replacement mappings remain null: 96 selected IDs need
+  reviewed operation coverage, potentially consolidated; 43 remain deferred.
+
+Temporal production design is accepted; later deployment/HA/restore and full
+product integration remain. All 49 current plus five older security findings
+remain OPEN; Office is DEFERRED. New images are unscanned/unpushed/unadmitted.
+Inference remains $0/$10. The promised approved location/owner for 75 real requests
+is still awaited. Sources stay disabled, current Meri/Capiro is untouched, and
+no cutover is approved. [Owner evidence](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact bindings and
+limits. Earlier dated checkpoints are historical.
+
+Historical continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
+eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The new isolated Linux qualification
 experiment SUCCEEDED: genuine community LiteLLM application import, offline
 Prisma generation and positive removal of the exact owned test container are
 independently reviewed and owner accepted within that scope. The same-version
@@ -43,7 +83,7 @@ disabled, current Meri/Capiro is untouched, and no cutover is approved. [Owner e
 records exact evidence and limitations. Earlier dated checkpoints are historical.
 
 Historical continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2–G7 unentered.** The second actual Linux experiment
+eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The second actual Linux experiment
 built the community proxy image and completed genuine offline Prisma generation.
 All four concrete generated engine paths/hashes match the accepted pins. The
 genuine application import then FAILED with OSError at soundfile.py:192. The
@@ -79,7 +119,7 @@ location/owner for75 real requests is still awaited. Sources stay disabled,
 current Meri is untouched, and no plan departure or cutover is approved.
 
 Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
-eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup
+eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** SDK native loopback/physical cleanup
 remains accepted, with its single Start consumed and interruption/resume open.
 The [complete proxy proposal](CODEX-G1-PROXY-FULL-DEPENDENCY-INDEPENDENT.md) and
 Q3 preparation passed distinct/root review. Actual123-wheel install passed;
@@ -118,7 +158,7 @@ review/renewed fresh authority precede role staging. No host/provider/source/cut
 spend$0/$10. Historical observations retain original failures/narrower acceptances.
 
 Historical continuation,10 October2026,22:10UTC. **Eight deployment gates:
-G0 accepted; G1 active/OPEN; G2–G7 not entered.** Three bounded Codex
+G0 accepted; G1 active/OPEN; G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 not entered.** Three bounded Codex
 implementation workstreams plus the integration owner use dedicated worktrees;
 no Hermes runs. Later-gate preparation does not establish environment promotion.
 
@@ -157,12 +197,12 @@ interrupt/replacement/checkpoint/resume/stale-fence tests, actual browser/render
 sandbox and managed physical cleanup, Office/security disposition,
 operation-specific REL-02 contracts, actual-proxy RG-08 and frozen measured
 cohorts. Full application deployment/data/workspace/commands/staging/release
-remain G2–G7. No cutover is authorized. Historical checkpoints below retain
+remain G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7. No cutover is authorized. Historical checkpoints below retain
 the facts and limitations that applied at their recorded times.
 
 ## Historical checkpoint,21:12UTC
 
-10 October2026,21:12UTC. **G0 accepted; G1 active; G2–G7
+10 October2026,21:12UTC. **G0 accepted; G1 active; G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7
 not started.** Four bounded Codex sessions include the integration owner,
 implementation and distinct review in dedicated worktrees. No Hermes is used.
 Only reviewed source is accepted; prepared fixtures and cloud registrations do
@@ -179,7 +219,7 @@ not establish a deployment-gate pass.
 | G6 | Full staging, security, recovery and release testing | Not started |
 | G7 | Controlled release and authorized cutover | Not started |
 
-There are **eight deployment gates**. RG-01–RG-12 are reliability checks used
+There are **eight deployment gates**. RG-01ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“RG-12 are reliability checks used
 inside these gates, not twelve additional deployment stages. Gate counts are not
 a weighted completion percentage. Independent source packages may progress
 before an environment promotion; this does not mean that later gates passed.
@@ -323,7 +363,7 @@ measured revocation remain open. Browser exact-error wire fixture/role executor
 is prepared separately; actual role/volume/TestState/host are still unadmitted.
 
 All49 worker findings plus five older vendor-open findings remain OPEN; Office
-DEFERRED. G0 discovery/planning accepted; G1 active; G2–G7 unrun. The plan has
+DEFERRED. G0 discovery/planning accepted; G1 active; G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unrun. The plan has
 eight gates total: Discovery, Qualification, Isolated development, Read-only
 data, Execution workspace, Selected commands, Staging and Controlled release.
 REL-01's75 approved real requests/traces still await the human's promised

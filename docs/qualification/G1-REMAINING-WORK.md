@@ -1,7 +1,47 @@
 # G1 remaining scope and sequence
 
-Current continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2–G7 unentered.** The new isolated Linux qualification
+Current continuation, 11 October 2026 06:07 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2Ã¢â‚¬â€œG7 unentered.** G1 still has substantial live verification
+remaining; no reliable completion time is established.
+
+The repaired isolated Linux run established a genuine Prisma TLS 1.3 connection
+with a non-owner application role. The overall run FAILED: the wrong-CA case
+returned a generic engine connection error without specific certificate-rejection
+evidence. Wrong-SAN, plaintext and wrong-password checks remain UNRUN. Root
+verified the complete returned bundle and positive absence of all six owned
+containers and the network, runner-reported private-file destruction and the
+original cleanup deadline. Distinct actual DATA review is accepted within that scope. The earlier AttributeError
+failure is preserved; neither consumed reservation will be retried.
+
+The narrow stream fixes pass 15 peer and 32 canonical native-auth controls plus
+independent source reviews. Combined native schema/auth source is integrated but
+has not run. SDK interruption driver and transport source pass 18 and 16 root
+controls respectively; actual interruption/replacement/recovery remains untested.
+A bounded Codex session is fixing missing checkpoint and shared-parser packaging.
+Browser bootstrap and parent supervision source are independently reviewed; no
+operational fixture clock, browser host or browser isolation probe has begun.
+
+G1 still requires:
+
+- Specific native TLS rejection controls; real schema/lifespan/authentication,
+  revocation, discovery, usage and durable $10 limits in the isolated Fargate path.
+- Native SDK interruption, fenced task replacement, durable partial checkpoint,
+  verified resume and physical cleanup. Full SessionStore/W05 scope remains.
+- Dedicated host, browser AND renderer sandbox, egress, cancellation and teardown.
+- Operation-specific REL-02 coverage, component/security disposition and measured
+  frozen cohorts. All 139 replacement mappings remain null: 96 selected IDs need
+  reviewed operation coverage, potentially consolidated; 43 remain deferred.
+
+Temporal production design is accepted; later deployment/HA/restore and full
+product integration remain. All 49 current plus five older security findings
+remain OPEN; Office is DEFERRED. New images are unscanned/unpushed/unadmitted.
+Inference remains $0/$10. The promised approved location/owner for 75 real requests
+is still awaited. Sources stay disabled, current Meri/Capiro is untouched, and
+no cutover is approved. [Owner evidence](../coordination/reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md) records exact bindings and
+limits. Earlier dated checkpoints are historical.
+
+Historical continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
+eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The new isolated Linux qualification
 experiment SUCCEEDED: genuine community LiteLLM application import, offline
 Prisma generation and positive removal of the exact owned test container are
 independently reviewed and owner accepted within that scope. The same-version
@@ -43,7 +83,7 @@ disabled, current Meri/Capiro is untouched, and no cutover is approved. [Owner e
 records exact evidence and limitations. Earlier dated checkpoints are historical.
 
 Historical continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2–G7 unentered.** The second actual Linux experiment
+eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The second actual Linux experiment
 built the community proxy image and completed genuine offline Prisma generation.
 All four concrete generated engine paths/hashes match the accepted pins. The
 genuine application import then FAILED with OSError at soundfile.py:192. The
@@ -78,7 +118,7 @@ findings remain OPEN; Office is DEFERRED. Inference remains $0/$10. The approved
 location/owner for75 real requests is still awaited. Sources stay disabled,
 current Meri is untouched, and no plan departure or cutover is approved.
 
-Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
+Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,
 replacement/resume, opaque sessions, original skills and stale fencing remain.
 [Proxy Q3](../coordination/reports/CODEX-G1-PROXY-NATIVE-Q3.md) installed123 exact
@@ -117,11 +157,11 @@ one role stage. Disposable-volume/two managed wire captures, watchdog/host admis
 real browser/renderer sandbox/physical cleanup remain. Separate Office/security
 disposition, REL-02/RG-08 and measured frozen cohorts remain. The75 approved real-
 request location/owner awaits the human's promised follow-up and does not block
-synthetic runtime. G0 accepted/G1OPEN/G2–G7 unentered, source connections disabled,
+synthetic runtime. G0 accepted/G1OPEN/G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered, source connections disabled,
 currentMeri untouched and inference$0/$10.
 
 Historical continuation,10 October2026 22:10Z: [current eight-gate status](../coordination/reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
-records G0 accepted/G1 OPEN/G2–G7 unentered. Exact SDK immutableversion:1 is
+records G0 accepted/G1 OPEN/G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered. Exact SDK immutableversion:1 is
 owner accepted with no Start authority; original failed operations remain.
 The45-read authority capture completed but its real scan encoding is refused by
 canonical UTF-8 parsing, and the600-second authority window is stale. Complete
@@ -153,7 +193,7 @@ INITIAL publication comparison is under separate source preparation; the
 existing operational publication hold remains. Security/Office, real SDK interruption/resume,
 browser host/sandbox/physical cleanup, REL-02/RG-08 and measured cohorts still
 close G1. The75 real-request source awaits the promised approved location/owner.
-G0 accepted; G1 OPEN; G2–G7 unstarted. No model spend/source/cutover occurred.
+G0 accepted; G1 OPEN; G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unstarted. No model spend/source/cutover occurred.
 Earlier dated observations below are historical, including superseded source
 holds and limited local acceptance.
 
@@ -195,8 +235,8 @@ Minimum completion sequence:
 
 Current checkpoint: [attempt3](../coordination/reports/W02-08-BUILD-ATTEMPT-3.md) build/static cleanup/inventory reconciliation is complete, with49scan findings/22severe OPEN and Office residual-risk decision DEFERRED. The first GetObject failed before a body, followed by a separate full eleven-file capture. First composed result audit failed after one group/no output on empty CodeBuild context placeholders; independent narrow source review and22synthetic tests preceded successful audit2. Preserve both failures. [W02-13](../coordination/reports/W02-13-OFFLINE-ACCEPTANCE.md)/68edb47 and [W02-15](../coordination/reports/W02-15-OFFLINE-ACCEPTANCE.md)/0f9d7bd+62380a6 are accepted OFFLINE, with all11W02-15 files byte-equal and primary61+lexical/API/syntax and distinct actual61/nine syntax/own lexical passed; heuristic crypto-string audit exit1 remains. [W02-14 implementation2](../coordination/reports/W02-14-IMPLEMENTATION-2-CHECKPOINT.md) closed partial/no commit; phase3 closed234a08e, primary25of27 composed traces passed/two malformed-attachment sticky failures remain. Review1 closed with source-level PASS that does not override primary failures; foreignStop assertion scope/raw-maxima discrepancies remain qualified in owner findings. Phase4 c062327 repaired the earlier nested-details failures and compiles registered definitions inertly, but candidate4 primary checks retain five nested-schema failures, optional-details absence and a stronger post-RetainENI sticky ENI/IP contradiction gap. Actual review2 CLOSED on exact c062327/report7e88/root a90, without overriding owner findings. Phase5 CLOSED PARTIAL05:44:47.709636Z at30turn cap/no commit/c062HEAD/three dirty modules, with confirmed process cleanup; owner preserved/inspected that partial before explicit phase6 resume20261010_013708_8bdb8f, started05:53:23.543559Z/PID29116 from c062+three dirty modules, same9paths/max20turns1200seconds, then CLOSED PARTIAL05:59:19.819218Z with confirmed process cleanup. [Candidate6 findings](../coordination/reports/W02-14-PRIMARY-CANDIDATE-6-FINDINGS.md) preserve owner checkpoint280a, corrected network coverage as44main+1wait passes/32classifier, closed actualreview3/reportcc79, conditional full-variable/Output proof and the later blocking malformed launch-shape witness. Phase7 actualHermes repair was owner-packaged at3da63e6 and is now [accepted OFFLINE](../coordination/reports/W02-14-OFFLINE-ACCEPTANCE.md), integrated11files byte-exact atfcc666f/report481e7ce. Distinct actualreview4/session20261010_025632_d8b0ff closed07:01:54.267628Z/report70824f9; primary47canonical+16focused+10independent cases and three syntax checks passed. Final91-state/112210byte graph2c962d23 returned AWSsyntaxOK/zero diagnostics, with no cloud mutation. Conditional bounds retain their admitted-input/serialization/service/transient/availability exclusions; reviewer raw-semantic subprobe, narrower assertion and repeated private-check qualifications remain. Actual wire/IAM/TestState/timing, separate managed resource admission, controller-loss survival/STOPPED/physical cleanup remain OPEN. The earlier W14 compiler pinned only SDK/Office families; acceptedW19 plus completeW22 now adds a separately reviewed inert canary source profile/definition. Runtime role/trust/service-tag, managed admission and physical cleanup remain unqualified. Do not use unadmitted SDK/Office to test watchdog survival or substitute an arbitrary task. Old source/build admission never transfers automatically. Primary evidence/snapshot and two broad missing-ajv npm failures remain. W02-10 prepared-input actual review2 closed538ef2c/04:57:12.128050Z with scoped PASS, owner/independent source-hash review no issue and deleted-scratch report qualification retained. The exact all-ADD2 change set for NEW MeriGreenfield-NativeQualification passed owner and separate read-only review; fresh AVAILABLE+STS checks preceded one ExecuteChangeSet. The stack reached CREATE_COMPLETE at AWS05:11:00.311Z with only SDK:1 and Office:1 definitions, no IAM/services. Six actual readbacks are retained in private W02-10-definition-registration-1/registration-readback-1. No RunTask occurred; registration does not prove W02-14 compiler/service compatibility or grant runtime admission. Runtime admission remains NONE/G1 OPEN/W03 queued, paid Bedrock inference0 and current Meri untouched. No native/EC2/provider/source/cutover action is admitted.
 
-Steps2–4 may proceed independently after their individual admissions. Native wire evidence informs step5; the qualified proxy supports step6. Baseline3's permitted private Logs endpoint, denied public/provider DNS and direct-IP timeout cover those measured attempts, not future network paths or all attempted sockets.
+Steps2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“4 may proceed independently after their individual admissions. Native wire evidence informs step5; the qualified proxy supports step6. Baseline3's permitted private Logs endpoint, denied public/provider DNS and direct-IP timeout cover those measured attempts, not future network paths or all attempted sockets.
 
-Later gates: public internet and individually authenticated browser workflows belong to W07/G4–G6. Full DOCX/XLSX/PPTX revision/preservation benchmarks and the95% human quality rubric belong to W07/G6. The60 representative tasks, production UI controls/E2E, full policy/revocation suite, recovery/load targets and rollback/restore drills belong to staging/release acceptance. Temporal deployment/migrations, live mTLS/JWT, replay/version routing, HA/PITR and sequential upgrades belong to W03/G2 and later qualification. They are not prerequisites for accepting its G1 design.
+Later gates: public internet and individually authenticated browser workflows belong to W07/G4ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G6. Full DOCX/XLSX/PPTX revision/preservation benchmarks and the95% human quality rubric belong to W07/G6. The60 representative tasks, production UI controls/E2E, full policy/revocation suite, recovery/load targets and rollback/restore drills belong to staging/release acceptance. Temporal deployment/migrations, live mTLS/JWT, replay/version routing, HA/PITR and sequential upgrades belong to W03/G2 and later qualification. They are not prerequisites for accepting its G1 design.
 
 Live-source G0 decisions remain separate: selected capability/data scope, first tenant/client, authorized endpoints/restricted principals and canonical Clerk/local membership bridge. Newly written trusted gateway connectors preserve future Capiro connectivity; source connections begin disabled and workers receive no existing RLS-bypassing credentials. Numeric revocation, retention/legal hold, recovery objectives and artifact rubric must be agreed before their later gates. They do not stop the synthetic G1 work. No cutover is authorized.
