@@ -1,72 +1,71 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 09:35 UTC: **G0 accepted / G1 OPEN;
-eight gates total, G2-G7 unentered.** Substantial runtime qualification and
-contract/security work remain. G1 is not close enough to promise a completion
-time. Codex alone owns G0/G1; bounded implementation and independent review
-sessions are active. Current Meri/Capiro remains untouched, source connections
-disabled, and no cutover or model inference is accepted.
+Current continuation, 11 October 2026 10:07 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2-G7 unentered.** Substantial runtime qualification,
+operation-specific contracts and security work remain; there is no reliable
+G1 completion estimate. Codex alone owns G0/G1, using bounded implementation
+and independent review sessions. Current Meri/Capiro remains untouched,
+source connections disabled, and no cutover or model inference is accepted.
 
-The latest isolated Linux TLS build a88d6125-abdd-4ad8-8520-d602a5134275 at
-21bd3c036f2a5316e1aa66da65da6cf3f0e19a4d remains FAILED. All five controls
-executed once: TLS1.3/nonowner positive passed; four final negatives failed.
-Public evidence reports incomplete ENGINE_CONNECTION -> CONNECT_ERROR ->
-HTTPCORE_CONNECT -> OS_ERROR -> OTHER, and unqualified CA/SAN native reasons.
-Root reconciled the exact immutable source/result versions, 309 tar members,
-308 public payloads and 101 process receipts; the distinct failed-DATA review
-and 495 sealed references are accepted within that scope only. Nine owned
-containers and one network were positively removed/absent within the original
-cleanup deadline. The fixture took 46,200ms. Private native output was neither
-exported nor inspected. Earlier failed namespaces remain immutable.
+The native TLS direct formatter and AnyIO finally-cleared ExceptionGroup
+repairs are independently SOURCE-accepted and integrated at8e7a502. All84
+focused classifier checks pass, preserving the earlier78 checks. Namespace6
+remains FAILED: its genuine TLS1.3 positive passed, while final negatives did
+not qualify; its101 process receipts and owned cleanup remain retained.
+Root independently reviewed namespace7's355 ZIP members/351 context rows,
+13 raw-Git fixture files, exactly two changed context rows and seven unchanged
+operational wrappers. A fresh eight-read builder/KMS authority review preceded
+ONE new synthetic TLS experiment. Build6baed94e-1d9f-4e5e-bf56-dce4f9b0e660
+uses source8e7a502c031e07608636f4fd3c95c1b5291dbf61 and immutable source version
+WBUYvL9i1g4BpZspm0oInnhR3VYKn56K. Latest observation: IN_PROGRESS/BUILD.
+Allfive actual controls, complete capture and original-clock cleanup must pass;
+no outcome is accepted yet. Prior failed/consumed namespaces are immutable.
 
-Pinned upstream source supports two narrow verification repairs: the native
-TLS Display can omit the wrapped prefix, and AnyIO can put a builtin aggregate
-ExceptionGroup under an OSError cause. This does not establish actual private
-contents. A separate three-path SOURCE repair is in progress, preserving the
-old strict grammar and 66 tests; a newly admitted actual experiment remains
-required after independent source review.
+SDK image build a34efcc4-2f20-40f3-b2f2-5fc0ff17200f SUCCEEDED/COMPLETED.
+Root and a distinct reviewer reconciled its exact versioned result:77 regular
+members,76 payloads,20 process receipts/40 streams,37 source rows/38 ZIP
+members/36 raw-Git sources and26,886 inventory entries. Four binary pins and
+SDK0.3.295/Playwright1.64.0-alpha-1790635538000 match frozen inputs. The
+never-started container and its two owned anonymous volumes were removed and
+positively absent. This is accepted STATIC PACKAGING DATA only: the new image
+is unscanned/unpushed/runtime-unadmitted, and interruption/recovery is unrun.
+Original CONSUMED_UNKNOWN_NO_RETRY dispatch outcome remains preserved; the
+later strict AWS autoRetryNumber:0 SOURCE repair passes28 checks and is
+integrated ate2717c1. No build retry or runtime acceptance is inferred.
 
-The SDK worker image collector/dispatcher and CLI/JSON/container-identity
-repairs are independently accepted and integrated atomically at
-224191a6c770e39190eb871b18bd231f1d39ee0a. The distinct 25 targeted checks and
-four isolated CLI checks passed; no duplicate broad replay was needed. Root
-accepted the first prepared 38-member archive and 740 helper/runtime records.
-Its authority expired unconsumed. A NEW UUID/slot used a fresh eight-call
-builder-role/KMS authority review, unchanged source and selected build-only
-recipe; it did not reuse or edit the old prepared subject.
+Browser Stage2 plus its fixed private source loader is independently
+SOURCE-accepted and report-pair integrated at1dbc241. Root rehashed the
+finite source/runtime closure and checked preservation of all13 old test
+bodies plus three new adversarial cache/package/shadow checks;16 pass.
+The old import-closure HOLD remains historical. Full operational bridge,
+Job child, current role chain and two fixed read-only TestState calls are
+UNRUN. Clock-free owner preparation is in progress; no new proof clock or
+consume is allocated. Historical bootstrap retains144 events/delete ACK,
+expired original clock and cleanup UNKNOWN/physical absence unproven.
+Dedicated browser host, real browser AND renderer sandbox, egress,
+cancellation and teardown still require live qualification.
 
-The one new SDK image build a34efcc4-2f20-40f3-b2f2-5fc0ff17200f started on
-immutable source version FZWr4eGu3B8tGMEhTDddLUI15vC_n2f1. Latest read-only
-observation is IN_PROGRESS/BUILD. Dispatch retained CONSUMED_UNKNOWN_NO_RETRY
-because its validator rejects the extra actual AWS autoRetryNumber:0 field.
-Root independently matched the original/current full configuration after
-asserting both retry fields are exact integer zero; this is DATA diagnosis,
-not runtime acceptance. A separate strict response-schema repair is assigned.
-No StartBuild retry, container start, ECR push or provider action is admitted.
-The build outcome, returned artifacts, scans and recovery qualification remain.
+The complete mail-category metadata/design outline is reviewed and integrated
+at48603d9. It maps three direct mail reads, one related contact read and three
+adjacent meeting boundaries, and identifies unresolved legacy thread-body
+semantics. Proposed normalized DTO/source-page choices are not yet frozen;
+the existing full-read evidence invariant remains intact. REL02 still needs
+operation-specific contracts/catalog/skill mapping for ALL96 selected IDs.
+All139 original IDs/96 selected/43 deferred remain accounted for, with no
+replacement handlers enabled. Trusted SDK gateway/checkpoint channel design
+is in progress; full planned Checkpoint/SessionStore scope is preserved.
 
-The managed browser wire bootstrap retains its original 144-event history,
-one owned empty encrypted 1GiB volume and delete acknowledgement. Cleanup is
-still UNKNOWN; physical absence is unproven. The expired original clock and
-two unrun follow-up probes were not reset or retried. Separate post-bootstrap
-Stage1 provenance SOURCE is accepted at072a42e0bd334db65ff9ee0aa569ddfb8a4b4030.
-Stage2 implementation candidate92432ba53b9905d2334b2981cc3e82be5746d15c has
-13 distinct inert checks across 14 executions and is under independent source
-review. An ordinary-import/bytecode closure concern is under review. No new
-owner/session/nonce/proof clock/admission/consume or actual observation is
-allocated. Browser host, renderer sandbox, egress, cancellation and teardown
-qualification are still outstanding.
-
-Remaining G1 work includes successful native TLS then combined schema/auth;
-proxy authorization/revocation, durable usage and $10 Bedrock budget enforcement;
-Fargate runtime composition; native SDK interruption/fenced replacement/checkpoint
-recovery and egress cleanup; RG08 native discovery; isolated browser host proof;
-REL02 typed contracts for all 96 selected capabilities; and security/license
-review. All 139 inventory rows remain accounted for (96 selected/43 deferred),
-with no replacement handlers enabled. The approved 75-request baseline location
-and owner are still awaited. Security findings remain open; Office is deferred.
-Temporal production HA/restore and complete SessionStore work retain their
-documented later-gate placement. G1 source fixtures do not pass these live gates.
+Remaining G1 work includes successful TLS then combined native schema/auth;
+proxy authorization/revocation, durable usage and the $10 Bedrock budget;
+isolated Fargate runtime composition; genuine SDK interruption, fenced fresh
+task replacement, trusted checkpoint recovery and egress cleanup; RG08 native
+discovery and measured cohorts; isolated browser proof; all96 typed contracts;
+and security/license dispositions. The49 recorded image findings and five
+older vendor-open findings remain unresolved; Office is deferred. The new
+SDK image has no new accepted scan. Approved75 real-request baseline location
+and owner are still awaited. Temporal production HA/restore and full W05
+SessionStore retain their documented later-gate placement. Source fixtures
+and partial qualification never close these runtime or deployment gates.
 
 Historical checkpoint, 11 October 2026 07:34 UTC (retained verbatim):
 
