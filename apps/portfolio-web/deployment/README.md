@@ -4,6 +4,10 @@ This directory owns only the isolated Portfolio frontend preview. Its templates
 do not modify the existing `capiro-dev` cluster, Capiro ALB/listener, or
 `os.capiro.ai` record. `ecr.yml` and `certificate.yml` were deployed through
 CloudFormation on 11 October 2026. `service.yml` is validated but **not deployed**.
+`build.yml` defines an isolated CodeBuild project with permissions limited to
+logs and pushing this preview repository; it cannot change ECS, DNS or Capiro
+services. Its `buildspec.yml` requires an exact source SHA, runs the full checks,
+and pushes an immutable image only after every check succeeds.
 
 ## Existing foundation
 
@@ -17,9 +21,11 @@ CloudFormation on 11 October 2026. `service.yml` is validated but **not deployed
 ## Gate before `service.yml`
 
 1. Record clean exact source SHA and run the full current-head unit, browser,
-   type, lint, format, architecture and Next production-build gates. Review the
-   visual output. Build the Linux image from `apps/portfolio-web` on that SHA;
-   run `/healthz`, setup/auth and anonymous proxy checks in the container.
+   type, lint, format, architecture and Next production-build gates. The
+   bounded CodeBuild project can run these independently of the local Cleanup
+   resource reservation. Review the visual output. Build the Linux image from
+   `apps/portfolio-web` on that SHA; run `/healthz`, setup/auth and anonymous
+   proxy checks in the container.
 2. Push the image to this repository by a source SHA tag. Read back its ECR
    `sha256:` image digest and scan findings. Deploy by digest, never by tag.
 3. Confirm the designated production Clerk publishable/secret key references
