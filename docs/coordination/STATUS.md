@@ -1,6 +1,27 @@
 # Meri kickoff status
 
-Current continuation,10 October2026 23:20Z: **eight deployment gates total;
+Current continuation,11 October2026 00:12Z: **G0 accepted/G1 active/OPEN;
+eight deployment gates, G2–G7 unentered.** The browser's
+[new read-only role is created and independently verified](reports/CODEX-G1-BROWSER-SOURCE8-ROLE-OWNER.md).
+Both original CREATE and execute remain consumed; original failures are preserved.
+SOURCE9 recovery paths passed distinct/root source review; fixture actions remain
+unadmitted. KMS/subnet discovery is retained, but fresh authority and bounded
+cleanup admission still precede volume/TestState/host work. No browser host yet.
+Playwright controls Chromium; real browser/renderer sandbox is still unqualified.
+The [first bounded fixed OCI acquisition](reports/CODEX-G1-PROXY-OCI-OWNER.md)
+failed TLS initialization with zero layer bytes and a confirmed empty Job. The
+consumed attempt is preserved. Local diagnostics identify dropped SYSTEMROOT;
+The narrow environment repair has passed distinct/root source review; a fresh
+separate admission still precedes acquisition. Inventory/
+native execution remain UNRUN; Q3 freeze FAILED/import UNRUN. SDK loopback and
+cleanup are accepted; [interruption/resume preparation](reports/CODEX-G1-SDK-INTERRUPTION-PREPARATION.md)
+identifies unfinished durable broker, replacement and fencing. The full planned
+Claude Agent SDK scope is retained; small fixtures do not replace product gates.
+The human requires approval before deviations from the current plan. All49+five
+findings OPEN, Office DEFERRED, sources disabled/current Meri untouched, no cutover,
+model spend$0/$10;75 real requests await the promised location/owner.
+
+Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
 G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native
 loopback fixture and physical cleanup remain independently accepted; interruption,
 replacement and resume remain open. The [123-package proxy install](reports/CODEX-G1-PROXY-NATIVE-Q3.md)

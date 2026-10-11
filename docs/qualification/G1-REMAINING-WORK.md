@@ -1,6 +1,27 @@
 # G1 remaining scope and sequence
 
-Current continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
+Current continuation,11 October2026 00:12Z: G0 accepted/G1 OPEN/G2–G7 unentered.
+[SOURCE8 created-role readback](../coordination/reports/CODEX-G1-BROWSER-SOURCE8-ROLE-OWNER.md)
+passed actual/distinct verification. Both CREATE/execute remain consumed; failures
+are preserved. SOURCE9 recovery paths passed source review. Next owner-review the
+retained KMS/subnet discovery, renew authority as needed and freeze bounded cleanup/
+cost admission before assigning original fixture T0/C900, creating/deleting the
+empty1GiB fixture and capturing two TestState wires. Watchdog/host admission, real
+browser AND renderer sandbox and teardown follow. No volume/TestState/browser host.
+The [first fixed OCI acquisition](../coordination/reports/CODEX-G1-PROXY-OCI-OWNER.md)
+failed TLS initialization before layer bytes; its empty Job and consumed outputs
+remain preserved. The narrow SYSTEMROOT repair passed distinct/root source review. Fresh
+separate acquisition admission and actual inventory remain. Native Prisma/ABI/notices/
+community assembly and real proxy/auth/Fargate remain open; Q3 freeze FAILED/
+import UNRUN. SDK interruption/resume needs durable session/workspace transfer,
+native driver, two-task orchestration and enforced stale fencing; source-only
+options are prepared. Full planned SDK built-ins/hooks/subagents/skills/compaction/
+sessions and native deferred discovery remain in scope; no reduced SDK is proposed.
+Office/security, REL-02/RG-08 and measured cohorts remain. Sources disabled/model
+spend$0/$10;75 real requests await the promised location/owner. Earlier entries
+are historical. Any departure from the current plan needs prior human approval.
+
+Historical continuation,10 October2026 23:20Z: G0 accepted/G1 OPEN/G2–G7 unentered.
 The first native SDK loopback/physical cleanup is accepted; interruption,
 replacement/resume, opaque sessions, original skills and stale fencing remain.
 [Proxy Q3](../coordination/reports/CODEX-G1-PROXY-NATIVE-Q3.md) installed123 exact

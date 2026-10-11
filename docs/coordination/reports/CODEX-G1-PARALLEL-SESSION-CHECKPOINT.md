@@ -1,6 +1,34 @@
 # Parallel Codex integration checkpoint
 
-Current continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
+Current continuation,11 October2026 00:12Z. **G0 accepted/G1 active/OPEN;
+eight deployment gates, G2–G7 unentered.** The
+[SOURCE8 role is created and independently verified](CODEX-G1-BROWSER-SOURCE8-ROLE-OWNER.md).
+Root verified94 author,194 actual-stage and91 SOURCE8 source-review records.
+Actual runtime/source preflight, four-call change-set readback, one five-call
+execute and seven-call final role readback passed. Root sealed76 actual payloads;
+distinct actual review passed and root verified110 reviewer records. Both global
+mutations stay consumed. SOURCE8 recovery remains a preserved HOLD; SOURCE9's
+correction passed distinct/root source review,63 author/19 reviewer records.
+No fixture action is admitted. KMS/subnet discovery has46 sealed occurrences;
+operational authority is pending. No volume/TestState/host/browser exists.
+[Fixed OCI source](CODEX-G1-PROXY-OCI-OWNER.md) is conditionally accepted with
+JSON/header-count limits intact. Root verified68 reader/20 reviewer/33 downloader/
+15 reviewer records, correcting the initial zero relative-record walker count
+explicitly. Supervisor1,015 records and979 actual runtime/source preflight records
+passed. Its first actual acquisition FAILED TLS initialization, zero layer bytes,
+source stable and Job empty; no inventory. Local diagnostic71 records/raw Git
+verified; diagnosis and narrow environment repair passed distinct/root source
+review, with a separate new acquisition admission still required. SDK loopback/cleanup accepted; interruption source19
+records/raw Git verified, actual durable broker/replacement/fencing unfinished.
+Official SDK external-store reference adapters/conformance tests are confirmed;
+trusted storage/workspace/fence integration is unfinished, not SDK incapability.
+Full planned SDK scope remains; the human now explicitly requires approval before
+any plan deviation. The approved browser-host exception and Codex-only G0/G1
+remain. Q3 freeze FAILED/import UNRUN. All49+five findings OPEN, Office DEFERRED,
+sources disabled/current Meri untouched/no cutover/inference$0/$10;75 real requests
+await the promised source.
+
+Historical continuation,10 October2026,23:20UTC. **G0 accepted/G1 active/OPEN;
 eight deployment gates, G2–G7 unentered.** SDK native loopback/physical cleanup
 remains accepted, with its single Start consumed and interruption/resume open.
 The [complete proxy proposal](CODEX-G1-PROXY-FULL-DEPENDENCY-INDEPENDENT.md) and
