@@ -14,8 +14,8 @@ import { liveFixture, requestFor, wire } from './fixture.mjs';
 const port = Number(process.env.MERI_FIXTURE_TEST_PORT);
 const database = process.env.MERI_FIXTURE_TEST_DATABASE;
 const enabled = Number.isInteger(port) && port > 0 && Boolean(database);
-const peerA = Object.freeze({ peerId: 'synthetic-task-a', credentialId: 'synthetic-credential-a' });
-const peerB = Object.freeze({ peerId: 'synthetic-task-b', credentialId: 'synthetic-credential-b' });
+const peerA = Object.freeze({ peerId: 'synthetic-task-a', credentialId: TRUSTED_FINGERPRINT });
+const peerB = Object.freeze({ peerId: 'synthetic-task-b', credentialId: TRUSTED_B_FINGERPRINT });
 
 test('real mTLS credentials reach PostgreSQL current-fence decisions across A and B',
   { skip: !enabled && 'isolated PostgreSQL test database required' }, async t => {
@@ -33,13 +33,7 @@ test('real mTLS credentials reach PostgreSQL current-fence decisions across A an
         bundle: f.bundle, fixtureFile: f.sentinel }),
     };
     const handlers = createFixtureServiceHandlers({ registry, checkpointStore });
-    const resolver = ({ fingerprintSha256 }) => {
-      if (fingerprintSha256 === TRUSTED_FINGERPRINT) return {
-        peer: peerA, context: f.current, producer: f.producer, audience: [f.producer] };
-      if (fingerprintSha256 === TRUSTED_B_FINGERPRINT) return {
-        peer: peerB, context: f.current, producer: f.producer, audience: [f.current] };
-      return null;
-    };
+    const resolver = query => registry.resolveCertificate(query);
     async function start(resolveCredential) {
       const ingress = createFixtureIngress({ bind: { host: '127.0.0.1', port: 0 },
         tls: { cert: CERTS.serverCert, key: CERTS.serverKey, clientCa: CERTS.ca },
@@ -83,8 +77,8 @@ test('real mTLS credentials reach PostgreSQL current-fence decisions across A an
     assert.equal(wrongPeer.body.length, 0);
     const wrongCurrent = structuredClone(f.current);
     wrongCurrent.identity.grantId = '00000000-0000-4000-9000-000000000999';
-    const substituted = await start(query => {
-      const binding = resolver(query);
+    const substituted = await start(async query => {
+      const binding = await resolver(query);
       return binding === null ? null : { ...binding, context: wrongCurrent };
     });
     const refusal = await send(requestFor(f, 'authorizeFixturePhase'), 'trusted', substituted);

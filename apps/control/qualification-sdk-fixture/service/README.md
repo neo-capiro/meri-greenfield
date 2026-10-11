@@ -16,6 +16,14 @@ revoked A grant and peer; the full B context in that denial must match the
 locked current row. A stale A commit is refused before storage preparation and
 again by the registry's atomic publication check after preparation.
 
+For the qualification fixture, use the registry's read-only
+`resolveCertificate` method as ingress `resolveCredential`. Its lookup key is
+the SHA-256 fingerprint of the verified socket certificate, stored as the
+grant's `credentialId` by the trusted issuer. It returns only the matching
+grant's audience, and the existing operation transaction rechecks currentness.
+The real PostgreSQL plus two-certificate loopback test uses this resolver;
+certificate creation and ECS task admission are still synthetic/unrun.
+
 The trusted `checkpointStore` port has two methods:
 
 - `prepareCommit({ producer, bundle, fixtureFile, evidence, signal })` returns

@@ -203,3 +203,39 @@ test('database guards prevent commit, grant and stable run rebinding', async () 
     await client.end();
   }
 });
+
+test('verified certificate fingerprint resolves only its admitted A or B audience', async () => {
+  const f = fixture(600);
+  const fingerprintA = hash(Buffer.from('synthetic-a-certificate'));
+  const fingerprintB = hash(Buffer.from('synthetic-b-certificate'));
+  const certificateA = { peerId: 'synthetic-cert-task-a', credentialId: fingerprintA };
+  const certificateB = { peerId: 'synthetic-cert-task-b', credentialId: fingerprintB };
+  await registry.admitRun({ context: f.producer, peer: certificateA });
+  const lookup = (fingerprintSha256, operation = 'authorizeFixturePhase') =>
+    registry.resolveCertificate({ fingerprintSha256, operation });
+  assert.equal(await lookup('f'.repeat(64)), null);
+  const original = await lookup(fingerprintA);
+  assert.deepEqual(original.peer, certificateA);
+  assert.deepEqual(original.context, f.producer);
+  assert.deepEqual(original.producer, f.producer);
+  assert.deepEqual(original.audience, [f.producer]);
+  await registry.publishCommit({ context: f.producer, peer: certificateA,
+    receipt: f.receipt, readback: f.readback });
+  await registry.replaceRun({ context: f.current, peer: certificateB });
+  const stale = await lookup(fingerprintA);
+  assert.deepEqual(stale.peer, certificateA);
+  assert.deepEqual(stale.context, f.current);
+  assert.deepEqual(stale.producer, f.producer);
+  assert.deepEqual(stale.audience, [f.producer]);
+  assert.equal((await registry.authorize({ presented: f.presented(stale.producer),
+    peer: stale.peer })).decision, 'DENIED_STALE_BINDING');
+  const replacement = await lookup(fingerprintB, 'loadFixtureCheckpoint');
+  assert.deepEqual(replacement.peer, certificateB);
+  assert.deepEqual(replacement.context, f.current);
+  assert.deepEqual(replacement.producer, f.producer);
+  assert.deepEqual(replacement.audience, [f.current]);
+  await assert.rejects(lookup(fingerprintA, 'foreign'), denied('FIXTURE_CREDENTIAL_INPUT'));
+  const duplicate = fixture(700);
+  await registry.admitRun({ context: duplicate.producer, peer: certificateA });
+  await assert.rejects(lookup(fingerprintA), denied('FIXTURE_CREDENTIAL_DUPLICATE'));
+});

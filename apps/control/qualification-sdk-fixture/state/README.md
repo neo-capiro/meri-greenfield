@@ -9,7 +9,12 @@ This is a source-only, trusted control-layer component for the partial `sdk-inte
 - `readPublication({runUuid})` is a **trusted internal** reconciliation read for an uncertain COMMIT acknowledgement. It must not be exposed directly to workers. `loadCheckpoint` and `verifyCheckpoint` require the current B grant and exact committed A receipt reference; they return/compare identity and digests, not object bytes.
 - `PostgresStore` owns one connection per transaction and uses PostgreSQL time after row locks. It never retries an ambiguous COMMIT. A `CommitUncertain` caller must reconcile by `readPublication`, compare the expected receipt identity, and refuse an unknown or foreign result. Database errors are content-free and do not authorize fallback state.
 
-The future private TLS ingress must authenticate the actual task/credential and audience, resolve canonical tenant/actor/run context independently of request fields, enforce live-stream byte limits and deadlines, and translate registry decisions to the fixed private wire. The future object-store integration must establish the actual immutable reread and byte digests, tenant/policy scope, evidence and quiescence. Neither capability is implemented here. Workers must receive no database credentials or storage privilege.
+The private TLS ingress authenticates a socket certificate, bounds its wire and
+uses this registry's fingerprint resolver for the admitted context/audience.
+The source-level S3 adapter separately checks exact object versions and bytes.
+Live task-bound credential issuance, native evidence/quiescence inspection,
+deployed storage and actual two-task execution remain unproven. Workers must
+receive no database credentials or storage privilege.
 
 ## Initialization and tests
 
@@ -17,4 +22,18 @@ The owner explicitly applies `migrations/0001_qualification_sdk_fixture_state.sq
 
 Tests require a newly migrated isolated database and `MERI_FIXTURE_TEST_PORT`, `MERI_FIXTURE_TEST_DATABASE`, and `MERI_FIXTURE_TEST_USER`. Run with Node 24: `node --test apps/control/qualification-sdk-fixture/state/test/*.test.mjs`. Tests use unique synthetic run identities and never clear database state. The caller owns database creation and physical shutdown. Importing any module neither connects nor starts a process.
 
-This partial source does not prove a real authenticated channel, S3 durability, native SDK interruption and resume, two Fargate tasks, physical revocation, or G1 acceptance.
+This partial source does not prove a live ECS-authenticated channel, S3
+durability, native SDK interruption/resume, two Fargate tasks, physical
+revocation or G1 acceptance.
+
+`FixtureRegistry.resolveCertificate({fingerprintSha256, operation})` now reads
+the verified mTLS socket fingerprint as an exact credential ID from the
+existing grant history. It refuses unknown/duplicate fingerprints and
+inconsistent run/grant rows, reconstructs the original A and current A/B
+contexts under the run lock, and returns only that certificate's own audience.
+An old A certificate may still reach the explicit stale-authorization path,
+but it cannot present B's context. The subsequent operation transaction remains
+the authority for current grant, fence, expiry and publication. An issuer must
+still create unique short-lived certificates, bind their fingerprint to an
+observed ECS task ARN during trusted admission, and deliver them safely; this
+read-only resolver does not issue credentials or attest ECS possession.

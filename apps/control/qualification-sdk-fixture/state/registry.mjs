@@ -20,6 +20,7 @@ import {
 } from './binding.mjs';
 import { fail } from './errors.mjs';
 import { publicationRow, sameIdentity } from './receipt.mjs';
+import { resolveCredentialRows } from './credential-resolution.mjs';
 
 const RUN_COLUMNS = ['run_uuid', 'session_id', 't0_ms', 'deadline_ms', 'cleanup_deadline_ms',
   'canonical_tenant_id', 'canonical_actor_id', 'canonical_conversation_id', 'canonical_run_id',
@@ -75,6 +76,32 @@ export class FixtureRegistry {
       fail('FIXTURE_STORE_REQUIRED');
     }
     this.#store = store;
+  }
+
+  /**
+   * Resolve the verified mTLS socket's SHA-256 fingerprint to exactly one
+   * admitted grant. The returned audience belongs only to that certificate;
+   * the later operation transaction still decides currentness and revocation.
+   */
+  async resolveCertificate({ fingerprintSha256, operation }) {
+    if (typeof fingerprintSha256 !== 'string' || !/^[a-f0-9]{64}$/.test(fingerprintSha256) ||
+        !['authorizeFixturePhase', 'commitFixtureCheckpoint',
+          'loadFixtureCheckpoint', 'verifyFixtureCheckpoint'].includes(operation)) {
+      fail('FIXTURE_CREDENTIAL_INPUT');
+    }
+    return this.#store.transact(async client => {
+      const hits = await client.query(
+        'SELECT run_uuid FROM meri_qualification_sdk_fixture.grants ' +
+        'WHERE credential_id = $1 LIMIT 2', [fingerprintSha256]);
+      if (hits.rowCount === 0) return null;
+      if (hits.rowCount !== 1) fail('FIXTURE_CREDENTIAL_DUPLICATE');
+      const run = await lockRun(client, hits.rows[0].run_uuid);
+      if (run === null) fail('FIXTURE_CREDENTIAL_ROW');
+      const grants = await client.query(
+        'SELECT * FROM meri_qualification_sdk_fixture.grants ' +
+        'WHERE run_uuid = $1 ORDER BY attempt FOR SHARE', [run.run_uuid]);
+      return resolveCredentialRows({ run, grants: grants.rows, fingerprintSha256 });
+    });
   }
 
   /** Initial trusted admission: attempt 1, the original interrupt phase. */
