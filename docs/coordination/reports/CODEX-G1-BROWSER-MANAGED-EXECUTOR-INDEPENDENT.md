@@ -1,0 +1,53 @@
+# Codex independent managed-executor SOURCE review
+
+**HOLD — repair the pre-import module-resolution boundary before operational admission.** This is a review of closed report-only candidate `29777d9155e8b4a5fac5abc4addbd7ceb03ef72e`, from reviewer base `fa00d587ddf7793457fde7191a24bfdef3b8a631`. No candidate, helper, test, Node, AWS, network or native action was executed in this review. Reviewer stdlib DATA/hash preservation and finite read-only Git commands were used.
+
+The three new executor modules were written by another Codex author. I previously authored parts of the inherited managed-history/reader preparation. This review independently assesses the new executor and its composition; it does not independently reaccept every inherited component or confer live/G1 authority.
+
+## Concrete blocker
+
+`managed_executor.py:17–22` hashes `PACK/managed_binding.py`, inserts the whole `PACK` at the front of `sys.path`, then performs ordinary `import managed_binding` **before** `m.check(closure_sha)`. The hash does not bind the code Python selects for that import. An adjacent `managed_binding` package, a matching native-extension filename, or a valid `__pycache__/managed_binding.cpython-312.pyc` can execute while the pinned `.py` bytes remain unchanged. `-B`/`dont_write_bytecode` prevents writing bytecode; it does not prevent loading existing bytecode.
+
+The source itself establishes the gap: `managed_binding.check` enumerates the SOURCE10 directory and the JS subtree, but does not close the PACK root before the first import. It is reached only after the imported module has executed. The 1020-record closure contains the three `.py`/`.mjs` files and fixed dependencies, not those alternate import candidates. In addition, the PACK path remains first while the binding imports `base64`, `json`, `subprocess` and other stdlib dependencies (`managed_binding.py:2`), permitting an unlisted PACK-root shadow for a dependency not already loaded. `-I -S` does not remove an explicitly inserted path.
+
+This is a static, reproducible source relationship, not a claim that an attacker or stale cache was present. No injected-cache/extension/package execution was attempted by this reviewer. The pinned local CPython3.12.14 `Lib/importlib/_bootstrap_external.py` independently explains the behavior: lines1080–1129 read and select a valid cache before the write-only `dont_write_bytecode` condition at1135; lines1620–1639 resolve packages/files, and1733–1736 put extension loaders before source loaders. Its raw source is preserved in reviewer evidence and its hash is already among the verified runtime records.
+
+The smallest repair is to load the exact verified binding-source bytes into one privately created fixed module without adding PACK to `sys.path`, then keep the existing complete SOURCE10 membership check before its ordinary imports. No caller-selected loader, module path, source, graph or callback should be introduced. Alternatively, a complete pre-import refusal of every alternate/cache/shadow candidate would need its own precise finite directory policy. The repair should add stale-cache, package/extension-selection and not-yet-loaded stdlib-shadow controls plus an unchanged-source positive. Root has retained this candidate and will allocate a focused repair; this review changes no author source or consumption slot.
+
+## Verified source and provenance
+
+The author FINAL-MANIFEST was rehashed at **289283bytes / `26d17ac84cdea1dc677f611a81de4c047ed7688cc72f4163ed9378f346227b4b`**. Its 103payload records and 1018external record occurrences matched current raw bytes. The executor closure was rehashed at **387304bytes / `c43419bc18c6099357f28f542126da7dc81f52a112fb3dabccf371e6c75d27de`**, with 1020unique records and 969runtime names. Across the seal, closure and report anchors,1121unique files were measured before and after preservation. The raw report is12975bytes / `7cbe9af03ea48a7bc864f7232a57095aae4de9ec8282af7bdc2b6114c9543d78`.
+
+Current author HEAD was exact29777d9, clean, with one added report and no tracked implementation delta. Raw HEAD/parent/status/commit/name-status/binary-diff stdout and stderr were retained. All 103payloads, the raw seal and anchors, author report, and27fixed predecessor records were copied into new reviewer evidence. Runtime binaries remain read-only external references with remeasured hashes; this is trusted local-filesystem readback, not historical kernel reconstruction or a hostile-filesystem guarantee.
+
+The three fixed source records are:
+
+| Module | Bytes | SHA256 |
+| --- | ---: | --- |
+| managed_executor.py | 5344 | 7ac745883e7aaeee2561d48cdaa0740bfa5f331b31b719055311ac4c6652e0b6 |
+| managed_binding.py | 9409 | 9670015e5cb482eba7156356a6fca8ece444ade42dedb0b823967c8d8ee4144d |
+| managed_bridge.mjs | 2401 | aa7223d8a23fe09f66bd45454e29dc30a6728a828d868045e2e33d6579736f32 |
+
+Full source read covered these modules, the inherited SOURCE10 closure/capture/role/planner/managed-probe path, its other closed domain files, all eight JS bridge dependencies, source-origin and predecessor inventories, and author fake-control/supervisor sources. Module responsibilities are coherent: fixed orchestration, protected binding/raw bridge preparation, and a thin JS canonical-decoder entry. The finding concerns how the binding is loaded, not a reason to replace these components with a broad framework.
+
+## Composition findings outside that blocker
+
+The intended path admits only `probe-instances` and `probe-volume`; no CLI mutation action or public callback is exposed. Freeze, admission and executor-closure hashes are separate owner inputs. Exact fields, types, source/run/action binding and an admission duration at most 600000ms are checked. Hashes alone are not owner authority. Before operational output allocation it reconstructs a pinned managed recipe, checks the parameters/request hash, and verifies the actual historical SOURCE7 CREATE stage chain. The 27predecessor records include the original SOURCE9 role template used through `b.SOURCE`, so that cross-pack template read is not an unlisted dependency.
+
+Historical role provenance does not substitute for fresh authority in the intended code: the entry runs the canonical seven-call current role readback and compares the result to the pinned role record. That path validates full caller, stack/resource identity, trust and sole exact inline policy/no attached policies. It then rechecks the owner admission and raw freeze/recipe/source pins before the managed probe. A fresh final full caller check precedes the original shared `OWNER/probe-*-consumed.json` allocation and one TestState call. Lost outcomes retain the consumed record; no retry/reset, local volume mutation or false cleanup verdict is added.
+
+The original managed `C=t0+900000` is carried through recipe, parameters, freeze and both captures. The initial 440000ms budget check reserves time for seven role calls, the bridge and two final calls; canonical Capture clips each call to at most 45seconds and the originalC. Managed probing also refuses insufficient final budget. The bridge independently reconstructs raw definition/input/pages through canonical JS using exact hashes, full bounded history and current probe time. It does not manufacture SOURCE9 caller/nonce/CLI ACK provenance. Actual error/cause is retained; summaries stay `cleanup:UNKNOWN`, `runtimeAdmitted:false`, `physicalAbsenceProven:false`.
+
+These are source relationships, not fresh service observations or a whole-ASL proof. Source drift detected in `finally` can itself prevent `operation.json` from being written; raw captures and consumption evidence, plus a future external supervisor, remain necessary. Both Python subprocess layers use direct-child timeouts and PIPE capture with post-completion size checks. They do not provide live byte caps, descendant-tree containment or controller-loss survival. The JS deny functions and fake-control audit hooks are not OS isolation. The canonical AWS capture inherits selected ambient environment values; the future supervisor must provide the reviewed credential/provider-free replacement environment rather than infer it from this source.
+
+## Retained checks and limits
+
+No author check was replayed. Raw evidence retains initial eight groups with **4PASS/4ERROR**, exit1, caused by the Windows `subprocess.Popen` audit fixture comparing a command-line string with an argv list. Corrected fixture evidence is **8/8PASS**, exit0; the unchanged production source was not repaired to obtain that result. The composed main controls are **2/2PASS**, exit0. Actual help exited0 and missing configuration exited2. The 90second check envelopes have equal full pre/post records; help/missing use their narrower original envelope schema and claim sourceStable without those arrays.
+
+The composed controls explicitly replace `m.check`, bridge, historical role provenance, role readback and Capture. They show fake-route ordering/consumption/UNKNOWN handling, not a production-composed real closure/import/current-IAM exercise. The separate eight-group controls use the real canonical bridge and retained actual role DATA with a fake seven-call adapter; those historical records are not current authority. None tests the alternate first-import boundary identified above.
+
+Reviewer DATA verifier1 failed an overbroad whole-stat equality including access time. Verifier2 then incorrectly required pre/post arrays from the narrower help/missing envelopes. Both helpers, partial outputs and failure explanations remain preserved; verifier3 measured the unchanged records, preserved the original schemas and completed successfully. Read-only path-lookup errors and one PowerShell brace-expansion parse error are retained in the tool transcript; they caused no candidate action. These review-tool corrections are not author test passes.
+
+No genuine managed execution, raw lifecycle history, originalT0/C, operational freeze or owner admission exists yet. Even after the loader repair, root must separately review/deploy and pin the managed workflow/version/input/name, obtain fresh IAM/KMS/cost/current-role authority, and implement/admit the external 600second process-tree supervisor before a live probe. Both actual EC2 TestState wire profiles and physical absence remain unqualified. No SDK/provider/host/volume action, security waiver, browser pass or G1 advancement follows from this report. All worker findings and prior failed/UNKNOWN operations remain open and immutable.
+
+Reviewer evidence: `.task-inputs/managed-executor-review-1`; successful DATA readback: `data-3/verification.json`. This review is CLOSED with the one pre-import boundary HOLD.
