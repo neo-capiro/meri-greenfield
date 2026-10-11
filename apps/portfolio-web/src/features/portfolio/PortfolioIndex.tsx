@@ -2,18 +2,26 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { Plus, LayoutGrid, List, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import type { Destinations } from "@/shared/config/config";
+import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { Shell } from "@/shared/shell/Shell";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useClients, useAccountOwners } from "./queries";
-import { memberName } from "./contracts";
-import { filterClients } from "./filter";
+import {
+  clearPortfolioFilters,
+  filterClients,
+  portfolioHref,
+  readPortfolioState,
+  sortClients,
+} from "./filter";
 import { CreateProfileDialog } from "./CreateProfileDialog";
 import { ProfileResults } from "./ProfileResults";
+import { IndexFilters } from "./IndexFilters";
 import { PortfolioPulse } from "./PortfolioPulse";
 import { GlobalQuickLog } from "./GlobalQuickLog";
 import styles from "./portfolio.module.css";
+
 export function PortfolioIndex({
   destinations,
 }: {
@@ -21,124 +29,101 @@ export function PortfolioIndex({
 }) {
   const clients = useClients();
   const owners = useAccountOwners();
+  const identity = useIdentity();
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const [creating, setCreating] = useState(false);
-  const filter = {
-    search: params.get("q") ?? "",
-    status: params.get("status") ?? "",
-    sector: params.get("sector") ?? "",
-    owner: params.get("owner") ?? "",
-  };
-  const view = params.get("view") === "list" ? "list" : "cards";
-  function setParam(key: string, value: string) {
-    const next = new URLSearchParams(params);
-    if (value) next.set(key, value);
-    else next.delete(key);
-    router.replace(`${pathname}?${next}`, { scroll: false });
-  }
-  const type = params.get("type") ?? "";
-  const rows = filterClients(
-    clients.data ?? [],
-    filter,
-    owners.data ?? {},
-  ).filter((client) => !type || client.profileType === type);
-  const sectors = [
-    ...new Set(
-      (clients.data ?? [])
-        .map((c) => c.sectorTag)
-        .filter((s): s is string => Boolean(s)),
-    ),
-  ].sort();
-  const ownerChoices = [
-    ...new Map(
-      Object.values(owners.data ?? {})
-        .filter((a) => a.accountOwner)
-        .map((a) => [a.accountOwnerUserId, a.accountOwner]),
-    ).entries(),
-  ];
+  const state = readPortfolioState(params);
+  const permitted =
+    !identity.error &&
+    (identity.data?.role === "standard_user" ||
+      canAdminister(identity.data?.role));
+  const set = (key: string, value: string) =>
+    router.replace(
+      portfolioHref(pathname, new URLSearchParams(params), key, value),
+      { scroll: false },
+    );
+  const clear = () =>
+    router.replace(
+      clearPortfolioFilters(pathname, new URLSearchParams(params)),
+      { scroll: false },
+    );
+  const rows = sortClients(
+    filterClients(
+      clients.data ?? [],
+      state,
+      owners.error ? {} : (owners.data ?? {}),
+    ).filter((client) => !state.type || client.profileType === state.type),
+    state.sort,
+  );
+  const ownerFilterWaiting = Boolean(
+    state.owner && (owners.isPending || owners.error),
+  );
+  const activeFilters = Boolean(
+    state.search || state.status || state.sector || state.owner || state.type,
+  );
   return (
     <Shell destinations={destinations}>
       <div className="page">
-        <header className="pageHeader">
+        <header className={`pageHeader ${styles.indexHeader}`}>
           <div className="stack" style={{ gap: 6 }}>
             <p className="eyebrow">Your client portfolio</p>
             <h1 className={styles.title}>
               Portfolio <span>{clients.data?.length ?? "—"}</span>
             </h1>
           </div>
-          <button className="button primary" onClick={() => setCreating(true)}>
-            <Plus size={16} />
-            Add profile
-          </button>
+          <div className={styles.headerActions}>
+            <label className={styles.search}>
+              <Search size={16} aria-hidden="true" />
+              <input
+                aria-label="Search profiles"
+                autoFocus={params.has("search")}
+                placeholder="Search profiles…"
+                value={state.search}
+                onChange={(e) => set("q", e.target.value)}
+              />
+            </label>
+            <button
+              className="button primary"
+              disabled={!permitted}
+              onClick={() => setCreating(true)}
+            >
+              <Plus size={16} aria-hidden="true" />
+              Add profile
+            </button>
+          </div>
         </header>
+        <QueryState
+          error={identity.error}
+          retry={() => void identity.refetch()}
+        />
+        {identity.data && !permitted && !identity.error && (
+          <p className="muted">Your role does not allow creating profiles.</p>
+        )}
         <PortfolioPulse clients={clients.data} />
-        <div className="toolbar">
-          <label className={styles.search}>
-            <Search size={16} />
-            <input
-              aria-label="Search profiles"
-              autoFocus={params.has("search")}
-              placeholder="Search profiles…"
-              value={filter.search}
-              onChange={(e) => setParam("q", e.target.value)}
-            />
-          </label>
-          <select
-            aria-label="Profile status"
-            value={filter.status}
-            onChange={(e) => setParam("status", e.target.value)}
-          >
-            <option value="">All statuses</option>
-            {[...new Set((clients.data ?? []).map((c) => c.profileStatus))].map(
-              (status) => (
-                <option key={status}>{status}</option>
-              ),
-            )}
-          </select>
-          <select
-            aria-label="Sector"
-            value={filter.sector}
-            onChange={(e) => setParam("sector", e.target.value)}
-          >
-            <option value="">All sectors</option>
-            {sectors.map((s) => (
-              <option key={s}>{s}</option>
-            ))}
-          </select>
-          <select
-            aria-label="Account owner"
-            disabled={!owners.data}
-            value={filter.owner}
-            onChange={(e) => setParam("owner", e.target.value)}
-          >
-            <option value="">All owners</option>
-            {ownerChoices.map(([id, owner]) => (
-              <option key={id} value={id ?? ""}>
-                {memberName(owner)}
-              </option>
-            ))}
-          </select>
-          <span className={styles.viewSwitch}>
-            <button
-              className="button iconButton"
-              aria-label="List view"
-              aria-pressed={view === "list"}
-              onClick={() => setParam("view", "list")}
-            >
-              <List size={16} />
+        <IndexFilters
+          state={state}
+          clients={clients.data ?? []}
+          owners={owners.error ? undefined : owners.data}
+          ownerPending={owners.isPending}
+          set={set}
+          clear={clear}
+        />
+        {state.unsupportedSort && (
+          <p className="status" role="status">
+            This sort is unavailable. Showing most recently added profiles.{" "}
+            <button className="button ghost" onClick={() => set("sort", "")}>
+              Use recent order
             </button>
-            <button
-              className="button iconButton"
-              aria-label="Card view"
-              aria-pressed={view === "cards"}
-              onClick={() => setParam("view", "cards")}
-            >
-              <LayoutGrid size={16} />
-            </button>
-          </span>
-        </div>
+          </p>
+        )}
+        {state.type === "PROSPECT" && (
+          <p className="status" role="status">
+            These are legacy prospect profiles. Current Business Development
+            prospects are in <Link href="/portfolio/prospects">Prospects</Link>.
+          </p>
+        )}
         <QueryState
           pending={clients.isPending}
           error={clients.error}
@@ -150,21 +135,20 @@ export function PortfolioIndex({
             retry={() => void owners.refetch()}
           />
         )}
-        {clients.data && (
+        {clients.data && !clients.error && (
           <>
             <div className={styles.columns}>
-              <section className="stack">
+              <section className="stack" aria-label="Portfolio profiles">
                 <nav className={styles.tabs} aria-label="Profile type">
                   {[
                     ["All", ""],
                     ["Clients", "CLIENT"],
-                    ["Prospects", "PROSPECT"],
                   ].map(([label, value]) => (
                     <button
                       key={label}
-                      className={`button ${type === value ? "primary" : ""}`}
-                      aria-pressed={type === value}
-                      onClick={() => setParam("type", value ?? "")}
+                      className={`button ${state.type === value ? "primary" : ""}`}
+                      aria-pressed={state.type === value}
+                      onClick={() => set("type", value ?? "")}
                     >
                       {label}{" "}
                       <small>
@@ -176,33 +160,74 @@ export function PortfolioIndex({
                     </button>
                   ))}
                   <Link className="button" href="/portfolio/prospects">
+                    Prospects
+                  </Link>
+                  <Link
+                    className="button"
+                    href="/portfolio/prospects?pipeline=1"
+                  >
                     Pipeline
                   </Link>
                 </nav>
-                {rows.length ? (
-                  <ProfileResults
-                    rows={rows}
-                    view={view}
-                    owners={owners.data}
-                  />
-                ) : (
-                  <div className="status">
-                    <h3>No profiles found</h3>
-                    <p className="muted">
-                      Adjust your filters or add a profile.
-                    </p>
+                {ownerFilterWaiting ? (
+                  <div className="status" role="status">
+                    {owners.isPending
+                      ? "Loading account owners…"
+                      : "The account owner filter cannot be applied until owners are available."}
                   </div>
+                ) : (
+                  <>
+                    <p className={styles.resultCount} role="status">
+                      {rows.length} {rows.length === 1 ? "profile" : "profiles"}
+                      {activeFilters ? ` of ${clients.data.length}` : ""}
+                    </p>
+                    {rows.length ? (
+                      <ProfileResults
+                        rows={rows}
+                        view={state.view}
+                        owners={owners.error ? undefined : owners.data}
+                      />
+                    ) : (
+                      <div className="status">
+                        <h3>
+                          {clients.data.length
+                            ? "No profiles found"
+                            : "No profiles yet"}
+                        </h3>
+                        <p className="muted">
+                          {clients.data.length
+                            ? "Try a different search or clear your filters."
+                            : "Add your first client or track a prospect in Business Development."}
+                        </p>
+                        {activeFilters && (
+                          <button className="button" onClick={clear}>
+                            Clear filters
+                          </button>
+                        )}
+                        {!activeFilters && permitted && (
+                          <button
+                            className="button"
+                            onClick={() => setCreating(true)}
+                          >
+                            Add profile
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+                {state.view === "cards" && permitted && (
+                  <button
+                    className={styles.addCard}
+                    onClick={() => setCreating(true)}
+                  >
+                    + Add profile
+                  </button>
                 )}
               </section>
               <aside className={`card stack ${styles.attention}`}>
                 <h3>Needs attention</h3>
-                <p className="muted">
-                  The portfolio attention feed is not connected yet.
-                </p>
-                <p className="muted">
-                  Objective coverage, attention priority, off-track status and
-                  aggregate counts need verified Portfolio contracts.
-                </p>
+                <p className="muted">Attention summaries are unavailable.</p>
                 <small>
                   Open a client to review its current objectives, activity,
                   meetings and work.

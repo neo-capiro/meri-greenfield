@@ -5,6 +5,64 @@ export interface PortfolioFilter {
   sector: string;
   owner: string;
 }
+export const unassignedOwner = "unassigned";
+export interface PortfolioIndexState extends PortfolioFilter {
+  type: string;
+  view: "list" | "cards";
+  sort: "recent" | "name";
+  unsupportedSort: string;
+}
+export function readPortfolioState(
+  params: Pick<URLSearchParams, "get">,
+): PortfolioIndexState {
+  const sort = params.get("sort") ?? "recent";
+  return {
+    search: params.get("q") ?? "",
+    status: params.get("status") ?? "",
+    sector: params.get("sector") ?? "",
+    owner: params.get("owner") ?? "",
+    type: params.get("type") ?? "",
+    view:
+      (params.get("view") ?? params.get("layout")) === "list"
+        ? "list"
+        : "cards",
+    sort: sort === "name" ? "name" : "recent",
+    unsupportedSort: sort === "name" || sort === "recent" ? "" : sort,
+  };
+}
+export function portfolioHref(
+  pathname: string,
+  params: URLSearchParams,
+  key: string,
+  value: string,
+) {
+  const next = new URLSearchParams(params);
+  if (value) next.set(key, value);
+  else next.delete(key);
+  if (key === "view") next.delete("layout");
+  return `${pathname}${next.size ? `?${next}` : ""}`;
+}
+export function clearPortfolioFilters(
+  pathname: string,
+  params: URLSearchParams,
+) {
+  const next = new URLSearchParams(params);
+  for (const key of ["q", "status", "sector", "owner", "type", "search"])
+    next.delete(key);
+  return `${pathname}${next.size ? `?${next}` : ""}`;
+}
+export function sortClients(clients: Client[], sort: "recent" | "name") {
+  // GET /clients is ordered by createdAt DESC. Preserve that order for Recent.
+  return sort === "name"
+    ? [...clients].sort(
+        (a, b) =>
+          a.name.localeCompare(b.name, undefined, {
+            sensitivity: "base",
+            numeric: true,
+          }) || a.id.localeCompare(b.id),
+      )
+    : clients;
+}
 export function filterClients(
   clients: Client[],
   filter: PortfolioFilter,
@@ -17,11 +75,14 @@ export function filterClients(
   return clients.filter(
     (client) =>
       (!term ||
-        `${client.name} ${client.description ?? ""} ${client.primaryContactName ?? ""} ${client.sectorTag ?? ""} ${memberName(owners[client.id]?.accountOwner)}`
+        `${client.name} ${client.description ?? ""} ${client.primaryContactName ?? ""} ${client.sectorTag ?? ""} ${owners[client.id]?.accountOwner ? memberName(owners[client.id]?.accountOwner) : ""}`
           .toLocaleLowerCase()
           .includes(term)) &&
       (!filter.status || client.profileStatus === filter.status) &&
       (!filter.sector || client.sectorTag === filter.sector) &&
-      (!filter.owner || owners[client.id]?.accountOwnerUserId === filter.owner),
+      (!filter.owner ||
+        (filter.owner === unassignedOwner
+          ? owners[client.id]?.accountOwnerUserId === null
+          : owners[client.id]?.accountOwnerUserId === filter.owner)),
   );
 }
