@@ -567,5 +567,91 @@ class TransportCauseTests(unittest.TestCase):
         self.assertFalse(value['specificRejection'])
 
 
+class OpenSSLVerificationTests(unittest.TestCase):
+    PREFIX = ('error performing TLS handshake: error:0A000086:SSL routines:'
+              'tls_post_process_server_certificate:certificate verify failed:')
+
+    def message(self, terminal='hostname mismatch', path='../ssl/statem/statem_clnt.c', line='2125'):
+        return self.PREFIX + path + ':' + line + ': (' + terminal + ')'
+
+    def result(self, text, case='wrong-san'):
+        payload = {'is_panic': False, 'error_code': 'P1011', 'meta': {'message': text},
+                   'message': 'Error opening a TLS connection: ' + text}
+        return classify_native_output(case, (json.dumps(payload) + '\n').encode(),
+                                      expected_user='fixture_user', expected_host='fixture-db')
+
+    def test_whole_source_backed_grammar_is_case_specific(self):
+        for terminal, case, reason in (
+                ('unable to get local issuer certificate', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('self-signed certificate', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('self-signed certificate in certificate chain', 'wrong-ca', 'OPENSSL_X509_CA_UNTRUSTED'),
+                ('hostname mismatch', 'wrong-san', 'OPENSSL_X509_NAME_MISMATCH'),
+                ('IP address mismatch', 'wrong-san', 'OPENSSL_X509_NAME_MISMATCH')):
+            for path in ('ssl/statem/statem_clnt.c', './ssl/statem/statem_clnt.c', '../ssl/statem/statem_clnt.c'):
+                for line in ('2124', '2125'):
+                    value = self.result(self.message(terminal, path, line), case)
+                    self.assertTrue(value['specificRejection'], value)
+                    self.assertTrue(value['complete'])
+                    self.assertEqual(reason, value['reason'])
+
+    def test_other_cases_cannot_relabel_specific_terminal(self):
+        for terminal, correct in (('hostname mismatch', 'wrong-san'),
+                                  ('unable to get local issuer certificate', 'wrong-ca')):
+            for case in ('positive', 'plaintext', 'wrong-password', 'wrong-ca', 'wrong-san'):
+                if case != correct:
+                    value = self.result(self.message(terminal), case)
+                    self.assertFalse(value['specificRejection'])
+                    self.assertEqual('CASE_MISMATCH', value['reason'])
+
+    def test_every_fixed_stack_field_and_error_data_is_required(self):
+        text = self.message()
+        for old, new in (('0A000086', '0A000085'), ('0A000086', '0a000086'),
+                ('SSL routines', 'x509 certificate routines'),
+                ('tls_post_process_server_certificate', 'ssl_verify_cert_chain'),
+                ('certificate verify failed', 'certificate expired'),
+                ('2125', '02125'), ('2125', '2126'), ('2125', '-1'),
+                ('../ssl/', '/private/ssl/'), ('../ssl/', '../../ssl/'),
+                (': (hostname', ':private (hostname')):
+            value = self.result(text.replace(old, new))
+            self.assertFalse(value['specificRejection'], (old, new, value))
+
+    def test_extra_stack_entries_prefix_suffix_or_mixed_reasons_refuse(self):
+        text = self.message()
+        for altered in ('warning: ' + text, text + ' ', text + '; certificate expired',
+                text + ', ' + text, text + ' (self-signed certificate)',
+                text.replace('hostname mismatch', 'hostname mismatch; certificate expired'),
+                text.replace('hostname mismatch', 'unable to get local issuer certificate; hostname mismatch'),
+                text.replace('hostname mismatch', 'server does not support TLS'),
+                text + '\nprivate', text.replace(': (', ':: (')):
+            for case in ('wrong-ca', 'wrong-san', 'plaintext'):
+                self.assertFalse(self.result(altered, case)['specificRejection'], altered)
+
+    def test_expiry_validity_purpose_algorithm_missing_files_and_unknown_outcomes_refuse(self):
+        for terminal in ('certificate has expired', 'certificate is not yet valid',
+                'unsuitable certificate purpose', 'certificate signature failure',
+                'CA signature digest algorithm too weak', 'unsupported signature algorithm',
+                'unable to verify the first certificate', 'cert file not found',
+                'no such file', 'permission denied', 'ok', 'Hostname mismatch',
+                'IP Address mismatch', 'hostname mismatch (private)'):
+            for case in ('wrong-ca', 'wrong-san'):
+                self.assertFalse(self.result(self.message(terminal), case)['specificRejection'], terminal)
+
+    def test_broad_candidate_is_never_upgraded_without_whole_grammar(self):
+        for text, case in (('certificate verify failed (self-signed certificate)', 'wrong-ca'),
+                           ('hostname mismatch', 'wrong-san'),
+                           (self.message().replace(self.PREFIX, ''), 'wrong-san')):
+            value = self.result(text, case)
+            self.assertFalse(value['specificRejection'])
+            self.assertEqual('TLS_REASON_UNQUALIFIED', value['reason'])
+
+    def test_result_exports_no_source_path_line_or_native_text(self):
+        value = self.result(self.message())
+        self.assertEqual(set(value), {'case', 'specificRejection', 'reason', 'tlsCandidate',
+                                      'source', 'recordCount', 'complete'})
+        self.assertTrue(all(type(item) in (str, bool, int) for item in value.values()))
+        for private in ('statem', '2125', '0A000086', 'fixture-db', 'fixture_user', 'hostname mismatch'):
+            self.assertNotIn(private, json.dumps(value))
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

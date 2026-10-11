@@ -307,12 +307,36 @@ def classify_exception(case, error, *, evidence_complete=True):
     return result
 
 
+def _openssl_verification(message):
+    # One complete native-tls/rust-openssl/OpenSSL 3.5.7 display. File/line
+    # identify the reviewed source call, never the origin of caller bytes.
+    prefix = ('error performing TLS handshake: error:0A000086:SSL routines:'
+              'tls_post_process_server_certificate:certificate verify failed:')
+    if not message.startswith(prefix):
+        return None
+    fields = message[len(prefix):].split(':')
+    if (len(fields) != 3 or fields[0] not in ('ssl/statem/statem_clnt.c',
+            './ssl/statem/statem_clnt.c', '../ssl/statem/statem_clnt.c')
+            or fields[1] not in ('2124', '2125')):
+        return None
+    # Empty OpenSSL error data followed by native-tls's exact verify-result.
+    outcomes = {
+        ' (unable to get local issuer certificate)': 'OPENSSL_X509_CA_UNTRUSTED',
+        ' (self-signed certificate)': 'OPENSSL_X509_CA_UNTRUSTED',
+        ' (self-signed certificate in certificate chain)': 'OPENSSL_X509_CA_UNTRUSTED',
+        ' (hostname mismatch)': 'OPENSSL_X509_NAME_MISMATCH',
+        ' (IP address mismatch)': 'OPENSSL_X509_NAME_MISMATCH',
+    }
+    return outcomes.get(fields[2])
+
+
 def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
                            evidence_complete=True):
     """Decode one complete pinned-engine startup KnownError, without I/O.
 
     Origin, process/config ownership and capture completeness belong to the
-    caller. CA/name candidates are observations, never qualified rejections.
+    caller. Only a whole fixed OpenSSL display can qualify CA/name; broad
+    candidates remain observations, never qualified rejections.
     No native text, metadata, paths or byte hashes leave this boundary.
     """
     result = {'case': case if type(case) is str and case in CASES else 'INVALID',
@@ -368,6 +392,8 @@ def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
                 _deny('NATIVE_FORMATTER_MISMATCH')
             if meta['message'] == 'error performing TLS handshake: server does not support TLS':
                 qualified = 'TLS_UNSUPPORTED'
+            elif _openssl_verification(meta['message']) is not None:
+                qualified = _openssl_verification(meta['message'])
             else:
                 candidate = _reason(code, meta['message'].lower())
                 if candidate in ('CERTIFICATE_REJECTED', 'HOSTNAME_REJECTED'):
@@ -379,7 +405,9 @@ def classify_native_output(case, stderr_bytes, *, expected_user, expected_host,
             _deny('NATIVE_UNKNOWN_CODE')
         result.update(source='NATIVE_KNOWN_ERROR', recordCount=1, complete=True)
         if (case == 'wrong-password' and qualified == 'PASSWORD_REJECTED'
-                or case == 'plaintext' and qualified == 'TLS_UNSUPPORTED'):
+                or case == 'plaintext' and qualified == 'TLS_UNSUPPORTED'
+                or case == 'wrong-ca' and qualified == 'OPENSSL_X509_CA_UNTRUSTED'
+                or case == 'wrong-san' and qualified == 'OPENSSL_X509_NAME_MISMATCH'):
             result.update(specificRejection=True, reason=qualified)
         else:
             result['reason'] = 'CASE_MISMATCH'
