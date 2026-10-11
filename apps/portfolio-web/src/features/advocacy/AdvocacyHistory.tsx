@@ -1,56 +1,100 @@
 "use client";
-import { TextareaField } from "@/shared/ui/TextareaField";
-import { useAddAdvocacyRecord } from "./mutations";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useMatters, useMatter } from "./queries";
 import { MatterEditor } from "./MatterEditor";
+import { RecordDialog } from "./RecordDialog";
+import { MatterDetail } from "./MatterDetail";
+import { CorrectionDialog, type CorrectionContext } from "./CorrectionDialog";
+import { UnassignedRecords } from "./UnassignedRecords";
+import { useAdvocacyAccess } from "./access";
 import type { Matter } from "./contracts";
+import styles from "./advocacy.module.css";
+
 export function AdvocacyHistory({ clientId }: { clientId: string }) {
-  const matters = useMatters(clientId);
-  const [selected, setSelected] = useState<string | null>(null);
-  const detail = useMatter(clientId, selected);
+  const { identity, canRead, canEdit } = useAdvocacyAccess();
+  const matters = useMatters(clientId, canRead);
+  const params = useSearchParams();
+  const [selected, setSelected] = useState<string | null>(() =>
+    params.get("matter"),
+  );
+  const detail = useMatter(clientId, selected, canRead);
   const [creating, setCreating] = useState(false);
   const [editing, setEditing] = useState<Matter>();
   const [addRecord, setAddRecord] = useState(false);
+  const [correction, setCorrection] = useState<CorrectionContext>();
+  const [notice, setNotice] = useState("");
+  const current = canRead && !detail.error ? detail.data : undefined;
   return (
-    <section className="card stack">
+    <section
+      className={`card stack ${styles.history}`}
+      aria-label="Advocacy history"
+    >
       <header className="row between">
         <div>
           <p className="eyebrow">Institutional memory</p>
           <h2>Advocacy history</h2>
         </div>
-        <button className="button" onClick={() => setCreating(true)}>
-          <Plus size={14} />
+        <button
+          className="button"
+          disabled={!canEdit}
+          onClick={() => setCreating(true)}
+        >
+          <Plus size={14} aria-hidden="true" />
           New matter
         </button>
       </header>
       <QueryState
-        pending={matters.isPending}
-        error={matters.error}
-        retry={() => void matters.refetch()}
+        pending={identity.isPending}
+        error={identity.error}
+        retry={() => void identity.refetch()}
       />
-      {matters.data?.map((matter) => (
-        <button
-          className="button ghost stack"
-          style={{ alignItems: "stretch", textAlign: "left" }}
-          key={matter.id}
-          onClick={() => setSelected(matter.id)}
-        >
-          <span className="row between">
-            <strong>{matter.title}</strong>
-            <span className="chip">{matter.status.replaceAll("_", " ")}</span>
-          </span>
-          <small>
-            {matter.recordCount} records · {matter.outcomeCount} outcomes
-          </small>
-          {matter.summary && <p className="muted">{matter.summary}</p>}
-        </button>
-      ))}
-      {matters.data?.length === 0 && (
-        <p className="empty">No advocacy matters yet.</p>
+      {!identity.isPending && !identity.error && !canRead && (
+        <p className="status">This account cannot access advocacy history.</p>
+      )}
+      {notice && (
+        <p className="status" role="status">
+          {notice}
+        </p>
+      )}
+      {canRead && (
+        <>
+          <QueryState
+            pending={matters.isPending}
+            error={matters.error}
+            retry={() => void matters.refetch()}
+          />
+          {!matters.error &&
+            matters.data?.map((matter) => (
+              <button
+                className={`button ghost stack ${styles.matterButton}`}
+                key={matter.id}
+                onClick={() => setSelected(matter.id)}
+              >
+                <span className="row between">
+                  <strong>{matter.title}</strong>
+                  <span className="chip">
+                    {matter.status.replaceAll("_", " ")}
+                  </span>
+                </span>
+                <small>
+                  {matter.recordCount} records · {matter.outcomeCount} outcomes
+                </small>
+                {matter.summary && <p className="muted">{matter.summary}</p>}
+              </button>
+            ))}
+          {!matters.error && matters.data?.length === 0 && (
+            <p className="empty">No advocacy matters yet.</p>
+          )}
+          <UnassignedRecords
+            clientId={clientId}
+            canEdit={canEdit}
+            onCorrect={setCorrection}
+          />
+        </>
       )}
       <MatterEditor
         key={editing?.id ?? "new"}
@@ -69,147 +113,49 @@ export function AdvocacyHistory({ clientId }: { clientId: string }) {
         onOpenChange={(open) => {
           if (!open) setSelected(null);
         }}
-        title={detail.data?.title ?? "Advocacy matter"}
-        drawer
+        title={current?.title ?? "Advocacy matter"}
+        className={styles.detail}
       >
-        <QueryState
-          pending={detail.isPending}
-          error={detail.error}
-          retry={() => void detail.refetch()}
-        />
-        {detail.data && (
+        {canRead ? (
           <>
-            <div className="row">
-              <span className="chip">
-                {detail.data.status.replaceAll("_", " ")}
-              </span>
-              <button
-                className="button"
-                onClick={() => setEditing(detail.data)}
-              >
-                Edit matter
-              </button>
-              <button className="button" onClick={() => setAddRecord(true)}>
-                Add advocacy record
-              </button>
-            </div>
-            <p>{detail.data.summary}</p>
-            <h3>Records</h3>
-            {detail.data.records.map((record) => (
-              <article className="card stack" key={record.id}>
-                <div className="row between">
-                  <strong>{record.title}</strong>
-                  <small>
-                    {record.activityDate?.slice(0, 10) ?? "Date not supplied"}
-                  </small>
-                </div>
-                <span className="eyebrow">
-                  {record.recordType.replaceAll("_", " ")}
-                </span>
-                {record.summary && <p>{record.summary}</p>}
-                {record.outcome && (
-                  <p>
-                    <strong>Outcome:</strong> {record.outcome}
-                  </p>
-                )}
-                <small>
-                  Source: {record.sourceType} · {record.evidenceClass}
-                </small>
-                {record.sourceUrl && /^https?:\/\//.test(record.sourceUrl) && (
-                  <a
-                    className="button"
-                    href={record.sourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View source ↗
-                  </a>
-                )}
-              </article>
-            ))}
-            {detail.data.records.length === 0 && (
-              <p className="muted">No records in this matter.</p>
+            <QueryState
+              pending={detail.isPending}
+              error={detail.error}
+              retry={() => void detail.refetch()}
+            />
+            {current && (
+              <MatterDetail
+                matter={current}
+                canEdit={canEdit && !matters.error}
+                onEdit={() => setEditing(current)}
+                onAdd={() => setAddRecord(true)}
+                onCorrect={setCorrection}
+              />
             )}
-            <h3>Linked work</h3>
-            {detail.data.links.map((link) => (
-              <p key={link.id}>
-                {link.label ?? link.linkType} <code>{link.linkKey}</code>
-              </p>
-            ))}
           </>
+        ) : (
+          <p className="status">Current advocacy access is unavailable.</p>
         )}
       </Dialog>
-      <RecordDialog
-        clientId={clientId}
-        matterId={selected}
-        open={addRecord}
-        onOpenChange={setAddRecord}
-      />
+      {addRecord && (
+        <RecordDialog
+          clientId={clientId}
+          matterId={selected}
+          onClose={() => setAddRecord(false)}
+        />
+      )}
+      {correction && (
+        <CorrectionDialog
+          clientId={clientId}
+          context={correction}
+          matters={!matters.error ? (matters.data ?? []) : []}
+          onClose={() => setCorrection(undefined)}
+          onSaved={() => {
+            setCorrection(undefined);
+            setNotice("Updated history reflects this correction.");
+          }}
+        />
+      )}
     </section>
-  );
-}
-function RecordDialog({
-  clientId,
-  matterId,
-  open,
-  onOpenChange,
-}: {
-  clientId: string;
-  matterId: string | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const mutation = useAddAdvocacyRecord(clientId, () => onOpenChange(false));
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange} title="Add advocacy record">
-      <form
-        className="stack"
-        onSubmit={(event) => {
-          event.preventDefault();
-          const form = new FormData(event.currentTarget);
-          const date = String(form.get("activityDate"));
-          mutation.mutate({
-            matterId,
-            recordType: form.get("recordType"),
-            title: String(form.get("title")).trim(),
-            summary: form.get("summary"),
-            ...(date ? { activityDate: new Date(date).toISOString() } : {}),
-          });
-        }}
-      >
-        <label>
-          Record type
-          <select name="recordType">
-            {[
-              "advocacy_ask",
-              "meeting",
-              "submission",
-              "congressional_request",
-              "regulatory_comment",
-              "testimony",
-              "outreach",
-              "government_action",
-              "outcome",
-              "other",
-            ].map((type) => (
-              <option key={type}>{type}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Title
-          <input name="title" required maxLength={500} />
-        </label>
-        <label>
-          Date and time (your browser time zone)
-          <input name="activityDate" type="datetime-local" />
-        </label>
-        <TextareaField label="Summary" name="summary" maxLength={4000} />
-        <QueryState error={mutation.error} />
-        <button className="button primary" disabled={mutation.isPending}>
-          Save record
-        </button>
-      </form>
-    </Dialog>
   );
 }

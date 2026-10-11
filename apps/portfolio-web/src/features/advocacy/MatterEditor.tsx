@@ -4,6 +4,7 @@ import { useSaveMatter } from "./mutations";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { matterTypes, type Matter } from "./contracts";
+import { useAdvocacyAccess } from "./access";
 export function MatterEditor({
   clientId,
   open,
@@ -15,6 +16,7 @@ export function MatterEditor({
   onOpenChange: (open: boolean) => void;
   matter?: Matter;
 }) {
+  const { canEdit } = useAdvocacyAccess();
   const mutation = useSaveMatter(clientId, matter?.id, () =>
     onOpenChange(false),
   );
@@ -31,6 +33,7 @@ export function MatterEditor({
         className="stack"
         onSubmit={(event) => {
           event.preventDefault();
+          if (!canEdit || mutation.isPending) return;
           const form = new FormData(event.currentTarget);
           mutation.mutate({
             title: String(form.get("title")).trim(),
@@ -92,7 +95,15 @@ export function MatterEditor({
           defaultValue={matter?.summary ?? ""}
         />
         <QueryState error={mutation.error} />
-        <button className="button primary" disabled={mutation.isPending}>
+        {!canEdit && (
+          <p className="status">
+            Your current role cannot save advocacy matters.
+          </p>
+        )}
+        <button
+          className="button primary"
+          disabled={!canEdit || mutation.isPending}
+        >
           {mutation.isPending
             ? "Saving…"
             : matter

@@ -1,0 +1,100 @@
+.history {
+  min-width: 0;
+}
+.matterButton {
+  align-items: stretch;
+  text-align: left;
+}
+.detail {
+  align-content: start;
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+}
+.record {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+  overflow-wrap: anywhere;
+}
+.record p {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.record header {
+  flex-wrap: wrap;
+}
+.recordActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.recordActions button,
+.record a {
+  padding: 0;
+  justify-self: start;
+  font-size: 12px;
+  min-height: 28px;
+}
+.correction {
+  padding: 0;
+  gap: 0;
+  border-radius: 14px;
+  width: min(520px, calc(100vw - 32px));
+  align-content: start;
+}
+.correction > header {
+  padding: 22px 28px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.correction > header h2 {
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.07px;
+}
+.merge {
+  width: min(560px, calc(100vw - 32px));
+}
+.form {
+  min-width: 0;
+}
+.body {
+  display: grid;
+  gap: 16px;
+  padding: 18px 28px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+.body strong {
+  color: var(--foreground);
+  font-size: 14px;
+}
+.body .warning {
+  color: var(--destructive-text);
+}
+.body textarea {
+  min-height: 60px;
+}
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  background: var(--muted);
+}
+@media (max-width: 680px) {
+  .correction > header,
+  .body,
+  .footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .detail {
+    padding: 18px;
+  }
+}
