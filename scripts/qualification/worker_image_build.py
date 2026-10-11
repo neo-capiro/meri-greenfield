@@ -22,7 +22,8 @@ import worker_context
 import worker_image_collect as collector
 
 ROOT = Path(__file__).resolve().parents[2]
-REFERENCE = '5192c575e78957bd4bc8d2c512a1efb5b455a884'
+# Reviewed private wire decoding is part of the immutable worker source baseline.
+REFERENCE = 'f118ff55dfb96ba4b44099953e6c9724064b723d'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'
