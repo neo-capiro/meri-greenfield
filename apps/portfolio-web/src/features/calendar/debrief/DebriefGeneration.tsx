@@ -11,7 +11,11 @@ import { MeetingTranscriptUpload } from "../library/public";
 import { usePreparationCapabilities, useDispatchGuard } from "../access/public";
 import { debriefBody, generateDebrief } from "./api";
 import { ManualDebriefSource } from "./ManualDebriefSource";
-type ReviewedDebriefSource = { text: string; method: "manual" | "upload" };
+import { VoiceMemoSource } from "./voice/VoiceMemoSource";
+type ReviewedDebriefSource = {
+  text: string;
+  method: "manual" | "upload" | "voice";
+};
 type DebriefGenerationProps = {
   meeting: Meeting;
   onDraft: (body: string) => void;
@@ -42,6 +46,7 @@ function SessionDebriefGeneration({
   );
   const [uploading, setUploading] = useState(false);
   const [manual, setManual] = useState(false);
+  const [voice, setVoice] = useState(false);
   const [source, setSource] = useState<ReviewedDebriefSource>();
   const busy = useRef(false);
   const lifetime = useRef<AbortController | undefined>(undefined);
@@ -122,6 +127,19 @@ function SessionDebriefGeneration({
         onOpenChange={setManual}
         allowed={allowed && !mutation.isPending}
         onGenerate={(text) => generate({ text, method: "manual" })}
+      />
+      <button
+        className="button"
+        disabled={!allowed || mutation.isPending}
+        onClick={() => setVoice(true)}
+      >
+        Record Voice Memo
+      </button>
+      <VoiceMemoSource
+        meeting={meeting}
+        open={voice}
+        onOpenChange={setVoice}
+        onGenerate={generate}
       />
       <QueryState
         error={capabilities.error ?? identity.error}

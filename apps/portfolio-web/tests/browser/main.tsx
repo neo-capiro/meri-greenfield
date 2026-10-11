@@ -18,6 +18,7 @@ import { OpportunitiesPage } from "@/features/opportunities/OpportunitiesPage";
 import { RegistrantIntakeHarness } from "./registrant-intake-harness";
 import { EmailComposeHarness } from "./email-compose-harness";
 import { MeetingDocumentsHarness } from "./meeting-documents-harness";
+import { ProfileToolsHarness } from "./profile-tools-harness";
 import { usePathname } from "./navigation";
 import "@/app/globals.css";
 import "./test-font.css";
@@ -31,6 +32,7 @@ function App() {
   if (path === "/__test/registrant-intake") return <RegistrantIntakeHarness />;
   if (path === "/__test/email-compose") return <EmailComposeHarness />;
   if (path === "/__test/meeting-documents") return <MeetingDocumentsHarness />;
+  if (path === "/__test/profile-tools") return <ProfileToolsHarness />;
   if (path === "/__test/past-performance")
     return (
       <Shell destinations={destinations}>

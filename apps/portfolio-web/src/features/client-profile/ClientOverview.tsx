@@ -17,6 +17,7 @@ import { FacilitiesCard } from "./FacilitiesCard";
 import { TeamDialog } from "./TeamDialog";
 import { NotesDialog } from "./NotesDialog";
 import { QuickLog } from "./QuickLog";
+import { FocusTags } from "./tags/public";
 import { useTeam, useActivity } from "./queries";
 import styles from "./overview.module.css";
 export function ClientOverview({ clientId }: { clientId: string }) {
@@ -85,6 +86,7 @@ export function ClientOverview({ clientId }: { clientId: string }) {
             <p className="muted">
               {value.description ?? "No organization description yet."}
             </p>
+            <FocusTags clientId={clientId} />
             <div className={styles.profileMeta}>
               <span>
                 <span className="eyebrow">Owner </span>
@@ -103,8 +105,14 @@ export function ClientOverview({ clientId }: { clientId: string }) {
               </button>
             </div>
           </section>
-          <section className={`card ${styles.pulse}`}>
-            <p className="eyebrow">Engagement pulse</p>
+          <section
+            className={`card ${styles.pulse}`}
+            aria-label="Engagement pulse"
+          >
+            <header className="row between">
+              <h2>Engagement pulse</h2>
+              <a href="#activity-timeline">Open timeline →</a>
+            </header>
             <div className={styles.pulseGrid}>
               <div>
                 <strong>{activity.data?.length ?? "—"}</strong>

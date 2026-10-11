@@ -111,8 +111,7 @@ export function RemoveActivity({ item, state, onClose, onReturnFocus }: Props) {
     >
       <div className={styles.removeBody}>
         <p className="muted">
-          Only remove an entry after confirming it is no longer needed, such as
-          a test entry your team has verified.
+          This removes the recorded activity from this client’s timeline.
         </p>
         <ActivityMutationStatus state={state} />
       </div>

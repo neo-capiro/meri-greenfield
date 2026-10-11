@@ -9,6 +9,7 @@ import {
   ArchiveClientDialog,
 } from "@/features/client-intake/public";
 import { useIdentity, canAdminister } from "@/shared/auth/identity";
+import { ClientProfileExport } from "./export/public";
 import styles from "./client-header.module.css";
 
 export function ClientProfileActions({ client }: { client: Client }) {
@@ -16,10 +17,19 @@ export function ClientProfileActions({ client }: { client: Client }) {
   const router = useRouter();
   const trigger = useRef<HTMLButtonElement>(null);
   const [menu, setMenu] = useState(false);
-  const [action, setAction] = useState<"edit" | "archive" | null>(null);
+  const [action, setAction] = useState<"edit" | "archive" | "export" | null>(
+    null,
+  );
   const role = identity.data?.role;
   const editable = canAdminister(role);
   const archivable = role === "standard_user" || editable;
+  const exportable = Boolean(
+    identity.data?.user.id &&
+    identity.data.tenant?.id &&
+    !identity.isFetching &&
+    !identity.error &&
+    archivable,
+  );
   const restoreFocus = (event: Event) => {
     event.preventDefault();
     trigger.current?.focus();
@@ -51,6 +61,13 @@ export function ClientProfileActions({ client }: { client: Client }) {
             </DropdownMenu.Item>
             <DropdownMenu.Item
               className={styles.menuItem}
+              disabled={!exportable}
+              onSelect={() => setAction("export")}
+            >
+              Export client profile JSON
+            </DropdownMenu.Item>
+            <DropdownMenu.Item
+              className={styles.menuItem}
               disabled={!archivable}
               onSelect={() => setAction("archive")}
             >
@@ -66,6 +83,14 @@ export function ClientProfileActions({ client }: { client: Client }) {
           if (!open) setAction(null);
         }}
         onSaved={() => setAction(null)}
+        onCloseAutoFocus={restoreFocus}
+      />
+      <ClientProfileExport
+        clientId={client.id}
+        open={action === "export"}
+        onOpenChange={(open) => {
+          if (!open) setAction(null);
+        }}
         onCloseAutoFocus={restoreFocus}
       />
       {action === "archive" && (

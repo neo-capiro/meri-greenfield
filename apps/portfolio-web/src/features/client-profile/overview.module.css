@@ -26,22 +26,35 @@
   align-items: center;
 }
 .pulse:global(.card) {
-  background: var(--dark-gradient);
-  color: white;
-  border-color: #242424;
+  padding: 16px 20px;
 }
-.pulse small,
-.pulse :global(.eyebrow) {
-  color: #aaa29c;
+.pulse h2 {
+  font-size: 14px;
+  letter-spacing: -0.07px;
+}
+.pulse a {
+  font-size: 13px;
+}
+.pulse small {
+  color: var(--muted-foreground);
 }
 .pulseGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 16px;
+  gap: 10px;
+  margin-top: 10px;
+}
+.pulseGrid > div {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 .pulseGrid strong {
   font-size: 22px;
+  letter-spacing: -0.44px;
+  line-height: 1.2;
 }
 .timeline {
   list-style: none;
