@@ -1,17 +1,17 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 06:07 UTC: **G0 accepted / G1 OPEN;
-eight gates total, G2Ã¢â‚¬â€œG7 unentered.** G1 still has substantial live verification
+Current continuation, 11 October 2026 06:13 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
 
 The repaired isolated Linux run established a genuine Prisma TLS 1.3 connection
 with a non-owner application role. The overall run FAILED: the wrong-CA case
 returned a generic engine connection error without specific certificate-rejection
-evidence. Wrong-SAN, plaintext and wrong-password checks remain UNRUN. Root
-verified the complete returned bundle and positive absence of all six owned
-containers and the network, runner-reported private-file destruction and the
-original cleanup deadline. Distinct actual DATA review is accepted within that scope. The earlier AttributeError
-failure is preserved; neither consumed reservation will be retried.
+evidence. Wrong-SAN, plaintext and wrong-password checks remain UNRUN. Root and
+an independent Codex reviewer verified the complete returned bundle and positive
+absence of all six owned containers and the network, runner-reported private-file
+destruction and the original cleanup deadline. The earlier AttributeError failure
+is preserved; neither consumed reservation will be retried.
 
 The narrow stream fixes pass 15 peer and 32 canonical native-auth controls plus
 independent source reviews. Combined native schema/auth source is integrated but
@@ -41,7 +41,7 @@ no cutover is approved. [Owner evidence](reports/CODEX-G1-ACTUAL-ABI-AND-DISCOVE
 limits. Earlier dated checkpoints are historical.
 
 Historical continuation, 11 October 2026 05:12 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The new isolated Linux qualification
+eight deployment gates, G2–G7 unentered.** The new isolated Linux qualification
 experiment SUCCEEDED: genuine community LiteLLM application import, offline
 Prisma generation and positive removal of the exact owned test container are
 independently reviewed and owner accepted within that scope. The same-version
@@ -83,7 +83,7 @@ disabled, current Meri/Capiro is untouched, and no cutover is approved. [Owner e
 records exact evidence and limitations. Earlier dated checkpoints are historical.
 
 Historical continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
-eight deployment gates, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unentered.** The second actual Linux experiment
+eight deployment gates, G2–G7 unentered.** The second actual Linux experiment
 built the community proxy image and completed genuine offline Prisma generation.
 All four concrete generated engine paths/hashes match the accepted pins. The
 genuine application import then FAILED with OSError at soundfile.py:192. The
@@ -119,7 +119,7 @@ location/owner for75 real requests is still awaited. Sources stay disabled,
 current Meri is untouched, and no plan departure or cutover is approved.
 
 Historical continuation,10 October2026 23:20Z: **eight deployment gates total;
-G0 accepted, G1 active/OPEN, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 not entered.** The first actual SDK native
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The first actual SDK native
 loopback fixture and physical cleanup remain independently accepted; interruption,
 replacement and resume remain open. The [123-package proxy install](reports/CODEX-G1-PROXY-NATIVE-Q3.md)
 passed offline, but its installed-byte freeze failed on the unchanged128MiB file
@@ -143,7 +143,7 @@ remain OPEN, Office DEFERRED, sources disabled, current Meri untouched and model
 spending$0/$10. The75 approved real requests await the promised location/owner.
 
 Historical continuation,10 October2026 22:52Z: **eight deployment gates total;
-G0 accepted, G1 active/OPEN, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 not entered.** The [first actual SDK experiment](reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [first actual SDK experiment](reports/CODEX-G1-SDK-NATIVE-WIRE-OWNER.md)
 is now [independently reviewed](reports/CODEX-G1-SDK-NATIVE-WIRE-INDEPENDENT.md)
 and owner accepted for the exact native loopback fixture and physical cleanup:
 one roleless Fargate task, worker exit0, complete1227-event history and full
@@ -161,7 +161,7 @@ Office DEFERRED. Codex-only parallel work continues; source connections disabled
 currentMeri untouched/no cutover and inference$0/$10. Older entries are historical.
 
 Historical continuation,10 October2026 22:10Z: **eight deployment gates total;
-G0 accepted, G1 active/OPEN, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 not entered.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+G0 accepted, G1 active/OPEN, G2–G7 not entered.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records owner-accepted exact SDK immutableversion:1 with no Start authority;
 the original publisherexit1/consumed reservations remain. All45 actual readonly
 authority captures completed, but canonical UTF-8 parsing refuses the real scan
@@ -178,7 +178,7 @@ The75 real-request approved location/owner remains pending the human's follow-up
 Dated observations below are historical, including superseded source holds.
 
 Historical continuation,10 October2026 21:12Z: **eight deployment gates total;
-G0 accepted, G1 active, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 not started.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
+G0 accepted, G1 active, G2–G7 not started.** The [current checkpoint](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md)
 records independently accepted proxy cancellation SOURCE and exact SDK name/helper
 reviews. The actual revision update returned no revisionId; its attempt is consumed
 UNKNOWN/no retry and publication/native launch remain held. Browser source2 has
@@ -191,11 +191,11 @@ is accepted offline; complete UI integration is later work. Current Meri/Capiro
 untouched, source connections disabled, no cutover and inference$0/$10. Dated
 entries below are historical.
 
-Parallel Codex checkpoint,10 October2026 20:22Z: [four-session integration](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md) independently accepts repaired browser containment SOURCE (25 canonical/eight unchanged controls), with the literal admission guard and root-absence block intact. Exact new SDK role/state-machine deployment is CREATE_COMPLETE/full readback; publication/native launch are HELD on initial null revision and a separately repaired execution-name mismatch. Proxy ASGI lifetime candidate is blocked by independent cancellation witnesses; author tests do not grant acceptance. Actual SDK/proxy/browser/runtime/contract/cohort gates remain OPEN. G0 planning accepted, G1 active, G2ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“G7 unrun; source connectivity disabled, inference$0/$10 and current Meri/Capiro untouched. Earlier dated checkpoints below are historical.
+Parallel Codex checkpoint,10 October2026 20:22Z: [four-session integration](reports/CODEX-G1-PARALLEL-SESSION-CHECKPOINT.md) independently accepts repaired browser containment SOURCE (25 canonical/eight unchanged controls), with the literal admission guard and root-absence block intact. Exact new SDK role/state-machine deployment is CREATE_COMPLETE/full readback; publication/native launch are HELD on initial null revision and a separately repaired execution-name mismatch. Proxy ASGI lifetime candidate is blocked by independent cancellation witnesses; author tests do not grant acceptance. Actual SDK/proxy/browser/runtime/contract/cohort gates remain OPEN. G0 planning accepted, G1 active, G2–G7 unrun; source connectivity disabled, inference$0/$10 and current Meri/Capiro untouched. Earlier dated checkpoints below are historical.
 
 Parallel Codex checkpoint,10 October2026 19:35Z: repaired proxy ingress is independently accepted for source behavior (22 canonical/14 independent controls); trusted live ingress and continuous revocation remain OPEN. SDK-only inert proposal and staging executor are separately reviewed; one immutable definition upload and one pending CREATE change set are reconciled, with exactly two ADDs and stack REVIEW_IN_PROGRESS. No execute, publication, SDK task or browser host has occurred from this staging. Browser managed teardown is an unaccepted partial candidate under independent review. All49 current/five older security findings remain OPEN, Office DEFERRED, inference$0/$10 and G1 OPEN. See the [owner integration checkpoint](reports/CODEX-G1-PARALLEL-INTEGRATION.md); dated observations below are retained.
 
-Final Figma reference is [structurally reconciled](reports/CODEX-FIGMA-FINAL-INVENTORY.md): Meri now sits under02 Ãƒâ€šÃ‚Â· Meri, with182 classified rows plus seven original Settings frames relocated intact elsewhere on the same page. All189 original IDs remain represented, with no silent capability deferral. This metadata refresh does not establish whole-UI implementation; final Home visual/responsive acceptance remains the separate bounded frontend result below.
+Final Figma reference is [structurally reconciled](reports/CODEX-FIGMA-FINAL-INVENTORY.md): Meri now sits under02 · Meri, with182 classified rows plus seven original Settings frames relocated intact elsewhere on the same page. All189 original IDs remain represented, with no silent capability deferral. This metadata refresh does not establish whole-UI implementation; final Home visual/responsive acceptance remains the separate bounded frontend result below.
 
 Current frontend ownership checkpoint, 10 October 2026: [capiro-frontend@28c300093c0886018c49df8764a8e6fac44819eb](https://github.com/neo-capiro/capiro-frontend/tree/28c300093c0886018c49df8764a8e6fac44819eb) is the accepted offline shared frontend baseline after independent public-package, responsive Home and guard repairs. Canonical `apps/web`, public UI/client and both qualification packages are there; this backend removes only the 44 obsolete UI qualification files, with [exact mapping and retained history](reports/CODEX-FRONTEND-BACKEND-CLEANUP.md). Backend frozen public contracts/trusted producer remain intact. The human finalized Figma; final Home presentation/responsive layout are independently accepted offline, including disabled Browse workflows. No live backend/source/identity connection or product deployment is enabled. G1 OPEN and later release gates remain unchanged. The earlier checkpoints below retain their dated facts and qualifications.
 

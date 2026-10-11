@@ -1,8 +1,8 @@
 # Actual ABI DATA and discovery source acceptance
 
-## Native TLS positive observed; certificate rejection remains unproven â€” 11 October 2026 06:05 UTC
+## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 06:05 UTC
 
-G0 accepted/G1OPEN; G2â€“G7unentered. All current source acceptances are scoped,
+G0 accepted/G1OPEN; G2-G7unentered. All current source acceptances are scoped,
 not security/runtime/G1 admission. Current Meri/Capiro is untouched, sources
 remain disabled, Bedrock inference$0/$10 and no cutover is approved.
 
@@ -27,7 +27,7 @@ review. Seven fresh canonical authority captures match prior accepted authority
 (excludingRoleLastUsed telemetry only); twelve invocation pins stable. No ECRpush,
 model/provider/source/customer action was authorized by this diagnostic admission.
 
-Actual05:58:49.006â€“06:02:05.304UTC terminalFAILED/buildCompletetrue/retry0.
+Actual05:58:49.006-06:02:05.304UTC terminalFAILED/buildCompletetrue/retry0.
 Image sha256:377282cb17a8cfe2a68adac8b96b216794b7360cac734e67d6206e20bf70f489.
 Run4b6399ff-bfd6-40c8-bfef-4dff07be6bbe T0=1791698480579,
 start+60000/work+300000/cleanup+330000/C+900000; ended1791698508272.
@@ -61,21 +61,21 @@ license/codec/denied-import-socket warnings or actual provider-budget requiremen
 
 Current independent SOURCE acceptances now also include:
 
-- SDK interruption driveraee1â†’c57fbb4:56finite refs,18rootcontrols/help0/missing2;
-  loopback24f9808â†’53ea22a/599650f:137refs/rawGit,16rootinjectedcontrols/help0/missing2.
+- SDK interruption driveraee1-c57fbb4:56finite refs,18rootcontrols/help0/missing2;
+  loopback24f9808-53ea22a/599650f:137refs/rawGit,16rootinjectedcontrols/help0/missing2.
   Exact earlier PhaseA user history must precede resumed response. No real transport/
   SDK recovery executed. Packaging checkpoint plus canonical scanner dependencies
   is a bounded Codex task; durable checkpoint/fencing/two-task composition remains.
-- Combined native schema/auth40c98â†’9b93365/f205c51:82finite refs/rawimplementationGit,
+- Combined native schema/auth40c98-9b93365/f205c51:82finite refs/rawimplementationGit,
   two documentation finalCRLF differences explicitly reconciled,8composition+11TLS
   rootchecks and separate source review. Sole import conflict retained exact digest
   predicate plus owner_url. Actual fiveTLScontrols/schema/grants/ownerrevocation
   must pass before native activation, all inside unchanged original clock.
-- Browser bootstrap555084f8â†’7dad3c6:1117refs/rawGit,13rootinertcontrols and distinct
+- Browser bootstrap555084f8-7dad3c6:1117refs/rawGit,13rootinertcontrols and distinct
   review; childclosure98857a3dd0230911cf5407f54b247c2df20e935ba03229fd9c3e0609172274ce.
   Canonical aws_evidence service pagingd41e587 permits --no-paginate only exact
   get-execution-history;3new+10oldrootcontrols pass, other defaults unchanged.
-- Browser parent supervisionf8e3b08â†’2201364:1076refs/rawGit+distinct source review;
+- Browser parent supervisionf8e3b08-2201364:1076refs/rawGit+distinct source review;
   sourceclosurea41bc30ca21f9c9297dcedb5543f03b76dc092dc5473e9c70a037039f42ab2fd.
   Unchanged accepted process/Job reused; author16+4source1/2source2budgetcontrols
   are accurately version-bound. Parent expiry/drift rechecked after runner return;
@@ -91,7 +91,7 @@ fullW05/product/HA/restore/deployment remain. OfficeDEFERRED;75approvedrealreque
 location/owner still awaited. No existing Meri cleanup/cutover outside the new
 backend scope occurred. Earlier dated entries below remain historical.
 
-## Supervisor source accepted; native TLS and timestamp work â€” 11 October 2026 05:12 UTC
+## Supervisor source accepted; native TLS and timestamp work — 11 October 2026 05:12 UTC
 
 G1 remains OPEN. Root independently verified exact clean commits, raw owned Git
 and finite sealed references: Prisma TLS DATA4fa4672 (104 files), supervisor
@@ -149,12 +149,12 @@ must compose/measure actual initialization under a separate owner before app
 nonowner startup. The PG TLS source is awaiting review, and finite browser
 publication/history composition and SDK interruption/resume source are parallel
 Codex tasks. No operational T0, fixture volume, browser host, DB, provider request
-or cutover occurred. E4 import acceptance is unchanged; inference remains$0/$10. G2â€“G7 are
+or cutover occurred. E4 import acceptance is unchanged; inference remains$0/$10. G2–G7 are
 unentered, sources disabled, all49 current plus5 older findings OPEN, Office
 DEFERRED,75 approved real requests still awaited. These source checks do not
 replace live qualification, operation-specific REL-02 or measured cohorts.
 
-## Genuine Linux import accepted; inert browser fixture deployed â€” 11 October 2026 04:40 UTC
+## Genuine Linux import accepted; inert browser fixture deployed — 11 October 2026 04:40 UTC
 
 G1 remains OPEN. Current Meri/Capiro is untouched; separate Fargate app/control
 placement, the full SDK and the approved dedicated browser-host exception remain.
@@ -179,7 +179,7 @@ the unchanged reviewed runner/inline recipe and source
 `6dbdef02c31b60898ad1720e55b8f414d12ee330`.
 
 Actual build `meri-greenfield-qualification-build:1acf96ad-8550-47ce-a02f-301cf7e0e1dc`
-ran04:26:15.649â€“04:28:48.696UTC, terminalSUCCEEDED/buildComplete=true.
+ran04:26:15.649–04:28:48.696UTC, terminalSUCCEEDED/buildComplete=true.
 Source version `cJInCKTPX8gZ7_wQJVTaB_vUK94pvHzo`; result version
 `l6mVSVKesKN2Am24dcoxDcBXwPtMj65U`. Result25359B SHA
 `698d708e3fc2f758e0fb7cda6fdbd5f86499b819a39b3b6624a8487d8932b129`
@@ -234,7 +234,7 @@ SDK interruption/resume, native proxy auth/TLS/usage/revocation/$10, REL-02 and
 measured frozen cohorts remain. All49+five security findings and new-image scans
 remain OPEN, OfficeDEFERRED, inference$0/$10, source connectionsdisabled.
 
-## Actual generation success, import failure and positive cleanup â€” 11 October 2026 04:10 UTC
+## Actual generation success, import failure and positive cleanup — 11 October 2026 04:10 UTC
 
 G1 remains OPEN. The full SDK and separate Fargate application/control placement
 remain required; only the previously approved dedicated browser host is an exception.
@@ -259,14 +259,14 @@ Root E3 is `.task-inputs/proxy-linux-owner-build-3/`. It borrows the exact immut
 E2 ZIP/manifest/runner/recipe and source822193ce; only fresh keys/reservation and
 the reviewed conditional-upload deadline differ. Its UUID is
 `5dc90ae1-5a9b-42e9-a52f-12ddfbf74a60`. The conditional KMS/SHA256 upload succeeded
-03:53:41.938750â€“03:54:55.650040UTC (73.711s), with a complete ACK and exact-version
+03:53:41.938750–03:54:55.650040UTC (73.711s), with a complete ACK and exact-version
 HEAD. Source version is `XcpYp81HgXgS9qS6lBw6lQxWAa80lJeC`. Fresh canonical
 caller/project/KMS/role/trust/policy evidence matches approved qualification
 authority; no managed policies or environment secret values were supplied.
 
 The one actual build is
 `meri-greenfield-qualification-build:b32822ce-9ccf-405a-b5dd-f0c9740dda56`,
-03:55:00.035â€“03:57:58.784UTC, terminal FAILED/COMPLETED, retry limit/number0.
+03:55:00.035–03:57:58.784UTC, terminal FAILED/COMPLETED, retry limit/number0.
 Docker build itself exited0, and image ID is
 `sha256:dd6fbf9f0d48377e33592f4767f5d1da54aeb18d3c571b8c753bf32be7e763a2`.
 The complete build log emits genuine generated-client observations, a real class
@@ -322,7 +322,7 @@ Temporal design is accepted; later deployment/restore work remains. Inference is
 $0/$10,75 approved real-request location/owner is awaited, sources remain disabled,
 current Meri is untouched and cutover remains unapproved.
 
-## Cache repair acceptance and pre-build upload failure â€” 11 October 2026 03:45 UTC
+## Cache repair acceptance and pre-build upload failure — 11 October 2026 03:45 UTC
 
 Root independently accepted and integrated these closed sessions:
 
@@ -362,9 +362,9 @@ caller/project/KMS/role/trust/inline policy/no attached policies, with0 mutation
 
 The admitted dispatcher reserved NEW UUIDe1c11eb9-4d6c-4683-9a36-2488609e5901,
 then attempted one conditional KMS/SHA256 input PutObject. Actual capture timed
-out at60s,03:40:46.656â€“03:41:46.695UTC, with empty binary stdout/stderr and no ACK.
+out at60s,03:40:46.656–03:41:46.695UTC, with empty binary stdout/stderr and no ACK.
 The invocation has no StartBuild-attempted marker or acknowledged build handle.
-A separate canonical read-only HeadObject at03:42:04â€“06UTC returned254/404
+A separate canonical read-only HeadObject at03:42:04–06UTC returned254/404
 Not Found, zero automatic retries, for that exact key. This is the actual absence
 observation at that time; it is not an upload success or permission to rerun the
 consumed dispatcher. No second build/container/database/provider/ECR action ran.
@@ -380,7 +380,7 @@ attempt will require exact source/closure pins, current authority and deliberate
 root admission; no automatic retry/reset is authorized. G1 remains OPEN,$0/$10,
 current Meri untouched and no cutover.
 
-## Independent failure review and engine recovery â€” 11 October 2026 03:18 UTC
+## Independent failure review and engine recovery — 11 October 2026 03:18 UTC
 
 Root independently verified and integrated three closed report-only sessions:
 
@@ -427,7 +427,7 @@ runner/recipe are reused by bytes; a new source/context/archive/attempt is still
 required before any second build. G1 OPEN, all security/Office/native gates and
 full plan unchanged, inference$0/$10, current Meri untouched.
 
-## Actual first Linux build â€” 11 October 2026 03:05 UTC
+## Actual first Linux build — 11 October 2026 03:05 UTC
 
 Root admitted one bounded build/import experiment after independent source,
 recipe and owner-dispatch reviews, exact artifact/ZIP checks and pre-invocation
@@ -435,7 +435,7 @@ source/runtime pins. [Dispatch review](CODEX-G1-PROXY-LINUX-OWNER-DISPATCH-REVIE
 is integrated at1d73214. This is qualification evidence; no runtime is admitted.
 
 CodeBuild `meri-greenfield-qualification-build:0e9dac8a-b69b-408e-af11-77dfc66f8655`
-ran03:00:16â€“03:01:21UTC and is terminal **FAILED / COMPLETED**, retry limit/number
+ran03:00:16–03:01:21UTC and is terminal **FAILED / COMPLETED**, retry limit/number
 both0. The exact source S3 version is`z0F24xm0e_69De0JgKZ_bqPVCJaZSVyv`.
 Fresh STS/full project comparisons passed; upload/versioned HEAD checksum/KMS,
 actual ACK and terminal source/environment/role/cache/log/secondary-source
@@ -475,9 +475,9 @@ The first reservation and result stay consumed/preserved. Distinct actual-DATA
 review and official Linux PostgreSQL17.11 artifact discovery continue in parallel.
 No gate advanced; model spend$0/$10, sources disabled and no cutover.
 
-## Owner continuation â€” 11 October 2026 02:58 UTC
+## Owner continuation — 11 October 2026 02:58 UTC
 
-G0 accepted; G1 OPEN; G2â€“G7 unentered. Root independently reviewed and integrated
+G0 accepted; G1 OPEN; G2–G7 unentered. Root independently reviewed and integrated
 the following exact source/data sessions. None admits a new runtime or closes G1.
 
 | Author commit | Integration | Scope |
@@ -529,7 +529,7 @@ attempts, native fixture consumes and security holds remain unchanged. G1 is OPE
 Office DEFERRED, sources disabled, model spend$0/$10 and no cutover authorized.
 
 Integration-owner checkpoint, 11 October 2026 01:37 UTC. G0 remains accepted;
-G1 is active and OPEN; G2â€“G7 are unentered. Research supplied by the human helps
+G1 is active and OPEN; G2–G7 are unentered. Research supplied by the human helps
 sequence the work but authorizes no departure from the deployment plan. Full
 Claude Agent SDK responsibilities, W05 SessionStore and Fargate workers remain
 required, with the previously approved dedicated isolated browser host.
@@ -567,7 +567,7 @@ dispatch refused. This was diagnostic execution, never an image binary.
 
 Root verified 1,077 preparation record occurrences, exact Git and five copied
 canonical sources, then issued a new closed 600-second admission and dispatched
-the fixed outer2 once. At 01:26:45â€“01:26:58 UTC the outer PID41676 exited0 in
+the fixed outer2 once. At 01:26:45–01:26:58 UTC the outer PID41676 exited0 in
 12.609 seconds and inner PID20684 exited0 in12.406 seconds. Both Jobs were empty,
 readers finished, cleanup/source checks passed and no timeout/capture/cleanup
 error was recorded. Original consumed namespaces were never reset.
@@ -661,7 +661,7 @@ candidate-exit receipt exists. Current identities were reverified. A shell
 sequence applied the source cherry-pick after the first salvage refusal; this
 coordination mistake is retained, and no action occurred until final pack review.
 
-The two design reports (2bdc11aâ†’02cc79a and c944da2â†’0207f70) passed111 root
+The two design reports (2bdc11a→02cc79a and c944da2→0207f70) passed111 root
 sealed-record checks plus exact Git. They are bounded implementation proposals,
 not native SDK or browser activation authority. The tools registration candidate
 087fc1f (12 reported offline checks) and browser bootstrap candidate d3c25af
@@ -679,7 +679,7 @@ refusal, corrected without changing an operational helper; its specific atime
 cause is inferred, not proved. Old seals and raw report bytes remain intact.
 
 Root issued a separate fresh600-second offline-only admission and ran outer3
-once. At01:51:36â€“01:51:45 UTC, outerPID43568 exited0 in9.235s and innerPID45748
+once. At01:51:36–01:51:45 UTC, outerPID43568 exited0 in9.235s and innerPID45748
 exited0 in9.046s. Both Jobs were empty, readers/source checks completed, no
 timeout/capture/cleanup error occurred and admission remained stable. No image
 binary, Node/engine, SDK/proxy/database/cloud/provider or Docker ran.
@@ -690,7 +690,7 @@ Root independently reconciled1,543 record occurrences and all242 CAS objects
 (184666866B):280 selected paths,249 files/21 directories/10 links,23 decoded ELFs,
 23 compressed descriptors and reported expanded identity/byte totals, nested
 raw receipts/streams/admissions/consumes/source freezes and retained prior files.
-No archive scan was repeated by this review. Node is now parsed, lib64â†’usr/lib
+No archive scan was repeated by this review. Node is now parsed, lib64→usr/lib
 and the motley regular zlib target are observed DATA. The seven remaining HOLDs
 are five unselected Node dependency families (libbrotlienc.so.1, libcrypto.so.4,
 libssl.so.4, libicui18n.so.78, libicuuc.so.78), missing package identity/license
@@ -710,7 +710,7 @@ Additional root proofs under ignored `.task-inputs/`:
 | abi-v2-preparation-owner-review-2/decision.json | 621679 | `2c75c46e30e1cb7fe924abd213487635f46801976736eaa70f88eec62c71416e` |
 | actual-abi-v2-owner-review-1/decision.json | 441115 | `2f39a45285dd85f0861cbb79620c194ae3f5508e00672f1ec6dc02d6ae141a86` |
 
-G0 accepted/G1 OPEN/G2â€“G7 unentered. Full SDK/W05 SessionStore, native checkpoint/
+G0 accepted/G1 OPEN/G2–G7 unentered. Full SDK/W05 SessionStore, native checkpoint/
 workspace/storage/fencing/replacement, actual-proxy discovery/auth/accounting,
 community Linux/package/notices, browser wire/IAM/KMS/physical absence/sandbox/
 egress, Office/security and measured cohorts remain required. All49+five findings
@@ -785,4 +785,4 @@ disposable-PostgreSQL authentication path, with a bounded primary-source
 discovery session active. No further Windows package install is allocated.
 Full SDK/Fargate/W05 scope, isolated environment, existing browser-host exception,
 all security holds, disabled source connections and $0/$10 spend remain unchanged.
-G0 is accepted, G1 remains OPEN and G2â€“G7 are unentered.
+G0 is accepted, G1 remains OPEN and G2–G7 are unentered.
