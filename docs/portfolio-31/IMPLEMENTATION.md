@@ -355,3 +355,14 @@ Linking does not charge, create a client or claim asset carry-over. New-client
 conversion stays separate until inline billing and durable carry-over are
 integrated. Verify search encoding, pending refusal, failures, mismatched
 receipts, permissions, expiry and lost-reply readback in the actual components.
+
+## Reviewed facility candidate concurrency — 11 October 2026
+
+The backend owns a semantic snapshot revision and atomic persistence guard shared
+by reviewed selection and asynchronous geocode writers. The frontend consumes
+the server revision associated with the displayed candidates and sends it only
+to the new reviewed route. It must refuse selection when the old service lacks
+that contract; it cannot reconstruct hidden snapshot fields or fall back to an
+unchecked candidate index. Existing query invalidation reloads candidates after
+a failed or ambiguous selection. Verify missing support, explicit conflict and
+read-back, exact revision payload, and old-route refusal in component tests.

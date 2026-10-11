@@ -7,7 +7,12 @@ import { profileKey } from "./queries";
 
 export type FacilityAction =
   | { kind: "resolve-district" | "geocode"; facilityId: string }
-  | { kind: "geocode-candidate"; facilityId: string; candidateIndex: number }
+  | {
+      kind: "geocode-candidate";
+      facilityId: string;
+      candidateIndex: number;
+      expectedRevision: string;
+    }
   | { kind: "remove"; facilityId: string };
 export function useFacilityAction(clientId: string) {
   const api = useApi();
@@ -26,7 +31,7 @@ export function useFacilityAction(clientId: string) {
       }
       return api.request(
         "core",
-        `${path}/${action.kind}`,
+        `${path}/${action.kind === "geocode-candidate" ? "geocode-candidate/reviewed" : action.kind}`,
         facilitySchema.refine(
           (facility) =>
             facility.clientId === clientId && facility.id === action.facilityId,
@@ -35,7 +40,10 @@ export function useFacilityAction(clientId: string) {
           method: "POST",
           body:
             action.kind === "geocode-candidate"
-              ? { candidateIndex: action.candidateIndex }
+              ? {
+                  candidateIndex: action.candidateIndex,
+                  expectedRevision: action.expectedRevision,
+                }
               : undefined,
         },
       );
@@ -46,6 +54,13 @@ export function useFacilityAction(clientId: string) {
           cache.invalidateQueries({ queryKey: profileKey(clientId, section) }),
         ),
       );
+    },
+    onError: async (_error, action) => {
+      if (action.kind === "geocode-candidate") {
+        await cache.invalidateQueries({
+          queryKey: profileKey(clientId, "facilities"),
+        });
+      }
     },
   });
 }

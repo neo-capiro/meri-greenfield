@@ -44,6 +44,11 @@ export function FacilityGeocoding({
       {facility.geocodeCandidates?.length ? (
         <fieldset className={styles.candidates}>
           <legend>Choose a Census address</legend>
+          {!facility.geocodeCandidateRevision && (
+            <p className="muted">
+              Reviewed address selection is unavailable from this service.
+            </p>
+          )}
           {facility.geocodeCandidates.map((candidate, candidateIndex) => (
             <div className={styles.candidate} key={candidateIndex}>
               <span>
@@ -54,14 +59,20 @@ export function FacilityGeocoding({
               </span>
               <button
                 className="button"
-                disabled={mutation.isPending || !candidate.matchedAddress}
-                onClick={() =>
+                disabled={
+                  mutation.isPending ||
+                  !candidate.matchedAddress ||
+                  !facility.geocodeCandidateRevision
+                }
+                onClick={() => {
+                  if (!facility.geocodeCandidateRevision) return;
                   mutation.mutate({
                     kind: "geocode-candidate",
                     facilityId: facility.id,
                     candidateIndex,
-                  })
-                }
+                    expectedRevision: facility.geocodeCandidateRevision,
+                  });
+                }}
               >
                 Use this address
               </button>

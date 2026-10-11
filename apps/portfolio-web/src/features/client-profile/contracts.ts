@@ -41,6 +41,10 @@ export const facilitySchema = z.object({
   geocodeLastError: z.string().nullable().optional(),
   geocodeNextAttemptAt: z.string().nullable().optional(),
   geocodeAttemptCount: z.number().int().nullable().optional(),
+  geocodeCandidateRevision: z
+    .string()
+    .regex(/^v1:[0-9a-f]{64}$/)
+    .optional(),
   geocodeCandidates: z
     .array(
       z.object({

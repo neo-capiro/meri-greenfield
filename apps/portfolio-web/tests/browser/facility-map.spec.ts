@@ -224,6 +224,7 @@ test("candidate index, district resolution, queued retry and failure messages st
     latitude: null,
     longitude: null,
     geocodeStatus: "ambiguous",
+    geocodeCandidateRevision: `v1:${"a".repeat(64)}`,
     geocodeCandidates: [
       {
         matchedAddress: "1 TEST ST, LOS ANGELES, CA 90001",
@@ -240,12 +241,20 @@ test("candidate index, district resolution, queued retry and failure messages st
     ]),
   );
   await page.route(
-    `**/clients/${clientId}/facilities/${facility.id}/*`,
+    `**/clients/${clientId}/facilities/${facility.id}/**`,
     async (route) => {
       const action = new URL(route.request().url()).pathname.split("/").at(-1);
       expect(route.request().method()).toBe("POST");
-      if (action === "geocode-candidate") {
-        expect(route.request().postDataJSON()).toEqual({ candidateIndex: 0 });
+      if (action === "reviewed") {
+        expect(
+          new URL(route.request().url()).pathname.endsWith(
+            "/geocode-candidate/reviewed",
+          ),
+        ).toBe(true);
+        expect(route.request().postDataJSON()).toEqual({
+          candidateIndex: 0,
+          expectedRevision: ambiguous.geocodeCandidateRevision,
+        });
         chosen = true;
         return json(route, facility);
       }
@@ -282,6 +291,116 @@ test("candidate index, district resolution, queued retry and failure messages st
   await expect(detail.getByRole("status")).toContainText("Retry requested");
   expect(queued).toBe(true);
   await page.screenshot({ path: "test-results/facility-geocoding-detail.png" });
+  expect(unexpected).toEqual([]);
+});
+
+test("reviewed candidate selection refuses a service without a snapshot revision", async ({
+  page,
+}) => {
+  const unexpected = await mapFixtures(page);
+  await page.route(`**/clients/${clientId}/facilities`, (route) =>
+    json(route, [
+      {
+        ...facility,
+        geocodeCandidates: [
+          {
+            matchedAddress: "OLD CANDIDATE",
+            congressionalDistrict: "01",
+            state: "CA",
+            latitude: 34,
+            longitude: -118,
+          },
+        ],
+      },
+    ]),
+  );
+  await page.goto(`/portfolio/${clientId}`);
+  await page
+    .getByRole("button", { name: "Open facility Synthetic lab", exact: true })
+    .click();
+  const detail = page.getByRole("dialog", {
+    name: "Synthetic lab · CA-01",
+    exact: true,
+  });
+  await expect(
+    detail.getByText(
+      "Reviewed address selection is unavailable from this service.",
+    ),
+  ).toBeVisible();
+  await expect(
+    detail.getByRole("button", { name: "Use this address", exact: true }),
+  ).toBeDisabled();
+  expect(unexpected).toEqual([]);
+});
+
+test("a candidate conflict reloads the displayed snapshot and never falls back to the unchecked route", async ({
+  page,
+}) => {
+  const unexpected = await mapFixtures(page);
+  let writes = 0;
+  const revision = (character: string) => `v1:${character.repeat(64)}`;
+  await page.route(`**/clients/${clientId}/facilities`, (route) =>
+    json(route, [
+      {
+        ...facility,
+        geocodeCandidateRevision: revision(writes === 0 ? "a" : "b"),
+        geocodeCandidates: [
+          {
+            matchedAddress:
+              writes === 0 ? "FIRST CANDIDATE" : "REVIEW NEW CANDIDATE",
+            congressionalDistrict: "01",
+            state: "CA",
+            latitude: 34,
+            longitude: -118,
+          },
+        ],
+      },
+    ]),
+  );
+  await page.route(
+    `**/clients/${clientId}/facilities/${facility.id}/geocode-candidate/reviewed`,
+    (route) => {
+      expect(route.request().method()).toBe("POST");
+      expect(route.request().postDataJSON()).toEqual({
+        candidateIndex: 0,
+        expectedRevision: revision(writes === 0 ? "a" : "b"),
+      });
+      writes++;
+      return json(
+        route,
+        {
+          message:
+            writes === 1
+              ? "Candidates changed; review the current result."
+              : "Reviewed route unavailable",
+        },
+        writes === 1 ? 409 : 404,
+      );
+    },
+  );
+  await page.goto(`/portfolio/${clientId}`);
+  await page
+    .getByRole("button", { name: "Open facility Synthetic lab", exact: true })
+    .click();
+  const detail = page.getByRole("dialog", {
+    name: "Synthetic lab · CA-01",
+    exact: true,
+  });
+  await detail
+    .getByRole("button", { name: "Use this address", exact: true })
+    .click();
+  await expect(detail.getByRole("alert")).toContainText("Candidates changed");
+  await expect(detail).toContainText("REVIEW NEW CANDIDATE");
+  await expect(detail).not.toContainText("FIRST CANDIDATE");
+  expect(writes).toBe(1);
+  await detail
+    .getByRole("button", { name: "Use this address", exact: true })
+    .click();
+  await expect(detail.getByRole("alert")).toContainText(
+    "Reviewed route unavailable",
+  );
+  expect(writes).toBe(2);
+  await expect(detail).toBeVisible();
   expect(unexpected).toEqual([]);
 });
 test("removal requires confirmation and does not close after a rejected delete", async ({
