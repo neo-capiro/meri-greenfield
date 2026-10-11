@@ -1,0 +1,24 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "OfficeTaskDefinition",
+            "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-office:2",
+            "ResourceType": "AWS::ECS::TaskDefinition",
+            "LastUpdatedTimestamp": "2026-10-10T14:24:05.259000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "SdkTaskDefinition",
+            "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2",
+            "ResourceType": "AWS::ECS::TaskDefinition",
+            "LastUpdatedTimestamp": "2026-10-10T14:24:05.153000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

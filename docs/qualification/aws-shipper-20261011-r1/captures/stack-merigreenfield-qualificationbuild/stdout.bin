@@ -1,0 +1,65 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationBuild/e5fac410-c415-11f1-a2f2-0afff1204785",
+            "StackName": "MeriGreenfield-QualificationBuild",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/context-8191fd7-20261009/777f6b0b-a603-4713-9dd4-c7f105837f7f",
+            "Description": "New isolated Meri qualification build resources; no source access",
+            "CreationTime": "2026-10-09T19:16:15.844000+00:00",
+            "LastUpdatedTime": "2026-10-09T19:35:02.626000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "UPDATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "SourceBucket",
+                    "OutputValue": "meri-greenfield-qual-build-967807252336-us-east-1"
+                },
+                {
+                    "OutputKey": "BuildProject",
+                    "OutputValue": "meri-greenfield-qualification-build"
+                },
+                {
+                    "OutputKey": "RepositoryName",
+                    "OutputValue": "meri-greenfield/qualification-worker"
+                },
+                {
+                    "OutputKey": "RepositoryUri",
+                    "OutputValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "UPDATE_STACK",
+                    "OperationId": "e1d785fa-32a6-46b0-a911-7ed882e2ac5d"
+                }
+            ]
+        }
+    ]
+}

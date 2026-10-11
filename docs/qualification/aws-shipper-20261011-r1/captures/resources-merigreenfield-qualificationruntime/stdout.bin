@@ -1,0 +1,284 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "AllowedDns",
+            "PhysicalResourceId": "rslvr-fdl-e9debe05ecc1478d",
+            "ResourceType": "AWS::Route53Resolver::FirewallDomainList",
+            "LastUpdatedTimestamp": "2026-10-09T20:52:47.204000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BlockedDns",
+            "PhysicalResourceId": "rslvr-fdl-c385a87aa13c42d2",
+            "ResourceType": "AWS::Route53Resolver::FirewallDomainList",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:41.406000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ClusterEB0386A7",
+            "PhysicalResourceId": "meri-greenfield-qualification",
+            "ResourceType": "AWS::ECS::Cluster",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:40.132000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "DnsAssociation",
+            "PhysicalResourceId": "rslvr-frgassoc-70f45bda8e8e43ae",
+            "ResourceType": "AWS::Route53Resolver::FirewallRuleGroupAssociation",
+            "LastUpdatedTimestamp": "2026-10-09T20:36:54.850000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "DnsRules",
+            "PhysicalResourceId": "rslvr-frg-32883f486cf249b0",
+            "ResourceType": "AWS::Route53Resolver::FirewallRuleGroup",
+            "LastUpdatedTimestamp": "2026-10-09T20:53:33.494000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "EmptyWorkerRole7C03C4DD",
+            "PhysicalResourceId": "MeriGreenfield-Qualificatio-EmptyWorkerRole7C03C4DD-nOWJZv6LQdqD",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:52.415000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "EndpointSecurityGroupF840B798",
+            "PhysicalResourceId": "sg-030c8a7ce5adea043",
+            "ResourceType": "AWS::EC2::SecurityGroup",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:58.754000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "EndpointSecurityGroupfromMeriGreenfieldQualificationRuntimeWorkerSecurityGroup6B45898C44304A094BB",
+            "PhysicalResourceId": "sgr-0cd09495db631ffc0",
+            "ResourceType": "AWS::EC2::SecurityGroupIngress",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:01.325000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ExecutionRole605A040B",
+            "PhysicalResourceId": "MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:52.505000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ExecutionRoleDefaultPolicyA5B92313",
+            "PhysicalResourceId": "MeriG-Execu-OCuQTWW3UecO",
+            "ResourceType": "AWS::IAM::Policy",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:09.478000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "RuntimeLogKey44F45B96",
+            "PhysicalResourceId": "3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+            "ResourceType": "AWS::KMS::Key",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:52.253000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "RuntimeLogKeyAlias27DA86A7",
+            "PhysicalResourceId": "alias/meri-greenfield/qualification-runtime-logs",
+            "ResourceType": "AWS::KMS::Alias",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:54.957000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "RuntimeLogs92941AA6",
+            "PhysicalResourceId": "/meri-greenfield/qualification/runtime",
+            "ResourceType": "AWS::Logs::LogGroup",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:47.457000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "Task79114B6B",
+            "PhysicalResourceId": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2",
+            "ResourceType": "AWS::ECS::TaskDefinition",
+            "LastUpdatedTimestamp": "2026-10-09T21:54:11.141000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "Vpc8378EB38",
+            "PhysicalResourceId": "vpc-06e1941747e798f0a",
+            "ResourceType": "AWS::EC2::VPC",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:49.082000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcCloudWatchLogs25679485",
+            "PhysicalResourceId": "vpce-057935580d0a956a9",
+            "ResourceType": "AWS::EC2::VPCEndpoint",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:56.428000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcEcrApi2DC95EDF",
+            "PhysicalResourceId": "vpce-0803bf544be06e51f",
+            "ResourceType": "AWS::EC2::VPCEndpoint",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:46.741000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcEcrDocker053FD29B",
+            "PhysicalResourceId": "vpce-0ee3a5130a81353a5",
+            "ResourceType": "AWS::EC2::VPCEndpoint",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:46.503000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcImageLayers1A6FFEBB",
+            "PhysicalResourceId": "vpce-07962a243f84c3591",
+            "ResourceType": "AWS::EC2::VPCEndpoint",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:54.939000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet1RouteTableAssociationC2D6915E",
+            "PhysicalResourceId": "rtbassoc-04a27130d4b50e587",
+            "ResourceType": "AWS::EC2::SubnetRouteTableAssociation",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:55.913000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet1RouteTableD0446D86",
+            "PhysicalResourceId": "rtb-0cdf44d0066d39b23",
+            "ResourceType": "AWS::EC2::RouteTable",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:01.202000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet1Subnet28F09E14",
+            "PhysicalResourceId": "subnet-0864c000b771df32c",
+            "ResourceType": "AWS::EC2::Subnet",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:53.558000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet2RouteTableAssociationD554B536",
+            "PhysicalResourceId": "rtbassoc-0ba09ddd06693d4c0",
+            "ResourceType": "AWS::EC2::SubnetRouteTableAssociation",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:55.944000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet2RouteTableF1532EFF",
+            "PhysicalResourceId": "rtb-0a062faae50d3da2a",
+            "ResourceType": "AWS::EC2::RouteTable",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:01.365000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "VpcisolatedworkerSubnet2SubnetD2755134",
+            "PhysicalResourceId": "subnet-06437dfaae1c217c3",
+            "ResourceType": "AWS::EC2::Subnet",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:53.548000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "WorkerSecurityGroup5529CF0B",
+            "PhysicalResourceId": "sg-0c4e15bec7adeed1a",
+            "ResourceType": "AWS::EC2::SecurityGroup",
+            "LastUpdatedTimestamp": "2026-10-09T20:34:58.082000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "WorkerSecurityGrouptoMeriGreenfieldQualificationRuntimeEndpointSecurityGroup49B4D9274432254A74A",
+            "PhysicalResourceId": "sgr-0bb0f076f8c07c701",
+            "ResourceType": "AWS::EC2::SecurityGroupEgress",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:01.164000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "WorkerSecurityGrouptopl63a5400a4439A7C485D",
+            "PhysicalResourceId": "sgr-01611f0456ad9d760",
+            "ResourceType": "AWS::EC2::SecurityGroupEgress",
+            "LastUpdatedTimestamp": "2026-10-09T20:35:00.452000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

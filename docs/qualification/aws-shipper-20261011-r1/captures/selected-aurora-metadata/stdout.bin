@@ -1,0 +1,22 @@
+[
+    {
+        "identifier": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+        "status": "available",
+        "engine": "aurora-postgresql",
+        "engineVersion": "16.11",
+        "subnetGroup": "capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt",
+        "securityGroups": [
+            {
+                "VpcSecurityGroupId": "sg-059b4e4de0b1dcca5",
+                "Status": "active"
+            }
+        ],
+        "encrypted": true,
+        "public": null,
+        "capacity": {
+            "MinCapacity": 1.0,
+            "MaxCapacity": 16.0
+        },
+        "arn": "arn:aws:rds:us-east-1:967807252336:cluster:capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv"
+    }
+]

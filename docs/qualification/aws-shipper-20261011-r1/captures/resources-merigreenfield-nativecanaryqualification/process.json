@@ -1,0 +1,36 @@
+{
+  "schema": "meri-shipper-extra-read-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "cloudformation",
+    "list-stack-resources",
+    "--stack-name",
+    "MeriGreenfield-NativeCanaryQualification",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+  "startedAt": "2026-10-11T22:25:18.067468+00:00",
+  "endedAt": "2026-10-11T22:25:19.050947+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 0,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 543,
+    "sha256": "e7bdd0f0b8eec228e0632be93c79995cefa90933c3f453228f3818e2d9b1de1e"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

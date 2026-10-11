@@ -1,0 +1,118 @@
+{
+    "clusters": [
+        {
+            "clusterArn": "arn:aws:ecs:us-east-1:967807252336:cluster/meri-greenfield-qualification",
+            "clusterName": "meri-greenfield-qualification",
+            "status": "ACTIVE",
+            "registeredContainerInstancesCount": 0,
+            "runningTasksCount": 0,
+            "pendingTasksCount": 0,
+            "activeServicesCount": 0,
+            "statistics": [
+                {
+                    "name": "runningEC2TasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "runningFargateTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "pendingEC2TasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "pendingFargateTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "runningExternalTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "pendingExternalTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "runningManagedInstancesTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "pendingManagedInstancesTasksCount",
+                    "value": "0"
+                },
+                {
+                    "name": "activeEC2ServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "activeFargateServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "drainingEC2ServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "drainingFargateServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "activeExternalServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "drainingExternalServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "activeManagedInstancesServiceCount",
+                    "value": "0"
+                },
+                {
+                    "name": "drainingManagedInstancesServiceCount",
+                    "value": "0"
+                }
+            ],
+            "tags": [
+                {
+                    "key": "Project",
+                    "value": "meri-greenfield"
+                },
+                {
+                    "key": "aws:cloudformation:stack-name",
+                    "value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "key": "Owner",
+                    "value": "Codex-integration"
+                },
+                {
+                    "key": "aws:cloudformation:stack-id",
+                    "value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "key": "Environment",
+                    "value": "qualification"
+                },
+                {
+                    "key": "aws:cloudformation:logical-id",
+                    "value": "ClusterEB0386A7"
+                },
+                {
+                    "key": "SourcesEnabled",
+                    "value": "false"
+                }
+            ],
+            "settings": [
+                {
+                    "name": "containerInsights",
+                    "value": "disabled"
+                }
+            ],
+            "capacityProviders": [],
+            "defaultCapacityProviderStrategy": []
+        }
+    ],
+    "failures": []
+}

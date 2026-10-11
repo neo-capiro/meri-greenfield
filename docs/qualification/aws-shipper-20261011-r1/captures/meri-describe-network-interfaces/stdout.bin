@@ -1,0 +1,268 @@
+{
+    "NetworkInterfaces": [
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-05cb83616e5709879",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1b",
+            "Description": "VPC Endpoint Interface vpce-0ee3a5130a81353a5",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "12:ff:cc:bf:88:91",
+            "NetworkInterfaceId": "eni-0c7fb6cc9aa576a4a",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-1-202.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.1.202",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-1-202.ec2.internal",
+                    "PrivateIpAddress": "10.80.1.202"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-06437dfaae1c217c3",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az2"
+        },
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-06bb8d6f402eca5b3",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1b",
+            "Description": "VPC Endpoint Interface vpce-0803bf544be06e51f",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "12:ff:f1:19:1e:25",
+            "NetworkInterfaceId": "eni-0940bdfbba3d50d5a",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-1-227.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.1.227",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-1-227.ec2.internal",
+                    "PrivateIpAddress": "10.80.1.227"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-06437dfaae1c217c3",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az2"
+        },
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-0cd414c60914551cb",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1b",
+            "Description": "VPC Endpoint Interface vpce-057935580d0a956a9",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "12:ff:f5:ec:33:f3",
+            "NetworkInterfaceId": "eni-0d99c7ca63e7e0e7b",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-1-212.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.1.212",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-1-212.ec2.internal",
+                    "PrivateIpAddress": "10.80.1.212"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-06437dfaae1c217c3",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az2"
+        },
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-08062c6d1874eb683",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1a",
+            "Description": "VPC Endpoint Interface vpce-0803bf544be06e51f",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:ff:eb:6e:3b:1b",
+            "NetworkInterfaceId": "eni-079c9e391bd7d89c3",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-0-84.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.0.84",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-0-84.ec2.internal",
+                    "PrivateIpAddress": "10.80.0.84"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-0864c000b771df32c",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az1"
+        },
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-0a41981351f81983b",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1a",
+            "Description": "VPC Endpoint Interface vpce-0ee3a5130a81353a5",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:ff:e4:0e:21:01",
+            "NetworkInterfaceId": "eni-0f281ba5e49513bbc",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-0-252.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.0.252",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-0-252.ec2.internal",
+                    "PrivateIpAddress": "10.80.0.252"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-0864c000b771df32c",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az1"
+        },
+        {
+            "Attachment": {
+                "AttachmentId": "ela-attach-00fe8d22db38a65a2",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "InstanceOwnerId": "amazon-aws",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "us-east-1a",
+            "Description": "VPC Endpoint Interface vpce-057935580d0a956a9",
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "InterfaceType": "vpc_endpoint",
+            "Ipv6Addresses": [],
+            "MacAddress": "02:ff:fb:9e:e7:e1",
+            "NetworkInterfaceId": "eni-062d297b2dfd889ff",
+            "OwnerId": "967807252336",
+            "PrivateDnsName": "ip-10-80-0-141.ec2.internal",
+            "PublicDnsName": "",
+            "PrivateIpAddress": "10.80.0.141",
+            "PrivateIpAddresses": [
+                {
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-80-0-141.ec2.internal",
+                    "PrivateIpAddress": "10.80.0.141"
+                }
+            ],
+            "RequesterId": "727180483921",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-0864c000b771df32c",
+            "TagSet": [],
+            "VpcId": "vpc-06e1941747e798f0a",
+            "Operator": {
+                "Managed": false,
+                "HiddenByDefault": false
+            },
+            "AvailabilityZoneId": "use1-az1"
+        }
+    ]
+}

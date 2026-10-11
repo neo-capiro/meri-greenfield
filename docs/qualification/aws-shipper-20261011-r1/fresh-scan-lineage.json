@@ -1,0 +1,27 @@
+{
+  "status": "DIAGNOSTIC_ONLY",
+  "original": {
+    "file": "captures/ecr-native-diagnostic-scan/stdout.bin",
+    "bytes": 59678,
+    "sha256": "011fff3c6b57794e0674644c0f8d14c56a7b6a94c1512e3806b256abe2afaa6a",
+    "encoding": "cp1252"
+  },
+  "derived": {
+    "file": "fresh-scan-derived-utf8.json",
+    "bytes": 59680,
+    "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+    "transformation": "Strict cp1252 decode then UTF-8 encode; no JSON reserialization or content edit."
+  },
+  "historicalScanRecovered": false,
+  "historicalExpectedSha256": "56a3d5f87336bf8f6a93111ecb8e976a75458f60e42dc5553fb01e460483f415",
+  "canonicalAwsReaderUsed": false,
+  "admission": false,
+  "findings": 47,
+  "counts": {
+    "MEDIUM": 17,
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "LOW": 7,
+    "UNDEFINED": 1
+  }
+}

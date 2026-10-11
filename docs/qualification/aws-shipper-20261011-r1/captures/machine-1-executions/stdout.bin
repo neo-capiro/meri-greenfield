@@ -1,0 +1,34 @@
+{
+    "executions": [
+        {
+            "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-cbfce523-4807-4ebc-865c-b319e4807e22",
+            "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+            "name": "meri-canary-cbfce523-4807-4ebc-865c-b319e4807e22",
+            "status": "SUCCEEDED",
+            "startDate": "2026-10-10T14:14:44.999000-04:00",
+            "stopDate": "2026-10-10T14:25:50.595000-04:00",
+            "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:3",
+            "redriveCount": 0
+        },
+        {
+            "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-1b4fc350-7391-4c40-9e3b-b2bb27a1cfbc",
+            "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+            "name": "meri-canary-1b4fc350-7391-4c40-9e3b-b2bb27a1cfbc",
+            "status": "SUCCEEDED",
+            "startDate": "2026-10-10T11:51:09.202000-04:00",
+            "stopDate": "2026-10-10T12:00:35.159000-04:00",
+            "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:2",
+            "redriveCount": 0
+        },
+        {
+            "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-canary-20261010:meri-canary-13af432b-3e3a-42fc-a916-223fd6fd2eff",
+            "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010",
+            "name": "meri-canary-13af432b-3e3a-42fc-a916-223fd6fd2eff",
+            "status": "FAILED",
+            "startDate": "2026-10-10T11:30:27.053000-04:00",
+            "stopDate": "2026-10-10T11:30:27.102000-04:00",
+            "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-canary-20261010:1",
+            "redriveCount": 0
+        }
+    ]
+}

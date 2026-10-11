@@ -1,0 +1,1251 @@
+{
+  "status": "PASS",
+  "startedAt": "2026-10-11T22:34:20.183521+00:00",
+  "endedAt": "2026-10-11T22:34:20.317005+00:00",
+  "archive": {
+    "bytes": 2394778,
+    "sha256": "0d1b822f1b27e29b1c37e3b8b2eede574b1a6218d71fe491f39ce95f3d209c34",
+    "members": 97,
+    "manifestRecordsVerified": 96,
+    "processStreamRecordsVerified": 26,
+    "safeRegularMembersOnly": true
+  },
+  "captureManifest": {
+    "allFilesIncluded": true,
+    "complete": true,
+    "excluded": [],
+    "files": [
+      {
+        "budgetCharged": 729,
+        "bytes": 729,
+        "complete": true,
+        "path": "artifact-0/process.json",
+        "sha256": "0694cb8593721a776af3171da56ed9f93df8ca957c0e9497110aa7c159079b06",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 731,
+        "bytes": 731,
+        "complete": true,
+        "path": "artifact-1/process.json",
+        "sha256": "3ab63c1b6366a87801d22635303ecf229274b948768ad8b980ae230097a816d0",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 723,
+        "bytes": 723,
+        "complete": true,
+        "path": "artifact-2/process.json",
+        "sha256": "544343573e57115a6a9cb1b9f7c087eec78e43449dc646071627efd2c5c6632c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 726,
+        "bytes": 726,
+        "complete": true,
+        "path": "artifact-3/process.json",
+        "sha256": "d51614130bcbd2d6ecb14ff65a0fe920ca819853713736e8f394292cc9a3e7fe",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 718,
+        "bytes": 718,
+        "complete": true,
+        "path": "artifact-4/process.json",
+        "sha256": "3d512e8c3ba01f91c3337d00e717fd8ee89ce4a7391b1be1457b336a00d4389f",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 724,
+        "bytes": 724,
+        "complete": true,
+        "path": "artifact-5/process.json",
+        "sha256": "c1279083dbd02fdab0431bf3edb3b6944b5e39583be609f09fb9928356bf22a7",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 722,
+        "bytes": 722,
+        "complete": true,
+        "path": "artifact-6/process.json",
+        "sha256": "22e11bab54525f1784a8d1a739c7a00609debe6d6560a46fc59ab441e887a88d",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 759,
+        "bytes": 759,
+        "complete": true,
+        "path": "artifact-7/process.json",
+        "sha256": "6427c3d36f667a5f268d71e0fd18c207e617d7831b693f823f8d61667f4c4a71",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 768,
+        "bytes": 768,
+        "complete": true,
+        "path": "artifact-8/process.json",
+        "sha256": "98786401e5b1d31b82ec3bf4c385d81eb9cd82a3c90fda698db56be9c5179a63",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 739,
+        "bytes": 739,
+        "complete": true,
+        "path": "artifact-9/process.json",
+        "sha256": "d9d271569ef243c31c6f6017f6e518c87498da1090371aabd1208ccec63700a6",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 817,
+        "bytes": 817,
+        "complete": true,
+        "path": "assemble-context/process.json",
+        "sha256": "e67271337dd803031f5d1b47e1caa9100c2193d6b7ba643bc4e6083996ff054e",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 701,
+        "bytes": 701,
+        "complete": true,
+        "path": "cleanup-inspect/process.json",
+        "sha256": "71e13cc11daa394d6c8d2f373db84bd97ba9d2e5e360137016b5762ec0eeb7cd",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 766,
+        "bytes": 766,
+        "complete": true,
+        "path": "container-absence/process.json",
+        "sha256": "2bc6d8ea8c3d8aaf52f136a6b692211b0327bec6c5da2b605d2d1fa970100b17",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 1050,
+        "bytes": 1050,
+        "complete": true,
+        "path": "container-create/process.json",
+        "sha256": "e293e350d02a4308839bd3a0ab3baed73bac7ade5d1e3232254b6bb7ddac445a",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 694,
+        "bytes": 694,
+        "complete": true,
+        "path": "container-inspect/process.json",
+        "sha256": "8559baeeb448761e99cc7a93fbdaa4e57ed8c068593cc63643ecf2756cf1038e",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 682,
+        "bytes": 682,
+        "complete": true,
+        "path": "container-remove/process.json",
+        "sha256": "e3fdbd4c7bb62869a90cff511bfbfa675ae45c95b55f55fa9f2bbf9e323a54bc",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 183,
+        "bytes": 183,
+        "complete": true,
+        "path": "create-attempt.json",
+        "sha256": "9d652b3ad9c329079e612c90c293698e9f85e3516d73951dc6575784e3a96e6e",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 996,
+        "bytes": 996,
+        "complete": true,
+        "path": "docker-build/process.json",
+        "sha256": "650052617b576d3261e7d19a16a2fde6c5a9f3418623b7a0650618a7f985b6f0",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 745,
+        "bytes": 745,
+        "complete": true,
+        "path": "ecr-auth-cleanup/process.json",
+        "sha256": "5f8573312cc3d7915319a449fada808de9909dacbf60c157c22b03e4ba482c43",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 709,
+        "bytes": 709,
+        "complete": true,
+        "path": "ecr-caller/process.json",
+        "sha256": "c7ae2a5cc04e6f786ed9e8e42a506c654f565b5cab313d2a842e3b5e4438f5d4",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 891,
+        "bytes": 891,
+        "complete": true,
+        "path": "ecr-image/process.json",
+        "sha256": "54f07629eae65bca3e84697d5ed5dc5d637aa4766f01cb7b5ead2c4f7ae954b9",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 893,
+        "bytes": 893,
+        "complete": true,
+        "path": "ecr-manifest/process.json",
+        "sha256": "b587b06ab4c35d8c3bd57f7e4e1e629fa2ad4a986ce0a59ce831a163a997ea60",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 370,
+        "bytes": 370,
+        "complete": true,
+        "path": "ecr-push-attempt.json",
+        "sha256": "65c3d8dab1123d6d35c73cb32137a132aa9aed5b9680448b5ad6df94ff1c5b76",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 709,
+        "bytes": 709,
+        "complete": true,
+        "path": "ecr-push-caller/process.json",
+        "sha256": "7a6268056105a1cf17307456b0043347547cf7e2b5846a3f7b73f154b969471c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 904,
+        "bytes": 904,
+        "complete": true,
+        "path": "ecr-tag/process.json",
+        "sha256": "b0867e8de5fba32ebd1ec5956e23b3e40256518c6e3f11812f9124c620aad9fb",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 701,
+        "bytes": 701,
+        "complete": true,
+        "path": "image-inspect/process.json",
+        "sha256": "f98938fb27932b6ce161edfc9ff8dbfe9a859966652ee8b0d8dfe6fa8e98791d",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 9548,
+        "bytes": 9548,
+        "complete": true,
+        "path": "owned-container.json",
+        "sha256": "a0286027bd2beae4253b94d158da55ddb96ca0cf9cdcbd84d6b0578df0557200",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 669,
+        "bytes": 669,
+        "complete": true,
+        "path": "publication-result.json",
+        "sha256": "935e7d4ecdff6c35c040b2c0585c86d7e65065c90bb0ebda11dc2cf98bb63c83",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 9860,
+        "bytes": 9860,
+        "complete": true,
+        "path": "result.json",
+        "sha256": "a582e2e17c038a707f0388d9099275f4375eac6c640f91e354709e90800bc1cb",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 9425,
+        "bytes": 9425,
+        "complete": true,
+        "path": "source-before.json",
+        "sha256": "63f308d4a4b95d6f92a3fbf586795ae1858457cf0318e288881448ea765e8c01",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 215,
+        "bytes": 215,
+        "complete": true,
+        "path": "source-post.json",
+        "sha256": "9caf973ff87b0a72567b1678f812393b1d0b1817b9d2de6ec6ddd539e8016db7",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 740,
+        "bytes": 740,
+        "complete": true,
+        "path": "volume-absence-0/process.json",
+        "sha256": "8028c7048a1a4f3b8d6c0ccab13eacefafa2cd6eee5c316f0436e1bc64f1bbcb",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 742,
+        "bytes": 742,
+        "complete": true,
+        "path": "volume-absence-1/process.json",
+        "sha256": "66c526550b02daaa6655c35a7df02ddfad38040bba7d458f946c8434a913aa95",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-0/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 5686272,
+        "bytes": 5686272,
+        "complete": true,
+        "path": "artifact-0/stdout.bin",
+        "sha256": "244ef8686830ff1601e272f92ca5bdee7acaffe2d248dcf0841dd4bdf41bf270",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-1/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 10240,
+        "bytes": 10240,
+        "complete": true,
+        "path": "artifact-1/stdout.bin",
+        "sha256": "ddedd6075c9367c257cd6c5954f6de7f1e096d0100393b98ba3f22bd89e95515",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-2/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 2048,
+        "bytes": 2048,
+        "complete": true,
+        "path": "artifact-2/stdout.bin",
+        "sha256": "a1ee518fb7ff67aaa3dc7435f6c1e0d670771174fa6b27a75a6f954304fac346",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-3/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 1536,
+        "bytes": 1536,
+        "complete": true,
+        "path": "artifact-3/stdout.bin",
+        "sha256": "eb342cf06cd50e66742954ef451814011ac77ef45fd714689818cd10f9ab2eb6",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-4/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 2560,
+        "bytes": 2560,
+        "complete": true,
+        "path": "artifact-4/stdout.bin",
+        "sha256": "6529bd4ffa13bc5bba4c50aa7d7fcfe85902e5004eb42fa7daf1d16a1d18c19b",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-5/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 2048,
+        "bytes": 2048,
+        "complete": true,
+        "path": "artifact-5/stdout.bin",
+        "sha256": "92b9c5d92d8e28fe8db659d5fcb47cbcf5c56a4a67388975299fb4fce9e8c233",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-6/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 70656,
+        "bytes": 70656,
+        "complete": true,
+        "path": "artifact-6/stdout.bin",
+        "sha256": "29c7f30b032f388c47916320637d7ab6a1e64dff8ddd52a390e3a4759c22d74f",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-7/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 4096,
+        "bytes": 4096,
+        "complete": true,
+        "path": "artifact-7/stdout.bin",
+        "sha256": "dbc3832910a43af72bc6e261fe72dfe7feefdeaf9dbd357f58f1968782d614bb",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-8/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 2048,
+        "bytes": 2048,
+        "complete": true,
+        "path": "artifact-8/stdout.bin",
+        "sha256": "eed923ae8ab474e4bc32b477298fbd2f2149d21dbb570f04f9ccd923555a9b62",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifact-9/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 3072,
+        "bytes": 3072,
+        "complete": true,
+        "path": "artifact-9/stdout.bin",
+        "sha256": "d829b990f1ac222fb98adeab434f09825d38218da42dd7814c152261ab3b2746",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 5684552,
+        "bytes": 5684552,
+        "complete": true,
+        "path": "artifacts/0.bin",
+        "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 8570,
+        "bytes": 8570,
+        "complete": true,
+        "path": "artifacts/1.bin",
+        "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 57,
+        "bytes": 57,
+        "complete": true,
+        "path": "artifacts/2.bin",
+        "sha256": "572df9ceee8fbd7375436093d6797459b34078e9eab10aff39ef3d57d75365bd",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "artifacts/3.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 605,
+        "bytes": 605,
+        "complete": true,
+        "path": "artifacts/4.bin",
+        "sha256": "a6f95cfbac88b6f0185ff797b392cb97f6d2e8e7c992534115da9a731f87092f",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 283,
+        "bytes": 283,
+        "complete": true,
+        "path": "artifacts/5.bin",
+        "sha256": "7b9851287f88277c0698737566b4e87a457e601c0e07b78adf360005fac30505",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 68705,
+        "bytes": 68705,
+        "complete": true,
+        "path": "artifacts/6.bin",
+        "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 2546,
+        "bytes": 2546,
+        "complete": true,
+        "path": "artifacts/7.bin",
+        "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 282,
+        "bytes": 282,
+        "complete": true,
+        "path": "artifacts/8.bin",
+        "sha256": "8cb928d63aa51ed7117257d2f162bc00ba85d335d54baf659e4097f3ec0b907c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 1259,
+        "bytes": 1259,
+        "complete": true,
+        "path": "artifacts/9.bin",
+        "sha256": "4289ada283f77263a17f5b5690a72be41f1ed39224f9a97745fd794938af2942",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "assemble-context/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 63,
+        "bytes": 63,
+        "complete": true,
+        "path": "assemble-context/stdout.bin",
+        "sha256": "82c47f284a40286d8b1b2e9a19f94adc9f4960265d311e486891be92b3a42fb0",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "cleanup-inspect/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 10358,
+        "bytes": 10358,
+        "complete": true,
+        "path": "cleanup-inspect/stdout.bin",
+        "sha256": "cbef2948740ee6e3e7a42f30f026c82bc2d632bb20b9b44fb1aeeeeffa709d1c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "container-absence/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "container-absence/stdout.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "container-create/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 65,
+        "bytes": 65,
+        "complete": true,
+        "path": "container-create/stdout.bin",
+        "sha256": "5c925f34a8cd72ad2bef331d90ae31a7706a5cf04ec35e4bd3e9546a4b6389b1",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "container-inspect/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 10358,
+        "bytes": 10358,
+        "complete": true,
+        "path": "container-inspect/stdout.bin",
+        "sha256": "cbef2948740ee6e3e7a42f30f026c82bc2d632bb20b9b44fb1aeeeeffa709d1c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "container-remove/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 65,
+        "bytes": 65,
+        "complete": true,
+        "path": "container-remove/stdout.bin",
+        "sha256": "5c925f34a8cd72ad2bef331d90ae31a7706a5cf04ec35e4bd3e9546a4b6389b1",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 182241,
+        "bytes": 182241,
+        "complete": true,
+        "path": "docker-build/stderr.bin",
+        "sha256": "8399146e4b90b394d69d6d382d6b86d1221470d9763c055b741eb95ddd31140c",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "docker-build/stdout.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-auth-cleanup/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 442,
+        "bytes": 442,
+        "complete": true,
+        "path": "ecr-auth-cleanup/stdout.bin",
+        "sha256": "a0c7f369d7d02acf8858962ffedd6beaa02b67c5fd8926e77e411039b859102b",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-caller/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 291,
+        "bytes": 291,
+        "complete": true,
+        "path": "ecr-caller/stdout.bin",
+        "sha256": "44279ff3f95a72e450bca8f0c5a0a0674b4438350ace473be55da9cc07b1ef3e",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-image/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 730,
+        "bytes": 730,
+        "complete": true,
+        "path": "ecr-image/stdout.bin",
+        "sha256": "df418e04e0a1b7f54dfe3b82b5ef39ebcd2d1139b1bb13e522c89664d38d80b8",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-manifest/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 8308,
+        "bytes": 8308,
+        "complete": true,
+        "path": "ecr-manifest/stdout.bin",
+        "sha256": "0e117d427ea0642b84b8bb8b52ed50c7250cd4c20ea2c103b9c23f1edd1f02b4",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-push-caller/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 291,
+        "bytes": 291,
+        "complete": true,
+        "path": "ecr-push-caller/stdout.bin",
+        "sha256": "44279ff3f95a72e450bca8f0c5a0a0674b4438350ace473be55da9cc07b1ef3e",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-tag/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "ecr-tag/stdout.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "image-inspect/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 7083,
+        "bytes": 7083,
+        "complete": true,
+        "path": "image-inspect/stdout.bin",
+        "sha256": "227f405ceb6554e819e2b7f3acea39f4a68a9d4546721abde31ac56b53763527",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 71,
+        "bytes": 71,
+        "complete": true,
+        "path": "image.iid",
+        "sha256": "d0cab3b96a572b5e2c48f62fd94bfa3826fc9af0e96c1f185ca2f5c79b0c6212",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "volume-absence-0/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "volume-absence-0/stdout.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "volume-absence-1/stderr.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      },
+      {
+        "budgetCharged": 0,
+        "bytes": 0,
+        "complete": true,
+        "path": "volume-absence-1/stdout.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sourceStable": true
+      }
+    ]
+  },
+  "processes": [
+    {
+      "member": "artifact-0/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.177424+00:00",
+      "endedAt": "2026-10-11T18:15:48.240756+00:00"
+    },
+    {
+      "member": "artifact-1/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.262960+00:00",
+      "endedAt": "2026-10-11T18:15:48.310872+00:00"
+    },
+    {
+      "member": "artifact-2/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.315680+00:00",
+      "endedAt": "2026-10-11T18:15:48.371143+00:00"
+    },
+    {
+      "member": "artifact-3/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.375018+00:00",
+      "endedAt": "2026-10-11T18:15:48.427078+00:00"
+    },
+    {
+      "member": "artifact-4/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.430045+00:00",
+      "endedAt": "2026-10-11T18:15:48.468692+00:00"
+    },
+    {
+      "member": "artifact-5/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.472686+00:00",
+      "endedAt": "2026-10-11T18:15:48.512599+00:00"
+    },
+    {
+      "member": "artifact-6/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.516643+00:00",
+      "endedAt": "2026-10-11T18:15:48.550757+00:00"
+    },
+    {
+      "member": "artifact-7/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.555568+00:00",
+      "endedAt": "2026-10-11T18:15:48.594637+00:00"
+    },
+    {
+      "member": "artifact-8/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.598575+00:00",
+      "endedAt": "2026-10-11T18:15:48.646646+00:00"
+    },
+    {
+      "member": "artifact-9/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.650515+00:00",
+      "endedAt": "2026-10-11T18:15:48.688448+00:00"
+    },
+    {
+      "member": "assemble-context/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:13:44.581072+00:00",
+      "endedAt": "2026-10-11T18:13:44.736739+00:00"
+    },
+    {
+      "member": "cleanup-inspect/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.760356+00:00",
+      "endedAt": "2026-10-11T18:15:48.770713+00:00"
+    },
+    {
+      "member": "container-absence/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.849413+00:00",
+      "endedAt": "2026-10-11T18:15:48.859581+00:00"
+    },
+    {
+      "member": "container-create/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.063128+00:00",
+      "endedAt": "2026-10-11T18:15:48.160186+00:00"
+    },
+    {
+      "member": "container-inspect/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.162738+00:00",
+      "endedAt": "2026-10-11T18:15:48.172408+00:00"
+    },
+    {
+      "member": "container-remove/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.773029+00:00",
+      "endedAt": "2026-10-11T18:15:48.845379+00:00"
+    },
+    {
+      "member": "docker-build/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:13:44.753430+00:00",
+      "endedAt": "2026-10-11T18:15:48.046745+00:00"
+    },
+    {
+      "member": "ecr-auth-cleanup/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:17:13.310028+00:00",
+      "endedAt": "2026-10-11T18:17:13.334946+00:00"
+    },
+    {
+      "member": "ecr-caller/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.975742+00:00",
+      "endedAt": "2026-10-11T18:16:06.117156+00:00"
+    },
+    {
+      "member": "ecr-image/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:17:11.966199+00:00",
+      "endedAt": "2026-10-11T18:17:12.571756+00:00"
+    },
+    {
+      "member": "ecr-manifest/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:17:12.574243+00:00",
+      "endedAt": "2026-10-11T18:17:13.299872+00:00"
+    },
+    {
+      "member": "ecr-push-caller/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:16:06.801698+00:00",
+      "endedAt": "2026-10-11T18:16:07.374414+00:00"
+    },
+    {
+      "member": "ecr-tag/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:16:06.785276+00:00",
+      "endedAt": "2026-10-11T18:16:06.799530+00:00"
+    },
+    {
+      "member": "image-inspect/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.049040+00:00",
+      "endedAt": "2026-10-11T18:15:48.059024+00:00"
+    },
+    {
+      "member": "volume-absence-0/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.861901+00:00",
+      "endedAt": "2026-10-11T18:15:48.873110+00:00"
+    },
+    {
+      "member": "volume-absence-1/process.json",
+      "exitCode": 0,
+      "startedAt": "2026-10-11T18:15:48.875238+00:00",
+      "endedAt": "2026-10-11T18:15:48.882770+00:00"
+    }
+  ],
+  "artifacts": [
+    {
+      "bytes": 5684552,
+      "file": "artifacts/0.bin",
+      "imagePath": "/opt/meri-worker/image-inventory.json",
+      "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c",
+      "outputFile": "historical-artifacts/00-image-inventory.json",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 8570,
+      "file": "artifacts/1.bin",
+      "imagePath": "/opt/meri-worker/os-installed-packages.txt",
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83",
+      "outputFile": "historical-artifacts/01-os-installed-packages.txt",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 57,
+      "file": "artifacts/2.bin",
+      "imagePath": "/opt/meri-worker/runtime-versions.txt",
+      "sha256": "572df9ceee8fbd7375436093d6797459b34078e9eab10aff39ef3d57d75365bd",
+      "outputFile": "historical-artifacts/02-runtime-versions.txt",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 0,
+      "file": "artifacts/3.bin",
+      "imagePath": "/opt/meri-worker/libreoffice-version.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputFile": "historical-artifacts/03-libreoffice-version.err",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 605,
+      "file": "artifacts/4.bin",
+      "imagePath": "/opt/meri-worker/cft-hashes.txt",
+      "sha256": "a6f95cfbac88b6f0185ff797b392cb97f6d2e8e7c992534115da9a731f87092f",
+      "outputFile": "historical-artifacts/04-cft-hashes.txt",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 283,
+      "file": "artifacts/5.bin",
+      "imagePath": "/opt/meri-worker/suid-sgid-reduced.txt",
+      "sha256": "7b9851287f88277c0698737566b4e87a457e601c0e07b78adf360005fac30505",
+      "outputFile": "historical-artifacts/05-suid-sgid-reduced.txt",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 68705,
+      "file": "artifacts/6.bin",
+      "imagePath": "/opt/meri-worker/package-lock.json",
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "outputFile": "historical-artifacts/06-package-lock.json",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 2546,
+      "file": "artifacts/7.bin",
+      "imagePath": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk/package.json",
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211",
+      "outputFile": "historical-artifacts/07-package.json",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 282,
+      "file": "artifacts/8.bin",
+      "imagePath": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/package.json",
+      "sha256": "8cb928d63aa51ed7117257d2f162bc00ba85d335d54baf659e4097f3ec0b907c",
+      "outputFile": "historical-artifacts/08-package.json",
+      "innerCopyVerified": true
+    },
+    {
+      "bytes": 1259,
+      "file": "artifacts/9.bin",
+      "imagePath": "/opt/meri-worker/node_modules/playwright/package.json",
+      "sha256": "4289ada283f77263a17f5b5690a72be41f1ed39224f9a97745fd794938af2942",
+      "outputFile": "historical-artifacts/09-package.json",
+      "innerCopyVerified": true
+    }
+  ],
+  "source": {
+    "commit": "60941654423b4118989b7bfc772ad11b383972d0",
+    "versionId": "qDplTC_3Blz56hZoRfHciu6o6OxDWJiV",
+    "bytes": 970778,
+    "sha256": "8cbd00ece6d01a0173630321dd50238a979c0ec4016d73cf984ac0ab546397af",
+    "zipMembersVerified": 50,
+    "sourceRowsVerified": 49,
+    "inputManifestSha256": "ca3c450a5e7aacbb6b335a13b81a03d539c0b6fdee0688c38ee608f5f29e05f4",
+    "contextManifestSha256": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+    "sourceStable": true
+  },
+  "image": {
+    "digest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+    "configDigest": "sha256:8f686c953252644cf970ee2a526040ac8f3724c36c46443b19fdd978d2891929",
+    "manifestDigestVerified": true,
+    "platform": "linux/amd64",
+    "user": "10001:10001",
+    "status": "PUBLISHED_NOT_ADMITTED",
+    "containerStarted": false,
+    "providerCalls": 0,
+    "admission": false
+  },
+  "inventory": {
+    "schema": "meri.qualification.image-inventory/1",
+    "coverage": {
+      "complete": true,
+      "scope": "declared roots/aliases; names do not prove renamed features absent"
+    },
+    "summary": {
+      "candidates": 2,
+      "elapsedMs": 20784,
+      "entries": 26901,
+      "errors": 0,
+      "exclusions": [
+        "/dev",
+        "/opt/meri-worker/image-inventory.json",
+        "/proc",
+        "/run",
+        "/sys"
+      ],
+      "expectationFailures": 0,
+      "expectations": 4,
+      "files": 22667,
+      "limitsExceeded": null,
+      "privilegeEntries": 2,
+      "roots": [
+        "/bin",
+        "/etc",
+        "/home",
+        "/lib",
+        "/lib64",
+        "/opt/meri-browsers",
+        "/opt/meri-venv",
+        "/opt/meri-worker",
+        "/packages",
+        "/root",
+        "/sbin",
+        "/scripts",
+        "/usr",
+        "/var/lib/dpkg"
+      ],
+      "symlinks": 1024,
+      "unexpectedPrivilegeEntries": 0
+    },
+    "expectations": [
+      {
+        "expected": {
+          "sha256": "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0"
+        },
+        "observed": {
+          "gid": 0,
+          "mode": "0755",
+          "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome",
+          "sha256": "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0",
+          "size": 298011976,
+          "type": "file",
+          "uid": 0
+        },
+        "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome",
+        "status": "match"
+      },
+      {
+        "expected": {
+          "gid": 0,
+          "mode": "4755",
+          "sha256": "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314",
+          "uid": 0
+        },
+        "observed": {
+          "gid": 0,
+          "mode": "4755",
+          "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox",
+          "sha256": "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314",
+          "size": 15216,
+          "type": "file",
+          "uid": 0
+        },
+        "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome-sandbox",
+        "status": "match"
+      },
+      {
+        "expected": {
+          "gid": 0,
+          "mode": "4755",
+          "sha256": "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314",
+          "uid": 0
+        },
+        "observed": {
+          "gid": 0,
+          "mode": "4755",
+          "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox",
+          "sha256": "be9f5d4be90fa60b985ad3069812b144ba7331fed0c3f980c6d9399d37d60314",
+          "size": 15216,
+          "type": "file",
+          "uid": 0
+        },
+        "path": "/opt/meri-browsers/chromium-1247/chrome-linux64/chrome_sandbox",
+        "status": "match"
+      },
+      {
+        "expected": {
+          "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358"
+        },
+        "observed": {
+          "gid": 10001,
+          "mode": "0755",
+          "path": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+          "sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+          "size": 256113848,
+          "type": "file",
+          "uid": 10001
+        },
+        "path": "/opt/meri-worker/node_modules/@anthropic-ai/claude-agent-sdk-linux-x64/claude",
+        "status": "match"
+      }
+    ],
+    "ok": true,
+    "truncated": false,
+    "errors": []
+  },
+  "cleanup": {
+    "status": "PASS_HISTORICAL_ARCHIVE",
+    "containerId": "c90359919430453142c5ef5e7d9c666256ad5270b2390373c5cb3761749c5959",
+    "volumes": [
+      "7f2939c2909842c728eec409c20e493967b5e2d58788c85dd89c6a1b1ac7e557",
+      "624d747dd489434e106fd86b189c984013a68074a060cb131f3ca17119e0d0b7"
+    ],
+    "observations": [
+      {
+        "label": "container-absence",
+        "argv": [
+          "docker",
+          "container",
+          "ls",
+          "-a",
+          "--no-trunc",
+          "--filter",
+          "id=c90359919430453142c5ef5e7d9c666256ad5270b2390373c5cb3761749c5959",
+          "--format",
+          "{{.ID}}"
+        ],
+        "observedAt": "2026-10-11T18:15:48.859581+00:00",
+        "status": "PASS"
+      },
+      {
+        "label": "volume-absence-0",
+        "argv": [
+          "docker",
+          "volume",
+          "ls",
+          "--filter",
+          "name=^7f2939c2909842c728eec409c20e493967b5e2d58788c85dd89c6a1b1ac7e557$",
+          "--format",
+          "{{.Name}}"
+        ],
+        "observedAt": "2026-10-11T18:15:48.873110+00:00",
+        "status": "PASS"
+      },
+      {
+        "label": "volume-absence-1",
+        "argv": [
+          "docker",
+          "volume",
+          "ls",
+          "--filter",
+          "name=^624d747dd489434e106fd86b189c984013a68074a060cb131f3ca17119e0d0b7$",
+          "--format",
+          "{{.Name}}"
+        ],
+        "observedAt": "2026-10-11T18:15:48.882770+00:00",
+        "status": "PASS"
+      }
+    ],
+    "credentialCleanup": {
+      "boundIdentity": [
+        37,
+        152886412
+      ],
+      "bytesRemoved": 16,
+      "directoryName": "meri-worker-auth.cfd9eac2",
+      "elapsedMs": 0,
+      "entriesRemoved": 1,
+      "filesRemoved": 1,
+      "maxDepth": 0,
+      "nonce": "cfd9eac2",
+      "parent": "/tmp",
+      "policy": "fd-relative-nofollow-root-owned-bounded/1",
+      "prefix": "meri-worker-auth.",
+      "realWindowsDeletion": "UNSUPPORTED",
+      "rootObserved": true,
+      "schema": "meri-worker-auth-cleanup/1",
+      "status": "CLEANED",
+      "verifiedAbsent": true
+    },
+    "limitation": "Reconciled immutable historical collector observations, not a new observation of the retired CodeBuild host."
+  },
+  "currentBackendContext": {
+    "bytes": 994107,
+    "members": 53,
+    "sha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+    "status": "SOURCE_ONLY",
+    "notHistoricalBuildAuthority": true
+  }
+}

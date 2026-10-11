@@ -1,0 +1,17 @@
+# AWS shipper preflight allocation — 11 October 2026
+
+Owner: this AWS shipping chat, assigned directly by Neo using the complete Meri AWS shipper handoff. Primary Codex retains all implementation, remediation, infrastructure-source and acceptance ownership.
+
+Pinned backend: `631aee670fcee6efa7170bf969b9f05f90de12e5`, tree `b5c4f1f0b96e31e6a14e40de857345cbcdc4a5aa`. Frontend reference: `ad04c660a8a181aa99b4786bf51926dd4957ea3a`, tree `9d662c6d1090af8211a459e9ff95310242ec21da`. Both open draft PR heads were refreshed and matched before allocation.
+
+Branch: `shipper/aws-preflight-20261011-r1`. Exclusive writable repository paths: this task record, `docs/coordination/reports/AWS-SHIPPER-20261011-r1.md`, and `docs/qualification/aws-shipper-20261011-r1/`. Claim sent to primary Codex chat `01a12165-3376-75bc-9b7b-555527c9f0ca` on host `durable`. Application, contracts, lockfiles, recipes, generated sources, guards and infrastructure source are read-only.
+
+This task authenticates through the existing approved local AWS profile, verifies exact account/region/caller, inventories only named Meri resources, recovers and independently verifies immutable historical build/security evidence, and prepares a next-action packet. It may publish its scrubbed evidence branch and draft return PR; it may not merge. All AWS activity in this allocation is read-only. No build, upload, ECS/EC2 launch, fence transition, database SQL, model request, IAM/network/config mutation or cleanup deletion is admitted.
+
+Reuse the unmodified Windows-compatible `scripts/qualification/aws_evidence.py` for its supported read vocabulary and ordinary scoped AWS CLI reads for additional inventory. Do not bypass any canonical helper guard. Retain UTC command envelopes, argv, raw bytes/hashes and failures. Download only exact versioned evidence into exclusively owned local paths; verify hashes before archive inspection, reject traversal/links, and keep unreviewed historical archive contents outside Git. Record existing resources without assuming their ownership transfers to this chat.
+
+Bound preflight commands to 60 seconds each, no automatic mutation retries, at most four independent reads concurrently, no background worker/scheduler. Stop only owned local processes on failure. No temporary cloud resource is to be created, so no remote teardown is required for this allocation. Record zero new Bedrock requests; historical aggregate usage/reservations remain UNKNOWN until the authoritative ledger is recovered. Preserve the shared $10 model cap, D720/C900 clocks and false partial recovery flags for any future admitted run.
+
+Acceptance: exact source and live identity bindings; scoped resource inventory; immutable build archive byte/hash and declared member reconciliation; historical scan recovery or an explicit unresolved locator; separate fresh exact-digest scan; bounded helper-defect reproduction; complete next-action packet with missing authority/source/security/cost fields explicit. G1 and production acceptance remain with their assigned owners.
+
+Completed native read-only scan repair readback at primary-accepted 415a55827b3f6343a0835e1d0e30fa0c69d673e6 / tree 3181f8e0d75299e39fc45a738baff4c41e01463e. Original baseline evidence remains preserved. Evidence branch now bases on that accepted source-only child; only the claimed task/report/evidence paths are authored here. No build or runtime authority transferred.

@@ -1,0 +1,24 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "NativeEnforcementMachine",
+            "PhysicalResourceId": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+            "ResourceType": "AWS::StepFunctions::StateMachine",
+            "LastUpdatedTimestamp": "2026-10-10T20:11:22.621000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "NativeEnforcementRole",
+            "PhysicalResourceId": "MeriGreenfield-NativeEnforcement-Sdk-20261010",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-10T20:11:03.470000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

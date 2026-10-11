@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "gh",
+    "pr",
+    "view",
+    "7",
+    "--repo",
+    "neo-capiro/meri-greenfield",
+    "--json",
+    "number,url,state,isDraft,headRefName,headRefOid,updatedAt,statusCheckRollup"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\shipper-scan-repair-r1",
+  "sourceCommit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+  "sourceTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+  "startedAt": "2026-10-11T22:42:27.953385+00:00",
+  "endedAt": "2026-10-11T22:42:28.581358+00:00",
+  "exitCode": 0,
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 265,
+    "sha256": "c2a1786e4aac9691986c039eef3dcc1890a3491c15249d4b437c610830f5a187"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

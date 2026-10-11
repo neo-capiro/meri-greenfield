@@ -1,0 +1,39 @@
+{
+  "schema": "meri-codex-aws-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "ecr",
+    "describe-image-scan-findings",
+    "--repository-name",
+    "meri-greenfield/qualification-worker",
+    "--image-ids",
+    "imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+  "startedAt": "2026-10-11T22:25:20.351965+00:00",
+  "endedAt": "2026-10-11T22:25:21.084175+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 252,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "bytes": 285,
+    "sha256": "9300e6832f7e04ea69e8f754831c79d83b750822a82c4a7366a80c0473e7ceb3"
+  },
+  "readonlyRequestValidation": null
+}

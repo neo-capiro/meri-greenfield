@@ -1,0 +1,109 @@
+# AWS shipper preflight and evidence return — 11 October 2026, r1
+
+Result: authenticated read-only preflight and historical archive recovery complete, with historical scan location explicitly unresolved. No AWS write, new build, image execution, deployment, SQL, provider call, fence transition, merge or cutover occurred. Fresh build and runtime qualification remain NOT RUN. Primary Codex retains implementation and gate acceptance; Neo retains exact production-release approval.
+
+## Status and identity
+
+| Criterion | Status | Evidence / limit |
+| --- | --- | --- |
+| Fresh caller/account/region | PASS | `capiro-dev`, `arn:aws:iam::967807252336:user/capirocli`, account `967807252336`, explicit `us-east-1`; canonical STS envelope in evidence. |
+| Reviewed build-owner principal | FAIL | Historical builder helper requires `hermes-cli`; current caller is `capirocli`. No role substitution performed. |
+| Backend PR7 / frontend PR4 refreshed | PASS | Both OPEN DRAFT; original requested heads matched. Primary later published accepted read-only replacement `415a558` and that exact head was freshly verified before reacquisition; frontend unchanged. GH envelopes retained. |
+| Scoped live inventory | PASS | Ten stacks, project/roles, four task revisions, buckets/KMS/logs, Meri network and three state machines read. Stored drift metadata only. |
+| Historical archive and source ZIP | PASS | Exact version/size/hash; 96/96 manifest records, 10/10 inner copies, 50/50 source ZIP members verified. |
+| Historical scan recovery | UNKNOWN | Exact 59,678-byte SHA `56a3d5f87336bf8f6a93111ecb8e976a75458f60e42dc5553fb01e460483f415` has no verified immutable locator. Not an archive member; exact result prefix contains only the archive. |
+| Canonical scan command | PASS after accepted repair | Original exit252 preserved. Native Windows reacquisition at accepted `415a558` succeeds with original UTF-8 bytes. |
+| Fresh separate scan retrieval | PASS | Ordinary explicitly authorized read-only CLI, process exit 0; raw bytes and encoding defect retained separately. |
+| Original diagnostic scan parser | FAIL preserved | CP1252 byte0x92 at offset40757 remains rejected; repaired canonical capture/analyzer now PASS without transcoding. |
+| Explicit UTF-8 derivative analyzer | PASS | 47 complete reconciled rows, no continuation tokens, `SOURCE_ONLY_HOLD`; diagnostic derivative has lineage and grants no admission. |
+| Security/license admission | FAIL | Old image PUBLISHED_NOT_ADMITTED; 5 critical, 17 high, 17 medium, 7 low, 1 undefined. Full notice and embedded-component disposition remains primary-owned. |
+| Accepted fresh remediation / action packet | UNKNOWN | No accepted remediation source, runner binding, complete fresh archive, exact action approval or infrastructure cost bound received. |
+| Fresh build/publication | NOT RUN | Prior one-build approval consumed; no unchanged rebuild. |
+| Linux import/start/ABI/Prisma and isolated PG auth/denial/revocation | NOT RUN | Requires admitted fresh image, fixture, wiring and runtime authority. |
+| SDK → LiteLLM → Bedrock deferred discovery/streaming | NOT RUN | No provider call; exact current approved profile and durable ledger required. |
+| Active Query.interrupt, stale-A denial, durable A→B recovery | NOT RUN | No tasks/fence transition; original D720/C900 and partial false flags preserved. |
+| Browser/renderer sandbox and physical host/root-volume cleanup | NOT RUN | No browser host launched; archived wire fixture success is not sandbox qualification. |
+| Office export/render and connected frontend HTTPS/auth/CORS/reconnect | NOT RUN | Waiting for accepted component/security and connected staging configuration. |
+| New-resource cleanup | PASS | This run created no cloud tasks, ENIs, instances, volumes or containers; none deleted. |
+| Historical collector cleanup reconciliation | PASS | Exact container/two volume absence command records, stream hashes and credential purge reconcile in immutable archive. Not a new observation of retired build host. |
+| Aggregate historical usage/reservations / remaining budget | UNKNOWN | No authoritative aggregate ledger supplied; zero new calls does not prove $10 remains. |
+
+Backend `631aee670fcee6efa7170bf969b9f05f90de12e5`, tree `b5c4f1f0b96e31e6a14e40de857345cbcdc4a5aa`; frontend `ad04c660a8a181aa99b4786bf51926dd4957ea3a`, tree `9d662c6d1090af8211a459e9ff95310242ec21da`. Baseline source-only context independently reproduced: 53 members / 994107 bytes / `da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4`. This does not transfer historical 49-member build authority. Product source was not edited or retested in this evidence-only lane.
+
+## Immutable build/image evidence
+
+Historical CodeBuild `meri-greenfield-qualification-build:7f906e90-98d5-435f-98aa-2b2246ffd2cb` SUCCEEDED, 18:13:31.043–18:17:15.468 UTC. Its source is historical `60941654423b4118989b7bfc772ad11b383972d0`, not the current backend commit. Source ZIP version `qDplTC_3Blz56hZoRfHciu6o6OxDWJiV`, 970778 bytes, SHA `8cbd00ece6d01a0173630321dd50238a979c0ec4016d73cf984ac0ab546397af`. Complete build log remains in the immutable archive (`docker-build/stderr.bin`, 182241 bytes), with manifest hash and process record independently checked. Source ZIP and private implementation bodies are not copied into Git.
+
+Archive: `s3://meri-greenfield-qual-build-967807252336-us-east-1/results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz`, version `RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6`, 2394778 bytes, SHA `0d1b822f1b27e29b1c37e3b8b2eede574b1a6218d71fe491f39ce95f3d209c34`. Download/head metadata and all regular-member/record hashes reconcile. No historical scan reconstructed or substituted.
+
+Blocked registry digest `sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac`; image config digest `sha256:8f686c953252644cf970ee2a526040ac8f3724c36c46443b19fdd978d2891929`. Live ECR manifest hash and config link match; platform linux/amd64, image user `10001:10001`. The collector created its container without starting it, so this is filesystem/image metadata evidence only.
+
+Recovered full inventory: 26901 entries, 22667 files, 1024 symlinks, zero inventory errors; coverage is limited to declared roots/aliases. All ten image-copy artifacts, including installed packages, lock metadata, SDK package metadata, browser hashes and full inventory, are retained under `historical-artifacts/`. Runtime metadata says Node v24.21.0, Python 3.13.5, LibreOffice 25.2.3.2. Metadata recovery does not resolve notices, security applicability or runtime ABI compatibility.
+
+Fresh raw diagnostic scan: 59678 bytes, SHA `011fff3c6b57794e0674644c0f8d14c56a7b6a94c1512e3806b256abe2afaa6a`. AWS scan COMPLETE timestamp 18:17:54 UTC; this read retrieves the existing stored scan, not a new scan request. Its strict CP1252→UTF-8 derivative is 59680 bytes, SHA `3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127`. The complete 47-row scaffold preserves raw findings with every disposition OPEN and all admission flags false. Historical and fresh hashes differ despite equal raw length.
+
+## Live resource bindings and boundaries
+
+| Stack | Observed status | Recorded resources |
+| --- | --- | ---: |
+| MeriGreenfield-BrowserManagedFixture-20261011 | CREATE_COMPLETE | 2 |
+| MeriGreenfield-BrowserWireReadOnly-20261010 | CREATE_COMPLETE | 1 |
+| MeriGreenfield-NativeCanaryEnforcement | UPDATE_COMPLETE | 2 |
+| MeriGreenfield-NativeCanaryQualification | CREATE_COMPLETE | 1 |
+| MeriGreenfield-NativeQualification | UPDATE_COMPLETE | 2 |
+| MeriGreenfield-NativeSdkEnforcement | CREATE_COMPLETE | 2 |
+| MeriGreenfield-QualificationBuild | UPDATE_COMPLETE | 9 |
+| MeriGreenfield-QualificationRuntime | UPDATE_COMPLETE | 28 |
+| MeriGreenfield-QualificationSdkCheckpoint | CREATE_COMPLETE | 6 |
+| MeriGreenfield-TestStateReadOnly | CREATE_COMPLETE | 1 |
+
+Exact physical IDs, tags/owners, outputs, task roles, machine revisions/definition hashes and raw-capture hashes are in `inventory-summary.json` and `command-ledger.json`. CloudFormation drift was not triggered; last-known fields cannot establish current source/live equivalence. Existing resource ownership remains with recorded owners, chiefly Codex-integration.
+
+| Task definition | Bound image digest |
+| --- | --- |
+| `meri-greenfield-qualification:2` | `sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75` |
+| `meri-greenfield-qualification-canary:1` | `sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c` |
+| `meri-greenfield-qualification-office:2` | `sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c` |
+| `meri-greenfield-qualification-sdk:2` | `sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c` |
+
+No Meri qualification services or running tasks; stopped-task list empty within AWS retention. All 20 returned project builds are terminal (9 SUCCEEDED, 11 FAILED); no new build was submitted. Three existing state machines have no listed RUNNING execution. Existing successes are historical and do not qualify this candidate.
+
+Project `meri-greenfield-qualification-build` uses small Linux/privileged build environment, builder role `arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H`; timeout 30 minutes / queue 5 minutes. Its legacy default source/buildspec is inventoried, not authorized for execution. No IAM/PassRole/trust, security-group, KMS, secret-reference or task-definition changes were made. Existing task-definition secret arrays are empty; there is no accepted connected deployment/endpoint configuration in this packet.
+
+Meri VPC `vpc-06e1941747e798f0a` (10.80/16), isolated subnets `subnet-0864c000b771df32c` and `subnet-06437dfaae1c217c3`, worker SG `sg-0c4e15bec7adeed1a`. Observed route tables contain local/S3 routes; no Internet/NAT/peering/TGW route observed. Both VPC peering directions empty. Worker SG has no ingress and restricted endpoint/S3 TCP443 egress. Six existing interfaces are in-use VPC endpoint ENIs; all preserved. Exact IDs are recorded in the inventory. No EC2 instance is currently returned in this VPC; this does not establish absence in other historical browser fixtures.
+
+Eventual selected Aurora `capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv` is available, encrypted Aurora PostgreSQL16.11, ACU1–16; exact subnet-group metadata confirms Capiro VPC `vpc-0ac26cfac7ed972be`, SG `sg-059b4e4de0b1dcca5`. Metadata only: no SQL, data access, role, capacity or network changes. No Meri→Capiro path was established. Stale new-RDS RuntimeStack is not admitted; G1 still requires a separate admitted synthetic PostgreSQL fixture.
+
+Build/checkpoint buckets have versioning enabled, SSE-KMS and public-access blocks; checkpoint ObjectLock is seven-day GOVERNANCE. Named build/checkpoint/runtime KMS keys are enabled; scoped logs and current role policies are captured. Intentionally retained stacks, images, versioned evidence, buckets, keys, endpoints and shared Aurora remain untouched.
+
+## Bounded defects returned to primary Codex (original outcomes preserved)
+
+All reproductions bind backend `631aee670fcee6efa7170bf969b9f05f90de12e5` and retained UTC process envelopes. Do not patch guards or move execution to Linux to bypass them.
+
+1. Canonical reader command `ecr describe-image-scan-findings --repository-name meri-greenfield/qualification-worker --image-ids imageDigest=sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac` exits252 before a service call: required `--image-id`. Correct singular is outside baseline reader allowlist. Preserve plural for `batch-get-image`; primary subsequently published the accepted scoped repair; native readback below passes.
+2. A separate ordinary read with singular option completes exit0, but its CP1252 stdout cannot pass UTF-8 JSON decoding. Reproduce offline against committed `captures/ecr-native-diagnostic-scan/stdout.bin` using strict UTF-8 decoding; offset40757 is 0x92. Original unmodified scan analyzer exit2 and separately derived diagnostic HOLD exit0 are both retained. Repair strict CLI/output encoding at the owner, not by disguising transformed bytes as original evidence.
+3. Safe inert runner check: `python -I -B -S -c "import sys; sys.path.insert(0, 'scripts/qualification'); import worker_image_build; worker_image_build.pins()"` exits1 `ValueError: fixed owner Python runtime`. Available runner Python3.11.15 differs from bound Administrator path/Python3.12.14/hash; caller differs from bound hermes-cli. No build attempt or principal impersonation occurred. Historical collector/assembler/source-authority pins also require current accepted closure before a new source candidate can build.
+
+## Accepted repair and native Windows readback
+
+Primary published and accepted read-only repair `415a55827b3f6343a0835e1d0e30fa0c69d673e6`, tree `3181f8e0d75299e39fc45a738baff4c41e01463e`, as a direct child of the requested backend baseline. Its canonical acceptance is `docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md`. The shipper fetched and verified a clean separate exact checkout, refreshed PR7 to the accepted head, and used the unmodified canonical reader for fresh STS and the singular exact-digest findings read. The evidence-only branch incorporates this accepted primary source as its base; no application/helper/recipe change was authored by this shipping lane.
+
+Native Windows CLI stdout is **original UTF-8**, 59680 bytes, SHA `3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127`, retained without transformation. Unmodified canonical analyzer PASS: complete47 rows, no continuation tokens, `SOURCE_ONLY_HOLD`, all disposition rows OPEN and all admission flags false. The stored scan timestamp remains18:17:54UTC; no new scan was started. This is separate from both earlier raw captures and the explicit CP1252 derivative. Original command/parser failures remain in the ledger.
+
+See [canonical readback summary](../qualification/aws-shipper-20261011-r1/canonical-repaired-scan-summary.json) and [canonical complete HOLD scaffold](../qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json). Fresh caller is still capirocli/account967807252336/us-east-1. The source-only patch does not repair builder Python/principal/source-authority guards, remediate vulnerabilities, locate historical scan, replenish consumed approval, establish cost bounds or admit build/runtime/G1. Its canonical 53-member worker context source rows remain byte-identical to the originally reproduced context.
+
+Exact raw evidence is stored with `-text` attributes and CR-at-EOL whitespace handling so Git does not normalize command bytes. All distributed Git blobs are checked against the hash index. An initial staging check exposed default CRLF normalization/whitespace noise; nothing was published with normalized bytes. Raw bytes were restored to the index, preserving the failures and original receipts. Documentation whitespace remains checked.
+
+## Next action, budget and cleanup
+
+`next-action-packet.json` is complete as an explicit prerequisite/authority record and **NOT EXECUTABLE**. Authorized read-only work and evidence publication are concrete; proposed fresh-build fields remain null where authority/source does not exist. Primary must supply historical scan locator, accepted supported remediation/security/license/compatibility evidence, complete candidate commit/tree/context/archive/recipe/helper closure, approved compatible runner/caller binding, exact reviewed manifest, bounded infrastructure spend/deadline/cleanup ownership and current exact-action approval. Prior build approvals are consumed. No user approval is inferred from time, broad AWS/GitHub access or source publication.
+
+The aggregate synthetic Bedrock cap remains $10 across all attempts and UNKNOWN reservations. New provider calls/spend: zero. Historical spend/reservations and remaining budget: UNKNOWN; reconcile ledger before provider execution. Infrastructure cost is separate and not yet approved for a new build/run. D720 containment and C900 absolute stop remain unchanged across replacement/retries; current fence UNKNOWN, no transition authorized. `completeRecoveryCheckpoint:false` and `sessionStoreQualified:false` remain mandatory for the bounded fixture.
+
+No new temporary cloud resource exists. Historical collector container `c90359919430453142c5ef5e7d9c666256ad5270b2390373c5cb3761749c5959` removal/absence and volumes `7f2939c2909842c728eec409c20e493967b5e2d58788c85dd89c6a1b1ac7e557`, `624d747dd489434e106fd86b189c984013a68074a060cb131f3ca17119e0d0b7` absence reconcile with exact IDs and successful empty-list stdout in the historical archive. Credential cleanup says verifiedAbsent. No active worker, scheduler or helper launched locally; all command processes ended. Source worktrees/evidence are deliberately retained.
+
+Rollback for this run: no AWS changes to undo; do not delete shared or preexisting resources. Future uncertain build/launch must be reconciled by owned run/resource IDs before retry, and future cleanup must be independently supervised. Neither G1 nor production shipping is claimed. Return this evidence branch for primary review; do not merge it.
+
+## Evidence access
+
+Companion [evidence index](../qualification/aws-shipper-20261011-r1/evidence-index.json), [inventory](../qualification/aws-shipper-20261011-r1/inventory-summary.json), [exact next-action packet](../qualification/aws-shipper-20261011-r1/next-action-packet.json), [complete 47-row HOLD scaffold](../qualification/aws-shipper-20261011-r1/fresh-scan-hold-scaffold.json), [reconciliation](../qualification/aws-shipper-20261011-r1/historical-reconciliation.json), [command ledger](../qualification/aws-shipper-20261011-r1/command-ledger.json). The index binds every distributed file by size/hash and gives exact immutable S3 references. Full command stdout/stderr remain in local shipper outputs; all scoped metadata/failure/scan captures are included in Git except enumerated source-bearing or broader DNS captures, which have hashed ledger entries and bounded inventory views. No credentials, customer records, signed URLs or private source ZIP payload is published.

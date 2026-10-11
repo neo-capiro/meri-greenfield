@@ -1,0 +1,83 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7",
+            "StackName": "MeriGreenfield-QualificationRuntime",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/image-8785118-20261009/1f5cfacc-ba01-4e8d-a3cc-702c6270764e",
+            "Description": "New synthetic-only isolated Fargate qualification network and task",
+            "Parameters": [
+                {
+                    "ParameterKey": "WorkerImage",
+                    "ParameterValue": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75"
+                }
+            ],
+            "CreationTime": "2026-10-09T20:32:59.746000+00:00",
+            "LastUpdatedTime": "2026-10-09T21:54:04.635000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "UPDATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "VpcId",
+                    "OutputValue": "vpc-06e1941747e798f0a"
+                },
+                {
+                    "OutputKey": "ClusterName",
+                    "OutputValue": "meri-greenfield-qualification"
+                },
+                {
+                    "OutputKey": "WorkerSecurityGroupId",
+                    "OutputValue": "sg-0c4e15bec7adeed1a"
+                },
+                {
+                    "OutputKey": "LogGroupName",
+                    "OutputValue": "/meri-greenfield/qualification/runtime"
+                },
+                {
+                    "OutputKey": "SubnetIds",
+                    "OutputValue": "subnet-0864c000b771df32c,subnet-06437dfaae1c217c3"
+                },
+                {
+                    "OutputKey": "TaskDefinitionArn",
+                    "OutputValue": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification:2"
+                }
+            ],
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "UPDATE_STACK",
+                    "OperationId": "36495970-50d9-478e-8295-fdcc7c170098"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "meri-codex-aws-capture/1",
+  "argv": [
+    "C:\\Program Files\\Amazon\\AWSCLIV2\\aws.exe",
+    "s3api",
+    "get-object",
+    "--bucket",
+    "meri-greenfield-qual-build-967807252336-us-east-1",
+    "--key",
+    "results/sdk-worker-image-441596ba-edd3-4e1b-ba0a-eee53c9c4af4/evidence.tar.gz",
+    "--version-id",
+    "RN2aZBAyPulzEwf6iNKONh8NDBAsIRJ6",
+    "--checksum-mode",
+    "ENABLED",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\shipper-recovered-r1\\historical-evidence.tar.gz",
+    "--profile",
+    "capiro-dev",
+    "--region",
+    "us-east-1",
+    "--output",
+    "json",
+    "--no-cli-pager",
+    "--cli-connect-timeout",
+    "10",
+    "--cli-read-timeout",
+    "30"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you",
+  "startedAt": "2026-10-11T22:25:22.103267+00:00",
+  "endedAt": "2026-10-11T22:25:23.430228+00:00",
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "exitCode": 0,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 533,
+    "sha256": "c1738e622028e8401b94c8fdf9c992b79f674b7ae208f0a53de8a878e99f262d"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "readonlyRequestValidation": null
+}

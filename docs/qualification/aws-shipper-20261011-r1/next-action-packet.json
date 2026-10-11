@@ -1,0 +1,218 @@
+{
+  "schema": "meri-aws-shipper-next-action/1",
+  "status": "NOT_EXECUTABLE_MISSING_PREREQUISITES",
+  "sourceBaseline": {
+    "backendCommit": "631aee670fcee6efa7170bf969b9f05f90de12e5",
+    "backendTree": "b5c4f1f0b96e31e6a14e40de857345cbcdc4a5aa",
+    "frontendCommit": "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+    "frontendTree": "9d662c6d1090af8211a459e9ff95310242ec21da",
+    "backendPr": 7,
+    "frontendPr": 4,
+    "bothOpenDraftAtRefresh": true,
+    "context": {
+      "bytes": 994107,
+      "members": 53,
+      "sha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+      "status": "SOURCE_ONLY",
+      "notHistoricalBuildAuthority": true
+    },
+    "readOnlyHelperRecipeClosure": [
+      {
+        "path": "scripts/qualification/aws_evidence.py",
+        "bytes": 12164,
+        "sha256": "04391bbda705f23fdc1ac57aa4d0103bf73831cc0f79a3b2b2820959006aecea"
+      },
+      {
+        "path": "scripts/qualification/worker_image_build.py",
+        "bytes": 30860,
+        "sha256": "955ff2e55fc7f888d1535d94b5e81b629779a7ed1914e70ab45c0c41100e7484"
+      },
+      {
+        "path": "scripts/qualification/worker_image_collect.py",
+        "bytes": 29992,
+        "sha256": "6ac9a55da3343f8a17f6e1f29736baa12c5c57d5f05dfa70a506d3f1f9ded27a"
+      },
+      {
+        "path": "scripts/qualification/worker_image_publish.py",
+        "bytes": 11611,
+        "sha256": "da1cb478d3048c7b102f90203f6bb3080d8002502d18c7a7711cd86dd2f795fa"
+      },
+      {
+        "path": "scripts/qualification/worker_image_scan.py",
+        "bytes": 9958,
+        "sha256": "d85a402b80df5a701dcc1f132c10eeab93885c9ada8aa1e46a90a08ef5dc27e0"
+      },
+      {
+        "path": "scripts/qualification/worker_context.py",
+        "bytes": 11723,
+        "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+      },
+      {
+        "path": "apps/worker/qualification/Dockerfile",
+        "bytes": 18786,
+        "sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36"
+      },
+      {
+        "path": "apps/worker/qualification/component-pins.json",
+        "bytes": 36019,
+        "sha256": "6c08b00a43ef6155333c0a891bd92eb0275e18767c3159282ccdef3e13c0793a"
+      }
+    ]
+  },
+  "target": {
+    "account": "967807252336",
+    "region": "us-east-1",
+    "observedCaller": "arn:aws:iam::967807252336:user/capirocli",
+    "profile": "capiro-dev",
+    "buildProject": "meri-greenfield-qualification-build",
+    "builderRole": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+    "ecrRepository": "meri-greenfield/qualification-worker",
+    "buildBucket": "meri-greenfield-qual-build-967807252336-us-east-1",
+    "qualificationCluster": "meri-greenfield-qualification",
+    "vpc": "vpc-06e1941747e798f0a",
+    "subnets": [
+      "subnet-0864c000b771df32c",
+      "subnet-06437dfaae1c217c3"
+    ],
+    "workerSecurityGroup": "sg-0c4e15bec7adeed1a"
+  },
+  "authorizedNow": {
+    "actions": [
+      "Read named scoped metadata",
+      "Read exact immutable historical evidence",
+      "Publish scrubbed shipper evidence PR",
+      "Return defects to primary Codex"
+    ],
+    "cloudMutations": 0,
+    "builds": 0,
+    "runtimeTasks": 0,
+    "hosts": 0,
+    "providerCalls": 0,
+    "iamPassRoleTrustNetworkKmsSecretChanges": [],
+    "automaticRetries": 0
+  },
+  "proposedFreshBuild": {
+    "status": "NOT RUN",
+    "maximumBuildsProposed": 1,
+    "concurrencyProposed": 1,
+    "runtimeTasks": 0,
+    "hosts": 0,
+    "providerCalls": 0,
+    "automaticRetries": 0,
+    "acceptedRemediationCommit": null,
+    "acceptedRemediationTree": null,
+    "completeSourceContextArchive": null,
+    "sourceArchiveBytesSha256S3Version": null,
+    "acceptedRecipeAndHelperClosure": null,
+    "acceptedRunnerAndCallerBinding": null,
+    "acceptedManifestAndBuildspecSha256": null,
+    "sourceSecurityLicenseCompatibilityAcceptance": null,
+    "supervisionDeadlineAndCleanupOwner": null,
+    "newResultKeyAndOwnedRunUuid": null,
+    "awsInfrastructureCostBoundUsd": null,
+    "exactActionApproval": null,
+    "iamPassRoleTrustNetworkKmsSecretChanges": []
+  },
+  "qualification": {
+    "status": "NOT RUN",
+    "acceptedConfigurationSchemaVersions": null,
+    "templateChangeSetDigests": null,
+    "endpointAndSecretReferenceBindings": null,
+    "admittedImageDigest": null,
+    "syntheticPostgresFixture": null,
+    "approvedModelProfileArn": null,
+    "ownedTaskHostVolumeIds": [],
+    "aggregateBedrockCapUsd": 10,
+    "historicalSpentUsd": null,
+    "historicalUnknownReservationsUsd": null,
+    "remainingUsd": null,
+    "newProviderCalls": 0,
+    "absoluteContainmentSeconds": 720,
+    "absoluteHardStopSeconds": 900,
+    "replacementResetsClock": false,
+    "unknownReservationsRemainCharged": true,
+    "currentFence": null,
+    "fenceTransitionsAuthorized": false,
+    "completeRecoveryCheckpoint": false,
+    "sessionStoreQualified": false
+  },
+  "cleanupRollback": {
+    "newOwnedCloudResources": [],
+    "awsRollback": "No AWS mutation was made; no remote rollback or deletion is applicable.",
+    "preserve": [
+      "All existing stacks, task definitions, images, versioned evidence and shared resources",
+      "Six existing VPC endpoint ENIs",
+      "Existing Aurora and Capiro services"
+    ],
+    "futureRun": "Require independently supervised cleanup binding before launch; uncertain launches are reconciled before any retry."
+  },
+  "nextRequestsToPrimary": [
+    "Supply immutable owner/key/version for historical scan SHA256 56a3d5f87336bf8f6a93111ecb8e976a75458f60e42dc5553fb01e460483f415.",
+    "Review full 47-row scan and component/package/notice obligations; provide accepted coherent remediation, compatibility evidence and exact complete source closure.",
+    "Supply reviewed compatible runner/Python/caller and complete source-authority binding without bypassing guards; canonical scan option/encoding repair now passes native Windows readback.",
+    "Supply accepted exact build manifest, bounded infrastructure spend/deadline/cleanup ownership and current exact-action approval.",
+    "Recover aggregate model ledger/reservations and current fence before any provider or runtime qualification."
+  ],
+  "production": {
+    "cutoverAuthorized": false,
+    "mergeAuthorized": false,
+    "g1Owner": "Primary Codex",
+    "releaseRequires": "Neo approval of exact tested candidate"
+  },
+  "acceptedReadOnlyReplacement": {
+    "backendCommit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+    "backendTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+    "acceptance": "docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md",
+    "scope": "Canonical ECR option and UTF-8 capture only; no builder, remediation, runtime or action admission",
+    "nativeReadBack": {
+      "status": "PASS_READ_ONLY_REACQUISITION",
+      "sourceCommit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "sourceTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+      "sourceAcceptance": "docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md",
+      "helperSha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+      "identity": {
+        "UserId": "AIDA6CVOOW5YCNOGMSALQ",
+        "Account": "967807252336",
+        "Arn": "arn:aws:iam::967807252336:user/capirocli"
+      },
+      "region": "us-east-1",
+      "raw": {
+        "path": "captures/ecr-canonical-repaired-scan/stdout.bin",
+        "bytes": 59680,
+        "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+        "encoding": "UTF-8",
+        "transformed": false
+      },
+      "findings": 47,
+      "severityCounts": {
+        "CRITICAL": 5,
+        "HIGH": 17,
+        "INFORMATIONAL": 0,
+        "LOW": 7,
+        "MEDIUM": 17,
+        "UNDEFINED": 1
+      },
+      "complete": true,
+      "nextTokenAbsent": true,
+      "scanMetadata": {
+        "findingSeverityCounts": {
+          "CRITICAL": 5,
+          "HIGH": 17,
+          "LOW": 7,
+          "MEDIUM": 17,
+          "UNDEFINED": 1
+        },
+        "imageScanCompletedAt": "2026-10-11T14:17:54-04:00",
+        "vulnerabilitySourceUpdatedAt": "2026-10-11T14:17:54-04:00"
+      },
+      "historicalScanRecovered": false,
+      "newScanRequested": false,
+      "scanAdmitted": false,
+      "runtimeAdmitted": false,
+      "g1Admitted": false,
+      "buildAuthorized": false,
+      "oldFailuresPreserved": true
+    },
+    "sourceBaselinePreserved": true
+  }
+}

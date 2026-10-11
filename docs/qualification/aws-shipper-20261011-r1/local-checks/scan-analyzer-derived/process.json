@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "C:\\Users\\neoma\\AppData\\Local\\hermes\\hermes-agent\\venv\\Scripts\\python.exe",
+    "-I",
+    "-B",
+    "-S",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo\\scripts\\qualification\\worker_image_scan.py",
+    "--scan-response",
+    "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\outputs\\aws-shipper-20261011-r1\\fresh-scan-derived-utf8.json",
+    "--scan-sha256",
+    "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+    "--image-digest",
+    "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+  "startedAt": "2026-10-11T22:34:20.534429+00:00",
+  "endedAt": "2026-10-11T22:34:20.699682+00:00",
+  "exitCode": 0,
+  "timeoutSeconds": 60,
+  "timedOut": false,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 66474,
+    "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

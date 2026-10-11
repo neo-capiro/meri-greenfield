@@ -1,0 +1,94 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "BuildInputs8BC01732",
+            "PhysicalResourceId": "meri-greenfield-qual-build-967807252336-us-east-1",
+            "ResourceType": "AWS::S3::Bucket",
+            "LastUpdatedTimestamp": "2026-10-09T19:17:13.695000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuildInputsPolicyDF117380",
+            "PhysicalResourceId": "meri-greenfield-qual-build-967807252336-us-east-1",
+            "ResourceType": "AWS::S3::BucketPolicy",
+            "LastUpdatedTimestamp": "2026-10-09T19:17:16.327000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuildKey89FE04E7",
+            "PhysicalResourceId": "1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+            "ResourceType": "AWS::KMS::Key",
+            "LastUpdatedTimestamp": "2026-10-09T19:16:58.325000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuildKeyAlias0EED660B",
+            "PhysicalResourceId": "alias/meri-greenfield/qualification-build",
+            "ResourceType": "AWS::KMS::Alias",
+            "LastUpdatedTimestamp": "2026-10-09T19:17:00.988000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuildLogs3759266E",
+            "PhysicalResourceId": "/meri-greenfield/qualification/build",
+            "ResourceType": "AWS::Logs::LogGroup",
+            "LastUpdatedTimestamp": "2026-10-09T19:16:53.339000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuilderRoleBBEBFA71",
+            "PhysicalResourceId": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-09T19:16:58.587000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "BuilderRoleDefaultPolicy8E4A45D4",
+            "PhysicalResourceId": "MeriG-Build-li2bg6StDekA",
+            "ResourceType": "AWS::IAM::Policy",
+            "LastUpdatedTimestamp": "2026-10-09T19:17:33.643000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ImageBuilderAD143916",
+            "PhysicalResourceId": "meri-greenfield-qualification-build",
+            "ResourceType": "AWS::CodeBuild::Project",
+            "LastUpdatedTimestamp": "2026-10-09T19:35:08.703000+00:00",
+            "ResourceStatus": "UPDATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "WorkerRepository770852D6",
+            "PhysicalResourceId": "meri-greenfield/qualification-worker",
+            "ResourceType": "AWS::ECR::Repository",
+            "LastUpdatedTimestamp": "2026-10-09T19:16:45.363000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

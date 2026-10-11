@@ -1,0 +1,140 @@
+{
+    "Subnets": [
+        {
+            "AvailabilityZoneId": "use1-az2",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "967807252336",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet2"
+                },
+                {
+                    "Key": "aws-cdk:subnet-name",
+                    "Value": "isolated-worker"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcisolatedworkerSubnet2SubnetD2755134"
+                },
+                {
+                    "Key": "aws-cdk:subnet-type",
+                    "Value": "Isolated"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:us-east-1:967807252336:subnet/subnet-06437dfaae1c217c3",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-06437dfaae1c217c3",
+            "State": "available",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "CidrBlock": "10.80.1.0/24",
+            "AvailableIpAddressCount": 248,
+            "AvailabilityZone": "us-east-1b",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        },
+        {
+            "AvailabilityZoneId": "use1-az1",
+            "MapCustomerOwnedIpOnLaunch": false,
+            "OwnerId": "967807252336",
+            "AssignIpv6AddressOnCreation": false,
+            "Ipv6CidrBlockAssociationSet": [],
+            "Tags": [
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "MeriGreenfield-QualificationRuntime/Vpc/isolated-workerSubnet1"
+                },
+                {
+                    "Key": "aws-cdk:subnet-name",
+                    "Value": "isolated-worker"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcisolatedworkerSubnet1Subnet28F09E14"
+                },
+                {
+                    "Key": "aws-cdk:subnet-type",
+                    "Value": "Isolated"
+                }
+            ],
+            "SubnetArn": "arn:aws:ec2:us-east-1:967807252336:subnet/subnet-0864c000b771df32c",
+            "EnableDns64": false,
+            "Ipv6Native": false,
+            "PrivateDnsNameOptionsOnLaunch": {
+                "HostnameType": "ip-name",
+                "EnableResourceNameDnsARecord": false,
+                "EnableResourceNameDnsAAAARecord": false
+            },
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "SubnetId": "subnet-0864c000b771df32c",
+            "State": "available",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "CidrBlock": "10.80.0.0/24",
+            "AvailableIpAddressCount": 248,
+            "AvailabilityZone": "us-east-1a",
+            "DefaultForAz": false,
+            "MapPublicIpOnLaunch": false
+        }
+    ]
+}

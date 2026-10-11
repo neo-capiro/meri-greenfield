@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Users\neoma\Documents\Codex\2026-10-11\for-meti-landing-page-can-you\work\aws-shipper-repo\scripts/qualification\worker_image_build.py", line 58, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "C:\Users\neoma\Documents\Codex\2026-10-11\for-meti-landing-page-can-you\work\aws-shipper-repo\scripts/qualification\worker_image_collect.py", line 51, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime

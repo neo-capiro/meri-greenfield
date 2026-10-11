@@ -1,0 +1,27 @@
+{
+  "argv": [
+    "gh",
+    "pr",
+    "view",
+    "4",
+    "--repo",
+    "neo-capiro/capiro-frontend",
+    "--json",
+    "number,url,state,isDraft,headRefName,headRefOid,baseRefName,updatedAt,statusCheckRollup,mergeStateStatus"
+  ],
+  "cwd": "C:\\Users\\neoma\\Documents\\Codex\\2026-10-11\\for-meti-landing-page-can-you\\work\\aws-shipper-repo",
+  "startedAt": "2026-10-11T22:35:01.920971+00:00",
+  "endedAt": "2026-10-11T22:35:02.454850+00:00",
+  "exitCode": 0,
+  "timedOut": false,
+  "timeoutSeconds": 60,
+  "automaticRetries": 0,
+  "stdout": {
+    "bytes": 312,
+    "sha256": "ff322ee1245f3cf933a040a73d42111945a5d5be4b80cbf4b52b3ab0bef59975"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

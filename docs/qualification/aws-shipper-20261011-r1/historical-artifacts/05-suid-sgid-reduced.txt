@@ -1,0 +1,11 @@
+/usr/bin/chage mode=2755
+/usr/bin/chfn mode=4755
+/usr/bin/chsh mode=4755
+/usr/bin/expiry mode=2755
+/usr/bin/gpasswd mode=4755
+/usr/bin/mount mode=4755
+/usr/bin/newgrp mode=4755
+/usr/bin/passwd mode=4755
+/usr/bin/su mode=4755
+/usr/bin/umount mode=4755
+/usr/sbin/unix_chkpwd mode=2755

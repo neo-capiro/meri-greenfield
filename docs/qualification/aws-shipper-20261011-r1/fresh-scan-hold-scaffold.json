@@ -1,0 +1,1833 @@
+{
+  "evidence": {
+    "bytes": 59680,
+    "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+    "registryId": "967807252336",
+    "repositoryName": "meri-greenfield/qualification-worker",
+    "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127"
+  },
+  "findingCount": 47,
+  "findings": [
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 0,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "4.0"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "A flaw was found in CUPS. When processing embedded job ticket comments within documents, the service improperly handles specific IPP attributes, causing an unhandled null pointer dereference. An unauthenticated attacker permitted to submit jobs to a shared printer queue can send a crafted Internet Printing Protocol (IPP) request to crash the print daemon, resulting in a temporary Denial of Service (DoS) for all printing services.",
+        "name": "CVE-2026-107655",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107655"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 1,
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "9.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "8.14.1-2+deb13u5"
+          },
+          {
+            "key": "package_name",
+            "value": "curl"
+          }
+        ],
+        "description": "When reusing a libcurl handle for sequential transfers driven by environment-variable proxy configuration, libcurl fails to clear the proxy authentication state between requests. Specifically, if the initial transfer authenticates against `proxyA` using Digest auth, a subsequent transfer routed through `proxyB` erroneously leaks the `Proxy-Authorization:` header intended solely for `proxyA`.",
+        "name": "CVE-2026-8927",
+        "severity": "CRITICAL",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-8927"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 2,
+      "observedProvider": {
+        "name": "gnupg2",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.7-21+deb13u1"
+          },
+          {
+            "key": "package_name",
+            "value": "gnupg2"
+          }
+        ],
+        "description": "In GnuPG before 2.5.17, a stack-based buffer overflow exists in tpm2daemon during handling of the PKDECRYPT command for TPM-backed RSA and ECC keys.",
+        "name": "CVE-2026-24882",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-24882"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 3,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.2"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS is an open source printing system for Linux and other Unix-like operating systems. In versions 2.4.16 and prior, an integer underflow vulnerability in _ppdCreateFromIPP() (cups/ppd-cache.c) allows any unprivileged local user to crash the cupsd root process by supplying a negative job-password-supported IPP attribute. The bounds check only caps the upper bound, so a negative value passes validation, is cast to size_t (wrapping to ~2^64), and is used as the length argument to memset() on a 33-byte stack buffer. This causes an immediate SIGSEGV in the cupsd root process. Combined with systemd's Restart=on-failure, an attacker can repeat the crash for sustained denial of service.",
+        "name": "CVE-2026-39314",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-39314"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 4,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "2.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:L/I:N/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "An argument injection flaw was found in CUPS. When email notification is configured, the CUPS scheduler accepts printer subscription requests that supply a mailto notify-recipient-uri. The mailto notifier passes the recipient address to the configured sendmail program without ensuring it cannot be interpreted as command-line options. A remote attacker who can reach the CUPS service could supply a crafted recipient value starting with \"-\" to influence sendmail behavior. Successful exploitation depends on the installed mail transfer agent and CUPS network exposure, and may lead to execution of attacker-controlled commands with the privileges of the CUPS service user.",
+        "name": "CVE-2026-105326",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-105326"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 5,
+      "observedProvider": {
+        "name": "zlib",
+        "version": "1.3.dfsg+really1.3.1-1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "8.3"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:N/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "1.3.dfsg+really1.3.1-1"
+          },
+          {
+            "key": "package_name",
+            "value": "zlib"
+          }
+        ],
+        "description": "zlib versions 1.3.1.2 through 1.3.2 contain a heap buffer overflow vulnerability in the gz_vacate() function when processing non-blocking gzwrite() operations with stale external buffer pointers. Attackers can trigger the overflow by calling gzprintf() or gzvprintf() after a write stall, causing an unchecked memmove() to write beyond the internal input buffer boundary.",
+        "name": "CVE-2026-85091",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-85091"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 6,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In xmlIO in libxml2 before 2.15.4, an inconsistency in xmlOutputWriteCallback and xmlBufUse causes negative lengths to reach write callbacks, aka a lack of a check for integer overflow before calling writecallback. This has security relevance for many types of uses of that length value within a callback.",
+        "name": "CVE-2026-86143",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86143"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 7,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "9.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "Improper certificate validation in gnutls v3.8.13 causes the application to accept certificates containing invalid extensions.",
+        "name": "CVE-2026-95210",
+        "severity": "CRITICAL",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-95210"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 8,
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "0.8-16"
+          },
+          {
+            "key": "package_name",
+            "value": "avahi"
+          }
+        ],
+        "description": "Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite. In 0.9-rc2 and earlier, avahi-daemon can be crashed by sending 2 unsolicited announcements with CNAME resource records 2 seconds apart.",
+        "name": "CVE-2025-68471",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2025-68471"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 9,
+      "observedProvider": {
+        "name": "expat",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "8.7"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "2.8.3-1~deb13u1"
+          },
+          {
+            "key": "package_name",
+            "value": "expat"
+          }
+        ],
+        "description": "Expat before 2.8.5 fails to validate that a high surrogate in UTF-16 input is followed by a low surrogate, allowing malformed UTF-16 sequences to be accepted. Attackers can supply UTF-16 encoded XML containing lone high surrogates that consume the following code unit, causing Expat to pass unpaired surrogates to applications built with XML_UNICODE and to silently replace input characters in other builds.",
+        "name": "CVE-2026-93990",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-93990"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 10,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In libxml2 before 2.15.4, there is a heap-based buffer overflow in xmlXPtrEvalXPtrPart because of xmlXPtrEval xpointer length saturation.",
+        "name": "CVE-2026-86142",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86142"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 11,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "Improper certificate validation in gnutls v3.8.13 causes the application to reject legitimate certificates for valid users, leading to a Denial of Service (DoS).",
+        "name": "CVE-2026-95184",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-95184"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 12,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "2.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS before 2.4.20 contains a double-free in printer-class management. When CUPS-Add-Modify-Class replaces an existing class member list, add_class() frees pclass->printers without clearing the pointer. If subsequent validation fails, the class retains the dangling pointer; CUPS-Delete-Class subsequently frees the same allocation in cupsdDeletePrinter(). A client authorized to modify and delete classes can cause scheduler-wide denial of service. The default policy requires @SYSTEM privileges.",
+        "name": "CVE-2026-107886",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107886"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 13,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "8.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "A flaw was found in libxml2 with Python bindings enabled. A remote attacker could exploit this vulnerability by providing a specially crafted XML document containing a Document Type Definition (DTD) with enumerated attribute values. This triggers a double-free error in the SAX attributeDecl callback handler, where a string is freed twice. This flaw can lead to a denial of service (DoS) due to a reproducible crash in Python applications using the libxml2 SAX bindings.",
+        "name": "CVE-2026-74860",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-74860"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 14,
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "0.8-16"
+          },
+          {
+            "key": "package_name",
+            "value": "avahi"
+          }
+        ],
+        "description": "A flaw was found in the Avahi-daemon, where it initializes DNS transaction IDs randomly only once at startup, incrementing them sequentially after that. This predictable behavior facilitates DNS spoofing attacks, allowing attackers to guess transaction IDs.",
+        "name": "CVE-2024-52616",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2024-52616"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 15,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.2"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS is an open source printing system for Linux and other Unix-like operating systems. In versions 2.4.16 and prior, a use-after-free vulnerability exists in the CUPS scheduler (cupsd) when temporary printers are automatically deleted. cupsdDeleteTemporaryPrinters() in scheduler/printers.c calls cupsdDeletePrinter() without first expiring subscriptions that reference the printer, leaving cupsd_subscription_t.dest as a dangling pointer to freed heap memory. The dangling pointer is subsequently dereferenced at multiple code sites, causing a crash (denial of service) of the cupsd daemon. With heap grooming, this can be leveraged for code execution.",
+        "name": "CVE-2026-39316",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-39316"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 16,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In libxml2 before 2.15.4, xmlFAParsePosCharGroup has an out-of-bounds read, aka an out-of-bounds read in the NXT macro in xmlregexp.",
+        "name": "CVE-2026-86137",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86137"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 17,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "9.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "A hostname verification bypass in GnuTLS v3.8.13 allows attackers to circumvent the Common Name fallback mechanism and eavesdrop on communications via a crafted certificate.",
+        "name": "CVE-2026-88647",
+        "severity": "CRITICAL",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-88647"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 18,
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "0.8-16"
+          },
+          {
+            "key": "package_name",
+            "value": "avahi"
+          }
+        ],
+        "description": "Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite. In 0.9-rc2 and earlier, avahi-daemon can be crashed by sending unsolicited announcements containing CNAME resource records pointing it to resource records with short TTLs. As soon as they expire avahi-daemon crashes.",
+        "name": "CVE-2025-68468",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2025-68468"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 19,
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "0.8-16"
+          },
+          {
+            "key": "package_name",
+            "value": "avahi"
+          }
+        ],
+        "description": "Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite. In versions 0.9rc2 and below, avahi-daemon can be crashed via a segmentation fault by sending an unsolicited mDNS response containing a recursive CNAME record, where the alias and canonical name point to the same domain (e.g., \"h.local\" as a CNAME for \"h.local\"). This causes unbounded recursion in the lookup_handle_cname function, leading to stack exhaustion. The vulnerability affects record browsers where AVAHI_LOOKUP_USE_MULTICAST is set explicitly, which includes record browsers created by resolvers used by nss-mdns. This issue is patched in commit 78eab31128479f06e30beb8c1cbf99dd921e2524.",
+        "name": "CVE-2026-24401",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-24401"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 20,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "3.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "xmlregexp in libxml2 before 2.15.4 has a NULL pointer dereference in xmlRegNewParserCtxt after a strdup failure, i.e., it does not calculate a string length after NULL checking.",
+        "name": "CVE-2026-86141",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86141"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 21,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "Incomplete X.509 implementation in GnuTLS v3.8.13 allows attackers controlling a subordinate Certificate Authority to bypass cross-domain PKI restrictions and issue unauthorized certificates.",
+        "name": "CVE-2026-88648",
+        "severity": "UNDEFINED",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-88648"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 22,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "3.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS before 2.4.20 contains a NULL pointer dereference caused by repeated IPP group tags in job-creation requests. IPP parsing creates unnamed separator attributes with IPP_TAG_ZERO, but add_job() converts these separators to IPP_TAG_JOB. During job startup, get_options()/ipp_length() subsequently calls strlen() on a NULL attribute name, terminating cupsd and disrupting all queues. A single crafted Print-Job request can trigger the crash when the client can reach the scheduler and submit jobs to an accepting, enabled queue supporting the submitted document format. Anonymous submission is possible when permitted by listener and access-control configuration.",
+        "name": "CVE-2026-107890",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107890"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 23,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "6.1"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:A/AC:L/AT:P/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS is an open source printing system for Linux and other Unix-like operating systems. In versions 2.4.16 and prior, in a network-exposed cupsd with a shared target queue, an unauthorized client can send a Print-Job to that shared PostScript queue without authentication. The server accepts a page-border value supplied as textWithoutLanguage, preserves an embedded newline through option escaping and reparse, and then reparses the resulting second-line PPD: text as a trusted scheduler control record. A follow-up raw print job can therefore make the server execute an attacker-chosen existing binary such as /usr/bin/vim as lp. At time of publication, there are no publicly available patches.",
+        "name": "CVE-2026-34980",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-34980"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 24,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS before 2.4.20 contains a NULL pointer dereference in cupsdCheckJobs() when a job marked job-held-on-create refers to a temporary printer that has been automatically deleted. Temporary-printer cleanup can remove the destination without canceling its held jobs, and the scheduler dereferences the NULL result of cupsdFindDest() while checking holding_new_jobs. This terminates cupsd and interrupts all queues managed by that process. In some plausible scenarios, an unprivileged submission can trigger this.",
+        "name": "CVE-2026-107888",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107888"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 25,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "An issue in gnutls v3.8.13 causes legitimate CA certificates to be rejected, leading to a Denial of Service (DoS).",
+        "name": "CVE-2026-95209",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-95209"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 26,
+      "observedProvider": {
+        "name": "cyrus-sasl2",
+        "version": "2.1.28+dfsg1-9"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.1.28+dfsg1-9"
+          },
+          {
+            "key": "package_name",
+            "value": "cyrus-sasl2"
+          }
+        ],
+        "description": "A heap-based buffer overflow flaw was found in Cyrus SASL. The add_to_challenge() function in the DIGEST-MD5 plugin computes the size of the buffer needed for a challenge/response field before DIGEST-MD5 quoting is applied, but does not recompute that size when quoting (escaping special characters) makes the value longer. The under-sized buffer is then passed to strcat(), causing a heap-based out-of-bounds write whose size depends on attacker-controlled input. A malicious or on-path DIGEST-MD5 (or HTTP Digest) server can trigger this flaw in a connecting client by supplying a crafted challenge field, such as realm or nonce, most likely resulting in a crash of the client application.",
+        "name": "CVE-2026-107161",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107161"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 27,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "3.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS through 2.4.20 contains a resource-exhaustion vulnerability in the submission-timeout handling of cupsdCheckJobs(). The scheduler suppresses timeout processing for all pending jobs whenever any client connection has an in-flight Send-Document operation, without matching that connection to the job being examined. A client allowed to reach the IPP service can hold an incomplete HTTP request containing parsed Send-Document headers before operation authorization, preventing unrelated incomplete jobs from expiring. Where Create-Job submission is allowed, incomplete jobs can accumulate until MaxJobs is exhausted and further legitimate print submissions are rejected. The suppression ends when the held connection closes.",
+        "name": "CVE-2026-107885",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107885"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 28,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In libxml2 before 2.15.4, xmlURIEscapeStr in uri.c has an integer overflow.",
+        "name": "CVE-2026-86139",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86139"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 29,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In xinclude in libxml2 before 2.15.4, xmlXIncludeProcess and xmlXIncludeProcessTree do not propagate parseFlags. This has security relevance for, for example, the XML_PARSE_NONET flag, if (without it) a custom resource loader accesses the internet and triggers XML external entity injection, SSRF, or a denial of service (e.g., for an attacker-controlled internet resource that is intentionally slow).",
+        "name": "CVE-2026-86144",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86144"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 30,
+      "observedProvider": {
+        "name": "poppler",
+        "version": "25.03.0-5+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "8.3"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:L/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "25.03.0-5+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "poppler"
+          }
+        ],
+        "description": "Poppler 0.42.0 through 26.10.0 contains a stack-based buffer overflow in Decrypt::revision6Hash() that allows attackers controlling the password to overwrite stack memory when opening AESV3/R6 encrypted PDFs. Attackers can supply a password longer than 127 bytes through applications using the libpoppler, libpoppler-glib or C++ API to overflow the K1 and E buffers, crashing the process or corrupting memory.",
+        "name": "CVE-2026-107705",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-107705"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 31,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "4.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "The cupsUTF32ToUTF8() function in CUPS's cups/transcode.c lacks a source-length bound and can read past the end of the source buffer, resulting in a heap out-of-bounds read. This is reachable via SNMP supply-description parsing in backend/snmp-supplies.c with attacker-controlled content.",
+        "name": "CVE-2026-87875",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-87875"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 32,
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "9.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "8.14.1-2+deb13u5"
+          },
+          {
+            "key": "package_name",
+            "value": "curl"
+          }
+        ],
+        "description": "A flaw in curl\u2019s cookie parsing logic allows a malicious HTTP server to set \"super cookies\" that bypass the Public Suffix List check. This enables an attacker-controlled origin to inject cookies that curl subsequently scopes and transmits to unrelated third-party domains.",
+        "name": "CVE-2026-8924",
+        "severity": "CRITICAL",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-8924"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 33,
+      "observedProvider": {
+        "name": "expat",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "8.3"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:N/VA:L/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "2.8.3-1~deb13u1"
+          },
+          {
+            "key": "package_name",
+            "value": "expat"
+          }
+        ],
+        "description": "libexpat before commit 13c5f63 contains a heap buffer over-read vulnerability in xmlparse.c. XML_ParseBuffer advances the parse buffer end with parser->m_bufferEnd += len using a caller-supplied length that is not validated against the allocated buffer size, so repeated XML_ParseBuffer calls move m_bufferEnd past the end of the heap allocation and subsequent parsing reads out of bounds. Reaching this path requires a parse buffer to already be present; otherwise XML_ParseBuffer returns XML_ERROR_NO_BUFFER. A buffer is present after a prior call to XML_GetBuffer, either directly (the common case) or indirectly through a prior XML_Parse call that allocates the buffer internally. The over-read discloses adjacent heap memory to the calling application, recovering heap pointers, libc function pointers, and code pointers sufficient to defeat ASLR and build further exploitation primitives.",
+        "name": "CVE-2026-77214",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-77214"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 34,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.3"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS is an open source printing system for Linux and other Unix-like operating systems. In versions 2.4.16 and prior, there is a heap-based buffer overflow in the CUPS scheduler when building filter option strings from job attribute. At time of publication, there are no publicly available patches.",
+        "name": "CVE-2026-34979",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-34979"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 35,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.4"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:A/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:L"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "OpenPrinting CUPS is an open source printing system for Linux and other Unix-like operating systems. Prior to 2.4.17, a network-adjacent attacker can send a crafted SNMP response to the CUPS SNMP backend that causes an out-of-bounds read of up to 176 bytes past a stack buffer. The leaked memory is converted from UTF-16 to UTF-8 and stored as printer supply description strings, which are subsequently visible to authenticated users via IPP Get-Printer-Attributes responses and the CUPS web interface. This vulnerability is fixed in 2.4.17.",
+        "name": "CVE-2026-41079",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-41079"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 36,
+      "observedProvider": {
+        "name": "tiff",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "6.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:R/S:U/C:L/I:L/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "4.7.0-3+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "tiff"
+          }
+        ],
+        "description": "A flaw was found in libtiff. A heap-buffer overflow vulnerability exists in the `tiff2pdf` utility due to an integer truncation error when processing crafted BigTIFF files. An attacker can provide a specially crafted BigTIFF file, causing a 64-bit `StripByteCounts` value to be truncated to a 32-bit integer. This leads to an undersized memory allocation and a subsequent out-of-bounds memory copy, resulting in a crash and severe memory corruption.",
+        "name": "CVE-2026-18495",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-18495"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 37,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In libxml2 before 2.15.4, xmlDictAddQString in dict.c has an integer overflow and resultant heap-based buffer overflow.",
+        "name": "CVE-2026-86138",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86138"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 38,
+      "observedProvider": {
+        "name": "tiff",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "9.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "4.7.0-3+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "tiff"
+          }
+        ],
+        "description": "An issue in libtiff 85f2ac8e0b01cb7db2bbecf4a3b891bdbef67938 allows an attacker to execute arbitrary code via the process_command_opts() function in tools/tiffcrop.c",
+        "name": "CVE-2026-52490",
+        "severity": "CRITICAL",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-52490"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 39,
+      "observedProvider": {
+        "name": "gnutls28",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "3.8.9-3+deb13u4"
+          },
+          {
+            "key": "package_name",
+            "value": "gnutls28"
+          }
+        ],
+        "description": "An issue in gnutls v.3.8.13 allows an attacker to obtain sensitive information via failing to reject end-entity X.509 certificates that contain a contradictory combination of Key Usage (KU) and Extended Key Usage (EKU)",
+        "name": "CVE-2026-67693",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-67693"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 40,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "7.8"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "In libxml2 before 2.15.4, xmlSnprintfElements in valid.c has a strcat stack-based buffer overflow.",
+        "name": "CVE-2026-86140",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-86140"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 41,
+      "observedProvider": {
+        "name": "cups",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "3.0"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:A/AC:L/PR:L/UI:R/S:U/C:L/I:N/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.10-3+deb13u2"
+          },
+          {
+            "key": "package_name",
+            "value": "cups"
+          }
+        ],
+        "description": "Two case-insensitive comparisons on request-derived usernames outside the main authorization path in CUPS's scheduler (printer ACL validation and private-attribute filtering) could allow bypass of username-based access controls in certain configurations.",
+        "name": "CVE-2026-87876",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-87876"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 42,
+      "observedProvider": {
+        "name": "gnupg2",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "2.9"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "2.4.7-21+deb13u1"
+          },
+          {
+            "key": "package_name",
+            "value": "gnupg2"
+          }
+        ],
+        "description": "CMS (Cryptographic Message Syntax) parsing in gpgsm in GnuPG through 2.5.20 mishandles the CMS format for AES-GCM because aes-ICVlen is supposed to be 12 bytes but 4 bytes is accepted. NOTE: this is related to CVE-2026-34182.",
+        "name": "CVE-2026-57062",
+        "severity": "LOW",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-57062"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 43,
+      "observedProvider": {
+        "name": "libxml2",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+          },
+          {
+            "key": "package_name",
+            "value": "libxml2"
+          }
+        ],
+        "description": "A flaw was found in libxml2. A local user or an attacker providing a specially crafted XML catalog can trigger a NULL pointer dereference during XML catalog parsing. This occurs when a `nextCatalog` element lacks its mandatory `catalog` attribute, leading to the application crashing and causing a Denial of Service (DoS).",
+        "name": "CVE-2026-76781",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-76781"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 44,
+      "observedProvider": {
+        "name": "curl",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "8.1"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          },
+          {
+            "key": "package_version",
+            "value": "8.14.1-2+deb13u5"
+          },
+          {
+            "key": "package_name",
+            "value": "curl"
+          }
+        ],
+        "description": "A vulnerability exists where a new transfer that uses STARTTLS to upgrade the connection might reuse an existing live connection even though the TLS configuration mismatches so it should not.",
+        "name": "CVE-2026-8286",
+        "severity": "HIGH",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-8286"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 45,
+      "observedProvider": {
+        "name": "nghttp2",
+        "version": "1.64.0-1.1+deb13u1"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS4_SCORE",
+            "value": "6.3"
+          },
+          {
+            "key": "CVSS4_VECTOR",
+            "value": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:N/SI:L/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X"
+          },
+          {
+            "key": "package_version",
+            "value": "1.64.0-1.1+deb13u1"
+          },
+          {
+            "key": "package_name",
+            "value": "nghttp2"
+          }
+        ],
+        "description": "nghttp2's nghttpx proxy through 1.69.0 forwards an HTTP/1.1 Upgrade request that also carries a Content-Length header and body onto reusable keep-alive backend connections, re-adding the Upgrade and Connection headers while passing Content-Length verbatim. A backend that resolves the resulting ambiguous message in the attacker's favor enables HTTP request/response smuggling and cross-client response-queue poisoning.",
+        "name": "CVE-2026-58055",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2026-58055"
+      }
+    },
+    {
+      "disposition": {
+        "embeddedCopyCoverage": null,
+        "ownerDecision": null,
+        "status": "OPEN",
+        "supportedFix": null,
+        "vendorApplicability": null
+      },
+      "index": 46,
+      "observedProvider": {
+        "name": "avahi",
+        "version": "0.8-16"
+      },
+      "rawFinding": {
+        "attributes": [
+          {
+            "key": "CVSS3_SCORE",
+            "value": "5.5"
+          },
+          {
+            "key": "CVSS3_VECTOR",
+            "value": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H"
+          },
+          {
+            "key": "package_version",
+            "value": "0.8-16"
+          },
+          {
+            "key": "package_name",
+            "value": "avahi"
+          }
+        ],
+        "description": "Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite. In 0.9-rc2 and earlier, an unprivileged local users can crash avahi-daemon (with wide-area disabled) by creating record browsers with the AVAHI_LOOKUP_USE_WIDE_AREA flag set via D-Bus. This can be done by either calling the RecordBrowserNew method directly or creating hostname/address/service resolvers/browsers that create those browsers internally themselves.",
+        "name": "CVE-2025-68276",
+        "severity": "MEDIUM",
+        "uri": "https://nvd.nist.gov/vuln/detail/CVE-2025-68276"
+      }
+    }
+  ],
+  "g1Admitted": false,
+  "limitations": [
+    "External byte pins do not authenticate the service origin or prove freshness.",
+    "Every finding requires separate vendor, applicability and owner disposition.",
+    "OS scan completeness does not establish bundled-component or notice closure.",
+    "Previously unresolved findings remain obligations even if a later scan omits them.",
+    "Zero findings grant no security, runtime or G1 admission."
+  ],
+  "rawResponseMetadata": {
+    "imageId": {
+      "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac"
+    },
+    "imageScanStatus": {
+      "description": "The scan was completed successfully.",
+      "status": "COMPLETE"
+    },
+    "registryId": "967807252336",
+    "repositoryName": "meri-greenfield/qualification-worker"
+  },
+  "runtimeAdmitted": false,
+  "scanAdmitted": false,
+  "scanEvidenceComplete": true,
+  "scanMetadata": {
+    "findingSeverityCounts": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "imageScanCompletedAt": "2026-10-11T14:17:54-04:00",
+    "vulnerabilitySourceUpdatedAt": "2026-10-11T14:17:54-04:00"
+  },
+  "schema": "meri-worker-basic-scan-preparation/1",
+  "severityCounts": {
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "INFORMATIONAL": 0,
+    "LOW": 7,
+    "MEDIUM": 17,
+    "UNDEFINED": 1
+  },
+  "status": "SOURCE_ONLY_HOLD"
+}

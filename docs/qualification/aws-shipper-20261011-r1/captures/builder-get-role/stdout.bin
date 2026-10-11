@@ -1,0 +1,53 @@
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "RoleId": "AROA6CVOOW5YATAVJGRSF",
+        "Arn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationBui-BuilderRoleBBEBFA71-8G97EeNmFM0H",
+        "CreateDate": "2026-10-09T19:16:42+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "codebuild.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:SourceAccount": "967807252336"
+                        },
+                        "ArnEquals": {
+                            "aws:SourceArn": "arn:aws:codebuild:us-east-1:967807252336:project/meri-greenfield-qualification-build"
+                        }
+                    }
+                }
+            ]
+        },
+        "Description": "Trusted image builder; only new qualification input bucket, ECR repository, logs and key",
+        "MaxSessionDuration": 3600,
+        "Tags": [
+            {
+                "Key": "Project",
+                "Value": "meri-greenfield"
+            },
+            {
+                "Key": "Environment",
+                "Value": "qualification"
+            },
+            {
+                "Key": "Owner",
+                "Value": "Codex-integration"
+            },
+            {
+                "Key": "SourcesEnabled",
+                "Value": "false"
+            }
+        ],
+        "RoleLastUsed": {
+            "LastUsedDate": "2026-10-11T18:17:14+00:00",
+            "Region": "us-east-1"
+        }
+    }
+}

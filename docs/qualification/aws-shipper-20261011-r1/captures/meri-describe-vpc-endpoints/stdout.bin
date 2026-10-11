@@ -1,0 +1,343 @@
+{
+    "VpcEndpoints": [
+        {
+            "VpcEndpointId": "vpce-07962a243f84c3591",
+            "VpcEndpointType": "Gateway",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "ServiceName": "com.amazonaws.us-east-1.s3",
+            "State": "available",
+            "PolicyDocument": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::prod-us-east-1-starport-layer-bucket/*\"}]}",
+            "RouteTableIds": [
+                "rtb-0a062faae50d3da2a",
+                "rtb-0cdf44d0066d39b23"
+            ],
+            "SubnetIds": [],
+            "Groups": [],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "service-defined"
+            },
+            "PrivateDnsEnabled": false,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [],
+            "DnsEntries": [],
+            "CreationTimestamp": "2026-10-09T20:34:52+00:00",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcImageLayers1A6FFEBB"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "meri-greenfield-qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "OwnerId": "967807252336",
+            "ServiceRegion": "us-east-1"
+        },
+        {
+            "VpcEndpointId": "vpce-057935580d0a956a9",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "ServiceName": "com.amazonaws.us-east-1.logs",
+            "State": "available",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-06437dfaae1c217c3",
+                "subnet-0864c000b771df32c"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-0d99c7ca63e7e0e7b",
+                "eni-062d297b2dfd889ff"
+            ],
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-057935580d0a956a9-iay0ksoa.logs.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-057935580d0a956a9-iay0ksoa-us-east-1a.logs.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-057935580d0a956a9-iay0ksoa-us-east-1b.logs.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "logs.us-east-1.amazonaws.com",
+                    "HostedZoneId": "Z03793121TQR0CN68EEJZ"
+                },
+                {
+                    "DnsName": "streaming-logs.us-east-1.amazonaws.com",
+                    "HostedZoneId": "Z04543191V14YSOH1VETR"
+                },
+                {
+                    "DnsName": "streaming-logs.us-east-1.api.aws",
+                    "HostedZoneId": "Z07961483QFOBH87EWUNU"
+                },
+                {
+                    "DnsName": "logs.us-east-1.api.aws",
+                    "HostedZoneId": "Z0391347NS0XBZ1I8R24"
+                }
+            ],
+            "CreationTimestamp": "2026-10-09T20:35:00.700000+00:00",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcCloudWatchLogs25679485"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "meri-greenfield-qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "OwnerId": "967807252336",
+            "ServiceRegion": "us-east-1"
+        },
+        {
+            "VpcEndpointId": "vpce-0ee3a5130a81353a5",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "ServiceName": "com.amazonaws.us-east-1.ecr.dkr",
+            "State": "available",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-06437dfaae1c217c3",
+                "subnet-0864c000b771df32c"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-0c7fb6cc9aa576a4a",
+                "eni-0f281ba5e49513bbc"
+            ],
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim.dkr.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim-us-east-1b.dkr.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-0ee3a5130a81353a5-4wv6hkim-us-east-1a.dkr.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "dkr.ecr.us-east-1.amazonaws.com",
+                    "HostedZoneId": "Z0379268ZH24PUU5HMJU"
+                },
+                {
+                    "DnsName": "*.dkr.ecr.us-east-1.amazonaws.com",
+                    "HostedZoneId": "Z0379268ZH24PUU5HMJU"
+                },
+                {
+                    "DnsName": "dkr-ecr.us-east-1.on.aws",
+                    "HostedZoneId": "Z03913762QQ8GW1YGV9VF"
+                },
+                {
+                    "DnsName": "*.dkr-ecr.us-east-1.on.aws",
+                    "HostedZoneId": "Z03913762QQ8GW1YGV9VF"
+                }
+            ],
+            "CreationTimestamp": "2026-10-09T20:35:00.751000+00:00",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcEcrDocker053FD29B"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "meri-greenfield-qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "OwnerId": "967807252336",
+            "ServiceRegion": "us-east-1"
+        },
+        {
+            "VpcEndpointId": "vpce-0803bf544be06e51f",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-06e1941747e798f0a",
+            "ServiceName": "com.amazonaws.us-east-1.ecr.api",
+            "State": "available",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-06437dfaae1c217c3",
+                "subnet-0864c000b771df32c"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-030c8a7ce5adea043",
+                    "GroupName": "MeriGreenfield-QualificationRuntime-EndpointSecurityGroupF840B798-BzWagTXCKxFG"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-0940bdfbba3d50d5a",
+                "eni-079c9e391bd7d89c3"
+            ],
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx.api.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx-us-east-1a.api.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "vpce-0803bf544be06e51f-eb8qm2zx-us-east-1b.api.ecr.us-east-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z7HUB22UULQXV"
+                },
+                {
+                    "DnsName": "api.ecr.us-east-1.amazonaws.com",
+                    "HostedZoneId": "Z0129288NU13M9OK8OAC"
+                },
+                {
+                    "DnsName": "ecr.us-east-1.api.aws",
+                    "HostedZoneId": "Z07952803GPQA7O4IMGE6"
+                }
+            ],
+            "CreationTimestamp": "2026-10-09T20:35:00.999000+00:00",
+            "Tags": [
+                {
+                    "Key": "Project",
+                    "Value": "meri-greenfield"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-name",
+                    "Value": "MeriGreenfield-QualificationRuntime"
+                },
+                {
+                    "Key": "Owner",
+                    "Value": "Codex-integration"
+                },
+                {
+                    "Key": "aws:cloudformation:stack-id",
+                    "Value": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-QualificationRuntime/9e1ca130-c420-11f1-97fc-12787c3aadc7"
+                },
+                {
+                    "Key": "Environment",
+                    "Value": "qualification"
+                },
+                {
+                    "Key": "aws:cloudformation:logical-id",
+                    "Value": "VpcEcrApi2DC95EDF"
+                },
+                {
+                    "Key": "Name",
+                    "Value": "meri-greenfield-qualification"
+                },
+                {
+                    "Key": "SourcesEnabled",
+                    "Value": "false"
+                }
+            ],
+            "OwnerId": "967807252336",
+            "ServiceRegion": "us-east-1"
+        }
+    ]
+}

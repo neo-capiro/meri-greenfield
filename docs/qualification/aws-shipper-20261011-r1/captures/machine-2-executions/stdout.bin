@@ -1,0 +1,14 @@
+{
+    "executions": [
+        {
+            "executionArn": "arn:aws:states:us-east-1:967807252336:execution:meri-greenfield-native-enforcement-sdk-20261010:meri-native-sdk-f1bdbc76-068f-4d04-bc91-5abd2608f05f",
+            "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010",
+            "name": "meri-native-sdk-f1bdbc76-068f-4d04-bc91-5abd2608f05f",
+            "status": "SUCCEEDED",
+            "startDate": "2026-10-10T18:33:28.180000-04:00",
+            "stopDate": "2026-10-10T18:35:01.086000-04:00",
+            "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:meri-greenfield-native-enforcement-sdk-20261010:1",
+            "redriveCount": 0
+        }
+    ]
+}

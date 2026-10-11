@@ -1,0 +1,101 @@
+{
+    "imageDetails": [
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:7bc1da22e7791a850e9a1165a4669fbbf586fa8dd34160db3e2d4712ef0f873a",
+            "imageTags": [
+                "host-assets-b0d92dbe19d281e099cc6573ec4d7d410b390aba"
+            ],
+            "imageSizeInBytes": 49853,
+            "imagePushedAt": "2026-10-10T11:12:30.563000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-10T11:18:38.668000-04:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:f669d3602892c36c7a829bc3e2747124fa2e1dd5397af193f7b893afdd19b837",
+            "imageTags": [
+                "f4f008f6afaf0517ea64822d008a39823e0b0032"
+            ],
+            "imageSizeInBytes": 1079034372,
+            "imagePushedAt": "2026-10-09T16:31:14.625000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-09T16:32:54.255000-04:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
+            "imageTags": [
+                "worker-0be04d0799c9c527e300b47c19176cddb0eaa231-88ac3e91-6a31-4df6-8b13-e5ee39940790"
+            ],
+            "imageSizeInBytes": 1149956864,
+            "imagePushedAt": "2026-10-09T23:57:01.550000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-10T17:59:42.491000-04:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+            "imageTags": [
+                "sdk-60941654423b4118989b7bfc772ad11b383972d0-441596ba-edd3-4e1b-ba0a-eee53c9c4af4"
+            ],
+            "imageSizeInBytes": 1150340321,
+            "imagePushedAt": "2026-10-11T14:17:11.551000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-11T14:17:13.210000-04:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:7327f04575b09a633730b0ffe4b5fdeeeffe151a5c0db6dc027cc6edb8960d75",
+            "imageTags": [
+                "8785118bff574e2cf3f520a542f6a7b56e075f9e"
+            ],
+            "imageSizeInBytes": 1080150331,
+            "imagePushedAt": "2026-10-09T17:48:52.708000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-09T17:51:01.244000-04:00",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:4bb191b4d2a9e0faa3a4580404ae6cd71e7437bc07c863628c72dc97a73ad353",
+            "imageTags": [
+                "host-assets-e23667a351ed3daaac9b2f95219e9c06f0510027"
+            ],
+            "imageSizeInBytes": 49872,
+            "imagePushedAt": "2026-10-10T10:40:02.104000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "imageStatus": "ACTIVE"
+        },
+        {
+            "registryId": "967807252336",
+            "repositoryName": "meri-greenfield/qualification-worker",
+            "imageDigest": "sha256:527e6d80d0e0cb9b3369f7f75d22475b96615bee171fb6fb6d57f31ce925d74e",
+            "imageTags": [
+                "worker-6176ce11217213f1f3b30801349864106c85a21a-87890e41-3f88-4b4d-b1d3-aaa9b85aaa9b"
+            ],
+            "imageSizeInBytes": 1149958196,
+            "imagePushedAt": "2026-10-09T22:23:13.379000-04:00",
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json",
+            "lastRecordedPullTime": "2026-10-09T22:28:25.980000-04:00",
+            "imageStatus": "ACTIVE"
+        }
+    ]
+}

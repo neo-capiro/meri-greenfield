@@ -1,0 +1,174 @@
+{
+    "taskDefinition": {
+        "taskDefinitionArn": "arn:aws:ecs:us-east-1:967807252336:task-definition/meri-greenfield-qualification-sdk:2",
+        "containerDefinitions": [
+            {
+                "name": "worker",
+                "image": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:bf55fdab91136344688e2c804598546e521b24d6cdbf4fde9e6a7131e6c2ec9c",
+                "cpu": 0,
+                "links": [],
+                "portMappings": [],
+                "essential": true,
+                "entryPoint": [
+                    "node"
+                ],
+                "command": [
+                    "/opt/meri-worker/probes/sdk-capture.mjs"
+                ],
+                "environment": [
+                    {
+                        "name": "MERI_QUALIFICATION_ONLY",
+                        "value": "true"
+                    },
+                    {
+                        "name": "CLAUDE_CONFIG_DIR",
+                        "value": "/workspace/config"
+                    },
+                    {
+                        "name": "MERI_SOURCES_ENABLED",
+                        "value": "false"
+                    },
+                    {
+                        "name": "CHROMIUM_SANDBOX_REQUIRED",
+                        "value": "true"
+                    },
+                    {
+                        "name": "PLAYWRIGHT_BROWSERS_PATH",
+                        "value": "/opt/meri-browsers"
+                    },
+                    {
+                        "name": "HOME",
+                        "value": "/workspace/home"
+                    },
+                    {
+                        "name": "TMPDIR",
+                        "value": "/tmp"
+                    }
+                ],
+                "environmentFiles": [],
+                "mountPoints": [
+                    {
+                        "sourceVolume": "workspace",
+                        "containerPath": "/workspace",
+                        "readOnly": false
+                    },
+                    {
+                        "sourceVolume": "tmp",
+                        "containerPath": "/tmp",
+                        "readOnly": false
+                    }
+                ],
+                "volumesFrom": [],
+                "linuxParameters": {
+                    "capabilities": {
+                        "add": [],
+                        "drop": [
+                            "ALL"
+                        ]
+                    },
+                    "devices": [],
+                    "tmpfs": []
+                },
+                "secrets": [],
+                "stopTimeout": 60,
+                "user": "10001:10001",
+                "privileged": false,
+                "readonlyRootFilesystem": true,
+                "dnsServers": [],
+                "dnsSearchDomains": [],
+                "extraHosts": [],
+                "dockerSecurityOptions": [],
+                "dockerLabels": {},
+                "ulimits": [],
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-group": "/meri-greenfield/qualification/runtime",
+                        "mode": "blocking",
+                        "awslogs-region": "us-east-1",
+                        "awslogs-stream-prefix": "qualification-sdk"
+                    },
+                    "secretOptions": []
+                },
+                "systemControls": [],
+                "credentialSpecs": []
+            }
+        ],
+        "family": "meri-greenfield-qualification-sdk",
+        "executionRoleArn": "arn:aws:iam::967807252336:role/MeriGreenfield-QualificationR-ExecutionRole605A040B-kL3yc2CIalc3",
+        "networkMode": "awsvpc",
+        "revision": 2,
+        "volumes": [
+            {
+                "name": "tmp",
+                "host": {}
+            },
+            {
+                "name": "workspace",
+                "host": {}
+            }
+        ],
+        "status": "ACTIVE",
+        "requiresAttributes": [
+            {
+                "name": "ecs.capability.execution-role-awslogs"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.ecr-auth"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.22"
+            },
+            {
+                "name": "ecs.capability.execution-role-ecr-pull"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+            },
+            {
+                "name": "ecs.capability.task-eni"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+            },
+            {
+                "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+            },
+            {
+                "name": "ecs.capability.container-ordering"
+            },
+            {
+                "name": "ecs.capability.extensible-ephemeral-storage"
+            }
+        ],
+        "placementConstraints": [],
+        "compatibilities": [
+            "EC2",
+            "FARGATE"
+        ],
+        "runtimePlatform": {
+            "cpuArchitecture": "X86_64",
+            "operatingSystemFamily": "LINUX"
+        },
+        "requiresCompatibilities": [
+            "FARGATE"
+        ],
+        "cpu": "2048",
+        "memory": "8192",
+        "registeredAt": "2026-10-10T10:24:04.133000-04:00",
+        "registeredBy": "arn:aws:iam::967807252336:user/capirocli",
+        "ephemeralStorage": {
+            "sizeInGiB": 50
+        }
+    },
+    "tags": []
+}

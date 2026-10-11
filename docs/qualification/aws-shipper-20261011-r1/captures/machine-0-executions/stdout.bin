@@ -1,0 +1,14 @@
+{
+    "executions": [
+        {
+            "executionArn": "arn:aws:states:us-east-1:967807252336:execution:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110:meri-browser-fixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+            "stateMachineArn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+            "name": "meri-browser-fixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110",
+            "status": "SUCCEEDED",
+            "startDate": "2026-10-11T04:09:26.490000-04:00",
+            "stopDate": "2026-10-11T04:09:38.966000-04:00",
+            "stateMachineVersionArn": "arn:aws:states:us-east-1:967807252336:stateMachine:MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110:1",
+            "redriveCount": 0
+        }
+    ]
+}

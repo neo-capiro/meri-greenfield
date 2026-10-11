@@ -1,0 +1,49 @@
+{
+  "status": "PASS_READ_ONLY_REACQUISITION",
+  "sourceCommit": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+  "sourceTree": "3181f8e0d75299e39fc45a738baff4c41e01463e",
+  "sourceAcceptance": "docs/coordination/reports/CODEX-G1-ECR-SCAN-OPTION-20261011.md",
+  "helperSha256": "972db83fe90c28fa1cc5c2c56d9e9a4f2dea66a9416db75abba7e01b12b51a04",
+  "identity": {
+    "UserId": "AIDA6CVOOW5YCNOGMSALQ",
+    "Account": "967807252336",
+    "Arn": "arn:aws:iam::967807252336:user/capirocli"
+  },
+  "region": "us-east-1",
+  "raw": {
+    "path": "captures/ecr-canonical-repaired-scan/stdout.bin",
+    "bytes": 59680,
+    "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+    "encoding": "UTF-8",
+    "transformed": false
+  },
+  "findings": 47,
+  "severityCounts": {
+    "CRITICAL": 5,
+    "HIGH": 17,
+    "INFORMATIONAL": 0,
+    "LOW": 7,
+    "MEDIUM": 17,
+    "UNDEFINED": 1
+  },
+  "complete": true,
+  "nextTokenAbsent": true,
+  "scanMetadata": {
+    "findingSeverityCounts": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "imageScanCompletedAt": "2026-10-11T14:17:54-04:00",
+    "vulnerabilitySourceUpdatedAt": "2026-10-11T14:17:54-04:00"
+  },
+  "historicalScanRecovered": false,
+  "newScanRequested": false,
+  "scanAdmitted": false,
+  "runtimeAdmitted": false,
+  "g1Admitted": false,
+  "buildAuthorized": false,
+  "oldFailuresPreserved": true
+}

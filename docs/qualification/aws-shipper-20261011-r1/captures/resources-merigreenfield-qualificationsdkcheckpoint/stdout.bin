@@ -1,0 +1,64 @@
+{
+    "StackResourceSummaries": [
+        {
+            "LogicalResourceId": "CheckpointBucketDFE4871A",
+            "PhysicalResourceId": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+            "ResourceType": "AWS::S3::Bucket",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:23.657000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "CheckpointBucketPolicyB1665717",
+            "PhysicalResourceId": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
+            "ResourceType": "AWS::S3::BucketPolicy",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:25.956000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "CheckpointKey6ED5B60F",
+            "PhysicalResourceId": "3a04f062-40de-4ed8-9a24-dad87c488e0c",
+            "ResourceType": "AWS::KMS::Key",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:08.198000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "CheckpointKeyAlias182434E4",
+            "PhysicalResourceId": "alias/meri-greenfield/qualification-sdk-checkpoint",
+            "ResourceType": "AWS::KMS::Alias",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:10.871000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ControlTaskRole6F8235EE",
+            "PhysicalResourceId": "meri-greenfield-qualification-sdk-control",
+            "ResourceType": "AWS::IAM::Role",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:09.571000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        },
+        {
+            "LogicalResourceId": "ControlTaskRoleDefaultPolicy7B4A7327",
+            "PhysicalResourceId": "MeriG-Contr-LXx9ptoKGIIx",
+            "ResourceType": "AWS::IAM::Policy",
+            "LastUpdatedTimestamp": "2026-10-11T16:53:40.927000+00:00",
+            "ResourceStatus": "CREATE_COMPLETE",
+            "DriftInformation": {
+                "StackResourceDriftStatus": "NOT_CHECKED"
+            }
+        }
+    ]
+}

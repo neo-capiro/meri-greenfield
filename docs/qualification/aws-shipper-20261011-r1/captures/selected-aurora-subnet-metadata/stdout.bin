@@ -1,0 +1,40 @@
+{
+    "DBSubnetGroups": [
+        {
+            "DBSubnetGroupName": "capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt",
+            "DBSubnetGroupDescription": "Subnets for AuroraCluster database",
+            "VpcId": "vpc-0ac26cfac7ed972be",
+            "SubnetGroupStatus": "Complete",
+            "Subnets": [
+                {
+                    "SubnetIdentifier": "subnet-094b7ca219f3aa3c4",
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-east-1a"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                },
+                {
+                    "SubnetIdentifier": "subnet-0637977787a9d8075",
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-east-1c"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                },
+                {
+                    "SubnetIdentifier": "subnet-0e93c85abf98a0382",
+                    "SubnetAvailabilityZone": {
+                        "Name": "us-east-1b"
+                    },
+                    "SubnetOutpost": {},
+                    "SubnetStatus": "Active"
+                }
+            ],
+            "DBSubnetGroupArn": "arn:aws:rds:us-east-1:967807252336:subgrp:capiro-dev-data-auroraclustersubnetsf3e9e6ad-qihnujilmfnt",
+            "SupportedNetworkTypes": [
+                "IPV4"
+            ]
+        }
+    ]
+}

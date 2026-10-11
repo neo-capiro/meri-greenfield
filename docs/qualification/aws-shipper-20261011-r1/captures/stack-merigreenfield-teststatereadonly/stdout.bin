@@ -1,0 +1,40 @@
+{
+    "Stacks": [
+        {
+            "StackId": "arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-TestStateReadOnly/788c9290-c4b1-11f1-98e1-12fffece6331",
+            "StackName": "MeriGreenfield-TestStateReadOnly",
+            "ChangeSetId": "arn:aws:cloudformation:us-east-1:967807252336:changeSet/codex-g1-readonly-20261010-1/fc5cbe39-be15-4212-b535-c6d33d019175",
+            "Description": "Independent Meri G1 read-only Step Functions wire qualification",
+            "CreationTime": "2026-10-10T13:49:53.639000+00:00",
+            "LastUpdatedTime": "2026-10-10T13:59:21.395000+00:00",
+            "RollbackConfiguration": {},
+            "StackStatus": "CREATE_COMPLETE",
+            "DisableRollback": false,
+            "DeploymentConfig": {
+                "Mode": "STANDARD",
+                "DisableRollback": false
+            },
+            "NotificationARNs": [],
+            "Capabilities": [
+                "CAPABILITY_NAMED_IAM"
+            ],
+            "Outputs": [
+                {
+                    "OutputKey": "RoleArn",
+                    "OutputValue": "arn:aws:iam::967807252336:role/MeriGreenfield-TestStateReadOnly-20261010"
+                }
+            ],
+            "Tags": [],
+            "EnableTerminationProtection": false,
+            "DriftInformation": {
+                "StackDriftStatus": "NOT_CHECKED"
+            },
+            "LastOperations": [
+                {
+                    "OperationType": "CREATE_STACK",
+                    "OperationId": "4ed5a516-6458-4f19-b7d7-34ae663a54da"
+                }
+            ]
+        }
+    ]
+}

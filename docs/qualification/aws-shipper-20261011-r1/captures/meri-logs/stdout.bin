@@ -1,0 +1,30 @@
+{
+    "logGroups": [
+        {
+            "logGroupName": "/meri-greenfield/qualification/build",
+            "creationTime": 1791573405672,
+            "retentionInDays": 30,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/build:*",
+            "storedBytes": 596714,
+            "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/1cca74fc-d9ae-43a6-8bfd-b93107e90042",
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/build",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        },
+        {
+            "logGroupName": "/meri-greenfield/qualification/runtime",
+            "creationTime": 1791578079581,
+            "retentionInDays": 30,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/runtime:*",
+            "storedBytes": 46968,
+            "kmsKeyId": "arn:aws:kms:us-east-1:967807252336:key/3e9e030a-953b-4209-8a73-1aa5ba4e628e",
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:us-east-1:967807252336:log-group:/meri-greenfield/qualification/runtime",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        }
+    ]
+}
