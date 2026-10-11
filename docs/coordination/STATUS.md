@@ -1,5 +1,62 @@
 # Meri kickoff status
 
+Current continuation, 11 October 2026 08:24 UTC: **G0 accepted / G1 OPEN;
+eight gates total, G2-G7 unentered.** Several substantial runtime proofs remain;
+G1 is not close enough to promise a completion time. Codex alone owns this work.
+
+The timeout, exact transport causes, whole native certificate grammar and native
+peer composition are independently source reviewed and integrated through
+c8978118a53cc6fc4cc3a553cdafdba4126d2443. Root's final composition checks pass
+27 fixture and 52 classifier controls. Source acceptance does not pass runtime.
+
+The fresh namespace5 isolated Linux build0056c94a-88c9-4c0c-9daf-2ceef38df2b1
+executed all five TLS cases and remains FAILED. The genuine TLS1.3/nonowner
+positive passed. All four final negatives remain false: the exception chain now
+reaches HTTPCORE_CONNECT but reports CONFLICTING_EVIDENCE; CA and SAN native
+reasons remain unqualified. Plaintext/password native observations are specific,
+without overriding failed composition. Root reconciled305 public payloads and
+100 process receipts, exact immutable source/result versions and positive absence
+of nine owned containers and one network before the original cleanup deadline.
+The331-record readback is sealed; distinct actual DATA review is completing.
+The prior failed namespaces/reservations remain immutable and cannot be retried.
+
+Upstream httpcore's pool clears an exception cause with raise-from-None. A narrow
+source repair is in a separate Codex session; actual private runtime arguments
+were not exported, so the diagnosis is a source-supported inference. Native CA
+and SAN formatting still needs structural diagnosis, with no relaxed acceptance.
+
+The first managed browser wire bootstrap ran once on its exact immutable version.
+Its complete144-event history corroborates one owned empty encrypted1GiB volume
+create and the first delete acknowledgement. Root and a distinct reviewer checked
+the complete raw capture and40 canonical streams. Cleanup remains UNKNOWN and
+physical absence is unproven; Ec2.Ec2Exception is the observed absence error wire.
+The two follow-up read-only probes were not admitted or run: root review and
+final DATA preparation missed the strict entry cutoff within original C900.
+The original clock/consumes are preserved, with no reset/retry/manual mutation.
+No browser host has launched. Future wire/absence proof, activation handling and
+an armed teardown are required before host/browser/renderer qualification.
+
+The SDK image context is prepared but not dispatchable. Root accepted the focused
+four-path image collector/dispatcher source allocation after33 reference checks;
+a separate Codex implementation session is active. It reuses the canonical
+assembler/capture, accounts for the never-started container and both declared
+anonymous volumes, and requires a new frozen archive/recipe. No image build,
+publication or SDK recovery experiment follows from source preparation alone.
+
+G1 still requires specific native TLS controls, real schema/lifespan/proxy auth,
+revocation/discovery/usage and durable$10 limits in isolated Fargate; real SDK
+interruption, fenced replacement/checkpoint/resume/egress/cleanup; dedicated host
+browser AND renderer sandbox/egress/cancellation/teardown; operation-specific
+REL-02, component/security disposition and measured frozen cohorts. Full SDK,
+96 selected capabilities and later full SessionStore/W05 scope are unchanged.
+
+All49 current plus five older security findings remain OPEN; Office is DEFERRED.
+Inference remains$0/$10. The promised approved location/owner for75 real requests
+is awaited. Sources remain disabled, current Meri/Capiro is untouched, and no
+cutover is approved. Earlier checkpoints below are historical.
+
+Historical checkpoint, 11 October 2026 07:34 UTC (retained verbatim):
+
 Current continuation, 11 October 2026 07:34 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
