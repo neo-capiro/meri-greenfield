@@ -1,5 +1,6 @@
 """Offline controls only. No Docker, real native client or DB is invoked."""
 import asyncio
+from datetime import timedelta
 import importlib.util
 import json
 import os
@@ -120,7 +121,7 @@ class FixtureTests(unittest.TestCase):
         seen=[]
         class Fake:
             def __init__(self,**kw):pass
-            async def connect(self):pass
+            async def connect(self,*,timeout):pass
             async def query_raw(self,sql):seen.append(sql);return [row]
             async def disconnect(self):pass
         result=self.fake_probe(Fake,'positive')
@@ -151,7 +152,7 @@ class FixtureTests(unittest.TestCase):
         for case,text in [('wrong-ca','TLS certificate verify failed: unable to get local issuer'),('wrong-san','TLS hostname mismatch'),('plaintext','TLS server does not support TLS'),('wrong-password','P1000 password authentication failed')]:
             class Fake:
                 def __init__(self,**kw):pass
-                async def connect(self):raise RuntimeError(text)
+                async def connect(self,*,timeout):raise RuntimeError(text)
                 async def disconnect(self):pass
             with self.subTest(case=case):
                 result,error=self.fake_probe(Fake,case,private=True)
@@ -160,7 +161,7 @@ class FixtureTests(unittest.TestCase):
                 self.assertNotIn(text,json.dumps(result))
         class NetworkFailure:
             def __init__(self,**kw):pass
-            async def connect(self):raise RuntimeError('connection timeout')
+            async def connect(self,*,timeout):raise RuntimeError('connection timeout')
             async def disconnect(self):pass
         for case in ('wrong-ca','wrong-san','plaintext','wrong-password'):
             self.assertFalse(self.fake_probe(NetworkFailure,case)['passed'])
@@ -168,7 +169,7 @@ class FixtureTests(unittest.TestCase):
     def test_negative_success_is_failure(self):
         class Fake:
             def __init__(self,**kw):pass
-            async def connect(self):pass
+            async def connect(self,*,timeout):pass
             async def query_raw(self,sql):return []
             async def disconnect(self):pass
         for case in ('wrong-ca','wrong-san','plaintext','wrong-password'):self.assertFalse(self.fake_probe(Fake,case)['passed'])
@@ -317,6 +318,30 @@ class FixtureTests(unittest.TestCase):
         public=json.dumps(result)
         for private in ('SYNTHETIC_PRIVATE','Error opening','server does not support'):
             self.assertNotIn(private,public)
+
+    def test_supported_startup_timeout_reaches_success_and_failure_and_disconnects(self):
+        timeouts=[];disconnected=[]
+        row={'who':config.USER,'db':config.names(example())['native'],'pid':42,'ssl':True,
+            'version':'TLSv1.3','cipher':'TLS_AES_256_GCM_SHA384',
+            'rolsuper':False,'rolcreatedb':False,'rolcreaterole':False,'rolreplication':False,
+            'rolbypassrls':False,'owns_database':False}
+        failure=RuntimeError('SYNTHETIC_GENERIC_CONNECTION_FAILURE')
+        class Fake:
+            fail=False
+            def __init__(self,**kw):pass
+            async def connect(self,*,timeout):
+                timeouts.append(timeout)
+                if self.fail:raise failure
+            async def query_raw(self,sql):return [row]
+            async def disconnect(self):disconnected.append(True)
+        result,error=self.fake_probe(Fake,'positive',private=True)
+        self.assertTrue(result['passed']);self.assertIsNone(error)
+        Fake.fail=True
+        result,error=self.fake_probe(Fake,'plaintext',private=True)
+        self.assertFalse(result['passed']);self.assertIs(error,failure)
+        self.assertNotIn('SYNTHETIC_GENERIC',json.dumps(result))
+        self.assertEqual(timeouts,[timedelta(seconds=3),timedelta(seconds=3)])
+        self.assertEqual(disconnected,[True,True])
 
     def test_cleanup_requires_positive_owned_id(self):
         c=capture.DockerCapture(Path('.'),10);calls=[]

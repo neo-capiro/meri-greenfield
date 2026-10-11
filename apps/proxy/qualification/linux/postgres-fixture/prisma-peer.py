@@ -2,6 +2,7 @@
 import argparse
 import asyncio
 import contextlib
+from datetime import timedelta
 import json
 import importlib.metadata
 import os
@@ -110,7 +111,7 @@ async def probe(root,case):
     caught=None
     try:
         async with asyncio.timeout(25):
-            await client.connect()
+            await client.connect(timeout=timedelta(seconds=3))
             rows=await client.query_raw("SELECT current_user AS who, current_database() AS db, pg_backend_pid() AS pid, s.ssl, s.version, s.cipher, r.rolsuper, r.rolcreatedb, r.rolcreaterole, r.rolreplication, r.rolbypassrls, (d.datdba=r.oid) AS owns_database FROM pg_stat_ssl s JOIN pg_roles r ON r.rolname=current_user JOIN pg_database d ON d.datname=current_database() WHERE s.pid=pg_backend_pid()")
             if case!='positive':
                 result['negativeConnected']=True
