@@ -5,6 +5,7 @@ import {
   type Client,
   type Member,
 } from "./contracts";
+import { sectorLabel } from "@/shared/domain/sector";
 export interface PortfolioFilter {
   search: string;
   status: string;
@@ -89,6 +90,7 @@ export function filterClients(
       client.description,
       client.primaryContactName,
       sectors.join(" "),
+      sectors.map(sectorLabel).join(" "),
       location?.replace(", ", " "),
       location,
       owners[client.id]?.accountOwner

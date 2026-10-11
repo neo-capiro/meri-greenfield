@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import {
   clientLocation,
-  clientSectors,
+  clientSectorLabel,
   initials,
   memberName,
   safeWebsite,
@@ -51,7 +51,7 @@ export function ProfileResults({
                 </Link>
               </td>
               <td>{client.profileType ?? "—"}</td>
-              <td>{clientSectors(client)[0] ?? "—"}</td>
+              <td>{clientSectorLabel(client) ?? "—"}</td>
               <td>
                 {owners?.[client.id]
                   ? memberName(owners[client.id]?.accountOwner)
@@ -94,7 +94,7 @@ export function ProfileCard({
 }) {
   const owner = ownership?.accountOwner;
   const location = clientLocation(client);
-  const sector = clientSectors(client)[0];
+  const sector = clientSectorLabel(client);
   return (
     <article className={styles.profileCard}>
       <Link

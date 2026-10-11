@@ -7,12 +7,12 @@ const rows = [
     ...client,
     id: secondId,
     name: "Alpha Energy",
-    sectorTag: "Energy",
+    sectorTag: "ENERGY",
     profileStatus: "ONBOARDING",
     intakeData: {
       city: "New York",
       state: "NY",
-      sectors: ["Energy", "Manufacturing"],
+      sectors: ["ENERGY", "Manufacturing", "HOMELAND_SECURITY"],
     },
   },
 ];
@@ -114,7 +114,7 @@ test("real fields drive search/status/sector/known unassigned; no matching resul
   const unexpected = await indexFixtures(page);
   await page.goto("/portfolio");
   await page.getByLabel("Search profiles").fill("Energy");
-  await page.getByLabel("Sector", { exact: true }).selectOption("Energy");
+  await page.getByLabel("Sector", { exact: true }).selectOption("ENERGY");
   await page
     .getByLabel("Profile status", { exact: true })
     .selectOption("ONBOARDING");
@@ -132,6 +132,14 @@ test("real fields drive search/status/sector/known unassigned; no matching resul
   await page.getByLabel("Search profiles").fill("Manufacturing");
   await expect(page.getByRole("article")).toHaveCount(1);
   await expect(page.getByRole("article")).toContainText("Alpha Energy");
+  await page
+    .getByLabel("Sector", { exact: true })
+    .selectOption("HOMELAND_SECURITY");
+  await expect(page.getByLabel("Sector", { exact: true })).toContainText(
+    "Homeland Security",
+  );
+  await page.getByLabel("Search profiles").fill("Homeland Security");
+  await expect(page.getByRole("article")).toHaveCount(1);
   await page.getByLabel("Search profiles").fill("New York, NY");
   await expect(page.getByRole("article")).toHaveCount(1);
   await expect(page.getByRole("article")).toContainText("Alpha Energy");

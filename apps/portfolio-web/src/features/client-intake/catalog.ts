@@ -47,19 +47,7 @@ export const organizationTypes = [
   ],
   ["Individuals", "Individual"],
 ] as const;
-export const sectors = [
-  ["DEFENSE", "Defense"],
-  ["HEALTH", "Health & Pharma"],
-  ["ENERGY", "Energy"],
-  ["TRANSPORTATION", "Transportation"],
-  ["AGRICULTURE", "Agriculture"],
-  ["HOMELAND_SECURITY", "Homeland Security"],
-  ["ENVIRONMENT_WATER", "Environment / Water"],
-  ["COMMERCE_TECH", "Commerce / Tech"],
-  ["EDUCATION", "Education"],
-  ["FINANCIAL_SERVICES", "Financial Services"],
-  ["OTHER", "Other"],
-] as const;
+export { sectors } from "@/shared/domain/sector";
 export const tracks = [
   ["NDAA", "NDAA Authorization Request"],
   ["APPROPRIATIONS", "Appropriations Plus-Up"],

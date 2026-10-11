@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { sectorLabel } from "@/shared/domain/sector";
 // Verified boundary projection: capirov2 ClientsService / Client Prisma model.
 // Extra backend fields are stripped; this app does not own or invent their semantics.
 export const clientSchema = z.object({
@@ -43,6 +44,10 @@ export function clientSectors(client: Client): string[] {
         .filter(Boolean),
     ),
   ];
+}
+export function clientSectorLabel(client: Client): string | null {
+  const primary = clientSectors(client)[0];
+  return primary ? sectorLabel(primary) : null;
 }
 export function clientLocation(client: Client): string | null {
   const city = client.intakeData?.city;

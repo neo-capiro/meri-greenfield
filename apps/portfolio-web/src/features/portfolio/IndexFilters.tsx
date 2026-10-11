@@ -1,5 +1,6 @@
 "use client";
 import { LayoutGrid, List } from "lucide-react";
+import { sectorLabel } from "@/shared/domain/sector";
 import {
   clientSectors,
   memberName,
@@ -70,7 +71,9 @@ export function IndexFilters({
           </option>
         )}
         {sectors.map((sector) => (
-          <option key={sector}>{sector}</option>
+          <option key={sector} value={sector}>
+            {sectorLabel(sector)}
+          </option>
         ))}
       </select>
       <select

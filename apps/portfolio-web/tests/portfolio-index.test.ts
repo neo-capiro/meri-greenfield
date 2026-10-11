@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   clientLocation,
   clientSchema,
+  clientSectorLabel,
   clientSectors,
 } from "../src/features/portfolio/contracts";
 import {
@@ -101,6 +102,23 @@ describe("Portfolio index contract-backed controls", () => {
     expect(
       filterClients([noLocation], { ...empty, search: "object" }, {}),
     ).toEqual([]);
+  });
+  it("searches intake sector labels while filtering by their persisted codes", () => {
+    const coded = clientSchema.parse({
+      id: "44444444-4444-4444-8444-444444444444",
+      name: "Coded Sector",
+      status: "active",
+      profileStatus: "ACTIVE",
+      sectorTag: "DEFENSE",
+      intakeData: { sectors: ["DEFENSE", "HOMELAND_SECURITY"] },
+    });
+    expect(clientSectorLabel(coded)).toBe("Defense");
+    expect(
+      filterClients([coded], { ...empty, search: "homeland security" }, {}),
+    ).toEqual([coded]);
+    expect(
+      filterClients([coded], { ...empty, sector: "HOMELAND_SECURITY" }, {}),
+    ).toEqual([coded]);
   });
   it("distinguishes known unassigned from missing owner receipts", () => {
     expect(
