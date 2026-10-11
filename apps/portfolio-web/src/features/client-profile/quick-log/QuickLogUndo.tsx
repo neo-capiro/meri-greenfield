@@ -27,6 +27,7 @@ export function QuickLogUndo({
   const [uncertain, setUncertain] = useState(false);
   const [removed, setRemoved] = useState(false);
   const lifetime = useRef<AbortController | null>(null);
+  const deleting = useRef(false);
   useLayoutEffect(() => {
     const controller = new AbortController();
     lifetime.current = controller;
@@ -40,11 +41,19 @@ export function QuickLogUndo({
     retry: false,
     mutationFn: async () => {
       const controller = lifetime.current;
-      if (!allowed || !actor || !controller || uncertain || removed)
+      if (
+        !allowed ||
+        !actor ||
+        !controller ||
+        uncertain ||
+        removed ||
+        deleting.current
+      )
         throw new Error(
           "This Quick log cannot be undone by the current session.",
         );
       let sent = false;
+      deleting.current = true;
       const guard = () => {
         controller.signal.throwIfAborted();
         assertClientWriter(cache, actor);
@@ -65,6 +74,7 @@ export function QuickLogUndo({
         if (sent && ambiguousClientWrite(error)) setUncertain(true);
         throw error;
       } finally {
+        deleting.current = false;
         if (sent)
           await cache.invalidateQueries({
             queryKey: profileKey(receipt.clientId, "activity"),

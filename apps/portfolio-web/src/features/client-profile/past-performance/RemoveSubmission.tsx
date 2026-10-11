@@ -28,6 +28,7 @@ export function RemoveSubmission({
   const cache = useQueryClient();
   const identity = useIdentity();
   const lifetime = useRef<AbortController | null>(null);
+  const deleting = useRef(false);
   const [uncertain, setUncertain] = useState<string[]>([]);
   useLayoutEffect(() => {
     const controller = new AbortController();
@@ -44,12 +45,14 @@ export function RemoveSubmission({
         !actor ||
         !controller ||
         item.tenantId !== actor.tenantId ||
-        uncertain.includes(item.id)
+        uncertain.includes(item.id) ||
+        deleting.current
       )
         throw new Error(
           "This submission cannot be removed by the current session.",
         );
       let sent = false;
+      deleting.current = true;
       const guard = () => {
         controller.signal.throwIfAborted();
         assertClientWriter(cache, actor);
@@ -64,6 +67,7 @@ export function RemoveSubmission({
           setUncertain((ids) => [...ids, item.id]);
         throw error;
       } finally {
+        deleting.current = false;
         if (sent)
           await cache.invalidateQueries({
             queryKey: submissionKey(item.clientId).slice(0, 2),

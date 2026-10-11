@@ -22,6 +22,7 @@ export function useQuickLog(
   const [receipt, setReceipt] = useState<QuickLogReceipt>();
   const [uncertain, setUncertain] = useState(false);
   const lifetime = useRef<AbortController | null>(null);
+  const saving = useRef(false);
   const actor = currentClientWriter(cache);
   useLayoutEffect(() => {
     const controller = new AbortController();
@@ -38,7 +39,7 @@ export function useQuickLog(
     retry: false,
     mutationFn: async (input: QuickLogInput) => {
       const controller = lifetime.current;
-      if (!open || !actor || !controller || uncertain)
+      if (!open || !actor || !controller || uncertain || saving.current)
         throw new Error(
           "Reopen Quick log with a current session before saving.",
         );
@@ -47,6 +48,7 @@ export function useQuickLog(
         assertClientWriter(cache, actor);
       };
       let sent = false;
+      saving.current = true;
       try {
         const value = await createQuickLog(
           api,
@@ -57,6 +59,7 @@ export function useQuickLog(
           controller.signal,
           () => {
             sent = true;
+            setReceipt(undefined);
           },
         );
         setReceipt(value);
@@ -67,6 +70,7 @@ export function useQuickLog(
         if (sent && ambiguousClientWrite(error)) setUncertain(true);
         throw error;
       } finally {
+        saving.current = false;
         if (sent)
           await cache.invalidateQueries({
             queryKey: profileKey(clientId, "activity"),
