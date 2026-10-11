@@ -24,4 +24,4 @@ Source read at backend reference `fd6ed6c017ae91ab774fd34f74475a746de13b68` (roo
 
 ## Validation / delivery
 
-Pending focused source checks, synthetic integrated browser checks, representative light/mobile-dark visual inspection, parent composition and permitted live GET. No live writes, provider calls, auth/deployment changes, backend edits or full builds. Fixtures will not establish live authenticated browser acceptance. Historical root-qualified 936 evidence is separate from this source.
+Initial focused units: 14/14 PASS. Focused ESLint PASS. First TypeScript check failed on the test fixture's unchecked array access under noUncheckedIndexedAccess; an explicit fixture-presence guard fixes the test without weakening checks. Source checks rerun below. Pending synthetic integrated browser checks, representative light/mobile-dark visual inspection, parent composition and permitted live GET. No live writes, provider calls, auth/deployment changes, backend edits or full builds. Fixtures will not establish live authenticated browser acceptance. Historical root-qualified 936 evidence is separate from this source.

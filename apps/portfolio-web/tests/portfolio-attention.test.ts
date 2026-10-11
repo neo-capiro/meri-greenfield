@@ -36,6 +36,7 @@ const response = {
 describe("Portfolio Needs attention", () => {
   it("retains incomplete records and source recency without fabricating deadlines", () => {
     const saved = portfolioAlertsSchema.parse(response).alerts[0];
+    if (!saved) throw new Error("Synthetic alert fixture missing");
     expect(saved.canonicalMissingFields).toEqual(["issueId", "whoActs"]);
     expect(alertTiming(saved)).toBe("1d ago");
     expect(alertTiming({ ...saved, countdownLabel: null })).toBeUndefined();
