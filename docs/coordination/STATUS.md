@@ -1,17 +1,18 @@
 # Meri kickoff status
 
-Current continuation, 11 October 2026 07:13 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 07:34 UTC: **G0 accepted / G1 OPEN;
 eight gates total, G2-G7 unentered.** G1 still has substantial live verification
 remaining; no reliable completion time is established.
 
-The repaired isolated Linux run established a genuine Prisma TLS 1.3 connection
-with a non-owner application role. The overall run FAILED: the wrong-CA case
-returned a generic engine connection error without specific certificate-rejection
-evidence. Wrong-SAN, plaintext and wrong-password checks remain UNRUN. Root and
-an independent Codex reviewer verified the complete returned bundle and positive
-absence of all six owned containers and the network, runner-reported private-file
-destruction and the original cleanup deadline. The earlier AttributeError failure
-is preserved; neither consumed reservation will be retried.
+The latest isolated Linux run executed all five native TLS cases. The genuine
+TLS1.3/nonowner positive passed. Native plaintext/password rejection observations
+are specific, but all four final negative outcomes remain false: the typed cause
+decoder encountered an unknown class, and CA/name candidates stay unqualified.
+Root and a distinct reviewer reconciled all308 public payloads/101 process
+receipts, exact source/result versions and nine owned containers plus one network
+removed/positively absent within the original cleanup clock. Private destruction
+is trusted-runner reported. The overall build remains FAILED; earlier failures
+and all consumed reservations remain immutable, with no dispatch retry.
 
 The narrow stream fixes pass 15 peer and 32 canonical native-auth controls plus
 independent source reviews. Combined native schema/auth source is integrated but
@@ -24,11 +25,19 @@ test remain. Private native-output capture and typed-exception diagnostics are
 now source-accepted and integrated after distinct reviews: 17 and 27 root controls
 pass respectively. Native startup parsing and peer composition are now separately
 source-accepted: 37 classifier, 25 distinct fixture and eight bootstrap checks
-pass. Real local pipe nesting and isolated Python layout also pass. A fresh
-immutable Linux diagnostic package is prepared; actual execution remains pending.
-CA/name observations remain unqualified, with no certificate-rejection acceptance.
-Browser bootstrap and parent supervision source are independently reviewed; no
-operational fixture clock, browser host or browser isolation probe has begun.
+pass. Real local pipe nesting and isolated Python layout also pass. That package
+has now executed, with the failed actual result above independently reconciled.
+A supported smaller fixture polling allowance is a source candidate:26inert
+checks pass, with original25 test/helper bodies preserved after four required
+fake signatures. Independent review and fresh runtime timing remain. Exact pinned
+transport causes and strict whole native certificate formatting are the next
+bounded source fixes; no generic failure or old candidate is promoted.
+Browser bootstrap and parent supervision source are independently reviewed. Eight
+fresh read-only captures confirm the inert setup/role and zero executions; root
+remeasured100payloads/1073closure files/54historical refs. The next managed wire
+bootstrap needs exact root action/cost/cleanup/supervision admission; host launch
+additionally needs qualified absence/activation handling and an armed teardown.
+No operational fixture clock, browser host or isolation probe has begun.
 
 G1 still requires:
 

@@ -1,6 +1,6 @@
 # Actual ABI DATA and discovery source acceptance
 
-## Native TLS positive observed; certificate rejection remains unproven - 11 October 2026 07:13 UTC
+## All native TLS cases executed; strict diagnostic acceptance remains open - 11 October 2026 07:34 UTC
 
 G0 accepted/G1OPEN; G2-G7unentered. All current source acceptances are scoped,
 not security/runtime/G1 admission. Current Meri/Capiro is untouched, sources
@@ -16,8 +16,8 @@ narrow repaired peer8aa0044 (integrated1b5193f/71cbc43),99sealed source/evidence
 refs, rawGit,15rootcontrols and distinct source review. Shared2MiB text counter
 is an intentional tightening for peer. Root canonical native-auth repair3ed3134
 covers both redirect sites and passes32rootchecks/help0/missing2 and distinct
-source review. No TLS/deadline assertions changed. The actual-run peer still
-discards native fd writes; the new capture module is not yet composed into it.
+source review. No TLS/deadline assertions changed. That earlier namespace3 peer
+discarded native fd writes; namespace4 below composes the reviewed private capture.
 Python limits count characters per nested context.
 
 Fresh buildfe9f54bd-8e36-4290-a580-eaa329767dd7 used source2201364be32bc99a5abe68ce96c4d1e18d1a1e8c,
@@ -140,17 +140,69 @@ with Python-I/B and no sys.path/pyc lookup. Three source mounts are read-only.
 Bounded well-formed failed negatives can continue for diagnostic coverage, but
 all five actual passes remain required before combined activation or exit0.
 
-Fresh public preparation .task-inputs/proxy-linux-native-tls-owner-build-4/ binds
-source8d577d1,13fixture/351context/355ZIP members,218600579B archive
-b0ce117839d04721d8599a7470836cee6842f8f93d9b757c1bf2e46f59082720;
-UUIDc1dc1663-fa26-4069-9b34-4c8def0e2d9f is fresh/unconsumed. Root verified every
-archive byte/member, exact E4base and five offline exporter/cleanup controls.
-Independent public preparation review is finishing; no dispatch is admitted.
-Seven fresh canonical read-only AWS captures match prior authority after removing
-onlyRoleLastUsed telemetry;12invocation pins and13rawGit fixture files are bound.
-No new model/native/runtime action followed source acceptance; inference stays0.
-Actual Linux controls and physical cleanup remain required; historical wrongCA
-stays UNKNOWN and its original build remains FAILED.
+The separately admitted namespace4 experiment now executed once and is terminal
+FAILED. Independent public preparation/dispatch review passed before root admission
+(sealce3c6de36657b695716f4485245f86ef25de9c19544ad95b51141ce4b2e6cc92).
+Source8d577d1e235bcbc9644a85afc901bae2e0a15a37,13fixture/351context/355ZIPmembers,
+218600579B SHA b0ce117839d04721d8599a7470836cee6842f8f93d9b757c1bf2e46f59082720;
+consumed UUIDc1dc1663-fa26-4069-9b34-4c8def0e2d9f,
+sourceS3versionRtfPJR0OJ0J.uFU8QjEDzmb41XAHAbXZ. Seven fresh authority captures,
+12invocation pins and13rawGit sources were checked before one conditional KMS
+upload and one zero-retry Start. No ECR/model/provider/customer/source action.
+
+Buildmeri-greenfield-qualification-build:3a1174b0-0ef1-4c63-9930-927757afd6ba
+ran07:15:46.703-07:19:29.075UTC, buildComplete true/retry0/FAILED. Image
+sha256:dd18ae19e110f7bae4e0fad5d923e4a0a59bbf47bc46e0ca569bad1b6bd0859e.
+ResultversioneqM6hvJWthpVtXVbWLqxUvPyLh38qByL,79283B
+SHA1d6f9acbab76e613830a5ca1e00615ca6b5a1bcff0142306a1f0991f5a107f2d.
+Root reconciled309tar members/308payloads/101processes and334closed readback
+records. Distinct actual DATA review agrees; seal
+259741bcddf051500eb8797aff4f66818d52bd495e67578d5f17b4252915570e.
+Root rehashed/read the review and accepted failed DATA within that scope only.
+
+All five cases executed. Same-backend positive TLSv1.3/nonowner passed. Each
+negative has complete private capture but typed classesENGINE_CONNECTION,
+CONNECT_ERROR,OTHER/incompleteUNKNOWN_EXCEPTION_CLASS. Native plaintext/P1000
+password observations are specific; CA/name candidates remain unqualified.
+All four final negative passed/specificRejection values remain false; no native
+observation overrides the current strict composition. P1000 alone is not SCRAM
+negotiation proof. No private native bytes/text/hashes were exported.
+
+Run e4794553-3164-495c-b23f-a26bbed962ba, originalT0=1791703081659,
+start+60000/work+300000/cleanup+330000/C+900000. Fixture endedT0+69993ms;
+last outer receiptT0+70168ms. Exactly eight fixture containers plus one import
+container and one owned empty network were removed/positively absent by bound
+IDs/images/labels. Nine further prospective-name absence observations are not
+additional deletions. Private-file destruction stays trusted-runner reported.
+The import's denied socket/asyncio destructor warning remains OPEN. No lifespan,
+schema/auth/Fargate/security/G1 admission follows; this reservation cannot retry.
+
+Evidence .task-inputs/proxy-linux-native-tls-owner-build-4/{dispatch-1,observations,
+actual-result-1,actual-build-owner-decision.json,READBACK-MANIFEST.json}; root
+failed-DATA acceptance .task-inputs/current-runtime-followups-20261011/.
+The prior namespace3's wrongCA remains UNKNOWN/FAILED, and its three unrun
+cases remain unrun in that historical namespace; the new run does not rewrite it.
+
+Source-backed next fixes: exact pinned transport causes (ordinaryhttpx0.28.1,
+httpcore1.0.9/AnyIO4.15.1) remain nonpositive; strict whole native-tls/OpenSSL
+verification formatting must refuse unknown/mixed/expiry/purpose/algorithm/file
+errors. Root rehashed73public discovery payloads (seal8c2bc5771f9b891d7eac1bf2750f32093f9faffc74fec5ed7a1d2ad5828d7f8e).
+Root timeout source candidateefa66b1 requests supported timedelta3s to reduce
+polling iterations, not guarantee3s wall time.26inertchecks PASS.297s/audit0/
+Prismaunimported; old25methods/helpers unchanged after four fake signatures.
+Independent source review and fresh cold-positive/negative timing remain;
+no original body25/disconnect3/peer32/start60/work300/cleanup330/C900 bound changes.
+
+Browser readiness: eight canonical read-only captures07:23:30-07:23:37UTC show
+exact stackCREATE_COMPLETE, machineACTIVE/STANDARD/inert graph unchanged,
+role/trust/soleinline/noattached unchanged, executions[] and activation unused.
+Root rehashed100public payloads/1073closure files/54historical references; seal
+f3dcf54653a06b1b9cf0a175ad434f81b7289f7cc400ae0906d1b658201180cb.
+Root must issue the existing managed wire bootstrap's exact action/cost/cleanup/
+supervision records before its one allowed execution. Host launch additionally
+requires qualified absence/activation handling and an armed teardown path.
+No operationalT0, volume, host, browser probe or source/model action followed
+this read-only audit. Inference stays0; original scope and host exception remain.
 
 G1 additionally retains host/browser AND renderer sandbox/egress/cancellation/
 physical teardown, trusted proxy authentication/revocation/native discovery/usage/
