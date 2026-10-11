@@ -36,8 +36,34 @@
 
 Root/backend/Workspace owners must agree on placement, persistence and DTOs before implementation/activation; no migration, backend deployment, auth/shared settings change or provider send is authorized by this draft boundary.
 
-## Early validation
+## Validation and delivery evidence
 
-Bundled Node v24.19.0: TypeScript `--noEmit --incremental false` exit 0; allocated ESLint exit 0; Vitest 10/10 exit 0; architecture 233 modules exit 0. Parent composition and actual final browser/visual qualification pending. No full build or live writes.
+Initial feature commit `f970098b237e20f3063fa062f1c532760ee3df7c` is integrated by root as `1fe2c69`. Root's real ProspectDetail composition `e178fe12651e851f57a7a7046cc9eaa0a7a993e0` is local `d2c51b3`; it passes only the validated Workspace destination and does not invent a draft/document route. Root separately owns GET-only template proxy boundary `efdb2820022fd6942dc4f55018557467e68b64f8` and its method/path authorization tests.
+
+Final focused qualification completed `2026-10-11 06:29:57 UTC` with explicit bundled Node `v24.19.0`, executable `C:\Users\Administrator\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe`. Browser children use `process.execPath`. No global PATH change. C: remains approximately 19.8 GiB free, above the 8 GiB reserve.
+
+| Check | Actual result |
+| --- | --- |
+| TypeScript `--noEmit --incremental false` | PASS, exit 0 |
+| ESLint allocated feature/unit/browser paths | PASS, exit 0 |
+| Vitest focused tests, `--cache=false --configLoader runner` | PASS, 10/10, exit 0 |
+| Architecture | PASS, 233 modules, exit 0 |
+| Prettier allocated source/tests | PASS, exit 0 |
+| Actual ProspectDetail component-browser scenarios | PASS, 7/7, no skips/flaky, exit 0 |
+| Full Next build / signed-in isolated production browser | NOT RUN by this agent; root integrated gates |
+
+Browser evidence uses the canonical app component harness and Clerk stub/intercepted synthetic APIs on temporary port 5194; the committed spec also runs under the parent's canonical harness. Temporary qualification config/server only set a small app-owned Vite cache and exact borrowed Geist-font allow path; neither source architecture nor dependencies are copied or changed. Temporary files are outside the source commit. The final browser asserts Geist loaded, exact template section text stays plain (including markup), no nonexistent generation/send controls, real search/product filters, filter reset, 503 explicit retry, forbidden-versus-empty distinction, wrong-detail receipt rejection/retry, identity failure/missing-tenant fail closed, Escape focus restoration to the initiating controls, mobile dark/no horizontal overflow, and cancellation/late-response isolation after switching preview selections.
+
+The first browser pass was **FAIL: 5 passed / 1 failed**, because Escape from the nested template preview did not restore focus. Fixed within the allocated components using shared Dialog's existing `onCloseAutoFocus` interface and explicit initiating-button refs. The failed trace/screenshot/JSON remain in `first-failed-qualification`; assertions were preserved. That first pass also exposed a qualification-only font realpath restriction from the read-only dependency junction; the temporary server now allows only the borrowed Geist font directory, and final font loading is asserted. Subsequent 6/6 and final 7/7 runs pass. No checks or visual baselines were weakened.
+
+Runtime setup deviation: the initial Vitest invocation used the default bundled config loader, which touched the borrowed `node_modules/.vite-temp` directory timestamp at 06:23:20 UTC. The directory is empty on final read-back; installed package source/lockfiles were not edited and no install occurred. No borrowed resource was removed. Final Vitest uses `--configLoader runner --cache=false` to avoid that temporary bundling path, and the browser uses only the task-owned app cache directory. Root was notified.
+
+Final screenshots `prospect-proposals-catalog.png`, `prospect-proposals-preview.png`, `prospect-proposals-mobile-dark.png` were visually inspected. Catalog/preview use the Figma 600px modal width, 20px heading, 24px body spacing, 12px list rounding, tokens, Geist and responsive dark behavior. This is an expressly limited generic template review experience: the inspected full proposal/create/send screens remain unavailable because their required contracts are missing. No fixture radio/template badges, prices, generated proposal content or sent receipts are introduced. Existing shell/static assets remain parent-owned and reused.
+
+Evidence directory: `C:\Users\Administrator\Documents\Codex\2026-10-10\implement-capiro-3-1-portfolio-in\outputs\evidence\prospect-proposals-20261011`. Contains final raw browser JSON, logs/results, three synthetic screenshots, preserved failed artifacts and this checkpoint.
+
+### Independently produced live GET-only evidence
+
+Root verified the canonical adapters against the approved `capiro-internal` / `neo@capiro.ai` account at `2026-10-11T06:26:44.216Z`, source `e178fe12651e851f57a7a7046cc9eaa0a7a993e0`, Node v24.19.0. I read back the resulting JSON/log: `/api/me` 200, `/workspace-api/templates/library` 200 with **20 records** passing the full schema/unique-ID validation, and a visible `/workspace-api/templates/:id` 200 passing exact identity/schema with **4 sections**. Names/content/session values were not retained. No template/draft/proposal/email/billing mutation occurred. Evidence stays separate in `outputs/evidence/portfolio-integration-20261011/live-workspace-templates.json` and `.log`; this agent did not overwrite it. This proves authorized template API reads, not signed-in isolated browser acceptance or proposal CRUD/send behavior.
 
 Original baseline remains read-only. PROS-027 remains partial; generic catalog/preview does not complete proposal creation, editing, sending, sharing or stage workflows.

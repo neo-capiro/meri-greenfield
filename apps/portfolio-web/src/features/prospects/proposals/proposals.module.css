@@ -20,6 +20,8 @@
 .catalog > header h2 {
   min-width: 0;
   overflow-wrap: anywhere;
+  font-size: 20px;
+  letter-spacing: -0.3px;
 }
 .catalog > header button {
   flex-shrink: 0;

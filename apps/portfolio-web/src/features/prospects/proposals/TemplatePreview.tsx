@@ -8,10 +8,12 @@ export function TemplatePreview({
   tenantId,
   templateId,
   onClose,
+  onRestoreFocus,
 }: {
   tenantId: string;
   templateId: string;
   onClose: () => void;
+  onRestoreFocus: () => void;
 }) {
   const query = useTemplate(tenantId, templateId);
   const template = query.isSuccess && !query.error ? query.data : undefined;
@@ -24,6 +26,10 @@ export function TemplatePreview({
         if (!open) onClose();
       }}
       className={styles.catalog}
+      onCloseAutoFocus={(event) => {
+        event.preventDefault();
+        onRestoreFocus();
+      }}
     >
       <QueryState
         pending={query.isPending}

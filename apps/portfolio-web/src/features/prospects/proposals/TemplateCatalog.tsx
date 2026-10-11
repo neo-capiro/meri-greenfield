@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { SelectField } from "@/shared/ui/SelectField";
@@ -11,25 +11,32 @@ import styles from "./proposals.module.css";
 export function TemplateCatalog({
   tenantId,
   onClose,
+  onRestoreFocus,
 }: {
   tenantId: string;
   onClose: () => void;
+  onRestoreFocus: () => void;
 }) {
   const query = useTemplateLibrary(tenantId);
   const [search, setSearch] = useState("");
   const [product, setProduct] = useState("");
   const [selected, setSelected] = useState<string>();
+  const previewTrigger = useRef<HTMLButtonElement | null>(null);
   const templates = query.isSuccess && !query.error ? query.data : undefined;
   const visible = templates && filterTemplates(templates, search, product);
   return (
     <Dialog
       open
       title="Workspace templates"
-      description="All templates visible to your account. This catalog is not restricted to prospect proposals; previewing a template does not generate or save a document."
+      description="Browse templates from all Workspace products. Previewing a template does not generate or save a document."
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
       className={styles.catalog}
+      onCloseAutoFocus={(event) => {
+        event.preventDefault();
+        onRestoreFocus();
+      }}
     >
       <QueryState
         pending={query.isPending}
@@ -97,7 +104,10 @@ export function TemplateCatalog({
                   </div>
                   <button
                     className="button"
-                    onClick={() => setSelected(template.id)}
+                    onClick={(event) => {
+                      previewTrigger.current = event.currentTarget;
+                      setSelected(template.id);
+                    }}
                     aria-label={`Preview ${template.name}`}
                   >
                     Preview
@@ -107,9 +117,8 @@ export function TemplateCatalog({
             </ul>
           )}
           <small className="muted">
-            The service returns the complete visible catalog without pagination.
-            Template ownership and published version metadata are not provided
-            here.
+            Showing the full catalog visible to your account. Template ownership
+            and version information are unavailable here.
           </small>
         </>
       )}
@@ -119,6 +128,7 @@ export function TemplateCatalog({
           tenantId={tenantId}
           templateId={selected}
           onClose={() => setSelected(undefined)}
+          onRestoreFocus={() => previewTrigger.current?.focus()}
         />
       )}
     </Dialog>

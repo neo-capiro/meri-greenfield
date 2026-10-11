@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useIdentity } from "@/shared/auth/identity";
 import { QueryState } from "@/shared/ui/QueryState";
 import { TemplateCatalog } from "./TemplateCatalog";
@@ -14,6 +14,7 @@ export function ProspectProposals({
 }) {
   const identity = useIdentity();
   const [open, setOpen] = useState(false);
+  const trigger = useRef<HTMLButtonElement>(null);
   const tenantId = identity.data?.tenant?.id;
   const authorized =
     identity.isSuccess && !identity.error && !identity.isPending && !!tenantId;
@@ -31,7 +32,11 @@ export function ProspectProposals({
       />
       {authorized ? (
         <div className="row">
-          <button className="button" onClick={() => setOpen(true)}>
+          <button
+            ref={trigger}
+            className="button"
+            onClick={() => setOpen(true)}
+          >
             Browse templates
           </button>
           {workspaceUrl && (
@@ -54,6 +59,7 @@ export function ProspectProposals({
           key={`${identity.data?.user.id}:${tenantId}:${prospectId}`}
           tenantId={tenantId}
           onClose={() => setOpen(false)}
+          onRestoreFocus={() => trigger.current?.focus()}
         />
       )}
     </section>
