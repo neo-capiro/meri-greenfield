@@ -138,6 +138,14 @@ class Controls(unittest.TestCase):
         self.assertIn(str(build.PYTHON.parent/'Lib/zipfile/__init__.py'), values)
         self.assertEqual(values[str(build.ROOT/'scripts/qualification/worker_context.py')]['sha256'], collect.ASSEMBLER_SHA)
 
+    def test_context_manifest_pin_tracks_candidate_bytes(self):
+        files = {p: (build.ROOT/p).read_bytes() for p, _ in build.worker_context.MEMBERS}
+        self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+        changed = dict(files)
+        path = 'packages/contracts/qualification-sdk/wire.mjs'
+        changed[path] += b'\n'
+        self.assertNotEqual(build.context_manifest_sha(changed), collect.CONTEXT_SHA)
+
     def dispatch_case(self, failure=None):
         folder = Path(self.temp.name); req = request(); collect.write(folder/'source.zip', b'zip'); seen = []
         start = build.start_input(req, 'immutable-version')

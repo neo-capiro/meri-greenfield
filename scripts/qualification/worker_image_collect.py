@@ -25,7 +25,7 @@ if __name__ == '__main__':
 SCHEMA = 'meri-worker-image-input/1'
 ASSEMBLER = 'scripts/qualification/worker_context.py'
 COLLECTOR = 'scripts/qualification/worker_image_collect.py'
-CONTEXT_SHA = 'e89bda8fa60fa2d950bcb9bb9177841e177f458131d4e5a66e8a9a17a1762940'
+CONTEXT_SHA = '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
 ASSEMBLER_SHA = '67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb'
 ARTIFACTS = {
     'image-inventory.json': 32*1024*1024, 'os-installed-packages.txt': 4*1024*1024,

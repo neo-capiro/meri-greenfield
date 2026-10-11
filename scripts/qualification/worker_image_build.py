@@ -104,6 +104,16 @@ def baseline(commit, capture=None):
     return current
 
 
+def context_manifest_sha(files):
+    """Predict the assembler's canonical manifest from exact candidate Git bytes."""
+    need(set(files) >= {p for p, _ in worker_context.MEMBERS}, 'context source membership')
+    rows = [{'sourcePath': path, 'contextPath': target, 'bytes': len(files[path]),
+             'sha256': sha(files[path])} for path, target in worker_context.MEMBERS]
+    manifest = {'schemaVersion': 1, 'status': 'SOURCE_ONLY', 'commitAuthority': False,
+                'members': rows, 'totalBytes': sum(row['bytes'] for row in rows)}
+    return sha(worker_context._json_bytes(manifest))
+
+
 def validate_authority(value):
     need(type(value) is dict and set(value) == {'decision', 'capturedAt', 'caller', 'project', 'authorityRecords'}
          and value['decision'] == 'ROOT_REVIEWED_WORKER_BUILDER_AUTHORITY', 'root authority descriptor')
@@ -144,7 +154,9 @@ def prepare(commit, path, authority_file, authority_sha):
     authority_raw = read(Path(authority_file).absolute(), 2*1024*1024)
     need(sha(authority_raw) == authority_sha, 'external authority SHA')
     observed = loads(authority_raw); project = validate_authority(observed)
-    files = baseline(commit); before = pins(); token = str(uuid.uuid4())
+    files = baseline(commit)
+    need(context_manifest_sha(files) == collector.CONTEXT_SHA, 'worker context manifest pin')
+    before = pins(); token = str(uuid.uuid4())
     helper_blobs = git_files(commit, tuple('scripts/qualification/'+p for p in HELPERS), prefix='helpers')
     need(all(v == read(ROOT/p, 2*1024*1024) for p, v in helper_blobs.items()), 'helper raw Git/current identity')
     files['buildspec.json'] = recipe()
@@ -183,7 +195,9 @@ def load(evidence):
     need(request['helperFiles'] == pins() and request['builderProject'] == validate_authority(request['authority']), 'execution closure/project drift')
     authority_raw = read(evidence/'authority.json', 2*1024*1024)
     need(sha(authority_raw) == request['authoritySha256'] and loads(authority_raw) == request['authority'], 'authority raw binding')
-    expected_files = baseline(request['sourceCommit']); expected_files['buildspec.json'] = recipe()
+    expected_files = baseline(request['sourceCommit'])
+    need(context_manifest_sha(expected_files) == collector.CONTEXT_SHA, 'worker context manifest pin')
+    expected_files['buildspec.json'] = recipe()
     manifest_raw = read(evidence/'worker-image-input.json', 2*1024*1024); content = loads(manifest_raw)
     need(content == {'schema': collector.SCHEMA, 'sourceCommit': request['sourceCommit'], 'runUuid': token,
          'contextManifestSha256': collector.CONTEXT_SHA,
