@@ -43,6 +43,8 @@ async function setup(
     badReceipt?: boolean;
     wrongClient?: boolean;
     readError?: boolean;
+    holdNewActorRead?: boolean;
+    holdPost?: boolean;
   } = {},
 ) {
   let posts = 0;
@@ -75,6 +77,7 @@ async function setup(
     if (path === "engagement/meetings/meeting-1") {
       reads++;
       if (options.holdRead && reads > 1) await gate;
+      if (options.holdNewActorRead && actor === "actor-b") await gate;
       if (options.readError)
         return json({ message: "Saved document access refused" }, 403);
       const current = options.rich
@@ -90,7 +93,9 @@ async function setup(
               },
             ],
           }
-        : prep;
+        : actor === "actor-b"
+          ? { ...prep, summary: "Actor B current saved preparation" }
+          : prep;
       return json({
         ...meeting,
         ...(options.wrongClient
@@ -123,6 +128,7 @@ async function setup(
       ]);
     if (path?.endsWith("/pdf-attachment")) {
       posts++;
+      if (options.holdPost) await gate;
       return json(
         options.badReceipt
           ? {}
@@ -368,10 +374,13 @@ test("invalidated identity success refuses local print and attachment dispatch",
   await expect(page.getByText(/session or permissions changed/)).toBeVisible();
   expect(flow.posts()).toBe(0);
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.evaluate(() => window.__documentRefetchIdentity?.());
   await page.getByRole("button", { name: "Preview preparation" }).click();
   await expect(page.getByText(prep.summary)).toBeVisible();
   await page.evaluate(() => window.__documentInvalidate?.("identity"));
-  await page.getByRole("button", { name: "Print / Save as PDF" }).click();
+  await expect(
+    page.getByRole("button", { name: "Print / Save as PDF" }),
+  ).toBeDisabled();
   await expect(page.getByText(/session or permissions changed/)).toBeVisible();
 });
 test("changed initiating actor during preflight refuses POST and hides old content", async ({
@@ -440,4 +449,79 @@ test("keyboard closes preview and mobile close stays in its heading row", async 
   expect(geometry.closeRight).toBeLessThan(geometry.dialogRight);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
+});
+
+test("actor-scoped saved cache never reveals previous actor content while new read waits", async ({
+  page,
+}) => {
+  const flow = await setup(page, { holdNewActorRead: true });
+  await page.getByRole("button", { name: "Preview preparation" }).click();
+  await expect(page.getByText(prep.summary)).toBeVisible();
+  flow.changeActor();
+  await page.evaluate(() => window.__documentRefetchIdentity?.());
+  await page.evaluate(() => window.__documentRemount?.());
+  await expect.poll(flow.reads).toBe(2);
+  await expect(page.getByText(prep.summary)).toHaveCount(0);
+  await expect(page.getByText("Actor B current saved preparation")).toHaveCount(
+    0,
+  );
+  flow.release();
+  await expect(
+    page.getByText("Actor B current saved preparation"),
+  ).toBeVisible();
+  expect(flow.posts()).toBe(0);
+});
+test("controlled close/reopen preserves unknown PDF attempt without a second POST", async ({
+  page,
+}) => {
+  const flow = await setup(page, { postStatus: 500 });
+  await page.getByRole("button", { name: "Email PDF" }).click();
+  await page
+    .getByRole("button", { name: "Prepare attachment", exact: true })
+    .click();
+  await expect(page.getByText(/may have completed/)).toBeVisible();
+  await page.getByRole("button", { name: "Close and check Files" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "Email PDF" }).click();
+  await expect(page.getByText(/may have completed/)).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Prepare attachment", exact: true }),
+  ).toBeDisabled();
+  expect(flow.posts()).toBe(1);
+});
+test("controlled close during preflight revokes delayed POST even after reopen", async ({
+  page,
+}) => {
+  const flow = await setup(page, { holdRead: true });
+  await page.getByRole("button", { name: "Email PDF" }).click();
+  await page
+    .getByRole("button", { name: "Prepare attachment", exact: true })
+    .click();
+  await expect.poll(flow.reads).toBe(2);
+  await page.evaluate(() => window.__documentClose?.());
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.evaluate(() => window.__documentReopen?.());
+  flow.release();
+  await expect(page.getByText(/no longer open/)).toBeVisible();
+  expect(flow.posts()).toBe(0);
+});
+test("controlled close after dispatch withholds receipt and preserves uncertainty on reopen", async ({
+  page,
+}) => {
+  const flow = await setup(page, { holdPost: true });
+  await page.getByRole("button", { name: "Email PDF" }).click();
+  await page
+    .getByRole("button", { name: "Prepare attachment", exact: true })
+    .click();
+  await expect.poll(flow.posts).toBe(1);
+  await page.evaluate(() => window.__documentClose?.());
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  flow.release();
+  await page.evaluate(() => window.__documentReopen?.());
+  await expect(page.getByText(/may have completed/)).toBeVisible();
+  await expect(page.getByText(/Stored receipt/)).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Prepare attachment", exact: true }),
+  ).toBeDisabled();
+  expect(flow.posts()).toBe(1);
 });

@@ -25,13 +25,21 @@ New public feature surface:
 ```ts
 SavedMeetingDocumentPreview({ meeting, document, onClose });
 // document = {kind:"preparation",preparation} | {kind:"debrief",debrief}
-PreparationPdfAttachmentReview({ meeting, preparation, onClose, onPrepared });
+PreparationPdfAttachmentReview({
+  meeting,
+  preparation,
+  open = true,
+  onClose,
+  onPrepared,
+});
 // onPrepared receives {id:string,fileName:string}; readiness is NOT implied.
 ```
 
 `DocumentMeeting` requires only canonical `id`, `subject`, and `client`. Root should key a document session by actor/tenant/meeting/client/document ID. Attachment receipt may seed the existing reviewed MailCompose `initialDraft.attachments`; canonical Files availability/scan checks remain mandatory there. Root owns that composition. Canonical `filesKey` is invalidated on verified attachment creation.
 
 ## Source fidelity and permission boundaries
+
+Review follow-up: saved-document query keys include tenant and user, are enabled only for the verified allowed initiating actor, and recheck the canonical read session before/after awaited reads. Print consumes the query's exact internal key. Controlled `open?: boolean` defaults to true. Keep a selected preparation review mounted with `open=false` across Close/reopen of the same scope; this preserves uncertain/completed latches. Closing synchronously revokes its layout lifetime, so neither delayed POST nor receipt can proceed after close/reopen. Only an actual actor/tenant/meeting/client/prep session change should remount/reset it. This state is in-memory only; durable recovery across reload remains the backend idempotency prerequisite.
 
 Figma high-fidelity design context and valid reference screenshots inspected for prep PDF `683:142867` and debrief PDF `689:142613`, on Prototype 3.1. Shared 660px modal, Geist, 20px heading, 13px content, 16px spacing and approved primary gradient are reused. An explicit print button makes the described Print / Save as PDF action functional. No static assets were supplied or needed. Saved content replaces mock values; debrief API exposes plain body, so the preview labels it truthfully rather than fabricating Recap/Action items/Intelligence sections.
 

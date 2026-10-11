@@ -39,12 +39,17 @@ declare global {
     __documentInvalidate?: (kind: "identity" | "capabilities") => Promise<void>;
     __documentUnmount?: () => void;
     __documentRefetchIdentity?: () => Promise<void>;
+    __documentClose?: () => void;
+    __documentReopen?: () => void;
+    __documentRemount?: () => void;
     __documentSanitize?: () => string;
   }
 }
 export function MeetingDocumentsHarness() {
   const [open, setOpen] = useState<"preparation" | "debrief" | "attachment">();
   const [receipt, setReceipt] = useState<string>();
+  const [visible, setVisible] = useState(true);
+  const [generation, setGeneration] = useState(0);
   const cache = useQueryClient();
   useEffect(() => {
     window.__documentInvalidate = async (kind) => {
@@ -57,6 +62,9 @@ export function MeetingDocumentsHarness() {
       });
     };
     window.__documentUnmount = () => setOpen(undefined);
+    window.__documentClose = () => setVisible(false);
+    window.__documentReopen = () => setVisible(true);
+    window.__documentRemount = () => setGeneration((value) => value + 1);
     window.__documentRefetchIdentity = async () => {
       await cache.refetchQueries({ queryKey: ["identity"] });
     };
@@ -70,6 +78,9 @@ export function MeetingDocumentsHarness() {
       delete window.__documentInvalidate;
       delete window.__documentUnmount;
       delete window.__documentRefetchIdentity;
+      delete window.__documentClose;
+      delete window.__documentReopen;
+      delete window.__documentRemount;
       delete window.__documentSanitize;
     };
   }, [cache]);
@@ -84,13 +95,20 @@ export function MeetingDocumentsHarness() {
         <button className="button" onClick={() => setOpen("debrief")}>
           Preview debrief
         </button>
-        <button className="button" onClick={() => setOpen("attachment")}>
+        <button
+          className="button"
+          onClick={() => {
+            setOpen("attachment");
+            setVisible(true);
+          }}
+        >
           Email PDF
         </button>
       </div>
       {receipt && <p role="status">Stored receipt {receipt}</p>}
       {open === "preparation" && (
         <SavedMeetingDocumentPreview
+          key={generation}
           meeting={meeting}
           document={{ kind: "preparation", preparation }}
           onClose={() => setOpen(undefined)}
@@ -98,6 +116,7 @@ export function MeetingDocumentsHarness() {
       )}
       {open === "debrief" && (
         <SavedMeetingDocumentPreview
+          key={generation}
           meeting={meeting}
           document={{ kind: "debrief", debrief }}
           onClose={() => setOpen(undefined)}
@@ -105,9 +124,11 @@ export function MeetingDocumentsHarness() {
       )}
       {open === "attachment" && (
         <PreparationPdfAttachmentReview
+          key={generation}
+          open={visible}
           meeting={meeting}
           preparation={preparation}
-          onClose={() => setOpen(undefined)}
+          onClose={() => setVisible(false)}
           onPrepared={(value) => setReceipt(value.fileName)}
         />
       )}

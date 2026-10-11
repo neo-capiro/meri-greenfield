@@ -23,20 +23,31 @@ export function PreparationPdfAttachmentReview({
   preparation,
   onClose,
   onPrepared,
+  open = true,
 }: {
   meeting: DocumentMeeting;
   preparation: Preparation;
   onClose: () => void;
   onPrepared: (receipt: PreparationPdfReceipt) => void;
+  open?: boolean;
 }) {
   const api = useApi();
   const cache = useQueryClient();
   const authority = useDocumentAuthority(
     `${meeting.id}:${meeting.client?.id}:${preparation.id}`,
     true,
+    open,
   );
   const capabilities = useCalendarCapabilities();
-  const saved = useSavedDocument(meeting, { kind: "preparation", preparation });
+  const saved = useSavedDocument(
+    meeting,
+    { kind: "preparation", preparation },
+    {
+      userId: authority.identity.data?.user.id,
+      tenantId: authority.identity.data?.tenant?.id,
+      allowed: authority.allowed && open,
+    },
+  );
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<Error>();
   const [uncertain, setUncertain] = useState(false);
@@ -110,7 +121,7 @@ export function PreparationPdfAttachmentReview({
   }
   return (
     <Dialog
-      open
+      open={open}
       onOpenChange={(open) => {
         if (!open && !pending) onClose();
       }}

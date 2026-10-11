@@ -11,6 +11,7 @@ import {
   readSavedDocument,
 } from "../src/features/calendar/documents/api";
 import { printMeetingDocument } from "../src/features/calendar/documents/print";
+import { savedDocumentKey } from "../src/features/calendar/documents/useSavedDocument";
 
 const id = "20000000-0000-4000-8000-000000000001";
 const prep = preparationSchema.parse({
@@ -69,6 +70,25 @@ function setup(
   return { api, calls };
 }
 describe("saved meeting document contracts", () => {
+  it("keys canonical saved documents by both tenant and actor", () => {
+    const document = { kind: "preparation" as const, preparation: prep };
+    const first = savedDocumentKey(meeting, document, {
+      tenantId: "tenant-a",
+      userId: "actor-a",
+    });
+    expect(first).not.toEqual(
+      savedDocumentKey(meeting, document, {
+        tenantId: "tenant-a",
+        userId: "actor-b",
+      }),
+    );
+    expect(first).not.toEqual(
+      savedDocumentKey(meeting, document, {
+        tenantId: "tenant-b",
+        userId: "actor-a",
+      }),
+    );
+  });
   it("reads canonical saved preparation, not an unsaved caller draft", async () => {
     const { api } = setup();
     const result = await readSavedDocument(api, meeting, {

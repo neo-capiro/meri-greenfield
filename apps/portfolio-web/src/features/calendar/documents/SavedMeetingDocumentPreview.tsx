@@ -23,10 +23,14 @@ export function SavedMeetingDocumentPreview({
   document: SavedMeetingDocument;
   onClose: () => void;
 }) {
-  const query = useSavedDocument(meeting, document);
   const authority = useDocumentAuthority(
     `${meeting.id}:${meeting.client?.id}:${documentId(document)}`,
   );
+  const query = useSavedDocument(meeting, document, {
+    userId: authority.identity.data?.user.id,
+    tenantId: authority.identity.data?.tenant?.id,
+    allowed: authority.allowed,
+  });
   const cache = useQueryClient();
   const article = useRef<HTMLElement>(null);
   const [error, setError] = useState<Error>();
@@ -38,13 +42,7 @@ export function SavedMeetingDocumentPreview({
   function print() {
     try {
       authority.capture()();
-      const state = cache.getQueryState([
-        "meeting-document",
-        meeting.id,
-        meeting.client?.id ?? null,
-        document.kind,
-        documentId(document),
-      ]);
+      const state = cache.getQueryState(query.queryKey);
       if (
         !article.current ||
         state?.status !== "success" ||

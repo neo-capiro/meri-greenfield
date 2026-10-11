@@ -4,7 +4,11 @@ import { ApiError } from "@/shared/api/http";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { useDispatchGuard } from "../access/public";
 
-export function useDocumentAuthority(scope: string, runtime = false) {
+export function useDocumentAuthority(
+  scope: string,
+  runtime = false,
+  active = true,
+) {
   const identity = useIdentity();
   const [initiatingActor, setInitiatingActor] = useState<{
     userId: string;
@@ -28,12 +32,16 @@ export function useDocumentAuthority(scope: string, runtime = false) {
   );
   const lifetime = useRef<object | null>(null);
   useLayoutEffect(() => {
+    if (!active) {
+      lifetime.current = null;
+      return;
+    }
     const token = {};
     lifetime.current = token;
     return () => {
       if (lifetime.current === token) lifetime.current = null;
     };
-  }, [scope]);
+  }, [scope, active]);
   function capture() {
     const token = lifetime.current;
     const assert = () => {
@@ -48,6 +56,7 @@ export function useDocumentAuthority(scope: string, runtime = false) {
     return assert;
   }
   const allowed =
+    active &&
     identity.isSuccess &&
     !identity.isFetching &&
     !identity.error &&
