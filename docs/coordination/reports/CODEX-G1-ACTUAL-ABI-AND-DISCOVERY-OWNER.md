@@ -1,5 +1,85 @@
 # Actual ABI DATA and discovery source acceptance
 
+## Genuine Linux import accepted; inert browser fixture deployed — 11 October 2026 04:40 UTC
+
+G1 remains OPEN. Current Meri/Capiro is untouched; separate Fargate app/control
+placement, the full SDK and the approved dedicated browser-host exception remain.
+
+The SoundFile qualification repair `6dbdef02` is integrated as `631cd1b`; its
+independent source review `59441224` is integrated as `dce0cd8`. Root remeasured
+383 source/record references and818 review references, verified clean owned Git,
+and ran26/26 exact Linux assembly tests successfully. The repair changes only
+the same-version Linux SoundFile artifact/license inventory and supported local
+pricing-map environment setting. Other123 wheels, four concrete Prisma engine
+mappings, five schema targets and the guarded import/build probes are unchanged.
+LGPL corresponding-source/codec/native security remain unqualified.
+
+E4 `.task-inputs/proxy-linux-owner-build-4/` freezes340 ZIP members/338 context
+files/331 artifacts. Source ZIP218541786B SHA
+`406512550653de91ccc7dfd607c059e33c6f9407ff184b0d81b41784cc1939f5`;
+input manifest65016B SHA
+`7cd1efee590d3e87f2ca2df4f23e16b716d641dfd2d44525362c230ec103c9f5`.
+One fresh conditional upload and one build used UUID
+`b893c769-8dbc-4ea3-b9d3-9157e727550e`, retries0, fresh full owner authority,
+the unchanged reviewed runner/inline recipe and source
+`6dbdef02c31b60898ad1720e55b8f414d12ee330`.
+
+Actual build `meri-greenfield-qualification-build:1acf96ad-8550-47ce-a02f-301cf7e0e1dc`
+ran04:26:15.649–04:28:48.696UTC, terminalSUCCEEDED/buildComplete=true.
+Source version `cJInCKTPX8gZ7_wQJVTaB_vUK94pvHzo`; result version
+`l6mVSVKesKN2Am24dcoxDcBXwPtMj65U`. Result25359B SHA
+`698d708e3fc2f758e0fb7cda6fdbd5f86499b819a39b3b6624a8487d8932b129`
+contains33 complete flat regular members. Root verified exact checksums/versions,
+all captured rows/processes, three actual container inspections, generation
+engine pins, nine stable invocation pins and positive same-ID rm/No-such-container.
+Distinct DATA review `6e0ddd57`, integrated `b4b990b`, is read in full and root
+verified269 finite source/report references plus clean owned Git. Root acceptance
+is separately retained in actual-build-independent-review-acceptance.json.
+
+ImageID `sha256:73ae63e6e2a6db5371f8b6754546830a3208cb1efc47b7065e7223f90b431aaa`.
+Native app import completed11.112598528s, appCallable/generatedPrisma true,
+541 routes and exact versions LiteLLM1.104.2/proxy-extras0.4.102.post1/Prisma0.11.0.
+Owned container `ecfa8f597ee872e9000196a8fbd3b7c3de60e4d16e6683037495637606fe7ceb`
+ran non-root10001:10001/networknone/RO/dropALL/NNP/pids64/2GiB/2CPUs and was
+positively removed. Database/lifespan/provider/ECR push were not exercised.
+One denied socket.__new__ and601B asyncio `_ssock` destructor warning remain;
+the telemetry lacks its initiating stack. No audit-clean or healthy-lifespan
+claim is made. This is limited import/generation/owned-cleanup acceptance only.
+
+Browser source report `29777d9` is integrated `adc4d96` with its independent
+import-boundary HOLD `ec829f2`/`8ae011a` preserved. Its replacement raw-source
+loader `fe706f2`/`32cdb92` and separate review `9b840a3`/`33a0726` are accepted
+for the narrow source repair. Root read the full modules/reports, verified
+1102 repaired source references/1196 review references and raw owned Git, then
+reran all nine meaningful hostile-cache/package/extension/stdlib/preload/hash/
+safe-config/complete-closure controls:9/9PASS, sourceStable1104before/after.
+Original failed controls and the old rejected candidate remain immutable.
+
+Root `.task-inputs/browser-managed-bootstrap-owner-1/` uses unchanged canonical
+fixture descriptor/workflow/template compilers. AWS ValidateStateMachineDefinition
+returnedOK/no diagnostics; ValidateTemplate passed. One reviewed CREATE change set
+contained exactly twoADDs (IAM role and STANDARD state machine) with exact inert
+template and literalfalse admission guard. The one execution ACK was followed
+by CREATE_COMPLETE and exact deployed definition/trust/sole inline policy/no
+attached policies/current zero executions readback. Stack:
+`MeriGreenfield-BrowserManagedFixture-20261011`, ID
+`arn:aws:cloudformation:us-east-1:967807252336:stack/MeriGreenfield-BrowserManagedFixture-20261011/70805440-c52b-11f1-ae8d-0affd542ef15`.
+Machine `MeriGF-BrowserFixture-b247b9a1-bfde-414a-a76b-9ff4fdd83110`;
+role `MeriGreenfield-BrowserManagedFixture-20-FixtureRole-8A8BHc9NlSeA`.
+The compiler's expired synthetic time is not operationalT0. No volume/host/Start.
+First readback incorrectly guessed CFN's untruncated role prefix; retained failure
+was corrected using actual resource CREATE_COMPLETE provenance. The second full
+readback succeeded before its result writer assumed missing initialrevisionId;
+DATA-only finalization retains null, not publication/update authority. The earlier
+wrong relative compiler import also remains preserved. No mutation was retried.
+
+Next source work prepares the fixed600s browser process-tree supervisor and real
+Linux native auth/PG TLS qualification, with exact Prisma engine TLS research.
+Actual managed probes, browser/renderer sandbox/egress/cancel/physical teardown,
+SDK interruption/resume, native proxy auth/TLS/usage/revocation/$10, REL-02 and
+measured frozen cohorts remain. All49+five security findings and new-image scans
+remain OPEN, OfficeDEFERRED, inference$0/$10, source connectionsdisabled.
+
 ## Actual generation success, import failure and positive cleanup — 11 October 2026 04:10 UTC
 
 G1 remains OPEN. The full SDK and separate Fargate application/control placement

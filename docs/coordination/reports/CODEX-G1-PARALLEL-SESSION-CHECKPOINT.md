@@ -1,6 +1,38 @@
 # Parallel Codex integration checkpoint
 
-Current continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
+Current continuation, 11 October 2026 04:40 UTC: **G0 accepted / G1 OPEN;
+eight deployment gates, G2–G7 unentered.** The new isolated Linux qualification
+experiment SUCCEEDED: genuine community LiteLLM application import, offline
+Prisma generation and positive removal of the exact owned test container are
+independently reviewed and owner accepted within that scope. The same-version
+SoundFile Linux wheel repair passed 26/26 root checks. The complete 33-member
+returned result matches its immutable source/result versions. One denied socket
+creation and an asyncio destructor warning remain OPEN; this was not a lifespan,
+database, authentication, security or Fargate deployment test.
+
+The fixed browser executor's import boundary is repaired, separately reviewed,
+and passed all nine root offline controls. The dedicated two-resource inert
+workflow/role stack is deployed and read back exactly; zero executions were
+observed. No operational T0, volume or browser host has started. A fixed
+process-tree supervisor is being prepared before actual managed probes.
+Host/browser AND renderer sandbox, egress, cancellation and physical teardown
+remain OPEN. Source/runtime observations do not pass those checks.
+
+Native PostgreSQL/LiteLLM authentication preparation is running in parallel,
+using the pinned PostgreSQL17.11 image and upstream native routes. Exact Prisma
+TLS semantics must be established and measured separately from psycopg TLS.
+SDK interrupt/replacement/resume/checkpoint/egress, actual proxy authentication/
+revocation/TLS/usage/durable $10 controls, operation-specific REL-02 and measured
+frozen cohorts still remain. Temporal production design is accepted; full W05
+product integration and later deployment/HA/restore remain later work.
+
+All49 current plus five older security findings remain OPEN; Office is DEFERRED.
+The new proxy image is unscanned and unpushed. Inference remains $0/$10. The
+approved location/owner for75 real requests is still awaited. Sources stay
+disabled, current Meri/Capiro is untouched, and no cutover is approved. [Owner evidence](CODEX-G1-ACTUAL-ABI-AND-DISCOVERY-OWNER.md)
+records exact evidence and limitations. Earlier dated checkpoints are historical.
+
+Historical continuation, 11 October 2026 04:10 UTC: **G0 accepted / G1 OPEN;
 eight deployment gates, G2–G7 unentered.** The second actual Linux experiment
 built the community proxy image and completed genuine offline Prisma generation.
 All four concrete generated engine paths/hashes match the accepted pins. The
