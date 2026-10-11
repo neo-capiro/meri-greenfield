@@ -7,6 +7,7 @@ import { CsvImportDialog } from "@/features/intake/csv/public";
 const clientId = "10000000-0000-4000-8000-000000000001";
 // Test-only component entry. It does not add a product CSV menu or route.
 export function ProfileToolsHarness() {
+  const [scopedClientId, setScopedClientId] = useState(clientId);
   const [csv, setCsv] = useState(false);
   const [exporting, setExporting] = useState(false);
   const cache = useQueryClient();
@@ -17,12 +18,29 @@ export function ProfileToolsHarness() {
         refetchType: "none",
       });
     };
+    const switchClient = () =>
+      setScopedClientId("10000000-0000-4000-8000-000000000003");
+    const switchActor = () => {
+      cache.setQueryData(["identity"], {
+        user: { id: "other-user", email: "other@example.test" },
+        tenant: {
+          id: "10000000-0000-4000-8000-000000000004",
+          name: "Other synthetic tenant",
+        },
+        role: "user_admin",
+      });
+    };
     window.addEventListener("profile-tools-authority-invalidate", invalidate);
-    return () =>
+    window.addEventListener("profile-tools-client-change", switchClient);
+    window.addEventListener("profile-tools-actor-change", switchActor);
+    return () => {
       window.removeEventListener(
         "profile-tools-authority-invalidate",
         invalidate,
       );
+      window.removeEventListener("profile-tools-client-change", switchClient);
+      window.removeEventListener("profile-tools-actor-change", switchActor);
+    };
   }, [cache]);
   return (
     <ClientFrame
@@ -34,7 +52,7 @@ export function ProfileToolsHarness() {
     >
       <section className="card stack">
         <h1>Profile tools qualification</h1>
-        <FocusTags clientId={clientId} />
+        <FocusTags clientId={scopedClientId} />
         <div className="row">
           <button className="button" onClick={() => setExporting(true)}>
             Review profile JSON

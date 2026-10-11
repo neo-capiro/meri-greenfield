@@ -14,6 +14,14 @@ import {
 } from "./actions";
 import styles from "./tags.module.css";
 export function FocusTags({ clientId }: { clientId: string }) {
+  const identity = useIdentity();
+  // Identity data selects state ownership only. Fresh permissions are checked
+  // inside the session and again at each API boundary. Keep this key stable
+  // during same-actor refetches so an unknown-write freeze is not discarded.
+  const scope = `${clientId}:${identity.data?.tenant?.id ?? "unverified"}:${identity.data?.user.id ?? "unverified"}`;
+  return <FocusTagSession key={scope} clientId={clientId} />;
+}
+function FocusTagSession({ clientId }: { clientId: string }) {
   const api = useApi();
   const cache = useQueryClient();
   const identity = useIdentity();
@@ -122,7 +130,7 @@ export function FocusTags({ clientId }: { clientId: string }) {
               autoComplete="off"
               maxLength={100}
               value={value}
-              disabled={pending || uncertain}
+              disabled={!allowed || pending || uncertain}
               onChange={(event) => setValue(event.target.value)}
             />
           </label>

@@ -3,6 +3,7 @@ import { client, clientId, installFixtures, json } from "./fixtures";
 export const toolsTenantId = "10000000-0000-4000-8000-000000000002";
 export const toolsClient = {
   ...client,
+  status: "active",
   tenantId: toolsTenantId,
   intakeData: {
     tags: ["Saved focus"],

@@ -1,11 +1,102 @@
 import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { json } from "./fixtures";
 import {
   installProfileTools,
   toolsClient,
   toolsIntelligence,
 } from "./profile-tools-fixtures";
 const route = "/__test/profile-tools";
+test("client prop change discards an open old draft and prevents held-preflight late save", async ({
+  page,
+}) => {
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const fixture = await installProfileTools(page, { heldRead: () => held });
+  const secondId = "10000000-0000-4000-8000-000000000003";
+  let secondWrites = 0;
+  await page.route(`**/api/backend/core/clients/${secondId}`, (request) => {
+    if (request.request().method() !== "GET") secondWrites++;
+    return json(request, {
+      ...toolsClient,
+      id: secondId,
+      name: "Second synthetic client",
+      intakeData: { tags: ["Other client focus"] },
+    });
+  });
+  await page.goto(route);
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await page
+    .getByRole("textbox", { name: "Focus tag" })
+    .fill("Old client draft");
+  await page.getByRole("button", { name: "Add tag", exact: true }).click();
+  await expect.poll(() => fixture.calls.gets).toBe(2);
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("profile-tools-client-change")),
+  );
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.getByLabel("Client focus tags")).toContainText(
+    "Other client focus",
+  );
+  release();
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await expect(page.getByRole("textbox", { name: "Focus tag" })).toHaveValue(
+    "",
+  );
+  await expect(
+    page.getByRole("button", { name: "Add tag", exact: true }),
+  ).toBeDisabled();
+  expect(fixture.calls.puts).toBe(0);
+  expect(secondWrites).toBe(0);
+});
+test("actor and tenant change discards an open old tag draft", async ({
+  page,
+}) => {
+  const fixture = await installProfileTools(page);
+  await page.goto(route);
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await page
+    .getByRole("textbox", { name: "Focus tag" })
+    .fill("Old actor draft");
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("profile-tools-actor-change")),
+  );
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await expect(page.getByRole("textbox", { name: "Focus tag" })).toHaveValue(
+    "",
+  );
+  await expect(
+    page.getByRole("button", { name: "Add tag", exact: true }),
+  ).toBeDisabled();
+  expect(fixture.calls.puts).toBe(0);
+});
+test("same-actor identity refresh cannot erase an unknown tag-write freeze", async ({
+  page,
+}) => {
+  const fixture = await installProfileTools(page, { tagStatus: 503 });
+  await page.goto(route);
+  await page.getByRole("button", { name: "+ Add focus tag" }).click();
+  await page
+    .getByRole("textbox", { name: "Focus tag" })
+    .fill("Uncertain draft");
+  await page.getByRole("button", { name: "Add tag", exact: true }).click();
+  await expect(
+    page.getByText("The save outcome is unknown.", { exact: false }),
+  ).toBeVisible();
+  await page.evaluate(() =>
+    window.dispatchEvent(new Event("profile-tools-authority-invalidate")),
+  );
+  await expect(page.getByRole("textbox", { name: "Focus tag" })).toHaveValue(
+    "Uncertain draft",
+  );
+  await expect(
+    page.getByRole("button", { name: "Add tag", exact: true }),
+  ).toBeDisabled();
+  expect(fixture.calls.puts).toBe(1);
+});
 test("focus tag uses fresh intake, retains unrelated values and refreshes saved chips", async ({
   page,
 }, info) => {

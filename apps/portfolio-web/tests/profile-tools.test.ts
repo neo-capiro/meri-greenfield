@@ -163,6 +163,23 @@ describe("CSV validation and real partial receipt", () => {
   });
 });
 describe("focus tag append", () => {
+  it("refuses the verified lowercase archived status before any tag write", async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(response({ ...client, status: "archived" }));
+    await expect(
+      addFocusTag(
+        createApiClient(fetcher),
+        clientId,
+        actor,
+        "New",
+        () => {},
+        signal(),
+        () => {},
+      ),
+    ).rejects.toMatchObject({ status: 502 });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it("preserves current intake fields and existing tags from a fresh scoped read", async () => {
     const fetcher = vi
       .fn<typeof fetch>()
@@ -281,6 +298,27 @@ describe("focus tag append", () => {
   });
 });
 describe("profile JSON source composition", () => {
+  it.each(["id", "tenantId"])(
+    "refuses a client source with mismatched %s before requesting intelligence",
+    async (field) => {
+      const fetcher = vi.fn<typeof fetch>().mockResolvedValue(
+        response({
+          ...client,
+          [field]: "10000000-0000-4000-8000-000000000009",
+        }),
+      );
+      await expect(
+        prepareProfileExport(
+          createApiClient(fetcher),
+          clientId,
+          actor,
+          () => {},
+          signal(),
+        ),
+      ).rejects.toMatchObject({ status: 502 });
+      expect(fetcher).toHaveBeenCalledTimes(1);
+    },
+  );
   it("preserves source amounts, attribution and extensible saved intake with a deterministic timestamp", async () => {
     const fetcher = vi
       .fn<typeof fetch>()
