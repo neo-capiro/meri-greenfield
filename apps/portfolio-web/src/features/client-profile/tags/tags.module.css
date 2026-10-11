@@ -1,0 +1,28 @@
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.tag,
+.add {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+.tag {
+  background: var(--muted);
+  overflow-wrap: anywhere;
+}
+.add {
+  background: transparent;
+  color: var(--muted-foreground);
+  border: 1px dashed var(--border-strong, var(--border));
+  cursor: pointer;
+}
+.add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

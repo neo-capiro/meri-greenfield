@@ -1,0 +1,26 @@
+.mapping {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.preview {
+  max-height: 300px;
+  overflow: auto;
+}
+.preview table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.preview th,
+.preview td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.preview caption {
+  text-align: left;
+  padding: 8px 0;
+  font-weight: 500;
+}
