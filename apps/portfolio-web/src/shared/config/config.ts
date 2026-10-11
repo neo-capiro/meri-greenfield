@@ -92,7 +92,7 @@ export function readConfig(
     secret?.match(/^sk_(test|live)_\S+$/),
   );
   if (!authConfigured)
-    issues.push("Configure the existing Clerk test application keys.");
+    issues.push("Configure the designated Clerk application keys.");
   else if (publicKey?.split("_")[1] !== secret?.split("_")[1])
     issues.push("Clerk public and secret keys must use the same environment.");
   if (!services.core)

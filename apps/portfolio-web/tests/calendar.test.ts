@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { Temporal } from "temporal-polyfill";
+import { prepItemSchema } from "../src/features/calendar/contracts";
 import type { ApiClient } from "../src/shared/api/http";
 import {
   calendarRange,
@@ -14,6 +15,36 @@ import {
   fetchPlanner,
   fetchMeetings,
 } from "../src/features/calendar/feeds";
+describe("verified preparation contract", () => {
+  it("preserves comprehensive evidence-linked items and legacy edited text", () => {
+    const comprehensive = {
+      text: "Review the synthetic deadline",
+      factIds: ["fact-1"],
+    };
+    expect(prepItemSchema.parse(comprehensive)).toEqual(comprehensive);
+    const saved = {
+      text: "Review the synthetic evidence",
+      evidenceReferences: ["source-1"],
+    };
+    const agenda = {
+      title: "Synthetic agenda",
+      description: "Discuss the project",
+    };
+    const followUp = { ...agenda, dueDate: "2026-10-20" };
+    expect(prepItemSchema.parse(saved)).toEqual(saved);
+    expect(prepItemSchema.parse(agenda)).toEqual(agenda);
+    expect(prepItemSchema.parse(followUp)).toEqual(followUp);
+    expect(prepItemSchema.parse("Edited preparation")).toBe(
+      "Edited preparation",
+    );
+    expect(
+      prepItemSchema.safeParse({ text: "Missing source metadata" }).success,
+    ).toBe(false);
+    expect(prepItemSchema.safeParse({ text: {}, factIds: [] }).success).toBe(
+      false,
+    );
+  });
+});
 describe("calendar ranges and source dates", () => {
   it("uses an exclusive end and honors spring daylight saving", () => {
     const range = calendarRange("2026-03-08", "week", "America/New_York");

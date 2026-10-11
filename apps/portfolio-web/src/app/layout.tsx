@@ -1,8 +1,8 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import type { ReactNode } from "react";
 import { readConfig } from "@/shared/config/config";
+import { AuthenticationProvider } from "@/shared/auth/AuthenticationProvider";
 import "./globals.css";
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -15,10 +15,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
-        {config.authConfigured ? (
-          <ClerkProvider publishableKey={config.publishableKey}>
+        {config.authConfigured && config.publishableKey ? (
+          <AuthenticationProvider publishableKey={config.publishableKey}>
             {content}
-          </ClerkProvider>
+          </AuthenticationProvider>
         ) : (
           content
         )}

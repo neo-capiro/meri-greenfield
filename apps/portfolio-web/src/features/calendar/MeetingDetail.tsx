@@ -132,7 +132,23 @@ export function MeetingDetail({
                       </h3>
                       <ul>
                         {prep[section].map((value, index) => (
-                          <li key={index}>{value}</li>
+                          <li key={index}>
+                            {typeof value === "string" ? (
+                              value
+                            ) : "text" in value ? (
+                              value.text
+                            ) : (
+                              <>
+                                <strong>{value.title}</strong>
+                                {value.description && (
+                                  <p>{value.description}</p>
+                                )}
+                                {value.dueDate && (
+                                  <span>Due {value.dueDate}</span>
+                                )}
+                              </>
+                            )}
+                          </li>
                         ))}
                       </ul>
                     </div>
