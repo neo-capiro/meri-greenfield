@@ -74,7 +74,7 @@
 }
 .kinds > .active {
   background: var(--dark-gradient);
-  color: var(--primary-foreground);
+  color: #fff;
   border-color: transparent;
 }
 .context {
