@@ -21,6 +21,7 @@ import { StageEditor } from "./StageEditor";
 import { useProspectVisibility } from "./mutations";
 import { ProspectContacts } from "./contacts/public";
 import { ProspectClientLink } from "./conversion/public";
+import { ProspectBrief } from "./brief/public";
 import styles from "./prospects.module.css";
 export function ProspectDetail({
   id,
@@ -124,6 +125,7 @@ export function ProspectDetail({
                       : "Stage updates are currently unavailable. Your existing stage is preserved."}
                   </p>
                 </section>
+                <ProspectBrief prospectId={id} />
                 <ProspectHistory id={id} />
               </div>
               <div className="stack">

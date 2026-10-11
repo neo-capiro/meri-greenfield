@@ -209,6 +209,10 @@ export async function installFixtures(page: Page) {
       },
       [`core/business-development/prospects/${prospectId}`]: prospect,
       [`core/business-development/prospects/${prospectId}/history`]: [],
+      [`core/business-development/prospects/${prospectId}/brief`]: {
+        brief: null,
+        currentVersion: null,
+      },
       [`core/clients/${clientId}/people`]: [person],
       [`core/clients/${clientId}/team`]: [],
       [`core/clients/${clientId}/activity`]: [],
