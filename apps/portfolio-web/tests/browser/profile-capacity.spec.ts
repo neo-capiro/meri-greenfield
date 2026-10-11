@@ -305,13 +305,11 @@ for (const event of ["capacity-invalidate-actor", "capacity-unmount"])
         exact: true,
       });
       await fillProfile(dialog);
-      await dialog
-        .getByLabel("Upload logo", { exact: true })
-        .setInputFiles({
-          name: "logo.png",
-          mimeType: "image/png",
-          buffer: Buffer.from("Synthetic intercepted bytes"),
-        });
+      await dialog.getByLabel("Upload logo", { exact: true }).setInputFiles({
+        name: "logo.png",
+        mimeType: "image/png",
+        buffer: Buffer.from("Synthetic intercepted bytes"),
+      });
       await dialog
         .getByRole("button", { name: "Create profile", exact: true })
         .click();

@@ -58,11 +58,13 @@ export function useSaveIntake(
       cache.setQueryData(clientKey(saved.id), saved);
     },
     // A committed write can lose its receipt. Refresh read models without replay.
-    onSettled: async () => {
+    onSettled: async (_saved, error) => {
       await Promise.all([
         cache.invalidateQueries({ queryKey: billingStateKey }),
         cache.invalidateQueries({ queryKey: clientsKey }),
-        ...(client
+        ...(client &&
+        error instanceof ClientProfileAttemptError &&
+        error.uncertain
           ? [cache.invalidateQueries({ queryKey: clientKey(client.id) })]
           : []),
       ]);

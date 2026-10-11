@@ -488,16 +488,14 @@ for (const event of ["invalidate", "unmount"])
     }) => {
       const state = await setup(page);
       let reached = false,
-        posts = 0,
-        candidateReads = 0;
+        posts = 0;
       let release!: () => void;
       const held = new Promise<void>((resolve) => {
         release = resolve;
       });
       await page.route("**/firm/import-candidates", async (route) => {
-        candidateReads++;
-        // This route starts after setup: one preflight read precedes refresh.
-        if (stage === "read-model-refresh" && candidateReads === 2) {
+        // Initial/preflight reads may race setup; only hold a post-write refresh.
+        if (stage === "read-model-refresh" && posts === 1) {
           reached = true;
           await held;
         }
