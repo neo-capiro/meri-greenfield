@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { Dialog } from "@/shared/ui/Dialog";
-import { uploadFile, type UploadAttempt } from "./upload";
+import { uploadParentFile, type UploadAttempt } from "./upload";
 import { fileValidation } from "./contracts";
 import { filesKey } from "./queries";
 type Job = {
@@ -17,10 +17,12 @@ export function UploadDialog({
   clientId,
   onClose,
   source,
+  beforeDispatch,
 }: {
   clientId: string;
   onClose: () => void;
   source?: string;
+  beforeDispatch?: () => void;
 }) {
   const api = useApi();
   const cache = useQueryClient();
@@ -37,14 +39,17 @@ export function UploadDialog({
     const attempt = attempts.current.get(job.id) ?? {};
     attempts.current.set(job.id, attempt);
     try {
-      await uploadFile(
+      await uploadParentFile(
         api,
-        clientId,
+        { clientId },
         job.file,
         attempt,
         (stage) => patch(job.id, { stage }),
         source,
+        fetch,
+        beforeDispatch,
       );
+      beforeDispatch?.();
       patch(job.id, {
         complete: true,
         stage: "Uploaded · awaiting service processing",
