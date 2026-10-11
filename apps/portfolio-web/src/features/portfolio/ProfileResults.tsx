@@ -73,42 +73,53 @@ export function ProfileResults({
     </div>
   ) : (
     <div className={styles.cards}>
-      {rows.map((client) => {
-        const owner = owners?.[client.id]?.accountOwner;
-        return (
-          <article className={styles.profileCard} key={client.id}>
-            <Link
-              className={styles.cardTop}
-              href={`/portfolio/${client.id}`}
-              aria-label={`Open ${client.name}`}
-            >
-              <ProfileLogo client={client} />
-              <div className={styles.cardIdentity}>
-                <h3>{client.name}</h3>
-                <small>{client.sectorTag ?? "Sector not supplied"}</small>
-              </div>
-            </Link>
-            <div className={styles.cardBottom}>
-              <span
-                className="chip"
-                aria-label={`Profile status: ${client.profileStatus}`}
-              >
-                {client.profileStatus}
-              </span>
-              <span
-                className={styles.ownerAvatar}
-                title={
-                  owners?.[client.id] ? memberName(owner) : "Owner unavailable"
-                }
-                aria-label={`Account owner: ${owners?.[client.id] ? memberName(owner) : "unavailable"}`}
-              >
-                {owner ? initials(memberName(owner)) : "—"}
-              </span>
-            </div>
-          </article>
-        );
-      })}
+      {rows.map((client) => (
+        <ProfileCard
+          key={client.id}
+          client={client}
+          ownership={owners?.[client.id]}
+        />
+      ))}
     </div>
+  );
+}
+export function ProfileCard({
+  client,
+  ownership,
+}: {
+  client: Client;
+  ownership?: { accountOwner: Member | null };
+}) {
+  const owner = ownership?.accountOwner;
+  return (
+    <article className={styles.profileCard}>
+      <Link
+        className={styles.cardTop}
+        href={`/portfolio/${client.id}`}
+        aria-label={`Open ${client.name}`}
+      >
+        <ProfileLogo client={client} />
+        <div className={styles.cardIdentity}>
+          <h3>{client.name}</h3>
+          <small>{client.sectorTag ?? "Sector not supplied"}</small>
+        </div>
+      </Link>
+      <div className={styles.cardBottom}>
+        <span
+          className="chip"
+          aria-label={`Profile status: ${client.profileStatus}`}
+        >
+          {client.profileStatus}
+        </span>
+        <span
+          className={styles.ownerAvatar}
+          title={ownership ? memberName(owner) : "Owner unavailable"}
+          aria-label={`Account owner: ${ownership ? memberName(owner) : "unavailable"}`}
+        >
+          {owner ? initials(memberName(owner)) : "—"}
+        </span>
+      </div>
+    </article>
   );
 }
 function ProfileLogo({ client }: { client: Client }) {

@@ -16,7 +16,7 @@ import {
   sortClients,
 } from "./filter";
 import { CreateProfileDialog } from "./CreateProfileDialog";
-import { ProfileResults } from "./ProfileResults";
+import { PortfolioProfiles } from "./PortfolioProfiles";
 import { IndexFilters } from "./IndexFilters";
 import { PortfolioPulse } from "./PortfolioPulse";
 import { GlobalQuickLog } from "./GlobalQuickLog";
@@ -183,9 +183,11 @@ export function PortfolioIndex({
                       {activeFilters ? ` of ${clients.data.length}` : ""}
                     </p>
                     {rows.length ? (
-                      <ProfileResults
+                      <PortfolioProfiles
+                        catalog={clients.data}
                         rows={rows}
-                        view={state.view}
+                        state={state}
+                        filtered={activeFilters}
                         owners={owners.error ? undefined : owners.data}
                       />
                     ) : (
@@ -215,6 +217,15 @@ export function PortfolioIndex({
                         )}
                       </div>
                     )}
+                    {rows.length > 0 &&
+                      (state.view !== "cards" ||
+                        state.sort !== "saved" ||
+                        activeFilters) && (
+                        <p className="muted">
+                          To rearrange profiles, choose Card view and Saved
+                          order, then clear profile filters.
+                        </p>
+                      )}
                   </>
                 )}
                 {state.view === "cards" && permitted && (

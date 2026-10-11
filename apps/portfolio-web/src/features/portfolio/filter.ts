@@ -9,13 +9,13 @@ export const unassignedOwner = "unassigned";
 export interface PortfolioIndexState extends PortfolioFilter {
   type: string;
   view: "list" | "cards";
-  sort: "recent" | "name";
+  sort: "saved" | "recent" | "name";
   unsupportedSort: string;
 }
 export function readPortfolioState(
   params: Pick<URLSearchParams, "get">,
 ): PortfolioIndexState {
-  const sort = params.get("sort") ?? "recent";
+  const sort = params.get("sort") ?? "saved";
   return {
     search: params.get("q") ?? "",
     status: params.get("status") ?? "",
@@ -26,8 +26,8 @@ export function readPortfolioState(
       (params.get("view") ?? params.get("layout")) === "list"
         ? "list"
         : "cards",
-    sort: sort === "name" ? "name" : "recent",
-    unsupportedSort: sort === "name" || sort === "recent" ? "" : sort,
+    sort: sort === "saved" || sort === "name" ? sort : "recent",
+    unsupportedSort: ["saved", "name", "recent"].includes(sort) ? "" : sort,
   };
 }
 export function portfolioHref(
@@ -51,7 +51,10 @@ export function clearPortfolioFilters(
     next.delete(key);
   return `${pathname}${next.size ? `?${next}` : ""}`;
 }
-export function sortClients(clients: Client[], sort: "recent" | "name") {
+export function sortClients(
+  clients: Client[],
+  sort: "saved" | "recent" | "name",
+) {
   // GET /clients is ordered by createdAt DESC. Preserve that order for Recent.
   return sort === "name"
     ? [...clients].sort(

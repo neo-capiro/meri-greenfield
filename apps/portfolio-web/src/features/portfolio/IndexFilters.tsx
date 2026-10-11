@@ -94,6 +94,7 @@ export function IndexFilters({
         value={state.sort}
         onChange={(e) => set("sort", e.target.value)}
       >
+        <option value="saved">Saved order</option>
         <option value="recent">Recently added</option>
         <option value="name">Name A–Z</option>
       </select>
