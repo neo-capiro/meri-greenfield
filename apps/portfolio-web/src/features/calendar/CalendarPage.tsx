@@ -20,6 +20,7 @@ import { MeetingDetail } from "./MeetingDetail";
 import { MeetingForm } from "./MeetingForm";
 import { MeetingLibrary } from "./library/public";
 import { PublicEventDetail } from "./public-event/public";
+import { CalendarSyncDialog } from "./sync/public";
 import type { CalendarKind } from "./contracts";
 import { deduplicate } from "./feeds";
 import styles from "./calendar.module.css";
@@ -49,6 +50,8 @@ export function CalendarPage({
   const range = calendarRange(date, view, zone);
   const feeds = useCalendarFeeds(range, zone, scope, mixed);
   const [creating, setCreating] = useState(false);
+  const [syncReview, setSyncReview] = useState<string | null>(null);
+  const syncScope = JSON.stringify([scope, view, date, zone]);
   const [search, setSearch] = useState("");
   const [hidden, setHidden] = useState<CalendarKind[]>([]);
   function update(values: Record<string, string | undefined>) {
@@ -112,6 +115,9 @@ export function CalendarPage({
         <div className="row">
           <button className="button" onClick={() => update({ library: "1" })}>
             Meeting library
+          </button>
+          <button className="button" onClick={() => setSyncReview(syncScope)}>
+            Sync calendar
           </button>
           <button className="button primary" onClick={() => setCreating(true)}>
             <Plus size={16} />
@@ -304,6 +310,13 @@ export function CalendarPage({
         }}
         clientId={scope}
         zone={zone}
+      />
+      <CalendarSyncDialog
+        key={syncScope}
+        open={syncReview === syncScope}
+        onOpenChange={(open) => setSyncReview(open ? syncScope : null)}
+        range={{ from: range.from, to: range.to }}
+        clientName={clients.data?.find((client) => client.id === scope)?.name}
       />
     </div>
   );

@@ -19,6 +19,7 @@ export async function installCalendarSyncFixtures(
     responseStatus?: number;
     hasMore?: boolean;
     preflightDelay?: number;
+    fallback?: boolean;
   } = {},
 ) {
   const state = {
@@ -101,6 +102,7 @@ export async function installCalendarSyncFixtures(
           : { connectionId: url.pathname.split("/").at(-2), calendar },
       );
     }
+    if (options.fallback) return route.fallback();
     state.unexpected.push(`${request.method()} ${url.pathname}`);
     return reply({ message: "Unexpected synthetic request" }, 500);
   });
