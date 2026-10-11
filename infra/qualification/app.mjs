@@ -89,7 +89,8 @@ class BuildStack extends Stack {
           ] },
           build: { commands: [
             'set -euo pipefail',
-            'docker build --pull --platform linux/amd64 -f apps/worker/qualification/Dockerfile -t "$REPOSITORY_URI:$IMAGE_TAG" apps/worker/qualification',
+            'timeout --signal=TERM --kill-after=5s 45s python3 -I -B -S scripts/qualification/worker_context.py --output "$CODEBUILD_SRC_DIR/.meri-worker-context"',
+            'docker build --pull --platform linux/amd64 -f "$CODEBUILD_SRC_DIR/.meri-worker-context/context/Dockerfile" -t "$REPOSITORY_URI:$IMAGE_TAG" "$CODEBUILD_SRC_DIR/.meri-worker-context/context"',
           ] },
           post_build: { commands: [
             'set -euo pipefail',

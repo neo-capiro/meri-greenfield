@@ -91,6 +91,15 @@ test('trusted builder preserves versioned evidence and can resolve pushed digest
   const [project] = resources(build, 'AWS::CodeBuild::Project');
   assert.equal(project.ConcurrentBuildLimit, 1); assert.equal(project.TimeoutInMinutes, 30);
   const spec = JSON.parse(project.Source.BuildSpec);
-  assert(spec.phases.build.commands.find(c => c.startsWith('docker build')).endsWith(' apps/worker/qualification'));
   assert(spec.phases.post_build.commands.indexOf('[ "${CODEBUILD_BUILD_SUCCEEDING:-0}" = 1 ]') < spec.phases.post_build.commands.findIndex(c => c.startsWith('docker push')));
+});
+
+test('worker build assembles an exclusive public context before Docker under a process bound', () => {
+  const [project] = resources(build, 'AWS::CodeBuild::Project');
+  const commands = JSON.parse(project.Source.BuildSpec).phases.build.commands;
+  assert.equal(commands.length, 3, 'no alternate build, context repair or cleanup commands');
+  assert.equal(commands[0], 'set -euo pipefail', 'assembly failure stops Docker');
+  assert.equal(commands[1], 'timeout --signal=TERM --kill-after=5s 45s python3 -I -B -S scripts/qualification/worker_context.py --output "$CODEBUILD_SRC_DIR/.meri-worker-context"');
+  assert.equal(commands[2], 'docker build --pull --platform linux/amd64 -f "$CODEBUILD_SRC_DIR/.meri-worker-context/context/Dockerfile" -t "$REPOSITORY_URI:$IMAGE_TAG" "$CODEBUILD_SRC_DIR/.meri-worker-context/context"');
+  assert(!commands.some(c => /(?:^|[;&|]\s*)(?:rm|mkdir|cp)(?:\s|$)/.test(c)), 'the fixed assembler owns context allocation');
 });
