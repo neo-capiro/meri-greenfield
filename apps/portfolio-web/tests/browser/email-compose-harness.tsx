@@ -7,6 +7,11 @@ declare global {
   interface Window {
     __mailRecheck?: () => Promise<void>;
     __mailUnmount?: () => void;
+    __mailInvalidate?: () => Promise<{
+      status?: string;
+      fetchStatus?: string;
+      isInvalidated?: boolean;
+    }>;
   }
 }
 export function EmailComposeHarness() {
@@ -18,9 +23,22 @@ export function EmailComposeHarness() {
     window.__mailRecheck = () =>
       cache.invalidateQueries({ queryKey: ["identity"] });
     window.__mailUnmount = () => setOpen(false);
+    window.__mailInvalidate = async () => {
+      await cache.invalidateQueries({
+        queryKey: ["identity"],
+        refetchType: "none",
+      });
+      const state = cache.getQueryState(["identity"]);
+      return {
+        status: state?.status,
+        fetchStatus: state?.fetchStatus,
+        isInvalidated: state?.isInvalidated,
+      };
+    };
     return () => {
       delete window.__mailRecheck;
       delete window.__mailUnmount;
+      delete window.__mailInvalidate;
     };
   }, [cache]);
   return (

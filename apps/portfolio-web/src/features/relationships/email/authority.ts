@@ -40,6 +40,7 @@ export function useMailAuthority(scopeKey?: string) {
         !actor ||
         state?.status !== "success" ||
         state.fetchStatus !== "idle" ||
+        state.isInvalidated ||
         state.error ||
         !state.data?.user.id.trim() ||
         !state.data.tenant?.id.trim() ||

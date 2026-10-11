@@ -183,6 +183,48 @@ async function attach(page: Page) {
     buffer: Buffer.from("%PDF-fixture"),
   });
 }
+test("invalidated successful idle identity refuses mail dispatch and retains draft", async ({
+  page,
+}) => {
+  const state = await setup(page);
+  await compose(page);
+  await page.getByRole("button", { name: "Review email", exact: true }).click();
+  expect(await page.evaluate(() => window.__mailInvalidate?.())).toEqual({
+    status: "success",
+    fetchStatus: "idle",
+    isInvalidated: true,
+  });
+  await page.getByRole("button", { name: "Send email", exact: true }).click();
+  await expect(
+    page.getByText(/mailbox session changed or is unverified/).last(),
+  ).toBeVisible({ timeout: 2000 });
+  expect(state.sent).toHaveLength(0);
+  await page.keyboard.press("Escape");
+  await expect(page.getByLabel("Message", { exact: true })).toHaveValue(
+    "Draft retained for explicit review.",
+  );
+});
+test("invalidated successful idle identity refuses upload prepare dispatch", async ({
+  page,
+}) => {
+  const state = await setup(page);
+  await compose(page);
+  expect(await page.evaluate(() => window.__mailInvalidate?.())).toEqual({
+    status: "success",
+    fetchStatus: "idle",
+    isInvalidated: true,
+  });
+  await attach(page);
+  await expect(
+    page.getByText(/mailbox session changed or is unverified/).last(),
+  ).toBeVisible({ timeout: 2000 });
+  expect(state.counts()).toMatchObject({
+    prepares: 0,
+    uploads: 0,
+    confirms: 0,
+  });
+  expect(state.sent).toHaveLength(0);
+});
 test("contact picker and CC/BCC survive explicit review and send exact receipt", async ({
   page,
 }) => {
