@@ -381,17 +381,21 @@ There are no satellite domains. A proposed `portfolio-preview.capiro.ai`
 satellite would cost $10/month; none was added. The allowed-subdomain form
 accepted `portfolio-preview.app.capiro.ai` as an input, but it was cleared
 without submission. The certificate template and preview runbook now target
-that hostname. The originally deployed certificate still covers only the old
-hostname until its CloudFormation stack is updated. No Clerk production setting
-was changed.
+that hostname. The certificate stack was updated on 11 October; ACM issued
+and DNS validated the new hostname, replacing the unused first certificate.
+No Clerk production setting was changed.
 
 The full S3-source build on `4f2a082` passed 728 unit and 459 browser cases,
 static checks, production compilation and the Linux image build. Its container
 smoke failed before image push because the check used `/api/core/clients` rather
 than the implemented `/api/backend/core/clients` proxy route. Diagnostic jobs
-confirmed UID 1000, a healthy `/healthz`, and setup/sign-in fallback pages. The
-smoke URL is corrected in the current source; a fresh exact-source build and
-scan are still required. The original zlib HIGH finding is not waived.
+confirmed UID 1000, a healthy `/healthz`, and setup/sign-in fallback pages.
+Source `8a41286` corrected the URL. Full CodeBuild job
+`322ee417-3874-4c38-85a6-948f2c90ff45` then SUCCEEDED with 728 unit and
+459 browser cases, production and Linux builds, container smoke and ECR digest
+read-back `sha256:9d9dfee999cb8586cf8e5cc0b74875f1152cfd2f390256b1cb4baab55a4970c3`.
+Its completed scan again reports one HIGH `CVE-2026-85091` zlib finding.
+No image is admitted for ECS while that finding lacks a disposition.
 
 ## Client lifecycle integration outline — 11 October 2026
 

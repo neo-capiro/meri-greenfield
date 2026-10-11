@@ -20,20 +20,24 @@ on `4f2a082` passed the full tests and image build, then failed a smoke check
 that called `/api/core/clients` instead of the actual proxy route
 `/api/backend/core/clients`; that run did not push an image. Separate diagnostic
 jobs confirmed the image starts as UID 1000, `/healthz` returns 200, and the
-setup/sign-in pages render. This source corrects the smoke URL. A new exact-head
-build, digest read-back and security disposition remain gates.
+setup/sign-in pages render. Source `8a41286` corrected the smoke URL. Its full
+CodeBuild job `322ee417-3874-4c38-85a6-948f2c90ff45` SUCCEEDED: 728 unit,
+459 browser, production and Linux builds, container smoke and ECR read-back.
+The immutable digest is
+`sha256:9d9dfee999cb8586cf8e5cc0b74875f1152cfd2f390256b1cb4baab55a4970c3`.
+The completed scan again reports one HIGH `CVE-2026-85091` zlib finding.
+Security disposition and merged-source release gates remain before ECS.
 
 ## Existing foundation
 
 - `Capiro-Portfolio-Preview-Registry`: immutable, scan-on-push ECR repository
   `967807252336.dkr.ecr.us-east-1.amazonaws.com/capiro/portfolio-preview`.
-- `Capiro-Portfolio-Preview-Certificate`: ISSUED ACM certificate
-  `arn:aws:acm:us-east-1:967807252336:certificate/179a4c08-7745-45f9-b4be-7ddae9d36729`.
-  This first certificate covers `portfolio-preview.capiro.ai` only. Clerk's
-  production primary domain is `app.capiro.ai`, with allowed subdomains enabled.
-  `certificate.yml` now targets `portfolio-preview.app.capiro.ai`; update the
-  certificate stack and verify issuance before a service change. No service
-  A/AAAA alias exists.
+- `Capiro-Portfolio-Preview-Certificate`: UPDATE_COMPLETE; ISSUED ACM
+  certificate `arn:aws:acm:us-east-1:967807252336:certificate/edcc6113-12f5-4154-bfdf-64c7da1037cd`
+  covers `portfolio-preview.app.capiro.ai`, with DNS validation SUCCESS. It
+  replaced the unused first certificate for `portfolio-preview.capiro.ai`.
+  Clerk's production primary domain is `app.capiro.ai`, with allowed subdomains
+  enabled. No service A/AAAA alias exists.
 
 ## Gate before `service.yml`
 
