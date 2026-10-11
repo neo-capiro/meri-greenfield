@@ -1,6 +1,8 @@
 import { createMailValidators } from './mail-validation.mjs';
 import { createMeetingValidators } from './meeting-source-validation.mjs';
 import { createOperationalReadValidators } from './operational-reads-validation.mjs';
+import { createFederalMarketValidators } from './federal-market-validation.mjs';
+import { createDataSearchValidators } from './data-search-validation.mjs';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import Ajv from 'ajv/dist/2020.js';
@@ -8,7 +10,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const mailSchemaId = 'urn:meri:retrieval:mail:0.2.0';
@@ -192,6 +194,24 @@ export const {
   assertTaskReadInput, assertTaskReadPage, assertActionItemReadInput, assertActionItemClientScopedPage,
   OPERATIONAL_READ_PENDING_MODES,
 } = operationalReadValidators;
+
+const federalMarketValidators = createFederalMarketValidators({
+  validateShape, schema: schemas[groups.indexOf('federal-market')],
+});
+export const {
+  federalMarketSchemaId, FEDERAL_MARKET_OPERATION_IDS, federalMarketInputDefinition,
+  validateFederalMarketShape, normalizeFederalMarketInput,
+} = federalMarketValidators;
+
+const dataSearchValidators = createDataSearchValidators({
+  validateShape, schema: schemas[groups.indexOf('data-search')],
+});
+export const {
+  DATA_SEARCH_OPERATION_ID, DATA_SEARCH_DOMAINS, DATA_SEARCH_QUERY_CLASSES,
+  RETRIEVAL_QUERY_CLASSES, DATA_SEARCH_UNSELECTABLE_QUERY_CLASSES, DATA_SEARCH_DEFAULTS,
+  DATA_SEARCH_STRICTER_THAN_FROZEN, RESULT_UNPROVEN_RELATIONS, DATA_SEARCH_FROZEN_BOUNDARY_NOTES,
+  dataSearchSchemaId, validateDataSearchShape, normalizeDataSearchInput, assertDataSearchResult,
+} = dataSearchValidators;
 
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);

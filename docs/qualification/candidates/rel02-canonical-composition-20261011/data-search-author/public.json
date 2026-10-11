@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "processGroupAbsent": true,
+  "elapsedSeconds": 3.107966423034668,
+  "stdoutSha256": "2f46437e49b87855fae02f1266630ab128d7e578db12e6e067ee5c657750e43e",
+  "stderrSha256": "a06ef387e31a00721dc55e3b480ef2c346bf46d83f2d3e96b16ddc342895761f"
+}

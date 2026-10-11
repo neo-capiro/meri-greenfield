@@ -9,7 +9,8 @@ import {
   federalMarketInputDefinition,
   validateFederalMarketShape,
   normalizeFederalMarketInput,
-} from '../retrieval-0.2/federal-market-validation.mjs';
+  validateShape,
+} from '../retrieval-0.2/validate.mjs';
 
 // Literal synthetic DATA only. No handler, identity, source or client scope is
 // exercised; passing structural validation never grants authorization.
@@ -17,6 +18,7 @@ const schemaPath = new URL('../retrieval-0.2/federal-market.schema.json', import
 const schemaRaw = readFileSync(schemaPath);
 const schema = JSON.parse(schemaRaw);
 const modulePath = new URL('../retrieval-0.2/federal-market-validation.mjs', import.meta.url);
+const canonicalModulePath = new URL('../retrieval-0.2/validate.mjs', import.meta.url);
 
 const positive = {
   search_federal_contract_awards: { clientId: 'client-synthetic', query: 'bridge', agency: 'DOT', state: 'ca', district: '07', fiscalYear: 2024, recipient: 'Acme', dateFrom: '2024-01-01', dateTo: '2024-12-31', page: 2, limit: 25 },
@@ -169,11 +171,13 @@ test('keeps the forecast global-query boundary explicit', () => {
 });
 
 test('module is a pure import with no network or storage effects', () => {
-  // Static surface: only a local schema read plus the pinned Ajv dependencies.
+  // The domain factory has no imports or second schema/Ajv owner. The existing
+  // canonical composition loads the local schemas and pinned Ajv dependencies.
   const source = readFileSync(modulePath, 'utf8');
   const specifiers = [...source.matchAll(/(?:^|\n)\s*import[^'"]*['"]([^'"]+)['"]/g)].map(match => match[1]).sort();
-  assert.deepEqual(specifiers, ['ajv-formats', 'ajv/dist/2020.js', 'node:fs'].sort());
-  assert.match(source, /readFileSync\(new URL\('\.\/federal-market\.schema\.json', import\.meta\.url\)\)/);
+  assert.deepEqual(specifiers, []);
+  assert.doesNotMatch(source, /readFileSync|\bnew\s+Ajv\b/);
+  assert.match(source, /export function createFederalMarketValidators/);
   for (const forbidden of ['node:net', 'node:http', 'node:https', 'node:dns', 'node:child_process', 'writeFileSync', 'node:worker_threads']) {
     assert.equal(source.includes(forbidden), false, `module must not use ${forbidden}`);
   }
@@ -186,10 +190,12 @@ test('module is a pure import with no network or storage effects', () => {
     `for(const k of['connect','createConnection'])if(typeof net[k]==='function')net[k]=()=>{network=true;throw new Error('network forbidden')};\n` +
     `const dirs=[${JSON.stringify(fileURLToPath(new URL('../retrieval-0.2', import.meta.url)))},${JSON.stringify(fileURLToPath(new URL('.', import.meta.url)))}];\n` +
     `const before=dirs.map(d=>readdirSync(d).sort().join(','));\n` +
-    `const mod=await import(${JSON.stringify(modulePath.href)});\n` +
+    `const factory=await import(${JSON.stringify(modulePath.href)});\n` +
+    `const mod=await import(${JSON.stringify(canonicalModulePath.href)});\n` +
     `const out=mod.FEDERAL_MARKET_OPERATION_IDS.map(id=>JSON.stringify(mod.normalizeFederalMarketInput(id,id==='get_district_federal_market'?{state:'NY',district:'AL'}:{query:'x'})));\n` +
     `const after=dirs.map(d=>readdirSync(d).sort().join(','));\n` +
-    `writeFileSync(1,JSON.stringify({exports:Object.keys(mod).sort(),network,unchanged:before.every((v,i)=>v===after[i]),out}));\n`;
+    `const names=['FEDERAL_MARKET_OPERATION_IDS','federalMarketInputDefinition','federalMarketSchemaId','normalizeFederalMarketInput','validateFederalMarketShape'];\n` +
+    `writeFileSync(1,JSON.stringify({exports:Object.keys(mod).filter(name=>names.includes(name)).sort(),factoryExports:Object.keys(factory).sort(),network,unchanged:before.every((v,i)=>v===after[i]),out}));\n`;
   const result = spawnSync(process.execPath, ['--input-type=module', '--eval', script], {
     env: { SystemRoot: process.env.SystemRoot, PATH: process.env.PATH, TEMP: process.env.TEMP }, shell: false, timeout: 15000, maxBuffer: 262144, windowsHide: true,
   });
@@ -200,6 +206,7 @@ test('module is a pure import with no network or storage effects', () => {
   assert.equal(report.unchanged, true);
   assert.equal(report.out.length, 5);
   assert.deepEqual(report.exports, ['FEDERAL_MARKET_OPERATION_IDS', 'federalMarketInputDefinition', 'federalMarketSchemaId', 'normalizeFederalMarketInput', 'validateFederalMarketShape']);
+  assert.deepEqual(report.factoryExports, ['FEDERAL_MARKET_OPERATION_IDS', 'createFederalMarketValidators']);
 });
 
 // ---------------------------------------------------------------------------
@@ -431,4 +438,36 @@ test('asserts no freshness, coverage, authorization or date format on result sha
   assert.equal(Object.hasOwn(schema.$defs, 'FederalMarketOutputOperationId'), false);
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
   assert.equal(JSON.stringify(catalog).includes('SearchFederalContractAwardsOutput'), false);
+});
+
+test('canonical structural owner resolves federal definitions without widening the federal family', () => {
+  for (const id of FEDERAL_MARKET_OPERATION_IDS) {
+    const input = normalizeFederalMarketInput(id, positive[id]).query;
+    assert.equal(validateShape(federalMarketInputDefinition(id), input), input);
+    assert.equal(validateShape(outputDefinition[id], positiveOutputs[id]), positiveOutputs[id]);
+    assert.throws(() => validateShape(outputDefinition[id], { ...positiveOutputs[id], tool: 'foreign_tool' }), /constant/);
+  }
+  const unrelated = { basis: 'unbounded' };
+  assert.equal(validateShape('WindowRequest', unrelated), unrelated);
+  assert.throws(() => validateFederalMarketShape('WindowRequest', unrelated), /Unknown federal-market contract WindowRequest/);
+  assert.throws(() => validateShape('InventedFederalInput', {}), /Unknown R2 contract InventedFederalInput/);
+  assert.throws(() => normalizeFederalMarketInput('search_capiro_data', {}), /Unknown federal-market operation ID/);
+});
+
+test('canonical structural checks compose with federal paging rules rather than replacing them', () => {
+  for (const def of pagedOutputDefinitions) {
+    const tool = schema.$defs[def].properties.tool.const;
+    const item = positiveOutputs[tool].items[0];
+    // Structural validation alone cannot decide the producer's cross-field rule.
+    const inconsistent = pageOutput(tool, item, {
+      page: 10000, hasMore: true, nextPage: 10001, paginationLimitReached: false,
+    });
+    assert.equal(validateShape(def, inconsistent), inconsistent);
+    assert.throws(() => validateFederalMarketShape(def, inconsistent), /must match the page limit/);
+    const terminal = pageOutput(tool, item, {
+      page: 10000, hasMore: true, nextPage: null, paginationLimitReached: true,
+    });
+    assert.equal(validateShape(def, terminal), terminal);
+    assert.equal(validateFederalMarketShape(def, terminal), terminal);
+  }
 });

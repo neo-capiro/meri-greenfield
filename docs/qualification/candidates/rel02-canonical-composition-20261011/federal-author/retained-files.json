@@ -1,0 +1,87 @@
+[
+  {
+    "path": "baseline-focused.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "baseline-focused.stdout",
+    "bytes": 1634,
+    "sha256": "ffabbcbbd408b4fedbf3d2fe5d4d7dca067dcd6f9dcbad25b9de4e058fc0dfd2"
+  },
+  {
+    "path": "baseline-preservation.json",
+    "bytes": 3594,
+    "sha256": "ae7a041fda7fe4d5787b5d2876d574f09f25f7727161a3546f8ccb8877173bad"
+  },
+  {
+    "path": "composition-focused-1.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "composition-focused-1.stdout",
+    "bytes": 1634,
+    "sha256": "335d808c5bbf3c0c9ce109d9d8f26385003a77d64031f468cd38fbf666224feb"
+  },
+  {
+    "path": "composition-focused-2.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "composition-focused-2.stdout",
+    "bytes": 1847,
+    "sha256": "89d5113169943315afe4f03cb5ec78e6b55cfd6bfbd0c44e61f7839f40dbad26"
+  },
+  {
+    "path": "preservation-result.json",
+    "bytes": 1767,
+    "sha256": "6f04ea792aaff346d5d0b7f7cc2f26578a8f381cda132c43b8f659b2129ce76e"
+  },
+  {
+    "path": "public-distribution-2.stderr",
+    "bytes": 495,
+    "sha256": "1d2e4b8fa2e909d95849309780183545b5157cda35be2b38da2441d8f7032d03"
+  },
+  {
+    "path": "public-distribution-2.stdout",
+    "bytes": 2048,
+    "sha256": "d3811ac21c0edb7b3e9aa314962313ded7201ec44a5b1f96d3ebe0bc32b54205"
+  },
+  {
+    "path": "public-distribution.stderr",
+    "bytes": 326,
+    "sha256": "9da926c12552f7afef01406897834d1ec5f98667ffce94b8074dd0eaf9ffd548"
+  },
+  {
+    "path": "public-distribution.stdout",
+    "bytes": 285,
+    "sha256": "5c7f6ede5bdefa502e6fa641988f1e8ebb043f86c275b8f99064bf84fe6e4328"
+  },
+  {
+    "path": "root-check-2.stderr",
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  {
+    "path": "root-check-2.stdout",
+    "bytes": 17113,
+    "sha256": "a01dd027f32505ffa53261c214da0d68048464e69310ca080f63e9ac49d74dbb"
+  },
+  {
+    "path": "root-check.stderr",
+    "bytes": 99,
+    "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+  },
+  {
+    "path": "root-check.stdout",
+    "bytes": 20018,
+    "sha256": "243061c4085b47b76fe644ee6a16e2070e364b0279ff17e39229408c58adf0ef"
+  },
+  {
+    "path": "source-checks.json",
+    "bytes": 7853,
+    "sha256": "8e713587c3edf808d82b71783adf4b54b07ce65b4490b43e9acbd803a9af584a"
+  }
+]

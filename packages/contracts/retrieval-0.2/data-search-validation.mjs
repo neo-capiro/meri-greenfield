@@ -1,12 +1,12 @@
 // Private candidate boundary for the canonical selected intent `search_capiro_data`.
 //
-// This module is source-only and unregistered. It is not wired into
-// `retrieval-0.2/validate.mjs` or `retrieval-0.2/catalog.json`, it is not
-// exported by the public 0.1 package, and it is not a handler, gateway, source
-// adapter, runtime parity claim or authorization. Importing it reads one local
-// schema file and compiles AJV validators: no network, storage, process, timer,
-// source or authorization effect is performed, and a passing validation grants
-// no access.
+// This factory is source-only and unregistered in `retrieval-0.2/catalog.json`.
+// The private canonical validator owns schema loading and structural validation;
+// this factory owns the unchanged selector and result-envelope rules. It is not
+// exported by the public 0.1 package and is not a handler, gateway, source adapter,
+// runtime parity claim or authorization. Importing the factory performs no file,
+// network, storage, process, timer, source or authorization effect. A passing
+// validation grants no access.
 //
 // Every behavioural rule below is traceable to frozen Git objects at
 // `neo-capiro/capirov2@fd8765ec01d292013758606204f2c9d886cd31c1`:
@@ -16,10 +16,6 @@
 //   apps/api/src/knowledge/knowledge.types.ts                (blob de4957b091de…)
 //   apps/api/src/meri/meri-tools.service.ts                  (blob 753b425b3e6b…, advertised schema only)
 // The Capiro working tree was never read or modified.
-import { readFileSync } from 'node:fs';
-import Ajv from 'ajv/dist/2020.js';
-import addFormats from 'ajv-formats';
-
 const fail = message => {
   throw new Error(message);
 };
@@ -201,181 +197,181 @@ export const DATA_SEARCH_FROZEN_BOUNDARY_NOTES = Object.freeze([
   }),
 ]);
 
-const schemaBytes = readFileSync(new URL('./data-search.schema.json', import.meta.url));
-const schema = JSON.parse(schemaBytes);
-export const dataSearchSchemaId = schema.$id;
+export function createDataSearchValidators({ validateShape, schema }) {
+  const dataSearchSchemaId = schema.$id;
+  const definitions = new Set(Object.keys(schema.$defs));
 
-const ajv = new Ajv({ strict: true, allErrors: true });
-addFormats(ajv);
-ajv.addSchema(schema);
-const validators = new Map(
-  Object.keys(schema.$defs).map(name => [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })]),
-);
+  // Structural responsibility only: asserts the JSON Schema shape of one private
+  // definition and never decides authorization, client scope, source availability
+  // or freshness.
+  function validateDataSearchShape(definition, value) {
+    if (!definitions.has(definition)) fail(`Unknown data-search contract ${definition}`);
+    validateShape(definition, value);
+    return value;
+  }
 
-// Structural responsibility only: asserts the JSON Schema shape of one private
-// definition and never decides authorization, client scope, source availability
-// or freshness.
-export function validateDataSearchShape(definition, value) {
-  const check = validators.get(definition);
-  if (!check) fail(`Unknown data-search contract ${definition}`);
-  if (!check(value)) fail(`${definition}: ${ajv.errorsText(check.errors)}`);
-  return value;
-}
-
-// Inputs are inert JSON data: no accessors, hidden keys, exotic prototypes,
-// cycles or non-finite numbers, so nothing at this boundary can trigger
-// coercion or evaluation.
-function assertInertData(value) {
-  const seen = new Set();
-  const pending = [value];
-  while (pending.length) {
-    const item = pending.pop();
-    if (item === null || ['string', 'boolean'].includes(typeof item)) continue;
-    if (typeof item === 'number' && Number.isFinite(item)) continue;
-    if (typeof item !== 'object' || seen.has(item)) fail('Data-search input requires finite, acyclic JSON data');
-    seen.add(item);
-    const prototype = Object.getPrototypeOf(item);
-    if (prototype !== (Array.isArray(item) ? Array.prototype : Object.prototype) && prototype !== null) {
-      fail('Data-search input requires plain JSON objects');
-    }
-    for (const name of Reflect.ownKeys(item)) {
-      if (Array.isArray(item) && name === 'length') continue;
-      const property = Object.getOwnPropertyDescriptor(item, name);
-      if (typeof name !== 'string' || !property.enumerable || !('value' in property)) {
-        fail('Data-search input accessor or hidden property');
+  // Inputs are inert JSON data: no accessors, hidden keys, exotic prototypes,
+  // cycles or non-finite numbers, so nothing at this boundary can trigger
+  // coercion or evaluation.
+  function assertInertData(value) {
+    const seen = new Set();
+    const pending = [value];
+    while (pending.length) {
+      const item = pending.pop();
+      if (item === null || ['string', 'boolean'].includes(typeof item)) continue;
+      if (typeof item === 'number' && Number.isFinite(item)) continue;
+      if (typeof item !== 'object' || seen.has(item)) fail('Data-search input requires finite, acyclic JSON data');
+      seen.add(item);
+      const prototype = Object.getPrototypeOf(item);
+      if (prototype !== (Array.isArray(item) ? Array.prototype : Object.prototype) && prototype !== null) {
+        fail('Data-search input requires plain JSON objects');
       }
-      pending.push(property.value);
-    }
-  }
-}
-
-function parseInstant(input, name) {
-  if (typeof input !== 'string' || input.length > MAX_INSTANT_LENGTH || !INSTANT_PATTERN.test(input)) {
-    fail(`${name} must be an ISO timestamp with a timezone, at most ${MAX_INSTANT_LENGTH} characters`);
-  }
-  const value = new Date(input);
-  if (!Number.isFinite(value.getTime())) fail(`${name} is invalid`);
-  return input;
-}
-
-// Frozen boundary entry point. Mirrors parseCapiroDataSearchInput's defaults,
-// de-duplication and refusals, then materializes an explicit, closed normalized
-// selector. The caller's object is never mutated.
-export function normalizeDataSearchInput(rawInput) {
-  assertInertData(rawInput);
-  if (rawInput === null || typeof rawInput !== 'object' || Array.isArray(rawInput)) {
-    fail('Data-search input requires a plain object');
-  }
-  for (const key of Object.keys(rawInput)) {
-    if (!ACCEPTED_INPUT_KEYS.includes(key)) fail(`Unsupported search_capiro_data argument: ${key}`);
-  }
-
-  if (typeof rawInput.query !== 'string' || rawInput.query.length > MAX_QUERY_LENGTH) {
-    fail(`query must be a string containing at most ${MAX_QUERY_LENGTH} characters`);
-  }
-  if (!Array.isArray(rawInput.domains) || !rawInput.domains.length ||
-      rawInput.domains.length > DATA_SEARCH_DOMAINS.length ||
-      rawInput.domains.some(domain => !DATA_SEARCH_DOMAINS.includes(domain))) {
-    fail('domains must be a nonempty list of supported retrieval domains');
-  }
-  const domains = [...new Set(rawInput.domains)];
-
-  const queryClass = rawInput.queryClass ?? DATA_SEARCH_DEFAULTS.queryClass;
-  if (!DATA_SEARCH_QUERY_CLASSES.includes(queryClass)) fail('Unsupported retrieval queryClass');
-
-  const pageSize = rawInput.pageSize ?? DATA_SEARCH_DEFAULTS.pageSize;
-  if (typeof pageSize !== 'number' || !Number.isInteger(pageSize) ||
-      pageSize < MIN_PAGE_SIZE || pageSize > MAX_PAGE_SIZE) {
-    fail(`pageSize must be an integer between ${MIN_PAGE_SIZE} and ${MAX_PAGE_SIZE}`);
-  }
-
-  if (rawInput.clientId !== undefined && (typeof rawInput.clientId !== 'string' || !UUID_PATTERN.test(rawInput.clientId))) {
-    fail('clientId must be a client UUID');
-  }
-  if (rawInput.memoryItemId !== undefined &&
-      (typeof rawInput.memoryItemId !== 'string' || !UUID_PATTERN.test(rawInput.memoryItemId) ||
-       domains.length !== 1 || domains[0] !== 'institutional_knowledge' ||
-       !['lookup', 'semantic_recall'].includes(String(queryClass)))) {
-    fail('memoryItemId requires a canonical UUID and an institutional_knowledge lookup');
-  }
-
-  let cursors = {};
-  if (rawInput.cursors !== undefined) {
-    if (!rawInput.cursors || typeof rawInput.cursors !== 'object' || Array.isArray(rawInput.cursors)) {
-      fail('cursors must map requested domains to their returned cursor');
-    }
-    for (const [domain, cursor] of Object.entries(rawInput.cursors)) {
-      if (!domains.includes(domain) || typeof cursor !== 'string' || !cursor || cursor.length > MAX_CURSOR_LENGTH) {
-        fail(`Each cursor must belong to a requested domain and contain at most ${MAX_CURSOR_LENGTH} characters`);
+      for (const name of Reflect.ownKeys(item)) {
+        if (Array.isArray(item) && name === 'length') continue;
+        const property = Object.getOwnPropertyDescriptor(item, name);
+        if (typeof name !== 'string' || !property.enumerable || !('value' in property)) {
+          fail('Data-search input accessor or hidden property');
+        }
+        pending.push(property.value);
       }
-      cursors[domain] = cursor;
     }
   }
 
-  const windowStart = rawInput.windowStart === undefined ? null : parseInstant(rawInput.windowStart, 'windowStart');
-  const windowEnd = rawInput.windowEnd === undefined ? null : parseInstant(rawInput.windowEnd, 'windowEnd');
-  if ((windowStart === null) !== (windowEnd === null)) {
-    fail('Supply both windowStart and windowEnd with end after start');
-  }
-  if (windowStart !== null && new Date(windowEnd) <= new Date(windowStart)) {
-    fail('Supply both windowStart and windowEnd with end after start');
+  function parseInstant(input, name) {
+    if (typeof input !== 'string' || input.length > MAX_INSTANT_LENGTH || !INSTANT_PATTERN.test(input)) {
+      fail(`${name} must be an ISO timestamp with a timezone, at most ${MAX_INSTANT_LENGTH} characters`);
+    }
+    const value = new Date(input);
+    if (!Number.isFinite(value.getTime())) fail(`${name} is invalid`);
+    return input;
   }
 
-  const query = rawInput.query.trim();
-  const normalized = {
-    query,
-    domains,
-    queryClass,
-    pageSize,
-    clientId: rawInput.clientId === undefined ? null : rawInput.clientId,
-    memoryItemId: rawInput.memoryItemId === undefined ? null : rawInput.memoryItemId,
-    cursors,
-    window: windowStart === null ? null : { startInclusive: windowStart, endExclusive: windowEnd },
-  };
-  validateDataSearchShape('DataSearchInput', normalized);
+  // Frozen boundary entry point. Mirrors parseCapiroDataSearchInput's defaults,
+  // de-duplication and refusals, then materializes an explicit, closed normalized
+  // selector. The caller's object is never mutated.
+  function normalizeDataSearchInput(rawInput) {
+    assertInertData(rawInput);
+    if (rawInput === null || typeof rawInput !== 'object' || Array.isArray(rawInput)) {
+      fail('Data-search input requires a plain object');
+    }
+    for (const key of Object.keys(rawInput)) {
+      if (!ACCEPTED_INPUT_KEYS.includes(key)) fail(`Unsupported search_capiro_data argument: ${key}`);
+    }
 
-  const freezeCursors = Object.freeze({ ...cursors });
-  return Object.freeze({
-    operationId: DATA_SEARCH_OPERATION_ID,
-    // clientId is a SELECTOR. searchToolData (frozen meri-context-plane.service.ts
-    // L93-96) recomputes the server security envelope and refuses a clientId
-    // outside it, so a valid selector value grants nothing by itself.
-    clientScope: Object.freeze({ clientId: normalized.clientId, authoritative: false, resolution: 'server_resolved' }),
-    input: Object.freeze({
-      ...normalized,
-      domains: Object.freeze([...domains]),
-      cursors: freezeCursors,
-      window: normalized.window === null ? null : Object.freeze({ ...normalized.window }),
-    }),
-    // Derived from the frozen searchCapiroData request construction (L92-103):
-    // an empty query is omitted, memoryItemId/clientId pass through only when
-    // explicitly supplied, and requireComplete is true exactly for
-    // exhaustive_search.
-    retrievalRequest: Object.freeze({
+    if (typeof rawInput.query !== 'string' || rawInput.query.length > MAX_QUERY_LENGTH) {
+      fail(`query must be a string containing at most ${MAX_QUERY_LENGTH} characters`);
+    }
+    if (!Array.isArray(rawInput.domains) || !rawInput.domains.length ||
+        rawInput.domains.length > DATA_SEARCH_DOMAINS.length ||
+        rawInput.domains.some(domain => !DATA_SEARCH_DOMAINS.includes(domain))) {
+      fail('domains must be a nonempty list of supported retrieval domains');
+    }
+    const domains = [...new Set(rawInput.domains)];
+
+    const queryClass = rawInput.queryClass ?? DATA_SEARCH_DEFAULTS.queryClass;
+    if (!DATA_SEARCH_QUERY_CLASSES.includes(queryClass)) fail('Unsupported retrieval queryClass');
+
+    const pageSize = rawInput.pageSize ?? DATA_SEARCH_DEFAULTS.pageSize;
+    if (typeof pageSize !== 'number' || !Number.isInteger(pageSize) ||
+        pageSize < MIN_PAGE_SIZE || pageSize > MAX_PAGE_SIZE) {
+      fail(`pageSize must be an integer between ${MIN_PAGE_SIZE} and ${MAX_PAGE_SIZE}`);
+    }
+
+    if (rawInput.clientId !== undefined && (typeof rawInput.clientId !== 'string' || !UUID_PATTERN.test(rawInput.clientId))) {
+      fail('clientId must be a client UUID');
+    }
+    if (rawInput.memoryItemId !== undefined &&
+        (typeof rawInput.memoryItemId !== 'string' || !UUID_PATTERN.test(rawInput.memoryItemId) ||
+         domains.length !== 1 || domains[0] !== 'institutional_knowledge' ||
+         !['lookup', 'semantic_recall'].includes(String(queryClass)))) {
+      fail('memoryItemId requires a canonical UUID and an institutional_knowledge lookup');
+    }
+
+    let cursors = {};
+    if (rawInput.cursors !== undefined) {
+      if (!rawInput.cursors || typeof rawInput.cursors !== 'object' || Array.isArray(rawInput.cursors)) {
+        fail('cursors must map requested domains to their returned cursor');
+      }
+      for (const [domain, cursor] of Object.entries(rawInput.cursors)) {
+        if (!domains.includes(domain) || typeof cursor !== 'string' || !cursor || cursor.length > MAX_CURSOR_LENGTH) {
+          fail(`Each cursor must belong to a requested domain and contain at most ${MAX_CURSOR_LENGTH} characters`);
+        }
+        cursors[domain] = cursor;
+      }
+    }
+
+    const windowStart = rawInput.windowStart === undefined ? null : parseInstant(rawInput.windowStart, 'windowStart');
+    const windowEnd = rawInput.windowEnd === undefined ? null : parseInstant(rawInput.windowEnd, 'windowEnd');
+    if ((windowStart === null) !== (windowEnd === null)) {
+      fail('Supply both windowStart and windowEnd with end after start');
+    }
+    if (windowStart !== null && new Date(windowEnd) <= new Date(windowStart)) {
+      fail('Supply both windowStart and windowEnd with end after start');
+    }
+
+    const query = rawInput.query.trim();
+    const normalized = {
       query,
-      queryOmitted: query === '',
+      domains,
       queryClass,
-      requestedDomains: Object.freeze([...domains]),
       pageSize,
-      cursors: Object.keys(freezeCursors).length === 0 ? null : freezeCursors,
-      windowStart,
-      windowEnd,
-      memoryItemId: normalized.memoryItemId,
-      clientId: normalized.clientId,
-      requireComplete: queryClass === 'exhaustive_search',
-    }),
-  });
-}
+      clientId: rawInput.clientId === undefined ? null : rawInput.clientId,
+      memoryItemId: rawInput.memoryItemId === undefined ? null : rawInput.memoryItemId,
+      cursors,
+      window: windowStart === null ? null : { startInclusive: windowStart, endExclusive: windowEnd },
+    };
+    validateDataSearchShape('DataSearchInput', normalized);
 
-// Structural validation of one search_capiro_data tool result. It asserts the
-// declared RetrievalResponse-derived envelope and the tool envelope only. The
-// relations in RESULT_UNPROVEN_RELATIONS are deliberately not asserted.
-export function assertDataSearchResult(value) {
-  validateDataSearchShape('SearchCapiroDataResult', value);
-  const keys = Object.keys(value).sort();
-  if (keys.join(',') !== 'coverage,observability,records,tool') {
-    fail(`search_capiro_data result must carry exactly the tool envelope; found ${keys.join(',')}`);
+    const freezeCursors = Object.freeze({ ...cursors });
+    return Object.freeze({
+      operationId: DATA_SEARCH_OPERATION_ID,
+      // clientId is a SELECTOR. searchToolData (frozen meri-context-plane.service.ts
+      // L93-96) recomputes the server security envelope and refuses a clientId
+      // outside it, so a valid selector value grants nothing by itself.
+      clientScope: Object.freeze({ clientId: normalized.clientId, authoritative: false, resolution: 'server_resolved' }),
+      input: Object.freeze({
+        ...normalized,
+        domains: Object.freeze([...domains]),
+        cursors: freezeCursors,
+        window: normalized.window === null ? null : Object.freeze({ ...normalized.window }),
+      }),
+      // Derived from the frozen searchCapiroData request construction (L92-103):
+      // an empty query is omitted, memoryItemId/clientId pass through only when
+      // explicitly supplied, and requireComplete is true exactly for
+      // exhaustive_search.
+      retrievalRequest: Object.freeze({
+        query,
+        queryOmitted: query === '',
+        queryClass,
+        requestedDomains: Object.freeze([...domains]),
+        pageSize,
+        cursors: Object.keys(freezeCursors).length === 0 ? null : freezeCursors,
+        windowStart,
+        windowEnd,
+        memoryItemId: normalized.memoryItemId,
+        clientId: normalized.clientId,
+        requireComplete: queryClass === 'exhaustive_search',
+      }),
+    });
   }
-  if (value.tool !== DATA_SEARCH_OPERATION_ID) fail('search_capiro_data result tool mismatch');
-  return value;
+
+  // Structural validation of one search_capiro_data tool result. It asserts the
+  // declared RetrievalResponse-derived envelope and the tool envelope only. The
+  // relations in RESULT_UNPROVEN_RELATIONS are deliberately not asserted.
+  function assertDataSearchResult(value) {
+    validateDataSearchShape('SearchCapiroDataResult', value);
+    const keys = Object.keys(value).sort();
+    if (keys.join(',') !== 'coverage,observability,records,tool') {
+      fail(`search_capiro_data result must carry exactly the tool envelope; found ${keys.join(',')}`);
+    }
+    if (value.tool !== DATA_SEARCH_OPERATION_ID) fail('search_capiro_data result tool mismatch');
+    return value;
+  }
+
+  return Object.freeze({
+    DATA_SEARCH_OPERATION_ID, DATA_SEARCH_DOMAINS, DATA_SEARCH_QUERY_CLASSES,
+    RETRIEVAL_QUERY_CLASSES, DATA_SEARCH_UNSELECTABLE_QUERY_CLASSES, DATA_SEARCH_DEFAULTS,
+    DATA_SEARCH_STRICTER_THAN_FROZEN, RESULT_UNPROVEN_RELATIONS, DATA_SEARCH_FROZEN_BOUNDARY_NOTES,
+    dataSearchSchemaId, validateDataSearchShape, normalizeDataSearchInput, assertDataSearchResult,
+  });
 }

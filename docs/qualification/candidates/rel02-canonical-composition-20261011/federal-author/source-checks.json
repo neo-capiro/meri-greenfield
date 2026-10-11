@@ -1,0 +1,207 @@
+{
+  "base": "32709fd72b895cdd27ebeac0ac617ed21cd6721a",
+  "node": "24.19.0",
+  "checks": [
+    {
+      "capture": "baseline-focused",
+      "command": "node --test packages/contracts/test/retrieval-federal-market.test.mjs",
+      "exitCode": 0,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/baseline-focused.stdout",
+          "bytes": 1634,
+          "sha256": "ffabbcbbd408b4fedbf3d2fe5d4d7dca067dcd6f9dcbad25b9de4e058fc0dfd2"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/baseline-focused.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "capture": "composition-focused-1",
+      "command": "node --test packages/contracts/test/retrieval-federal-market.test.mjs",
+      "exitCode": 0,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/composition-focused-1.stdout",
+          "bytes": 1634,
+          "sha256": "335d808c5bbf3c0c9ce109d9d8f26385003a77d64031f468cd38fbf666224feb"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/composition-focused-1.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "capture": "composition-focused-2",
+      "command": "node --test packages/contracts/test/retrieval-federal-market.test.mjs",
+      "exitCode": 0,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/composition-focused-2.stdout",
+          "bytes": 1847,
+          "sha256": "89d5113169943315afe4f03cb5ec78e6b55cfd6bfbd0c44e61f7839f40dbad26"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/composition-focused-2.stderr",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "capture": "root-check",
+      "command": "npm run check",
+      "exitCode": 1,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/root-check.stdout",
+          "bytes": 20018,
+          "sha256": "243061c4085b47b76fe644ee6a16e2070e364b0279ff17e39229408c58adf0ef"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/root-check.stderr",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      }
+    },
+    {
+      "capture": "public-distribution",
+      "command": "npm run check:contracts:distribution",
+      "exitCode": 1,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/public-distribution.stdout",
+          "bytes": 285,
+          "sha256": "5c7f6ede5bdefa502e6fa641988f1e8ebb043f86c275b8f99064bf84fe6e4328"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/public-distribution.stderr",
+          "bytes": 326,
+          "sha256": "9da926c12552f7afef01406897834d1ec5f98667ffce94b8074dd0eaf9ffd548"
+        }
+      }
+    },
+    {
+      "capture": "root-check-2",
+      "command": "npm run check",
+      "exitCode": 0,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/root-check-2.stdout",
+          "bytes": 17113,
+          "sha256": "a01dd027f32505ffa53261c214da0d68048464e69310ca080f63e9ac49d74dbb"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/root-check-2.stderr",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      }
+    },
+    {
+      "capture": "public-distribution-2",
+      "command": "npm run check:contracts:distribution",
+      "exitCode": 0,
+      "files": {
+        "stdout": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/public-distribution-2.stdout",
+          "bytes": 2048,
+          "sha256": "d3811ac21c0edb7b3e9aa314962313ded7201ec44a5b1f96d3ebe0bc32b54205"
+        },
+        "stderr": {
+          "path": ".task-inputs/rel02-federal-composition-20261011/public-distribution-2.stderr",
+          "bytes": 495,
+          "sha256": "1d2e4b8fa2e909d95849309780183545b5157cda35be2b38da2441d8f7032d03"
+        }
+      }
+    }
+  ],
+  "sources": {
+    "packages/contracts/retrieval-0.2/validate.mjs": {
+      "sha256": "1d928ace9217bed4218576f45045523e6b821310515d9a3edfcce5211712ceb2",
+      "gitBlob": "97e0751829c515f91b56f4c493b21656932dd8d0"
+    },
+    "packages/contracts/retrieval-0.2/federal-market-validation.mjs": {
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "gitBlob": "49e32e9eb288d91b78c6482f03c973d4862bdbf9"
+    },
+    "packages/contracts/test/retrieval-federal-market.test.mjs": {
+      "sha256": "aa7db71d4233e8d2a5dbade93b2f4e8c215fd2714e7ae955b3c6cf165975a1a6",
+      "gitBlob": "8a10b041bc8f8722baff192745923acb8b2ece18"
+    }
+  },
+  "preservationResult": {
+    "base": "32709fd72b895cdd27ebeac0ac617ed21cd6721a",
+    "originalBodies": 18,
+    "preservedBodies": 17,
+    "adaptedBody": "module is a pure import with no network or storage effects",
+    "newBodies": [
+      "canonical structural owner resolves federal definitions without widening the federal family",
+      "canonical structural checks compose with federal paging rules rather than replacing them"
+    ],
+    "immutableFiles": {
+      "packages/contracts/retrieval-0.2/federal-market.schema.json": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "packages/contracts/retrieval-0.2/catalog.json": "940d768aab94cc2b513a177ade216c675a74ff4021d99ec04b1b059f80b4d264",
+      "packages/contracts/retrieval-0.2/mail.schema.json": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "packages/contracts/meri.schema.json": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "packages/contracts/validate.mjs": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "packages/contracts/package.json": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "packages/contracts/dist/browser.mjs": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+      "packages/contracts/dist/metadata.mjs": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"
+    },
+    "schemaGroups": [
+      "common",
+      "catalog",
+      "retrieval",
+      "skill",
+      "mail",
+      "meeting-source",
+      "operational-reads",
+      "federal-market"
+    ],
+    "uniqueDefinitions": 117,
+    "changedTrackedPaths": [
+      "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "packages/contracts/retrieval-0.2/validate.mjs",
+      "packages/contracts/test/retrieval-federal-market.test.mjs"
+    ]
+  },
+  "catalog": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "affected": {
+      "search_federal_contract_awards": {
+        "disposition": "selected",
+        "state": "pending",
+        "replacement": null
+      },
+      "search_federal_subawards": {
+        "disposition": "selected",
+        "state": "pending",
+        "replacement": null
+      },
+      "search_contract_vehicles": {
+        "disposition": "selected",
+        "state": "pending",
+        "replacement": null
+      },
+      "search_procurement_forecasts": {
+        "disposition": "selected",
+        "state": "pending",
+        "replacement": null
+      },
+      "get_district_federal_market": {
+        "disposition": "selected",
+        "state": "pending",
+        "replacement": null
+      }
+    }
+  }
+}

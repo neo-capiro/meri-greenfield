@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "meri-source-checks/1",
+  "sourceCommit": "69b935b0f49e2bec4c7c056d1d5448025f8187c2",
+  "checks": [
+    {
+      "label": "root",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 3.702,
+      "ownedProcessGroupAbsent": true,
+      "captures": [
+        {
+          "path": "root.stdout.bin",
+          "bytes": 17406,
+          "sha256": "206dc4ad8204dc048da42f8a7963c251c84b8f5cabe29e6903fbe4096524ae50"
+        },
+        {
+          "path": "root.stderr.bin",
+          "bytes": 99,
+          "sha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+        }
+      ]
+    },
+    {
+      "label": "public",
+      "argv": [
+        "npm",
+        "run",
+        "check",
+        "--prefix",
+        "packages/contracts"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 3.434,
+      "ownedProcessGroupAbsent": true,
+      "captures": [
+        {
+          "path": "public.stdout.bin",
+          "bytes": 1946,
+          "sha256": "66c0b43066f709e38e70b6e76c7ec0bb0706a8dcbae2e1889e6704bac54ca4d8"
+        },
+        {
+          "path": "public.stderr.bin",
+          "bytes": 396,
+          "sha256": "a06ef387e31a00721dc55e3b480ef2c346bf46d83f2d3e96b16ddc342895761f"
+        }
+      ]
+    },
+    {
+      "label": "source-pins",
+      "argv": [
+        "python3",
+        "-m",
+        "unittest",
+        "scripts/qualification/worker_source_pins_test.py"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.365,
+      "ownedProcessGroupAbsent": true,
+      "captures": [
+        {
+          "path": "source-pins.stdout.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "source-pins.stderr.bin",
+          "bytes": 102,
+          "sha256": "66d6e314674f6e6ea71cf48674237688347597b068c9457453dcd6ce6dfe124b"
+        }
+      ]
+    },
+    {
+      "label": "fixed-source-pins",
+      "argv": [
+        "python3",
+        "scripts/qualification/worker_source_pins.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.065,
+      "ownedProcessGroupAbsent": true,
+      "captures": [
+        {
+          "path": "fixed-source-pins.stdout.bin",
+          "bytes": 69,
+          "sha256": "c8d7c07562d4a07cccd13da9fa712e4beb599e8f62382a42f73ca31c379d3465"
+        },
+        {
+          "path": "fixed-source-pins.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "label": "worker-context",
+      "argv": [
+        "python3",
+        "scripts/qualification/worker_context.py",
+        "--output",
+        "/workspace/scratch/853fba62b1f1/meri-g1-remote-continuation/.task-inputs/rel02-integrated-checks-20261011/worker-context"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.115,
+      "ownedProcessGroupAbsent": true,
+      "captures": [
+        {
+          "path": "worker-context.stdout.bin",
+          "bytes": 63,
+          "sha256": "7635d7d53c0d46e0dbb6e996b4ba103f8b4cfb1ce6f2f80e595f5ca5e6ac79d9"
+        },
+        {
+          "path": "worker-context.stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "cloudCalls": 0,
+  "runtimeQualified": false,
+  "workerContext": {
+    "members": 53,
+    "bytes": 994107,
+    "manifestSha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+    "commitAuthority": false
+  }
+}

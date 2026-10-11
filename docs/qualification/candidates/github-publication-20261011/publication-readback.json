@@ -1,0 +1,341 @@
+{
+  "schemaVersion": "meri-publication-readback/1",
+  "decision": "ACCEPT_EXACT_SOURCE_PUBLICATION",
+  "repositories": [
+    {
+      "repository": "backend",
+      "status": "PASS_EXACT_SOURCE_TREE",
+      "publicUrl": "https://github.com/neo-capiro/meri-greenfield.git",
+      "branch": "task/codex-g1-publish-20261011",
+      "fetchedCommit": "d0c36aaa8cf10aa63a8c50e54ef110ac4758b600",
+      "fetchedTree": "2735d5c3e7b8409f8084d045dc2ca8b1e60d6eba",
+      "parent": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "reviewedSourceCommit": "32709fd72b895cdd27ebeac0ac617ed21cd6721a",
+      "standaloneDepthOneNetworkFetch": true,
+      "alternatesAbsent": true,
+      "treeEntries": 1118,
+      "uniqueRawBlobsVerified": 1047,
+      "allCheckoutFilesByteExact": true,
+      "checkoutClean": true,
+      "workflowsAbsent": true,
+      "backendPortfolioConstraint": "PASS_ABSENT",
+      "criticalBinaryReadbacks": [
+        {
+          "path": "docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.docx",
+          "gitBlob": "79dd7d4973ade209bc14ba89bff6563931772415",
+          "bytes": 83776,
+          "sha256": "d62a91f88ef642d20b5bedf1293e0f9a42716c56bc268efb8ec05f175fc3af7b"
+        },
+        {
+          "path": "docs/handover/20261011/Meri_Greenfield_Engineering_Handover_2026-10-11.pdf",
+          "gitBlob": "e88883361c63ae435743d32344c995f7b7cb38bc",
+          "bytes": 581165,
+          "sha256": "c8fb928fb5e8609566f1ddb8c2c0198e577dac0198510cfbc9f762787d728f27"
+        }
+      ],
+      "commands": [
+        {
+          "args": [
+            "git",
+            "init",
+            "--quiet"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.003
+        },
+        {
+          "args": [
+            "git",
+            "config",
+            "core.autocrlf",
+            "false"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.001
+        },
+        {
+          "args": [
+            "git",
+            "remote",
+            "add",
+            "origin",
+            "https://github.com/neo-capiro/meri-greenfield.git"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "args": [
+            "git",
+            "fetch",
+            "--depth=1",
+            "--no-tags",
+            "origin",
+            "refs/heads/task/codex-g1-publish-20261011:refs/heads/publication-readback"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 7.158
+        },
+        {
+          "args": [
+            "git",
+            "checkout",
+            "--quiet",
+            "publication-readback"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.094
+        },
+        {
+          "args": [
+            "git",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.003
+        },
+        {
+          "args": [
+            "git",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "args": [
+            "git",
+            "cat-file",
+            "-p",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "args": [
+            "git",
+            "ls-tree",
+            "-r",
+            "-z",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "args": [
+            "git",
+            "ls-tree",
+            "-r",
+            "-z",
+            "32709fd72b895cdd27ebeac0ac617ed21cd6721a"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.003
+        },
+        {
+          "args": [
+            "git",
+            "cat-file",
+            "--batch"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.154
+        },
+        {
+          "args": [
+            "git",
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.24
+        },
+        {
+          "args": [
+            "git",
+            "fsck",
+            "--strict",
+            "--full",
+            "--no-reflogs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.146
+        }
+      ],
+      "fsckOutput": ""
+    },
+    {
+      "repository": "frontend",
+      "status": "PASS_EXACT_SOURCE_TREE",
+      "publicUrl": "https://github.com/neo-capiro/capiro-frontend.git",
+      "branch": "task/meri-ui-publish-20261011",
+      "fetchedCommit": "ad04c660a8a181aa99b4786bf51926dd4957ea3a",
+      "fetchedTree": "9d662c6d1090af8211a459e9ff95310242ec21da",
+      "parent": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "reviewedSourceCommit": "85e96b968a3e984407886b2e06536b20810eccef",
+      "standaloneDepthOneNetworkFetch": true,
+      "alternatesAbsent": true,
+      "treeEntries": 912,
+      "uniqueRawBlobsVerified": 890,
+      "allCheckoutFilesByteExact": true,
+      "checkoutClean": true,
+      "workflowsAbsent": true,
+      "backendPortfolioConstraint": "NOT_APPLICABLE_EXISTING_FRONTEND_PORTFOLIO_PRESERVED",
+      "criticalBinaryReadbacks": [
+        {
+          "path": "apps/web/public/design/home/meri-wordmark.png",
+          "gitBlob": "7e5eeae964a1ef641c2517dec7d06b82b4bce7d0",
+          "bytes": 23234,
+          "sha256": "1b9fc833853d4d9169e14d0a1746f491b1d9a574816ddef3156c83a24809fe49"
+        }
+      ],
+      "commands": [
+        {
+          "args": [
+            "git",
+            "init",
+            "--quiet"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.016
+        },
+        {
+          "args": [
+            "git",
+            "config",
+            "core.autocrlf",
+            "false"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.003
+        },
+        {
+          "args": [
+            "git",
+            "remote",
+            "add",
+            "origin",
+            "https://github.com/neo-capiro/capiro-frontend.git"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "args": [
+            "git",
+            "fetch",
+            "--depth=1",
+            "--no-tags",
+            "origin",
+            "refs/heads/task/meri-ui-publish-20261011:refs/heads/publication-readback"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.367
+        },
+        {
+          "args": [
+            "git",
+            "checkout",
+            "--quiet",
+            "publication-readback"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.098
+        },
+        {
+          "args": [
+            "git",
+            "rev-parse",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.004
+        },
+        {
+          "args": [
+            "git",
+            "rev-parse",
+            "HEAD^{tree}"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.005
+        },
+        {
+          "args": [
+            "git",
+            "cat-file",
+            "-p",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.007
+        },
+        {
+          "args": [
+            "git",
+            "ls-tree",
+            "-r",
+            "-z",
+            "HEAD"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.003
+        },
+        {
+          "args": [
+            "git",
+            "ls-tree",
+            "-r",
+            "-z",
+            "85e96b968a3e984407886b2e06536b20810eccef"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.004
+        },
+        {
+          "args": [
+            "git",
+            "cat-file",
+            "--batch"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.088
+        },
+        {
+          "args": [
+            "git",
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.138
+        },
+        {
+          "args": [
+            "git",
+            "fsck",
+            "--strict",
+            "--full",
+            "--no-reflogs"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 0.095
+        }
+      ],
+      "fsckOutput": ""
+    }
+  ],
+  "limits": [
+    "No source changes, broad test reruns, merges or cloud/native execution.",
+    "Published commit metadata differs from original reviewed history; complete source trees and every fetched raw blob/checkout byte match.",
+    "This readback accepts source publication only, not runtime/image/G1/deployment."
+  ],
+  "ownedCommandsPhysicallyExited": true,
+  "remoteMutationsPerformed": false
+}

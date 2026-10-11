@@ -21,11 +21,13 @@ import {
   validateDataSearchShape,
   normalizeDataSearchInput,
   assertDataSearchResult,
-} from '../retrieval-0.2/data-search-validation.mjs';
+  validateShape,
+} from '../retrieval-0.2/validate.mjs';
 
 const schemaPath = new URL('../retrieval-0.2/data-search.schema.json', import.meta.url);
 const schema = JSON.parse(readFileSync(schemaPath, 'utf8'));
 const modulePath = fileURLToPath(new URL('../retrieval-0.2/data-search-validation.mjs', import.meta.url));
+const canonicalModulePath = new URL('../retrieval-0.2/validate.mjs', import.meta.url);
 const repositoryRoot = fileURLToPath(new URL('../../..', import.meta.url));
 
 // Literal frozen vocabularies, transcribed independently of the module so a
@@ -442,9 +444,11 @@ test('imports and runs with no filesystem, network or process side effect', () =
   for (const forbidden of ['writeFile', 'appendFile', 'createWriteStream', 'child_process', 'setTimeout(', 'setInterval(', 'globalThis.fetch', 'process.env', 'eval(', 'new Function(', 'require(']) {
     assert.equal(source.includes(forbidden), false, `module source must not contain ${forbidden}`);
   }
-  assert.ok(source.includes("from 'node:fs'"));
+  assert.equal(source.includes('readFileSync'), false, 'the factory must not load its own schema');
+  assert.equal(source.includes('new Ajv'), false, 'the factory must not compile a second validator');
+  assert.ok(source.includes('export function createDataSearchValidators'));
   const importSpecifiers = [...source.matchAll(/^import .* from '([^']+)';$/gm)].map(match => match[1]).sort();
-  assert.deepEqual(importSpecifiers, ['ajv-formats', 'ajv/dist/2020.js', 'node:fs']);
+  assert.deepEqual(importSpecifiers, []);
 
   // Dynamic check under the Node permission model: filesystem writes are denied
   // by the runtime, and live prototype/global guards record any socket or fetch
@@ -464,7 +468,8 @@ let guardLive = false;
 try { net.Socket.prototype.connect(); } catch { guardLive = true; }
 effects.length = 0;
 const envBefore = JSON.stringify(process.env);
-const mod = await import(${JSON.stringify(new URL('../retrieval-0.2/data-search-validation.mjs', import.meta.url).href)});
+const factory = await import(${JSON.stringify(new URL('../retrieval-0.2/data-search-validation.mjs', import.meta.url).href)});
+const mod = await import(${JSON.stringify(canonicalModulePath.href)});
 const normalized = mod.normalizeDataSearchInput({ query: 'probe', domains: ['mail'] });
 let writeDenied = false;
 try { fs.writeFileSync(path.join(${JSON.stringify(repositoryRoot)}, 'data-search-probe.tmp'), 'x'); }
@@ -479,6 +484,7 @@ console.log(JSON.stringify({
   domain: normalized.input.domains[0],
   queryClass: normalized.input.queryClass,
   envStable: envBefore === JSON.stringify(process.env),
+  factoryPresent: typeof factory.createDataSearchValidators === 'function',
 }));
 `;
   const child = spawnSync(process.execPath, [
@@ -498,5 +504,62 @@ console.log(JSON.stringify({
   assert.equal(report.domain, 'mail');
   assert.equal(report.queryClass, 'lookup');
   assert.equal(report.envStable, true);
+  assert.equal(report.factoryPresent, true);
   assert.equal(child.stderr.includes('ERR_ACCESS_DENIED'), false);
+});
+
+test('canonical structural ownership preserves the closed data-search definition boundary', () => {
+  const input = normalizeDataSearchInput({ query: 'canonical probe', domains: ['mail'] }).input;
+  assert.equal(validateShape('DataSearchInput', input), input);
+  assert.equal(validateDataSearchShape('DataSearchInput', input), input);
+  assert.equal(validateShape('SearchCapiroDataResult', validResult()).tool, 'search_capiro_data');
+  assert.throws(() => validateShape('DataSearchInput', { query: 'q', domains: ['mail'] }), /DataSearchInput/);
+  // The global owner knows this federal definition; the data-search family must
+  // refuse it before delegation instead of accepting every canonical contract.
+  const federalInput = {};
+  assert.equal(validateShape('SearchFederalSubawardsInput', federalInput), federalInput);
+  for (const definition of ['SearchFederalSubawardsInput', 'MailListInput', 'MissingDefinition', 'constructor', '__proto__']) {
+    assert.throws(() => validateDataSearchShape(definition, federalInput), /Unknown data-search contract/);
+  }
+});
+
+test('canonical composition retains selector relations beyond generic structural shape checks', () => {
+  const input = normalizeDataSearchInput({ query: 'q', domains: ['mail'] }).input;
+  const foreignCursor = { ...input, cursors: { tasks: 'opaque-task-cursor' } };
+  assert.equal(validateShape('DataSearchInput', foreignCursor), foreignCursor);
+  assert.throws(() => normalizeDataSearchInput({ query: 'q', domains: ['mail'], cursors: { tasks: 'opaque-task-cursor' } }), /cursor/);
+  const reversedWindow = {
+    ...input, window: { startInclusive: '2026-02-01T00:00:00Z', endExclusive: '2026-01-01T00:00:00Z' },
+  };
+  assert.equal(validateShape('DataSearchInput', reversedWindow), reversedWindow);
+  assert.throws(() => normalizeDataSearchInput({
+    query: 'q', domains: ['mail'], windowStart: reversedWindow.window.startInclusive,
+    windowEnd: reversedWindow.window.endExclusive,
+  }), /Supply both windowStart and windowEnd with end after start/);
+  const inconsistent = validResult();
+  inconsistent.coverage.recordsReturned = 99;
+  assert.equal(assertDataSearchResult(inconsistent), inconsistent, 'composition must not invent an unproven count relation');
+});
+
+test('raw query and domain bounds still precede normalization without mutating callers', () => {
+  assert.throws(() => normalizeDataSearchInput({ query: 'x' + ' '.repeat(4000), domains: ['mail'] }), /at most 4000 characters/);
+  assert.equal(normalizeDataSearchInput({ query: 'x' + ' '.repeat(3999), domains: ['mail'] }).input.query, 'x');
+  const emojiBoundary = '\u{1f600}'.repeat(2000);
+  assert.equal(emojiBoundary.length, 4000);
+  assert.equal(normalizeDataSearchInput({ query: emojiBoundary, domains: ['mail'] }).input.query, emojiBoundary);
+  assert.throws(() => normalizeDataSearchInput({ query: emojiBoundary + '\u{1f600}', domains: ['mail'] }), /at most 4000 characters/);
+  assert.throws(() => normalizeDataSearchInput({ query: 'q', domains: Array(19).fill('mail') }), /domains must be a nonempty list/);
+  const raw = {
+    query: '  q  ', domains: ['tasks', 'mail', 'tasks'], cursors: { mail: 'cursor' },
+    windowStart: '2026-01-01T00:00:00Z', windowEnd: '2026-02-01T00:00:00Z',
+  };
+  const before = structuredClone(raw);
+  const normalized = normalizeDataSearchInput(raw);
+  assert.deepEqual(raw, before);
+  assert.notEqual(normalized.input.domains, raw.domains);
+  assert.notEqual(normalized.input.cursors, raw.cursors);
+  assert.deepEqual(normalized.input.domains, ['tasks', 'mail']);
+  assert.ok(Object.isFrozen(normalized.input.domains));
+  assert.ok(Object.isFrozen(normalized.input.cursors));
+  assert.ok(Object.isFrozen(normalized.input.window));
 });

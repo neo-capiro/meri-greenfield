@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/retrieval-r2.test.mjs"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 2.4132657051086426,
+  "stdoutSha256": "edd3cf0bed4c456e1e0d79fb4f6db9214b69316e287f704f1dcfc1e11940cc3d",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

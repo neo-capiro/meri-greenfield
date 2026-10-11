@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "exitCode": 0,
+  "timedOut": false,
+  "processGroupAbsent": true,
+  "elapsedSeconds": 3.666874885559082,
+  "stdoutSha256": "1dd383fa46256ff9611474fbf75726888f911476802e74124bbefea37e4d27e2",
+  "stderrSha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+}

@@ -1,0 +1,36 @@
+{
+  "base": "32709fd72b895cdd27ebeac0ac617ed21cd6721a",
+  "originalBodies": 18,
+  "preservedBodies": 17,
+  "adaptedBody": "module is a pure import with no network or storage effects",
+  "newBodies": [
+    "canonical structural owner resolves federal definitions without widening the federal family",
+    "canonical structural checks compose with federal paging rules rather than replacing them"
+  ],
+  "immutableFiles": {
+    "packages/contracts/retrieval-0.2/federal-market.schema.json": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+    "packages/contracts/retrieval-0.2/catalog.json": "940d768aab94cc2b513a177ade216c675a74ff4021d99ec04b1b059f80b4d264",
+    "packages/contracts/retrieval-0.2/mail.schema.json": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+    "packages/contracts/meri.schema.json": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+    "packages/contracts/validate.mjs": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+    "packages/contracts/package.json": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+    "packages/contracts/dist/browser.mjs": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+    "packages/contracts/dist/metadata.mjs": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94"
+  },
+  "schemaGroups": [
+    "common",
+    "catalog",
+    "retrieval",
+    "skill",
+    "mail",
+    "meeting-source",
+    "operational-reads",
+    "federal-market"
+  ],
+  "uniqueDefinitions": 117,
+  "changedTrackedPaths": [
+    "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs"
+  ]
+}

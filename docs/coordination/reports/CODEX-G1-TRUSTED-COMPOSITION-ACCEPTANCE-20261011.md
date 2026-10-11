@@ -142,7 +142,10 @@ No prior build approval is reused.
 
 The pinned proxy/import/authentication and native discovery route, trusted ECS
 identity, durable aggregate $10 budget, browser-host sandbox qualification,
-Office acceptance and 75 approved real-request inputs remain separate G1 work.
+Office acceptance remains separate G1 work. Correction on 11 October: the
+latest resume handover explicitly removes 75 existing user requests as a G1
+prerequisite. The adopted REL-01 real-request baseline remains later release
+work when a protected corpus exists; synthetic examples do not replace it.
 Full SessionStore/workspace/subagent/compaction recovery is not claimed here.
 Nothing was pushed, merged, deployed, cut over or changed in current Capiro.
 All owned local check children exited; no new listener or background worker
