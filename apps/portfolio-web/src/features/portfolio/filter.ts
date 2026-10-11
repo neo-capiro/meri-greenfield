@@ -75,17 +75,34 @@ export function filterClients(
   >,
 ) {
   const term = filter.search.trim().toLocaleLowerCase();
-  return clients.filter(
-    (client) =>
-      (!term ||
-        `${client.name} ${client.description ?? ""} ${client.primaryContactName ?? ""} ${client.sectorTag ?? ""} ${owners[client.id]?.accountOwner ? memberName(owners[client.id]?.accountOwner) : ""}`
-          .toLocaleLowerCase()
-          .includes(term)) &&
+  return clients.filter((client) => {
+    const city = client.intakeData?.city;
+    const state = client.intakeData?.state;
+    const location = [city, state]
+      .filter((part): part is string => typeof part === "string")
+      .filter(Boolean);
+    const searchText = [
+      client.name,
+      client.description,
+      client.primaryContactName,
+      client.sectorTag,
+      location.join(" "),
+      location.join(", "),
+      owners[client.id]?.accountOwner
+        ? memberName(owners[client.id]?.accountOwner)
+        : "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLocaleLowerCase();
+    return (
+      (!term || searchText.includes(term)) &&
       (!filter.status || client.profileStatus === filter.status) &&
       (!filter.sector || client.sectorTag === filter.sector) &&
       (!filter.owner ||
         (filter.owner === unassignedOwner
           ? owners[client.id]?.accountOwnerUserId === null
-          : owners[client.id]?.accountOwnerUserId === filter.owner)),
-  );
+          : owners[client.id]?.accountOwnerUserId === filter.owner))
+    );
+  });
 }

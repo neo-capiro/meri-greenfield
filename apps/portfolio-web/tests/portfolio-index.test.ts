@@ -15,6 +15,7 @@ const clients = [
     profileStatus: "ACTIVE",
     sectorTag: "Energy",
     primaryContactName: "Ada Test",
+    intakeData: { city: "Seattle", state: "WA" },
   }),
   clientSchema.parse({
     id: "22222222-2222-4222-8222-222222222222",
@@ -22,6 +23,7 @@ const clients = [
     status: "active",
     profileStatus: "ONBOARDING",
     sectorTag: "Aerospace",
+    intakeData: { city: "New York", state: "NY" },
   }),
 ];
 const owners = {
@@ -58,6 +60,12 @@ describe("Portfolio index contract-backed controls", () => {
     expect(
       filterClients(clients, { ...empty, search: "Unassigned" }, owners),
     ).toEqual([]);
+    expect(
+      filterClients(clients, { ...empty, search: "Seattle, WA" }, owners),
+    ).toEqual([clients[0]]);
+    expect(
+      filterClients(clients, { ...empty, search: "new york ny" }, owners),
+    ).toEqual([clients[1]]);
   });
   it("distinguishes known unassigned from missing owner receipts", () => {
     expect(

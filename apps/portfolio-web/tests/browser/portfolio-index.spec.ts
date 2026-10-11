@@ -9,6 +9,7 @@ const rows = [
     name: "Alpha Energy",
     sectorTag: "Energy",
     profileStatus: "ONBOARDING",
+    intakeData: { city: "New York", state: "NY" },
   },
 ];
 const assignments = {
@@ -116,6 +117,9 @@ test("real fields drive search/status/sector/known unassigned; no matching resul
   await page
     .getByLabel("Account owner", { exact: true })
     .selectOption("unassigned");
+  await expect(page.getByRole("article")).toHaveCount(1);
+  await expect(page.getByRole("article")).toContainText("Alpha Energy");
+  await page.getByLabel("Search profiles").fill("New York, NY");
   await expect(page.getByRole("article")).toHaveCount(1);
   await expect(page.getByRole("article")).toContainText("Alpha Energy");
   await page.getByLabel("Search profiles").fill("Not a real organization");
