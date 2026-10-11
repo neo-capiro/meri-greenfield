@@ -1,0 +1,39 @@
+# Disposable PostgreSQL/native Prisma TLS fixture
+
+SOURCE ONLY; root must independently review this source and admit the remote Linux run. No Docker, database, native Prisma, TLS handshake or cloud execution ran during authoring. The first fixture is SELECT-only and does **not** initialize LiteLLM's native Prisma schema, migration0001, auth lifespan or virtual keys. Those canonical owners remain separate.
+
+## Runnable interface and inputs
+
+Trusted Linux builder setup runs as root solely to create/chown new ephemeral mounted files; PG explicitly runs999:999 and the native client10001:10001. Root first builds and verifies the **new** proxy image and separately fetches the pinned official PostgreSQL17.11 Linux/amd64 image. This fixture performs no image pull/build and rejects the historical E4 image73ae... as a runtime input. Root verifies Docker binary/daemon, source closure, image configuration, exact fresh owner input and external supervisor before invocation. Use a replacement environment with only reviewed system essentials/PATH; no provider, AWS, proxy, Docker-host override or preload variables.
+
+```
+python3 -B /reviewed/postgres-fixture/run-fixture.py --config /owned/input.json --config-sha256 <exact SHA256> --output /owned/new-result
+```
+
+The host runner uses ordinary fixed sibling modules (unlike the self-contained container peer, it is not invoked with `-I`). The complete source directory must be pinned before invocation and immutable during execution; root must refuse unlisted shadow modules/pyc. `--help`/missing args are inert. No arbitrary command, role, endpoint, SQL, environment or runtime toggle exists. Exit0 requires all actual controls, positive owned cleanup, private-file destruction, unchanged owner input and original deadline;1 means actual fixture failure/unknown;2 means handled refusal.
+
+Owner config exact keys: `schema:"meri.postgres.tls-fixture/1"`, canonical `runId`, `proxyImage:"sha256:<fresh image ID>"`, `postgresImage:"docker.io/library/postgres@sha256:3cec7eb015ba8adb28139fa5c83b8489cdf0e666e53dfdf20f598ae0cc8739e3"`, integer `t0Ms`, `startDeadlineMs`, `workDeadlineMs`, `cleanupDeadlineMs`, `originalC`. Start<=t0+60s, work<=t0+300s, cleanup<=work+30s and originalC=t0+900s; original times never reset. No actual clock/config/admission was authored here. Root should allocate sufficient work budget and independently own the external controller-loss cleanup path; local finally is not durable cloud survival.
+
+## Isolation, mounts and database permissions
+
+One new `--internal` bridge with run-bound names/labels owns two servers and five fresh native client containers. Certificate generation has networknone. No port is published. All containers use read-only roots, dropALL, NNP, private default PID/IPC, explicit users,1GiB/1CPU/pids128 and bounded tmpfs. PG data/socket are UID999 tmpfs; no persistent Docker volume is accepted. Exact container image/user/network/capability/resource properties are read back before start. Unknown create ACK retains the prospective unique name and reconciles only owner-labelled exact IDs; prior names must be positively absent.
+
+Synthetic passwords and keys are generated only into the new result/private area with strict UID/modes, then mounted read-only where needed; values never enter argv/env/receipts. Do **not archive private/**. It is destroyed after positive owned container/network removal; if cleanup is unknown, it stays private for trusted owner containment and the run fails. Bootstrap init/SQL diagnostics stay in unexported container tmpfs. Rust native fd1/fd2 and Python text are discarded during the Prisma probe, so credential-bearing URLs cannot enter captured native output. Final peer records expose fixed classifications and nonsecret TLS/db/role facts only.
+
+The final server HBA rejects all local and non-TLS clients, allowing only app hostssl SCRAM. Temporary local trust is used during bootstrap while listen_addresses is empty and the socket belongs only to the server's private container; it is removed before public fixture listening. Bootstrap verifies the app's stored verifier is SCRAM-SHA-256 before emitting the fixed ready marker. App role is LOGIN/NOSUPERUSER/NOCREATEDB/NOCREATEROLE/NOREPLICATION/NOBYPASSRLS, with CONNECT on its fresh native DB; separate NOLOGIN owner owns both fresh native and state DBs. No app schema ownership or product migration is created.
+
+Mount identity matches native-auth preparation: `/run/meri-native-auth/<hyphen UUID>/database-url` and `ca.pem`, UID10001, mode0400; native DB=`meri_native_auth_<UUID32>`, state DB=`meri_qualification_<UUID32>`, host=`meri-native-auth-pg`, user=`meri_native_auth_app`. The fixture additionally mounts finite case URLs and wrong-ca.pem. Native auth needs separate actual schema initialization/grants and new fresh disposable setup; this TLS phase destroys its DBs and credentials.
+
+## Actual controls required later
+
+Each case uses a new process/client/pool. Positive uses exact require/strict/absolute sslcert, no duplicated/unsupported keys/host overrides, and queries `pg_stat_ssl WHERE pid=pg_backend_pid()` on the native query's connection. It demands ssltrue, TLSv1.2/1.3, cipher, current user/database and nonowner/nonprivileged role facts. Wrong CA uses an independently generated untrusted CA. Wrong SAN uses a different owned alias on the same trusted-chain server. Plaintext uses the second server with ssl=off while the native client still requires strict TLS; a specific TLS-unavailable error is necessary. Wrong password requires specific authentication refusal. Connection timeout/generic failure or a successful negative connection never passes.
+
+The strict CA is additive to system trust, not exclusive CA pinning. Error-text predicates are conservative source-backed expectations and remain **unqualified against actual pinned engine output**; unexpected real error wording fails rather than relaxing validation. No exact error spelling is invented as observed. Actual TLS protocol, image ABI, native schema, auth and driver versions remain runtime gates.
+
+## Capture and cleanup boundaries
+
+`docker_capture.py` adapts the reviewed E4 linux-run selector capture/process-group/owned-ID cleanup pattern; it is a focused adapter, not another supervisor. Calls have live2MiB stream prefix caps, per-call<=45s/work or<=10s/cleanup clipped to the original clock, at most128 calls, no retry. Binary receipts precede outcome assertions. Removal checks exact label+image, uses returned ID (rm --force --volumes), then demands Docker's explicit same-ID absent response; empty/access-denied alone cannot pass. Network must be owner-labelled and empty before exact-ID removal/absence. Data lives in tmpfs, so positive container removal removes server storage; no shared or existing volume is touched.
+
+Root's external bounded Linux supervisor remains mandatory before execution. A killed controller cannot run this finally or guarantee daemon cleanup; the separate owner must inspect/contain exact labelled objects and positively reconcile physical absence. This source does not silently add a daemon, service or architecture component. Unknown outcomes never establish cleanup/runtime/G1 acceptance.
+
+`test_fixture.py` uses physical socket/process denial before candidate imports and immediate pure fake coroutines (timeout context explicitly faked, no native engine/loop/self-pipe). It checks strict data/clock/URL, fixed secret-free arguments, same-backend role proof, negative-specific errors vs generic failures, unexpected negative success and exact owned-ID cleanup/absent errors. It does not prove PostgreSQL or native TLS. Canonical migration0001 remains unmodified and can be separately applied by its owner to a new state DB; it is intentionally not conflated with native Prisma schema initialization.
