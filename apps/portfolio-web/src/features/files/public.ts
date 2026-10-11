@@ -5,5 +5,10 @@ export {
   type UploadParent,
   type UploadAttempt,
 } from "./upload";
-export { attachmentSchema, fileValidation, type Attachment } from "./contracts";
+export {
+  attachmentSchema,
+  fileValidation,
+  signedUrl,
+  type Attachment,
+} from "./contracts";
 export { UploadDialog } from "./UploadDialog";

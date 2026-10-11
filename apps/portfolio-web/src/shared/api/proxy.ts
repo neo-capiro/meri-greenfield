@@ -14,6 +14,7 @@ const permittedRoots: Record<Service, readonly string[]> = {
     "directory",
     "explorer",
     "firm",
+    "billing",
   ],
   strategy: ["planner", "strategies"],
   workspace: ["drafts", "documents", "artifacts", "templates"],
@@ -79,6 +80,14 @@ export async function proxyRequest(
     if (!allowed) return jsonError(400, "Invalid firm intake path.");
     if (!allowed.includes(request.method))
       return jsonError(405, "Method not allowed for firm intake.");
+  }
+  if (selected === "core" && path[0] === "billing") {
+    // Core owns these two read contracts. Payment mutations belong to
+    // Onboard and require a separately reviewed service configuration.
+    if (path.length !== 2 || !["state", "summary"].includes(path[1] ?? ""))
+      return jsonError(400, "Invalid billing read path.");
+    if (request.method !== "GET")
+      return jsonError(405, "Billing access is read-only.");
   }
   const base = config.services[selected];
   if (!base || !config.authConfigured || config.issues.length)
