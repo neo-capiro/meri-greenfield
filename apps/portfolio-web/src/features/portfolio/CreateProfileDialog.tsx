@@ -11,6 +11,7 @@ import {
   ProfileCapacityStatus,
   useProfileCapacity,
 } from "@/features/billing/public";
+import { BillingSummaryPanel } from "@/features/billing/summary-public";
 import styles from "./portfolio.module.css";
 
 interface CreateProfileDialogProps {
@@ -91,6 +92,7 @@ function ProfileChoiceSession({
       <div className={styles.choiceGroup}>
         <p className="eyebrow">New client</p>
         {permitted && <ProfileCapacityStatus capacity={capacity} />}
+        <BillingSummaryPanel enabled={open} />
         <button
           className={styles.profileChoice}
           disabled={!permitted || !capacity.allowed}
