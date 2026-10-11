@@ -1,7 +1,9 @@
-// Candidate federal-market input boundary: structural schema validation plus
-// explicit fail-closed per-tool rules. Importing this module reads one local
-// schema file and compiles validators; it performs no network, storage, process,
-// timer, source or authorization effect, and it grants no access by itself.
+// Candidate federal-market boundary: structural schema validation of the input
+// shapes and of the declared-type result shapes, plus explicit fail-closed
+// per-tool rules and the narrow paging consistency of a paged result. Importing
+// this module reads one local schema file and compiles validators; it performs no
+// network, storage, process, timer, source or authorization effect, and it grants
+// no access by itself.
 import { readFileSync } from 'node:fs';
 import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
@@ -46,12 +48,37 @@ addFormats(ajv);
 ajv.addSchema(schema);
 const validators = new Map(Object.keys(schema.$defs).map(name => [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })]));
 
-// Structural responsibility only: this asserts the JSON Schema shape and never
-// decides authorization, client scope, source availability or freshness.
+// Paged result definitions are derived from the schema instead of restated: each
+// paged output definition pins `tool` to its operation ID and carries the
+// `pageResult` fields, so the schema stays the single owner of the
+// operation-to-output mapping and no second registry or alias table is added.
+const PAGED_OUTPUT_DEFINITIONS = Object.freeze(Object.entries(schema.$defs)
+  .filter(([, definition]) => definition?.properties?.hasMore !== undefined)
+  .map(([name]) => name));
+
+// Narrow cross-field invariants that JSON Schema cannot express, taken directly
+// from the frozen producer `pageResult` (federal-market-meri-tools.service.ts
+// L138-147): `nextPage` continues at `page + 1` only while rows remain and the
+// tool page limit has not been reached, and is null otherwise. `hasMore` is
+// deliberately NOT re-derived from `total`: the contract asserts no total
+// accuracy, so the producer's `page * pageSize < total` relation is recorded as
+// a producer fact rather than enforced here.
+function assertPagedOutputConsistency(definition, value) {
+  const { page, hasMore, nextPage, paginationLimitReached } = value;
+  if (hasMore === false && nextPage !== null) fail(`${definition}: nextPage must be null when hasMore is false`);
+  if (paginationLimitReached === true && hasMore !== true) fail(`${definition}: paginationLimitReached requires hasMore`);
+  if (paginationLimitReached === true && nextPage !== null) fail(`${definition}: nextPage must be null at the pagination limit`);
+  if (hasMore === true && paginationLimitReached === false && nextPage !== page + 1) fail(`${definition}: nextPage must continue at page + 1`);
+}
+
+// Structural responsibility only: this asserts the JSON Schema shape, plus the
+// narrow paging consistency of a paged result definition, and never decides
+// authorization, client scope, source availability or freshness.
 export function validateFederalMarketShape(definition, value) {
   const check = validators.get(definition);
   if (!check) fail(`Unknown federal-market contract ${definition}`);
   if (!check(value)) fail(`${definition}: ${ajv.errorsText(check.errors)}`);
+  if (PAGED_OUTPUT_DEFINITIONS.includes(definition)) assertPagedOutputConsistency(definition, value);
   return value;
 }
 

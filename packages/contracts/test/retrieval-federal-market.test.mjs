@@ -201,3 +201,232 @@ test('module is a pure import with no network or storage effects', () => {
   assert.equal(report.out.length, 5);
   assert.deepEqual(report.exports, ['FEDERAL_MARKET_OPERATION_IDS', 'federalMarketInputDefinition', 'federalMarketSchemaId', 'normalizeFederalMarketInput', 'validateFederalMarketShape']);
 });
+
+// ---------------------------------------------------------------------------
+// REL-02 result shapes. Literal synthetic DATA only: no handler, identity,
+// source, client scope or serialization pipeline is exercised, and passing
+// structural validation never grants authorization or proves freshness.
+// ---------------------------------------------------------------------------
+
+// The schema is the single owner of the operation-to-output mapping: each output
+// definition pins `tool` to its operation ID, so the mapping is derived here
+// rather than restated.
+const outputDefinitionFor = operationId => Object.entries(schema.$defs)
+  .filter(([, definition]) => definition?.properties?.tool?.const === operationId)
+  .map(([name]) => name);
+const outputDefinition = Object.fromEntries(FEDERAL_MARKET_OPERATION_IDS.map(id => [id, outputDefinitionFor(id)[0]]));
+const pagedOutputDefinitions = [
+  outputDefinition.search_federal_contract_awards,
+  outputDefinition.search_federal_subawards,
+  outputDefinition.search_contract_vehicles,
+  outputDefinition.search_procurement_forecasts,
+];
+const pageEnvelopeFields = ['items', 'total', 'page', 'pageSize', 'source', 'asOf', 'generatedAt', 'hasMore', 'nextPage', 'paginationLimitReached', 'tool'];
+
+const contractRow = (overrides = {}) => ({
+  id: 'award-1', awardId: 'AW-1', recipientName: 'Acme', recipientUei: 'ABC123456789', awardingAgency: 'DOT',
+  amount: 1000, description: 'bridge', actionDate: '2024-01-01', latestActionDate: null, baseAwardSignedDate: null,
+  sourceLastModifiedDate: null, popStartDate: null, popEndDate: null, state: 'CA', district: '07',
+  districtKey: 'CA-07', source: 'usaspending', sourceUpdatedAt: null, ...overrides,
+});
+const subawardRow = (overrides = {}) => ({
+  id: 'sub-1', providerKey: 'tango:sub:1', awardKey: 'AW-1', primeRecipientName: 'Prime', primeRecipientUei: null,
+  subawardeeName: 'Sub', subawardeeUei: null, awardingAgency: 'DOT', awardingOffice: null, amount: 250,
+  description: 'paving', actionDate: '2023-05-05', fiscalYear: 2023, naicsCode: '237310', state: 'NY',
+  district: null, districtKey: null, sourceUrl: 'https://example.invalid/subaward/1', source: 'tango',
+  sourceUpdatedAt: null, ...overrides,
+});
+const vehicleRow = (overrides = {}) => ({
+  id: 'veh-1', vehicleId: 'GS-00F-0001', name: 'Schedule', solicitationIdentifier: null, vehicleType: 'GSA',
+  agency: 'GSA', naicsCode: null, pscCode: null, setAside: null, lastDateToOrder: '2027-09-30', awardeeCount: 3,
+  orderCount: null, totalObligated: 100, relationship: 'self', recipientUei: null, source: 'tango',
+  sourceUpdatedAt: null, ...overrides,
+});
+const forecastRow = (overrides = {}) => ({
+  id: 'fc-1', forecastId: 'FC-1', title: 'Cloud services', description: null, agency: 'VA', department: null,
+  office: null, anticipatedAwardDate: null, estimatedPeriod: null, fiscalYear: 2025, naicsCode: null, pscCode: null,
+  setAside: null, contractVehicle: null, placeOfPerformance: null, contactName: null, contactEmail: null,
+  status: null, active: null, sourceSystem: null, sourceUrl: null, source: 'tango', sourceUpdatedAt: null, ...overrides,
+});
+const districtRow = (overrides = {}) => ({
+  districtKey: 'NY-01', state: 'NY', district: '01', contractCount: 2, contractAmount: 500, subawardCount: 1,
+  subawardAmount: null, ...overrides,
+});
+const stateSubawardRow = (overrides = {}) => ({
+  state: 'NY', subawardCount: 4, subawardAmount: 1200, geographyBasis: 'source_state_place_of_performance', ...overrides,
+});
+const futureSignalRow = (overrides = {}) => ({
+  id: 'sig-1', source: 'sam_gov', title: 'Upcoming', agency: null, state: null, districtKey: null, date: null,
+  geographyBasis: 'unresolved', sourceUrl: null, ...overrides,
+});
+const pageOutput = (operationId, item, overrides = {}) => ({
+  items: [item], total: 3, page: 1, pageSize: 10, source: 'tango', asOf: null,
+  generatedAt: '2026-10-11T00:00:00.000Z', hasMore: true, nextPage: 2, paginationLimitReached: false,
+  tool: operationId, ...overrides,
+});
+const geographyOutput = (overrides = {}) => ({
+  districts: [districtRow()], futureSignals: [futureSignalRow()], awardedMoneyIncludesFutureOpportunities: false,
+  warnings: [], tool: 'get_district_federal_market', generatedAt: '2026-10-11T00:00:00.000Z', ...overrides,
+});
+const positiveOutputs = {
+  search_federal_contract_awards: pageOutput('search_federal_contract_awards', contractRow()),
+  search_federal_subawards: pageOutput('search_federal_subawards', subawardRow()),
+  search_contract_vehicles: pageOutput('search_contract_vehicles', vehicleRow()),
+  search_procurement_forecasts: pageOutput('search_procurement_forecasts', forecastRow()),
+  get_district_federal_market: geographyOutput(),
+};
+
+test('exposes one distinct structural output definition per federal-market operation', () => {
+  for (const id of FEDERAL_MARKET_OPERATION_IDS) {
+    const names = outputDefinitionFor(id);
+    assert.equal(names.length, 1, `${id} must map to exactly one output definition`);
+    assert.ok(Object.hasOwn(schema.$defs, names[0]));
+  }
+  assert.equal(new Set(Object.values(outputDefinition)).size, 5, 'output definitions must stay distinct');
+  // Each paged family carries the frozen page envelope and the pageResult fields.
+  for (const name of pagedOutputDefinitions) {
+    assert.equal(schema.$defs[name].additionalProperties, false);
+    assert.deepEqual([...schema.$defs[name].required].sort(), [...pageEnvelopeFields].sort());
+    assert.equal(schema.$defs[name].properties.page.minimum, 1);
+    assert.equal(schema.$defs[name].properties.pageSize.minimum, 1);
+  }
+  // The geography output keeps its rolling-optional fields out of `required`.
+  const geographyRequired = schema.$defs[outputDefinition.get_district_federal_market].required;
+  for (const optional of ['stateSubawards', 'futureSignalsAvailability']) {
+    assert.equal(geographyRequired.includes(optional), false, `${optional} must not be forced present`);
+  }
+  // The five input definitions are untouched by the output extension.
+  assert.deepEqual(schema.$defs.FederalMarketOperationId.enum, [...FEDERAL_MARKET_OPERATION_IDS]);
+  for (const id of FEDERAL_MARKET_OPERATION_IDS) assert.equal(schema.$defs[federalMarketInputDefinition(id)].additionalProperties, false);
+  assert.deepEqual(schema.$defs.GetDistrictFederalMarketInput.required, ['state', 'district']);
+});
+
+test('accepts one positive structural result for each of the five output families', () => {
+  for (const id of FEDERAL_MARKET_OPERATION_IDS) {
+    assert.equal(validateFederalMarketShape(outputDefinition[id], positiveOutputs[id]), positiveOutputs[id]);
+  }
+  // Both optional rolling rails may be present, and each may be absent on its own.
+  assert.equal(validateFederalMarketShape(outputDefinition.get_district_federal_market, geographyOutput({
+    stateSubawards: [stateSubawardRow()], futureSignalsAvailability: 'unavailable',
+  })).stateSubawards.length, 1);
+  assert.equal('stateSubawards' in geographyOutput(), false);
+  const emptyRails = validateFederalMarketShape(outputDefinition.get_district_federal_market, geographyOutput({
+    districts: [], stateSubawards: [], futureSignals: [], futureSignalsAvailability: 'available',
+  }));
+  assert.deepEqual(emptyRails.districts, []);
+});
+
+test('enforces declared result fields, nullability and row source literals', () => {
+  const def = outputDefinition.search_federal_subawards;
+  const withItem = item => pageOutput('search_federal_subawards', item);
+  // Missing required envelope field and missing required row field.
+  for (const drop of ['total', 'asOf', 'hasMore', 'nextPage', 'paginationLimitReached', 'tool']) {
+    const value = pageOutput('search_federal_subawards', subawardRow());
+    delete value[drop];
+    assert.throws(() => validateFederalMarketShape(def, value), /required/, `${drop} must be required`);
+  }
+  const missingRowField = subawardRow();
+  delete missingRowField.providerKey;
+  assert.throws(() => validateFederalMarketShape(def, withItem(missingRowField)), /required/);
+  // Declared nullability: `| null` fields accept null and their non-null type, and refuse anything else.
+  validateFederalMarketShape(def, withItem(subawardRow({ amount: null, fiscalYear: null, sourceUpdatedAt: null })));
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ amount: '250' }))), /number/);
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ fiscalYear: 2023.5 }))), /integer/);
+  // A declared non-nullable field stays non-nullable.
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ id: null }))), /string/);
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ providerKey: null }))), /string/);
+  // Declared row source literals are per family and never interchangeable.
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ source: 'usaspending' }))), /constant/);
+  assert.throws(() => validateFederalMarketShape(outputDefinition.search_federal_contract_awards, pageOutput('search_federal_contract_awards', contractRow({ source: 'tango' }))), /constant/);
+  assert.throws(() => validateFederalMarketShape(outputDefinition.search_procurement_forecasts, pageOutput('search_procurement_forecasts', forecastRow({ source: 'sam_gov' }))), /constant/);
+  // Declared tri-state/enum row fields.
+  validateFederalMarketShape(outputDefinition.search_procurement_forecasts, pageOutput('search_procurement_forecasts', forecastRow({ active: true })));
+  assert.throws(() => validateFederalMarketShape(outputDefinition.search_procurement_forecasts, pageOutput('search_procurement_forecasts', forecastRow({ active: 'yes' }))), /boolean/);
+  assert.throws(() => validateFederalMarketShape(outputDefinition.search_contract_vehicles, pageOutput('search_contract_vehicles', vehicleRow({ relationship: 'child' }))), /allowed values/);
+  validateFederalMarketShape(outputDefinition.search_contract_vehicles, pageOutput('search_contract_vehicles', vehicleRow({ relationship: null })));
+  // Closed declared rows refuse an undeclared field.
+  assert.throws(() => validateFederalMarketShape(def, withItem(subawardRow({ extra: 1 }))), /additional properties/);
+  // The contract-award row is a declared-type candidate whose serializer is
+  // outside the frozen file set, so an unestablished extra field stays open.
+  const serialized = contractRow({ serializedBaseAwardDate: '2024-01-01' });
+  validateFederalMarketShape(outputDefinition.search_federal_contract_awards, pageOutput('search_federal_contract_awards', serialized));
+  assert.equal(schema.$defs.FederalContractMarketRow.additionalProperties, true);
+  assert.match(schema.$defs.FederalContractMarketRow.description, /DECLARED-TYPE CANDIDATE/);
+  // A wrong-family item is refused by the row reference.
+  assert.throws(() => validateFederalMarketShape(def, withItem(contractRow())), /required/);
+});
+
+test('keeps the state-only subaward rail separate from district attribution', () => {
+  const def = outputDefinition.get_district_federal_market;
+  // A state rail row is not a district row and vice versa: both shapes are closed.
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ districts: [stateSubawardRow()] })), /required/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ stateSubawards: [districtRow()] })), /required/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ stateSubawards: [stateSubawardRow({ districtKey: 'NY-01' })] })), /additional properties/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ districts: [districtRow({ geographyBasis: 'source_state_place_of_performance' })] })), /additional properties/);
+  // The rail literal is required and fixed.
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ stateSubawards: [stateSubawardRow({ geographyBasis: 'inferred_from_city' })] })), /constant/);
+  const missingBasis = stateSubawardRow();
+  delete missingBasis.geographyBasis;
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ stateSubawards: [missingBasis] })), /required/);
+  // The frozen composer drops statewide/non-voting sentinel districts.
+  for (const sentinel of ['90', '98', 'ZZ']) {
+    assert.throws(() => validateFederalMarketShape(def, geographyOutput({ districts: [districtRow({ district: sentinel })] })), /NOT be valid/);
+  }
+  validateFederalMarketShape(def, geographyOutput({ districts: [districtRow({ district: '00' }), districtRow({ district: 'AL' })] }));
+  // Awarded dollars never include future opportunities, and the rail status is source-only.
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ awardedMoneyIncludesFutureOpportunities: true })), /constant/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ futureSignalsAvailability: 'unknown' })), /allowed values/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ futureSignals: [futureSignalRow({ source: 'tango' })] })), /allowed values/);
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ futureSignals: [futureSignalRow({ geographyBasis: 'district_inferred' })] })), /allowed values/);
+  validateFederalMarketShape(def, geographyOutput({ futureSignals: [futureSignalRow({ source: 'agency_forecast', geographyBasis: 'state_text', date: null })] }));
+  assert.throws(() => validateFederalMarketShape(def, geographyOutput({ warnings: [1] })), /string/);
+});
+
+test('enforces the paged-result paging boundary established by the frozen pageResult', () => {
+  for (const def of pagedOutputDefinitions) {
+    const tool = schema.$defs[def].properties.tool.const;
+    const item = positiveOutputs[tool].items[0];
+    const value = overrides => pageOutput(tool, item, overrides);
+    // hasMore false is the only state with a null continuation.
+    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: false, nextPage: 2 })), /nextPage must be null/);
+    assert.equal(validateFederalMarketShape(def, value({ hasMore: false, nextPage: null })).nextPage, null);
+    // paginationLimitReached implies more rows and no continuation.
+    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: false, nextPage: null, paginationLimitReached: true })), /requires hasMore/);
+    assert.throws(() => validateFederalMarketShape(def, value({ page: 10000, nextPage: 10001, paginationLimitReached: true })), /nextPage must be null/);
+    assert.equal(validateFederalMarketShape(def, value({ page: 10000, nextPage: null, paginationLimitReached: true })).paginationLimitReached, true);
+    // While rows remain below the limit, the continuation is exactly page + 1.
+    assert.equal(validateFederalMarketShape(def, value({ page: 4, nextPage: 5 })).nextPage, 5);
+    assert.throws(() => validateFederalMarketShape(def, value({ page: 4, nextPage: 4 })), /page \+ 1/);
+    assert.throws(() => validateFederalMarketShape(def, value({ page: 4, nextPage: 6 })), /page \+ 1/);
+    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: true, paginationLimitReached: false, nextPage: null })), /page \+ 1/);
+    // No total accuracy is asserted: an inconsistent-looking total is not derived from.
+    assert.equal(validateFederalMarketShape(def, value({ total: 0, hasMore: true, nextPage: 2 })).total, 0);
+    assert.throws(() => validateFederalMarketShape(def, value({ hasMore: 'yes' })), /boolean/);
+  }
+  // The geography family has no paging envelope at all.
+  assert.equal('hasMore' in schema.$defs[outputDefinition.get_district_federal_market].properties, false);
+  assert.throws(() => validateFederalMarketShape(outputDefinition.get_district_federal_market, geographyOutput({ hasMore: false })), /additional properties/);
+});
+
+test('asserts no freshness, coverage, authorization or date format on result shapes', () => {
+  const outputDefs = Object.values(outputDefinition).map(name => schema.$defs[name]);
+  const keywordNames = new Set();
+  const collect = node => {
+    if (Array.isArray(node)) { for (const item of node) collect(item); return; }
+    if (node && typeof node === 'object') for (const [key, value] of Object.entries(node)) { keywordNames.add(key); collect(value); }
+  };
+  for (const definition of outputDefs) collect(definition);
+  assert.equal(keywordNames.has('format'), false, 'no date/other format may be asserted');
+  const forbiddenKeys = ['authorizationDecisionId', 'authorized', 'grants', 'coverage', 'freshness', 'sourceAuthority', 'eligible', 'deadline'];
+  for (const definition of outputDefs) {
+    for (const key of Object.keys(definition.properties)) assert.equal(forbiddenKeys.includes(key), false, `${key} must not be claimed`);
+  }
+  // Nullable rolling fields stay unformatted text, so no parseable date is promised.
+  assert.deepEqual(schema.$defs.FederalMarketNullableText.anyOf, [{ type: 'string' }, { type: 'null' }]);
+  assert.equal(schema.$defs[outputDefinition.search_federal_subawards].properties.asOf.$ref, '#/$defs/FederalMarketNullableText');
+  assert.equal(schema.$defs.FederalMarketFutureSignal.properties.date.$ref, '#/$defs/FederalMarketNullableText');
+  // The output extension adds no export, handler, availability or catalog entry.
+  assert.equal(Object.hasOwn(schema.$defs, 'FederalMarketOutputOperationId'), false);
+  const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
+  assert.equal(JSON.stringify(catalog).includes('SearchFederalContractAwardsOutput'), false);
+});
