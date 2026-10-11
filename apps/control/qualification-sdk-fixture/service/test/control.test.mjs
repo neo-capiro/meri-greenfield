@@ -2,6 +2,7 @@
 // No cloud task, S3 request, provider call or native evidence is produced here.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { createFixtureControl } from '../control.mjs';
 import { PostgresStore } from '../../state/store.mjs';
 import { CERTS, TRUSTED_FINGERPRINT, TRUSTED_B_FINGERPRINT, httpsCall, waitFor }
@@ -99,6 +100,30 @@ test('A commit is versioned, B rereads it through the current fence, A is revoke
     assert.equal(inspections, 1);
     assert.equal(s3.calls.filter(c => c.type === 'PutObjectCommand').length, 3);
     assert.equal(await waitFor(() => control.activeConnections() === 0), true);
-    await control.close();
+    const originalSend = s3.client.send;
+    let entered, release;
+    const didEnter = new Promise(resolve => { entered = resolve; });
+    const gate = new Promise(resolve => { release = resolve; });
+    let paused = false;
+    s3.client.send = async command => {
+      if (!paused && command instanceof GetObjectCommand) {
+        paused = true;
+        entered();
+        await gate;
+      }
+      return originalSend(command);
+    };
+    const pending = send(requestFor(f, 'loadFixtureCheckpoint'), 'trusted-b').catch(() => null);
+    await didEnter;
+    assert.equal(control.activeOperations(), 1);
+    const closing = control.close();
+    const closedEarly = await Promise.race([
+      closing.then(() => true), new Promise(resolve => setTimeout(() => resolve(false), 20)),
+    ]);
+    assert.equal(closedEarly, false, 'shutdown waits for the exact unsettled read');
+    release();
+    await closing;
+    await pending;
+    assert.equal(control.activeOperations(), 0);
     assert.equal(control.address(), null);
   });

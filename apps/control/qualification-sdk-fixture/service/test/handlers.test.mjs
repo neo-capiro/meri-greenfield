@@ -86,6 +86,25 @@ test('a stale A commit is refused before object preparation', async () => {
   assert.equal(calls.prepared, 0);
 });
 
+test('a disconnected commit leaves prepared objects uncommitted', async () => {
+  const f = liveFixture(), controller = new AbortController();
+  let publications = 0, preparations = 0;
+  const { handlers } = composition(f, { registry: {
+    publishCommit: async () => { publications++; throw new Error('unexpected publication'); },
+  }, checkpointStore: {
+    prepareCommit: async () => {
+      preparations++;
+      controller.abort();
+      return { receipt: f.receipt, readback: f.readback };
+    },
+  } });
+  await assert.rejects(handlers.commitFixtureCheckpoint({
+    ...call(f, 'commitFixtureCheckpoint'), signal: controller.signal,
+  }), /FIXTURE_SERVICE_REFUSED/);
+  assert.equal(preparations, 1);
+  assert.equal(publications, 0);
+});
+
 test('a B grant revoked during object read refuses before returning loaded bytes', async () => {
   const f = liveFixture();
   let reads = 0;

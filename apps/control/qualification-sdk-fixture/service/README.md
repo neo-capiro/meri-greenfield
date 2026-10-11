@@ -81,7 +81,12 @@ they are not AWS durability evidence.
 versioned S3 store and private mTLS ingress. It resolves certificate fingerprints
 from durable grants and exposes the registry only to the trusted owner for A/B
 admission. Construction does not connect or listen. Its `start()` owns the
-listener, and `close()` drains it before releasing the owned S3 client. The
+listener; `close()` shuts the socket path, waits for tracked operations, then
+releases the owned S3 client. If an operation remains unsettled after the
+bounded wait, closure reports uncertainty and leaves the client available for
+owner reconciliation. A disconnected commit is refused before database
+publication if its abort is visible after object preparation; an already
+dispatched database commit still requires authoritative readback. The
 native evidence inspector remains a mandatory trusted dependency, without a
 production implementation; passing a test inspector is not native quiescence.
 The integrated source test uses two synthetic certificates, isolated local

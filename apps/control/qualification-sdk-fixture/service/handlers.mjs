@@ -77,14 +77,16 @@ export function createFixtureServiceHandlers({ registry, checkpointStore,
   }
 
   async function commitFixtureCheckpoint({ peer, producer, request, signal }) {
+    if (signal?.aborted) fail();
     const authorization = await registry.authorize({ presented: presentedBinding(producer), peer });
-    if (authorization.decision !== 'AUTHORIZED') fail();
+    if (authorization.decision !== 'AUTHORIZED' || signal?.aborted) fail();
     const stored = await checkpointStore.prepareCommit({ producer,
       bundle: request.bundle, fixtureFile: request.fixtureFile, evidence: request.evidence, signal });
-    if (!stored || !stored.receipt || !stored.readback) fail();
+    if (!stored || !stored.receipt || !stored.readback || signal?.aborted) fail();
     const response = envelope(request, 'COMMITTED', { completeRecoveryCheckpoint: false,
       sessionStoreQualified: false, receipt: stored.receipt });
     checkResponse(request, response, producer, clock());
+    if (signal?.aborted) fail();
     const identity = fixtureReceiptIdentity(stored.receipt);
     try {
       const result = await registry.publishCommit({ context: producer, peer,
