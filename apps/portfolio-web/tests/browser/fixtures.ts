@@ -187,6 +187,15 @@ export async function installFixtures(page: Page) {
       return json(route, { message: "Unexpected test mutation" }, 500);
     }
     const responses: Record<string, unknown> = {
+      "core/billing/state": {
+        billingEnabled: false,
+        status: "none",
+        slots: 0,
+        usedSlots: 1,
+        trialEndsAt: null,
+        onboardingFlowVersion: 1,
+        locked: false,
+      },
       "core/clients": [client],
       "core/intelligence/portfolio-alerts": {
         alerts: [],

@@ -44,6 +44,18 @@ async function setup(
     const request = route.request();
     const url = new URL(request.url());
     const path = url.pathname.replace("/api/backend/core/", "");
+    if (path === "billing/state")
+      return route.fulfill({
+        json: {
+          billingEnabled: false,
+          status: "none",
+          slots: 0,
+          usedSlots: 0,
+          locked: false,
+          trialEndsAt: null,
+          onboardingFlowVersion: 1,
+        },
+      });
     if (path === "me")
       return route.fulfill({
         status: state.identityFailure ? 503 : 200,

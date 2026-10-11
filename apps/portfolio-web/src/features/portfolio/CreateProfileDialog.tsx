@@ -7,6 +7,10 @@ import { RegistrantImportDialog } from "@/features/intake/registrant/public";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
+import {
+  ProfileCapacityStatus,
+  useProfileCapacity,
+} from "@/features/billing/public";
 import styles from "./portfolio.module.css";
 
 interface CreateProfileDialogProps {
@@ -24,6 +28,7 @@ function ProfileChoiceSession({
   const identity = useIdentity();
   const [manual, setManual] = useState(false);
   const [registrant, setRegistrant] = useState(false);
+  const capacity = useProfileCapacity(!manual && !registrant);
   const switching = useRef(false);
   const [opener] = useState(() =>
     typeof document !== "undefined" &&
@@ -85,9 +90,10 @@ function ProfileChoiceSession({
       )}
       <div className={styles.choiceGroup}>
         <p className="eyebrow">New client</p>
+        {permitted && <ProfileCapacityStatus capacity={capacity} />}
         <button
           className={styles.profileChoice}
-          disabled={!permitted}
+          disabled={!permitted || !capacity.allowed}
           onClick={() => {
             switching.current = true;
             setManual(true);

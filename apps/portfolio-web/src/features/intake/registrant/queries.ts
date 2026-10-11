@@ -8,6 +8,10 @@ import type { identitySchema } from "@/shared/auth/identity";
 import type { z } from "zod";
 import { clientsKey } from "@/features/portfolio/public";
 import {
+  billingStateKey,
+  verifyProfileCapacity,
+} from "@/features/billing/public";
+import {
   fetchCandidates,
   fetchRegistrant,
   importClients,
@@ -23,6 +27,7 @@ function assertWriteAllowed(cache: ReturnType<typeof useQueryClient>) {
   if (
     state?.status !== "success" ||
     state.fetchStatus !== "idle" ||
+    state.isInvalidated ||
     state.error ||
     !state.data?.tenant?.id.trim() ||
     !state.data.user.id.trim() ||
@@ -109,7 +114,7 @@ export function useImportClients() {
       if (!scope.active)
         throw new ApiError(409, "This import session is no longer active.");
       const actor = assertWriteAllowed(cache);
-      return importClients(api, registrantId, ids, () => {
+      const guard = () => {
         if (!scope.active)
           throw new ApiError(409, "This import session is no longer active.");
         const current = assertWriteAllowed(cache);
@@ -121,6 +126,10 @@ export function useImportClients() {
             409,
             "Your session changed. Refresh and review before importing.",
           );
+      };
+      return importClients(api, registrantId, ids, async () => {
+        await verifyProfileCapacity(api, ids.length, guard);
+        guard();
       });
     },
     // Even an ambiguous failure may have committed individual rows.
@@ -128,6 +137,7 @@ export function useImportClients() {
       await Promise.all([
         cache.invalidateQueries({ queryKey: clientsKey }),
         cache.invalidateQueries({ queryKey: [...registrantKey, "candidates"] }),
+        cache.invalidateQueries({ queryKey: billingStateKey }),
       ]);
     },
   });

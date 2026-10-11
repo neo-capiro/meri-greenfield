@@ -19,6 +19,11 @@ import { CompanyStep } from "./CompanyStep";
 import { RegistrationStep } from "./RegistrationStep";
 import { SectorStep } from "./SectorStep";
 import { useSaveIntake, useUploadLogo } from "./mutations";
+import { ClientProfileAttemptError } from "./profile-api";
+import {
+  ProfileCapacityStatus,
+  useProfileCapacity,
+} from "@/features/billing/public";
 import { validateLogo, type LogoAttempt } from "./logo";
 import styles from "./intake.module.css";
 
@@ -57,8 +62,13 @@ function IntakeSession({
         ?.focus();
   }, [errors]);
   const save = useSaveIntake(client);
+  const capacity = useProfileCapacity(!client && !persisted);
   const upload = useUploadLogo();
   const pending = save.isPending || upload.isPending;
+  const uncertainCreation =
+    !client &&
+    save.error instanceof ClientProfileAttemptError &&
+    save.error.uncertain;
   const role = identity.data?.role;
   const permitted = client
     ? canAdminister(role)
@@ -91,7 +101,14 @@ function IntakeSession({
     return !first;
   }
   async function submit() {
-    if (pending || !permitted || !validate()) return;
+    if (
+      pending ||
+      uncertainCreation ||
+      !permitted ||
+      (!client && !persisted && !capacity.allowed) ||
+      !validate()
+    )
+      return;
     try {
       const saved =
         persisted ??
@@ -133,6 +150,9 @@ function IntakeSession({
             ? "Client edits require an administrator."
             : "Your role cannot create client profiles."}
         </p>
+      )}
+      {!client && !persisted && permitted && (
+        <ProfileCapacityStatus capacity={capacity} />
       )}
       <form
         className={styles.form}
@@ -243,6 +263,12 @@ function IntakeSession({
             </p>
           )}
           <QueryState error={save.error ?? upload.error} />
+          {uncertainCreation && (
+            <p role="alert">
+              Profile creation could not be confirmed. Review the client list
+              before starting another profile. No automatic retry will be sent.
+            </p>
+          )}
           {persisted && upload.error && (
             <p role="status">
               The profile was saved. Its logo is not confirmed. Retry the logo
@@ -273,7 +299,15 @@ function IntakeSession({
               Back
             </button>
           )}
-          <button className="button primary" disabled={pending || !permitted}>
+          <button
+            className="button primary"
+            disabled={
+              pending ||
+              !permitted ||
+              uncertainCreation ||
+              (!client && !persisted && !capacity.allowed)
+            }
+          >
             {pending
               ? upload.isPending
                 ? "Uploading logo…"

@@ -4,6 +4,10 @@ import { useIsMutating } from "@tanstack/react-query";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import { canAdminister, useIdentity } from "@/shared/auth/identity";
+import {
+  ProfileCapacityStatus,
+  useProfileCapacity,
+} from "@/features/billing/public";
 import type { ImportReceipt } from "./contracts";
 import { canReadRegistrant } from "./domain";
 import { registrantKey, useCandidates, useRegistrant } from "./queries";
@@ -53,6 +57,7 @@ function RegistrantSession({
   });
   const registrantId = anchor.data?.ldaRegistrantId ?? null;
   const selected = selection.registrantId === registrantId ? selection.ids : [];
+  const capacity = useProfileCapacity(permitted, Math.max(1, selected.length));
   const candidates = useCandidates(registrantId, readable && !searching);
   const canSubmit =
     permitted &&
@@ -60,7 +65,8 @@ function RegistrantSession({
     !candidates.isFetching &&
     !candidates.error &&
     !anchor.isFetching &&
-    !anchor.error;
+    !anchor.error &&
+    capacity.allowed;
   const attempt = useImportAttempt({
     canSubmit,
     readable,
@@ -176,6 +182,7 @@ function RegistrantSession({
             />
           ) : (
             <>
+              {permitted && <ProfileCapacityStatus capacity={capacity} />}
               <QueryState
                 pending={candidates.isFetching}
                 error={candidates.error}
@@ -188,7 +195,15 @@ function RegistrantSession({
                 <CandidateReview
                   data={candidates.data}
                   selected={selected}
-                  disabled={busy || !canSubmit}
+                  disabled={
+                    busy ||
+                    !permitted ||
+                    !candidates.isSuccess ||
+                    candidates.isFetching ||
+                    Boolean(candidates.error) ||
+                    anchor.isFetching ||
+                    Boolean(anchor.error)
+                  }
                   onToggle={(id) =>
                     setSelection({
                       registrantId,
