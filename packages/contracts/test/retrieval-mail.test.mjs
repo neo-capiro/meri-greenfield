@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { canonicalSha256 } from '../validate.mjs';
-import { assertMailThreadInput, assertMailThreadSourcePage, assertCatalog, assertSkillManifest, assertEvidence, validateShape } from '../retrieval-0.2/validate.mjs';
+import { assertMailThreadInput, assertMailThreadSourcePage, assertMailListInput, assertMailSearchInput, assertMailCandidateSourcePage, assertCatalog, assertSkillManifest, assertEvidence, validateShape } from '../retrieval-0.2/validate.mjs';
 
 // Literal synthetic DATA only. No handlers, actual identities or source access.
 const uuid = '11111111-1111-4111-8111-111111111111';
@@ -128,13 +128,13 @@ test('transport refuses absence, evidence-ready, complete enumeration and cursor
 test('empty stored thread page never certifies absence',()=>{
   const p=page();p.messages=[];p.totalMessages=0;p.coverage.returnedCount=0;p.coverage.enumerableTotal=0;p.continuation.requiredReads=[];assertMailThreadSourcePage(p,input());assert.equal(p.negativeAssertion.kind,'none');assert.equal(p.evidenceReady,false);
 });
-test('concrete catalog preserves every ledger ID/boundary and only one unavailable mapping',()=>{
+test('concrete catalog preserves every ledger ID/boundary and only three unavailable mappings',()=>{
   const c=catalog();assertCatalog(c);
   const ledger=JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json',import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary})=>({id,disposition,boundary})),ledger.records.map(r=>({id:r.fields.ID,disposition:r.acceptedScope.disposition,boundary:r.acceptedScope.boundary})));
   assert.equal(c.originals.length,139);assert.equal(c.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(c.originals.filter(r=>r.disposition==='deferred').length,43);
-  assert.equal(c.operations.length,1);assert.equal(c.originals.filter(r=>r.state==='mapped').length,1);
-  assert.equal(c.originals.find(r=>r.state==='mapped').id,'get_email_thread');
+  assert.equal(c.operations.length,3);assert.equal(c.originals.filter(r=>r.state==='mapped').length,3);
+  assert.deepEqual(c.originals.filter(r=>r.state==='mapped').map(r=>r.id),['list_emails','search_emails','get_email_thread']);
   assert.equal(c.operations[0].availability,'unimplemented');assert.equal(c.operations[0].qualification,'pending');assert.equal(c.operations[0].handler,null);
 });
 test('mail descriptor raw-byte schema pins and exact definition IDs cannot drift',()=>{
@@ -159,4 +159,103 @@ test('mailbox identity and authoritative body lineage cannot be substituted',()=
   const r=page();r.snapshotVersionId='snapshot-a';r.sources[0].snapshotVersionId='snapshot-b';assert.throws(()=>assertMailThreadSourcePage(r,input()),/snapshot lineage/);
   const s=page();const other={...structuredClone(s.messages[0]),messageId:uuid,mailboxId:messageId,readHandle:'second'};
   s.messages.push(other);s.totalMessages=2;s.coverage.enumerableTotal=2;s.coverage.returnedCount=2;s.continuation.requiredReads.push('second');assert.throws(()=>assertMailThreadSourcePage(s,input()),/another mailbox/);
+});
+
+const clock = {nowMs:Date.parse('2026-01-02T00:00:00Z')};
+const listInput = () => ({subject:{kind:'personal'}});
+function candidatePage(request=listInput(),operation='mail.list_messages') {
+  const selection=(operation==='mail.list_messages'?assertMailListInput:assertMailSearchInput)(request,clock);
+  const p=page();
+  for(const k of ['totalMessages','hasMoreMessages','nextMessageOffset','nextBodyOffsets'])delete p[k];
+  p.kind='mail-candidate-source-page';p.operation.id=operation;p.selection=selection;p.argumentsSha256=canonicalSha256(selection);
+  p.filterSha256=canonicalSha256({...selection,offset:0,asOf:null});p.order='effectiveAt-desc-nullslast_messageId-desc';
+  p.queryScope={asOfInclusive:selection.asOf??'2026-01-01T00:00:00Z',storedCreatedAtEndInclusive:selection.asOf??'2026-01-01T00:00:00Z',effectiveStartInclusive:null,missingEffectiveDates:'included'};
+  p.messages=[{sourceId:'mail',mailboxId,threadId:uuid,messageId,recordVersionId:null,citationId:null,scopes:[scope()],removed:false,connectionStatus:'disconnected',readHandle:'opaque-read',internetMessageId:'<synthetic@example.invalid>',clientId:null,receivedAt:'2026-01-01T00:00:00Z',sentAt:null,createdAt:'2026-01-01T00:00:00Z',effectiveAt:'2026-01-01T00:00:00Z',subjectText:'synthetic',preview:{kind:'incomplete-preview',text:'preview',fullSizeKnown:false},from:{email:null,name:null},to:[],cc:[],toTruncated:false,ccTruncated:false}];
+  p.totalMatches=1;p.hasMore=false;p.nextOffset=null;
+  p.threadGroups=operation==='mail.list_messages'?[{mailboxId,threadId:uuid,messageIds:[messageId]}]:null;p.returnedThreadGroupCount=operation==='mail.list_messages'?1:null;
+  return p;
+}
+test('list/search defaults are strict inert normalized DATA with no clock invention',()=>{
+  const i=listInput(),snapshot=structuredClone(i);assert.deepEqual(assertMailListInput(i),{subject:{kind:'personal'},folder:'all',withinDays:null,limit:15,offset:0,asOf:null});assert.deepEqual(i,snapshot);
+  const s=assertMailSearchInput({...i,folder:'inbox'});assert.equal(s.limit,20);assert.equal(s.query,'');
+  assert.throws(()=>assertMailSearchInput(i),/filter/);
+  for(const patch of [{limit:null},{limit:'15'},{offset:true},{withinDays:0},{withinDays:3651},{offset:10001},{folder:'Inbox'},{query:'x'},{asOf:null},{actorId:'foreign'}])assert.throws(()=>assertMailListInput({...i,...patch}));
+  for(const patch of [{query:null},{query:'x'.repeat(201)},{query:'😀'.repeat(101)},{participant:1}])assert.throws(()=>assertMailSearchInput({...i,folder:'inbox',...patch}));
+  for(const patch of [{limit:1},{limit:50},{withinDays:3650}])assertMailListInput({...i,...patch});
+  for(const patch of [{limit:0},{limit:51},{offset:-1},{withinDays:1.5}])assert.throws(()=>assertMailListInput({...i,...patch}));
+});
+test('search literal terms remain distinct AND filters and keyword-free scoped search is valid',()=>{
+  const i={...listInput(),query:'  %_\\literal  ',from:'sender',participant:'person'};
+  const s=assertMailSearchInput(i);assert.equal(s.query,'%_\\literal');assert.equal(s.from,'sender');assert.equal(s.participant,'person');assert.equal(i.query,'  %_\\literal  ');
+  assertMailSearchInput({...listInput(),withinDays:1});assertMailSearchInput({...listInput(),folder:'sent'});
+  assert.throws(()=>assertMailSearchInput({...listInput(),query:'   '}));
+});
+test('list/search getters hidden fields null and nonfinite values are refused without effects',()=>{
+  let n=0;const i=listInput();Object.defineProperty(i,'limit',{enumerable:true,get(){n++;return 15;}});assert.throws(()=>assertMailListInput(i),/accessor/);assert.equal(n,0);
+  const hidden=listInput();Object.defineProperty(hidden,'secret',{value:'x'});assert.throws(()=>assertMailListInput(hidden),/hidden/);
+  for(const value of [null,[],{...listInput(),offset:Infinity},{...listInput(),offset:NaN}])assert.throws(()=>assertMailListInput(value));
+});
+test('candidate query inclusive anchor is separate from exclusive requester window',()=>{
+  const request={...listInput(),withinDays:1,asOf:'2026-01-01T00:00:00Z'},p=candidatePage(request);
+  p.queryScope.effectiveStartInclusive='2025-12-31T00:00:00Z';p.queryScope.missingEffectiveDates='excluded';
+  p.window={basis:'explicit',timezone:'UTC',startInclusive:'2025-12-31T00:00:00Z',endExclusive:'2026-01-01T00:00:00Z',weekStartsOn:null};
+  assertMailCandidateSourcePage(p,request,'mail.list_messages',clock);
+  const q=structuredClone(p);q.messages[0].effectiveAt=q.messages[0].receivedAt='2025-12-31T00:00:00Z';assertMailCandidateSourcePage(q,request,'mail.list_messages',clock);
+  for(const edit of [q=>q.queryScope.asOfInclusive='2026-01-01T00:00:00.001Z',q=>q.queryScope.effectiveStartInclusive='2025-12-31T00:00:00.001Z',q=>q.messages[0].effectiveAt=q.messages[0].receivedAt=null]){const q=structuredClone(p);edit(q);assert.throws(()=>assertMailCandidateSourcePage(q,request,'mail.list_messages',clock));}
+  assert.throws(()=>assertMailListInput({...listInput(),asOf:'2026-01-02T00:00:01.001Z'},clock),/clock/);
+  assert.throws(()=>assertMailListInput({...listInput(),asOf:'2026-01-01T00:00:00Z'}),/nowMs/);
+});
+test('message totals and page-only groups differ; exhausted preview never proves absence',()=>{
+  const p=candidatePage();p.messages.push({...structuredClone(p.messages[0]),messageId:uuid,internetMessageId:'<second>',readHandle:'second'});p.totalMatches=2;p.coverage.enumerableTotal=2;p.coverage.returnedCount=2;p.continuation.requiredReads.push('second');p.threadGroups[0].messageIds.push(uuid);
+  assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock);assert.equal(p.returnedThreadGroupCount,1);assert.equal(p.totalMatches,2);
+  assert.throws(()=>assertEvidence(p));
+  for(const edit of [q=>q.returnedThreadGroupCount=2,q=>q.threadGroups[0].messageIds.reverse(),q=>q.evidenceReady=true,q=>q.coverage.enumeration='complete',q=>q.negativeAssertion={kind:'absence'}]){const q=structuredClone(p);edit(q);assert.throws(()=>assertMailCandidateSourcePage(q,listInput(),'mail.list_messages',clock));}
+});
+test('continuation binds retained anchor filters actor window and message offset',()=>{
+  const request={...listInput(),limit:1},prior=candidatePage(request);prior.totalMatches=2;prior.coverage.enumerableTotal=2;prior.hasMore=true;prior.nextOffset=1;prior.coverage.truncated=true;
+  assertMailCandidateSourcePage(prior,request,'mail.list_messages',clock);
+  const nextRequest={...request,offset:1,asOf:'2026-01-01T00:00:00Z'},p=candidatePage(nextRequest);p.totalMatches=2;p.coverage.enumerableTotal=2;
+  assertMailCandidateSourcePage(p,nextRequest,'mail.list_messages',{...clock,previousPage:prior});
+  assert.throws(()=>assertMailCandidateSourcePage(p,nextRequest,'mail.list_messages',clock));
+  for(const edit of [q=>q.queryScope.asOfInclusive='2026-01-01T00:00:00.001Z',q=>q.filterSha256='a'.repeat(64),q=>q.binding.writerFence=2,q=>q.nextOffset=2,q=>q.argumentsSha256='a'.repeat(64)]){const q=structuredClone(prior);edit(q);assert.throws(()=>assertMailCandidateSourcePage(p,nextRequest,'mail.list_messages',{...clock,previousPage:q}));}
+  assert.throws(()=>assertMailListInput({...request,offset:1}),/asOf/);
+});
+test('dedup is mailbox-specific; order nulls-last and immutable versions are conservative',()=>{
+  const p=candidatePage();p.messages.push({...structuredClone(p.messages[0]),messageId:uuid,readHandle:'other'});p.totalMatches=2;p.coverage.enumerableTotal=2;p.coverage.returnedCount=2;p.continuation.requiredReads.push('other');p.threadGroups[0].messageIds.push(uuid);
+  assert.throws(()=>assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock),/deduplication/);
+  p.messages[1].internetMessageId='<different>';p.messages[0].effectiveAt=p.messages[0].receivedAt=null;assert.throws(()=>assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock),/order/);
+  const q=candidatePage();q.messages[0].recordVersionId='proof-format-1';assert.throws(()=>assertMailCandidateSourcePage(q,listInput(),'mail.list_messages',clock));
+  const r=candidatePage();r.snapshotVersionId='asOf-is-not-snapshot';assert.throws(()=>assertMailCandidateSourcePage(r,listInput(),'mail.list_messages',clock));
+});
+test('authorization source and mailbox scopes are independent of connection state',()=>{
+  for(const status of ['connected','disconnected','error','revoked']){const p=candidatePage();p.messages[0].connectionStatus=status;assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock);}
+  for(const edit of [p=>{p.sources[0].status='denied';p.coverage.sourcesChecked=[];p.coverage.sourcesUnavailable=['mail'];},p=>p.messages[0].mailboxId=messageId,p=>p.messages[0].scopes[0].policyRevision='foreign',p=>p.messages[0].removed=true,p=>p.continuation.requiredReads=[]]){const p=candidatePage();edit(p);assert.throws(()=>assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock));}
+});
+test('preview has no body offsets size guarantee or recipient completeness upgrade',()=>{
+  for(const text of [null,'','😀']){const p=candidatePage();p.messages[0].preview.text=text;assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock);}
+  for(const edit of [p=>p.messages[0].preview.fullSizeKnown=true,p=>p.messages[0].preview.bodyOffset=0,p=>p.messages[0].preview.text='😀'.repeat(20000),p=>p.messages[0].to=Array.from({length:9},()=>({email:null,name:null}))]){const p=candidatePage();edit(p);assert.throws(()=>assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock));}
+});
+test('search page operation groups counts filters and all pending descriptor pins are closed',()=>{
+  const request={...listInput(),query:'synthetic'},p=candidatePage(request,'mail.search_messages');assertMailCandidateSourcePage(p,request,'mail.search_messages',clock);
+  for(const edit of [p=>p.operation.id='mail.list_messages',p=>p.threadGroups=[],p=>p.argumentsSha256='a'.repeat(64),p=>p.totalMatches=3]){const q=structuredClone(p);edit(q);assert.throws(()=>assertMailCandidateSourcePage(q,request,'mail.search_messages',clock));}
+  const c=catalog();for(const op of c.operations){assert.equal(op.handler,null);assert.equal(op.retry.maxRetries,0);assert.equal(op.availability,'unimplemented');const q=catalog();q.operations.find(r=>r.operation.id===op.operation.id).inputSchema.sha256='b'.repeat(64);assert.throws(()=>assertCatalog(q),/byte pin/);}
+});
+test('cross-mailbox identical internet IDs stay distinct stored candidates',()=>{
+  const p=candidatePage(),other={...scope(),resourceId:messageId};p.subject.scopes.push(other);
+  p.messages.push({...structuredClone(p.messages[0]),mailboxId:messageId,scopes:[structuredClone(other)],messageId:uuid,readHandle:'other-mailbox'});
+  p.totalMatches=2;p.coverage.enumerableTotal=2;p.coverage.returnedCount=2;p.continuation.requiredReads.push('other-mailbox');p.threadGroups.push({mailboxId:messageId,threadId:uuid,messageIds:[uuid]});p.returnedThreadGroupCount=2;
+  assertMailCandidateSourcePage(p,listInput(),'mail.list_messages',clock);
+  const client='client-synthetic',request={subject:{kind:'client',entityId:client}},q=candidatePage(request);q.subject.kind='client';q.subject.entityType='client';q.subject.entityIds=[client];q.messages[0].clientId=client;
+  assertMailCandidateSourcePage(q,request,'mail.list_messages',clock);q.messages[0].clientId='foreign';assert.throws(()=>assertMailCandidateSourcePage(q,request,'mail.list_messages',clock),/client selection/);
+});
+test('offset ceiling keeps hasMore true with null nextOffset and no completeness',()=>{
+  const priorRequest={...listInput(),limit:1,offset:9999,asOf:'2026-01-01T00:00:00Z'},prior=candidatePage(priorRequest);prior.totalMatches=10002;prior.coverage.enumerableTotal=10002;prior.hasMore=true;prior.nextOffset=10000;prior.coverage.truncated=true;
+  const request={...priorRequest,offset:10000},p=candidatePage(request);p.totalMatches=10002;p.coverage.enumerableTotal=10002;p.hasMore=true;p.nextOffset=null;p.coverage.truncated=true;
+  assertMailCandidateSourcePage(p,request,'mail.list_messages',{...clock,previousPage:prior});
+  for(const edit of [q=>q.totalMatches=10000,q=>q.coverage.truncated=false,q=>q.queryScope.storedCreatedAtEndInclusive='2026-01-01T00:00:00.001Z',q=>q.selection.asOf='2025-12-31T00:00:00Z']){const q=structuredClone(prior);edit(q);assert.throws(()=>assertMailCandidateSourcePage(p,request,'mail.list_messages',{...clock,previousPage:q}));}
+});
+test('empty search and unknown stored totals cannot become complete or absent',()=>{
+  const request={...listInput(),folder:'inbox'},p=candidatePage(request,'mail.search_messages');p.messages=[];p.totalMatches=0;p.hasMore=false;p.nextOffset=null;p.coverage.returnedCount=0;p.coverage.enumerableTotal=0;p.continuation.requiredReads=[];
+  assertMailCandidateSourcePage(p,request,'mail.search_messages',clock);assert.equal(p.evidenceReady,false);assert.equal(p.negativeAssertion.kind,'none');assert.throws(()=>assertEvidence(p));
+  const q=candidatePage();q.totalMatches=null;q.hasMore=null;q.coverage.enumerableTotal=null;assertMailCandidateSourcePage(q,listInput(),'mail.list_messages',clock);q.hasMore=false;assert.throws(()=>assertMailCandidateSourcePage(q,listInput(),'mail.list_messages',clock),/Unknown stored total/);
 });

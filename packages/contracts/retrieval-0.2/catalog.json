@@ -568,15 +568,21 @@
       "id": "list_emails",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "mail.list_messages",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_emails",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "mail.search_messages",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_email_thread",
@@ -1011,11 +1017,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadInput",
-        "sha256": "c19fd81822abe3300e640fa351aae7c179f4a33cb179d3f9bfb9ae4ad72c9d42"
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailThreadSourcePage",
-        "sha256": "c19fd81822abe3300e640fa351aae7c179f4a33cb179d3f9bfb9ae4ad72c9d42"
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
       },
       "aliases": [
         "get_email_thread"
@@ -1046,6 +1052,138 @@
       ],
       "fixtureIds": [
         "mail.thread.transport"
+      ]
+    },
+    {
+      "operation": {
+        "id": "mail.list_messages",
+        "version": "0.2.0"
+      },
+      "displayName": "List stored mail message candidates",
+      "whenToUse": "Prepare incomplete stored message candidates under current trusted mailbox and client authorization.",
+      "limitations": [
+        "Pending/null handler; no source or skill enabled.",
+        "Inclusive query anchor is separate from exclusive requester window.",
+        "Preview only; deduplicated stored totals/page groups do not establish completeness or absence.",
+        "Unknown snapshots and immutable versions remain null; connection status does not authenticate stored access."
+      ],
+      "positiveExamples": [
+        "Find stored message candidates requiring decisive authorized reads."
+      ],
+      "negativeExamples": [
+        "Prove absence from exhausted previews.",
+        "Send email or bypass current authorization."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "mail",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailListInput",
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+      },
+      "aliases": [
+        "list_emails"
+      ],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-05"
+      ],
+      "fixtureIds": [
+        "mail.list.candidates"
+      ]
+    },
+    {
+      "operation": {
+        "id": "mail.search_messages",
+        "version": "0.2.0"
+      },
+      "displayName": "Search stored mail message candidates",
+      "whenToUse": "Prepare incomplete stored message candidates under current trusted mailbox and client authorization.",
+      "limitations": [
+        "Pending/null handler; no source or skill enabled.",
+        "Inclusive query anchor is separate from exclusive requester window.",
+        "Preview only; deduplicated stored totals/page groups do not establish completeness or absence.",
+        "Unknown snapshots and immutable versions remain null; connection status does not authenticate stored access."
+      ],
+      "positiveExamples": [
+        "Find stored message candidates requiring decisive authorized reads."
+      ],
+      "negativeExamples": [
+        "Prove absence from exhausted previews.",
+        "Send email or bypass current authorization."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "mail",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailSearchInput",
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:mail:0.2.0#/$defs/MailCandidateSourcePage",
+        "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+      },
+      "aliases": [
+        "search_emails"
+      ],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-05"
+      ],
+      "fixtureIds": [
+        "mail.search.candidates"
       ]
     }
   ]
