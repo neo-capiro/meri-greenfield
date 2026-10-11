@@ -26,7 +26,16 @@ CodeBuild job `322ee417-3874-4c38-85a6-948f2c90ff45` SUCCEEDED: 728 unit,
 The immutable digest is
 `sha256:9d9dfee999cb8586cf8e5cc0b74875f1152cfd2f390256b1cb4baab55a4970c3`.
 The completed scan again reports one HIGH `CVE-2026-85091` zlib finding.
-Security disposition and merged-source release gates remain before ECS.
+That Debian image remains ineligible for ECS. Runtime source
+`a1a1c09016f4c778b2c39dc4b0cfbb3f139a465d` instead pins the
+Node 24.21.0 Alpine 3.23 image and upgrades zlib to vendor-fixed `1.3.2-r1`.
+Its exact-source CodeBuild job
+`capiro-portfolio-preview-build:288c6d1d-30d3-4ff7-8378-7d76c1117b91`
+SUCCEEDED with 728 unit and 459 browser tests, production and Linux image
+builds, non-root container smoke, push and digest read-back. ECR digest
+`sha256:7c1b10100a566fb6ce179ec480ea73e833e2c71c8af64db11439b3099f55e4aa`
+has scan status COMPLETE and zero findings. The merged-source release and
+reviewed service-change gates remain before ECS.
 
 ## Existing foundation
 
@@ -52,7 +61,9 @@ Security disposition and merged-source release gates remain before ECS.
 3. Confirm the designated production Clerk publishable/secret key references
    match each other and backend issuer/JWT trust. Pass their Secrets Manager ARNs
    and protecting KMS key ARN as parameters; never put values in the template,
-   command line, image or Git. Confirm the Bill Tracker backend owner.
+   command line, image or Git. The owner selected the Intelligence service for
+   Bill Tracker on 11 October 2026. Pass `TrackerBackend=intelligence` explicitly
+   when creating the service change set; the template has no backend default.
    Read-only metadata shows the existing `web-vnext` and core API reference a
    matching `live` pair under one KMS key; preview-origin and signed-in behavior
    still require actual validation.

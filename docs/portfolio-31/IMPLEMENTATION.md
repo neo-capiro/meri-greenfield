@@ -88,6 +88,9 @@ invalidation, error retention, owner membership and explicit conversion boundari
 mutation adapters, table/board presentation and dialogs. Reuse shell, dialogs,
 cache, HTTP and configured existing Bill 360 destination. Add explicit validated
 `TRACKER_BACKEND=core|intelligence`; neither backend is a fallback for the other.
+The owner selected `intelligence` for the Portfolio preview on 11 October 2026.
+The service change set must pass that value explicitly and signed-in acceptance
+must exercise the Intelligence board, search and watchlist contracts.
 Core paths include `/api/intelligence`, intelligence paths use `/intel-api`.
 Normalize their different board/card and untrack contracts at the adapter.
 Keep service-owned stages and probabilities intact; no browser passage model.
@@ -395,7 +398,21 @@ Source `8a41286` corrected the URL. Full CodeBuild job
 459 browser cases, production and Linux builds, container smoke and ECR digest
 read-back `sha256:9d9dfee999cb8586cf8e5cc0b74875f1152cfd2f390256b1cb4baab55a4970c3`.
 Its completed scan again reports one HIGH `CVE-2026-85091` zlib finding.
-No image is admitted for ECS while that finding lacks a disposition.
+At that checkpoint, no image was admitted for ECS while that finding lacked a
+disposition.
+
+The Debian image remains ineligible. Source
+`a1a1c09016f4c778b2c39dc4b0cfbb3f139a465d` switches the isolated
+preview runtime to pinned Node 24.21.0 Alpine 3.23 with vendor-fixed zlib
+`1.3.2-r1`. CodeBuild
+`capiro-portfolio-preview-build:288c6d1d-30d3-4ff7-8378-7d76c1117b91`
+SUCCEEDED on exact source/S3 version with 728 unit and 459 browser cases,
+static checks, Next and Linux builds, non-root container smoke, push and ECR
+digest read-back. Digest
+`sha256:7c1b10100a566fb6ce179ec480ea73e833e2c71c8af64db11439b3099f55e4aa`
+scanned COMPLETE with zero findings. This clears the image-scan gate; it does
+not merge the draft PR or activate the preview service, Clerk subdomain or
+traffic DNS.
 
 ## Client lifecycle integration outline — 11 October 2026
 
