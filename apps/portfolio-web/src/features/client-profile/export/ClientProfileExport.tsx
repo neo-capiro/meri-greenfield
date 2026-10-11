@@ -118,8 +118,7 @@ function ExportSession({
       <div className="stack">
         <p className="muted">
           The snapshot includes sensitive client information available to your
-          account. Source values and attribution are preserved; this is not a
-          PDF report.
+          account. Source values and attribution are preserved in the JSON.
         </p>
         {!allowed && (
           <p className="status">

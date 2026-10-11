@@ -68,9 +68,7 @@ export async function addFocusTag(
       "Saved focus tags have an unsupported format. No changes were sent.",
     );
   if (
-    focusTags(intake).some(
-      (value) => value.toLocaleLowerCase() === tag.toLocaleLowerCase(),
-    )
+    focusTags(intake).some((value) => value.toLowerCase() === tag.toLowerCase())
   )
     throw new ApiError(409, "This focus tag is already saved.");
   const tags = [...existing.data, tag];
