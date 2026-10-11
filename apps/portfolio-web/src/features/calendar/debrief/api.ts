@@ -14,6 +14,7 @@ export function generateDebrief(
   meetingId: string,
   sourceText: string,
   signal?: AbortSignal,
+  method: "upload" | "manual" | "voice" = "upload",
 ) {
   if (!sourceText.trim())
     throw new ApiError(422, "Review a nonempty source before generating.");
@@ -29,7 +30,7 @@ export function generateDebrief(
         ),
       "The service returned an empty draft",
     ),
-    { method: "POST", body: { method: "upload", sourceText }, signal },
+    { method: "POST", body: { method, sourceText }, signal },
   );
 }
 export function debriefBody(draft: z.infer<typeof debriefDraftSchema>) {

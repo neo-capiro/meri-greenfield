@@ -32,4 +32,6 @@ First browser qualification8PASS/1FAIL and second9PASS/1FAIL are preserved separ
 
 ## Final focused checks
 
+Root visual review found top144px still partially covered the Overview Notes icon. Root moved the client-only desktop toast to200px, below both client and Overview action rows. The regression now checks the full Notes and Quick add bounding boxes and uses ordinary pointer interaction. Earlier144px screenshots/results remain preserved as intermediate evidence; they are not the final placement. Mobile placement and the toast's approved visual treatment remain unchanged.
+
 Explicit bundled Node24.19.0: **16/16 unit PASS**, **10/10 browser PASS**, TypeScript/scoped ESLint/Prettier/architecture **exit0**, architecture324modules. Browser uses actual root-composed QuickLog in ClientFrame and actual saved-history component in the canonical test-only route; synthetic interception does not establish live backend acceptance. No real submission/activity deletion, provider writes, upload, migrations, deployment or full build. Root owns combined qualification and product placement decision. Final screenshots: remove-desktop-error.png, quick-log-desktop.png, remove-mobile-dark.png. Original audit CORE128/129 rows remain separate from implementation state in output JSON/CSV.

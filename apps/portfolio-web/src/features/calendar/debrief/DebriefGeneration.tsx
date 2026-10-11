@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { ApiError } from "@/shared/api/http";
@@ -7,20 +7,31 @@ import { canAdminister, useIdentity } from "@/shared/auth/identity";
 import { Dialog } from "@/shared/ui/Dialog";
 import { QueryState } from "@/shared/ui/QueryState";
 import type { Meeting } from "../contracts";
-import {
-  MeetingTranscriptUpload,
-  type ExtractedMeetingSource,
-} from "../library/public";
+import { MeetingTranscriptUpload } from "../library/public";
 import { usePreparationCapabilities, useDispatchGuard } from "../access/public";
 import { debriefBody, generateDebrief } from "./api";
-
-export function DebriefGeneration({
-  meeting,
-  onDraft,
-}: {
+import { ManualDebriefSource } from "./ManualDebriefSource";
+type ReviewedDebriefSource = { text: string; method: "manual" | "upload" };
+type DebriefGenerationProps = {
   meeting: Meeting;
   onDraft: (body: string) => void;
-}) {
+};
+
+export function DebriefGeneration(props: DebriefGenerationProps) {
+  const identity = useIdentity();
+  // Written source and pending generation belong to one meeting and actor.
+  return (
+    <SessionDebriefGeneration
+      key={`${props.meeting.id}:${identity.data?.tenant?.id}:${identity.data?.user.id}`}
+      {...props}
+    />
+  );
+}
+
+function SessionDebriefGeneration({
+  meeting,
+  onDraft,
+}: DebriefGenerationProps) {
   const api = useApi();
   const identity = useIdentity();
   const capabilities = usePreparationCapabilities();
@@ -30,13 +41,15 @@ export function DebriefGeneration({
     true,
   );
   const [uploading, setUploading] = useState(false);
-  const [source, setSource] = useState<ExtractedMeetingSource>();
+  const [manual, setManual] = useState(false);
+  const [source, setSource] = useState<ReviewedDebriefSource>();
   const busy = useRef(false);
   const lifetime = useRef<AbortController | undefined>(undefined);
-  useEffect(() => {
-    lifetime.current = new AbortController();
-    return () => lifetime.current?.abort();
-  }, []);
+  useLayoutEffect(() => {
+    const controller = new AbortController();
+    lifetime.current = controller;
+    return () => controller.abort();
+  }, [meeting.id, identity.data?.user.id, identity.data?.tenant?.id]);
   const allowed = Boolean(
     identity.data?.user.id &&
     identity.data.tenant?.id &&
@@ -52,7 +65,7 @@ export function DebriefGeneration({
   );
   const mutation = useMutation({
     retry: false,
-    mutationFn: async (reviewed: ExtractedMeetingSource) => {
+    mutationFn: async (reviewed: ReviewedDebriefSource) => {
       const scope = lifetime.current;
       if (!allowed || !scope || scope.signal.aborted)
         throw new ApiError(
@@ -65,14 +78,15 @@ export function DebriefGeneration({
         meeting.id,
         reviewed.text,
         scope.signal,
+        reviewed.method,
       );
       if (scope.signal.aborted)
         throw new ApiError(409, "This meeting session is no longer active.");
       guard();
-      return draft;
+      return { draft, scope };
     },
-    onSuccess: (draft) => {
-      if (lifetime.current?.signal.aborted) return;
+    onSuccess: ({ draft, scope }) => {
+      if (scope.signal.aborted || lifetime.current !== scope) return;
       setSource(undefined);
       onDraft(debriefBody(draft));
     },
@@ -80,11 +94,12 @@ export function DebriefGeneration({
       busy.current = false;
     },
   });
-  function generate(reviewed: ExtractedMeetingSource) {
-    if (busy.current || !allowed) return;
+  function generate(reviewed: ReviewedDebriefSource) {
+    if (busy.current || !allowed) return false;
     busy.current = true;
     setSource(reviewed);
     mutation.mutate(reviewed);
+    return true;
   }
   return (
     <>
@@ -95,6 +110,19 @@ export function DebriefGeneration({
       >
         Transcript and attachments
       </button>
+      <button
+        className="button"
+        disabled={!allowed || mutation.isPending}
+        onClick={() => setManual(true)}
+      >
+        Type Notes Manually
+      </button>
+      <ManualDebriefSource
+        open={manual}
+        onOpenChange={setManual}
+        allowed={allowed && !mutation.isPending}
+        onGenerate={(text) => generate({ text, method: "manual" })}
+      />
       <QueryState
         error={capabilities.error ?? identity.error}
         retry={() =>
@@ -112,7 +140,7 @@ export function DebriefGeneration({
         meeting={meeting}
         open={uploading}
         onOpenChange={setUploading}
-        onExtracted={generate}
+        onExtracted={(reviewed) => generate({ ...reviewed, method: "upload" })}
       />
       <Dialog
         open={Boolean(source)}
@@ -129,7 +157,7 @@ export function DebriefGeneration({
         {mutation.error && (
           <>
             <p>
-              Your extracted source is retained. A failed response may follow a
+              Your reviewed source is retained. A failed response may follow a
               completed generation; generating again starts another request.
             </p>
             <button

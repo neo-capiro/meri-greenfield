@@ -176,8 +176,13 @@ test("an unknown second create cannot leave the prior entry Undo visible", async
   const actionBox = await quickAdd.boundingBox();
   const toastBox = await toast.boundingBox();
   expect(actionBox).not.toBeNull();
-  expect(toastBox?.y).toBe(144);
+  expect(toastBox?.y).toBe(200);
   expect(toastBox!.y).toBeGreaterThanOrEqual(actionBox!.y + actionBox!.height);
+  const notesBox = await page
+    .getByRole("button", { name: "Notes", exact: true })
+    .boundingBox();
+  expect(notesBox).not.toBeNull();
+  expect(toastBox!.y).toBeGreaterThanOrEqual(notesBox!.y + notesBox!.height);
   await quickAdd.click();
   await page
     .getByRole("menuitem", { name: "Log activity", exact: true })
