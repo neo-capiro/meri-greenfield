@@ -3,13 +3,19 @@ import Link from "next/link";
 import { useState } from "react";
 import { QueryState } from "@/shared/ui/QueryState";
 import { useActivity } from "./queries";
+import { ActivityFilters } from "./ActivityFilters";
+import {
+  emptyActivityFilters,
+  filterActivity,
+  activityRangeError,
+} from "./activity-filters";
 import styles from "./overview.module.css";
 export function ActivityTimeline({ clientId }: { clientId: string }) {
   const activity = useActivity(clientId);
-  const [kind, setKind] = useState("");
-  const rows = (activity.data ?? []).filter(
-    (item) => !kind || item.kind === kind,
-  );
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [filters, setFilters] = useState({ ...emptyActivityFilters });
+  const rangeError = activityRangeError(filters);
+  const rows = filterActivity(activity.data ?? [], filters, zone);
   return (
     <section className="card stack" aria-label="Activity timeline">
       <header className="row between">
@@ -17,23 +23,21 @@ export function ActivityTimeline({ clientId }: { clientId: string }) {
           <p className="eyebrow">Relationship history</p>
           <h2>Activity timeline</h2>
         </div>
-        <select
-          aria-label="Activity type"
-          value={kind}
-          onChange={(e) => setKind(e.target.value)}
-        >
-          <option value="">All activity</option>
-          {[...new Set((activity.data ?? []).map((i) => i.kind))].map((k) => (
-            <option key={k}>{k}</option>
-          ))}
-        </select>
       </header>
+      <ActivityFilters
+        value={filters}
+        onChange={setFilters}
+        zone={zone}
+        kinds={[...new Set((activity.data ?? []).map((i) => i.kind))]}
+      />
+      {rangeError && <p role="alert">{rangeError}</p>}
       <QueryState
         pending={activity.isPending}
         error={activity.error}
         retry={() => void activity.refetch()}
       />
       {activity.data &&
+        !rangeError &&
         (rows.length ? (
           <ol className={styles.timeline}>
             {rows.map((item) => (

@@ -44,7 +44,7 @@ prove live authentication, tenant access, provider writes or deployed behavior.
 | MERI_API_BASE_URL                                           | Reserved; no alternate Meri implementation                                                                            |
 | CAPIRO_EXISTING_APP_URL                                     | Existing Workspace/Strategies/meeting preparation deep links                                                          |
 | CAPIRO_MERI_URL / CAPIRO_MODULES_URL / CAPIRO_WORKSPACE_URL | Existing shell destinations; unavailable actions stay visibly disabled                                                |
-| NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY        | Existing designated Clerk test application; matching test/live environments required                                  |
+| NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY        | Existing designated Clerk application; matching key pair and backend trust required                                   |
 
 Origins include the deployed prefix, for example `https://test.example/api`.
 Browser requests go through `/api/backend/<service>/...`; the server obtains the
@@ -53,12 +53,14 @@ Configuration rejects URL credentials, query/fragment and non-loopback HTTP.
 
 ## Preview hosting dependency
 
-No hosted preview exists. A separate target, hostname and its Clerk test origin
+No hosted preview exists. A separate target, hostname and its approved Clerk origin
 must be allocated by the hosting/auth owner. Do not point shared routing at this
 app or reuse Meri qualification resources. The reproducible build and runtime
 commands above are ready for that isolated target; its server environment must
-map each service explicitly. Backend origins and the designated test identity
-remain pending from the human. No shared backend change or migration is applied.
+map each service explicitly. The human designated capiro-internal and neo@capiro.ai;
+live core reads verify https://os.capiro.ai/api. The production Clerk application
+rejects localhost; development keys or an approved preview origin are required
+for signed-in browser acceptance. No shared backend change or migration is applied.
 
 ## Structure and verification
 
@@ -68,14 +70,25 @@ HTTP/session boundary, query cache, shell, CSS tokens and Radix primitives.
 Schedule-X supplies calendar grids and React Flow supplies the organization
 chart. Workspace items open the existing editor.
 
-Current local evidence: 61 unit checks, 21 synthetic browser checks, TypeScript,
+Current local evidence: 67 unit checks, 24 synthetic browser checks, TypeScript,
 architecture and production build pass. ESLint passes with one static SVG image
 warning. Representative screens were reviewed against current Figma, including
 desktop and phone dark captures; full workflow/visual acceptance remains open.
 The actual Next production server also passes setup/deep-link/fail-closed proxy
 checks without configured credentials. These checks do not establish live
-authentication or backend acceptance. The previous dependency audit found zero
+authentication or mutation acceptance. Nine authorized core read projections
+passed against capiro-internal. Structured meeting preparation was corrected
+from live evidence; native Clerk initialization failure now has a retry screen.
+The previous dependency audit found zero
 production advisories; ESLint's development-only braces advisory remains open.
+
+The local preview now uses existing Capiro development keys saved outside Git.
+Its real sign-in form loads, and an unauthenticated core proxy call returns 401.
+That development instance lacks capiro-internal membership and the capiro JWT
+template; matching backend trust/tenant configuration or an approved isolated
+production-auth preview origin is still needed for signed-in product acceptance.
+Activity history search/type/civil-date filters and clear use the latest 500
+records already fetched. They do not imply a complete historical calendar feed.
 
 ## Current feature boundaries
 

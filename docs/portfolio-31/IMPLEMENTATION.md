@@ -41,11 +41,11 @@ Playwright responsive flow checks. Fixture checks are labeled separately from
 live integration. Review >400 nonblank-line modules and >80-line functions for
 mixed responsibility; these are review signals, not acceptance shortcuts.
 
-Backend origins, existing Clerk test configuration, allowed tenant/account and
-sandbox operations await the human. Missing config produces a setup state;
+The human designated capiro-internal and neo@capiro.ai on 11 October. Authenticated
+read checks verified the deployed core origin https://os.capiro.ai/api. Missing config produces a setup state;
 missing contracts produce actionable errors rather than fabricated data.
 No hosted deployment, shared routing/CORS/auth setting, shared migration,
-customer send, calendar write, conversion or billing action is authorized here.
+customer send, conversion or billing action is included in these read checks.
 Prepare hosted preview configuration after inspecting available infrastructure.
 
 ## Scope checkpoints
@@ -168,9 +168,80 @@ Shared operating policy: b32b4803933760dc0a93fffdcd8fba30a89c3aac; clean and thr
 commits ahead of fetched origin/main. Machine map revision 2026-09-30T00:21:48Z.
 Current fetched capirov2 main remains fd8765ec; meri-greenfield main is 8586f627.
 
-The human's G1 research proposal was reviewed against current upstream sources.
-It concerns the independent Meri runtime owner, outside Portfolio implementation.
-Pinned upstream Linux build and InvokeModel discovery are supported qualification
-candidates. Application snapshots can be an initial recovery proof; the current
-G1 owner explicitly retains SessionStore qualification and full W05 scope. No
-deployment-plan change or new runtime admission is inferred from the research.
+## Authorized live read checkpoint — 11 October 2026
+
+The approved secret store contains the deployed Clerk application's keys. The
+account already has capiro-internal membership and an active scoped session;
+no test account was needed. Nine core read projections passed HTTP 200 and the
+actual frontend boundary schemas: clients (15), owner catalog/options (6),
+Master meetings (47 in October), and one accessible client's profile, facilities,
+team, activity and client meetings. No content, tokens or session identifiers
+were retained. Evidence: `portfolio-authorized-read-checks-20261011.json` in task
+outputs. This does not prove cross-user privacy or mutation acceptance.
+
+Saved meeting preparation exposed structured objects where the initial adapter
+required strings. Calendar now accepts the verified text/factIds,
+text/evidenceReferences and title/description/dueDate formats and renders their
+text without dropping opaque references or manufacturing citations. Initial
+failure evidence is retained. The regression includes a real-component browser
+case. Calendar/auth checkpoint checks: 62 unit, 22 synthetic browser, TypeScript, formatting,
+155-module architecture and production build PASS; ESLint retains one SVG warning.
+
+The configured production preview runs at http://localhost:5190 with the core
+origin above. Clerk rejects its localhost origin. Native ClerkFailed handling
+now displays a retryable sign-in error, verified on the final Next build.
+Production keys are identical to the deployed public configuration. After the
+human signed into Clerk, existing Capiro development keys were retrieved and
+saved in a dedicated approved local secret file, outside Git. The local preview
+now initializes Clerk and displays the real development sign-in form. Shared
+production keys/settings are untouched. Read-only development checks find Neo's
+account, but no capiro-internal membership or capiro JWT template. Backend source
+verifies its own Clerk instance's signing keys and optional issuer, so these
+development credentials cannot be assumed to access the production tenant.
+Authenticated product acceptance needs a matching development backend/tenant or
+an approved isolated preview origin using the current production instance.
+No production auth/domain/CORS setting is changed.
+
+## SessionStore follow-through
+
+The human explicitly requested proceeding with SessionStore and the supplied
+recovery recommendation. A separate source candidate is draft meri-greenfield
+PR 2, commit 7b2e77b8739eeb48d96f3c6025de7aaec0f63549. It preserves SDK/Fargate,
+reuses canonical contracts/native-file capture, and adds bounded run-scoped
+SessionStore mirroring/read-back checks. 121 focused/static checks and seven
+deterministic evals pass. A broader worker run passed 295/297; two unchanged
+native-file cases intermittently refused SOURCE_CHANGED on Windows, then passed
+14/14 standalone. The broader suite is not green; its failure is retained.
+No G1 pass is claimed. Native session/workspace immutable checkpoints are the
+primary recommended recovery proof; authenticated durable transport, proven
+quiescence, generation-fenced checkpoint publication and two fresh Fargate tasks
+remain runtime-owner integration. Full W05 is separate from the bounded G1 spike.
+The active G1 owner is not identifiable in current app sessions; cleanup has no
+verified owner thread ID. Existing runtime/contract/lock/infra files are untouched.
+
+## Activity history filters outline
+
+Continue CORE-103 using the current Figma search/type/date controls (411:60532),
+adapted into the required bottom Overview timeline. Client-profile owns filter
+state, controls and selection over the existing latest-500 activity projection.
+No extra feed, pagination claim or persistence is introduced. Search title/body,
+preserve service kinds, and treat chosen civil date bounds inclusively in the
+viewer's local time zone; reject inverted ranges. Reuse Radix menu/popover focus
+behavior and existing CSS tokens. Extract the calendar's existing civil-date
+validation/instant-to-day operations into a focused shared date module because
+both features now need exactly that behavior. Verify search/type/date/clear,
+midnight/DST boundaries, failure/retry retention, responsive geometry and the
+exact downloaded Figma assets. No Open commitments panel is restored.
+
+Activity search/type/date/clear and failure/retry retention now pass two browser
+cases and five domain checks, including the 25-hour DST day and local/server
+date differences. Default all-dates behavior is preserved; Last 30 days is an
+explicit preset computed from current local civil dates, not Figma fixture dates.
+The final combined frontend has 67 unit checks, 24 component-browser checks,
+TypeScript, formatting, 159-module architecture and production build PASS.
+Search/type/date assets were inspected at their native 16/14px geometry on desktop
+and phone dark captures against 411:60532. The timeline remains scrollable at the
+bottom of Overview. The authenticated live activity read was empty; positive
+history/filter acceptance uses synthetic records and is not marked live-complete.
+The final actual Next build also loads development Clerk across three deep links,
+renders its sign-in form, and refuses unauthenticated core proxy access with 401.

@@ -4,7 +4,7 @@ export const activitySchema = z.object({
   kind: z.string(),
   title: z.string(),
   body: z.string().nullable(),
-  occurredAt: z.string(),
+  occurredAt: z.iso.datetime({ offset: true }),
   sourceType: z.string().nullable(),
   sourceId: z.string().nullable(),
   origin: z.enum(["recorded", "derived"]),
@@ -12,6 +12,7 @@ export const activitySchema = z.object({
   settledAt: z.string().nullable(),
   pinned: z.boolean(),
 });
+export type Activity = z.infer<typeof activitySchema>;
 export const facilitySchema = z.object({
   id: z.string(),
   name: z.string(),
