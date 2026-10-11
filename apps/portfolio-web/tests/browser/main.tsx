@@ -23,6 +23,7 @@ import { VoiceHarness } from "./voice-harness";
 import { ThreadMailHarness } from "./thread-mail-harness";
 import { PortfolioLayoutHarness } from "./portfolio-layout-harness";
 import { CalendarSyncHarness } from "./calendar-sync-harness";
+import { GlobalObjectiveHarness } from "./global-objective-harness";
 import {
   PublicEventHarness,
   PublicEventCalendarHarness,
@@ -46,6 +47,7 @@ function App() {
   if (path === "/__test/public-event") return <PublicEventHarness />;
   if (path === "/__test/portfolio-layout") return <PortfolioLayoutHarness />;
   if (path === "/__test/calendar-sync") return <CalendarSyncHarness />;
+  if (path === "/__test/global-objective") return <GlobalObjectiveHarness />;
   if (path === "/__test/past-performance")
     return (
       <Shell destinations={destinations}>

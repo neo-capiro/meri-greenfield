@@ -1,3 +1,23 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.actions a,
+.source {
+  border-radius: 8px;
+  padding: 5px 10px;
+  min-height: 30px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.039px;
+}
+.source {
+  border: 1px solid var(--border);
+  background: var(--card);
+}
 .pulse {
   display: flex;
   align-items: center;

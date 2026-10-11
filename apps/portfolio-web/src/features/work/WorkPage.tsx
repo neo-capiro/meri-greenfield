@@ -30,12 +30,21 @@ export function WorkPage({
       <header className="row between">
         <h1>Client work</h1>
         {base && (
-          <a
-            className="button"
-            href={`${base}/strategies?clientId=${clientId}`}
-          >
-            Open Strategies ↗
-          </a>
+          <div className={styles.actions}>
+            <span className={styles.source}>Source of truth: Strategies</span>
+            <a
+              className="button"
+              href={`${base}/strategies?clientId=${encodeURIComponent(clientId)}`}
+            >
+              Open Strategies
+            </a>
+            <a
+              className="button primary"
+              href={`${base}/strategies/new?clientId=${encodeURIComponent(clientId)}`}
+            >
+              New strategy
+            </a>
+          </div>
         )}
       </header>
       <section className={styles.pulse} aria-label="Client strategy portfolio">

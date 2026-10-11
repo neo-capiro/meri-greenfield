@@ -21,6 +21,7 @@ import { IndexFilters } from "./IndexFilters";
 import { PortfolioPulse } from "./PortfolioPulse";
 import { GlobalQuickLog } from "./GlobalQuickLog";
 import { PortfolioAttention } from "./attention/public";
+import { GlobalObjectiveClientPicker } from "@/features/objectives/global-create/public";
 import styles from "./portfolio.module.css";
 
 export function PortfolioIndex({
@@ -244,6 +245,19 @@ export function PortfolioIndex({
           </>
         )}
         <CreateProfileDialog open={creating} onOpenChange={setCreating} />
+        <GlobalObjectiveClientPicker
+          open={params.get("new") === "objective"}
+          onOpenChange={(open) => {
+            if (!open) {
+              const next = new URLSearchParams(params);
+              next.delete("new");
+              router.replace(`/portfolio?${next}`, { scroll: false });
+            }
+          }}
+          onContinue={(clientId) =>
+            router.push(`/portfolio/${clientId}/objectives?new=1`)
+          }
+        />
       </div>
     </Shell>
   );

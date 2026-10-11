@@ -41,6 +41,18 @@ test("client Work opens typed Workspace drafts through the canonical editor rout
     }),
   );
   await page.goto(`/portfolio/${clientId}/work`);
+  await expect(
+    page.getByRole("link", { name: "Open Strategies" }),
+  ).toHaveAttribute(
+    "href",
+    `http://127.0.0.1:5191/existing/strategies?clientId=${clientId}`,
+  );
+  await expect(
+    page.getByRole("link", { name: "New strategy" }),
+  ).toHaveAttribute(
+    "href",
+    `http://127.0.0.1:5191/existing/strategies/new?clientId=${clientId}`,
+  );
   for (const [id, title, status] of [
     [draftId, "Synthetic briefing draft", "Draft"],
     [completeId, "Synthetic completed letter", "Completed"],
