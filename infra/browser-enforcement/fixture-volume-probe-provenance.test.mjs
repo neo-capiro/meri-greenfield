@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { prepareManagedFixtureVolumeProbes as prepare } from './fixture-volume-probe-provenance.mjs';
 import { preparePostBootstrapReadOnlyWireProof as preparePost } from './fixture-volume-probe-provenance.mjs';
+import * as probeProvenance from './fixture-volume-probe-provenance.mjs';
 import { createFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
 import { compileFixtureBootstrapWorkflow, compileFixtureWorkflow } from './fixture-volume-workflow.mjs';
 import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
@@ -192,16 +193,49 @@ test('post-bootstrap proof accepts expired owned history without extending origi
   assert.equal(value.evidenceOnly, true); assert.equal(value.status, 'PREPARED_NOT_ADMITTED');
 });
 
-test('post-bootstrap intents are exactly VPC read and sole retained volume-id filter without hiding predicates', () => {
+test('post-bootstrap intents are exactly the VPC read and the retained singleton exact-ID volume read', () => {
   const value = preparePost(postOptions());
   assert.deepEqual(value.requestIntents, [
     { case: 'DescribeInVpc', readOnly: true, service: 'ec2', operation: 'describeInstances', arguments: {
       Filters: [{ Name: 'vpc-id', Values: ['vpc-06e1941747e798f0a'] }, { Name: 'owner-id', Values: ['967807252336'] }], MaxResults: 5 } },
-    { case: 'DescribeRetainedVolumeByFilter', readOnly: true, service: 'ec2', operation: 'describeVolumes',
-      arguments: { Filters: [{ Name: 'volume-id', Values: ['vol-0123456789abcdef0'] }], MaxResults: 5 } },
+    { case: 'DescribeRetainedVolumeById', readOnly: true, service: 'ec2', operation: 'describeVolumes',
+      arguments: { VolumeIds: ['vol-0123456789abcdef0'] } },
   ]);
   assert.equal(value.directInstance, null);
-  assert.equal(Object.hasOwn(value.requestIntents[1].arguments, 'VolumeIds'), false);
+});
+
+test('post-bootstrap volume read is a frozen single-element exact-ID intent with no filter, paging or width escape', () => {
+  const value = preparePost(postOptions()), intent = value.requestIntents[1];
+  assert.equal(intent.service, 'ec2'); assert.equal(intent.operation, 'describeVolumes'); assert.equal(intent.readOnly, true);
+  assert.equal(intent.case, 'DescribeRetainedVolumeById');
+  // Exactly one argument key: the retained singleton ID. No predicate, page size or
+  // caller hint may hide a still-existing resource or widen the observation.
+  assert.deepEqual(Reflect.ownKeys(intent.arguments), ['VolumeIds']);
+  for (const key of ['Filters', 'MaxResults', 'NextToken', 'VolumeId', 'filters']) {
+    assert.equal(Object.hasOwn(intent.arguments, key), false);
+  }
+  assert.equal(intent.arguments.VolumeIds.length, 1);
+  assert.equal(intent.arguments.VolumeIds[0], ID);
+  assert.ok(Object.isFrozen(intent.arguments)); assert.ok(Object.isFrozen(intent.arguments.VolumeIds));
+  // The MANAGED predecessor carries the same exact-ID shape; both remain independent literals.
+  const managed = prepare(fixture().options);
+  assert.deepEqual(managed.requestIntents[1].arguments, { VolumeIds: [ID] });
+  assert.ok(managed.requestIntents[1].arguments.VolumeIds !== intent.arguments.VolumeIds);
+});
+
+test('post-bootstrap cannot accept caller filters, widened IDs, error strings or a simulated absence shortcut', () => {
+  for (const extra of [{ filters: [{ Name: 'volume-id', Values: [ID] }] }, { volumeIds: [ID] }, { maxResults: 5 },
+    { nativeError: { Code: 'InvalidVolume.NotFound' } }, { errorString: 'InvalidVolume.NotFound' },
+    { missingVolumeError: { name: 'InvalidVolume.NotFound' } }, { absence: true }, { response: {} }]) {
+    const options = postOptions(); Object.assign(options, extra); assert.throws(() => preparePost(options));
+  }
+  // A foreign or malformed ID cannot be smuggled into the singleton element.
+  for (const volumeId of [OTHER, ID + '\n', null, undefined, true, [ID]]) {
+    const options = postOptions(); options.volumeId = volumeId; assert.throws(() => preparePost(options));
+  }
+  // Only the two evidence-preparation exports exist: no exported absence/error decoder.
+  assert.deepEqual(Object.keys(probeProvenance).sort(),
+    ['prepareManagedFixtureVolumeProbes', 'preparePostBootstrapReadOnlyWireProof']);
 });
 
 test('proof clock has exact finite bounded distinct-session DATA with no original-clock substitution', () => {
@@ -285,7 +319,7 @@ test('post-bootstrap result is detached frozen evidence and produces no source9 
   assert.equal(value.proofClock.expiresAtMs, T + 1600000);
   assert.equal(value.externalIdentity.sourceCommit, 'b'.repeat(40));
   assert.ok(Object.isFrozen(value.proofClock)); assert.ok(Object.isFrozen(value.history.ownership.direct.volume.Tags));
-  assert.ok(Object.isFrozen(value.requestIntents[1].arguments.Filters[0].Values));
+  assert.ok(Object.isFrozen(value.requestIntents[1].arguments.VolumeIds));
   for (const key of ['nonce', 'caller', 'rawCreate', 'deleteAck', 'ownerInput', 'definition', 'admission', 'capture']) {
     assert.equal(Object.hasOwn(value, key), false);
   }

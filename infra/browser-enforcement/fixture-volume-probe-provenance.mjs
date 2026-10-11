@@ -110,15 +110,15 @@ export function preparePostBootstrapReadOnlyWireProof(options) {
     requestIntents: [
       { case: 'DescribeInVpc', readOnly: true, service: 'ec2', operation: 'describeInstances',
         arguments: { Filters: [{ Name: 'vpc-id', Values: [F.vpc] }, { Name: 'owner-id', Values: [F.account] }], MaxResults: 5 } },
-      { case: 'DescribeRetainedVolumeByFilter', readOnly: true, service: 'ec2', operation: 'describeVolumes',
-        arguments: { Filters: [{ Name: 'volume-id', Values: [volumeId] }], MaxResults: 5 } },
+      { case: 'DescribeRetainedVolumeById', readOnly: true, service: 'ec2', operation: 'describeVolumes',
+        arguments: { VolumeIds: [volumeId] } },
     ],
     limitations: [
       'External source/version/raw pins and proof clock are owner DATA, not authenticated origin or permission',
       'Later dispatch must separately recheck actual time, current authority, admission, source and remaining proof budget',
       'Original fixture t0/C and historical UNKNOWN are unchanged; later reads cannot prove cleanup before original C',
       'Managed delete success is retained history, not a fabricated SOURCE9 CLI/STS/nonce/delete receipt or absence proof',
-      'Filtered response, typed pagination and actual service wire remain unqualified; no response is inferred here',
+      'Exact-ID response body, native missing-ID error bytes, typed pagination and actual service wire remain unqualified; no response or absence decoder is inferred here',
       'No resource mutation, managed survival, host, runtime, security or G1 admission',
     ],
   });
