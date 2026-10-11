@@ -240,6 +240,7 @@ class EvidenceTests(unittest.TestCase):
 
     def test_certificate_validity_purpose_algorithm_are_not_san_or_plaintext(self):
         messages = ('certificate is not valid for the current date',
+                    'certificate is invalid', 'invalid certificate', 'certificate invalid',
                     'certificate has expired', 'certificate is not yet valid',
                     'certificate is not valid yet', 'certificate is not valid for server purpose',
                     'unsuitable certificate purpose', 'invalid purpose',
@@ -262,6 +263,8 @@ class EvidenceTests(unittest.TestCase):
 
     def test_mixed_validity_and_specific_reason_refuse(self):
         for message in ('hostname mismatch; certificate has expired',
+                        'hostname mismatch; invalid certificate',
+                        'server does not support TLS; certificate is invalid',
                         'hostname mismatch; certificate is not yet valid',
                         'IP address mismatch; unsuitable certificate purpose',
                         'server does not support TLS; signature algorithm unsupported',

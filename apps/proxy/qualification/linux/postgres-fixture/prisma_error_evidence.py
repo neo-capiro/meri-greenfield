@@ -141,7 +141,8 @@ def _reason(code, message):
         # Certificate validity/purpose/algorithm failures are not evidence of
         # hostname mismatch or a server refusing TLS. Mixed reasons refuse.
         if any(text in message for text in ('expired', 'not yet valid', 'not valid yet',
-                'not valid for', 'invalid purpose', 'unsuitable certificate purpose',
+                'not valid for', 'invalid certificate', 'certificate invalid', 'certificate is invalid',
+                'invalid purpose', 'unsuitable certificate purpose',
                 'unsupported certificate', 'certificate algorithm', 'signature algorithm')):
             return None
         hostname = any(text in message for text in ('hostname mismatch', 'ip address mismatch'))
