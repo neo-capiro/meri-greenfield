@@ -40,6 +40,9 @@ export function BriefEditor({
   const dirty =
     name !== title ||
     sectionKeys.some((key) => draft[key] !== base.sections[key].text);
+  const accessDenied =
+    save.error instanceof ApiError &&
+    [401, 403, 404].includes(save.error.status);
   function close() {
     if (save.isPending || checking) return;
     if (dirty || unknown) setDiscard(true);
@@ -96,7 +99,7 @@ export function BriefEditor({
         if (!open) close();
       }}
       title="Edit saved prospect brief"
-      description={`Structured sections based on version ${base.versionNumber}. Sources remain server-owned.`}
+      description={`Sections based on version ${base.versionNumber}. Citations stay attached to the saved evidence.`}
       className={styles.editor}
     >
       <form
@@ -107,7 +110,7 @@ export function BriefEditor({
           setMessage(undefined);
           try {
             if (!name.trim() || name.length > 300)
-              throw new Error("Enter a title of1–300 characters.");
+              throw new Error("Enter a title of 1–300 characters.");
             const input: SaveInput = {
               idempotencyKey: `brief-edit:${crypto.randomUUID()}`,
               expectedVersionNumber: base.versionNumber,
@@ -158,8 +161,8 @@ export function BriefEditor({
         {unknown && (
           <div className="status stack" role="alert">
             <p>
-              The outcome is unconfirmed. Your frozen draft and request key are
-              retained; no new version is automatically submitted.
+              The outcome is unconfirmed. Your original draft is retained;
+              retrying reuses the same save.
             </p>
             <button
               className="button"
@@ -269,7 +272,8 @@ export function BriefEditor({
               save.isPending ||
               conflict ||
               unknown ||
-              base.versionNumber >= 100
+              base.versionNumber >= 100 ||
+              accessDenied
             }
           >
             {save.isPending ? "Saving…" : "Save new version"}

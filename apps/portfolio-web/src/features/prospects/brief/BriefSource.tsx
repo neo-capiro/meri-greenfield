@@ -7,6 +7,7 @@ import type { BriefVersion } from "./contracts";
 import { resolveCitation } from "./api";
 import { sourceHref } from "./editing";
 import styles from "./brief.module.css";
+import { BriefDate } from "./BriefDate";
 
 export function BriefSource({
   prospectId,
@@ -59,11 +60,17 @@ export function BriefSource({
           </p>
           <dl className={styles.dates}>
             <dt>Event date</dt>
-            <dd>{citation.eventDate ?? "Not provided"}</dd>
+            <dd>
+              <BriefDate value={citation.eventDate} />
+            </dd>
             <dt>Source updated</dt>
-            <dd>{citation.sourceUpdatedAt ?? "Not provided"}</dd>
+            <dd>
+              <BriefDate value={citation.sourceUpdatedAt} />
+            </dd>
             <dt>Retrieved</dt>
-            <dd>{citation.retrievedAt ?? "Not provided"}</dd>
+            <dd>
+              <BriefDate value={citation.retrievedAt} />
+            </dd>
             <dt>Relationship</dt>
             <dd>{citation.relationshipStrength}</dd>
             <dt>Stage</dt>
@@ -81,6 +88,13 @@ export function BriefSource({
           )}
           <section className="stack">
             <h3>Saved snapshot</h3>
+            <small>
+              Identity basis: {version.sourceSnapshot.identityBasis}
+            </small>
+            <small>
+              Snapshot built{" "}
+              <BriefDate value={version.sourceSnapshot.generatedAt} />
+            </small>
             <p>
               {saved?.title ??
                 "No matching evidence item is present in the saved snapshot."}
@@ -114,9 +128,8 @@ export function BriefSource({
             </>
           ) : (
             <p role="note">
-              Historical source shown from its immutable snapshot. The
-              current-source endpoint only resolves the current version, so it
-              is not used for this historical citation.
+              Historical source shown from its immutable snapshot. Current
+              dossier checks are available only for the current version.
             </p>
           )}
         </div>

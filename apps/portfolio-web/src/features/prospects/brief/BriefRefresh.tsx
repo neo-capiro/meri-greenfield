@@ -5,6 +5,7 @@ import { QueryState } from "@/shared/ui/QueryState";
 import { readRefresh } from "./api";
 import { sectionLabels } from "./contracts";
 import styles from "./brief.module.css";
+import { BriefDate } from "./BriefDate";
 export function BriefRefresh({
   prospectId,
   versionNumber,
@@ -28,15 +29,15 @@ export function BriefRefresh({
         retry={() => void proposal.refetch()}
       />
       <p role="note">
-        Preview only. Saving this exact comparison requires a service contract
-        that pins the reviewed evidence and preserves citation identities. The
-        current apply operation re-reads sources, so it is unavailable here.
+        Preview only. Saving a refresh is unavailable until the reviewed text
+        and citations can be preserved together.
       </p>
       {proposal.data && (
         <>
           <small>
             Compared against version {proposal.data.baseVersionNumber}. Snapshot
-            generated {proposal.data.sourceSnapshot.generatedAt}.
+            generated{" "}
+            <BriefDate value={proposal.data.sourceSnapshot.generatedAt} />.
           </small>
           {proposal.data.diff.map((item) => (
             <section className="stack" key={item.section}>

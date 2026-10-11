@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { QueryState } from "@/shared/ui/QueryState";
 import { listVersions, type BriefScope } from "./api";
+import { BriefDate } from "./BriefDate";
 export function BriefHistory({
   scope,
   onSelect,
@@ -29,8 +30,9 @@ export function BriefHistory({
           className="button"
           onClick={() => onSelect(version)}
         >
-          Version {version.versionNumber} · {version.createdAt} ·{" "}
-          {version.citationCount} citations
+          Version {version.versionNumber} ·{" "}
+          <BriefDate value={version.createdAt} /> · {version.citationCount}{" "}
+          citations
         </button>
       ))}
       {history.data && !history.data.versions.length && (

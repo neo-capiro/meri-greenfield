@@ -171,6 +171,29 @@ describe("saved brief content and conflict review", () => {
       mergeDraft(version, latest, { ...draftOf(version), judgment: "Changed" }),
     ).toThrow("cited source changed");
   });
+  it("refuses attribution drift when the same source identity has different saved dates or text", async () => {
+    const changedCitation = { ...citation, eventDate: "2026-10-11" };
+    const latest = versionSchema.parse({
+      ...version,
+      citations: [changedCitation],
+    });
+    expect(() =>
+      mergeDraft(version, latest, { ...draftOf(version), judgment: "Changed" }),
+    ).toThrow("cited source changed");
+    await expect(
+      resolveCitation(
+        client({
+          resolvable: true,
+          citation: changedCitation,
+          sourceSnapshotEvidence: null,
+          currentDossierEvidence: null,
+        }).api,
+        scope.prospectId,
+        0,
+        citation,
+      ),
+    ).rejects.toMatchObject({ status: 409 });
+  });
   it("allows safe source locators without inventing links for references or unsafe URLs", () => {
     expect(sourceHref("https://example.test/source")).toBe(
       "https://example.test/source",

@@ -1,6 +1,7 @@
 import type { BriefVersion } from "./contracts";
 import { sectionKeys, sectionLabels } from "./contracts";
 import styles from "./brief.module.css";
+import { BriefDate } from "./BriefDate";
 
 export function BriefDocument({
   title,
@@ -17,13 +18,12 @@ export function BriefDocument({
       aria-label={`Saved brief version ${version.versionNumber}`}
     >
       <p className={styles.notice}>
-        Saved prospect brief from authorized dossier evidence. Candidate
-        objectives, budget plans and Workspace filing are not established by
-        this brief.
+        A starting point for discussion. Review the saved evidence and
+        information gaps before acting.
       </p>
       <p className="eyebrow">
         Federal strategy brief · Version {version.versionNumber} ·{" "}
-        <time dateTime={version.createdAt}>{version.createdAt}</time>
+        <BriefDate value={version.createdAt} />
       </p>
       <h2>{title}</h2>
       {sectionKeys.map((key) => (

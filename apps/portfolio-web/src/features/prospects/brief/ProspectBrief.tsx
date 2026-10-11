@@ -7,12 +7,16 @@ import { useBrief, useWriteBrief } from "./hooks";
 import type { BriefScope, CreateInput } from "./api";
 import { BriefViewer } from "./BriefViewer";
 import styles from "./brief.module.css";
+import { BriefDate } from "./BriefDate";
 
 export function ProspectBrief({ prospectId }: { prospectId: string }) {
   const identity = useIdentity();
   const allowed =
-    identity.data?.role === "standard_user" ||
-    canAdminister(identity.data?.role);
+    identity.isSuccess &&
+    !identity.error &&
+    !identity.isPending &&
+    (identity.data?.role === "standard_user" ||
+      canAdminister(identity.data?.role));
   const tenantId = identity.data?.tenant?.id;
   return (
     <section
@@ -53,7 +57,13 @@ function ScopedBrief({ scope }: { scope: BriefScope }) {
   const [open, setOpen] = useState(false);
   const unavailable =
     current.error instanceof ApiError && current.error.status === 404;
-  const result = current.data;
+  const ambiguous =
+    create.isError &&
+    (!(create.error instanceof ApiError) || create.error.status >= 500);
+  const accessDenied =
+    create.error instanceof ApiError &&
+    (create.error.status === 401 || create.error.status === 403);
+  const result = current.isSuccess ? current.data : undefined;
   return (
     <>
       {unavailable ? (
@@ -77,15 +87,15 @@ function ScopedBrief({ scope }: { scope: BriefScope }) {
       {create.isError && (
         <div className="status stack" role="alert">
           <p>
-            The creation outcome is not confirmed. Check saved status or
-            explicitly retry the same request; no automatic re-generation is
-            performed.
+            {ambiguous
+              ? "The creation outcome is not confirmed. Check saved status or explicitly retry the same request; no automatic re-generation is performed."
+              : "Creation was rejected. Review the error and check saved status before retrying."}
           </p>
           <div className="row">
             <button className="button" onClick={() => void current.refetch()}>
               Check saved status
             </button>
-            {attempt && (
+            {attempt && !accessDenied && (
               <button
                 className="button"
                 disabled={create.isPending}
@@ -103,9 +113,14 @@ function ScopedBrief({ scope }: { scope: BriefScope }) {
             <strong>{result.brief.title}</strong>
             <small>
               {result.brief.status} ·{" "}
-              {result.currentVersion
-                ? `Version ${result.currentVersion.versionNumber} · Saved ${result.currentVersion.createdAt}`
-                : "No saved version"}
+              {result.currentVersion ? (
+                <>
+                  Version {result.currentVersion.versionNumber} · Saved{" "}
+                  <BriefDate value={result.currentVersion.createdAt} />
+                </>
+              ) : (
+                "No saved version"
+              )}
             </small>
           </div>
           <button className="button" onClick={() => setOpen(true)}>
@@ -113,27 +128,27 @@ function ScopedBrief({ scope }: { scope: BriefScope }) {
           </button>
         </div>
       ) : (
-        current.isSuccess && (
-          <>
-            <p>No brief has been saved yet.</p>
-            <button
-              className="button primary"
-              disabled={create.isPending || create.isError}
-              onClick={() => {
-                const input = {
-                  idempotencyKey: `brief-create:${crypto.randomUUID()}`,
-                };
-                setAttempt(input);
-                create.mutate(input);
-              }}
-            >
-              {create.isPending
-                ? "Generating and saving…"
-                : "Generate from dossier"}
-            </button>
-          </>
-        )
+        current.isSuccess && <p>No brief has been saved yet.</p>
       )}
+      {result &&
+        (!result.brief ||
+          (result.brief.status === "draft" && !result.currentVersion)) && (
+          <button
+            className="button primary"
+            disabled={create.isPending || create.isError}
+            onClick={() => {
+              const input = {
+                idempotencyKey: `brief-create:${crypto.randomUUID()}`,
+              };
+              setAttempt(input);
+              create.mutate(input);
+            }}
+          >
+            {create.isPending
+              ? "Generating and saving…"
+              : "Generate from dossier"}
+          </button>
+        )}
       <small>
         Workspace filing and candidate objectives require separate supported
         workflows.

@@ -61,7 +61,7 @@ export function BriefViewer({
         if (!open) onClose();
       }}
       title={data.brief?.title ?? "Saved prospect brief"}
-      description="Versioned dossier brief. Workspace document association is not available from this service."
+      description="Saved versions and source citations. Workspace filing is unavailable for this brief."
       className={styles.viewer}
     >
       <nav className="row" aria-label="Brief views">
@@ -125,7 +125,9 @@ export function BriefViewer({
               onSource={setSource}
             />
           ) : (
-            !historical.isPending && <p>No saved version is available.</p>
+            (!selected || !historical.isPending) && (
+              <p>No saved version is available.</p>
+            )
           )}
         </>
       )}
