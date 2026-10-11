@@ -1,10 +1,9 @@
-# Build context: apps/portfolio-web. The pinned base is the Node 24.21.0
-# trixie-slim base used by the separate worker candidate. This app requires its
-# own Linux build, scan and runtime admission.
-FROM node:24.21.0-trixie-slim@sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66 AS base
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Build context: apps/portfolio-web. This pinned Node 24 Alpine base uses a
+# vendor-fixed zlib package for CVE-2026-85091. Confirm the package version,
+# container behavior and image scan before runtime admission.
+FROM node:24.21.0-alpine3.23@sha256:9ec4a2e289874ed0d722e1772ec2de45d2801541db8612f3638b26f128c69ac2 AS base
+RUN apk add --no-cache --upgrade zlib=1.3.2-r1 ca-certificates \
+    && test "$(apk info -v zlib)" = zlib-1.3.2-r1
 WORKDIR /app
 
 FROM base AS build
