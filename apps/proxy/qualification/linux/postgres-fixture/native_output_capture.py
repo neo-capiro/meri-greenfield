@@ -37,6 +37,7 @@ class _NativeCapture:
         self._deadline = deadline
         self._lock = threading.Lock()
         self._stop = threading.Event()
+        self._reader_finished = threading.Event()
         self._buffers = [bytearray(), bytearray()]
         self._observed = [0, 0]
         self._eof = [False, False]
@@ -47,7 +48,7 @@ class _NativeCapture:
         self._owned = set()
         self._close_attempted = set()
         self._thread = None
-        self._thread_started = False
+        self._thread_start_attempted = False
         self._owner_acquired = False
         self._used = False
         self._closed = False
@@ -96,11 +97,15 @@ class _NativeCapture:
                 self._writes.append(write_fd)
                 os.set_blocking(read_fd, False)
             self._thread = threading.Thread(target=self._read, name='private-native-fd-reader', daemon=True)
+            # start() can launch the real reader and then be interrupted before
+            # returning. A pre-call obligation cannot lose that ownership.
+            self._thread_start_attempted = True
             self._thread.start()
-            self._thread_started = True
             for index, fd in enumerate((1, 2)):
-                os.dup2(self._writes[index], fd)
+                # Even a failed/uncertain dup2 is safely restored from our
+                # saved copy; record that obligation before its side effect.
                 self._redirected.append(fd)
+                os.dup2(self._writes[index], fd)
             for fd in self._writes:
                 self._close_owned(fd)
             self.check()
@@ -145,6 +150,7 @@ class _NativeCapture:
         finally:
             for fd in self._reads:
                 self._close_owned(fd)
+            self._reader_finished.set()
 
     def check(self):
         if time.monotonic() >= self._deadline:
@@ -165,15 +171,19 @@ class _NativeCapture:
         self._restored = restored
         for fd in (*self._writes, *self._saved):
             self._close_owned(fd)
-        if self._thread_started:
+        if self._thread_start_attempted:
             drain_until = self._deadline - _CLOSE_RESERVE_SECONDS
-            while self._thread.is_alive() and time.monotonic() < drain_until:
-                self._thread.join(min(_POLL_SECONDS, max(0, drain_until - time.monotonic())))
-            if self._thread.is_alive():
+            while not self._reader_finished.is_set() and time.monotonic() < drain_until:
+                self._reader_finished.wait(min(_POLL_SECONDS, max(0, drain_until - time.monotonic())))
+            if not self._reader_finished.is_set():
                 self._fail('ORIGINAL_DRAIN_DEADLINE')
                 self._stop.set()
-                self._thread.join(max(0, self._deadline - time.monotonic()))
+            # join is legal only once Python positively observes an actual
+            # started thread. A not-yet-started/uncertain reader retains its
+            # read descriptors; this owner must not close them underneath it.
             if self._thread.is_alive():
+                self._thread.join(max(0, self._deadline - time.monotonic()))
+            if not self._reader_stopped():
                 self._fail('READER_STOP_UNKNOWN')
         else:
             for fd in self._reads:
@@ -182,8 +192,7 @@ class _NativeCapture:
         # Unknown cleanup must block another process-wide redirection. There is
         # deliberately no reset API: the trusted outer owner must end this
         # disposable process if descriptor/reader ownership cannot be proved.
-        cleanup_proven = restored and not self._owned and (
-            not self._thread_started or not self._thread.is_alive())
+        cleanup_proven = restored and not self._owned and self._reader_stopped()
         if self._owner_acquired and cleanup_proven:
             _OWNER.release()
             self._owner_acquired = False
@@ -198,7 +207,7 @@ class _NativeCapture:
     def facts(self):
         """Sanitized observations only; body failure is separate from drain."""
         with self._lock:
-            stopped = not self._thread_started or not self._thread.is_alive()
+            stopped = self._reader_stopped()
             return {'observedBytes': {'stdout': self._observed[0], 'stderr': self._observed[1]},
                     'retainedBytes': {'stdout': len(self._buffers[0]), 'stderr': len(self._buffers[1])},
                     'eof': {'stdout': self._eof[0], 'stderr': self._eof[1]},
@@ -207,6 +216,10 @@ class _NativeCapture:
                     'bodyFailed': self._body_failed, 'failure': self._failure,
                     'complete': self._closed and self._restored and stopped and not self._owned
                                 and all(self._eof) and self._failure is None}
+
+    def _reader_stopped(self):
+        return not self._thread_start_attempted or (
+            self._reader_finished.is_set() and not self._thread.is_alive())
 
     def private_bytes(self):
         """Trusted in-process consumer only; caller owns/disposes returned copies."""

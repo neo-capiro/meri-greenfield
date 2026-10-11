@@ -121,12 +121,87 @@ class NativeOutputTests(unittest.TestCase):
         self.assertTrue(value.facts()['readerStopped'])
         self.assertTrue(value.facts()['ownedDescriptorsClosed'])
 
-    def test_thread_start_failure_closes_owned_pipes(self):
-        before = identities(); value = capture.capture_native_output(time.monotonic()+2)
-        with mock.patch.object(capture.threading.Thread, 'start', side_effect=RuntimeError('SYNTHETIC_START')):
+    def test_thread_start_without_reader_retains_unknown_ownership(self):
+        s = importlib.util.spec_from_file_location('unknown_start_capture', HERE/'native_output_capture.py')
+        isolated = importlib.util.module_from_spec(s); s.loader.exec_module(isolated)
+        before = identities(); value = isolated.capture_native_output(time.monotonic()+.1)
+        try:
+            # ident may be assigned before Python marks a thread started;
+            # neither ident nor a failed start is permission to join/close.
+            with mock.patch.object(isolated.threading.Thread, 'start', side_effect=RuntimeError('SYNTHETIC_START')), \
+                    mock.patch.object(isolated.threading.Thread, 'ident', property(lambda _: 1)), \
+                    mock.patch.object(isolated.threading.Thread, 'join', side_effect=AssertionError('JOIN_NOT_STARTED')):
+                with self.assertRaisesRegex(isolated.NativeOutputCaptureError, 'INITIALIZATION'):
+                    with value: self.fail('entered')
+            self.assertEqual(identities(), before)
+            self.assertFalse(value.facts()['readerStopped'])
+            self.assertFalse(value.facts()['ownedDescriptorsClosed'])
+            self.assertFalse(value.facts()['complete'])
+            for fd in value._reads: os.fstat(fd)
+            with self.assertRaisesRegex(isolated.NativeOutputCaptureError, 'ALREADY_OWNED'):
+                with isolated.capture_native_output(time.monotonic()+1): self.fail('ownership reset')
+        finally:
+            # This mock never launched a reader. Only the test knows that fact;
+            # production cannot turn a raised start() into termination proof.
+            for fd in value._reads: os.close(fd)
+
+    def test_redirect_real_effect_then_baseexception_restores_borrowed(self):
+        class Interrupt(BaseException): pass
+        before = identities(); real_dup2 = os.dup2; calls = [0]
+        def interrupted(*args, **kwargs):
+            result = real_dup2(*args, **kwargs)
+            calls[0] += 1
+            if calls[0] == 1: raise Interrupt('SYNTHETIC_AFTER_REAL_DUP2')
+            return result
+        value = capture.capture_native_output(time.monotonic()+1)
+        with mock.patch.object(capture.os, 'dup2', side_effect=interrupted):
             with self.assertRaisesRegex(capture.NativeOutputCaptureError, 'INITIALIZATION'):
                 with value: self.fail('entered')
         self.assertEqual(identities(), before)
+        self.assertTrue(value.facts()['descriptorsRestored'])
+        self.assertTrue(value.facts()['readerStopped'])
+        self.assertTrue(value.facts()['ownedDescriptorsClosed'])
+
+    def test_thread_real_start_then_baseexception_waits_for_reader(self):
+        class Interrupt(BaseException): pass
+        before = identities(); real_start = threading.Thread.start
+        def interrupted(thread):
+            real_start(thread)
+            raise Interrupt('SYNTHETIC_AFTER_REAL_START')
+        value = capture.capture_native_output(time.monotonic()+1)
+        with mock.patch.object(capture.threading.Thread, 'start', interrupted):
+            with self.assertRaisesRegex(capture.NativeOutputCaptureError, 'INITIALIZATION'):
+                with value: self.fail('entered')
+        self.assertEqual(identities(), before)
+        self.assertTrue(value.facts()['readerStopped'])
+        self.assertTrue(value.facts()['ownedDescriptorsClosed'])
+        self.assertFalse(value._thread.is_alive())
+
+    def test_interrupted_delayed_reader_is_not_closed_or_released(self):
+        class Interrupt(BaseException): pass
+        s = importlib.util.spec_from_file_location('delayed_start_capture', HERE/'native_output_capture.py')
+        isolated = importlib.util.module_from_spec(s); s.loader.exec_module(isolated)
+        gate = threading.Event(); real_start = threading.Thread.start; real_read = isolated._NativeCapture._read
+        def delayed(value):
+            gate.wait(1)
+            real_read(value)
+        def interrupted(thread):
+            real_start(thread)
+            raise Interrupt('SYNTHETIC_AFTER_DELAYED_START')
+        value = isolated.capture_native_output(time.monotonic()+.1)
+        try:
+            with mock.patch.object(isolated._NativeCapture, '_read', delayed), mock.patch.object(isolated.threading.Thread, 'start', interrupted):
+                with self.assertRaisesRegex(isolated.NativeOutputCaptureError, 'INITIALIZATION'):
+                    with value: self.fail('entered')
+            self.assertTrue(value._thread.is_alive())
+            self.assertFalse(value.facts()['readerStopped'])
+            self.assertFalse(value.facts()['ownedDescriptorsClosed'])
+            for fd in value._reads: os.fstat(fd)
+            with self.assertRaisesRegex(isolated.NativeOutputCaptureError, 'ALREADY_OWNED'):
+                with isolated.capture_native_output(time.monotonic()+1): self.fail('ownership reset')
+        finally:
+            gate.set(); value._thread.join(1)
+        self.assertFalse(value._thread.is_alive())
         self.assertTrue(value.facts()['ownedDescriptorsClosed'])
 
     def test_uncertain_owned_close_is_not_reported_closed_or_retried(self):
