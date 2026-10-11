@@ -30,8 +30,8 @@ export function TextField({
     maxLength: input.maxLength,
   };
   return (
-    <label htmlFor={id} className={styles.field}>
-      {label}
+    <div className={styles.field}>
+      <label htmlFor={id}>{label}</label>
       {multiline ? (
         <textarea {...common} onChange={onChange} />
       ) : (
@@ -42,7 +42,7 @@ export function TextField({
           {error}
         </small>
       )}
-    </label>
+    </div>
   );
 }
 export function ChoiceList({

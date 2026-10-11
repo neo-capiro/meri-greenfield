@@ -47,6 +47,8 @@
   gap: 20px;
 }
 .field {
+  display: grid;
+  gap: 6px;
   font-size: 12px;
   font-weight: 500;
 }
