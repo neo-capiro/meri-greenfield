@@ -1,5 +1,6 @@
 "use client";
 import type { ReactNode } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { Destinations } from "@/shared/config/config";
 import { Shell } from "@/shared/shell/Shell";
 import { QueryState } from "@/shared/ui/QueryState";
@@ -16,6 +17,10 @@ export function ClientFrame({
   children: ReactNode;
 }) {
   const client = useClient(clientId);
+  const path = usePathname();
+  const params = useSearchParams();
+  const library =
+    path === `/portfolio/${clientId}/calendar` && params.get("library") === "1";
   return (
     <Shell
       destinations={destinations}
@@ -32,8 +37,10 @@ export function ClientFrame({
       ) : (
         client.data && (
           <>
-            <ClientHeader client={client.data} />
-            <div className={styles.content}>{children}</div>
+            {!library && <ClientHeader client={client.data} />}
+            <div className={library ? undefined : styles.content}>
+              {children}
+            </div>
           </>
         )
       )}
