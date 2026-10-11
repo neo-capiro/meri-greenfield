@@ -142,19 +142,21 @@ function PickerSession({
           <p role="status">Your current session cannot create objectives.</p>
         ) : (
           <>
-            <label className={styles.label} htmlFor="objective-client-search">
-              Client <span aria-hidden="true">*</span>
-            </label>
-            <div className={styles.search}>
-              <input
-                id="objective-client-search"
-                type="search"
-                placeholder="Search clients"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                aria-controls="objective-client-options"
-              />
-              <ChevronDown size={14} aria-hidden="true" />
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="objective-client-search">
+                Client <span aria-hidden="true">*</span>
+              </label>
+              <div className={styles.search}>
+                <input
+                  id="objective-client-search"
+                  type="search"
+                  placeholder="Search clients"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  aria-controls="objective-client-options"
+                />
+                <ChevronDown size={14} aria-hidden="true" />
+              </div>
             </div>
             {clients.error ? (
               <div role="alert" className="status error">
@@ -197,6 +199,7 @@ function PickerSession({
                   >
                     <input
                       type="radio"
+                      required
                       name="objective-client"
                       value={client.id}
                       checked={selected === client.id}
