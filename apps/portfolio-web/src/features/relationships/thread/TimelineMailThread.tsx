@@ -12,7 +12,7 @@ import { ThreadContent } from "./ThreadContent";
 import styles from "./thread.module.css";
 
 const replyGap =
-  "Reply sending is unavailable: the current service does not pin the originating mailbox or send a native reply. You can review recipients and text here, then reply from your mailbox.";
+  "Reply sending is unavailable here. You can review recipients and text, then reply from your mailbox.";
 export function TimelineMailThread({
   clientId,
   threadId,

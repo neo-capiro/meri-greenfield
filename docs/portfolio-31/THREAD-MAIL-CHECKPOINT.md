@@ -32,4 +32,13 @@ Owner: Engagement/API integration owner, with explicit email integration change-
 
 ## Validation
 
-Focused checks and browser results will be appended after source commit. Runtime explicit bundled Node24.19.0; borrowed dependencies read-only; no install, production build, live mail reads/sends, backend writes or provider calls. Synthetic fixtures establish component behavior only.
+Source `0c281a32cd4d03dea1daeebe4dee48021b6cc28d` introduced the feature. Follow-up source changes only make blocked review labels explicit (`Review reply`, `Sending unavailable`); ordinary send labels and behavior remain unchanged.
+
+- Explicit bundled Node24.19.0: 15 new thread units +27 existing email units, **42 PASS**.
+- Browser qualification: **29 PASS**, comprising13 new thread cases and16 unchanged canonical composer cases. On-demand full read/collapse, exact reviewed sender/Reply-all Cc, self exclusion, no writes from blocked review,403 GET retry, wrong client/cross-thread receipts, missing self identity, read-only role, actor/client/invalidation transitions, empty state, plain-text script safety and mobile dark no-overflow verified. Existing send ambiguity/upload/authority cases remain passing.
+- Typecheck, scoped ESLint/Prettier and architecture **PASS** (344 modules), no changed checks or baselines.
+- Screenshots inspected for desktop expanded thread, blocked recipient/content review and mobile dark; Geist Test font loaded and checked. Parent route composition/live acceptance are separate gates.
+- Preserved first startup failure (owned Playwright cwd), first component run27PASS/2FAIL (exact recipient-chip text locator included nested×), and affected2PASS rerun. Final review To/Cc remained exact assertions; locator now uses the exact accessible recipient remove action. No product behavior or assertion was removed to obtain a pass.
+- Parent confirmed strict direct binding: no second frontend list preflight. Indirect timeline association requires a **server-verified requested-client association projection** (CORE-107); native pinned-mailbox reply + durable outcome contract separately blocks CORE-108. No atomic/CAS claim.
+
+Borrowed dependencies read-only; no install, production build, live mail reads/sends, backend writes or provider calls. Synthetic fixtures establish component behavior only. The test-only owned ThreadMailHarness is available for parent canonical harness composition; it is not a product route or a second test architecture. Isolated temporary config/entry/cache stays ignored under app `work/thread`, port5194 returned when runner exited.

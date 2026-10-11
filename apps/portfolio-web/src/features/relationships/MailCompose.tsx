@@ -253,8 +253,12 @@ export function MailCompose({
         onOpenChange={(value) => {
           if (!value && !send.isPending) setReview(null);
         }}
-        title="Send email"
-        description={`Send “${review?.input.subject ?? ""}” through your connected mailbox?`}
+        title={sendBlockedReason ? "Review reply" : "Send email"}
+        description={
+          sendBlockedReason
+            ? `Review “${review?.input.subject ?? ""}”. Sending is unavailable here.`
+            : `Send “${review?.input.subject ?? ""}” through your connected mailbox?`
+        }
       >
         {review && (
           <div className="stack">
@@ -269,10 +273,12 @@ export function MailCompose({
               </p>
             )}
             <p className={styles.review}>{review.text}</p>
-            <small>
-              {review.input.attachmentIds?.length ?? 0} attachment(s), rechecked
-              before sending.
-            </small>
+            {!sendBlockedReason && (
+              <small>
+                {review.input.attachmentIds?.length ?? 0} attachment(s),
+                rechecked before sending.
+              </small>
+            )}
             {review.input.appendSignature && (
               <small>Includes your saved signature.</small>
             )}
@@ -306,7 +312,11 @@ export function MailCompose({
             send.mutate(review.input, { onSuccess: () => setReview(null) });
           }}
         >
-          {send.isPending ? "Sending…" : "Send email"}
+          {sendBlockedReason
+            ? "Sending unavailable"
+            : send.isPending
+              ? "Sending…"
+              : "Send email"}
         </button>
       </Dialog>
     </Dialog>
