@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/shared/api/provider";
 import { clientKey, clientsKey } from "@/features/portfolio/public";
@@ -22,7 +22,7 @@ export function useReviewAction(
   const lifetime = useRef<AbortController | null>(null);
   const [uncertain, setUncertain] = useState(false);
   const [receipt, setReceipt] = useState<string>();
-  useEffect(() => {
+  useLayoutEffect(() => {
     const controller = new AbortController();
     lifetime.current = controller;
     return () => {
