@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { decodeFixtureVolumeHistory, decodeFixtureBootstrapVolumeHistory } from './fixture-volume-history.mjs';
-import { decodeFixtureBootstrapHistoryCapture } from './fixture-volume-history-wire.mjs';
+import { decodeFixtureBootstrapHistoryCapture, fixtureHistoryTimestamp, fixtureHistoryEnvelopeTimestamp } from './fixture-volume-history-wire.mjs';
 import { FIXTURE as F, fixtureTags, fixtureMachineName, fixtureExecutionName } from './fixture-volume-binding.mjs';
 import { compileFixtureWorkflow, compileFixtureBootstrapWorkflow } from './fixture-volume-workflow.mjs';
 import { createFixtureBootstrapDescriptor, fixtureBootstrapInput } from './fixture-volume-activation.mjs';
@@ -256,4 +256,62 @@ test('bootstrap absent/error observation never becomes physical absence or a SOU
   const g=bootstrapFixture();const ev=g.events.find(e=>e.type==='TaskTimedOut');ev.type='TaskSucceeded';
   ev.taskSucceededEventDetails={resourceType:'aws-sdk:ec2',resource:'describeVolumes',output:'{"Volumes":[]}',outputDetails:{truncated:false}};
   delete ev.taskTimedOutEventDetails;g.packageEvents();bootstrapRefused(g);
+});
+
+test('history CLI offsets, UTC and measured microseconds have exact epoch meaning',()=>{
+  for(const [value,expected] of [
+    ['2026-10-11T00:32:14.440000-04:00',1791693134440],
+    ['2026-10-11T04:32:14.440000Z',1791693134440],
+    ['2026-10-11T10:02:14.440+05:30',1791693134440],
+    ['2026-10-11T04:32:14Z',1791693134000],
+    ['2026-10-11T00:32:14-04:00',1791693134000]])
+    assert.equal(fixtureHistoryEnvelopeTimestamp(value),expected);
+  assert.equal(fixtureHistoryEnvelopeTimestamp(1791693134.44),1791693134440);
+  assert.equal(fixtureHistoryEnvelopeTimestamp('2026-10-11T04:32:14.440Z'),fixtureHistoryTimestamp('2026-10-11T04:32:14.440Z'));
+});
+test('history microsecond rounding includes ties and second/day/leap-year carry',()=>{
+  for(const [value,expected] of [
+    ['2026-10-11T04:32:14.000499Z',1791693134000],
+    ['2026-10-11T04:32:14.000500Z',1791693134001],
+    ['2026-12-31T23:59:59.999500Z',Date.UTC(2027,0,1)],
+    ['2024-02-29T23:59:59.999999+00:00',Date.UTC(2024,2,1)],
+    ['0099-01-01T00:00:00Z',-59042995200000]])
+    assert.equal(fixtureHistoryEnvelopeTimestamp(value),expected);
+});
+test('history date, time, fraction, timezone and type profiles fail closed',()=>{
+  for(const value of ['2026-02-29T00:00:00Z','2024-02-30T00:00:00Z','2026-00-01T00:00:00Z',
+    '2026-10-11T24:00:00Z','2026-10-11T00:60:00Z','2026-10-11T00:00:60Z',
+    '2026-10-11T00:00:00+24:00','2026-10-11T00:00:00-04:60','2026-10-11T00:00:00',
+    '2026-10-11T00:00:00.1Z','2026-10-11T00:00:00.1234567Z','2026-10-11T00:00:00.123Z\n',
+    ' 2026-10-11T00:00:00Z',null,false,NaN,Infinity,Number.MAX_VALUE,{}])
+    assert.throws(()=>fixtureHistoryEnvelopeTimestamp(value),/timestamp/);
+});
+test('all event envelopes accept CLI ISO without rewriting retained raw bytes or payloads',()=>{
+  for(const build of [fixture,bootstrapFixture]){
+    const f=build(),decode=build===fixture?decodeFixtureVolumeHistory:decodeFixtureBootstrapVolumeHistory;
+    const expected=decode(f.x);
+    for(const e of f.events)e.timestamp=new Date(e.timestamp*1000).toISOString().replace('Z','000+00:00');
+    f.packageEvents();const before=Buffer.from(f.x.pages[0].responseRaw),actual=decode(f.x);
+    assert.deepEqual(actual.createAttempt,expected.createAttempt);assert.deepEqual(actual.firstDeleteAttempt,expected.firstDeleteAttempt);
+    assert.deepEqual(actual.ownership,expected.ownership);assert.deepEqual(f.x.pages[0].responseRaw,before);
+    assert.equal(actual.physicalAbsenceProven,false);assert.equal(actual.runtimeAdmitted,false);
+  }
+});
+test('history envelope profile never broadens embedded EC2 CreateTime',()=>{
+  for(const build of [fixture,bootstrapFixture])for(const value of ['2026-10-10T18:00:00.500000+00:00','2026-10-10T18:00:00.500000Z']){
+    const f=build();output(f,'ListFirst',o=>({Volumes:[{...o.Volumes[0],CreateTime:value}]}));
+    assert.throws(()=> (build===fixture?decodeFixtureVolumeHistory:decodeFixtureBootstrapVolumeHistory)(f.x),/timestamp/);
+  }
+  assert.throws(()=>fixtureHistoryTimestamp('2026-10-11T00:32:14.440000-04:00'),/timestamp/);
+});
+test('CLI envelopes preserve original start/create ceiling, event order and C boundary',()=>{
+  for(const mutate of [f=>f.events[0].timestamp=T-1,f=>f.events[0].timestamp=T+300001,
+    f=>f.events.at(-1).timestamp=T+900001,f=>f.events[4].timestamp=T]){
+    const f=bootstrapFixture();for(const e of f.events)e.timestamp*=1000;mutate(f);
+    for(const e of f.events)e.timestamp=new Date(e.timestamp).toISOString().replace('Z','000+00:00');
+    f.packageEvents();bootstrapRefused(f);
+  }
+  const f=bootstrapFixture();f.events.at(-1).timestamp=(T+900000)/1000;
+  for(const e of f.events)e.timestamp=new Date(e.timestamp*1000).toISOString().replace('Z','000+00:00');
+  f.packageEvents();assert.equal(decodeFixtureBootstrapHistoryCapture(f.x).terminalAtMs,T+900000);
 });

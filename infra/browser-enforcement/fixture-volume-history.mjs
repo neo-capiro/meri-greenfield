@@ -1,7 +1,7 @@
 // Managed fixture Task/ownership reconstruction. No IO, clients or admission.
 import { isDeepStrictEqual } from 'node:util';
 import { FIXTURE as F, fixtureTags } from './fixture-volume-binding.mjs';
-import { decodeFixtureHistoryCapture, decodeFixtureBootstrapHistoryCapture, decodeFixtureTaskPayload, fixtureHistoryTimestamp as timestamp } from './fixture-volume-history-wire.mjs';
+import { decodeFixtureHistoryCapture, decodeFixtureBootstrapHistoryCapture, decodeFixtureTaskPayload, fixtureHistoryTimestamp as ec2Timestamp, fixtureHistoryEnvelopeTimestamp as timestamp } from './fixture-volume-history-wire.mjs';
 import { FIXTURE_BOOTSTRAP_PROFILE } from './fixture-volume-activation.mjs';
 
 const fail = reason => { throw new Error(`Managed fixture history refused: ${reason}`); };
@@ -14,7 +14,7 @@ function volume(row, b, states) {
       !fixtureTags().every(t => row.Tags.filter(x => object(x) && x.Key === t.Key && x.Value === t.Value).length === 1) ||
       (Object.hasOwn(row, 'OwnerId') && row.OwnerId !== F.account)) fail('volume ownership');
   if(typeof row.CreateTime!=='string')fail('EC2 timestamp wire profile');
-  const created = timestamp(row.CreateTime);
+  const created = ec2Timestamp(row.CreateTime);
   if (created < b.t0Ms || created > b.createNotAfterMs || row.AvailabilityZone !== F.az || row.KmsKeyId !== F.keyArn ||
       row.Size !== 1 || row.VolumeType !== 'gp3' || row.Encrypted !== true || !Array.isArray(row.Attachments) || row.Attachments.length ||
       (Object.hasOwn(row, 'SnapshotId') && row.SnapshotId !== '') || Object.hasOwn(row, 'SourceVolumeId') || !states.includes(row.State)) fail('volume security/window/state');

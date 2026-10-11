@@ -32,6 +32,27 @@ function timestamp(value) {
   }
   return fail('timestamp profile');
 }
+function historyTimestamp(value) {
+  // History envelopes may be rendered by AWS CLI datetime.isoformat(). Keep
+  // embedded EC2 Task payloads on timestamp()'s original strict wire profile.
+  if (typeof value === 'number') return timestamp(value);
+  if (typeof value !== 'string') return fail('history timestamp profile');
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{3}|\d{6}))?(Z|[+-]\d{2}:\d{2})$/.exec(value);
+  if (!m || m[0]!==value) return fail('history timestamp profile');
+  const [year,month,day,hour,minute,second] = m.slice(1,7).map(Number);
+  const zone=m[8], offsetHour=zone==='Z'?0:Number(zone.slice(1,3)), offsetMinute=zone==='Z'?0:Number(zone.slice(4,6));
+  if (month<1||month>12||day<1||day>31||hour>23||minute>59||second>59||offsetHour>23||offsetMinute>59) return fail('history timestamp fields');
+  // setUTCFullYear avoids Date.UTC's special handling of years 00..99.
+  const date=new Date(0);date.setUTCFullYear(year,month-1,day);date.setUTCHours(hour,minute,second,0);
+  if (date.getUTCFullYear()!==year||date.getUTCMonth()!==month-1||date.getUTCDate()!==day) return fail('history timestamp calendar');
+  const offset=(zone[0]==='-'?-1:1)*(offsetHour*60+offsetMinute)*60000;
+  const micros=Number((m[7]??'').padEnd(6,'0'));
+  // Round sub-ms fractions exactly as numeric seconds; allow carry to the next
+  // second/day rather than truncating the original CLI microseconds.
+  const ms=date.getTime()-offset+Math.round(micros/1000);
+  if (!integer(ms)) return fail('history timestamp range');
+  return ms;
+}
 function noTruncation(value) {
   if (!object(value) && !Array.isArray(value)) return;
   for (const [key, item] of Object.entries(value)) {
@@ -96,7 +117,7 @@ function decodeHistoryCapture({pins,definitionRaw,inputRaw,pages}, b, graph, exp
     if(!exact(ev,['id','previousEventId','timestamp','type',detail])||!object(ev[detail]))fail('contradictory event detail/envelope');
     const d=ev[detail];
     for(const field of ['input','output'])if(Object.hasOwn(d,field)&&(typeof d[field]!=='string'||!exact(d[field+'Details'],['truncated'])||d[field+'Details'].truncated!==false))fail('missing/truncated execution data evidence');
-    const ms=timestamp(ev.timestamp); if(ms<previousTime||ms>b.C) fail('event clock/order/ceiling'); previousTime=ms;
+    const ms=historyTimestamp(ev.timestamp); if(ms<previousTime||ms>b.C) fail('event clock/order/ceiling'); previousTime=ms;
     noTruncation(ev);
     if(ev.type==='ExecutionRedriven'||ev.type==='MapRunRedriven'||ev.type==='EvaluationFailed') fail('redrive/evaluation failure');
   }
@@ -106,7 +127,7 @@ function decodeHistoryCapture({pins,definitionRaw,inputRaw,pages}, b, graph, exp
       events.slice(0,-1).some(e=>/^Execution(Succeeded|Failed|TimedOut|Aborted)$/.test(e.type))) fail('complete single STANDARD execution');
   const started=start.executionStartedEventDetails;
   if(!object(started)||started.stateMachineVersionArn!==pins.versionArn||started.roleArn!==pins.roleArn||Object.hasOwn(started,'stateMachineAliasArn')||
-      typeof started.input!=='string'||hash(Buffer.from(started.input,'utf8'))!==pins.inputSha256||timestamp(start.timestamp)>b.createNotAfterMs) fail('execution start/version/input');
+      typeof started.input!=='string'||hash(Buffer.from(started.input,'utf8'))!==pins.inputSha256||historyTimestamp(start.timestamp)>b.createNotAfterMs) fail('execution start/version/input');
 
   return { binding:b, graph, events, execution, rawHashes, pins, terminalAtMs:previousTime };
 }
@@ -116,3 +137,4 @@ export function decodeFixtureTaskPayload(raw) {
   const bytes=Buffer.from(raw,'utf8');return {data:json(bytes),sha256:hash(bytes)};
 }
 export const fixtureHistoryTimestamp = timestamp;
+export const fixtureHistoryEnvelopeTimestamp = historyTimestamp;
