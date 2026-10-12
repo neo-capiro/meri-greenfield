@@ -1,0 +1,15 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "observationCheckExitCode": 0,
+  "controlsPassed": 19,
+  "controlsFailed": 0,
+  "stderrBytes": 0,
+  "recordedRejectedObservationPreserved": true,
+  "trackedSourceUnchanged": true,
+  "diffCheckExitCode": 0,
+  "privatePathValuesScanned": 27,
+  "privatePathValuesFound": 0,
+  "longPrivateSourceLinesFound": 0,
+  "helperNotReviewed": true,
+  "nativeExecution": false
+}

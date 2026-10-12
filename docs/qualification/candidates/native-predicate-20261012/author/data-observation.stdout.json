@@ -1,0 +1,334 @@
+{
+  "roleComparisons": [
+    {
+      "role": "executable",
+      "entryCount": 9,
+      "beforePassed": true,
+      "afterPassed": true,
+      "sixFieldIdentityAndPlainMetadataStable": true,
+      "exactJsonFieldsEqual": false,
+      "pairs": [
+        {
+          "ancestorIndexZeroBased": 0,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 1,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 2,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 3,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 4,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 5,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 6,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 7,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 8,
+          "changedFields": []
+        }
+      ]
+    },
+    {
+      "role": "root",
+      "entryCount": 8,
+      "beforePassed": true,
+      "afterPassed": true,
+      "sixFieldIdentityAndPlainMetadataStable": true,
+      "exactJsonFieldsEqual": false,
+      "pairs": [
+        {
+          "ancestorIndexZeroBased": 0,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 1,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 2,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 3,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 4,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 5,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 6,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 7,
+          "changedFields": []
+        }
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryCount": 9,
+      "beforePassed": true,
+      "afterPassed": true,
+      "sixFieldIdentityAndPlainMetadataStable": true,
+      "exactJsonFieldsEqual": false,
+      "pairs": [
+        {
+          "ancestorIndexZeroBased": 0,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 1,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 2,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 3,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 4,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 5,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 6,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 7,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 8,
+          "changedFields": []
+        }
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryCount": 9,
+      "beforePassed": true,
+      "afterPassed": true,
+      "sixFieldIdentityAndPlainMetadataStable": true,
+      "exactJsonFieldsEqual": false,
+      "pairs": [
+        {
+          "ancestorIndexZeroBased": 0,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 1,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 2,
+          "changedFields": [
+            "LastAccessTime"
+          ]
+        },
+        {
+          "ancestorIndexZeroBased": 3,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 4,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 5,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 6,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 7,
+          "changedFields": []
+        },
+        {
+          "ancestorIndexZeroBased": 8,
+          "changedFields": []
+        }
+      ]
+    }
+  ],
+  "pairedEntries": 35,
+  "changedPairs": 12,
+  "uniqueChangedNamedPaths": 3,
+  "hashRecordFieldDifferences": [
+    {
+      "pair": "opened-before/opened-after",
+      "changedFields": []
+    },
+    {
+      "pair": "opened-before/named-during",
+      "changedFields": []
+    },
+    {
+      "pair": "named-before/opened-before",
+      "changedFields": []
+    },
+    {
+      "pair": "opened-after/named-after",
+      "changedFields": []
+    }
+  ],
+  "reportedOutcomes": {
+    "executableBeforeOpenedAfterStable": true,
+    "pathIdentityAndPlainMetadataStable": true,
+    "allRecordedPathFieldsStable": false,
+    "boundedHashObservationAccepted": false
+  },
+  "recomputedCollectorConjunction": false,
+  "conjunctionMatchesRecordedRejection": true,
+  "privateSameDefinitionReviewed": false,
+  "privateHashLifecycleReviewed": false,
+  "directJsonEqualityIsPrivateSameProof": false,
+  "nativeAdmission": false,
+  "inputPins": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "controls": [
+    {
+      "name": "all-four-conjuncts-required",
+      "passed": true
+    },
+    {
+      "name": "false-conjunct-0-refuses",
+      "passed": true
+    },
+    {
+      "name": "false-conjunct-1-refuses",
+      "passed": true
+    },
+    {
+      "name": "false-conjunct-2-refuses",
+      "passed": true
+    },
+    {
+      "name": "false-conjunct-3-refuses",
+      "passed": true
+    },
+    {
+      "name": "missing-hash-refuses",
+      "passed": true
+    },
+    {
+      "name": "recorded-all-fields-failure-refuses",
+      "passed": true
+    },
+    {
+      "name": "invalid-three-conjunct-control-would-accept",
+      "passed": true
+    },
+    {
+      "name": "identical-json-has-no-differences",
+      "passed": true
+    },
+    {
+      "name": "detect-VolumeSerialHex",
+      "passed": true
+    },
+    {
+      "name": "detect-FileId128Hex",
+      "passed": true
+    },
+    {
+      "name": "detect-Attributes",
+      "passed": true
+    },
+    {
+      "name": "detect-ReparseTag",
+      "passed": true
+    },
+    {
+      "name": "detect-Directory",
+      "passed": true
+    },
+    {
+      "name": "detect-DeletePending",
+      "passed": true
+    },
+    {
+      "name": "access-time-difference-retained",
+      "passed": true
+    },
+    {
+      "name": "access-time-not-in-six-field-predicate",
+      "passed": true
+    },
+    {
+      "name": "missing-field-detected",
+      "passed": true
+    },
+    {
+      "name": "bool-is-not-integer-field-equality",
+      "passed": true
+    }
+  ],
+  "passed": 19,
+  "failed": 0,
+  "collectorExecuted": false
+}
