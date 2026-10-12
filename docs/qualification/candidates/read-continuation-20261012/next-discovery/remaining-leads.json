@@ -1,0 +1,12 @@
+{
+  "status":"PARTIAL_TRACE_LEADS_NOT_READY_PACKET_OR_ACCEPTANCE",
+  "sourceCommit":"fd8765ec01d292013758606204f2c9d886cd31c1",
+  "leads":[
+    {"ids":["list_members"],"owner":"meri-tools.service.ts:listMembers5765..5830","known":"Stored CongressMember current rows; state/chamber validation, limit1..100/default100; explicit invalid-filter branches and returned-length count. Remaining: freeze full state normalization/scalars/policy metadata."},
+    {"ids":["search_intel_articles"],"owner":"meri-tools.service.ts:searchIntelArticles6349..6392 / Prisma IntelArticle","known":"Global withSystem rows/count; query/source filters; title/summary bounded text and categories/topics arrays. Remaining: exact projection/summary/date normalization pin and independent policy trace."},
+    {"ids":["list_global_datasets","query_global_data"],"owner":"meri-tools.service.ts4770..4860; analytics/global-dataset-registry.ts; query-spec-compiler.ts:QuerySpec84..93; analytics-db.service.ts:run105..117","known":"Named select/filter/group/order QuerySpec and dataset field metadata exist. Query runs stored compiled SQL through dedicated client transaction/timeout and records meriAnalyticsQueryLog via withSystem. recordAnalyticsQuery catches/logs its own failure. These are effects, not missing DTOs. Remaining: complete registry whitelist, normalized dynamic result scalars, caps/parameter binding and authority trace; no legacy compiler/DB implementation copy."},
+    {"ids":["get_representation"],"owner":"meri-tools.service.ts:getRepresentation6145..6182; clients/representation-resolver.service.ts:representationForClient261..282; ResolvedRepresentation18/UnresolvedRepresentation29/FederalMemberSummary35/StateLegislatorSummary43","known":"Explicit tenantId/clientId facility query and DTOs exist; tenant-only resolver signature does not establish current actor/client-wall policy. Remaining: current authorization and full downstream resolver effect trace; no claim of missing DTO."}
+  ],
+  "catalogChanged":false,
+  "sourceExecuted":false
+}
