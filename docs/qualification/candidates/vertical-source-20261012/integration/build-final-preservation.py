@@ -28,16 +28,33 @@ changed = sorted(path for path in before if path in after and before[path] != af
 added = sorted(set(after) - set(before))
 assert not deleted, deleted
 tests = [path for path in changed if '/test/' in path]
+title_changes = {
+    'apps/gateway/test/action-item-context-independent.test.mjs': (
+        b'all84 production operations remain unavailable and zero-effect',
+        b'all97 production operations remain unavailable and zero-effect'),
+    'apps/gateway/test/capability-next-independent.test.mjs': (
+        b'independent combined catalog remains invisible and refuses all84 operations before every effect',
+        b'independent combined catalog remains invisible and refuses all97 operations before every effect'),
+    'packages/contracts/test/retrieval-reference-integration-independent.test.mjs': (
+        b'actual production gateway keeps all84 unavailable without any authority or budget effects',
+        b'actual production gateway keeps all97 unavailable without any authority or budget effects'),
+}
 rows = []
 for path in tests:
     old, new = git('show', f'{BASE}:{path}'), git('show', f'{head}:{path}')
     declarations = lambda data: re.findall(rb'\b(?:test|it)\s*\(\s*[\'"`]([^\'"`]+)', data)
-    assert declarations(old) == declarations(new), path
+    expected = declarations(old)
+    if path in title_changes:
+        old_title, new_title = title_changes[path]
+        assert expected.count(old_title) == 1 and declarations(new).count(new_title) == 1
+        expected = [new_title if title == old_title else title for title in expected]
+    assert expected == declarations(new), path
     assertions = lambda data: len(re.findall(rb'\bassert(?:\.[A-Za-z]+)?\s*\(', data))
     assert assertions(new) >= assertions(old), path
     rows.append({'path': path, 'beforeSha256': sha(old), 'afterSha256': sha(new),
                  'beforeTests': len(declarations(old)), 'afterTests': len(declarations(new)),
-                 'beforeAssertions': assertions(old), 'afterAssertions': assertions(new)})
+                 'beforeAssertions': assertions(old), 'afterAssertions': assertions(new),
+                 'reviewedTitleChange': [v.decode() for v in title_changes[path]] if path in title_changes else None})
 forward = git('diff', '--binary', BASE, head, '--', *tests)
 inverse = git('diff', '--binary', head, BASE, '--', *tests)
 with tempfile.TemporaryDirectory(prefix='meri-vertical-inverse-', dir='/tmp') as temp:
