@@ -1,0 +1,56 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "frozen_at_utc": "2026-10-12T04:15:35.599720+00:00",
+  "scope": "Independent source review of actual gateway durable tool-budget call path. No production/migration edits, database/cloud/native/paid/provider execution.",
+  "criteria": [
+    {
+      "id": "DB1",
+      "assertion": "Root-approved exclusive production paths, migration contract and exact candidate freeze; preserve existing model ledger, public0.1/private0.2/catalog/source-disabled semantics and all original assertions."
+    },
+    {
+      "id": "DB2",
+      "assertion": "Actual createToolDispatch reserve/settle/markUncertain path composes the concrete persistence-backed tool-budget implementation in a source-only trusted composition; injected canned acknowledgements alone are insufficient."
+    },
+    {
+      "id": "DB3",
+      "assertion": "Trusted stable invocation/reservation identity permits replay-safe accounting: exact replay cannot double debit or redispatch; altered binding/operation/arguments/usage under an existing identity denies. Argument equality alone is not invocation identity."
+    },
+    {
+      "id": "DB4",
+      "assertion": "Reservation and transitions preserve complete tenant/actor/conversation/run/attempt/worker/writerFence and capability/policy bindings; model/caller DTO fields cannot supply trusted cost or broaden budget/authority."
+    },
+    {
+      "id": "DB5",
+      "assertion": "Fresh current state, revocation, expiry and stale replacement checks occur within the authoritative accounting transition, including after lock waits; dispatch/release authority checks and deadlines remain effective."
+    },
+    {
+      "id": "DB6",
+      "assertion": "Explicit trusted tool cost/usage policy defines finite safe integer microUSD and output/runtime/turn treatment; held plus consumed liabilities enforce caps without reset, underflow, overflow, or model-ledger double counting."
+    },
+    {
+      "id": "DB7",
+      "assertion": "Atomic reserve precedes effect; commit acknowledgement loss, cancellation, timeout, process interruption and unknown outcome retain liability. No automatic retry, refund, expiry release or fresh-id bypass of unresolved prior work."
+    },
+    {
+      "id": "DB8",
+      "assertion": "Settlement is bound to original reservation and trusted measured usage; replay has at most one debit, mismatched/elevated usage denies or quarantines without erasing liability. Uncertain cleanup does not overwrite a terminal settled state."
+    },
+    {
+      "id": "DB9",
+      "assertion": "Independent actual-dispatch tests cover success, duplicate replay/concurrency, stale/revoked/expired state, missing/malformed/parked reserve and settlement, lost acknowledgements and uncertainty cleanup failure; source connectivity remains disabled in production composition."
+    },
+    {
+      "id": "DB10",
+      "assertion": "Inspect real SQL transactions, unique keys/locking/isolation and source integration separately from a local fake/recording executor. Any engine/concurrency/crash/reconnect tests authored but unrun remain explicit; no fake DB durability claim."
+    },
+    {
+      "id": "DB11",
+      "assertion": "Original gateway deadline/authority/negative controls remain unchanged and relevant suites pass or retain diagnosed failures; source tests are evidence only, not closure of actual G1 runtime gates."
+    },
+    {
+      "id": "DB12",
+      "assertion": "Exact commit/tree/source hashes, before/after checks, raw failures and remaining authority/engine gates recorded; bounded local cleanup, no background jobs or external actions."
+    }
+  ]
+}

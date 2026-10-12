@@ -1,0 +1,55 @@
+{
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "files": [
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 7174,
+      "sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb"
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "bytes": 2994,
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9"
+    },
+    {
+      "path": "apps/proxy/qualification/state/ledger.py",
+      "bytes": 8478,
+      "sha256": "cf5627d63cf3d27f7288c54aa1d08863a9aa5c1d0c7c62da7fa3618f1b9dcfde"
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 4449,
+      "sha256": "3b4cf4bb014b62908077feea01bff47189833e9669863c184ffe436cd63b3a6b"
+    },
+    {
+      "path": "apps/proxy/qualification/state/grants.py",
+      "bytes": 4650,
+      "sha256": "7d1a3b313ca984f8cd5f4a3c2eeb31bc6075805b4b7843bcb84081390b98f50c"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+      "bytes": 2467,
+      "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/bedrock_transport.py",
+      "bytes": 7595,
+      "sha256": "0a07f8c47d88aaacaebb6016a81e57af2a926f20b29085798224b07c7aa01884"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 12067,
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+    }
+  ]
+}
