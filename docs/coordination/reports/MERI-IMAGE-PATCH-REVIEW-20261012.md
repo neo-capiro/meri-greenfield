@@ -1,0 +1,20 @@
+# Independent worker image patch preparation review
+
+Status: IN PROGRESS. Base PR12 `90b4dc8472da13cdee9f49cdc0b4c8306ecbdc73`. Reviewer isolated worktree `/workspace/meri-image-patch-review-20261012`, branch `review/meri-image-patch-20261012`. Separate source author, OS/vendor researcher, license researcher and parent full-row mapping owner retain exclusive paths. This reviewer owns only this report and `docs/qualification/candidates/image-patch-20261012/review/**`. No delegation.
+
+## Acceptance outline fixed before candidate
+
+1. Preserve the held image `sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac`, its complete original scan and installed package inventory. Every one of the 47 findings remains an obligation; disappearance from a new scan alone is not a fix. New evidence must distinguish vendor fix availability, actual installed provider/feature reachability, bundled copies and owner disposition.
+2. A patched build-context candidate needs released exact versions and immutable archive/digest/integrity pins, not future or unavailable packages. For Debian, retain the fixed main/security snapshot, signature trust, Release-to-Packages-to-binary hash chain and real dependency-resolution/ABI evidence requirements. Public fetch/signature failures stay visible; a guard or version string alone cannot establish a supported fix.
+3. Retain required SDK, Playwright/MCP, Chromium sandbox, LibreOffice writer/calc/impress, PDF, Python artifact libraries and fonts. No removal of required functionality, alternate model loop, legacy implementation, host artifact skills or unreviewed distribution/runtime migration is acceptable.
+4. Candidate coherence spans Dockerfile, component pins, npm/Python locks, ABI-specific wheels, compiled inventory pins/roots, sandbox helper ownership, closed context membership, assembler/build-helper closure and license/notice evidence. Existing runtime/renderer/Office probes and source-disabled admission gates cannot be weakened merely to accept new versions.
+5. Independently assemble deterministic source contexts without building an image; verify byte identity and refuse modified context, unexpected files, symlinks or a forged authority flag. Offline scan countercontrols must retain exact digest/row/count/pagination binding and false admission flags even for zero findings.
+6. Recheck the exact returned candidate and original relevant local tests. Return `ACCEPT_SOURCE_PREPARATION` only for a coherent reviewable source/evidence packet, explicitly separate from readiness to build or runtime admission. If no supported patchset exists, say `HOLD` for the patched image; an honest held packet may be accepted as evidence without inventing a fixed image.
+
+No AWS calls, image build/push/execution, provider/model/paid actions, customer access, frontend changes, infrastructure mutation or Hermes operations are authorized. Local metadata, deterministic source assembly and synthetic tests cannot close G1 or prove a clean image.
+
+## Early architecture findings
+
+The inherited recipe has 35 direct exact OS package pins and signed fixed Debian trixie main/security sources. It retains Node/SDK/browser binary hashes, seven hash-pinned Python wheels including a CPython 3.13 ABI-specific lxml wheel, and compiled inventory roots/helper identity checks. The closed worker_context membership and pinned assembler/build-helper/Windows-runner closure are separate obligations from package versions. Changing the snapshot or SDK/browser version requires a coherent change across these boundaries; no runner migration is implied.
+
+Current component-pins and Dockerfile historical wording still describes the trixie candidate as UNBUILT and cites older bookworm7327 evidence (2 critical/13 high). The exact PR8 held8d1ec09 scan instead contains 47 findings (5 critical/17 high). Historical source/evidence must stay preserved, but the new packet must reconcile the current held lineage explicitly; the older unresolvedPins list is not exhaustive current scan coverage.
