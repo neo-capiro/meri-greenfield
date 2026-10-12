@@ -1,0 +1,15 @@
+{
+  "authority": "Parent continuation after reading PR20 external evidence package",
+  "restriction": "Repeated proxy403 is an access restriction",
+  "supersedes": "PR20 proposal to arrange an alternative external metadata handoff",
+  "prohibitedRoutesForSameBlockedMetadata": ["another host", "mirror", "relay", "local computer"],
+  "requiredOwnerAction": "Environment owner approves and enables the supported normal route",
+  "nativePrefixPath": "BLOCKED_UNTIL_OWNER_ENABLED_NORMAL_ROUTE",
+  "additionalMetadataRetrievals": 0,
+  "setupActions": 0,
+  "nativeInstallation": false,
+  "securityOrNetworkChanges": false,
+  "unchangedFailureMetadataPr": false,
+  "independentAuthorizedWork": "Exact already-authorized private helper review and independently demonstrated canonical hash deadline source repair",
+  "priorEvidencePreserved": true
+}

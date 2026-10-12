@@ -1,0 +1,173 @@
+{
+  "candidate": "c67558c211ede5a41e903f09e73666b43867301b",
+  "verdict": "ACCEPT_SOURCE",
+  "nativeAcceptance": "HOLD",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-HELPER-SOURCE-REVIEW-20261012.md",
+      "bytes": 8327,
+      "sha256": "b72750fdc8891c05caa02fd1fea82d4b953467b4225f49ff4e2a679613371834"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/author-hash-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/author-hash-final.stdout.txt",
+      "bytes": 11221,
+      "sha256": "259b14473fe6737fca8061b4c9aeb56f3b7c5cf5773e634cbbe15030f0404991"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/author-helper-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/author-helper-final.stdout.txt",
+      "bytes": 3556,
+      "sha256": "72364077ecbe222060144336ae72904be9c560d9d33a421d8f20c7b6e12d9b9e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/author-manifest-integrity.json",
+      "bytes": 3086,
+      "sha256": "bf75eb76a6ecea58cdcc9107a4add71c8ab65f67c86004656a36a675c556a731"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-baseline.json",
+      "bytes": 4524,
+      "sha256": "3d71f4fdf957442910f9422c015a64e960d6bd777986fdb96c2c49bd0ad0e42e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-baseline.source.py.txt",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-draft-replay.json",
+      "bytes": 4023,
+      "sha256": "dcd59699707a4e5555b61f10e557e9613f572f47f7c77b9c12e7fb1567e503d8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-draft-replay.source.py.txt",
+      "bytes": 14108,
+      "sha256": "06dfe5e559e7cd474b31facd67ebadefb5cd2ae07ac1f1e077b671e6ece44db0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-exact-freeze.json",
+      "bytes": 4023,
+      "sha256": "be9cfa38a15e580cf5f517516516dbd63eb3c692173dcbb7d1b65c4bb83b915d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-exact-freeze.source.py.txt",
+      "bytes": 14190,
+      "sha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/deadline-final.stdout.txt",
+      "bytes": 111,
+      "sha256": "6f967c40135e755937243aad84cfdaa46abaf9d5db9a215e532c47d6ca1f39b8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/exact-replay-receipts.json",
+      "bytes": 1007,
+      "sha256": "08542f1cb0c199c9aab928e123a98996b3f2561f6077766ff7066c72d6173d38"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/final-review.json",
+      "bytes": 954,
+      "sha256": "cfcfafb41d60dc2dc65b1956b2ce7c7dc19e1f2c371755d8476293513b5ee634"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/frozen-criteria.json",
+      "bytes": 3772,
+      "sha256": "da1a058c188c314487dad28359a3c97344a8b47408486bfa190374252df0a33b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/hash-deadline-controls.py",
+      "bytes": 3740,
+      "sha256": "5f571b348c54be7a397b278cc46f1aee16c0c5ec7a8c7d832033879a0c5160a8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/hash-preservation-controls.py",
+      "bytes": 6427,
+      "sha256": "190f0f3adce2b6cb1fb9fb226e0c83cf7edf3abaf6cd71264f79a704756871a4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/helper-source-data-analysis.json",
+      "bytes": 9603,
+      "sha256": "5e65ce3a389153e241d12cf4391effd5ec2ddb736ffbbda65fa4221dbd7b3cb7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/maintained-final.stderr.txt",
+      "bytes": 1318,
+      "sha256": "e5edaee7e4457ef0ee674e1a06a6b2f00fd9d8545cb302814bca6dc216159c89"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/maintained-final.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/preservation-draft.json",
+      "bytes": 2417,
+      "sha256": "c282dda667328827e7cfa29dcd26b73beab41f2ab6edc75e038c346d4fe86d72"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/preservation-exact-freeze.json",
+      "bytes": 2417,
+      "sha256": "a22c5f6a42d8a4d5b728fc344e05dfef5303d08cf4d7f9cb728968ae53a6ad93"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/preservation-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/preservation-final.stdout.txt",
+      "bytes": 28,
+      "sha256": "bff3b8a87f0bceeb2a38c198795957227d4bb790b03c3e84bede230d6dd53f87"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/privacy-audit.json",
+      "bytes": 259,
+      "sha256": "f318bb9a19b4659a900d7987b75f312075abbf554763cbbc833631e165be0180"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/private-facts-final.json",
+      "bytes": 4984,
+      "sha256": "3f3f4e3bd7fb6a5c6c0a4d1d1916dde79c29325255c029714878ea33483a8939"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/private-facts-review.py",
+      "bytes": 4363,
+      "sha256": "294d7203d5007e232ad4640367b04c0a14a2b436cad6cfb8c58c62ce141f6fa2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/static-exact-freeze.json",
+      "bytes": 4186,
+      "sha256": "e6de833569f00d1c2c276e530dce9fcdd6768a3afdf54464bcd546d4e9db1f79"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/static-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/static-final.stdout.txt",
+      "bytes": 28,
+      "sha256": "1b7bd80bd06b4cd195fedf59f3ae0dc78b62f764f963fb2f800b388e76de9811"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/review/static-preservation-review.py",
+      "bytes": 5938,
+      "sha256": "de63e43d016872e36e2454359dcef5aff53abf11c7f9b8ef7885c2c82b44f764"
+    }
+  ]
+}
