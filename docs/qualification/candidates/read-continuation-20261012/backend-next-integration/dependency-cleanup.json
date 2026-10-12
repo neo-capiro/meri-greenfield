@@ -1,0 +1,55 @@
+{
+  "observedAt": "2026-10-12T20:11:14.847897+00:00",
+  "paths": [
+    {
+      "path": "node_modules/ajv",
+      "files": 466,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "files": 15,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "files": 6,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "files": 44,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "files": 11,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "files": 12,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "files": 4,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "files": 2836,
+      "donorBytesExactBeforeRemoval": true,
+      "removedOwnedCopy": true
+    }
+  ],
+  "donorModified": false,
+  "sourceOrEvidenceRemoved": false
+}

@@ -1,0 +1,39 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "canonicalSource": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "completeTestSource": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "passed": {
+    "expanded": 3196,
+    "correctedIndependent": 29,
+    "publicTests": 7,
+    "sourceAudit": 7690,
+    "acceptedPacketChecks": 1192,
+    "independentControls": 29,
+    "independentSourceAudit": 7429,
+    "independentPacketAudit": 795,
+    "independentReceiptAudit": 52
+  },
+  "publicGenerationAndTypes": "PASS",
+  "preservedFailures": {
+    "focused": {
+      "passed": 1022,
+      "failed": 7,
+      "cause": "Reviewer synthetic PE identity and required year claims; original assertions retained; corrected29 and complete3196 suite passed"
+    },
+    "publicContracts": "First run generation passed, typecheck launcher MODULE_NOT_FOUND; exact7donor .bin symlinks restored, publiccheck passed"
+  },
+  "ownedCaptureGroups": 10,
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "scope": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 70,
+    "selectedPending": 26,
+    "typedUnavailable": 71
+  },
+  "rootReceiptFreeze": "9e8a6c8a2fe66d7b62813fd74163904fddaaf186",
+  "independentReview": "d0b181e312b797e0fe181c16be814da23e126767",
+  "historicalReceiptPreserved": "initial-verification-summary.json"
+}
