@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/verify-packets.py"
+  ],
+  "cwd": "/workspace/meri-backend-next-20261012",
+  "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T20:04:18.817425+00:00",
+  "durationSeconds": 0.818,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 294949,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-final.stdout.bin",
+      "bytes": 1680,
+      "sha256": "53165c5e86763c85d5f4f06b7f0006e865cec5b6af337d81e1fb35b0d4a07d70"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/accepted-packets-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

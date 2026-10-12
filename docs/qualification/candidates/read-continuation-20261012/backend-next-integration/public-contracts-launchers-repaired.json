@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-backend-next-20261012",
+  "sourceHead": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T20:05:27.674148+00:00",
+  "durationSeconds": 3.131,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 296120,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 296157,
+      "status": 0
+    },
+    {
+      "pid": 296251,
+      "status": 0
+    },
+    {
+      "pid": 296270,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts-launchers-repaired.stdout.bin",
+      "bytes": 1946,
+      "sha256": "2da3cacd594398aaa80274f50450c05e98cc69cb398445031e097a6e5bef3f6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/public-contracts-launchers-repaired.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,5 +1,5 @@
 {
-  "passed": 877,
+  "passed": 1192,
   "failed": 0,
   "packets": [
     {
@@ -25,8 +25,20 @@
       "manifest": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json",
       "members": 53,
       "sha256": "fe8fc1f3760eca91ba1af0658b979bbf56fa5edd19a079930eea6f4750b0fc6c"
+    },
+    {
+      "reference": "790638e4908429f190dd6414814ee872145fa289",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json",
+      "members": 70,
+      "sha256": "d92df8a1549c715d2d02a5b78aa97404a7ac02e749f9af7a6beec7ce3e3729cf"
+    },
+    {
+      "reference": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json",
+      "members": 33,
+      "sha256": "28cbefa92df1504997a784863104735a9402f31faa2787ff9b5648ba6a4f68fd"
     }
   ],
-  "boundCodeFiles": 18,
+  "boundCodeFiles": 22,
   "runtimeAccepted": false
 }
