@@ -1,0 +1,74 @@
+{
+  "baseCommit": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "criteriaCommit": "4a5c3baa5a2033abfff70060c91f44fca2c8a3f9",
+  "files": [
+    {
+      "path": "apps/control/qualification-temporal/workflow.ts",
+      "bytes": 7703,
+      "sha256": "31ed39577ef3c60f83fcb6bbea23a5c627a217adb48052d205517cd984528650"
+    },
+    {
+      "path": "apps/control/qualification-temporal/activities.ts",
+      "bytes": 1837,
+      "sha256": "952015320fa259c2afd510eada5e1426fe1f1daad04bf1bfec80c3e5f5b35fd5"
+    },
+    {
+      "path": "apps/control/qualification-temporal/package.json",
+      "bytes": 860,
+      "sha256": "685c65a85bd7d352a929f4a99ccdf803cad25a697ea9d6f04ff5821b99847c6e"
+    },
+    {
+      "path": "apps/control/qualification-temporal/package-lock.json",
+      "bytes": 79367,
+      "sha256": "2f51fc50d101aa3650b295a3d4e72bef36e4047b2bc784b6ee1136578ab13673"
+    },
+    {
+      "path": "apps/control/qualification-temporal/tsconfig.json",
+      "bytes": 484,
+      "sha256": "1b511b5cc1cd6a802896b1ae66945020424a5da1c269466d95403ff429eeba0c"
+    },
+    {
+      "path": "apps/control/qualification-temporal/compatibility.test.mjs",
+      "bytes": 29438,
+      "sha256": "3c4735ab42694d44d2fddb3d08c3c59326d0db9b87e4d98d1f5bb9a1697d98f8"
+    },
+    {
+      "path": "apps/control/qualification-temporal/component-pins.json",
+      "bytes": 5399,
+      "sha256": "68898b4e6727062405b351465656927bdabe50e6e78ec68cc3e505a470f4aacb"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/binding.mjs",
+      "bytes": 14534,
+      "sha256": "1cc5c10b31335cc46a6c5285f72ae8d71bd392efc7b633e94df225539fd0dec4"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/control.mjs",
+      "bytes": 3738,
+      "sha256": "76f76b7f6231d91a25d09df787d1dc629d68d204c884a8c258d733fcbbadf74e"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/run-stop.mjs",
+      "bytes": 6757,
+      "sha256": "5be0412841282d19bed28fac0b41556ac012bbdff4523e4e2fac45c43446623b"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "bytes": 5948,
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+    },
+    {
+      "path": "scripts/qualification/sdk-stale-worker-challenge.mjs",
+      "bytes": 3542,
+      "sha256": "8cf5066f6c1be96b88bc99111da914bb88ad2dcd5fe4c75acaffc562382b01b3"
+    }
+  ],
+  "nativeExecution": false,
+  "realDatabase": false,
+  "coreLoaded": false
+}
