@@ -1,0 +1,9 @@
+{
+  "fullExit": 2,
+  "fullStdoutBytes": 8700,
+  "fullStdoutSha256": "938f10aeb8b37b53ec30726c65aef0fd8f1f7de26ddfcf46b3689e029125bd08",
+  "fullStderrBytes": 0,
+  "authoredExit": 0,
+  "rawEvidenceNormalized": false,
+  "explanation": "Full raw evidence may retain patch context whitespace; authored script/test/task/report check is separate and must pass."
+}

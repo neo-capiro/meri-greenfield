@@ -3,7 +3,7 @@
   "runtimeVerdict": "HOLD",
   "source": "441613b0432bf8c84c8acb33e237e6595b6170c7",
   "sourceTree": "b14f441a572f7fa69c758db60ef52a632be2769a",
-  "packet": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "packet": "b733e9d43ec7d43cbd867ac73a0df2b533d79dc4",
   "behaviorDiffBytes": 0,
   "behaviorDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "canonicalProduction": "c80260046e33d742811fca6f553af4033eb393bc",
@@ -52,5 +52,7 @@
     "review initial new-source audit incorrectly included README",
     "review root receipt parser initially expected TAP instead of captured spec reporter"
   ],
-  "runtimeAccepted": false
+  "runtimeAccepted": false,
+  "earlierVerifiedPacket": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "finalMetadataChecks": 386
 }

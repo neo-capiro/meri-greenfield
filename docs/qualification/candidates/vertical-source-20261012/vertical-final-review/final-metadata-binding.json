@@ -1,0 +1,2127 @@
+{
+  "before": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "packet": "b733e9d43ec7d43cbd867ac73a0df2b533d79dc4",
+  "changed": [
+    "docs/coordination/reports/CODEX-VERTICAL-SOURCE-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/integration/build-ledgers.py",
+    "docs/qualification/candidates/vertical-source-20261012/integration/capability-ledger.json",
+    "docs/qualification/candidates/vertical-source-20261012/integration/cleanup-final.json",
+    "docs/qualification/candidates/vertical-source-20261012/integration/requirements-continuation.json"
+  ],
+  "deltas": [
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        25,
+        "sourceEvidence",
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        25,
+        "sourceEvidence",
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        25,
+        "sourceEvidence",
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        98,
+        "sourceEvidence",
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        98,
+        "sourceEvidence",
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        98,
+        "sourceEvidence",
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        99,
+        "sourceEvidence",
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        99,
+        "sourceEvidence",
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        99,
+        "sourceEvidence",
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        100,
+        "sourceEvidence",
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        100,
+        "sourceEvidence",
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "capability-ledger.json",
+        "records",
+        100,
+        "sourceEvidence",
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        1,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        1,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        1,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        7,
+        "continuationComponents",
+        0,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        7,
+        "continuationComponents",
+        0,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        7,
+        "continuationComponents",
+        0,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        9,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        9,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        9,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        12,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        12,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        12,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        15,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        15,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        15,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        16,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        16,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        16,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        25,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        25,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        25,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        29,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        29,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        29,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        37,
+        "continuationComponents",
+        0,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        37,
+        "continuationComponents",
+        0,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        37,
+        "continuationComponents",
+        0,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        42,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        42,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        42,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        45,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        45,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        45,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        47,
+        "continuationComponents",
+        3,
+        "behavior"
+      ],
+      "before": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+      "after": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority."
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        47,
+        "continuationComponents",
+        3,
+        "generalBudgetReview"
+      ],
+      "before": null,
+      "after": "207d9f084e335b7bd7051ff97b1c844f0671e425"
+    },
+    {
+      "path": [
+        "requirements-continuation.json",
+        "records",
+        47,
+        "continuationComponents",
+        3,
+        "generalBudgetSource"
+      ],
+      "before": null,
+      "after": "cee27278cc58ab35f72763faa8c9b49ff80c8725"
+    }
+  ],
+  "checks": [
+    {
+      "name": "five exact allocated metadata changes",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 19, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 19, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 25, 'sourceEvidence', 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 25, 'sourceEvidence', 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 25, 'sourceEvidence', 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 25, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 25, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 78, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 78, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 85, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 85, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 98, 'sourceEvidence', 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 98, 'sourceEvidence', 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 98, 'sourceEvidence', 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 98, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 98, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 99, 'sourceEvidence', 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 99, 'sourceEvidence', 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 99, 'sourceEvidence', 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 99, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 99, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 100, 'sourceEvidence', 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 100, 'sourceEvidence', 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['capability-ledger.json', 'records', 100, 'sourceEvidence', 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 100, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 100, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 101, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 101, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 102, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 102, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 103, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 103, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 104, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 104, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 116, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 116, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 117, 'sourceEvidence', 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['capability-ledger.json', 'records', 117, 'sourceEvidence', 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 0, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 0, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 0, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 0, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 1, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 1, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 1, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 1, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 2, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 2, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 2, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 2, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 3, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 3, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 3, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 3, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 4, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 5, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 6, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 6, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 6, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 6, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 7, 'continuationComponents', 0, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 7, 'continuationComponents', 0, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 7, 'continuationComponents', 0, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 7, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 8, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 9, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 9, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 9, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 9, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 10, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 10, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 10, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 10, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 11, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 11, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 11, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 11, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 12, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 12, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 12, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 12, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 13, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 13, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 13, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 13, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 14, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 14, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 14, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 14, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 15, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 15, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 15, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 15, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 16, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 16, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 16, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 16, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 17, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 17, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 17, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 17, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 18, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 18, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 18, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 18, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 19, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 19, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 19, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 19, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 20, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 20, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 20, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 20, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 21, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 21, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 21, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 21, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 22, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 22, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 22, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 22, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 23, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 23, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 23, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 23, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 24, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 24, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 24, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 24, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 25, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 25, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 25, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 25, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 26, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 26, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 26, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 26, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 27, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 27, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 27, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 27, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 28, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 28, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 28, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 28, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 29, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 29, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 29, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 29, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 30, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 30, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 30, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 30, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 31, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 31, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 31, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 31, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 32, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 32, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 32, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 32, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 33, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 33, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 33, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 33, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 34, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 34, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 34, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 34, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 35, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 35, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 35, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 35, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 36, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 36, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 36, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 36, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 37, 'continuationComponents', 0, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 37, 'continuationComponents', 0, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 37, 'continuationComponents', 0, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 37, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 38, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 39, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 39, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 39, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 39, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 40, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 40, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 40, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 40, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 41, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 41, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 41, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 41, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 42, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 42, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 42, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 42, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 43, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 43, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 43, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 43, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 44, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 44, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 44, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 44, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 45, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 45, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 45, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 45, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 46, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 46, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 46, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 46, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 0, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 0, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 1, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 1, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 2, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 2, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 47, 'continuationComponents', 3, 'behavior']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 47, 'continuationComponents', 3, 'generalBudgetReview']",
+      "passed": true
+    },
+    {
+      "name": "exact declared metadata leaf ['requirements-continuation.json', 'records', 47, 'continuationComponents', 3, 'generalBudgetSource']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 3, 'operations']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationComponents', 3, 'remaining']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 47, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 48, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 48, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 48, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 48, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 49, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 49, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 49, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 49, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 50, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 50, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 50, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 50, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 51, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 51, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 51, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 51, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 52, 'continuationComponents']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 52, 'continuationSourceFamilies']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 52, 'governingRequirement', 'reportedRuntimeReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "same list length ['requirements-continuation.json', 'records', 52, 'governingRequirement', 'sourceReceiptIds']",
+      "passed": true
+    },
+    {
+      "name": "all application/package/test bytes unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 386,
+  "failed": 0,
+  "rootReportRead": true,
+  "runtimeAccepted": false
+}

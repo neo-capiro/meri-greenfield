@@ -1,0 +1,97 @@
+{
+  "ownedProcessGroups": [
+    {
+      "receipt": "accepted-packets-stage.json",
+      "group": 396793,
+      "absent": true
+    },
+    {
+      "receipt": "canonical-expanded.json",
+      "group": 388541,
+      "absent": true
+    },
+    {
+      "receipt": "canonical-first.json",
+      "group": 386976,
+      "absent": true
+    },
+    {
+      "receipt": "final-accepted-packets.json",
+      "group": 399955,
+      "absent": true
+    },
+    {
+      "receipt": "final-root-receipts-corrected.json",
+      "group": 400395,
+      "absent": true
+    },
+    {
+      "receipt": "final-root-receipts.json",
+      "group": 399936,
+      "absent": true
+    },
+    {
+      "receipt": "final-source-audit.json",
+      "group": 398748,
+      "absent": true
+    },
+    {
+      "receipt": "integration-audit-corrected.json",
+      "group": 389914,
+      "absent": true
+    },
+    {
+      "receipt": "integration-audit-first.json",
+      "group": 389668,
+      "absent": true
+    },
+    {
+      "receipt": "prior-identities.json",
+      "group": 387853,
+      "absent": true
+    }
+  ],
+  "allAbsent": true,
+  "removedOwnedDependencies": [
+    {
+      "path": "node_modules/ajv",
+      "bytes": 1033496,
+      "files": 466
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "bytes": 56763,
+      "files": 15
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "bytes": 24474,
+      "files": 6
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "bytes": 12966,
+      "files": 11
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "bytes": 220886,
+      "files": 44
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "bytes": 22220,
+      "files": 12
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "bytes": 3422,
+      "files": 4
+    }
+  ],
+  "removedBytes": 1374227,
+  "donorTouched": false,
+  "sourceEvidenceLocksBranchesPreserved": true,
+  "networkOrInstallation": false,
+  "freeBytesAfter": 74244096
+}
