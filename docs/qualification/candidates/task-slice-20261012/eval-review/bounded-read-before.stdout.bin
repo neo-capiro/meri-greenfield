@@ -1,0 +1,28 @@
+✖ CLI reads bounded descriptor chunks instead of unbounded readFile after stat (13.882443ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2463.290784
+
+✖ failing tests:
+
+test at evals/task-lookup/test/eval-independent.test.mjs:134:1
+✖ CLI reads bounded descriptor chunks instead of unbounded readFile after stat (13.882443ms)
+  AssertionError [ERR_ASSERTION]: pre-stat size is not an allocation bound against subsequent growth
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-review-20261012/evals/task-lookup/test/eval-independent.test.mjs:141:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,6 @@
+{
+  "command": "git sparse-checkout add --no-cone /packages/contracts/",
+  "exitCode": 128,
+  "result": "unknown option no-cone; trailing git add also refused absent dependency-links.json",
+  "correction": "Use sparse-checkout add without mode flag; worktree already non-cone. No target/test execution occurred."
+}

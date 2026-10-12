@@ -1,0 +1,38 @@
+{
+  "source": "844115957d46f4657d223a5a905513dbf3a3a210",
+  "actualControlDependency": "ee2479918c59afa91b88e8c0b3ba2652030a5869",
+  "verdict": "HOLD",
+  "findings": [
+    {
+      "id": "E1",
+      "owner": "root first identified; independently reproduced",
+      "issue": "Actual read before_release.original is complete prepared binding; scorer requires RunBinding shorthand.",
+      "receipt": "actual-control-before.json",
+      "result": "48 PASS /1 FAIL"
+    },
+    {
+      "id": "E2",
+      "issue": "Expected denial passes with no captured authority denial.",
+      "receipt": "outcomes-before.json"
+    },
+    {
+      "id": "E3",
+      "issue": "Expected denial passes with all-authorized callbacks.",
+      "receipt": "outcomes-before.json"
+    },
+    {
+      "id": "E4",
+      "issue": "Clarify label/reason passes without any clarification operation/observation contract. Root approved explicit ineligible until supported.",
+      "receipt": "outcomes-before.json",
+      "combinedResult": "48 PASS /4 FAIL includingE1"
+    },
+    {
+      "id": "E5",
+      "issue": "CLI stat followed by unbounded FileHandle.readFile contradicts16MiB bounded ingestion against growth.",
+      "receipt": "bounded-read-before.json",
+      "result": "0 PASS /1 FAIL",
+      "mechanism": "Observe isolated local built-in open handle method calls on tiny synthetic regular JSON; require bounded read chunks; no large-file allocation/native target."
+    }
+  ],
+  "scope": "Source only; no real data, current-policy authentication or runtime qualification."
+}

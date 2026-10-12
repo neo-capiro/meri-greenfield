@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "evals/task-lookup/test/eval-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-eval-review-20261012",
+  "sourceHead": "4b547a2ecd5dea0df933e2837784c9a73f4a7cff",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-12T23:47:32.211326+00:00",
+  "durationSeconds": 2.881,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 414240,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/fixture-corrected.stdout.bin",
+      "bytes": 3936,
+      "sha256": "6fffdc4ec78c0639b1533704ac9a07a70f82bf285b7baf83a1fe57cd605311a2"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/fixture-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

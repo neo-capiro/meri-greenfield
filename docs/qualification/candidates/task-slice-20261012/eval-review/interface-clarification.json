@@ -1,0 +1,1 @@
+{"beforeCandidate":true,"beforeAnyReplay":true,"change":"Author confirmed runnerCases returns pinned envelope with cases array, not bare array assumed in first prewritten controls. Assertions access .cases; original commit0e19ffdf retained."}

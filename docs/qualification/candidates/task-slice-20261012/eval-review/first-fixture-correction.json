@@ -1,0 +1,14 @@
+{
+  "source": "844115957d46f4657d223a5a905513dbf3a3a210",
+  "initial": {
+    "pass": 91,
+    "fail": 3
+  },
+  "corrections": [
+    "Independent observation raw argument hash replaced by existing canonical normalizeInput argumentsSha256; two positive failures share this cause.",
+    "Run-envelope substitution preserves every failed case instead of throwing; assert all failed and observationSetValid false."
+  ],
+  "unchangedProduction": true,
+  "originalTest": "first-independent.test.mjs.txt",
+  "sourceMismatchPending": "Actual control full prepared binding versus inferred RunBinding callback form; root finding to preserve separately."
+}

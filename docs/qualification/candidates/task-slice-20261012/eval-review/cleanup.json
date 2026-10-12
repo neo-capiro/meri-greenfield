@@ -1,0 +1,66 @@
+{
+  "reviewGroups": [
+    {
+      "receipt": "actual-control-before.json",
+      "group": 415198,
+      "absent": true
+    },
+    {
+      "receipt": "bounded-read-before.json",
+      "group": 416468,
+      "absent": true
+    },
+    {
+      "receipt": "first.json",
+      "group": 413080,
+      "absent": true
+    },
+    {
+      "receipt": "fixture-corrected.json",
+      "group": 414240,
+      "absent": true
+    },
+    {
+      "receipt": "outcomes-before.json",
+      "group": 416095,
+      "absent": true
+    },
+    {
+      "receipt": "repaired.json",
+      "group": 418869,
+      "absent": true
+    }
+  ],
+  "allAbsent": true,
+  "ownedLinksRemoved": [
+    {
+      "name": "ajv",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "ajv-formats",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "canonicalize",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "fast-deep-equal",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "fast-uri",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "json-schema-traverse",
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "require-from-string",
+      "borrowedTargetUntouched": true
+    }
+  ],
+  "targetOperations": "read-only metadata only; no other-owner cleanup"
+}
