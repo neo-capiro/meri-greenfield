@@ -1,0 +1,35 @@
+{
+  "status": "SOURCE_REVIEW_REJECTION_CORRECTED_NOT_EXECUTED",
+  "rejectedDraftSha256": "35a96f50c88c31574d0d375903ea7377c4bb3effe0b69eb672da783bbbc28296",
+  "issues": [
+    {
+      "id": "L2_HOST_ISOLATED_IMPORT_FAILURE",
+      "source": "apps/proxy/qualification/linux/postgres-fixture/run-fixture.py",
+      "reason": "Host imports sibling config/docker_capture/native_bootstrap before gate. -I removes script-directory import access; source README specifies python3 -B. Container peer intentionally retains -I -B.",
+      "resolution": "Remove -I from HOST argv only; preserve source unchanged."
+    },
+    {
+      "id": "L1_RESOURCE_UNDERCOUNT",
+      "resolution": "Count two ephemeral TLS listeners and one transient bound non-listening negative socket, in addition to PG listener."
+    },
+    {
+      "id": "L1_OLD_SITE_INTERPRETATION",
+      "resolution": "Historical OLD_SITE is appended, not prepended; isolated Python still loads admitted venv site. Missing extra path alone does not establish incompatibility. Bind actual supported dependency environment."
+    },
+    {
+      "id": "L1_ENDPOINT_LOOKALIKE_AND_AUTH",
+      "resolution": "Require fresh cluster identity + empty schemas; proposed narrow loopback HBA trust explicitly needs local containment and owner approval. No implied SCRAM/passfile support."
+    },
+    {
+      "id": "OFFLINE_DECODER_PATH",
+      "reason": "Read-only path existence check returned false for apps/worker/qualification/scripts/reconstruct-sdk-capture.mjs and adjacent protocol; source is at root scripts/.",
+      "resolution": "Bound scripts/reconstruct-sdk-capture.mjs and scripts/sdk-capture/protocol.mjs; no decoder or runtime invoked."
+    },
+    {
+      "id": "VERIFIER_COHORT_ENUM_SPELLING",
+      "reason": "Initial offline verifier failed 1 of116 checks because expected cohort labels were spelled OLDER_VENDOR_5/HISTORICAL_OMITTED_2; canonical inherited rows use OLDER_FIVE/HISTORICAL_OMITTED_TWO.",
+      "resolution": "Correct expected labels; preserve original verifier source and raw failure. No change to54 source rows, severities or disposition."
+    }
+  ],
+  "runtimeCommandsExecuted": false
+}

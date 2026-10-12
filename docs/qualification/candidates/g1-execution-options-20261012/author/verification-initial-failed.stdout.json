@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "scope": "Offline file/source integrity only; no native/project/runtime execution",
+  "checks": 116,
+  "failed": [
+    "exact54cohorts"
+  ],
+  "baseCommit": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "runtimeTests": "UNRUN",
+  "permissionGranted": false
+}

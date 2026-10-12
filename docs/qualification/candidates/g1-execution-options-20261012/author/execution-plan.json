@@ -1,0 +1,611 @@
+{
+  "schema": "meri-g1-execution-options/1",
+  "baseCommit": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "status": "PLAN_ONLY",
+  "executionAdmission": "NOT_EXECUTABLE",
+  "permissionGranted": false,
+  "automaticChaining": false,
+  "allPhasesExecuted": false,
+  "allCostsAreEstimates": false,
+  "sourceConnectivityEnabled": false,
+  "existingAuroraSelection": {
+    "name": "capiro-dev-data-auroracluster23d869c0-ltmz40k47ewv",
+    "currentStateVerified": false,
+    "selectedForEventualState": true,
+    "connectionOrMutationAuthorized": false,
+    "newRdsAllowed": false,
+    "networkOrDatabaseChangeAllowed": false
+  },
+  "phases": [
+    {
+      "id": "P0_ADMISSION",
+      "kind": "SOURCE_AND_AUTHORITY_PREREQUISITE",
+      "status": "BLOCKED_EXTERNAL_BINDINGS",
+      "entrypoints": [
+        "scripts/qualification/worker_runner_capture.py",
+        "docs/qualification/candidates/native-python-profile-20261012/author/profile-packet.json"
+      ],
+      "actions": [
+        "Bind exact host/interpreter/helper provenance, absolute paths, argv/cwd, reviewed external supervisor and exclusive output slots; preserve original collector failure.",
+        "Bind one immutable reviewed source commit, all runtime artifacts, current security/license/ABI evidence and expected source bytes.",
+        "Obtain current actor authority, resource inventory, policy applicability, exact one-action permissions and cleanup ownership. Do not retry inaccessible private policy retrieval here."
+      ],
+      "resources": {
+        "newResourcesAuthorized": 0,
+        "chosenHost": null,
+        "credentialCreationAuthorized": false
+      },
+      "budget": {
+        "attempts": 0,
+        "providerCalls": 0,
+        "costUsd": null,
+        "reason": "No execution admission; known native diagnostic proposal has its separate10s/15s bounds but is not rerun here."
+      },
+      "evidence": [
+        "Exact executable/source/input SHA256s; approved action/expiry; prior failure hashes; no ambient provider/database/admin credentials in worker"
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "L1_DISPOSABLE_STATE",
+      "kind": "PROPOSED_LOCAL_REAL_ENGINE",
+      "status": "NO_EXECUTION_APPROVAL",
+      "entrypoints": [
+        "apps/proxy/qualification/test/test_postgres_state.py",
+        "apps/proxy/qualification/state/postgres_store.py",
+        "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+        "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+        "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs"
+      ],
+      "resources": {
+        "proposalNotObserved": true,
+        "postgresProcesses": "One PostgreSQL cluster/service with its own server subprocess tree; not literally one OS process.",
+        "freshLogicalDatabases": 2,
+        "loopbackOnly": true,
+        "hostPorts": "One owner-bound PostgreSQL loopback TCP listener, two ephemeral loopback TLS listeners created by ingress test, and one transient bound non-listening negative socket used by PricingTests. No external listeners.",
+        "databaseNames": [
+          "meri_qualification_test",
+          "meri_qualification_sdk_fixture_<OWNER_RUN_SUFFIX>"
+        ],
+        "dataDirectory": "<NEW_OWNER_BOUND_LOCAL_DATA_DIRECTORY>",
+        "fixtureCertificates": "Existing harness requires .task-inputs/sdk-fixture-ingress-1/certs in an isolated checkout; approve generation/use of only synthetic local certs, never reuse customer/production identities.",
+        "maximumAdditionalTlsListeners": 2,
+        "transientNegativeBoundSockets": 1,
+        "testRoles": [
+          {
+            "name": "qualification_owner",
+            "owns": "meri_qualification_test",
+            "privileges": "LOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOREPLICATION, NOBYPASSRLS; owns only this disposable DB/schema"
+          },
+          {
+            "name": "qualification_sdk_fixture_owner",
+            "owns": "meri_qualification_sdk_fixture_<OWNER_RUN_SUFFIX>",
+            "privileges": "LOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOREPLICATION, NOBYPASSRLS; owns only this disposable DB/schema"
+          }
+        ],
+        "bootstrapRole": "Separate fresh-cluster bootstrap owner <OWNER_BOUND_BOOTSTRAP_ROLE>; never supplied to tests. Its exact local creation/access must be reviewed. No existing DB superuser.",
+        "identityAdmission": [
+          "Owner proves data directory was newly created and empty, local and not symlink/reparse/network-mounted; bind its absolute path and filesystem identity.",
+          "Before test mutation bind fresh cluster system_identifier, PGDATA/SHOW data_directory, pg_control version, PostgreSQL executable hash/version, postmaster PID plus OS creation identity, process ancestry and exact loopback listener ownership.",
+          "Bind each database OID/name/owner, two test role OIDs/properties, HBA/config hashes and empty meri_qualification / meri_qualification_sdk_fixture schemas; database name or endpoint match alone is insufficient.",
+          "No ambient PGHOST/PGSERVICE/PGPASSFILE/provider settings; replacement environment admits only required PATH/system variables and reviewed exact fixture bindings."
+        ],
+        "authenticationProposal": {
+          "status": "OWNER_CHOICE_REQUIRED_NOT_CONFIGURED",
+          "mode": "NARROW_DISPOSABLE_LOOPBACK_HBA_TRUST",
+          "reason": "Current Python/Node test constructors do not supply passwords; no verified passfile handoff is asserted.",
+          "conditions": [
+            "Use a dedicated/contained disposable local execution host with no untrusted peer processes able to reach the loopback port. Loopback alone does not authenticate local users. If this containment cannot be established, HOLD pending a reviewed supported credential channel; do not use broad trust.",
+            "Bind listen_addresses=127.0.0.1 and exact port; trust only qualification_owner on meri_qualification_test and qualification_sdk_fixture_owner on the exact SDK database from 127.0.0.1/32. Reject other TCP/local socket connections; no all/all trust entry.",
+            "Bootstrap access is separately scoped to fresh-cluster bootstrap role/database during creation, removed before tests; prove effective HBA/config hash after removal. Unix sockets disabled or confined and rejected by reviewed HBA.",
+            "No production password, copied identity, existing database, container, Aurora or network/security-state modification. This is a new local fixture configuration requiring approval."
+          ]
+        }
+      },
+      "actions": [
+        "Owner first prepares and source-reviews a lifecycle launcher bound to admitted existing PostgreSQL/Python/Node binaries, dependency versions and hashes; none is supplied as an executable all-in-one runner by this packet.",
+        "Initialize one fresh local cluster and only the two named synthetic databases; fsync and synchronous_commit must be on; bind only loopback; no Aurora connection or database clone.",
+        "Before every test command, revalidate cluster/process/listener/database identity and original t0/deadlines. Never accept an existing endpoint with matching names. No server restart occurs in this initial plan.",
+        "Run Python test module once: it applies qualification-state0001 then tool-budget0002 itself, and deliberately TRUNCATEs/resets only its fresh synthetic schema between cases.",
+        "Run SDK registry-ingress test first on the empty SDK database: it applies fixture-state0001; then run registry and explicit opt-in revocation-postgres tests without reapplying migration.",
+        "Preserve all outputs/row counts/migration hashes. Do not treat skipped tests as passed. Stop and positively verify owned PostgreSQL/client processes and listener absence."
+      ],
+      "commandTemplates": [
+        {
+          "argv": [
+            "<ADMITTED_PYTHON>",
+            "-B",
+            "-m",
+            "unittest",
+            "apps.proxy.qualification.test.test_postgres_state"
+          ],
+          "cwd": "<EXACT_ISOLATED_CHECKOUT>",
+          "environmentBindings": {
+            "MERI_TEST_ENGINE": "<PRIVATE_SYNTHETIC_ENGINE_JSON_PATH>"
+          },
+          "note": "Child uses -I -B, inserts exact checkout ROOT, then APPENDS historical OLD_SITE. Admitted venv site remains available under -I; a missing extra Windows-style path alone does not establish Linux incompatibility. Verify exact interpreter/psycopg/httpx dependencies including child environment before execution."
+        },
+        {
+          "argv": [
+            "<ADMITTED_NODE>",
+            "--test",
+            "--test-concurrency=1",
+            "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs"
+          ],
+          "environmentBindings": {
+            "MERI_FIXTURE_TEST_PORT": "<BOUND_LOOPBACK_PORT>",
+            "MERI_FIXTURE_TEST_DATABASE": "<FRESH_SDK_DATABASE>",
+            "MERI_FIXTURE_TEST_USER": "qualification_sdk_fixture_owner"
+          },
+          "cwd": "<EXACT_ISOLATED_CHECKOUT>"
+        },
+        {
+          "argv": [
+            "<ADMITTED_NODE>",
+            "--test",
+            "--test-concurrency=1",
+            "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+            "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs"
+          ],
+          "environmentBindings": {
+            "MERI_FIXTURE_REVOCATION_TEST_RUN": "yes",
+            "MERI_FIXTURE_TEST_PORT": "<BOUND_LOOPBACK_PORT>",
+            "MERI_FIXTURE_TEST_DATABASE": "<SAME_SDK_DATABASE_AFTER_FIRST_TEST>",
+            "MERI_FIXTURE_TEST_USER": "qualification_sdk_fixture_owner"
+          },
+          "cwd": "<EXACT_ISOLATED_CHECKOUT>"
+        }
+      ],
+      "budget": {
+        "classification": "PROPOSED_OWNER_SUPERVISOR_CAPS_NOT_IMPLEMENTED_OR_APPROVED",
+        "attemptsPerCommand": 1,
+        "totalWorkSeconds": 720,
+        "totalCleanupCutoffSeconds": 900,
+        "stdoutBytesPerCommand": 8388608,
+        "stderrBytesPerCommand": 1048576,
+        "providerCalls": 0,
+        "newCloudResources": 0,
+        "providerUsd": 0,
+        "incrementalCloudUsd": 0,
+        "existingHostCost": "Not estimated; zero provider/new-cloud requests does not mean free host time.",
+        "sourceBounds": {
+          "pythonTestMethods": 23,
+          "pythonEngineMethods": 20,
+          "nodeRegistryTests": 6,
+          "nodeRevocationTests": 3,
+          "nodeIngressTests": 1,
+          "maximumPythonCompetingThreads": 8,
+          "maximumPythonCompetingChildProcesses": 3,
+          "nodeConnectMs": 5000,
+          "nodeStatementMs": 5000,
+          "nodeLockMs": 2000
+        }
+      },
+      "failureStop": [
+        "Any source/host/DB identity mismatch, non-loopback endpoint, fsync/off, already-existing schema, missing dependency/cert, test skip/failure, unexpected network/provider call, deadline/output overflow or unresolved process causes HOLD and teardown.",
+        "No auto-retry on same schema; a proposed rerun needs failure review and a new disposable data directory/database identity."
+      ],
+      "proves": [
+        "Real PostgreSQL transaction/lock/current-grant behavior for those original tests; real loopback TLS within the SDK ingress test; synthetic commit-acknowledgement ambiguity controls."
+      ],
+      "doesNotProve": [
+        "JS gateway durable budget on a real pg pool (current gateway tests use scripted SQL); PostgreSQL server-crash/WAL/PITR recovery; Aurora compatibility/network/capacity; native ECS identity; S3 durability; actual SDK task A/B; browser or G1."
+      ],
+      "missingBeforePermission": [
+        "Exact local host/OS/isolation and ownership; admitted existing PostgreSQL executable+utilities/driver/native libraries, Python and Node provenance/security/license versions/hashes; no download/install authorized.",
+        "Source-reviewed fresh-cluster bootstrap/lifecycle and external supervisor implementation; exact private config/cert/output paths, test dependency lock installation already present and verified.",
+        "Explicit authorization for one disposable cluster, two databases/test roles and bootstrap role, narrowly scoped local HBA configuration, synthetic TLS identities, local processes/listeners/files, cleanup and the proposed time/output envelope.",
+        "Provider environment absence and supported no-egress observation/enforcement already available without modifying network security.",
+        "Original clock binding t0 with work cutoff t0+720s and final cleanup cutoff t0+900s; monotonic supervisor bound to those same cutoffs."
+      ],
+      "cleanupAndEvidence": [
+        "Record external process owner before launch and each child identity, exact PID+creation time/executable+PGDATA binding. Start supervisor before cluster and tests; reserve cleanup time within original900s.",
+        "On failure/timeout/output overflow stop test admission, terminate only owned client trees and then gracefully stop only the identified cluster. Escalation to owned-process termination follows separately reviewed supervisor policy; never kill by name/port alone.",
+        "Prove server/child/TLS-client process absence and PG+both ingress listener absence. Record socket-negative test closure. Unknown teardown stays HOLD; do not reset deadlines or erase unresolved evidence.",
+        "Preserve content-free raw stdout/stderr, exact argv/cwd/env key allowlist, exit/EOF/overflow/timeout and original UTC+monotonic timestamps, source/driver/config/migration hashes, test pass/fail/skip counts, database/schema/role identity and cleanup receipts. Private synthetic configs/cert keys stay out of publication.",
+        "Only after positive owned process/listener absence remove the newly owned data directory and synthetic secrets under approved path identity; prove absence. Keep failure/evidence manifests. No persistent resource or customer data exists by admission."
+      ],
+      "requiredNextSourceTests": [
+        "Actual JS createDurableSourceDisabledGateway/PostgresBudgetStore with real pg Pool and migration0002: cross-process competing reservation/invocation identity, replay without double charge, UNKNOWN on lost COMMIT acknowledgement, eventual exact reconciliation and immutable settled receipt.",
+        "Admitted real PostgreSQL server stop/restart: prove persisted reservations/current fences and stale admission denial after reopening genuine JS adapter; existing Python child os._exit is client crash, not server recovery.",
+        "Real pool connection release and late COMMIT/settlement versus original deadline/stopRun, including unknown release/teardown evidence; no scripted-pool fixture can close this gap."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": true
+    },
+    {
+      "id": "L2_NATIVE_PROXY_TLS_AUTH",
+      "kind": "OPTIONAL_LOCAL_CONTAINER_NATIVE_FIXTURE",
+      "status": "BLOCKED_IMAGES_AND_PRIVILEGED_LIFECYCLE_ADMISSION",
+      "entrypoints": [
+        "apps/proxy/qualification/linux/postgres-fixture/run-fixture.py",
+        "apps/proxy/qualification/linux/postgres-fixture/config.py",
+        "apps/proxy/qualification/linux/postgres-fixture/native_bootstrap.py",
+        "apps/proxy/qualification/linux/native-runtime/native_auth_probe.py"
+      ],
+      "commandTemplates": [
+        {
+          "argv": [
+            "<ADMITTED_LINUX_PYTHON>",
+            "-B",
+            "apps/proxy/qualification/linux/postgres-fixture/run-fixture.py",
+            "--config",
+            "<EXACT_ABSOLUTE_OWNER_CONFIG>",
+            "--config-sha256",
+            "<CONFIG_SHA256>",
+            "--output",
+            "<NEW_ABSOLUTE_OUTPUT_DIRECTORY>"
+          ],
+          "note": "HOST runner needs sibling imports and uses -B only per README. Only container peer has -I -B. Actual CLI requires trusted Linux root setup, admitted images and separate authorization; excluded from first L1 request."
+        }
+      ],
+      "resources": {
+        "historicalImagesUnadmitted": true,
+        "internalDockerNetworks": 1,
+        "postgresServerContainers": 2,
+        "logicalDatabasesAcrossServers": 4,
+        "tlsCases": 5,
+        "certificateGeneratorContainers": 1,
+        "caseClientContainers": 5,
+        "optionalCombinedSchemaContainers": 1,
+        "optionalCombinedAuthContainers": 1,
+        "totalContainersTlsOnly": 8,
+        "totalContainersCombined": 10,
+        "networkIsolation": "Internal Docker bridge; no host-published DB port; certificate generator network none.",
+        "credentials": "Synthetic owner/app password/key/certificate mounts; private output subtree is not a publication artifact."
+      },
+      "actions": [
+        "Admit current proxy/Postgres runtime source/image/security/license/ABI and exact cleanup plan; old fixed proxy/Postgres digests are not automatically accepted.",
+        "For TLS-only mode run positive encrypted Prisma query plus wrong CA, wrong SAN, plaintext and wrong password cases on fresh clients.",
+        "Combined native mode needs distinct rootAdmissionSha256 and separately approved native schema initialization: genuine Prisma db push --accept-data-loss is confined to a new disposable database, then native views/grants and owner password revocation.",
+        "Observe real LiteLLM lifecycle: one read_only key creation, authentication, one deletion, and post-delete denial; genuine startup creates background migrations/tasks, so it is not read-only."
+      ],
+      "budget": {
+        "classification": "EXISTING_SOURCE_BOUNDS_REQUIRE_REVIEWED_EXTERNAL_SUPERVISOR",
+        "attempts": 1,
+        "startDeadlineSeconds": 60,
+        "workDeadlineSeconds": 300,
+        "cleanupAfterWorkSeconds": 30,
+        "outerOriginalCeilingSeconds": 900,
+        "stdoutBytesPerDockerCall": 2097152,
+        "stderrBytesPerDockerCall": 2097152,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "newCloudResources": 0,
+        "incrementalCloudUsd": 0
+      },
+      "failureStop": [
+        "Stop on any failed TLS case; native auth must begin before original60s start cutoff; never reset t0 to fit schema work.",
+        "Unknown native key deletion/commit stays unknown; no retry/refund. Preserve content-free raw receipts; remove only positively owned containers/network, then private mounts once absence is proven."
+      ],
+      "doesNotProve": [
+        "Actual model proxy inference, continuous native task revocation, provider accounting, Fargate, server restart durability, Aurora or G1."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "T1_TEMPORAL_NATIVE_DESIGN",
+      "kind": "PROPOSED_LOCAL_NATIVE_HISTORY_QUALIFICATION",
+      "status": "BLOCKED_SOURCE_RUNNER_AND_TOPOLOGY_DECISION",
+      "entrypoints": [
+        "apps/control/qualification-temporal/workflow.ts",
+        "apps/control/qualification-temporal/activities.ts",
+        "apps/control/qualification-temporal/client-options.ts",
+        "apps/control/qualification-temporal/component-pins.json"
+      ],
+      "actions": [
+        "Prepare separately reviewed explicit Worker/Client/server lifecycle runner: PR15 has no deployed worker, server launcher or native orchestration runner.",
+        "Choose a dedicated local synthetic persistence/namespace fixture, exact server/native SDK binaries and admitted limits; do not apply the historical five-role/new-RDS fixture to cloud or Aurora.",
+        "First bounded native case may start one workflow, query it, signal cancelRequested during its initial wait and confirm terminal history. This tests native cancellation/history only.",
+        "Full continuation/replay case requires real timers: each run waits30min; continuation0 enters at most one continuation1, with three5s stages per run. Prepare a distinct reviewed long-run envelope or separately approve supported test-only time skipping and new pinned dependency; no unannounced timer edits.",
+        "Replace a trusted application worker and replay exact history with persisted invocation identities/current-fence checks only after a real activity implementation exists. Current activity functions heartbeat/echo and fixed approval cannot prove checkpoint storage or authorization."
+      ],
+      "resources": {
+        "proposalOnly": true,
+        "exactServerTopology": null,
+        "persistence": null,
+        "namespace": null,
+        "workerReplicas": null,
+        "reason": "No native runner/topology is allocated at PR15. These are required owner decisions, not invented existing services."
+      },
+      "budget": {
+        "attemptsPerSelectedScenario": 1,
+        "cancellationCaseProposedWorkSeconds": 120,
+        "cancellationCaseProposedCleanupSeconds": 30,
+        "fullScenarioExecutionTimeSeconds": null,
+        "fullScenarioMinimumTimerWaitSeconds": 3600,
+        "fullScenarioStageSleepSeconds": 30,
+        "sourceActivityStartToCloseSeconds": 300,
+        "sourceActivityMaximumAttempts": 3,
+        "proposedStdoutBytes": 8388608,
+        "proposedStderrBytes": 1048576,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "newCloudResources": 0,
+        "incrementalCloudUsd": 0
+      },
+      "failureStop": [
+        "Do not execute while server/persistence/namespace/timeout are unresolved.",
+        "No claims of durable SDK checkpoints, cloud TLS/JWT/default-authorizer behavior or G1 from echoed activity output."
+      ],
+      "ownerDecision": "Native local Temporal topology and exact runnable fixture; full-timer envelope vs separately supported test-only time-skipping change.",
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "N1_SDK_LOOPBACK",
+      "kind": "NATIVE_SDK_PROBE_LOCAL_FIRST_OR_SEPARATE_CLOUD_ADMISSION",
+      "status": "BLOCKED_SUPPORTED_WORKER_AND_RUNNER",
+      "entrypoints": [
+        "apps/worker/qualification/probes/sdk-capture.mjs",
+        "apps/worker/qualification/probes/sdk-capture-options.mjs",
+        "infra/native-qualification/app.mjs"
+      ],
+      "commandTemplates": [
+        {
+          "argv": [
+            "node",
+            "/opt/meri-worker/probes/sdk-capture.mjs"
+          ],
+          "note": "Inside only a separately admitted fresh Linux worker environment. Native task definition explicitly sets EntryPoint node; historical task revisions must be re-read and rebound."
+        }
+      ],
+      "resources": {
+        "selectedPlacement": null,
+        "localOption": "One disposable admitted Linux worker; loopback server inside worker.",
+        "cloudOption": "One serial Fargate task; historical shape2vCPU/8GiB/50GiB ephemeral; no taskRoleArn; fresh workspace/tmp; execution role only. All current resource bindings/permissions required."
+      },
+      "actions": [
+        "Enforce source-disabled and replacement credential-free environment plus actual egress denial before SDK native child.",
+        "Capture exactly two loopback Messages requests and one wire echo tool round trip; no real provider."
+      ],
+      "budget": {
+        "attempts": 1,
+        "nativeQueries": 1,
+        "loopbackRequests": 2,
+        "maxTurns": 3,
+        "maxOutputTokens": 256,
+        "workMs": 60000,
+        "childExitGraceMs": 2000,
+        "writeTimeoutMs": 5000,
+        "requestBytes": 4194304,
+        "decompressedRequestBytes": 8388608,
+        "stderrBytes": 65536,
+        "recordBytes": 12288,
+        "localSdkUsdGuard": 0.01,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "cloudUsd": null,
+        "cloudPriceStatus": "UNPRICED_NOT_AUTHORIZED"
+      },
+      "failureStop": [
+        "Any credential/environment drift, unexpected endpoint/request/tool/child, sandbox/egress violation, stream error, output overflow or unknown child cleanup fails; stop only exact owned task/process and retain raw failure."
+      ],
+      "doesNotProve": [
+        "Actual governed proxy native discovery/provider usage or cost; two-task durable recovery; cloud isolation if run locally."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false,
+      "offlineEvidenceDecoder": {
+        "source": "scripts/reconstruct-sdk-capture.mjs",
+        "argv": [
+          "<ADMITTED_NODE>",
+          "scripts/reconstruct-sdk-capture.mjs",
+          "--input",
+          "<EXACT_CAPTURED_NDJSON>"
+        ],
+        "effect": "Input-only validates; optional --out requires new owned output path and separate binding.",
+        "inputBytes": 33554432,
+        "recordLimit": 20000,
+        "runtimeInvokedNow": false
+      }
+    },
+    {
+      "id": "N2_TASK_A_B",
+      "kind": "ACTUAL_NATIVE_CHECKPOINT_TASK_RECOVERY",
+      "status": "BLOCKED_TRUSTED_OWNER_COMPOSITION_AND_IDENTITY",
+      "entrypoints": [
+        "apps/worker/qualification/probes/sdk-interruption.mjs",
+        "apps/control/qualification-sdk-fixture/service/control.mjs",
+        "scripts/qualification/sdk-native-evidence-owner.mjs",
+        "scripts/qualification/sdk-stale-worker-challenge.mjs",
+        "apps/worker/qualification/checkpoint/native-session-files.mjs",
+        "apps/control/qualification-sdk-fixture/service/s3-objects.mjs"
+      ],
+      "commandTemplates": [],
+      "missingExecutable": "sdk-interruption.mjs CLI returns COMPOSITION_REQUIRED/2. runInterruptionPhase must be imported by a separately reviewed managed two-task owner; do not invent a runnable CLI.",
+      "resources": {
+        "freshWorkerTasks": 2,
+        "concurrentConversationWorkersMaximum": 1,
+        "controlComposition": "Trusted private control ingress + PostgreSQL registry + separately admitted versioned checkpoint S3/KMS capability; no worker DB/storage/provider/admin credential.",
+        "checkpointResource": "Historical existing qualification checkpoint stack/bucket/role requires fresh exact readback and action authority; preserve7-day governance retention, no bypass/delete."
+      },
+      "actions": [
+        "Admit one immutable original run context, fresh task-A peer/certificate/grant/fence, original t0/D/C and aggregate budget; source connectivity stays false.",
+        "Observe actual pinned SDK interrupt, child exit and event drain; trusted admitted observer signs four init/interrupt/exit/drain records. Verify namespace/workspace quiescence; publish immutable versions and exact independent reread before PostgreSQL current-fence commit.",
+        "Physically stop and verify task A before allocating fresh task B. Preserve unknown commits/liabilities; do not advance on ambiguous outcome.",
+        "Trusted registry.replaceRun admits B with new task/attempt/worker/grant/fence. B receives only its own credential; owner retains A transport for exactly one stale challenge.",
+        "Restore only exact committed bundle/sentinel versions into B's empty namespace, verify hashes/compatibility/current authority, observe continuity, reject old-A authorization/publication and then owner.stopRun B with durable revocation/readback.",
+        "Current source explicitly returns completeRecoveryCheckpoint:false: partial native transcript continuity alone does not close full product checkpoint or G1."
+      ],
+      "budget": {
+        "attempts": 1,
+        "tasks": 2,
+        "phaseMaximumMs": 60000,
+        "originalDeadlineMs": 720000,
+        "originalCleanupMs": 900000,
+        "nativeEvidenceKinds": 4,
+        "nativeEvidenceBytesEach": 65536,
+        "checkpointFiles": 256,
+        "checkpointMembers": 512,
+        "checkpointDepth": 12,
+        "checkpointFileBytes": 8388608,
+        "checkpointTotalBytes": 33554432,
+        "wireRequestResponseBytes": 52428800,
+        "oneStaleChallenge": true,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "cloudUsd": null,
+        "cloudPriceStatus": "UNPRICED_NOT_AUTHORIZED"
+      },
+      "failureStop": [
+        "No A/B launch until owner wiring, issuance/expiry/revocation, durable invocation/budget producer and inspector provenance are reviewed.",
+        "Close exact owner admission before revocation; maintain UNKNOWN on lost acknowledgement. stopRun/close cooperative completion is not physical task containment.",
+        "Any unowned/duplicate task, stale or mismatched receipt, deadline, uncertain cleanup or stopped-A ambiguity blocks B and all subsequent admissions."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "N3_OFFICE",
+      "kind": "NATIVE_ARTIFACT_GENERATE_RENDER_INSPECT",
+      "status": "BLOCKED_SUPPORTED_IMAGE_AND_ACTION_ADMISSION",
+      "entrypoints": [
+        "apps/worker/qualification/probes/office-export.mjs",
+        "apps/worker/qualification/probes/artifacts.mjs",
+        "apps/worker/qualification/probes/artifacts.py",
+        "infra/native-qualification/app.mjs"
+      ],
+      "commandTemplates": [
+        {
+          "argv": [
+            "node",
+            "/opt/meri-worker/probes/office-export.mjs"
+          ],
+          "note": "One fresh admitted worker only; same exact artifact package and fonts as the proposed image."
+        }
+      ],
+      "resources": {
+        "freshTasksMaximum": 1,
+        "localOption": "Disposable admitted Linux worker only; proves local native behavior.",
+        "cloudOption": "One serial roleless Fargate task after independent cloud admission."
+      },
+      "actions": [
+        "Generate and inspect DOCX/XLSX/PPTX, render PDFs/PNGs, verify page counts1/1/2 and recalculation SUM(A1:A3)=6.",
+        "Reconstruct exactly11 allowlisted files from complete bounded output, independently hash/parse and visually inspect all render pages/fonts. No fixture-only reduced product scope.",
+        "Generation and export each have separate120s phase limits; the external owner must still clip both and cleanup to the one original run ceiling, never present120s as the combined total."
+      ],
+      "budget": {
+        "attempts": 1,
+        "childAbortMs": 5000,
+        "exportFiles": 11,
+        "rawTotalBytes": 8388608,
+        "maxChunks": 1500,
+        "chunkBytes": 6144,
+        "lineBytes": 12288,
+        "nativeFileBytes": 524288,
+        "pdfFileBytes": 1048576,
+        "pngFileBytes": 2097152,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "cloudUsd": null,
+        "generationDeadlineMs": 120000,
+        "exportDeadlineMs": 120000,
+        "outerOriginalDeadlineMs": 720000,
+        "outerOriginalCleanupMs": 900000
+      },
+      "failureStop": [
+        "Missing render/recalc/structure/page/font evidence, incomplete transport, oversized content, child failure or cleanup uncertainty is HOLD; never keep only successful files."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "N4_BROWSER_RENDERER",
+      "kind": "ACTUAL_ISOLATED_BROWSER_HOST_QUALIFICATION",
+      "status": "BLOCKED_PATCHED_IMAGES_HOST_AUTHORITY_AND_EXECUTABLE_WATCHDOG",
+      "entrypoints": [
+        "infra/browser-qualification/app.mjs",
+        "infra/browser-qualification/bootstrap.sh",
+        "infra/browser-qualification/host-evidence.py",
+        "infra/browser-qualification/host_evidence/config.py",
+        "infra/browser-enforcement/workflow.mjs",
+        "infra/browser-enforcement/binding.mjs"
+      ],
+      "resources": {
+        "freshHosts": 1,
+        "freshRootVolumes": 1,
+        "sourceExampleOnly": {
+          "instanceType": "t3.large",
+          "rootGiB": 30,
+          "containerCpu": 2,
+          "containerMemoryGiB": 4,
+          "containerPids": 512,
+          "sharedMemoryGiB": 1
+        },
+        "noCurrentResourceClaim": true,
+        "immutableBindingsNeeded": [
+          "Host AMI provenance/support/security",
+          "Worker image/source/config",
+          "Distinct support image fourteen-file payload/source manifest",
+          "Seccomp profile",
+          "Current reviewed stack/watchdog/role/network/DNS/logging bindings"
+        ]
+      },
+      "actions": [
+        "Do not launch historical bf55 worker or any other old image. Rebind source-pinned assets only after independently reviewed supported worker/support/host closure.",
+        "Review exact stack/change set and executable watchdog; current compileWatchdog output is explicitly an INERT inspection graph, not an admitted controller.",
+        "One dedicated disposable host runs the exact pinned Playwright browser probe on synthetic owned fixtures. Capture both browser and renderer identity, flags, UID/capabilities, NoNewPrivs, seccomp/filter differences and namespace evidence.",
+        "Prove approved egress/DNS behavior, denied metadata/direct routes, source walls and no credentials; do not modify existing networks to make a test pass.",
+        "Confirm externally supervised task/container exit, EC2 termination and exact owned root-volume deletion. Guest poweroff alone is not proof."
+      ],
+      "budget": {
+        "attempts": 1,
+        "browserSeconds": 120,
+        "observerMaximumPollSeconds": 300,
+        "originalStopMs": 720000,
+        "originalCeilingMs": 900000,
+        "hostLifetimeMinutes": 15,
+        "sourceManifestBytes": 32768,
+        "rawCaptureFileBytes": 2097152,
+        "exportTotalBytes": 8388608,
+        "exportEvents": 1500,
+        "providerCalls": 0,
+        "providerUsd": 0,
+        "cloudUsd": null,
+        "cloudPriceStatus": "UNPRICED_NOT_AUTHORIZED"
+      },
+      "failureStop": [
+        "No launch unless actual executable watchdog/cleanup authority is independently admitted.",
+        "Any sandbox-disabling flag, missing renderer, egress success on forbidden route, source/image mismatch, unknown task ownership, deadline/output overflow, host/root absence uncertainty causes HOLD and blocks another run."
+      ],
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    },
+    {
+      "id": "P1_REAL_PROVIDER",
+      "kind": "DEFERRED_ACTUAL_PROXY_DISCOVERY_AND_MODEL_USAGE",
+      "status": "NO_RECONCILED_ALLOWANCE_NO_EXECUTION_PLAN",
+      "entrypoints": [
+        "apps/proxy/qualification/runtime/server.py",
+        "apps/proxy/qualification/runtime/bedrock_transport.py",
+        "apps/proxy/qualification/state/ledger.py"
+      ],
+      "actions": [
+        "First reconcile historical aggregate$10 ledger including UNKNOWN and prior owners; obtain exact remaining budget, current pricing/model/routes and task-bound real proxy/auth/expiry/revocation admission.",
+        "Prepare a separate count/token/output/time/cost-limited exact action packet with authoritative count/reservation/settlement; no arbitrary new dollar allowance or fake successful provider evidence.",
+        "Actual SDK through governed proxy/native discovery and no-retry usage evidence remains a separate G1 gate. Loopback SSE, local$0.01 SDK guard and SQL10000000microUSD fixture ceiling never authorize paid dispatch."
+      ],
+      "budget": {
+        "authorizedProviderCalls": 0,
+        "authorizedProviderUsd": 0,
+        "remainingHistoricalAllowanceUsd": null,
+        "proposedPaidCalls": null,
+        "proposedPaidUsd": null,
+        "reason": "Unreconciled and unpriced; no paid action is proposed for execution."
+      },
+      "executionResult": "UNRUN",
+      "includedInFirstPermissionProposal": false
+    }
+  ],
+  "globalStopAndCleanup": [
+    "Each admitted future action is one-shot and serial; bind original deadlines before allocation. A failed/uncertain step does not authorize retry or follow-on execution.",
+    "Use a separately reviewed external owner supervisor bound to exact platform/path/process-tree/stream limits. No such executable lifecycle composition is supplied by this packet; cooperative timers do not establish hard termination.",
+    "Record raw stdout/stderr separately with EOFs, sizes/hashes, argv/cwd, interpreter/source/image/config hashes, UTC and monotonic timing, exit/signal, timeout/overflow/read errors, process/container/task identities and positive owned-resource absence.",
+    "Keep credentials and private policy bodies out of public evidence. Preserve immutable failed evidence; no log deletion, retention bypass, unrelated process kill, database reset outside disposable fixture, shared-resource deletion or customer-data access.",
+    "Unknown DB COMMIT, provider charge, native task state, child/descendant state, object write or cleanup remains UNKNOWN/HOLD. No refund, successful rollback or clean physical shutdown is inferred from timeout.",
+    "Cloud price/action packet must include region/instance/task/volume/runtime/S3/KMS/log/endpoint/transition/build/storage-retention line items and all recurring resources, with explicit owner spending ceiling. No current prices or approved amount are established here."
+  ]
+}

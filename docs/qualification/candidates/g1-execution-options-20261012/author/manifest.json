@@ -1,0 +1,62 @@
+{
+  "schema": "meri-g1-execution-plan-integrity/1",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "bytes": 14285,
+      "sha256": "7744a806437ac0ae3dfdb5417203327acd1530a943026c0cba3f5a123cece819"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "bytes": 36920,
+      "sha256": "caefeacf2310a8fd11dbd3ac5976a824bb0ffe33e0183a0a01ddc776e14c1f1d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "bytes": 7375,
+      "sha256": "042445dbfe77d1b8c55491720ea77de960c9f404ed7ee1f1896855f327aca77c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/proposal-corrections.json",
+      "bytes": 2159,
+      "sha256": "260de9fe01adef50a557fcaf97af8b8633b16476d598a2bbb7e9c3667c3291f8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/rejected-draft-execution-plan.json",
+      "bytes": 28731,
+      "sha256": "35a96f50c88c31574d0d375903ea7377c4bb3effe0b69eb672da783bbbc28296"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/source-evidence.json",
+      "bytes": 38290,
+      "sha256": "82021248043364defb96e95a2070038a687eb3ed602d4e6956fd57d877338690"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.py",
+      "bytes": 6764,
+      "sha256": "7a06b64c3214866f24f43c4eea1fb7d354bff42ef7337a880b5c3d00a50c5be1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/verification-initial-failed.stdout.json",
+      "bytes": 283,
+      "sha256": "88b2244003ba2389af155cfbd4c2dff1e7d18449bb17153a7bf0aa9b3a76320c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/verify-packet.py",
+      "bytes": 6762,
+      "sha256": "c538175a126171f553eea25b44d6c0eac4254df991121d0e33ab4cd33d202fdd"
+    }
+  ],
+  "excludes": [
+    "manifest.json self",
+    "verify.stdout.json",
+    "verify.stderr.txt",
+    "verification-receipt.json"
+  ],
+  "runtimeExecuted": false
+}
