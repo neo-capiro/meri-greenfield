@@ -1,0 +1,40 @@
+# Ten reviewed reference read contracts
+
+Candidate source `290ab5cee2ea0e7aef5019343f07555b6b404d37`, tree `df92519c23ce446d1398ce5176187f651c05f875`. Root full source checks passed **2158/2158**, public generation/types and **7/7** tests passed, and preservation audit passed **6464/6464**. Exact root receipts were committed at `c91f1716a476243abf9df2b9080041841d967f13`. Independent combined source acceptance is recorded separately; no runtime acceptance is claimed here.
+
+The canonical private catalog advances from 0.2.6 to 0.2.7, adding ten previously pending selected capabilities. The ledger remains **139 originals / 96 selected / 43 deferred**, now **55 mapped unavailable / 41 selected pending / 56 typed unavailable**. The partial action-item family remains typed but unmapped. All 46 predecessor descriptors, all original disposition/boundary text, and public 0.1 files remain unchanged. Source connectivity is disabled; handlers are null, availability unimplemented and qualification pending.
+
+| Domain | Operations | Accepted author source | Independent family review |
+| --- | --- | --- | --- |
+| Legislative directory | get_committee_roster; list_members | c511b4bf6ee3f30674f3bd7badae79df82a61aab | 7f287767e15b334e44919d8c2ee9bcd4f60819bc |
+| PE references | get_pe_contractors; get_pe_bills; get_pe_report_language | c9770ef235ae220159500b12bd1ab885f9ba9b45 | e79a7ca4abafb349516ce74f6f95195ee9d877c0 |
+| Rule status | get_state_rule_status | 95442b40d006e48e2215d6acec09fd7f029a2b9b | b3670edb527aa2cd8f4deaa3b75fbbec4993a267 |
+| Certification snapshot | get_certification_status | fa59df3739a2c43310b86de416d2f455a8715dce | 498f3ef3b6dfe469563ded08a2667d3b94bb4b3d |
+| Stored references | search_intel_articles; list_global_datasets | 450d48fc158dbcdd24f224ec32d6f5b2f92aca80 | 720098fb1b99a5fd15c602940f3621ab0aace68f |
+| Facility representation | get_representation | 530416e490763155c5531140f4b70e95a9493b7b | f041eed2e46be40d68254187ffd1d9396842bd25 |
+
+The family validators remain cohesive private modules. The canonical loader composes seven schema groups and their existing factories; the canonical binding table routes normalization, output validation and explicit trusted context. Canonical inert JSON admission, subject validation and hashing are reused. No source adapter, new authorization system, provider implementation or second registry is introduced.
+
+Directory and rule schemas had HTTPS identifiers that passed their standalone checks but violated the unchanged canonical catalog's `urn:meri:` requirement. Initial composition `0e579078b71146d12a1783b9b3cfde6e4ea06800` failed both test modules before execution. Repair `82906d4ce48eae2029e50fb44009d43bbfedc92a` changes only those two `$id` strings and repins the three affected descriptors. Twenty other accepted source/test files remain exact; the two repaired schemas are otherwise byte-identical. Original author source remains preserved. The canonical SchemaRef rule was not relaxed.
+
+After schema admission, 43/46 focused tests passed; three expectations still named the prior cardinality. Fifteen prior test files were narrowly updated for exact ledger counts/version and explicit ten-ID continuation allowlists. Original baseline fixtures, assertions and negative controls remain. Four of these files are gateway tests; no gateway production file changed. Independent review verified that undoing just those declared expectation changes restores all fifteen files byte-for-byte to PR28. The corrected focused replay passed 46/46.
+
+The first expanded check passed 2156/2158. Two failures came from the temporary borrowed dependency realpaths: the generated browser bundle no longer matched its original path provenance, and the no-side-effects subprocess refused the external contract dependency path. Initial public checking failed on the same generated drift. Root restored exact local dependency bytes from the preserved installed donor, verifying 3386 files; no install, lock edit, golden-file regeneration or permission-assertion change occurred. The full rerun passed 2158/2158, and public generation/types plus 7/7 passed. Both failed receipts remain intact.
+
+Independent connected controls passed 59/59 at the repaired namespace candidate. The original 58 controls were unchanged; the added regression rejects the historical HTTPS schema references. These checks cover all ten canonical routing/normalization/output boundaries, trusted context isolation, hostile inert JSON, unavailable activation and zero gateway inner effects. Final review binds the exact candidate and the subsequent descriptor wording/test-expectation changes. It verifies the successful broad receipt rather than redundantly rerunning that suite.
+
+## Compatibility and remaining qualification
+
+Directory projections preserve nullable member details, source ordering, schema-owned state/territory vocabulary and uncapped committee rosters. Pure projection checks do not prove current membership or geographic source joins. PE projections preserve separate award/exhibit money provenance, fallback distinctions and review states. Deduplication prefers stronger match basis before status; final report order follows status, basis, fiscal year and confidence. Program-level matches require their attribution caveat, and absent selector echoes do not gain fabricated lineage proof.
+
+Rule status requires separate trusted `stageAsOf` and `commentAsOf` observations. Their thresholds are checked without using generatedAt as a clock or inventing ordering between observations. Certification requires trusted canonical supported `comparisonLocale`; that restriction does not qualify the actual source's locale or current status. HTTP, retries and source body allocation are still unqualified execution dependencies.
+
+Stored intelligence is an excerpt/count snapshot, not a feed refresh or a corpus absence claim. Dataset metadata grants neither query nor row access; no private registry body or SQL implementation is copied. Facility normalization uses canonical binding/one-client subject consistency, not current grant proof. Raw state/chamber correlations are checked where projected; hidden geocode/district facts and federal state-name joins remain unqualified. Exact missing/empty/unresolved outcomes and Unicode/nullable/stored identity distinctions are documented in the family reports.
+
+All owned source-check processes were observed absent. Full rerun group 233200 exited and reaped two zero-exit descendants; public group 233242 exited and reaped three; initial failing groups and focused/audit groups were also absent. No timeout or group kill was required for these root checks. Runtime-source connectivity, real identities, provider/SQL/model calls, cloud actions and native qualification were not exercised.
+
+G0 remains accepted, G1 OPEN and G2–G7 unentered. The separate native owner retains RC1 native33 and nine budget cases. The vulnerable historical image must never run. Current authority, durable budgets, native recovery/stale rejection, browser/renderer isolation, egress, teardown and artifact inspection remain runtime gates. The approved administrator memory self-review exception remains unchanged; the Clio/portfolio research-evidence decision is separate. Aurora, public/private separation and Claude Agent SDK/Temporal/AI SDK responsibilities remain as adopted.
+
+The next source-only lanes are state status/votes, regulatory dockets and tenant contacts, with exclusive author/reviewer ownership. They are not part of this catalog version until their own reviewed integration. Remaining-read discovery preserves all 30 then-unallocated selected reads, and command discovery preserves all eleven command/artifact/analysis boundaries. The implementation scope has not been reduced to these fixtures or DTOs.
+
+Evidence is under `docs/qualification/candidates/read-continuation-20261012/reference-integration/`, alongside preserved family author/reviewer packets and the disconnect checkpoint. The derived capability ledger is a report, not another registry.
