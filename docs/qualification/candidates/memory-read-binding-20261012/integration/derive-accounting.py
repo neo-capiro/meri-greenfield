@@ -58,6 +58,9 @@ allowed_changes = {
     'packages/contracts/test/retrieval-mail.test.mjs',
     'packages/contracts/test/retrieval-memory-proposals.test.mjs',
     'packages/contracts/test/retrieval-memory-binding.test.mjs',
+    # Separately reviewed descriptive policy alignment; no operation is added.
+    'packages/contracts/retrieval-0.2/memory-review-policy.mjs',
+    'packages/contracts/test/retrieval-memory-review-policy.test.mjs',
 }
 changes = git('diff', '--name-only', BASE, '--', 'apps', 'packages', 'scripts',
               'package.json', 'package-lock.json', 'docs/coordination/r2').decode().splitlines()
