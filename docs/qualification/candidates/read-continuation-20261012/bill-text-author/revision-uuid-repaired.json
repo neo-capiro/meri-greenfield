@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-bill-text.test.mjs"
+  ],
+  "cwd": "/workspace/meri-bill-text-20261012",
+  "sourceHead": "4980080fc19315559de322e9010f16db7f4fea23",
+  "sourceDiffSha256": "b673d9974dab4cffa9f0d2d8613f462cc8f21bd426d7aeda0709fefb9ac816e6",
+  "sourceDiffBytes": 2301,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:14:19.045597+00:00",
+  "durationSeconds": 0.516,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 177116,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stdout.bin",
+      "bytes": 2880,
+      "sha256": "e712d06fd30864dc1ac4d38590ba72d5e9c760679666083a9a3557b4bcdf930b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "General stored UUID output admitted; source input cursor remains exactv4. Replay unchanged positive regression.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

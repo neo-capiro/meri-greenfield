@@ -1,0 +1,45 @@
+diff --git a/packages/contracts/retrieval-0.2/bill-text-validation.mjs b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+index 2a4c385..cbe0ff5 100644
+--- a/packages/contracts/retrieval-0.2/bill-text-validation.mjs
++++ b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+@@ -67,6 +67,7 @@ export function createBillTextValidators({validateShape,schema}){
+    unique(data.data,'id');
+    if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
+    else if(data.page!==input.page)fail('Congress metadata page substitution');
++   if(!data.resolvedBy&&input.activeSince!==undefined)validateBillTextShape('BillTextActionDateSelector',input.activeSince);
+    const activeAfter=!data.resolvedBy&&input.activeSince!==undefined?Date.parse(input.activeSince):null;
+    if(activeAfter!==null&&!Number.isFinite(activeAfter))fail('Congress metadata action-date selector invalid');
+    let prior=Infinity;
+diff --git a/packages/contracts/retrieval-0.2/bill-text.schema.json b/packages/contracts/retrieval-0.2/bill-text.schema.json
+index 760796b..5cc1fa7 100644
+--- a/packages/contracts/retrieval-0.2/bill-text.schema.json
++++ b/packages/contracts/retrieval-0.2/bill-text.schema.json
+@@ -2,6 +2,18 @@
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+   "$id": "urn:meri:retrieval:bill-text:0.2.0",
+   "$defs": {
++    "BillTextActionDateSelector": {
++      "anyOf": [
++        {
++          "type": "string",
++          "format": "date"
++        },
++        {
++          "type": "string",
++          "format": "date-time"
++        }
++      ]
++    },
+     "BillTextInstant": {
+       "type": "string",
+       "format": "date-time"
+diff --git a/packages/contracts/test/retrieval-bill-text.test.mjs b/packages/contracts/test/retrieval-bill-text.test.mjs
+index afc48eb..39d5625 100644
+--- a/packages/contracts/test/retrieval-bill-text.test.mjs
++++ b/packages/contracts/test/retrieval-bill-text.test.mjs
+@@ -48,3 +48,5 @@ test('canonical resolver preserves original aliases/digest and exact trusted con
+ 
+ test('activeSince constrains metadata fallback dates but direct and text branches ignore it',()=>{const p=metadata();assert.throws(()=>check(SEARCH,p,{activeSince:'2026-01-01'}));p.data[0].latestActionDate='2026-01-01T00:00:00.000Z';check(SEARCH,p,{activeSince:'2026-01-01'});assert.throws(()=>check(SEARCH,p,{activeSince:'2026-01-02'}));assert.throws(()=>check(SEARCH,{...metadata(),data:[],total:0},{activeSince:'not-a-date'}));const direct=metadata();direct.resolvedBy='bill-id';check(SEARCH,direct,{query:'H.R. 1',activeSince:'not-a-date'});check(SEARCH,textPage(),{textQuery:'minerals',activeSince:'not-a-date'});});
+ test('text search congress filter binds the stored bill-ID prefix',()=>{check(SEARCH,textPage(),{textQuery:'minerals',congress:119});assert.throws(()=>check(SEARCH,textPage(),{textQuery:'minerals',congress:118}));});
++
++test('successful metadata date selectors require ISO dates or explicit zones, without constraining ignored branches',()=>{const empty={...metadata(),data:[],total:0};for(const activeSince of ['October 1, 2026','2026-10-01T12:00:00'])assert.throws(()=>check(SEARCH,empty,{activeSince}));for(const activeSince of ['2026-10-01','2026-10-01T12:00:00Z','2026-10-01T12:00:00+02:00'])check(SEARCH,empty,{activeSince});const direct=metadata();direct.resolvedBy='bill-id';check(SEARCH,direct,{query:'H.R. 1',activeSince:'2026-10-01T12:00:00'});check(SEARCH,textPage(),{textQuery:'minerals',activeSince:'October 1, 2026'});});

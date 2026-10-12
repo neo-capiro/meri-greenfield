@@ -1,0 +1,73 @@
+{
+  "checks": [
+    {
+      "label": "all-evidence",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "stdoutBytes": 550,
+      "stderrBytes": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/whitespace-all-evidence.stdout.bin",
+        "sha256": "51effc73a2d196289c788c92ab31c839d3f48eaefd9954fa4d64a3ef0da14304"
+      }
+    },
+    {
+      "label": "owned-source",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "01c75641b62bb586d130feda3468c0ddb4286e8f",
+        "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+        "--",
+        "packages/contracts"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    },
+    {
+      "label": "authored-packet",
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check",
+        "--",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/whitespace.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/reference-identities.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/capture-reaped.py",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/build-schema.py",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/manifest.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/source-preservation.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/source-preservation-selector-freeze.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/outline.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/verify.py",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/results.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.json",
+        "docs/qualification/candidates/read-continuation-20261012/bill-text-author/verification.json",
+        "docs/coordination/reports/CODEX-READ-CONTINUATION-BILL-TEXT-AUTHOR-20261012.md"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "scope": "Staged authored report/scripts/JSON; excludes raw patches and byte-output files only."
+    }
+  ],
+  "policy": "Preserve raw patch/context whitespace; do not normalize source-bound historical patches."
+}

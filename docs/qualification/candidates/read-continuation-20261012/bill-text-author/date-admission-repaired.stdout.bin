@@ -1,0 +1,35 @@
+✔ distinct operations/schema and hostile operation references (2.107507ms)
+✔ trusted defaultCongress required; model arguments cannot inject authority (1.185201ms)
+✔ request normalization preserves query/search aliases and exact UTF16 caps (2.078924ms)
+✔ text and metadata limits/defaults differ; registered text limit is conservatively clamped (0.73177ms)
+✔ metadata returns all stored scalar/null fields and opaque committees without false total equality (4.133912ms)
+✔ metadata nullable dates, newer-first non-null order, unknown statuses stay distinct (1.536098ms)
+✔ direct designation has one exact bill, page1 and ignores metadata filters by original branch (0.727243ms)
+✔ designation miss can fall back to metadata page; no fabricated unavailable search envelope (0.448845ms)
+✔ text search scalar/null fields and same-bill cross-version passage cursor are preserved (1.988559ms)
+✔ search empty first versus later page retains different total availability (0.869847ms)
+✔ omitted bills count before trimming determines hasMore and required disclosure (0.526281ms)
+✔ text response ceiling measures JSON characters, not scalar-codepoint length (0.860302ms)
+✔ unavailable current text is explicit local coverage, including resumed stale pointer disappearance (3.71975ms)
+✔ sequential first/final/resumed-empty pages retain exact coverage booleans (2.6484ms)
+✔ valid nonfinal surrogate boundary can shorten sequential page by one UTF16 unit (1.838312ms)
+✔ sequential text length, cursor offset and coverage cannot substitute one another (1.375287ms)
+✔ cursor canonical base64url accepts whitespace JSON but rejects malformed scope/hash/offset (0.513902ms)
+✔ continuation output binds version, revision and text hash even without requested version (0.644769ms)
+✔ locator passes complete structural framing without treating excerpts as full content (1.62347ms)
+✔ locator six exact nonoverlapping windows and per-passage lineage (1.460859ms)
+✔ locator no-hit note prevents treating lack of exact wording as topic absence (0.571308ms)
+✔ locator rejects altered passage framing, unbound text and mixed cursor input (1.293885ms)
+✔ all branches preserve immutable input and deny accessors/cycles/proxy hooks (0.642525ms)
+✔ canonical resolver preserves original aliases/digest and exact trusted context (1.972795ms)
+✔ activeSince constrains metadata fallback dates but direct and text branches ignore it (1.447755ms)
+✔ text search congress filter binds the stored bill-ID prefix (0.463576ms)
+✔ successful metadata date selectors require ISO dates or explicit zones, without constraining ignored branches (0.857619ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 408.526755
