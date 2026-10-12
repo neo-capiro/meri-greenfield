@@ -1,0 +1,31 @@
+{
+  "receivedAt": "2026-10-12T01:55:21.610479+00:00",
+  "source": "parent delegation relay; not native artifacts inspected by backend",
+  "parentThread": "01a0ff18-26cd-7609-beba-87726d0300c6",
+  "localSession": "01a12dc3-1def-72a3-ba50-94b62e954600",
+  "coordinatorTask": "01a12dcb-b1f2-71f1-a0b3-4ae23e65c037",
+  "host": "NEOMART",
+  "reportedReadiness": {
+    "awsCli": "2.36.8",
+    "profile": "capiro-dev",
+    "account": "967807252336",
+    "principal": "capirocli",
+    "region": "us-east-1",
+    "privatePolicyMain": "b2b0ce8",
+    "hostMap": "October 2"
+  },
+  "inProgress": [
+    "bounded exact-source PR8 read-only runner capture",
+    "separate read-only resource inventory"
+  ],
+  "nativeArtifactsReturnedHere": false,
+  "policyBodiesDeliveredHere": false,
+  "backendAdmission": {
+    "runnerPinsChanged": false,
+    "runtime": false,
+    "build": false,
+    "cloudWrites": false,
+    "paidProvider": false
+  },
+  "supersedes": "Direct connector404 remains actual backend observation, but private policy is now reported accessible on designated local host; await relevant policy/artifacts."
+}
