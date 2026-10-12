@@ -18,12 +18,12 @@ function action(){return {date:T,text:'Synthetic action',type:null,chamber:null}
 function billVote(){return {chamber:'house',rollNumber:1,question:null,result:null,voteType:null,voteDate:T,yeas:0,nays:0,present:0,notVoting:0,partyTotals:null,sourceUrl:null};}
 function rule(){return {ruleBillId:'119-hres-2',ruleTitle:null,ruleStatus:null,ruleLatestAction:null,ruleVotes:[{rollNumber:1,result:null,yeas:0,nays:0,voteDate:T,question:null,sourceUrl:null}]};}
 function bill(){return {tool:B,authoritativeOwner:'congress_bill_status',currentStatus:'available',generatedAt:T,billId:id,found:true,title:'Synthetic bill',congress:119,status:'custom_status',statusLabel:'custom_status',statusAt:null,latestAction:{text:null,date:null},sponsor:{name:null,bioguideId:null},cosponsorsCount:0,recentActions:[action()],floorVotes:[billVote()],governingRules:[rule()]};}
-const invalid=()=>({tool:B,authoritativeOwner:'congress_bill_status',currentStatus:'invalid_request',generatedAt:T,found:false,note:'Synthetic invalid selector'});
-const unavailable=()=>({...invalid(),billId:id,currentStatus:'unavailable',note:'Synthetic stored bill not found'});
+const invalid=()=>({tool:B,authoritativeOwner:'congress_bill_status',currentStatus:'invalid_request',generatedAt:T,found:false,note:schema.$defs.FederalInvalidBillNote.const});
+const unavailable=()=>({...invalid(),billId:id,currentStatus:'unavailable',note:`No bill ${id} on record in the Capiro database. Say so explicitly — do not describe its status from memory.`});
 function vote(){return {id:'vote-synthetic',congress:119,session:1,billId:id,title:null,...billVote()};}
 function votes(){return {tool:V,generatedAt:T,votesFound:1,votes:[vote()]};}
 const candidate=(id='A000001')=>({bioguideId:id,fullName:'Synthetic Member',chamber:'house',state:null,party:null,isCurrent:true});
-function ambiguity(){return {tool:V,generatedAt:T,votesFound:0,votes:[],ambiguousMember:[candidate(),candidate('B000002')],note:'Synthetic multiple name matches'};}
+function ambiguity(){return {tool:V,generatedAt:T,votesFound:0,votes:[],ambiguousMember:[candidate(),candidate('B000002')],note:'"Smith" matches 2 members — ask the user which (by state/chamber/full name) before attributing votes. Results are NOT scoped to a member yet.'};}
 function memberVotes(){const p=votes();p.member={bioguideId:'A000001',fullName:'Synthetic Member'};p.votes[0].memberVotes=[{voteCast:'Yea',party:null,state:null}];return p;}
 const reject=(op,p,input=op===B?raw:{},options=ctx)=>assert.throws(()=>check(op,p,input,options));
 function mutants(op,make,list,input=op===B?raw:{}){for(const m of list){const p=make();m(p);reject(op,p,input);}}
@@ -44,11 +44,12 @@ test('bill invalid and unavailable branches cannot claim resolved or successful 
   mutants(B,unavailable,[p=>p.found=true,p=>p.currentStatus='available',p=>p.title='leaked',p=>p.billId='119-s-2']);
   const bad=invalid();bad.billId=id;reject(B,bad,{});
 });
-test('bill source owner labels and resolved bill/congress stay correlated',()=>{
-  mutants(B,bill,[p=>p.authoritativeOwner='federal_evidence_current',p=>p.currentStatus='fresh',p=>p.found=false,p=>p.billId='119-s-2',p=>p.congress=118]);
+test('bill owner markers and resolved identity stay exact while stored congress remains a separate column',()=>{
+  mutants(B,bill,[p=>p.authoritativeOwner='federal_evidence_current',p=>p.currentStatus='fresh',p=>p.found=false,p=>p.billId='119-s-2']);
+  const p=bill();p.congress=118;check(B,p,raw,ctx);
 });
 test('stored unknown null and empty statuses retain exact label semantics',()=>{
-  for(const [status,label] of [[null,'Unknown'],['',''],['future_status','future_status']]){const p=bill();p.status=status;p.statusLabel=label;check(B,p,raw,ctx);p.statusLabel='invented';reject(B,p);}
+  for(const [status,label] of [[null,'Unknown'],['',''],['future_status','future_status'],['constructor','constructor'],['__proto__','__proto__']]){const p=bill();p.status=status;p.statusLabel=label;check(B,p,raw,ctx);p.statusLabel='invented';reject(B,p);}
 });
 test('actions and direct floor votes have separate fifteen-row windows without count proof',()=>{
   const p=bill();p.recentActions=Array.from({length:15},action);p.floorVotes=Array.from({length:15},billVote);check(B,p,raw,ctx);p.recentActions.push(action());reject(B,p);p.recentActions.pop();p.floorVotes.push(billVote());reject(B,p);
@@ -83,7 +84,7 @@ test('invalid floor bill/chamber become no filter rather than an invented scoped
   check(V,votes(),{query:'source question or title match'},ctx);
 });
 test('floor member not-found and ambiguous branches are empty and conditional',()=>{
-  const empty={tool:V,generatedAt:T,votesFound:0,votes:[],note:'Synthetic member not found'};check(V,empty,{member:'A000001'},ctx);check(V,ambiguity(),{member:'Smith'},ctx);
+  const empty={tool:V,generatedAt:T,votesFound:0,votes:[],note:'No member with Bioguide id A000001 is on record. Results are NOT scoped to a member — say so; do not attribute votes.'};check(V,empty,{member:'A000001'},ctx);check(V,ambiguity(),{member:'Smith'},ctx);
   reject(V,ambiguity(),{});reject(V,ambiguity(),{member:'A000001'});const p=ambiguity();p.votes=[vote()];p.votesFound=1;reject(V,p,{member:'Smith'});
 });
 test('ambiguity requires bounded multiple distinct candidates and no resolved member',()=>{
@@ -116,4 +117,16 @@ test('operation selector, raw inputs and trusted options admit no coercion/acces
 test('nested arbitrary JSON rejects effects and non-JSON values without interpreting party totals',()=>{
   let effects=0;const p=bill();p.floorVotes[0].partyTotals={};Object.defineProperty(p.floorVotes[0].partyTotals,'D',{enumerable:true,get(){effects++;return 1;}});reject(B,p);assert.equal(effects,0);
   mutants(V,votes,[p=>p.votes[0].partyTotals=NaN,p=>p.votes[0].partyTotals={[Symbol('bad')]:1},p=>p.generatedAt=new Date(T)]);
+});
+test('no-bill-vote and rule-failed warnings remain separate and required',()=>{
+  const p=bill();p.floorVotes=[];reject(B,p);p.note=schema.$defs.FederalNoBillVoteNote.const;check(B,p,raw,ctx);
+  p.status='rule_failed';p.statusLabel=schema.$defs.FederalBillStatusLabels.const.rule_failed;reject(B,p);p.note+=' '+schema.$defs.FederalRuleFailedNote.const;check(B,p,raw,ctx);
+  const q=bill();q.note='Unsupported proof';reject(B,q);
+});
+test('floor scalar defaults and ineffective zero numeric filters are explicit',()=>{
+  const n=normalize(V,{},ctx);assert.equal(n.limit,10);assert.equal(n.congress,null);assert.equal(n.chamber,null);assert.equal(n.billId,null);assert.equal(n.member,null);assert.equal(n.bioguideId,null);
+  for(const congress of [null,0,'0','','bad'])assert.equal(normalize(V,{congress},ctx).congress,null);
+  assert.equal(normalize(V,{limit:'2.9'},ctx).limit,2);assert.equal(normalize(V,{limit:999},ctx).limit,25);assert.equal(normalize(V,{limit:' '},ctx).limit,1);
+  for(const raw of [{congress:1.5},{congress:2147483648},{congress:'Infinity'},{limit:true},{member:9}])assert.throws(()=>normalize(V,raw,ctx));
+  assert.equal(normalize(B,{billId:'119-HR-00001'},ctx).billId,'119-hr-00001');assert.equal(normalize(B,{billId:'H.R. 00001'},ctx).billId,id);
 });

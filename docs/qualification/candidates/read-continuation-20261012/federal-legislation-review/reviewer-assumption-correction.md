@@ -1,0 +1,5 @@
+# Retained reviewer fixture/assumption failures
+
+Initial frozen23 controls passed20/failed3 at stable module a811e83b... and schema85cfe00e...; PG169606 absent, raw streams retained. Two failures used generic synthetic refusal notes where the source contract preserves exact warning/refusal wording. Fixtures now use the new Meri contract constant or exact contextual template already represented by that contract; missing/wrong note negatives remain required. They were fixture corrections, not source repairs.
+
+The third failure assumed CongressBill.congress must equal congress parsed from the selected bill ID. Producer selects by id and separately projects the stored Int column; schema has no cross-field constraint, and there is no congress predicate for get_bill_status. The corrected positive characterizes the independently stored column. Exact source-owner markers/bill ID remain negative controls. Floor-vote explicit congress filtering remains separately enforced. No production repair was requested. Original assertions survive in b93a542 and raw prefreeze output; none of these three are reported as passing source negatives.

@@ -1,0 +1,33 @@
+✔ independent bill invalid unavailable found and ordinary vote branches admit (8.55016ms)
+✔ default congress is explicit trusted context with no model authority fields (2.390195ms)
+✔ bill designation grammar preserves canonical and explicit congress precedence (1.900699ms)
+✔ bill invalid and unavailable branches cannot claim resolved or successful data (1.673517ms)
+✔ bill owner markers and resolved identity stay exact while stored congress remains a separate column (1.14306ms)
+✔ stored unknown null and empty statuses retain exact label semantics (1.252664ms)
+✔ actions and direct floor votes have separate fifteen-row windows without count proof (2.337506ms)
+✔ governing rule uniqueness and three-vote bound do not imply history completeness (0.653503ms)
+✔ bill date fields preserve date-only latestAction but general status/action instants (0.845712ms)
+✔ each bill action and vote history descends while tied dates remain admissible (0.855707ms)
+✔ opaque partyTotals and signed Int storage fields are not turned into tally or outcome proof (1.294707ms)
+✔ floor votes count is returned length and request bound not a global source count (0.978491ms)
+✔ floor exact bill/chamber/congress selectors refuse substitution (0.835606ms)
+✔ invalid floor bill/chamber become no filter rather than an invented scoped request (0.490608ms)
+✔ floor member not-found and ambiguous branches are empty and conditional (0.638851ms)
+✔ ambiguity requires bounded multiple distinct candidates and no resolved member (0.614605ms)
+✔ canonical member result matches requested identity and keeps conditional vote records (0.540373ms)
+✔ multiple matched member records are preserved but empty resolved nested match fails closed (0.305509ms)
+✔ votes without a matching source member cannot silently enter unfiltered success branch (0.326291ms)
+✔ full vote identity uniqueness and descending time keep ties without fabricated roll sequence (0.342225ms)
+✔ all nullable fields remain required and unprojected data cannot leak (1.593347ms)
+✔ operation selector, raw inputs and trusted options admit no coercion/accessor effects (0.213521ms)
+✔ nested arbitrary JSON rejects effects and non-JSON values without interpreting party totals (0.335635ms)
+✔ no-bill-vote and rule-failed warnings remain separate and required (1.487908ms)
+✔ floor scalar defaults and ineffective zero numeric filters are explicit (0.696137ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.469721
