@@ -1,0 +1,14 @@
+✔ actual control.stopRun consumes canonical registry and preserves raw registry API (9.868529ms)
+✔ synchronous stop gate prevents queued and later matching handlers (2.737784ms)
+✔ already running handler is aborted, settled and cannot hide publication uncertainty (2.890744ms)
+✔ unknown revocation remains visible and repeating stop never retries (1.569889ms)
+✔ wrong full binding does not abort the authenticated matching handler (1.524942ms)
+✔ cleanup cutoff bounds waiting but retains an issued late revocation (17.952746ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 628.479124
