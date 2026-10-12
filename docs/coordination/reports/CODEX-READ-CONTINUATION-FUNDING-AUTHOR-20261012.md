@@ -201,7 +201,14 @@ record exact commands and raw bytes, source hashes, and owned process groups
 confirmed absent without timeout or kill. The broader checks reaped seven exited
 descendants in total, including the original preserved runs. No daemon, native database, provider, image or model was executed.
 
-The offline packet verifier passes **161/161** identity, raw-receipt, source and
+The complete evidence whitespace check failed on three lines of the exact raw
+repair patches (blank diff-context lines represented by a space). Those bytes
+remain bound to the source receipts and were not normalized. The failure was
+replayed against evidence freeze `7ff4f758a854781da6a12efa03c9e98fb944a9ad`
+and its raw output/exit 2 preserved. Authored source/metadata whitespace passed
+with only the raw patch files excluded; this is not a full-evidence whitespace pass.
+
+The offline packet verifier passes **183/183** identity, raw-receipt, source and
 preservation checks. All 5267 original Git paths are byte-identical; exactly five allocated source/test
 files were added. Public package metadata, lockfiles, schemas, canonical loader,
 catalog and shared tests are unchanged. Root supplied physically copied existing
