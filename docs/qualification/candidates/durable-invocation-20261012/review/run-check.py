@@ -43,7 +43,7 @@ try:
     absent = False
 except ProcessLookupError:
     absent = True
-receipt = {'command': command, 'cwd': os.getcwd(), 'startUnixSeconds': started,
+receipt = {'command': command, 'cwd': os.getcwd(), 'sourceRoot': os.environ.get('MERI_REVIEW_SOURCE_ROOT'), 'startUnixSeconds': started,
            'elapsedSeconds': time.time() - started, 'exitCode': code,
            'ownedPidAndGroup': process.pid, 'externalTimeout': timed_out,
            'ownedProcessGroupAbsent': absent, 'reapedDescendants': reaped, 'streams': {}}
