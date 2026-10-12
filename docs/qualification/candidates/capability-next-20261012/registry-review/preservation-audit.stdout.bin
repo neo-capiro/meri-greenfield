@@ -1,0 +1,264 @@
+{
+  "sourceFreeze": "56a917f59e849630f50933e31703a2c7c262be1d",
+  "requiredAuthorRepair": "deba2c13c612845b4f65e38c263982c698bb4361",
+  "reviewedComposite": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+  "reviewedTree": "01b19b6a51f55bdd49878227940f15aade642876",
+  "source": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "bytes": 2320,
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e",
+      "blob": "6d2295a7e56a57ef8768d2e710c686f868177436"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "bytes": 4315,
+      "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833",
+      "blob": "3b501da917cd0105bba763ae6bb340897a6e5cef"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 17469,
+      "sha256": "11ba3bb8f0ac1309c1ea7b8cd9093d885053c9804036ed522c2ff92d75033d19",
+      "blob": "a90e04d6eee2ee09cac926f752076a08d82e98c0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-registry.test.mjs",
+      "bytes": 4893,
+      "sha256": "99019dee71a56fdb4abad274738abdcb163baf16be75f9595b34784876b3924e",
+      "blob": "cf06af4be9701a9cd6d819249ce69d1488e49795"
+    }
+  ],
+  "checks": [
+    {
+      "name": "only-allocated-family-loader-author-test-changes",
+      "pass": true
+    },
+    {
+      "name": "schema-unmodified-by-repair",
+      "pass": true
+    },
+    {
+      "name": "loader-unmodified-by-repair",
+      "pass": true
+    },
+    {
+      "name": "reviewed-repair-exact-author-bytes:packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "reviewed-repair-exact-author-bytes:packages/contracts/test/retrieval-client-registry.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "review-worktree-exact-reviewed-bytes:packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "review-worktree-exact-reviewed-bytes:packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "pass": true
+    },
+    {
+      "name": "review-worktree-exact-reviewed-bytes:packages/contracts/retrieval-0.2/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "review-worktree-exact-reviewed-bytes:packages/contracts/test/retrieval-client-registry.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "public-runtime-catalog-registry-resolver-lock-plan-ledger-preserved",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/catalog.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/common.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/data-search.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/mail.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/memory-proposals.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "pass": true
+    },
+    {
+      "name": "prior-schema-unchanged:packages/contracts/retrieval-0.2/skill.schema.json",
+      "pass": true
+    },
+    {
+      "name": "all-original139-rows-preserved",
+      "pass": true
+    },
+    {
+      "name": "prior15-descriptors-preserved",
+      "pass": true
+    },
+    {
+      "name": "dispositions96-selected43-deferred",
+      "pass": true
+    },
+    {
+      "name": "registry-not-yet-catalog-bound-at-reviewed-freeze",
+      "pass": true
+    },
+    {
+      "name": "registry-native-pending-null-at-reviewed-freeze",
+      "pass": true
+    },
+    {
+      "name": "all-prior-operations-unavailable",
+      "pass": true
+    },
+    {
+      "name": "RC1-branch-preserved",
+      "pass": true
+    },
+    {
+      "name": "RC1-tag-preserved",
+      "pass": true
+    },
+    {
+      "name": "main-ref-preserved",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:first-independent",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:repaired-unchanged-controls",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:reference-audit",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:reference-audit-corrected",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:reference-audit-final",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "preserved-receipt-outcome:final-family",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "exact-raw-stream:docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stderr.bin",
+      "pass": true
+    }
+  ],
+  "passed": 47,
+  "failed": 0,
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.json",
+      "bytes": 1336,
+      "sha256": "3bb69277b5ebaea3cbe51aa5721b8d63ed1e5875a1ce15df87911fe0221d2c84",
+      "exitCode": 1
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.json",
+      "bytes": 1356,
+      "sha256": "ff04d0d293977764201f493a7d6a2af84f6305a4130c9c974d25b0121dabb58c",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.json",
+      "bytes": 1310,
+      "sha256": "069380e679f8f59282c1dfb1aef474d0d41a94490c31c55564fa3af97515d561",
+      "exitCode": 1
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.json",
+      "bytes": 1330,
+      "sha256": "2c2e6d42b85fccb9d5476b6fee16ee4628120d37f2b05a298cb17c7773a2e58f",
+      "exitCode": 1
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.json",
+      "bytes": 1322,
+      "sha256": "3af1a8e096e5c6bc4ee4848f3beaf71222be648cee439fb492103e1cd210f064",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-family.json",
+      "bytes": 1392,
+      "sha256": "547b3d7ac32942fb00a6ed35dc2d835b7c09cad95eba908acda7a1822df55114",
+      "exitCode": 0
+    }
+  ],
+  "runtimeAccepted": false,
+  "catalogBindingAccepted": false
+}

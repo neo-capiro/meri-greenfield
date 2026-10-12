@@ -1,0 +1,35 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "cwd": "/workspace/meri-registry-next-review-20261012",
+  "sourceHead": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+  "sourceDiffSha256": "c29eb09d7ca550857d2eee3bb46dc35d36f8ea6033cef389d6a071a69455102c",
+  "sourceDiffBytes": 9623,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:33:43.589098+00:00",
+  "durationSeconds": 0.008,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 137422,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stdout.bin",
+      "bytes": 99,
+      "sha256": "dc4214901026eb8dcb2e40653e11fb8110822d6feb590f945b039bc52aa2eb68"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

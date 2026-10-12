@@ -1,0 +1,40 @@
+{
+  "sourceFailure": {
+    "receipt": "first-independent.json",
+    "source": "56a917f59e849630f50933e31703a2c7c262be1d",
+    "pass": 68,
+    "fail": 1,
+    "cause": "Description Unicode code-point schema limit admits 202 UTF-16 units; immutable producer caps 200 units",
+    "exactTestSnapshot": "first-independent.test.mjs.txt"
+  },
+  "authorRepair": "deba2c13c612845b4f65e38c263982c698bb4361",
+  "repairCherryPick": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+  "unchangedControlReplay": {
+    "pass": 69,
+    "fail": 0,
+    "receipt": "repaired-unchanged-controls.json"
+  },
+  "maintainedSuiteChanges": [
+    "Move freeze-specific unbound registration characterization to preservation evidence, because root separately owns later binding; unchanged check passed in 69-control replay",
+    "Remove assertion that every SHA256 string has length64; exact bytes/hash are independently bound in source audit",
+    "Strengthen original Unicode refusal with candidate-branch positive/negative counterpart"
+  ],
+  "referenceAuditFailures": {
+    "receipts": [
+      "reference-audit.json",
+      "reference-audit-corrected.json"
+    ],
+    "eachPass": 20,
+    "eachFail": 1,
+    "cause": "Reviewer AST walker omitted identifier calls used by the four bound lookup test functions; first attempted correction handled element access only. Neither failed check concerns source production. Exact checker versions and raw failures retained.",
+    "finalFix": "Include actual Identifier callee as well as property/element forms"
+  },
+  "authoredWhitespace": {
+    "initialReceipt": "staged-whitespace.json",
+    "exitCode": 2,
+    "cause": "Reviewer test had a new blank line at EOF after moving freeze-specific characterization out",
+    "fix": "Remove only redundant final blank line",
+    "beforeSnapshot": "final-test-before-whitespace.mjs.txt",
+    "testBehaviorChanged": false
+  }
+}
