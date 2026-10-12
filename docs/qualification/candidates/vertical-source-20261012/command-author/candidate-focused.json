@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-durable-budget.test.mjs",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "packages/contracts/test/commands-task-update.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-execution-20261012",
+  "sourceHead": "0fc36aff02751f11f3d6dff76a005c1357e79f9e",
+  "sourceDiffSha256": "4337d3c70ffe73931d3e2fdad5d403ab05d07c92cc28d73962be4ef5df354fa6",
+  "sourceDiffBytes": 29180,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:25:51.680863+00:00",
+  "durationSeconds": 3.455,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 367604,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stdout.bin",
+      "bytes": 7202,
+      "sha256": "627b96d147cd68427602701543821dd669d6d1ee4fa0bced15bc322f4c256876"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/candidate-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Reusable intent moved into private contracts with unchanged helper owner; fresh approval-only minimum published before actual private marker/settlement; late cleanup guard repaired.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
