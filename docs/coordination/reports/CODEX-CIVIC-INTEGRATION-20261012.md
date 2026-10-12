@@ -1,6 +1,6 @@
 # Civic and tenant read source continuation
 
-The seven reviewed private read boundaries are composed in catalog0.2.8 at source `1c1fc211b5032487dbbec27531fd301e7030e5f1`, with exact final family metadata at `8be4b07781315625766a4df306d76ff4617bed73`. Base is PR30 publication `c1c9bfde7dd466a0474589a224a99b44277adbc9`. Independent combined acceptance awaits the final receipt review. This is source qualification only: every handler remains null, source connectivity is false, G1 remains OPEN and G2–G7 are unentered.
+The seven reviewed private read boundaries are composed in catalog0.2.8 at source `1c1fc211b5032487dbbec27531fd301e7030e5f1`, with exact final family metadata at `8be4b07781315625766a4df306d76ff4617bed73`. Base is PR30 publication `c1c9bfde7dd466a0474589a224a99b44277adbc9`. Independent combined verdict is **ACCEPT_SOURCE**, frozen at `a6adebdd2442a0fcab66e2eb918b885269abd292`. This is source qualification only: every handler remains null, source connectivity is false, G1 remains OPEN and G2–G7 are unentered.
 
 The preserved ledger is139originals /96selected /43deferred;62selected originals are mapped but unavailable,34remain pending, and63typed unavailable boundaries include the prior partial action-item boundary. No capability was discarded or reclassified. Existing public0.1, gateway production, workers/native probes, frontend and infrastructure remain unchanged.
 
@@ -32,7 +32,7 @@ Independent combined review also retained its own two malformed federal-key fixt
 - All56prior descriptors remain identical and ordered; all139original disposition/boundary records are preserved apart from the seven explicit mappings. Every schema pin resolves exact private bytes; all63descriptors remain unimplemented/pending/null-handler.
 - Accepted family files:19/19exact, with contact repair/test corrections checked against their independently reviewed commits. Shared state helper remains exact.
 - Immutable family packet integrity:327/327checks across12author/reviewer packets.
-- Independent combined controls:38/38; initial source/test-byte audit162/162. Final receipt audit and source verdict are separately recorded by the independent reviewer, not folded into the root suite count.
+- Independent combined controls:38/38; initial source/test-byte audit162/162. Final immutable receipt audit28/28 and ACCEPT_SOURCE are recorded by the independent reviewer; these are not folded into the root suite count.
 
 Raw receipts, streams, source identities, full capability ledger and scripts are under [civic-integration](../../qualification/candidates/read-continuation-20261012/civic-integration/). Meaningful earlier failures are retained. All root check groups are absent. Exact local installed dependencies were copied from the preserved donor with byte verification and no installs or lock changes. To avoid workspace exhaustion, only disposable installed caches in this team's completed source worktrees were removed; source/evidence/locks/branches and the shared donor remain intact. Cleanup receipts name exact paths. Native/infrastructure/other-owner worktrees were untouched.
 
