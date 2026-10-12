@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.3",
+  "catalogVersion": "0.2.4",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -833,8 +833,11 @@
       "id": "lookup_client_registry",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "lookup_client_registry",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_client",
@@ -2115,6 +2118,79 @@
       ],
       "fixtureIds": [
         "catalog.binding.query_action_items.client_scoped"
+      ]
+    },
+    {
+      "operation": {
+        "id": "lookup_client_registry",
+        "version": "0.2.0"
+      },
+      "displayName": "Look up an existing client and public registry candidates",
+      "whenToUse": "Prepare the selected name lookup across the authorized tenant-client projection and the public LDA registry projection.",
+      "limitations": [
+        "Pending contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
+        "A name is a selector. Tenant membership alone does not authorize every client; trusted source policy must authorize each returned tenant record.",
+        "Compatibility guidance is untrusted reported text and grants no creation, update or approval authority. create_client remains deferred.",
+        "Empty/null results and reported counts establish no authoritative absence, exhaustive enumeration, freshness, source health or snapshot stability.",
+        "This frozen success projection declares no request/provenance envelope. A qualified adapter must bind results to the authorized request and preserve upstream failures."
+      ],
+      "positiveExamples": [
+        "Look up a prospective organization name and distinguish an existing tenant client from exact and nearby registry candidates."
+      ],
+      "negativeExamples": [
+        "Create a client, treat candidate matching as verified identity, or claim registry absence from an empty candidate list."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "clients",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        },
+        {
+          "sourceId": "lda_registry",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-registry:0.2.0#/$defs/ClientRegistryInput",
+        "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-registry:0.2.0#/$defs/ClientRegistryResult",
+        "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.lookup_client_registry"
       ]
     }
   ]

@@ -12,6 +12,9 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id: 'lookup_client_registry', nativeId: 'lookup_client_registry', group: 'client-registry', input: 'ClientRegistryInput', output: 'ClientRegistryResult', version: '0.2.0',
+    normalize: (v, request) => ({input: v.normalizeClientRegistryInput(request)}),
+    outputAssert: (v, page, request) => {v.normalizeClientRegistryInput(request); return v.assertClientRegistryResult(page);}}),
   Object.freeze({id: 'mail.read_thread', nativeId: 'get_email_thread', group: 'mail', input: 'MailThreadInput', output: 'MailThreadSourcePage', version: '0.2.0',
     normalize: (v, request, context, binding) => ({input: v.assertMailThreadInput(request)}),
     outputAssert: (v, page, request, context, binding) => v.assertMailThreadSourcePage(page, request)}),

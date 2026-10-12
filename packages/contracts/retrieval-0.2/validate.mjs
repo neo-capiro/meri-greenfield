@@ -219,4 +219,4 @@ const sourceCatalog = JSON.parse(readFileSync(new URL('./catalog.json', import.m
 export const {resolveOperationContract} = createOperationContracts({catalog: sourceCatalog,
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
   validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
-    ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators})});
+    ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators})});
