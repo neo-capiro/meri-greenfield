@@ -13,3 +13,5 @@ Pinned integration base PR30 c1c9bfde7dd466a0474589a224a99b44277adbc9. Seven all
 9. Exact candidate/source/reference/preservation audit and owned Linux subreaper cleanup, explicit ACCEPT_SOURCE/HOLD, exact reviewer-only commits/manifest. Shape or source-test acceptance cannot close native/G1/runtime gates.
 
 Metadata reconnaissance note: initial ad-hoc ledger count reader guessed mappingStatus and raised KeyError. Actual field is state; no source or test change was made. Subsequent counts use the inspected actual schema.
+
+Frozen controls baseline: real canonical test execution before registration produces expected unknown-operation failures; exact raw stdout/stderr and initial test preimage retained. Before candidate replay, direct schema inspection corrected the reviewer-only upcoming-docket fixture: accepted family expects integer limit and days, not numeric-string limit/upcomingDays. This was an unexecuted inner fixture assumption masked by missing canonical registration, not a production defect. No assertion was removed.
