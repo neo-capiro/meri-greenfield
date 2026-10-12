@@ -1,0 +1,35 @@
+✔ production control constructs real source-disabled gateway and never dispatches (23.239949ms)
+✔ actual control->dispatcher validates normalized request and records immutable completion before fixed charge (26.026487ms)
+✔ unprepared exact historical observation is ABSENT with no new row or refund (2.8014ms)
+✔ concurrent reconstructed producers retain one original ID, deadline and one physical handler (16.322977ms)
+✔ canonical whitespace replay agrees; changed raw arguments cannot borrow original identity (6.002379ms)
+✔ same run/delivery key with replacement grant/task/fence refuses rather than minting a second identity (7.422663ms)
+✔ lost prepare COMMIT acknowledgement preserves exact durable stage across owner reconstruction (5.421597ms)
+✔ lost reserve COMMIT acknowledgement preserves exact durable stage across owner reconstruction (8.992321ms)
+✔ lost marker COMMIT acknowledgement preserves exact durable stage across owner reconstruction (8.544649ms)
+✔ lost settle COMMIT acknowledgement preserves exact durable stage across owner reconstruction (25.046144ms)
+✔ UNKNOWN without completion remains held after revocation, expiry, quarantine and restart (7.24818ms)
+✔ retained valid marker reconciles historically once with full fixed charge and no result release (11.579865ms)
+✔ reserved owned namespace cannot enter legacy execute or forInvocation with an extra bypass argument (3.176363ms)
+✔ aborted before prepare makes no new transaction or authority call (1.52458ms)
+✔ cancelled parked prepare acknowledgement cannot start dispatch after late completion (14.942012ms)
+✔ abort while completion marker ACK is parked prevents automatic settlement after late ACK (14.000567ms)
+✔ expiry while completion marker ACK is parked prevents automatic settlement after late ACK (6.077983ms)
+✔ invalid-output leaves UNKNOWN without completion proof (4.218649ms)
+✔ release-denial leaves UNKNOWN without completion proof (5.859574ms)
+✔ corrupt retained raw_request_sha256 cannot authorize historical settlement (6.450693ms)
+✔ corrupt retained arguments_sha256 cannot authorize historical settlement (5.051441ms)
+✔ corrupt retained facts cannot authorize historical settlement (4.362194ms)
+✔ corrupt retained producer_key_sha256 cannot authorize historical settlement (5.975659ms)
+✔ corrupt retained completion cannot authorize historical settlement (5.622768ms)
+✔ live normalized digest must be the canonical dispatcher result, never caller-supplied reconciliation digest (6.451554ms)
+✔ unknown model liability participates in the same canonical reservation cap (3.489304ms)
+✔ control rejects outer accessor/proxy without executing injected code (0.469054ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1374.73287
