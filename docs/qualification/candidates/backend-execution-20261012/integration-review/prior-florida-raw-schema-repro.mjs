@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {resolveOperationContract,validateShape} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
+const context={asOf:'2026-10-12T00:00:00.000Z',effectiveScope:{jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null},clientResolution:null};
+const contract=resolveOperationContract({id:'get_florida_budget_project',version:'0.2.0'});
+const normalized=contract.normalizeInput({},context);
+validateShape('FloridaBudgetRequest',{});
+assert.equal(normalized.input.offset,0);
+assert.equal(contract.binding.input,'FloridaBudgetInput');
+assert.throws(()=>validateShape(contract.binding.input,{}));
+console.log(JSON.stringify({reproduced:true,raw:{},normalized:normalized.input,advertisedDefinition:contract.binding.input,consequence:'Caller advertised input rejects default request admitted by canonical normalizer; no runtime test.'},null,2));

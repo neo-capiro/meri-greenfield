@@ -1,5 +1,6 @@
+import {fullActionReference} from './backend-execution-expectations.mjs';
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
-const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -16,9 +17,9 @@ const context={actorId,nowMs:0};
 test('partial action binding does not declare full native parity or activate a handler',()=>{
  const c=catalog(),binding=CATALOG_OPERATION_BINDINGS.find(row=>row.id===reference.id),resolved=contract();
  assertCatalog(c);assert.equal(binding.nativeCoverage,'partial');assert.equal(resolved.binding,binding);
- assert.equal(c.operations.length,71);assert.equal(c.originals.filter(row=>row.state==='mapped').length,70);
- assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,26);
- const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'pending');assert.equal(original.replacement,null);
+ assert.equal(c.operations.length,84);assert.equal(c.originals.filter(row=>row.state==='mapped').length,83);
+ assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,13);
+ const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'mapped');assert.deepEqual(original.replacement,fullActionReference);
  assert.deepEqual(resolved.descriptor.aliases,[]);assert.equal(resolved.descriptor.handler,null);
  assert.equal(resolved.descriptor.availability,'unimplemented');assert.equal(resolved.descriptor.qualification,'pending');
  assert.equal(resolved.descriptor.retry.maxRetries,0);assert.deepEqual(resolved.descriptor.retry.retryableCodes,[]);
@@ -86,6 +87,8 @@ test('all fourteen original descriptors and all139 native rows remain exact',()=
   assert.equal(row.state,'mapped');assert.deepEqual(row.replacement,{id,version:'0.2.0'});
   row.state='pending';row.replacement=null;
  }
+ const fullAction=priorRows.find(row=>row.id==='query_action_items');
+ assert.deepEqual(fullAction.replacement,fullActionReference);assert.equal(fullAction.state,'mapped');fullAction.state='pending';fullAction.replacement=null;
  assert.equal(canonicalSha256(priorRows),'74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9');
  assert.deepEqual(CATALOG_OPERATION_BINDINGS.filter(row=>row.dispatchProfile==='mail-candidates/1').map(row=>row.id),['mail.list_messages','mail.search_messages']);
 });

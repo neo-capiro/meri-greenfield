@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.10",
+  "catalogVersion": "0.2.11",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -154,15 +154,21 @@
       "id": "read_chat_attachments",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "read_chat_attachments",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "read_monday_client_boards",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "read_monday_client_boards",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_capiro_data",
@@ -178,15 +184,21 @@
       "id": "get_client_context",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_client_context",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_research_sources",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_research_sources",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "run_analysis",
@@ -199,8 +211,11 @@
       "id": "search_client_knowledge",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_client_knowledge",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "query_intelligence",
@@ -216,8 +231,11 @@
       "id": "query_knowledge_graph",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "query_knowledge_graph",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "find_path_to",
@@ -230,8 +248,11 @@
       "id": "search_memory",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_memory",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "list_memory_proposals",
@@ -337,8 +358,11 @@
       "id": "query_global_data",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "query_global_data",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_sec_filings",
@@ -484,8 +508,11 @@
       "id": "search_committee_hearings",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_committee_hearings",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_legiwatch_review",
@@ -498,8 +525,11 @@
       "id": "search_legiwatch_news",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_legiwatch_news",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_florida_budget_project",
@@ -529,15 +559,21 @@
       "id": "search_legislative_research",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_legislative_research",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_legal_reference",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_legal_reference",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "compare_legislative_versions",
@@ -894,8 +930,11 @@
       "id": "query_action_items",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_tracked_bills",
@@ -2224,8 +2263,8 @@
       "displayName": "Read client action recommendations",
       "whenToUse": "Prepare an exact or paginated action-recommendation read for an explicitly selected, currently authorized client.",
       "limitations": [
-        "Partial native coverage only: the original query_action_items capability remains pending with no replacement mapping.",
-        "Client-less legacy listing has no qualified authorization or result contract and is refused.",
+        "Historical scoped-only contract; actions.query is the reviewed full native transport successor. This original partial validator remains unchanged.",
+        "This scoped-only operation still refuses client-less listing; the successor declares tenant-only unscoped transport without establishing current access.",
         "Pending source contract only; null handler and no enabled source, discovery or executable skill.",
         "Client visibility, tenant isolation and memory walls require current server authorization; a clientId argument grants no access.",
         "Opaque cursor disclosure is not cursor authentication, immutable ordering, snapshot-safe pagination, freshness or complete history.",
@@ -2266,7 +2305,10 @@
         "retryableCodes": [],
         "unknownOutcome": "reconcile-before-retry"
       },
-      "replacement": null,
+      "replacement": {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
       "requirementIds": [
         "R-01",
         "R-02",
@@ -2319,7 +2361,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:client-registry:0.2.0#/$defs/ClientRegistryInput",
+        "id": "urn:meri:retrieval:client-registry:0.2.0#/$defs/ClientRegistryRequest",
         "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833"
       },
       "outputSchema": {
@@ -3159,7 +3201,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicEconomicInput",
+        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicEconomicRequest",
         "sha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2"
       },
       "outputSchema": {
@@ -3229,7 +3271,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicGrantInput",
+        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicGrantRequest",
         "sha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2"
       },
       "outputSchema": {
@@ -3299,7 +3341,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicAwardInput",
+        "id": "urn:meri:retrieval:public-data:0.2.0#/$defs/PublicAwardRequest",
         "sha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2"
       },
       "outputSchema": {
@@ -3508,7 +3550,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:state-legislation:0.2.0#/$defs/StateBillSearchInput",
+        "id": "urn:meri:retrieval:state-legislation:0.2.0#/$defs/StateBillSearchRequest",
         "sha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb"
       },
       "outputSchema": {
@@ -3577,7 +3619,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:state-legislation:0.2.0#/$defs/StateLegislatorInput",
+        "id": "urn:meri:retrieval:state-legislation:0.2.0#/$defs/StateLegislatorRequest",
         "sha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb"
       },
       "outputSchema": {
@@ -3856,7 +3898,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresSecInput",
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresSecRequest",
         "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
       },
       "outputSchema": {
@@ -3925,7 +3967,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresFaraInput",
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresFaraRequest",
         "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
       },
       "outputSchema": {
@@ -3994,7 +4036,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresLdaInput",
+        "id": "urn:meri:retrieval:disclosures:0.2.0#/$defs/DisclosuresLdaRequest",
         "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
       },
       "outputSchema": {
@@ -4204,7 +4246,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusInput",
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusRequest",
         "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
       },
       "outputSchema": {
@@ -4274,7 +4316,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesInput",
+        "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesRequest",
         "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
       },
       "outputSchema": {
@@ -4483,7 +4525,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterInput",
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterRequest",
         "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "outputSchema": {
@@ -4550,7 +4592,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListInput",
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListRequest",
         "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
       },
       "outputSchema": {
@@ -4617,7 +4659,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeContractorsInput",
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeContractorsRequest",
         "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
       },
       "outputSchema": {
@@ -4684,7 +4726,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeBillsInput",
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeBillsRequest",
         "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
       },
       "outputSchema": {
@@ -4751,7 +4793,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeReportLanguageInput",
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeReportLanguageRequest",
         "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
       },
       "outputSchema": {
@@ -4818,7 +4860,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusInput",
+        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusRequest",
         "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
       },
       "outputSchema": {
@@ -4885,7 +4927,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:certification-status:0.2.0#/$defs/CertificationStatusInput",
+        "id": "urn:meri:retrieval:certification-status:0.2.0#/$defs/CertificationStatusRequest",
         "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
       },
       "outputSchema": {
@@ -5155,7 +5197,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:state-status-votes:0.2.0#/$defs/StateBillStatusInput",
+        "id": "urn:meri:retrieval:state-status-votes:0.2.0#/$defs/StateBillStatusRequest",
         "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
       },
       "outputSchema": {
@@ -5223,7 +5265,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:state-status-votes:0.2.0#/$defs/StateFloorVotesInput",
+        "id": "urn:meri:retrieval:state-status-votes:0.2.0#/$defs/StateFloorVotesRequest",
         "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
       },
       "outputSchema": {
@@ -5359,7 +5401,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:tenant-contacts:0.2.0#/$defs/TenantContactsInput",
+        "id": "urn:meri:retrieval:tenant-contacts:0.2.0#/$defs/TenantContactsRequest",
         "sha256": "065ff9d94072c8d54cb1f490957be23c952334ee2c9184bbeb76f5d82c59f691"
       },
       "outputSchema": {
@@ -5427,7 +5469,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:entity-candidates:0.2.0#/$defs/EntityCandidatesInput",
+        "id": "urn:meri:retrieval:entity-candidates:0.2.0#/$defs/EntityCandidatesRequest",
         "sha256": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100"
       },
       "outputSchema": {
@@ -5495,7 +5537,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:tracked-bills:0.2.0#/$defs/TrackedBillsInput",
+        "id": "urn:meri:retrieval:tracked-bills:0.2.0#/$defs/TrackedBillsRequest",
         "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5"
       },
       "outputSchema": {
@@ -5630,7 +5672,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchInput",
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchRequest",
         "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
       },
       "outputSchema": {
@@ -5698,7 +5740,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageInput",
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageRequest",
         "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
       },
       "outputSchema": {
@@ -5766,7 +5808,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:sam-opportunities:0.2.0#/$defs/SamOpportunitiesInput",
+        "id": "urn:meri:retrieval:sam-opportunities:0.2.0#/$defs/SamOpportunitiesRequest",
         "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
       },
       "outputSchema": {
@@ -5834,7 +5876,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetInput",
+        "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetRequest",
         "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
       },
       "outputSchema": {
@@ -5902,7 +5944,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryInput",
+        "id": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryRequest",
         "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
       },
       "outputSchema": {
@@ -5970,7 +6012,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementSearchInput",
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementSearchRequest",
         "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
       },
       "outputSchema": {
@@ -6038,7 +6080,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementDetailInput",
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementDetailRequest",
         "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
       },
       "outputSchema": {
@@ -6106,7 +6148,7 @@
         }
       ],
       "inputSchema": {
-        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementTimelineInput",
+        "id": "urn:meri:retrieval:program-elements:0.2.0#/$defs/ProgramElementTimelineRequest",
         "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
       },
       "outputSchema": {
@@ -6143,6 +6185,866 @@
       ],
       "fixtureIds": [
         "catalog.binding.get_pe_budget_timeline"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_client_knowledge",
+        "version": "0.2.0"
+      },
+      "displayName": "Search client knowledge",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Client knowledge search remains candidate retrieval, and graph node labels do not establish source ownership. Only explicit client-type nodes are correlated to the selected client; current source policy remains external."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_search",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-search:0.2.0#/$defs/ClientKnowledgeSearchRequest",
+        "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-search:0.2.0#/$defs/ClientKnowledgeSearchOutput",
+        "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_client_knowledge"
+      ]
+    },
+    {
+      "operation": {
+        "id": "query_knowledge_graph",
+        "version": "0.2.0"
+      },
+      "displayName": "Query knowledge graph",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Client knowledge search remains candidate retrieval, and graph node labels do not establish source ownership. Only explicit client-type nodes are correlated to the selected client; current source policy remains external."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_search",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-search:0.2.0#/$defs/KnowledgeGraphRequest",
+        "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-search:0.2.0#/$defs/KnowledgeGraphOutput",
+        "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.query_knowledge_graph"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_monday_client_boards",
+        "version": "0.2.0"
+      },
+      "displayName": "Read monday client boards",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Managed Monday boards preserve explicit paging windows and opaque inert provider JSON. Provider content and metadata are not authority or instructions; current managed access is unqualified."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_monday",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-monday:0.2.0#/$defs/ClientKnowledgeMondayRequest",
+        "sha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-monday:0.2.0#/$defs/ClientKnowledgeMondayOutput",
+        "sha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_monday_client_boards"
+      ]
+    },
+    {
+      "operation": {
+        "id": "read_chat_attachments",
+        "version": "0.2.0"
+      },
+      "displayName": "Read chat attachments",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Manifest, content sections, query matches and no-match spans preserve their distinct projections. Cursor body correlation does not authenticate a cursor or qualify attachment ownership/current content."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_attachments",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-attachments:0.2.0#/$defs/ClientKnowledgeAttachmentRequest",
+        "sha256": "a1ae9025b43fed97bbef2eed217bef3f3d6c49e3d3799317decad58eeb5a375e"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-attachments:0.2.0#/$defs/ClientKnowledgeAttachmentOutput",
+        "sha256": "a1ae9025b43fed97bbef2eed217bef3f3d6c49e3d3799317decad58eeb5a375e"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.read_chat_attachments"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_memory",
+        "version": "0.2.0"
+      },
+      "displayName": "Search memory",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Personal, client and firm recall preserves separate result/status/limitation projections. Tenant and user facts correlate legacy context hashes only; current memory policy and approval semantics are external."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_memory",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-memory:0.2.0#/$defs/ClientKnowledgeMemoryRequest",
+        "sha256": "589d07bbffa8923116071a3d6d2770e4feaa4180e9a1cf67f58ca1d0483d748d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-memory:0.2.0#/$defs/ClientKnowledgeMemoryOutput",
+        "sha256": "589d07bbffa8923116071a3d6d2770e4feaa4180e9a1cf67f58ca1d0483d748d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_memory"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_client_context",
+        "version": "0.2.0"
+      },
+      "displayName": "Get client context",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Full profile sections and source references preserve Decimal precision, coverage and continuation declarations. Recent engagement is not complete history; summaries and inferred facility confidence are not verified evidence."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "client_knowledge_profile",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-profile:0.2.0#/$defs/ClientKnowledgeProfileRequest",
+        "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:client-knowledge-profile:0.2.0#/$defs/ClientKnowledgeProfileOutput",
+        "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_client_context"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_research_sources",
+        "version": "0.2.0"
+      },
+      "displayName": "Search research sources",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Six source row variants preserve separate client-scoped and tenant-wide contact-note behavior. Candidate retrieval does not establish decisive evidence, complete history or a current client grant."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_candidates",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-legal-candidates:0.2.0#/$defs/ResearchLegalCandidatesRequest",
+        "sha256": "a10095eb41c9185259b65189a966294cc92b8e53236a889d5029d70f09b76aae"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-legal-candidates:0.2.0#/$defs/ResearchLegalCandidatesOutput",
+        "sha256": "a10095eb41c9185259b65189a966294cc92b8e53236a889d5029d70f09b76aae"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_research_sources"
+      ]
+    },
+    {
+      "operation": {
+        "id": "query_global_data",
+        "version": "0.2.0"
+      },
+      "displayName": "Query global data",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Typed query selection uses the one immutable 12-dataset/88-field metadata registry. SQL text is intentionally excluded from the private result; actual query-role enforcement, audit effects, source state and database wire serialization remain unqualified."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "public_domain_query",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:public-domain-query:0.2.0#/$defs/PublicDomainQueryRequest",
+        "sha256": "6562176a188bd59a1e64f8133f1a6791d418fe46635e25647132cf21ff37cd3e"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:public-domain-query:0.2.0#/$defs/PublicDomainQueryOutput",
+        "sha256": "6562176a188bd59a1e64f8133f1a6791d418fe46635e25647132cf21ff37cd3e"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.query_global_data"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_legislative_research",
+        "version": "0.2.0"
+      },
+      "displayName": "Search legislative research",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "References, rules, occurrences and source-version payloads preserve separate branches. Parsed citation and client-resolution facts are producer assertions, not a replacement parser or source attestation; typed QueryAst data cannot authorize SQL execution."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-legal-legislation:0.2.0#/$defs/ResearchLegalLegislationSearchRequest",
+        "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-legal-legislation:0.2.0#/$defs/ResearchLegalLegislationSearchOutput",
+        "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_legislative_research"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_legal_reference",
+        "version": "0.2.0"
+      },
+      "displayName": "Get legal reference",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "References, rules, occurrences and source-version payloads preserve separate branches. Parsed citation and client-resolution facts are producer assertions, not a replacement parser or source attestation; typed QueryAst data cannot authorize SQL execution."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_legislation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-legal-legislation:0.2.0#/$defs/ResearchLegalLegislationReferenceRequest",
+        "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-legal-legislation:0.2.0#/$defs/ResearchLegalLegislationReferenceOutput",
+        "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_legal_reference"
+      ]
+    },
+    {
+      "operation": {
+        "id": "actions.query",
+        "version": "0.2.0"
+      },
+      "displayName": "Query action items",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "Scoped mode reuses the original canonical validator and full run binding; unscoped raw listing preserves tenant-only source behavior and count races. This does not add client-wall requirements to the unscoped path.",
+        "Inherited scoped nested grammar is a narrower private admission than arbitrary stored casts; opaque cursor presence does not prove native cursor identity or immutable pagination."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "action_items_complete",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:action-items-complete:0.2.0#/$defs/ActionItemsCompleteInput",
+        "sha256": "3d2f05ce303d3196d57222b322532591349cd6a353f918e459eab4e965400825"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:action-items-complete:0.2.0#/$defs/ActionItemsCompleteResult",
+        "sha256": "3d2f05ce303d3196d57222b322532591349cd6a353f918e459eab4e965400825"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.actions.query"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_legiwatch_news",
+        "version": "0.2.0"
+      },
+      "displayName": "Search legiwatch news",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "News, personnel, private monitors and four exact-source variants retain separate context and result branches. Effective client scope may come from a visible folder. Tenant/owner correlation and typed query AST do not establish current authorization or execute a query."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_legal_news",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-legal-news:0.2.0#/$defs/ResearchLegalNewsRequest",
+        "sha256": "bf7f7bd427c8c7b4c47e25e3ac1e0dcb649b4269e8e7910bb3366d9df22bdf5f"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-legal-news:0.2.0#/$defs/ResearchLegalNewsOutput",
+        "sha256": "bf7f7bd427c8c7b4c47e25e3ac1e0dcb649b4269e8e7910bb3366d9df22bdf5f"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_legiwatch_news"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_committee_hearings",
+        "version": "0.2.0"
+      },
+      "displayName": "Search committee hearings",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Trusted context is an adapter assertion for projection correlation, never a current grant, source attestation or authorization decision.",
+        "Local validation does not qualify identity, source access, completeness, cursor authentication, result release or runtime.",
+        "All five ordinary record families, exact published versions, private briefs/reconciliation, fragments, coverage and observability remain declared. A decoded cursor or supplied cutoff is not authenticated continuation or complete source history.",
+        "The inherited producer cursor parser rejects published/private prefixes on later pages. This source contract does not repair that producer defect or qualify native pagination."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "public_domain_hearings",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:public-domain-hearings:0.2.0#/$defs/PublicDomainHearingsRequest",
+        "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:public-domain-hearings:0.2.0#/$defs/PublicDomainHearingsOutput",
+        "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_committee_hearings"
       ]
     }
   ]

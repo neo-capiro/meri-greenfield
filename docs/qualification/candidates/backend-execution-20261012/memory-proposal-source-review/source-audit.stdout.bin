@@ -1,0 +1,176 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "source": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "sourceTree": "f2c6b78a176386834b7c80426b531666cce32110",
+  "originalFiles": 7677,
+  "addedFiles": [
+    "apps/gateway/sources/memory-proposals/handler.mjs",
+    "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+    "apps/gateway/sources/memory-proposals/request-context.mjs",
+    "apps/gateway/test/memory-proposal-source.test.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/gateway/sources/memory-proposals/handler.mjs",
+      "bytes": 1992,
+      "sha256": "333c9ae8b12dbda5ca08365f3f28bc7c3347514a42f44d71e0eccf5787597ebf"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "bytes": 4891,
+      "sha256": "46213a8f0294a84fb34c27143920cc35f52a721f72236c91408cc0b9c2f8de1c"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/request-context.mjs",
+      "bytes": 2828,
+      "sha256": "8d7288a28e9de9963013cfc10f07578603c2d1eb869ba40f6db01605f9a41e75"
+    },
+    {
+      "path": "apps/gateway/test/memory-proposal-source.test.mjs",
+      "bytes": 14382,
+      "sha256": "d3941d9d157345899da0bdc53df325baf2ed2d0a4862f50238d01c77670866d1"
+    }
+  ],
+  "passed": 34,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "all original files byte/mode preserved",
+      "pass": true
+    },
+    {
+      "check": "exact4 allocated new implementation/test files",
+      "pass": true
+    },
+    {
+      "check": "tested exact source apps/gateway/sources/memory-proposals/handler.mjs",
+      "pass": true
+    },
+    {
+      "check": "tested exact source apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "pass": true
+    },
+    {
+      "check": "tested exact source apps/gateway/sources/memory-proposals/request-context.mjs",
+      "pass": true
+    },
+    {
+      "check": "tested exact source apps/gateway/test/memory-proposal-source.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri-memory-proposal-read.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri-memory-proposal-read.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/meri/meri-memory-proposal-read.ts",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/memory/governed-memory-candidate.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/memory/governed-memory-candidate.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/memory/governed-memory-candidate.service.ts",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/memory/memory-wall.helpers.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/memory/memory-wall.helpers.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri.controller.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri.controller.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/tool-service-secret.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/tool-service-secret.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri-tools.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "pinned private identity apps/api/src/meri/meri-tools.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "pinned/current metadata unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "raw receipt docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/first-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/first-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group cleanup first-source",
+      "pass": true
+    },
+    {
+      "check": "clean measured source first-source",
+      "pass": true
+    },
+    {
+      "check": "raw receipt docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/corrected-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw receipt docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/corrected-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group cleanup corrected-controls",
+      "pass": true
+    },
+    {
+      "check": "clean measured source corrected-controls",
+      "pass": true
+    },
+    {
+      "check": "first retained23/2",
+      "pass": true
+    },
+    {
+      "check": "final25/25",
+      "pass": true
+    }
+  ],
+  "bodyPublication": false,
+  "runtimeAccepted": false
+}

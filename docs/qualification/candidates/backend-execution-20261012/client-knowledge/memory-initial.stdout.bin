@@ -1,0 +1,17 @@
+✔ memory normalization preserves floor/clamp and early refusal branches (50.985324ms)
+✔ memory full governed content and detached ownership (3.908584ms)
+✔ memory exact mode and fallback preserve requested/effective page sizes (1.241936ms)
+✔ memory content hash, offset and result projection substitutions refuse (1.968899ms)
+✔ memory governed statuses are observations not pending proposal bodies (0.45951ms)
+✔ memory empty/unavailable exact result stays distinct (0.63272ms)
+✔ memory metadata-only classification counts content without approving it as fact (0.735615ms)
+✔ memory cursor scope refuses actor substitution and cursor selector conflict (2.610253ms)
+✔ memory inert request boundary rejects getters without evaluation (0.264868ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 226.768897

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/workspace/meri-public-legal-20261012/docs/qualification/candidates/backend-execution-20261012/public-legal/verify-packet.py", line 129, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/workspace/meri-public-legal-20261012/docs/qualification/candidates/backend-execution-20261012/public-legal/verify-packet.py", line 114, in main
+    producer = git(repo, 'show', receipt['source'] + ':' + str((here / 'capture-focused.py').relative_to(repo)))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-public-legal-20261012/docs/qualification/candidates/backend-execution-20261012/public-legal/verify-packet.py", line 18, in git
+    return subprocess.check_output(['git', '-C', str(repo), *args], stderr=subprocess.PIPE)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-C', '/workspace/meri-public-legal-20261012', 'show', '64853d387fe98e3ff117fd6ad9c3652bf5465276:docs/qualification/candidates/backend-execution-20261012/public-legal/capture-focused.py']' returned non-zero exit status 128.

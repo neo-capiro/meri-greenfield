@@ -1,0 +1,6 @@
+{
+  "preservedResult": "269/271, exactly2remainingbinding comparisons",
+  "cause": "JSON.stringify compared property insertion order after explicitly allowed additive dispatchProfile/supersededBy fields, despite equal values and exact callback source.",
+  "correction": "Compare objects by deep strict value equality while preserving function source strings and every field. Descriptor comparisons remain exact; no production or scope change.",
+  "sourceUnchanged": "ea94aff840424843b4b6efbfc21fb9d195f7ff54"
+}

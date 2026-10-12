@@ -1,0 +1,1 @@
+{"classification":"reviewer metadata output collision", "initialExit":0,"initialPassed":39,"detail":"Initial audit wrote source-audit.json then capture used the same receipt name. Raw39-pass output and initial script preserved; derived report rerun as source-preservation.json with distinct final-audit capture label. No product or test assertion changed."}

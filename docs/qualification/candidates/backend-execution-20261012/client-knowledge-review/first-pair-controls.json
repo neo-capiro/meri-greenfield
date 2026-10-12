@@ -1,0 +1,9 @@
+{
+  "candidateNotInspected": true,
+  "candidateAlreadyFrozenWhenControlsWritten": "6c3a4220",
+  "criteriaPredatesCandidate": "744712eb",
+  "test": "packages/contracts/test/retrieval-client-knowledge-independent.test.mjs",
+  "bytes": 11468,
+  "sha256": "7938747e63776c3ea577d3c06794096ca834db2c1eb206f39355de9b93ca9324",
+  "basis": "Independent pinned wrapper/downstream projection read plus approved author API/context outline; candidate code not read."
+}

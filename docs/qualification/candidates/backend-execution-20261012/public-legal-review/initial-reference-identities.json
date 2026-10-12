@@ -1,0 +1,197 @@
+{
+  "frozen": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCurrent": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "referenceScope": "Metadata identities only; original private bodies excluded. No execution or current authority inferred.",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "research-source method/projection/scalars inspected"
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "research-source method/projection/scalars inspected"
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "research-source method/projection/scalars inspected"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+          "bytes": 273389,
+          "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+          "bytes": 6935,
+          "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+          "bytes": 6935,
+          "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/intel-api/src/tracker/research/research.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+          "bytes": 37618,
+          "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+          "bytes": 37618,
+          "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+          "bytes": 35726,
+          "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+          "bytes": 35726,
+          "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "13c4b888669c6245d2de5db80d5ac08305d21403",
+          "bytes": 3416,
+          "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "13c4b888669c6245d2de5db80d5ac08305d21403",
+          "bytes": 3416,
+          "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+          "bytes": 15620,
+          "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+          "bytes": 15620,
+          "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    },
+    {
+      "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+          "bytes": 18687,
+          "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+          "bytes": 18687,
+          "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+        }
+      ],
+      "unchanged": true,
+      "inspection": "interface/owner locator inspected; full variants pending further source review"
+    }
+  ]
+}

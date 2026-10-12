@@ -1,0 +1,21 @@
+{
+  "sourceHead": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "adapter": "createMemoryProposalHttpAdapter({origin,getCredentials,fetchImpl,now,maxResponseBytes,maxRequestMs}) -> {read({input,authority,signal})}",
+  "handler": "createMemoryProposalReadHandler({adapter,now}) -> execute(dispatchCall)",
+  "route": "POST /clio/tools/list_memory_proposals",
+  "credentialReceiptKeys": [
+    "binding",
+    "bearerToken",
+    "serviceSecret",
+    "expiresAtMs"
+  ],
+  "canonicalOperation": {
+    "id": "memory.list_own_proposals",
+    "version": "0.2.0"
+  },
+  "registryEdits": false,
+  "productionSourceEnabled": false,
+  "brokerJWTMappingQualified": false,
+  "nativePersistenceQualified": false,
+  "sideEffectFreeBackendClaim": false
+}

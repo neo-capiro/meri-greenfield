@@ -1,0 +1,308 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "6394-6453",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-context-plane.service.ts",
+    "locators": "89-145",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1",
+      "bytes": 52829,
+      "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1",
+      "bytes": 52829,
+      "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/hearings-retrieval.adapter.ts",
+    "locators": "1-336",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "3d56f9daaff11f5340de45f83ee1db6df88ebdc6",
+      "bytes": 15401,
+      "sha256": "65c2288b804050394efbc9b0dea91d2c3dbdf9275339cd049beca11462d1e2d7"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "3d56f9daaff11f5340de45f83ee1db6df88ebdc6",
+      "bytes": 15401,
+      "sha256": "65c2288b804050394efbc9b0dea91d2c3dbdf9275339cd049beca11462d1e2d7"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/published-hearing-records.ts",
+    "locators": "1-211",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "30484d833507d26d05486add8999a1618ff5b0a3",
+      "bytes": 9058,
+      "sha256": "ba768480419a62a97918626c3d5c264db301021cd2b7565ee977536c4ae3eb26"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "30484d833507d26d05486add8999a1618ff5b0a3",
+      "bytes": 9058,
+      "sha256": "ba768480419a62a97918626c3d5c264db301021cd2b7565ee977536c4ae3eb26"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/hearing-content-chunks.ts",
+    "locators": "1-78",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "b7ea1ccb76f0cc917b15e9b9dffae515f89c946e",
+      "bytes": 3631,
+      "sha256": "9012954e62e40339076885ac402ea2f147859e91b7cdf98466bda9b119d1d036"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "b7ea1ccb76f0cc917b15e9b9dffae515f89c946e",
+      "bytes": 3631,
+      "sha256": "9012954e62e40339076885ac402ea2f147859e91b7cdf98466bda9b119d1d036"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/government-work-retrieval.helpers.ts",
+    "locators": "1-75",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "40b626296f58ae0f9ca99f11b8301f5ba1d6404b",
+      "bytes": 2967,
+      "sha256": "5e009588dd73db03bdb338c8d49ec596f3593fcf404e18cea35848a6a68ef5f1"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "40b626296f58ae0f9ca99f11b8301f5ba1d6404b",
+      "bytes": 2967,
+      "sha256": "5e009588dd73db03bdb338c8d49ec596f3593fcf404e18cea35848a6a68ef5f1"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/retrieval-v2.types.ts",
+    "locators": "1-104;168-355",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0",
+      "bytes": 11082,
+      "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0",
+      "bytes": 11082,
+      "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/retrieval-v2.service.ts",
+    "locators": "127-339",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "2bf79bd83f34db06426bd55bab68b8e960f13fa2",
+      "bytes": 12003,
+      "sha256": "bf347134c6a88ea73b404c0a975f366372309319ec113ba9b349b97efafbc5ed"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "2bf79bd83f34db06426bd55bab68b8e960f13fa2",
+      "bytes": 12003,
+      "sha256": "bf347134c6a88ea73b404c0a975f366372309319ec113ba9b349b97efafbc5ed"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/retrieval/coverage-manifest.ts",
+    "locators": "1-115",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1d71d0f42347f39bb3db287d1b1f08fead04201a",
+      "bytes": 3992,
+      "sha256": "71912119efaf73bd6d375e8b8252ec7063fd2dca89081b8c7fe061156d9f4698"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "1d71d0f42347f39bb3db287d1b1f08fead04201a",
+      "bytes": 3992,
+      "sha256": "71912119efaf73bd6d375e8b8252ec7063fd2dca89081b8c7fe061156d9f4698"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/knowledge/knowledge.types.ts",
+    "locators": "1-15",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "de4957b091de86a4f45ba585692f119b76bf167b",
+      "bytes": 5768,
+      "sha256": "af823f3ba72d84db1bd199896e8b9360f61b5489c79e31335d518d4802e498df"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "de4957b091de86a4f45ba585692f119b76bf167b",
+      "bytes": 5768,
+      "sha256": "af823f3ba72d84db1bd199896e8b9360f61b5489c79e31335d518d4802e498df"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/hearing/hearing-record-retrieval.controller.ts",
+    "locators": "1-133",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "bfca6048ff3e9b5ac91a616e54e5ef95e5b93081",
+      "bytes": 4823,
+      "sha256": "1a720525983fe22082fc593b85ca4badf5acac43a8bd6ea1475c55802161f2f8"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "bfca6048ff3e9b5ac91a616e54e5ef95e5b93081",
+      "bytes": 4823,
+      "sha256": "1a720525983fe22082fc593b85ca4badf5acac43a8bd6ea1475c55802161f2f8"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/hearing/hearing-record-workflow.service.ts",
+    "locators": "31-65;575-699;850-891;1117-1130;1184-1255",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "0c7c29faa9ef4ac5942e94ffca3e382699e73278",
+      "bytes": 57502,
+      "sha256": "f0ba1c70c27a4c6a40541241a1b0416f83c5da2af0cb50558f1492604ba7e1ab"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "0c7c29faa9ef4ac5942e94ffca3e382699e73278",
+      "bytes": 57502,
+      "sha256": "f0ba1c70c27a4c6a40541241a1b0416f83c5da2af0cb50558f1492604ba7e1ab"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/hearing/published-record-domain.ts",
+    "locators": "1-48;90-131",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "755786579d7454084854569d8d27838ff7c5d100",
+      "bytes": 7797,
+      "sha256": "1c7821e58f3c3ceb704682ce62bdaaa2a0c7500c4137e90c609f82fc19aa170f"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "755786579d7454084854569d8d27838ff7c5d100",
+      "bytes": 7797,
+      "sha256": "1c7821e58f3c3ceb704682ce62bdaaa2a0c7500c4137e90c609f82fc19aa170f"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/sourcedata/hearing-records.repository.ts",
+    "locators": "1-99",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "e3e3396c76d8f2bafac39f9178851728784597da",
+      "bytes": 8202,
+      "sha256": "02f2c046924d6e015cc068c1aaf853e5bb8e4a5fd72c407e9eaf62e731784ea8"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "e3e3396c76d8f2bafac39f9178851728784597da",
+      "bytes": 8202,
+      "sha256": "02f2c046924d6e015cc068c1aaf853e5bb8e4a5fd72c407e9eaf62e731784ea8"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/prisma/schema.prisma",
+    "locators": "7106-7178;7298-7320;7483-7527;7559-7581;7900-7930;7973-8000",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "changed": false
+  },
+  {
+    "path": "packages/meriv2-core/src/tools/hearing/generate-published-record-brief.ts",
+    "locators": "1-119",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "4cec87992e23735ec0e18113f1010c798758d263",
+      "bytes": 10039,
+      "sha256": "18431c6f44a2d74f9dc00eb97195d242ae1700ca9909142989459e6f17b45482"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "4cec87992e23735ec0e18113f1010c798758d263",
+      "bytes": 10039,
+      "sha256": "18431c6f44a2d74f9dc00eb97195d242ae1700ca9909142989459e6f17b45482"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/reports/report-domain.ts",
+    "locators": "1-38",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ee3f66f614ae4e5f11fb9cc3f919137a7b9eea68",
+      "bytes": 21911,
+      "sha256": "a437741542456bf359e641e34424bda389b091d2758994bfa5ed74e402372b2a"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "ee3f66f614ae4e5f11fb9cc3f919137a7b9eea68",
+      "bytes": 21911,
+      "sha256": "a437741542456bf359e641e34424bda389b091d2758994bfa5ed74e402372b2a"
+    },
+    "changed": false
+  }
+]

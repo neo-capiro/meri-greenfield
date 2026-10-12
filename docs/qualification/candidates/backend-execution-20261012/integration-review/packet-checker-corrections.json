@@ -1,0 +1,9 @@
+{
+  "scope": "Reviewer packet-audit assumptions, not product failures",
+  "firstFailure": "KeyError members: the preserved memory-proposal source reviewer manifest uses entries, while the test-author manifest uses files. Final checker accepts only these three explicit known keys and still verifies every member.",
+  "secondFailure": "Schedule source-verdict commit2a21989e preceded its final manifest. Correct immutable final packet is a1a78f2e0dfc7f8c265357e75a45b6541632a4dc; source verdict remains unchanged.",
+  "historicalPublicLegalManifest": "Verify stage-two-manifest at original35f4bf37. Final six-family correspondence is bound by fb7fd02d complete-manifest, never by pretending a historical two-family manifest covers later files.",
+  "preservation": "Both failed raw stdout/stderr/exit/cleanup receipts and both checker preimages are retained.",
+  "sourceChanges": false,
+  "additionalSetupObservation": "One read-only exec transport disconnected before process creation and succeeded on retry. Ad-hoc report/path inspections initially used two nonexistent report-directory names; no product or evidence files were modified by those reads."
+}

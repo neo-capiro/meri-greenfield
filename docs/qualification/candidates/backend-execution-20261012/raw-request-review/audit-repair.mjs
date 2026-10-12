@@ -1,0 +1,39 @@
+import {isDeepStrictEqual} from 'node:util';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {CATALOG_OPERATION_BINDINGS as currentBindings} from '../../../../../packages/contracts/retrieval-0.2/catalog-validation.mjs';
+const root=fileURLToPath(new URL('../../../../../',import.meta.url));
+const base='7e128127e666242102ed83b6c10afc1e5b7fd3f8',candidate='ea94aff840424843b4b6efbfc21fb9d195f7ff54';
+const git=(...a)=>execFileSync('git',['-C',root,...a]);
+const read=p=>readFileSync(new URL('../../../../../'+p,import.meta.url));
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const trace=JSON.parse(readFileSync(new URL('./admission-trace.json',import.meta.url))).rows;
+const checkRows=[];function check(name,condition){checkRows.push({name,passed:Boolean(condition)})}
+const oldModule=git('show',`${base}:packages/contracts/retrieval-0.2/catalog-validation.mjs`);
+// This is local pure Meri metadata. Its module owns no IO or producer code.
+const {CATALOG_OPERATION_BINDINGS:oldBindings}=await import(`data:text/javascript;base64,${oldModule.toString('base64')}`);
+const oldCatalog=JSON.parse(git('show',`${base}:packages/contracts/retrieval-0.2/catalog.json`));
+const currentCatalog=JSON.parse(read('packages/contracts/retrieval-0.2/catalog.json'));
+const expected=new Map(trace.map(r=>[r.id,r]));let inputChanges=0,descriptorChanges=0;
+const stableBinding=b=>({...b,normalize:b.normalize.toString(),outputAssert:b.outputAssert.toString()});
+for(const b of oldBindings){const current=currentBindings.find(c=>c.id===b.id),row=expected.get(b.id),want={...b,...(row?{input:row.rawDefinition}:{})};if(b.id==='list_global_datasets')want.dispatchProfile='dataset-metadata/1';if(b.id==='query_action_items')want.supersededBy='actions.query';check(`Only allocated input definition change ${b.id}`,current&&isDeepStrictEqual(stableBinding(current),stableBinding(want)));if(current?.input!==b.input)inputChanges++}
+for(const d of oldCatalog.operations){const id=d.operation.id,current=currentCatalog.operations.find(x=>x.operation.id===id),row=expected.get(id),want=structuredClone(d);if(row)want.inputSchema.id=want.inputSchema.id.replace(/#\/\$defs\/[^#]+$/,`#/$defs/${row.rawDefinition}`);if(id==='query_action_items'){want.replacement={id:'actions.query',version:'0.2.0'};want.limitations[0]='Historical scoped-only contract; actions.query is the reviewed full native transport successor. This original partial validator remains unchanged.';want.limitations[1]='This scoped-only operation still refuses client-less listing; the successor declares tenant-only unscoped transport without establishing current access.';}check(`Only allocated descriptor input ID change ${id}`,JSON.stringify(want)===JSON.stringify(current));if(current?.inputSchema.id!==d.inputSchema.id)descriptorChanges++}
+check('Exactly31bindinginputdefinition changes',inputChanges===31);check('Exactly31descriptorinputIDchanges',descriptorChanges===31);
+const sourceRows=[];
+for(const group of new Set(trace.map(r=>r.group)))for(const suffix of ['-validation.mjs','.schema.json']){
+ const p=`packages/contracts/retrieval-0.2/${group}${suffix}`,a=git('show',`${base}:${p}`),b=read(p);check('Original family bytes unchanged '+p,a.equals(b));check('Exact candidate bytes '+p,b.equals(git('show',`${candidate}:${p}`)));sourceRows.push({path:p,bytes:b.length,sha256:sha(b)})
+}
+for(const p of ['packages/contracts/retrieval-0.2/operation-contracts.mjs','packages/contracts/meri.schema.json','packages/contracts/validate.mjs','packages/contracts/package.json','packages/contracts/package-lock.json','package.json','package-lock.json'])check('Canonical boundary/public/dependency unchanged '+p,read(p).equals(git('show',`${base}:${p}`)));
+for(const p of ['packages/contracts/retrieval-0.2/catalog-validation.mjs','packages/contracts/retrieval-0.2/catalog.json','packages/contracts/retrieval-0.2/validate.mjs'])check('Exact composed integration bytes '+p,read(p).equals(git('show',`${candidate}:${p}`)));
+const rootBefore=JSON.parse(git('show','d913b396:docs/qualification/candidates/backend-execution-20261012/integration/raw-request-admission-before.json'));
+check('Original root31 valid examples preserved',rootBefore.rows.length===31&&rootBefore.rows.every(r=>r.normalizationSucceeded));check('Original root22advertisementrefusals preserved',rootBefore.rows.filter(r=>!r.previousAdvertisementAdmittedRequest).length===22);
+for(const r of rootBefore.rows)check('Independent implementation pin matches original root finding '+r.id,trace.find(t=>t.id===r.id)?.sha256===r.moduleSha256);
+for(const name of ['baseline','baseline-corrected','factory-trace','canonical-repair']){const receipt=JSON.parse(readFileSync(new URL(name+'.json',import.meta.url)));check('Owned group absent '+name,receipt.ownedProcessGroupAbsent&&!receipt.timedOut);for(const s of receipt.streams)check('Raw evidence hash '+s.path,sha(read(s.path))===s.sha256)}
+check('Full original139selected96deferred43 retained',currentCatalog.originals.length===139&&currentCatalog.originals.filter(x=>x.disposition==='selected').length===96&&currentCatalog.originals.filter(x=>x.disposition==='deferred').length===43);
+check('Original IDs and selection dispositions unchanged',isDeepStrictEqual(oldCatalog.originals.map(x=>[x.id,x.disposition]),currentCatalog.originals.map(x=>[x.id,x.disposition])));
+check('All31original inventory records unchanged by this repair',trace.every(r=>isDeepStrictEqual(oldCatalog.originals.find(x=>x.id===r.id),currentCatalog.originals.find(x=>x.id===r.id))));
+check('All84composed descriptors retain null handlers and unavailable state',currentCatalog.operations.length===84&&currentCatalog.operations.every(x=>x.handler===null&&x.availability==='unimplemented'&&x.qualification==='pending'));
+const result={base,candidate,scope:'31priorrawrequestadvertisements only; additional13 mappings and other accepted source slices belong to combinedreview',priorBindings:oldBindings.length,currentBindings:currentBindings.length,inputChanges,descriptorChanges,familySourceFiles:sourceRows,checks:checkRows,passed:checkRows.filter(x=>x.passed).length,failed:checkRows.filter(x=>!x.passed).length,runtimeAccepted:false};
+writeFileSync(new URL('./repair-audit-results.json',import.meta.url),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({passed:result.passed,failed:result.failed,inputChanges,descriptorChanges,priorBindings:oldBindings.length,currentBindings:currentBindings.length}));if(result.failed)process.exitCode=1;

@@ -1,0 +1,8 @@
+{
+  "kind": "REVIEWER_HARNESS_CORRECTION",
+  "initial": "25 author tests pass; independent file fails before its cases due to one-argument callback",
+  "actualCallback": "validateMetadata(name,value)",
+  "correction": "Use actual named validation callback; preserve all behavioral cases",
+  "preimageSha256": "6309265ebf0fb4a3c4c3b6b7ac8920238feb1c1cd56942777385e19683afdc8e",
+  "sourceChanged": false
+}

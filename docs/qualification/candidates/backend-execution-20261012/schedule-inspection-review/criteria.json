@@ -1,0 +1,18 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "frozenBeforeCandidateInspection": true,
+  "authorOutlineRead": "b30f0cdd",
+  "sdk": {"version":"1.24.0","commit":"1fd1c81a0383f5f5c7923dd735472c7d1ffdc867","sourceLocationPending":true},
+  "criteria": [
+    "Public projection/identity reused, every scope same tenant; read callback owns actor/delegate decision.",
+    "Exact projection temporalScheduleId only; zero schedule mutations, listing or persistence.",
+    "Snapshot trusted request before first await; stale/different digest, caller or expiry refused at both authorization phases.",
+    "Absolute local deadline at most60000ms; expiry immediately limits canonical shared lifetime before subsequent ports.",
+    "Parked authority/connection-scope/describe/release return on local cancellation without result release or later describe calls.",
+    "Original deadline cannot extend; owned timers/listeners disposed; borrowed client/connection never close; uncertainty not physical cancellation.",
+    "Only selected safe state/count/date/workflow-reference fields; native Dates converted without calling override methods.",
+    "Ignored secrets/args/memo/raw fields and omitted tail entries not traversed; arrays capped100 with exact observed/returned/omitted counts.",
+    "Partial SDK windows never claim full history or current execution identity; firstExecutionRunId remains original execution reference.",
+    "Pure mock tests/source inspection only; native service/authentication/policy/runtime all UNRUN."
+  ]
+}

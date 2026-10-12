@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema-repro.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-integration-review-20261012",
+  "sourceHead": "c2e27a1134fa9fce26a1d37b9c5ea1a0c4c31e2b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:13:20.959277+00:00",
+  "durationSeconds": 1.873,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 324385,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.stdout.bin",
+      "bytes": 373,
+      "sha256": "ed45c5fd8eaf09c9e85121dc0bad734c44369c6f9ce510613fedc13699e65262"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

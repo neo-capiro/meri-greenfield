@@ -1,0 +1,15 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "--",
+    "packages/contracts/test/retrieval-client-knowledge-independent.test.mjs",
+    "packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs",
+    "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs",
+    "packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs",
+    "packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs"
+  ],
+  "exitCode": 0
+}

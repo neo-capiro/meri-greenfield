@@ -1,0 +1,622 @@
+{
+  "status": "PASS",
+  "passed": 135,
+  "total": 135,
+  "candidate": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+  "tree": "8f7f2be0625f14a19b0855c3c73b162a688fb78f",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "originalEntries": 7677,
+  "references": [
+    {
+      "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 18687,
+          "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174",
+          "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 18687,
+          "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174",
+          "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15620,
+          "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2",
+          "blob": "09f725aafc574122a5e3c1472172b428ce8f7990"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15620,
+          "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2",
+          "blob": "09f725aafc574122a5e3c1472172b428ce8f7990"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/analytics/analytics-db.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 5505,
+          "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056",
+          "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 5505,
+          "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056",
+          "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "frozen/current same apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current same apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current same apps/api/src/meri/analytics/analytics-db.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current same apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "dataset key lda_registrations",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits lda_registrations",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.registrant_id",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.registrant_name",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.client_id",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.client_name",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.client_state",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.filing_year",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.dt_posted",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.status",
+      "pass": true
+    },
+    {
+      "name": "exact field lda_registrations.is_in_house",
+      "pass": true
+    },
+    {
+      "name": "dataset key federal_grants",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits federal_grants",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.id",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.agency",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.sub_agency",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.category",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.funding_instrument",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.status",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.doc_type",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.award_ceiling",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.award_floor",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.estimated_funding",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.expected_awards",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.open_date",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_grants.close_date",
+      "pass": true
+    },
+    {
+      "name": "dataset key sam_opportunities",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits sam_opportunities",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.notice_id",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.notice_type",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.agency",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.sub_agency",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.set_aside",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.naics_code",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.psc_code",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.posted_date",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.response_deadline",
+      "pass": true
+    },
+    {
+      "name": "exact field sam_opportunities.active",
+      "pass": true
+    },
+    {
+      "name": "dataset key federal_awards",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits federal_awards",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.awarding_agency",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.contractor_name",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.amount",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.pe_code",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.dod_acq_program_code",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.dod_acq_program_name",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.pop_state",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.action_date",
+      "pass": true
+    },
+    {
+      "name": "exact field federal_awards.awarded_at",
+      "pass": true
+    },
+    {
+      "name": "dataset key sec_filings",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits sec_filings",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.cik",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.company_name",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.form_type",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.filing_date",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.sic",
+      "pass": true
+    },
+    {
+      "name": "exact field sec_filings.state_of_incorp",
+      "pass": true
+    },
+    {
+      "name": "dataset key fara_registrations",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits fara_registrations",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.registrant_name",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.foreign_principal",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.country",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.status",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.registration_date",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.termination_date",
+      "pass": true
+    },
+    {
+      "name": "exact field fara_registrations.state",
+      "pass": true
+    },
+    {
+      "name": "dataset key congress_bills",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits congress_bills",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.congress",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.bill_type",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.policy_area",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.status",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.sponsor_state",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.sponsor_party",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.cosponsors_count",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.origin_chamber",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.introduced_date",
+      "pass": true
+    },
+    {
+      "name": "exact field congress_bills.latest_action_date",
+      "pass": true
+    },
+    {
+      "name": "dataset key state_bills",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits state_bills",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.state",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.session",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.chamber",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.status",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.sponsor_party",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.sponsor_count",
+      "pass": true
+    },
+    {
+      "name": "exact field state_bills.latest_action_date",
+      "pass": true
+    },
+    {
+      "name": "dataset key gao_reports",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits gao_reports",
+      "pass": true
+    },
+    {
+      "name": "exact field gao_reports.report_type",
+      "pass": true
+    },
+    {
+      "name": "exact field gao_reports.publish_date",
+      "pass": true
+    },
+    {
+      "name": "exact field gao_reports.recommendations",
+      "pass": true
+    },
+    {
+      "name": "dataset key crs_reports",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits crs_reports",
+      "pass": true
+    },
+    {
+      "name": "exact field crs_reports.date",
+      "pass": true
+    },
+    {
+      "name": "exact field crs_reports.active",
+      "pass": true
+    },
+    {
+      "name": "dataset key fec_committees",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits fec_committees",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.committee_type",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.party",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.state",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.total_receipts",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.total_disbursements",
+      "pass": true
+    },
+    {
+      "name": "exact field fec_committees.cash_on_hand",
+      "pass": true
+    },
+    {
+      "name": "dataset key news_articles",
+      "pass": true
+    },
+    {
+      "name": "complete dataset metadata/limits news_articles",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.source",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.published_at",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.author",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.categories",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.agencies",
+      "pass": true
+    },
+    {
+      "name": "exact field news_articles.topics",
+      "pass": true
+    },
+    {
+      "name": "all original ordered datasets retained",
+      "pass": true
+    },
+    {
+      "name": "12 datasets / 88 fields",
+      "pass": true
+    },
+    {
+      "name": "exact source locator and byte hash",
+      "pass": true
+    },
+    {
+      "name": "fixed canonical projection hash",
+      "pass": true
+    },
+    {
+      "name": "no physical SQL/column/table/expression properties",
+      "pass": true
+    },
+    {
+      "name": "all base mode/blob entries preserved",
+      "pass": true
+    },
+    {
+      "name": "exercised exact frozen packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "pass": true
+    },
+    {
+      "name": "exercised exact frozen packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "pass": true
+    },
+    {
+      "name": "exercised exact frozen packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exercised exact frozen packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exercised exact frozen packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "new global source exactly five files",
+      "pass": true
+    },
+    {
+      "name": "global-first raw result and cleanup",
+      "pass": true
+    },
+    {
+      "name": "global-first raw global-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "global-first raw global-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "global-corrected raw result and cleanup",
+      "pass": true
+    },
+    {
+      "name": "global-corrected raw global-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "global-corrected raw global-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "50 focused cases pass",
+      "pass": true
+    }
+  ],
+  "scope": "AST metadata extraction and local source controls only; private implementation not imported or executed; no runtime/authority acceptance"
+}

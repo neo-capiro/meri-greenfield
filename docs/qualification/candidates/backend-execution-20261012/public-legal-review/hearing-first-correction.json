@@ -1,0 +1,13 @@
+{
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "firstResult": {
+    "pass": 73,
+    "fail": 3
+  },
+  "classification": "reviewer fixture errors; production unchanged",
+  "corrections": [
+    "unavailable result queriedDatasets must be empty, as original buildObservability filters pagesRead/recordsEvaluated",
+    "CommitteeHearing timezone/eventStatus/coverageStatus/sourceRevision are required stored scalars; witnesses is String[]",
+    "positive whole-record fixture now uses exact hearings adapter/table and SHA256(JSON.stringify(payload)) rather than placeholder"
+  ]
+}

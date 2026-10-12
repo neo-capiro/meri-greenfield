@@ -1,0 +1,12 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "branch": "review/meri-client-knowledge-20261012",
+  "sparse": true,
+  "dependencies": "seven small exact existing packages physically copied from own completed outreach author worktree; no install or lock changes",
+  "setupFailure": {
+    "command": "git sparse-checkout add --no-cone /docs/IMPLEMENTATION-STANDARDS.md /.agents/",
+    "exit": 129,
+    "reason": "add subcommand does not accept --no-cone; existing non-cone configuration retained and plain add succeeded"
+  },
+  "nestedAgents": false
+}

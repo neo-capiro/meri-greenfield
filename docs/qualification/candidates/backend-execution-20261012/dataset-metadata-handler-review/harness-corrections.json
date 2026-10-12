@@ -1,0 +1,10 @@
+{
+  "importCorrection": {
+    "beforeSha256": "9ef5cc868309a30c4ffff4397b065246f67b09a4928614ceccdd0529f8b6c369",
+    "reason": "Family validator is internal in canonical loader, not a named export. Registry uses actual exported validateShape; canonical resolver still owns deep output validation. No production or assertion change."
+  },
+  "aliasFixture": {
+    "beforeSha256": "3e4b9b231db2b54f0cfed847b19ae56706ea3eef06879fd002b13b4615e49d5d",
+    "reason": "structuredClone preserved reference equality between authority.binding and claims.binding, defeating one-sided mismatch adversary. JSON-detach makes mutation one-sided. Detached-output positive uses fresh signal because dispatcher intentionally closes/aborts its owned signal after completion. Final-clock-abort negative unchanged."
+  }
+}

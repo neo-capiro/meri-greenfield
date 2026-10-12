@@ -1,0 +1,568 @@
+{
+  "verdict": "ACCEPT_METADATA",
+  "author": "f749dd4dfd3989466fa663de98ac3f94cb2d8800",
+  "authorTree": "07d2d1f4974a5893118c023bddb8222133307ff3",
+  "status": "PASS",
+  "passed": 138,
+  "total": 138,
+  "manifestSha256": "4734a2548af621ed23ff518a7fc26642b2fcb5881200b8ee8bffaf67e0410847",
+  "manifestMembers": 11,
+  "checks": [
+    {
+      "name": "all7677 originals preserved",
+      "pass": true
+    },
+    {
+      "name": "author additions only allocated documentation",
+      "pass": true
+    },
+    {
+      "name": "manifest11members unique",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/api-proposal.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/authority-and-reuse-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/collect-identities.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/independent-findings.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/read-limitations.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/source-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/storage-field-census.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/verify.py",
+      "pass": true
+    },
+    {
+      "name": "20 paired source references",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen packages/shared/src/research-portfolios.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed packages/shared/src/research-portfolios.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful packages/shared/src/research-portfolios.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-phase11.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-phase11.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-phase11.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolio-output.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolio-output.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolio-output.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/ResearchPortfolioMeriAdapters.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/ResearchPortfolioMeriAdapters.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/ResearchPortfolioMeriAdapters.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/research-portfolios/research-portfolios.schema.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/research-portfolios/research-portfolios.schema.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/research-portfolios/research-portfolios.schema.contract.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/meri/meri-research-evidence.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/meri/meri-research-evidence.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/meri/meri-research-evidence.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/meri/meri-research-handoff.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/meri/meri-research-handoff.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/meri/meri-research-handoff.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/meri/meri-bizdev-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/meri/meri-bizdev-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/meri/meri-bizdev-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata frozen apps/api/src/business-development/bizdev-evidence.types.ts",
+      "pass": true
+    },
+    {
+      "name": "source metadata observed apps/api/src/business-development/bizdev-evidence.types.ts",
+      "pass": true
+    },
+    {
+      "name": "paired drift truthful apps/api/src/business-development/bizdev-evidence.types.ts",
+      "pass": true
+    },
+    {
+      "name": "16models labelled census not allowlist",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioMember",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioMember.evidence",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioMember.unresolvedInput",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioEvent",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioEvent.payloadFingerprint",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioEvent.payload",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioTemplateVersion",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioTemplateVersion.payloadFingerprint",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioRuleVersion",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioRuleVersion.previewHash",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioRulePreview",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioRulePreview.previewHash",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioRulePreview.manifest",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioReview",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioReview.evidenceFor",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioReview.evidenceAgainst",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioDecision",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioDecision.evidenceFor",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioDecision.evidenceAgainst",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioContinuityLedger",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioContinuityLedger.originalEvidence",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioContinuityLedger.sourceEdition",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioImportJob",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioImportJob.originalHash",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioImportEffect",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioImportEffect.payload",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioImportCompensationReceipt",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioImportCompensationReceipt.previewHash",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioSnapshot",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioSnapshot.contentHash",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioSnapshot.basis",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioSnapshot.sourceVersions",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioOutputRequest",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioOutputRequest.snapshotId",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioOutputRequest.requestHash",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioOutputRequest.includeSourceAppendix",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioOutputArtifact",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioOutputArtifact.contentHash",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioFitVersion",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioFitVersion.basisFingerprint",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioFitVersion.inputBasis",
+      "pass": true
+    },
+    {
+      "name": "model line ResearchPortfolioClientFilingJob",
+      "pass": true
+    },
+    {
+      "name": "stored scalar ResearchPortfolioClientFilingJob.requestHash",
+      "pass": true
+    },
+    {
+      "name": "proposal not implementation or mapping",
+      "pass": true
+    },
+    {
+      "name": "exact selected intent and canonical context",
+      "pass": true
+    },
+    {
+      "name": "three explicit proposed variants",
+      "pass": true
+    },
+    {
+      "name": "branch-owned coverage review",
+      "pass": true
+    },
+    {
+      "name": "branch-owned coverage snapshot",
+      "pass": true
+    },
+    {
+      "name": "branch-owned coverage current_continuity",
+      "pass": true
+    },
+    {
+      "name": "current continuity no invented selectors",
+      "pass": true
+    },
+    {
+      "name": "raw/historical evidence not silently excluded",
+      "pass": true
+    },
+    {
+      "name": "remaining inclusion questions explicit",
+      "pass": true
+    },
+    {
+      "name": "author metadata verifier194pass",
+      "pass": true
+    },
+    {
+      "name": "narrow documentary repair only",
+      "pass": true
+    },
+    {
+      "name": "known final tree",
+      "pass": true
+    },
+    {
+      "name": "known final manifest identity",
+      "pass": true
+    },
+    {
+      "name": "both semantic findings preserved",
+      "pass": true
+    },
+    {
+      "name": "exact review source seam not default-lane absence",
+      "pass": true
+    },
+    {
+      "name": "native annual derivation remains explicit",
+      "pass": true
+    },
+    {
+      "name": "report excludes analytics not all current derivation",
+      "pass": true
+    },
+    {
+      "name": "original192pass preserved",
+      "pass": true
+    },
+    {
+      "name": "manifest covers exact author additions",
+      "pass": true
+    }
+  ],
+  "implementationAccepted": false,
+  "completeMappingAccepted": false,
+  "runtimeAccepted": false,
+  "scope": "Authority/carrier/API proposal metadata only; current continuity computation and exact-review lane scope remain explicit design conditions."
+}

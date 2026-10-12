@@ -1,0 +1,18 @@
+{
+  "candidate": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+  "production": "1b52df122e0eb660dd74e79386fc3bbf8983c98e",
+  "initial": {
+    "independentPass": 24,
+    "independentFail": 3,
+    "authorTestsRun": 0
+  },
+  "cause": "Reviewer generic row helper used empty title for clio_note. Pinned source6948 emits note.title OR Meri note fallback, so empty output is unreachable. Three positive controls shared this invalid fixture.",
+  "change": "Set only clio_note fixture title to the source fallback; keep all27 tests/assertions; add explicit empty-title rejection.",
+  "commandCorrection": "Initial command named nonexistent retrieval-research-legal.test.mjs and Node ran only matching independent file. Final command names actual retrieval-research-legal-candidates.test.mjs.",
+  "preimage": {
+    "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-independent.test.mjs.txt",
+    "bytes": 12389,
+    "sha256": "1596c3dca549ab0ae21c75cbd1a64993374fecdf11d2d69cbff53b61d3594243"
+  },
+  "productionChanged": false
+}

@@ -1,0 +1,30 @@
+{
+  "observedBetween": [
+    "2026-10-12 21:52:35 UTC",
+    "2026-10-12 21:52:49 UTC"
+  ],
+  "refs": [
+    {
+      "ref": "refs/heads/main",
+      "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+    },
+    {
+      "ref": "refs/heads/task/codex-g1-publish-20261011",
+      "sha": "5ee46446b5f60034916f00b2a665b3e2bef9cf60"
+    },
+    {
+      "ref": "refs/heads/task/handover-preserve-candidates-20261012",
+      "sha": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+    },
+    {
+      "ref": "refs/heads/task/meri-backend-execution-20261012",
+      "sha": "dbe4f9238eb514faeff354755ecc2253ce382a4e"
+    },
+    {
+      "ref": "refs/heads/task/meri-backend-next-20261012",
+      "sha": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8"
+    }
+  ],
+  "scope": "READ_ONLY_REMOTE_REFS",
+  "sourceConnectivityEnabled": false
+}

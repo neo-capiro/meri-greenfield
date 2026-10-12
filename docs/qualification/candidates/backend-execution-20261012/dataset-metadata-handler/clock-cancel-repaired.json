@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs"
+  ],
+  "cwd": "/workspace/meri-dataset-metadata-handler-20261012",
+  "sourceHead": "e96eec4e991f12f7e4e1158edea55a40bf8ef6ab",
+  "sourceDiffSha256": "838bebbaea1d70b00b8486d9b0b52c2a87654e6e016a4e4877bbabbdf8e10ebb",
+  "sourceDiffBytes": 752,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:18:09.948179+00:00",
+  "durationSeconds": 2.073,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 327972,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stdout.bin",
+      "bytes": 2400,
+      "sha256": "8b8e861bf01704fc2e1023da82863cc1b82afbf235968fb6badbb9921415444a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Add final native signal check after trusted clock callback; exact24/25 failing source/regression preserved without changing original assertions.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

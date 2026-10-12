@@ -1,0 +1,104 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "2504-2566; wrapper authority and client resolution",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/research/research.service.ts",
+    "locators": "28-180;228-482",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+      "bytes": 37618,
+      "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562",
+      "bytes": 37618,
+      "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285"
+    },
+    "changed": false
+  },
+  {
+    "path": "packages/shared/src/legislative-research.ts",
+    "locators": "1-114;243-260",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0",
+      "bytes": 13892,
+      "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0",
+      "bytes": 13892,
+      "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826"
+    },
+    "changed": false
+  },
+  {
+    "path": "packages/shared/src/legiwatch-query.ts",
+    "locators": "1-28;157-241",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba",
+      "bytes": 10141,
+      "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba",
+      "bytes": 10141,
+      "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+    "locators": "79-85",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+      "bytes": 6935,
+      "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+      "bytes": 6935,
+      "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+    "locators": "7-20;31-35;50-72",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b",
+      "bytes": 6134,
+      "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b",
+      "bytes": 6134,
+      "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754"
+    },
+    "changed": false
+  }
+]

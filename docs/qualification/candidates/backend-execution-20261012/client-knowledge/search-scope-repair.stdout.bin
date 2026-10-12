@@ -1,0 +1,24 @@
+✔ KB defaults preserve raw client and reject missing query (6.523916ms)
+✔ KB context observation is required canonical and not model supplied (0.456857ms)
+✔ KB missing client and explicit failure remain distinct (5.889031ms)
+✔ KB raw client truthiness and fractional limit remain (0.293241ms)
+✔ KB all kinds accept opaque IDs and finite scores above threshold (0.780403ms)
+✔ KB selectors and observation are bound (0.545771ms)
+✔ KB excerpt is same normalized UTF16 prefix, with source trailing truncation space (0.419741ms)
+✔ KB result returned as detached nested value (0.36537ms)
+✔ graph preserves numeric fraction and parseInt string semantics (2.783263ms)
+✔ graph three branches and exact scoped refusal (4.316839ms)
+✔ graph summary counts reflect pre-cap edges and original seed (0.779242ms)
+✔ graph duplicate and type identity refused without inventing label vocabulary (0.230867ms)
+✔ raw getters and proxies are never invoked (0.150657ms)
+✔ result getters and unrelated contexts refused (0.258449ms)
+✔ scoped graph excludes other client nodes without asserting ownership of other types (0.221253ms)
+✔ KB string limit is ignored rather than coerced, as in wrapper (0.165068ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 175.145089

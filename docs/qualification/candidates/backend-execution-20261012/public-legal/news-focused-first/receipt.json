@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-research-legal-news.test.mjs"
+  ],
+  "source": "0dcb6ae5c16566ae53abedff3a1b5c0aca9fe309",
+  "sourceDiff": "",
+  "startedAt": "2026-10-12T21:06:22.352630+00:00",
+  "endedAt": "2026-10-12T21:06:22.536161+00:00",
+  "exitCode": 1,
+  "timeout": false,
+  "processGroup": 321034,
+  "groupAbsent": true,
+  "stdoutSha256": "7efc7c16940a3f84f39ce43dddaa4730c24e95bc624ffe9c4d43fb9bf8a2be68",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

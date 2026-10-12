@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-research-legal-legislation.test.mjs"
+  ],
+  "source": "2584818a24dd60fb63ac9e613d48a0c34e8542ba",
+  "sourceDiff": "",
+  "startedAt": "2026-10-12T21:00:31.571488+00:00",
+  "endedAt": "2026-10-12T21:00:31.870981+00:00",
+  "exitCode": 0,
+  "timeout": false,
+  "processGroup": 317010,
+  "groupAbsent": true,
+  "stdoutSha256": "838aa9b708c7d15c7fa6f858b3d5c3f891a11cc74284c579bbc785bbd82c0d2d",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

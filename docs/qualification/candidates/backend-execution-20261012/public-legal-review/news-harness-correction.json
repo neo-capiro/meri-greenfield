@@ -1,0 +1,8 @@
+{
+  "kind": "REVIEWER_HARNESS_CORRECTION",
+  "before": "Independent module fails strict schema resolution before running cases;34author pass",
+  "correction": "Register existing canonical FloridaBudget dependency used by news schema",
+  "preimageSha256": "6a3bf53309906f48ba8cb09463f373d4114efd3a28a6feef6ade2941549e81b3",
+  "behavioralAssertionsChanged": false,
+  "productionChanged": false
+}

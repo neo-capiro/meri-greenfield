@@ -1,0 +1,52 @@
+{
+  "sourceHead": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "checks": [
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/audit-initial.json",
+      "group": 307046,
+      "exitCode": 1,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/audit-repaired.json",
+      "group": 307461,
+      "exitCode": 0,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/exact-connected-memory.json",
+      "group": 307862,
+      "exitCode": 0,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/initial-source.json",
+      "group": 306112,
+      "exitCode": 0,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.json",
+      "group": 308682,
+      "exitCode": 2,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "unownedProcessesTouched": false
+}

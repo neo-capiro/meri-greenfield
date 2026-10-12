@@ -1,0 +1,462 @@
+{
+  "status": "PASS",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "authorityPins": [
+    {
+      "path": "docs/coordination/DECISIONS.md",
+      "commit": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5",
+      "bytes": 16919,
+      "sha256": "b2aef79714a5d5f965ee7daffc8245ca84f0e3768de9d89a2ea711439fef79e8",
+      "blob": "64fc779a777d6d128860cfd6ee766b7d5d1825bb"
+    },
+    {
+      "path": "docs/CAPABILITY-SCOPE.md",
+      "commit": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+      "bytes": 43968,
+      "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6",
+      "blob": "4b14019d20630731ade648b7ae74fa50787daa2b"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "commit": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5",
+      "blob": "c0436b3578b634f0441b7557a64571f21dba2761"
+    },
+    {
+      "path": "docs/coordination/r2/capabilities.json",
+      "commit": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+      "bytes": 307002,
+      "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1",
+      "blob": "78e155390e13948ec3a9a543214b810d8399ce05"
+    },
+    {
+      "path": "docs/plans/revisions/20261010-R2/inventory-stored-cells.json",
+      "commit": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+      "bytes": 927872,
+      "sha256": "15b706f14aeef9b5a142d35ffdf2f7ee03b946ab665ff789de6da84202e89191",
+      "blob": "749abe0c9a38aa1c7fa6bfc233b76456f54994d1"
+    }
+  ],
+  "references": [
+    {
+      "path": "packages/shared/src/research-portfolios.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 31751,
+          "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90",
+          "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 31751,
+          "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90",
+          "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 12620,
+          "sha256": "adaf540aca6c9f757558d7cf50faf0c487f47a5e76fa146af2e93371842598d5",
+          "blob": "74023cee501890091d3efc9ec9d1ab4d2b613e93"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 12620,
+          "sha256": "adaf540aca6c9f757558d7cf50faf0c487f47a5e76fa146af2e93371842598d5",
+          "blob": "74023cee501890091d3efc9ec9d1ab4d2b613e93"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6332,
+          "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9",
+          "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6332,
+          "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9",
+          "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 1833,
+          "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08",
+          "blob": "6f110e358145ff50e424e2f6805669c0081998fa"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 1833,
+          "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08",
+          "blob": "6f110e358145ff50e424e2f6805669c0081998fa"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 65674,
+          "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f",
+          "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 65674,
+          "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f",
+          "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 32301,
+          "sha256": "1642c8ae571c6e19305154b0bd2178e63d62bd3434ff3dbf816c209814d744f0",
+          "blob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 32301,
+          "sha256": "1642c8ae571c6e19305154b0bd2178e63d62bd3434ff3dbf816c209814d744f0",
+          "blob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-changes.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15275,
+          "sha256": "7617f9c242bf29a8e062e202f86e6a16f479d3173d94967a2873e8ae768404cb",
+          "blob": "60cc3c51644ae5b8c93fb93a684c544713a97349"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15275,
+          "sha256": "7617f9c242bf29a8e062e202f86e6a16f479d3173d94967a2873e8ae768404cb",
+          "blob": "60cc3c51644ae5b8c93fb93a684c544713a97349"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 21363,
+          "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631",
+          "blob": "0ff6253e623fdc25838cd781186aa585db2dc144"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 21363,
+          "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631",
+          "blob": "0ff6253e623fdc25838cd781186aa585db2dc144"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 11582,
+          "sha256": "a575355a60bf34dc564558643a17245c918381ef85a5006e3db63516907d2fc4",
+          "blob": "1679ab8e36345772c41eaf7426c736e7a038ab58"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 11582,
+          "sha256": "a575355a60bf34dc564558643a17245c918381ef85a5006e3db63516907d2fc4",
+          "blob": "1679ab8e36345772c41eaf7426c736e7a038ab58"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/meri-research-handoff.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 7234,
+          "sha256": "4bfbe52019a17ca607e33a2476f2d5d757ebdebe2d57c325b67f026ad6ca0923",
+          "blob": "1ad509660e030ca896d224643129c4f4b645463b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 7234,
+          "sha256": "4bfbe52019a17ca607e33a2476f2d5d757ebdebe2d57c325b67f026ad6ca0923",
+          "blob": "1ad509660e030ca896d224643129c4f4b645463b"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 7833,
+          "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+          "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 7833,
+          "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+          "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 25314,
+          "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19",
+          "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 25314,
+          "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19",
+          "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842"
+        }
+      ]
+    }
+  ],
+  "reviewEvidenceFields": [
+    "sourceRevisionId",
+    "locator",
+    "quote",
+    "stance"
+  ],
+  "nativeBackend27": {
+    "row": 27,
+    "id": "get_research_evidence",
+    "currentCapability": "Read immutable attachment evidence for your research session, with source IDs, completeness/status and paging; verify supplied attachments before citing them.",
+    "acceptedBoundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred."
+  },
+  "passed": 41,
+  "total": 41,
+  "checks": [
+    {
+      "name": "D011 human explicitly accepts96/43 and basic Portfolio reads",
+      "pass": true
+    },
+    {
+      "name": "scope accepts new implementation not parity/grant",
+      "pass": true
+    },
+    {
+      "name": "all139 retained with96selected43deferred",
+      "pass": true
+    },
+    {
+      "name": "evidence selected Portfolio boundary",
+      "pass": true
+    },
+    {
+      "name": "review workflow and analytics deferred",
+      "pass": true
+    },
+    {
+      "name": "R2 labels explicitly separate scope",
+      "pass": true
+    },
+    {
+      "name": "stored original Native backend27 preserved",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged packages/shared/src/research-portfolios.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-access.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolios.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-changes.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/meri/meri-research-handoff.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "paired source unchanged apps/api/src/research-portfolios/research-portfolios.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "exact4 actual review evidence fields",
+      "pass": true
+    },
+    {
+      "name": "review evidence nullable quote and stance",
+      "pass": true
+    },
+    {
+      "name": "no existing Portfolio get_research_evidence method",
+      "pass": true
+    },
+    {
+      "name": "existing review list read has no take/cursor",
+      "pass": true
+    },
+    {
+      "name": "review list alone does not establish source locator permission",
+      "pass": true
+    },
+    {
+      "name": "stored review UUID id",
+      "pass": true
+    },
+    {
+      "name": "stored review UUID tenantId",
+      "pass": true
+    },
+    {
+      "name": "stored review UUID portfolioId",
+      "pass": true
+    },
+    {
+      "name": "evidence storage is Json rather than constrained item relation",
+      "pass": true
+    },
+    {
+      "name": "canonical existing context binding subject only",
+      "pass": true
+    },
+    {
+      "name": "legacy evidence is separate Clio session attachment projection",
+      "pass": true
+    },
+    {
+      "name": "BizDev evidence is separate operation",
+      "pass": true
+    },
+    {
+      "name": "actual retained carrier ResearchPortfolioContributionDto",
+      "pass": true
+    },
+    {
+      "name": "actual retained carrier ResearchPortfolioSnapshotDto",
+      "pass": true
+    },
+    {
+      "name": "actual retained carrier ResearchPortfolioContinuityLedgerDto",
+      "pass": true
+    },
+    {
+      "name": "member stored evidence absent from current DTO",
+      "pass": true
+    },
+    {
+      "name": "current continuity read uses default scope and no persistence",
+      "pass": true
+    },
+    {
+      "name": "current continuity schema distinguishes nonpersisted projection",
+      "pass": true
+    },
+    {
+      "name": "snapshot distinct read keeps retained projection source versions and requirements",
+      "pass": true
+    },
+    {
+      "name": "controller read seams are snapshots reviews annual review",
+      "pass": true
+    }
+  ],
+  "scope": "Documentary/source-contract facts only. No API or runtime source qualification inferred; interpretation is in independent report."
+}

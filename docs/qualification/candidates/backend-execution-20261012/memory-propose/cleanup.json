@@ -1,0 +1,54 @@
+{
+  "ownedGroups": [
+    {
+      "receipt": "corrected-author.json",
+      "ownedPidAndPgid": 311658,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "exact-audit.json",
+      "ownedPidAndPgid": 313488,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "exact-source.json",
+      "ownedPidAndPgid": 313457,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "initial-author.json",
+      "ownedPidAndPgid": 311462,
+      "absentAtCloseout": true,
+      "captureExitCode": 1,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "metadata-audit.json",
+      "ownedPidAndPgid": 312187,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "receipt": "whitespace.json",
+      "ownedPidAndPgid": 313571,
+      "absentAtCloseout": true,
+      "captureExitCode": 0,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "otherOwnersTouched": false
+}

@@ -1,0 +1,3 @@
+The credential-proxy negative control exposes an inert undefined `then` solely for JavaScript Promise assimilation inside the synthetic async trusted port. All other reflection/property hooks are counted and must remain uncalled. This correction precedes candidate execution; it does not relax source admission. Initial test commit8a908298 is preserved.
+
+Read-only discovery initially guessed meri-tools.controller.ts and an authority/request-authority.mjs path; actual owners are meri.controller.ts and authorization/current-tool-authority.mjs. A search was once issued from the private producer cwd for Meri gateway paths, which correctly reported absent paths; the subsequent read used the Meri worktree. No producer execution or source defect was claimed.

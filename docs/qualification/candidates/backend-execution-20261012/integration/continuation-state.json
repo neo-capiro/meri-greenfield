@@ -1,0 +1,42 @@
+{
+  "recordedAt": "2026-10-12T21:53:13.671643+00:00",
+  "workingDirectory": "/workspace/meri-backend-execution-20261012",
+  "branch": "task/meri-backend-execution-20261012",
+  "draftPullRequest": "https://github.com/neo-capiro/meri-greenfield/pull/37",
+  "canonicalProductionFreeze": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "fullTestFreeze": "90c747dd61320998494cd947ad6f3ad072106310",
+  "independentAcceptance": "5357dc276189213d2a06fb83c8952abaf29e5319",
+  "localTestFailuresUnresolved": 0,
+  "historicalFailuresRetained": true,
+  "sourceConnectivityEnabled": false,
+  "remainingSelectedLedger": "docs/qualification/candidates/backend-execution-20261012/integration/remaining-selected.json",
+  "nextSourceBoundaries": [
+    "New Portfolio evidence projections must preserve complete selected intent and explicitly bound each source carrier; no relabeled Clio parity or hidden-column disclosure inference.",
+    "Implement task/memory/artifact command execution only behind immutable approved intent, current authority, durable idempotency/budget ownership and truthful receipt boundaries; payload schemas alone do not close execution.",
+    "Continue new application Temporal listing/history and explicit private mutation/lifecycle contracts; SDK defaults and public schedule views are not authority.",
+    "Consume exact independently accepted native artifact and SDK evidence without copying legacy or host artifact implementations or duplicating native execution."
+  ],
+  "pendingExternalDependencies": [
+    "Safe read-only V7 native manifest/archive locator and digest are not provided in this environment.",
+    "Full Portfolio raw-member and unrestricted historical evidence inclusion/exposure needs a concrete source-owner contract; selected basic intent is already authorized.",
+    "Private host policy retrieval, aggregate paid-model budget reconciliation and exact infrastructure/security approvals remain outside this source-only lane."
+  ],
+  "ownedResources": "All root/reviewer captured groups absent; root temporary dependencies removed; other owners were not stopped.",
+  "productionChangesAfterCanonicalFreeze": false,
+  "explicitlyUnauthorized": [
+    "merge main",
+    "cloud image build/push/deploy",
+    "resource or credential creation",
+    "security/network/database changes",
+    "customer data access/mutation",
+    "provider messages",
+    "paid model calls",
+    "infrastructure spend"
+  ],
+  "researchEvidenceScopeProposal": {
+    "author": "f749dd4dfd3989466fa663de98ac3f94cb2d8800",
+    "review": "2c3052e74e7f91e17c27bdd460841347c32c4466",
+    "verdict": "ACCEPT_METADATA",
+    "completeMapping": "HOLD"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "rootExplicitlyConfirmed": true,
+  "rawReviewVerdictScope": "Only31rawrequestadvertisements; this records bounded known other-lane diffs, not acceptance of their semantics",
+  "preservedInitialAudit": "268/271, exactly3 false checks owing to other-lane deltas",
+  "exceptions": [
+    {
+      "id": "list_global_datasets",
+      "field": "dispatchProfile",
+      "value": "dataset-metadata/1",
+      "source": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+      "review": "8f2e9cfa5f23df23259e2ecbd27bc62edbd68648"
+    },
+    {
+      "id": "query_action_items",
+      "fields": [
+        "binding.supersededBy",
+        "descriptor.replacement",
+        "descriptor.limitations[0]",
+        "descriptor.limitations[1]"
+      ],
+      "source": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+      "familyReview": "c522d3dfde2b7e932fc0c505c9660df2ab843334",
+      "composition": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+      "compositionReviewOwner": "gateway_reviewer",
+      "qualification": "Full successor transport source accepted separately; root supersession composition requires combined review, not implied by family verdict."
+    }
+  ],
+  "allOtherExistingFieldsCompared": true,
+  "newMappingsCount": 13,
+  "allOriginalRepositoryEntriesUnchangedClaimed": false
+}

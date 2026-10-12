@@ -1,0 +1,167 @@
+{
+  "source": "2084f947ede709dfea0705bf2b67e62c3e929438",
+  "authorPacket": "907e7f05aff0c5433577dace76a8fb4a3cd037e0",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "packages/contracts/test/commands-memory-propose-independent.test.mjs",
+      "bytes": 13301,
+      "sha256": "b51e139edda364bab080a6f2556df7c8bf708c1255348597a3e1becd78bc62b9"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-MEMORY-PROPOSE-REVIEW-20261012.md",
+      "bytes": 4560,
+      "sha256": "d3264e44d0b9aff45b9b836779b16c3dbe9f2a478ffb1b3528af50003f3659dd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/audit-initial.py",
+      "bytes": 4698,
+      "sha256": "3d16d371761373f110be318d91f63465e533cfc5f510817209d8572156d307c7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/audit-receipt-correction.json",
+      "bytes": 358,
+      "sha256": "df47ecee6c427662b40846aa08e7f23a528809c70d6f98fbf7803779a5f8e5ef"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/audit.py",
+      "bytes": 4705,
+      "sha256": "6ad3507fb9604ad77de856e1936c73395fa76e5234c6250c81bbb868d65bfdcc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/baseline-absent.json",
+      "bytes": 1319,
+      "sha256": "38aedd5967f64b7d2979a6f23e1ebb2a4c4b5c4f5ffe57a48bdbc3ec292b2e48"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/baseline-absent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/baseline-absent.stdout.bin",
+      "bytes": 1671,
+      "sha256": "ffd0456e5a6213ff5aa2c43fa091c2392ab8b1e90e58d936c628ad0c57f0d5c1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/cleanup-verification.json",
+      "bytes": 808,
+      "sha256": "05f8cb3706e5c076b4a6596b03fa35e581d35a81b57d4cbe1636f53759d6fc3c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/criteria.json",
+      "bytes": 2465,
+      "sha256": "125d824e07b9586b904b804a5fab9c02968642a8c5fe168278be0cb793711cb8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/dependencies.json",
+      "bytes": 1270,
+      "sha256": "57183590f30c096313ec74bcb6f335b2b38a5350bdc652317039d1dae35fe69b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/exact31.json",
+      "bytes": 1303,
+      "sha256": "a50d05d9dfae8c6c10df03d0df562a33a7cb98dc029cf2aa95dde3724ec15467"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/exact31.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/exact31.stdout.bin",
+      "bytes": 3231,
+      "sha256": "41bc54cd34ec591cfbc890a0fd37e57ae8ce42c323633956e2fbf182495ba931"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/final-audit.json",
+      "bytes": 1410,
+      "sha256": "63cf6283a412f651653d3e892636c6e4f3a220c00872276264a007892a044bb4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/final-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "f9eb05abf6a17cfc525110e1ea4c661f62c801d4a66c1b061e9ebf3daa82e565"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/initial31.json",
+      "bytes": 1307,
+      "sha256": "4abeb623f6f4cae8487a5738de56b9027873f34d8e041762ee17a361be24caf5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/initial31.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/initial31.stdout.bin",
+      "bytes": 3230,
+      "sha256": "a91899e4f6d3bd756d40026d30d8b271cfc7a598dee04a10a8a1ea258c2c2a33"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/packet-audit.json",
+      "bytes": 1355,
+      "sha256": "fd5aa4be0d2a27b31560e3983ceb50cf6869579079a01b74f9af8fa1a972abc9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/packet-audit.py",
+      "bytes": 2223,
+      "sha256": "be9ca5b796ebd6388ebebd486904ab604b525dff8ac25e22227c35620ab9cf5a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/packet-audit.stdout.bin",
+      "bytes": 43,
+      "sha256": "692672222d0f45caf4a63c394d8a61717014e18a18679197a89bde534e515b97"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/packet-verification.json",
+      "bytes": 6419,
+      "sha256": "eef416d733996567897cf62794413c9828637ec1b7db72043029c51d1e3a0ce2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/reference-identities.json",
+      "bytes": 5180,
+      "sha256": "5fcff86438eb2b34c8ab4da0be9ee4e31f2326bd1452970e8f50e782abd04c2c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/source-audit.json",
+      "bytes": 1348,
+      "sha256": "e4f4a468a730c67e9839ba915909a9953541bed58c8da05b292fb71993056462"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/source-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "3fb93306b4e6f85df87ca3ea7d9d6eef42f79c038bbc027a78221fc982d0dee4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/source-preservation.json",
+      "bytes": 5256,
+      "sha256": "e54fad89b70fbad4e59a53e7f7e0e6edc8babd3a677a7057a31dd2c155c7f1d0"
+    }
+  ]
+}

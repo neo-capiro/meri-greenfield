@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+    "packages/contracts/test/retrieval-research-legal-candidates.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-legal-review-20261012",
+  "sourceHead": "90adb74df626cf75f2d43aa68fe576f8b87df2f9",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T20:44:15.609264+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 308436,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stdout.bin",
+      "bytes": 5167,
+      "sha256": "8cc8b64f4d3987e70530e760b73e5731a0cd1db66d86889daefbc8492c05acc6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

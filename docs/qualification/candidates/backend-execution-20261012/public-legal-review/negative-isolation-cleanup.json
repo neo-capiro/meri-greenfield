@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "sameSevenOwnedDependencyCopiesRemovedAgain": true,
+  "groups": [
+    {
+      "group": 307976,
+      "absent": true
+    },
+    {
+      "group": 329454,
+      "absent": true
+    },
+    {
+      "group": 330585,
+      "absent": true
+    },
+    {
+      "group": 308436,
+      "absent": true
+    },
+    {
+      "group": 324008,
+      "absent": true
+    },
+    {
+      "group": 318340,
+      "absent": true
+    },
+    {
+      "group": 311914,
+      "absent": true
+    },
+    {
+      "group": 324273,
+      "absent": true
+    },
+    {
+      "group": 319531,
+      "absent": true
+    },
+    {
+      "group": 329982,
+      "absent": true
+    },
+    {
+      "group": 320425,
+      "absent": true
+    },
+    {
+      "group": 311744,
+      "absent": true
+    },
+    {
+      "group": 321293,
+      "absent": true
+    },
+    {
+      "group": 324600,
+      "absent": true
+    },
+    {
+      "group": 334697,
+      "absent": true
+    }
+  ],
+  "noOtherOwnerMutation": true
+}

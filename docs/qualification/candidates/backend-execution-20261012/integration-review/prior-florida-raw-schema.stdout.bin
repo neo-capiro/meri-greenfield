@@ -1,0 +1,15 @@
+{
+  "reproduced": true,
+  "raw": {},
+  "normalized": {
+    "q": "",
+    "fiscalYear": "2026-27",
+    "projectId": "",
+    "offset": 0,
+    "sessionKey": "",
+    "folderId": null,
+    "clientId": null
+  },
+  "advertisedDefinition": "FloridaBudgetInput",
+  "consequence": "Caller advertised input rejects default request admitted by canonical normalizer; no runtime test."
+}

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection.mjs",
+    "projection-audit-final-result",
+    "/workspace/meri-reference-integration-review-20261012/packages/contracts/node_modules/typescript/lib/typescript.js"
+  ],
+  "cwd": "/workspace/meri-client-knowledge-review-20261012",
+  "sourceHead": "bed1507cb02e8cdbdd7d7b31cb8f87b5938b6aa7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:03:12.976861+00:00",
+  "durationSeconds": 0.465,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 318686,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stdout.bin",
+      "bytes": 25,
+      "sha256": "85462c803449c70c642a3eb0263a3077f80650a26db86b41130b289fabbf6dae"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

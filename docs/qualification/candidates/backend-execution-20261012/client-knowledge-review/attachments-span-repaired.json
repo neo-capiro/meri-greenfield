@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs",
+    "packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs"
+  ],
+  "cwd": "/workspace/meri-client-knowledge-review-20261012",
+  "sourceHead": "bed1507cb02e8cdbdd7d7b31cb8f87b5938b6aa7",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:03:11.917632+00:00",
+  "durationSeconds": 0.472,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 318536,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stdout.bin",
+      "bytes": 3430,
+      "sha256": "73e56eece17a48b077eaf3103eb56fbf8a80bce21d20b450e8a6c074faebed97"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

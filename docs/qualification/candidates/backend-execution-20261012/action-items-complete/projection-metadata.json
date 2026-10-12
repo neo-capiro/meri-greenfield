@@ -1,0 +1,208 @@
+{
+  "owner": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+  "fields": [
+    {
+      "field": "id",
+      "projectionLine": 477,
+      "storedReferences": [
+        "id"
+      ]
+    },
+    {
+      "field": "districtKey",
+      "projectionLine": 478,
+      "storedReferences": [
+        "districtKey"
+      ]
+    },
+    {
+      "field": "clientId",
+      "projectionLine": 479,
+      "storedReferences": [
+        "clientId"
+      ]
+    },
+    {
+      "field": "clientName",
+      "projectionLine": 480,
+      "storedReferences": [
+        "client"
+      ]
+    },
+    {
+      "field": "peCode",
+      "projectionLine": 481,
+      "storedReferences": [
+        "peCode"
+      ]
+    },
+    {
+      "field": "programId",
+      "projectionLine": 482,
+      "storedReferences": [
+        "programId"
+      ]
+    },
+    {
+      "field": "deltaId",
+      "projectionLine": 483,
+      "storedReferences": [
+        "deltaId"
+      ]
+    },
+    {
+      "field": "actionType",
+      "projectionLine": 484,
+      "storedReferences": [
+        "actionType"
+      ]
+    },
+    {
+      "field": "issueTitle",
+      "projectionLine": 485,
+      "storedReferences": [
+        "issueTitle"
+      ]
+    },
+    {
+      "field": "whatChanged",
+      "projectionLine": 486,
+      "storedReferences": [
+        "whatChanged"
+      ]
+    },
+    {
+      "field": "whyItMatters",
+      "projectionLine": 487,
+      "storedReferences": [
+        "whyItMatters"
+      ]
+    },
+    {
+      "field": "recommendedAction",
+      "projectionLine": 488,
+      "storedReferences": [
+        "recommendedAction"
+      ]
+    },
+    {
+      "field": "targetAudience",
+      "projectionLine": 489,
+      "storedReferences": [
+        "targetAudience"
+      ]
+    },
+    {
+      "field": "suggestedArtifactType",
+      "projectionLine": 490,
+      "storedReferences": [
+        "suggestedArtifactType"
+      ]
+    },
+    {
+      "field": "deadline",
+      "projectionLine": 491,
+      "storedReferences": [
+        "deadline",
+        "deadline"
+      ]
+    },
+    {
+      "field": "deadlineSource",
+      "projectionLine": 492,
+      "storedReferences": [
+        "deadlineSource"
+      ]
+    },
+    {
+      "field": "ownerUserId",
+      "projectionLine": 493,
+      "storedReferences": [
+        "ownerUserId"
+      ]
+    },
+    {
+      "field": "priority",
+      "projectionLine": 494,
+      "storedReferences": [
+        "priority"
+      ]
+    },
+    {
+      "field": "confidence",
+      "projectionLine": 495,
+      "storedReferences": [
+        "confidence"
+      ]
+    },
+    {
+      "field": "uncertainty",
+      "projectionLine": 496,
+      "storedReferences": [
+        "uncertainty"
+      ]
+    },
+    {
+      "field": "evidence",
+      "projectionLine": 497,
+      "storedReferences": [
+        "evidence"
+      ]
+    },
+    {
+      "field": "status",
+      "projectionLine": 498,
+      "storedReferences": [
+        "status"
+      ]
+    },
+    {
+      "field": "dismissalReason",
+      "projectionLine": 499,
+      "storedReferences": [
+        "dismissalReason"
+      ]
+    },
+    {
+      "field": "outcome",
+      "projectionLine": 500,
+      "storedReferences": [
+        "outcome"
+      ]
+    },
+    {
+      "field": "createdAt",
+      "projectionLine": 501,
+      "storedReferences": [
+        "createdAt"
+      ]
+    },
+    {
+      "field": "updatedAt",
+      "projectionLine": 502,
+      "storedReferences": [
+        "updatedAt"
+      ]
+    }
+  ],
+  "fieldCount": 26,
+  "list": "202-235",
+  "toCard": "471-504",
+  "wrapper": "meri-tools.service.ts8443-8477",
+  "unscopedEnvelope": [
+    "tool",
+    "generatedAt",
+    "total",
+    "actions"
+  ],
+  "optionalSerialization": [
+    "clientName"
+  ],
+  "absentFromList": [
+    "linkedSourceProofs"
+  ],
+  "countReadRace": true,
+  "nativeCursorOpaqueHere": true,
+  "authorizationQualified": false,
+  "normalization": "Reuse accepted closed operational-reads admission; resolved-client context is explicit trusted assertion; source selectors/coercion differ as documented."
+}

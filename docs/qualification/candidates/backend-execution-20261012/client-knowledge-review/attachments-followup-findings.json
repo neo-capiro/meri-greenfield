@@ -1,0 +1,22 @@
+{
+  "span": {
+    "candidate": "d46e3e5a",
+    "checks": "38/40",
+    "failures": [
+      "no-query span exceeds requested limit",
+      "query-miss nonempty character span"
+    ],
+    "repair": "4ecc4dfc",
+    "replay": "42/42"
+  },
+  "case": {
+    "candidate": "4ecc4dfc",
+    "checks": "42/44",
+    "failures": [
+      "first-page UUID case-equivalent stored ID rejected",
+      "emitted next cursor case-equivalent stored ID rejected"
+    ],
+    "sourceBasis": "authorizeSource performs typed UUID lookup and projects stored row.id; incoming cursor/raw selector remains exact in parseInput.",
+    "repairPendingReplay": "dcb375c5"
+  }
+}

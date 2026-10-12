@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-research-legal-candidates.test.mjs"
+  ],
+  "source": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+  "exitCode": 0,
+  "elapsedSeconds": 0.2730438709259033,
+  "timeout": false,
+  "processGroup": 306742,
+  "ownedGroupAbsent": true,
+  "sourceDiff": "",
+  "stdoutSha256": "4353d38dc95ae99111d5240ddd884e1a2bed4ec84437076ddf27f7630ac50fc6",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

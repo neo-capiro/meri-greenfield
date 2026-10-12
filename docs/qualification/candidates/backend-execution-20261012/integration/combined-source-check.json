@@ -1,0 +1,39 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "node --test --test-concurrency=2 packages/contracts/test/*.test.mjs evals/qualification/hermes-session.test.mjs apps/gateway/test/*.test.mjs apps/gateway/test/sources/*.test.mjs apps/control/test/temporal-inspection.test.mjs apps/control/schedules/test/temporal-inspection-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "f9e0471c3795861460167692826401bc27fb6b33",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T21:39:45.944269+00:00",
+  "durationSeconds": 91.116,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 339565,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 341251,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stdout.bin",
+      "bytes": 388834,
+      "sha256": "9409ca7e2bfe7fb3cc705be83595acdbd7f4b18d0a00b826da7a09cfbdb7910a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

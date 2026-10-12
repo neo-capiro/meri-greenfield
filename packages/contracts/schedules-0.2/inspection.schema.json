@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:schedules:inspection:0.2.0",
+  "description": "Read-only bounded Temporal observation, not current authorization or complete execution history.",
+  "$defs": {
+    "ScheduleInspectionBinding": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "projection",
+        "callerIdentity",
+        "deadlineMs"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleInspectionAuthorization": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "const": true
+        },
+        "projectionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "authorized",
+        "projectionSha256",
+        "callerIdentity",
+        "expiresAtMs"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleOriginalRun": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firstExecutionRunId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "workflowId",
+        "firstExecutionRunId"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleRecentAction": {
+      "type": "object",
+      "properties": {
+        "scheduledAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "takenAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "workflow": {
+          "$ref": "#/$defs/ScheduleOriginalRun"
+        }
+      },
+      "required": [
+        "scheduledAt",
+        "takenAt",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleInspectionWindow": {
+      "type": "object",
+      "properties": {
+        "observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "observed",
+        "returned",
+        "omitted"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleInspectionOutput": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "projectionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "temporal": {
+          "type": "object",
+          "properties": {
+            "scheduleId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "paused": {
+              "type": "boolean"
+            },
+            "remainingActions": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "numActionsTaken": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "numActionsMissedCatchupWindow": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "numActionsSkippedOverlap": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "nextActionTimes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "maxItems": 100
+            },
+            "recentActions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScheduleRecentAction"
+              },
+              "maxItems": 100
+            },
+            "runningActions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScheduleOriginalRun"
+              },
+              "maxItems": 100
+            }
+          },
+          "required": [
+            "scheduleId",
+            "paused",
+            "remainingActions",
+            "createdAt",
+            "lastUpdatedAt",
+            "numActionsTaken",
+            "numActionsMissedCatchupWindow",
+            "numActionsSkippedOverlap",
+            "nextActionTimes",
+            "recentActions",
+            "runningActions"
+          ],
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "historyComplete": {
+              "const": false
+            },
+            "currentRunIdentityVerified": {
+              "const": false
+            },
+            "nextActions": {
+              "$ref": "#/$defs/ScheduleInspectionWindow"
+            },
+            "recentActions": {
+              "$ref": "#/$defs/ScheduleInspectionWindow"
+            },
+            "runningActions": {
+              "$ref": "#/$defs/ScheduleInspectionWindow"
+            }
+          },
+          "required": [
+            "historyComplete",
+            "currentRunIdentityVerified",
+            "nextActions",
+            "recentActions",
+            "runningActions"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "projection",
+        "projectionSha256",
+        "observedAt",
+        "temporal",
+        "coverage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

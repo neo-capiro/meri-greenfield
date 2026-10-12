@@ -1,0 +1,232 @@
+{
+  "source": "f8e80bc3e2d35887caead8cd953afe58c2224e58",
+  "priorPacket": "36af89b921f37adcc15032b913d520bc9fbac25d",
+  "historicalManifestAtPriorPacket": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-manifest.json",
+  "files": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "bytes": 9572,
+      "sha256": "2eedfd9929825ab489b765a797c0de97a3d665f3f2f462c0f5fe57e083e8f37f"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "bytes": 940,
+      "sha256": "1c9953e0e9efaade981851c20e6592579e63d37c6d2718ebda8732ac13f08b38"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "bytes": 22299,
+      "sha256": "cbe5b1d176bb75f8597879635716d151d86b3dd22a4b4a5fc22f1339f2367390"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18728,
+      "sha256": "9dcb48a2ad738276a11f6e2e847bca3c47f48fd7d47fab109ee534189bf47bba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-dependency-cleanup.json",
+      "bytes": 3174,
+      "sha256": "3dda201a848d30ab89e07cc2a61656b9801b21b0d305ac98361782c461c9f0b7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-nineteen-expectation-updates.json",
+      "bytes": 656526,
+      "sha256": "cbac6b20f3f5de121dc3b77a1d3ab4915e25ff837843aa0ac3f677ad4e300c0f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-nineteen-update-script.py",
+      "bytes": 14055,
+      "sha256": "edfcd80b48bacc092628029fe2bcda5d88899a011298c6df7d344fe907203671"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-audit-results.json",
+      "bytes": 14698,
+      "sha256": "37ae1b8a407f072740b3573a19c59700fcce0e79fb241a9377dff9c09f88f8c6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-audit.py",
+      "bytes": 4139,
+      "sha256": "b7efb8d622903cd36566cab3d14f65220765ec438e260141bf97b2d349bd145f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.json",
+      "bytes": 1376,
+      "sha256": "de1da80e33dd8d1d7d3ea5a04f7ea0c5eeff6c5425efc7011c8b3af7bb180680"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.stdout.bin",
+      "bytes": 1620,
+      "sha256": "81cbfaac976a064ccc486cfb3cc6845b3cb965395c9160406cd157c44dcfb007"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.json",
+      "bytes": 1433,
+      "sha256": "8a3d1096fb386bda516ee6fc6009de65c5872689a92e919236dcf71081ad3c8d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.stdout.bin",
+      "bytes": 46,
+      "sha256": "120119c33b464ffccf9db7fd5fc211e04316139210f91bca36d7eb10160bfff1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-outline.md",
+      "bytes": 1163,
+      "sha256": "5ccaeb45cc93ad7a0617124e8ee49cccb78bf90d0ab1af5129fb831227b026dc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-report.md",
+      "bytes": 2522,
+      "sha256": "f71219d740c09e1973e97e976c67260fda49e3ce1ca9b5f314a85a5f38a5791c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-transform.json",
+      "bytes": 1402,
+      "sha256": "ab4b838c42c3c6a73a1840f62342218949fb7e82dbe3b8a3ee0c8f06b49495e2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-transform.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-transform.stdout.bin",
+      "bytes": 78,
+      "sha256": "a1477ba0d7ff370eca048cd6d88b370c1edb9bae422b209339b32871edd0693a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-whitespace.json",
+      "bytes": 1599,
+      "sha256": "e890de9144a04a203e93ac62c173a714137362c573239d079f2370815638ae25"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.json",
+      "bytes": 1585,
+      "sha256": "112d81b8ad5d1cd8aca59c255a18d75f51bcfc10f4920a262790730ada525545"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.stdout.bin",
+      "bytes": 388834,
+      "sha256": "9409ca7e2bfe7fb3cc705be83595acdbd7f4b18d0a00b826da7a09cfbdb7910a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-failure-provenance.json",
+      "bytes": 1221,
+      "sha256": "5167e910987f4a13b93397dd0977e95d55c90c6804bdc9e4e4deb068d04ecd3c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-expectation-updates.json",
+      "bytes": 658894,
+      "sha256": "454ae3599ff77b4a5108b5f947cfd0aeee21f9621113acb45ecbbd33b44f6848"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/update-test-expectations.py",
+      "bytes": 16152,
+      "sha256": "618a051eb9ac6c36fe2fe55f07497f62a86b39cb5bc1ff41ac4d285387864947"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "bytes": 19427,
+      "sha256": "2e92b4ad8419ba919626bf99b3d41c47cfc94e5f6d93b5897ae8898d57dccd64"
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-expectations.mjs",
+      "bytes": 6385,
+      "sha256": "4690f3f4e00fa1e6fda2fe0738b75fd653c654aacd3503994afb927f944da5c4"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "bytes": 9049,
+      "sha256": "79d5729c89cbc3bebc8d581e0b8a95bd76613d09981cc573fbf07fc5fd887052"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 10772,
+      "sha256": "e37e47eb6d41ec7c52313320788838240d88569fb3edce75828bc07d490251b0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "bytes": 15497,
+      "sha256": "0b69c36d54d367d86b89f3f89e716e656d537b91008771fc10845823b35cfeb3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13707,
+      "sha256": "0d79fb0acef22a1dc9244d292b7d9b4f87b17de70303fcd210ca63db86de29e1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "bytes": 14805,
+      "sha256": "17a0eb6d7f96139c0b2776509192f5effad00935b5d0d6a36de83781cc19ec57"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 30019,
+      "sha256": "ca55bb015d147ddf7838a5f8a4cefbf4bcb399e3cfba5ccca4baf094bce13bf5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "bytes": 15405,
+      "sha256": "8c8bc4217cf72c634ca6ffde599f9040f28660f1a22c2061654a21875a8e9ab2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "bytes": 9824,
+      "sha256": "2500051c46bad2f83ba0998ab290bfe6cd495fc76acfc2f72c11bab19ee59950"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "bytes": 16870,
+      "sha256": "9e4c0724c46ab81bdd6fbeba2b9fbc1610a111de4126886389949449a94f6c48"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "bytes": 14712,
+      "sha256": "54b8190d22ca20c879d9ff4887b21200e66507214f659185566eaee8320f130c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "bytes": 32260,
+      "sha256": "eeaab623b9b23760a51e5550f8c116f6fd629d9e3771810b141f9b2f98b27034"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "bytes": 9963,
+      "sha256": "48864c8b1a13d35ed93501016b137ab00ec5061cf01d3ab81aaac510f8b335bd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "bytes": 24523,
+      "sha256": "482d1da949c813afe8cacd2a270d63ec914df3dd29a121a7aedd9dac11b3bc45"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "bytes": 16416,
+      "sha256": "9865daf6a32b98f36083ea5cad351e867a50c3b528c9fad518bf62335c8d2e93"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "bytes": 8716,
+      "sha256": "490f8fc42d40fe19769aba19d5ace0a32c5e426b3ab916658e9f0e4be67885ce"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "bytes": 9623,
+      "sha256": "02a10746f971979b3f396174b6c97494e90df81eed0ee3284092eb3db755fea2"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/mail-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-dataset-metadata-handler-review-20261012",
+  "sourceHead": "77a5da8029b8dc8b5021a128199dba7c481f4a99",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:18:52.044426+00:00",
+  "durationSeconds": 4.116,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 328541,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/original-dispatch-contexts.stdout.bin",
+      "bytes": 8804,
+      "sha256": "52f66489ac149b20bbb2b62664d1470327542980388ad4f8d4ba6392910ad6fd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/original-dispatch-contexts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

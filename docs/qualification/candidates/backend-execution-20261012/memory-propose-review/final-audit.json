@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/audit.py",
+    "--packet",
+    "907e7f05aff0c5433577dace76a8fb4a3cd037e0"
+  ],
+  "cwd": "/workspace/meri-memory-propose-review-20261012",
+  "sourceHead": "ee5c6bb3277563f45a7132e2600f1455aa35d5f8",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T20:55:20.229474+00:00",
+  "durationSeconds": 0.175,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 314087,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/final-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "f9eb05abf6a17cfc525110e1ea4c661f62c801d4a66c1b061e9ebf3daa82e565"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

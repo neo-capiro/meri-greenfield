@@ -1,0 +1,11 @@
+{
+  "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "beforeSha256": "c48e263e5e4f8d66a742bd577efea5fc8c92133d9a9960607c92f267a9a6400a",
+  "afterSha256": "a8d99bbfe2160a7a02c5fdb70754d98c125eb494ca0bff374a517c2918948c72",
+  "old": "'assertArtifactFileVersion'];",
+  "new": "'assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult'];",
+  "count": 1,
+  "inverseExact": true,
+  "reason": "Explicitly include three new private memory proposal validators; all original behavioral assertions retained."
+}

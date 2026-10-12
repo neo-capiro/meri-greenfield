@@ -1,0 +1,25 @@
+✔ canonical provider and real resolver/authority/dispatch emit exact12 datasets88 fields (14.345977ms)
+✔ production gateway stays unavailable with zero authority/source effects (6.417625ms)
+✔ only branded immutable provider accepted without calling fake registry methods (0.41348ms)
+✔ unknown or authority-bearing arguments refuse before identity (1.242976ms)
+✔ handler admits only own inert fields and never invokes hostile accessors/proxies (6.770925ms)
+✔ direct handler checks binding, policy, digest and fresh deadlines (6.513298ms)
+✔ handler checks abort after registry projection and returns detached raw JSON (6.444905ms)
+✔ expired grant stale fence missing grants and source denial block before reserve (1.615556ms)
+✔ malformed reservation and settlement acknowledgments retain uncertainty (4.752425ms)
+✔ revoke during reservation prevents handler and retains uncertain hold (1.043917ms)
+✔ envelope substitutions reject before settlement through canonical dispatch (23.282474ms)
+✔ canonical raw family validator rejects duplicate metadata aggregate lies and freshness flags (19.824592ms)
+✔ revocation during handler or settled accounting cannot release result (5.932667ms)
+✔ subject drift at release prevents settlement even though registry is public metadata (3.0373ms)
+✔ cancelled parked handler and settlement never continue to later authority ports (9.841104ms)
+✔ freshly shortened release deadline bounds parked settlement no late release (23.102083ms)
+✔ handler construction is own-data only and no clock effects until call (0.411328ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1916.385831

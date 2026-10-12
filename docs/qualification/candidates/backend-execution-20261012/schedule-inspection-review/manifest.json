@@ -1,0 +1,144 @@
+{
+  "source": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "authorPacket": "f6413801acf949141dea3bb86f7bcd5233eef3f5",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeAccepted": false,
+  "members": [
+    {
+      "path": "apps/control/schedules/test/temporal-inspection-independent.test.mjs",
+      "bytes": 16285,
+      "sha256": "b45c20dd644946641c3c6abd3de4c01d2ae7a08356fc89854cff477705e6ecf1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-REVIEW-20261012.md",
+      "bytes": 5505,
+      "sha256": "e458ec8d98d4a646aaea16857962de81b3bf75523cebd44e153b43adc39b3d77"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-REVIEW-20261012.md",
+      "bytes": 2673,
+      "sha256": "24127ef477e6937f99717468ba3d876afa34dfcf05d08f6b2a25c04230d9095d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/audit-source.py",
+      "bytes": 5996,
+      "sha256": "a4a2d78123de79d64a1d1383186f88a913cdd065e5911c4e09f94d551ed1427e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/author-packet-audit.json",
+      "bytes": 12492,
+      "sha256": "0a60f973c5960fbda4928e98a5cd45ebc55b11cd9cfb4b0fd930888484537ae4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/criteria.json",
+      "bytes": 1535,
+      "sha256": "bfbacf21dfbb4603cd926b2ad99484cb5f9e6faecca5081a133e3391fd2a4672"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/expanded-initial.json",
+      "bytes": 1336,
+      "sha256": "0aed0080392eba271df2d4cb682438f70cf48b73b70919eb188af8dfc6941225"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/expanded-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/expanded-initial.stdout.bin",
+      "bytes": 6450,
+      "sha256": "f929d26beea755385f24e1e5047fd06b638157523542815d5cca7fecad9d295b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-candidate.json",
+      "bytes": 1392,
+      "sha256": "92453b7bce1e31a40d3cb3c430127d4ba13b7769bc910ef748692e890c4a4556"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-candidate.stdout.bin",
+      "bytes": 6474,
+      "sha256": "045ec682b56f0dafe956d2d0325efbc6067104a172b86252ab42b12d78e0dcf2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/initial-disposition.json",
+      "bytes": 547,
+      "sha256": "d6285949b2901e605d7283d080c7fd0675e17de0c14d03a7b7b7c2d4f2cca7d5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/pre-replay-fixture-corrections.json",
+      "bytes": 854,
+      "sha256": "f5d4093bab2da1cd20ebf4f7e236fe54180c38bbceeb7ac0c80442d79e822f16"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/pre-replay-fixture-original.test.mjs.txt",
+      "bytes": 13283,
+      "sha256": "85d8a4e09444034c4929911af3e6fae3c31e2ed3f4148e2dd34ac0cba70a8061"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/preinspection-tests.json",
+      "bytes": 501,
+      "sha256": "e411e270688689ef5a63f04f7e4bc93bd1b63eeadc74cb0540688d9fb07020aa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.json",
+      "bytes": 1394,
+      "sha256": "bf394c5ea0b01834914db2380bdb1b811098549dd4a594adce2b0d441d4302aa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/repaired-candidate.stdout.bin",
+      "bytes": 6253,
+      "sha256": "fa089b3fdc20e27852b4ee2667e2f45d8dd3e7c9f20297256464fdb41621837d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/review-only-sequence.json",
+      "bytes": 620,
+      "sha256": "e96c045bc8f13b51a24501d656725fa258ad4b3c20c2e6ca599d11719acd52fc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/setup.json",
+      "bytes": 687,
+      "sha256": "ab85c5f38bc1cbb6cf3dd29003108c14e745ba21a00134644fb0dc830ccfd15c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/source-acceptance.json",
+      "bytes": 801,
+      "sha256": "e8a10d7848b467862e6d1462179140f78d9bdd6816c8f3f703d477967295872e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/source-audit.json",
+      "bytes": 9118,
+      "sha256": "ac4430dd7736df21b82688ccea69c357c76eddad6ee5c5ee39c2a4f060fdcc8b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/whitespace.json",
+      "bytes": 779,
+      "sha256": "a6289da38d5e03726865fdaf73a3f95408ff8111e18356cd77d2450f06bf0893"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/whitespace.stdout.bin",
+      "bytes": 566,
+      "sha256": "ad7a931f432f39d43ea57eff2bef2186acdf3013ac9e1e050b5c3b738a16bfc5"
+    }
+  ],
+  "selfExcluded": true
+}

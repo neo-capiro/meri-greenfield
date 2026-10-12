@@ -1,0 +1,121 @@
+{
+  "status": "PASS",
+  "passed": 28,
+  "total": 28,
+  "manifestSha256": "dee0500f6667c55c01ec9625ecbee4978042cd62ffdfd56df1df9b8f3e17582d",
+  "manifestMembers": 23,
+  "checks": [
+    {
+      "name": "unique members",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/author-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/author-audit.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/facts.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/facts.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/final-audit-correction.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-facts.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-facts.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-repaired-author-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-repaired-author-audit.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-verify-repaired-author-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-verify-scope-facts.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/repaired-author-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/repaired-author-audit.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-author-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-repaired-author-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-review-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-scope-facts.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "complete allocated packet membership",
+      "pass": true
+    },
+    {
+      "name": "independent facts passed",
+      "pass": true
+    },
+    {
+      "name": "exact author accepted metadata only",
+      "pass": true
+    },
+    {
+      "name": "no dependency or runtime claim",
+      "pass": true
+    }
+  ]
+}

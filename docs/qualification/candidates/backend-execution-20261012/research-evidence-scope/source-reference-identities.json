@@ -1,0 +1,362 @@
+[
+  {
+    "path": "packages/shared/src/research-portfolios.ts",
+    "locators": "51-98;372-445;721-806",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+      "bytes": 31751,
+      "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "ed70483bea476eaced8b1ae4e45ccc1f373a1341",
+      "bytes": 31751,
+      "sha256": "8cd82fdc0ac7d6fcb3d61be1b84f6537c50e1bf0d0872043c9e62b46fbb23c90"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/prisma/schema.prisma",
+    "locators": "ResearchPortfolio* models;15231-15260;15575-15661;15937-15970;16284ff",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-access.ts",
+    "locators": "14-59",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "6f110e358145ff50e424e2f6805669c0081998fa",
+      "bytes": 1833,
+      "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "6f110e358145ff50e424e2f6805669c0081998fa",
+      "bytes": 1833,
+      "sha256": "927d3292d437c944d80ccb9be6f9e7f77a15906eb9408eb9b3aa1ca259fb7e08"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-meri-scope.service.ts",
+    "locators": "64-113;115-165",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+      "bytes": 6332,
+      "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "1a1132aacc19d8565778ecf83614b2cff658cd3e",
+      "bytes": 6332,
+      "sha256": "35417378d7cdd373ccab8ecfc72f6e0c52ce521d80f93b52a8790c1e998e0ea9"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-meri-tools.service.ts",
+    "locators": "69-116;145-165;220-234",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "74023cee501890091d3efc9ec9d1ab4d2b613e93",
+      "bytes": 12620,
+      "sha256": "adaf540aca6c9f757558d7cf50faf0c487f47a5e76fa146af2e93371842598d5"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "74023cee501890091d3efc9ec9d1ab4d2b613e93",
+      "bytes": 12620,
+      "sha256": "adaf540aca6c9f757558d7cf50faf0c487f47a5e76fa146af2e93371842598d5"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolios.service.ts",
+    "locators": "member/detail DTO projections and current access policy",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082",
+      "bytes": 32301,
+      "sha256": "1642c8ae571c6e19305154b0bd2178e63d62bd3434ff3dbf816c209814d744f0"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "a7c7d8eaf81664e71593f380a2935e7bd01b0082",
+      "bytes": 32301,
+      "sha256": "1642c8ae571c6e19305154b0bd2178e63d62bd3434ff3dbf816c209814d744f0"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolios.controller.ts",
+    "locators": "118-129;185-221;review/annual route metadata",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842",
+      "bytes": 25314,
+      "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "b3fe6a6d4372542f8d0c976f946d1bd87102f842",
+      "bytes": 25314,
+      "sha256": "a03597a28e8884e503b32a471bb1584a4ba7b7c5785f26e3cdb00a9c40234a19"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-review.service.ts",
+    "locators": "69-107;662-669;770-868;1147-1338;1519-1547;1818-1841",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46",
+      "bytes": 65674,
+      "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "6503f7f76e33f678de2ec7b1d27ebf4ecff07e46",
+      "bytes": 65674,
+      "sha256": "be95aac547917aeaf8e51035c0eee068572b4ceb307c67c3442240d31438306f"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-analytics.service.ts",
+    "locators": "64-95;133-150;315-333;364-417",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "0ff6253e623fdc25838cd781186aa585db2dc144",
+      "bytes": 21363,
+      "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "0ff6253e623fdc25838cd781186aa585db2dc144",
+      "bytes": 21363,
+      "sha256": "3242c2cbacb2d5710f567db58e5a5ccd1294640f28a24c8efa3823489ff6c631"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-phase11.service.ts",
+    "locators": "185-198;current-fit read versus refresh boundary",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "6689403d1c297b6f3ca7b0495f94ec6cf316a82a",
+      "bytes": 43645,
+      "sha256": "28f0f17db2342a575d89ef38255a4506d85e28ca13e3a3993c17ed0ef0301770"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "6689403d1c297b6f3ca7b0495f94ec6cf316a82a",
+      "bytes": 43645,
+      "sha256": "28f0f17db2342a575d89ef38255a4506d85e28ca13e3a3993c17ed0ef0301770"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolio-output.service.ts",
+    "locators": "475-492;artifact download is a separate byte boundary",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "28c443b9b3117cdccce13828d6be7ba06ff70f2f",
+      "bytes": 37147,
+      "sha256": "0daccc04f90a3a93dfb4a0e6325221fd484ac1bf9eb0fc67fa8b0b66e610cc98"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "28c443b9b3117cdccce13828d6be7ba06ff70f2f",
+      "bytes": 37147,
+      "sha256": "0daccc04f90a3a93dfb4a0e6325221fd484ac1bf9eb0fc67fa8b0b66e610cc98"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/ResearchPortfolioMeriAdapters.contract.spec.ts",
+    "locators": "current scope/tool parameter contract assertions",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "a63de2addc6944664aab6bb9dd5a94f572232bbc",
+      "bytes": 6299,
+      "sha256": "565f961783dcc294e1c3e387c8b879e9514b820883120be5d792cae093cf6961"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "a63de2addc6944664aab6bb9dd5a94f572232bbc",
+      "bytes": 6299,
+      "sha256": "565f961783dcc294e1c3e387c8b879e9514b820883120be5d792cae093cf6961"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/research-portfolios/research-portfolios.schema.contract.spec.ts",
+    "locators": "persisted carrier schema assertions",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "d7ad360d362669b443274d6819365dcad4dfad67",
+      "bytes": 9947,
+      "sha256": "1d3d45450e2b847f18e89e5dbe85cbf7bccdeb3ed3873ba37e4fa2c23e6e703d"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "d7ad360d362669b443274d6819365dcad4dfad67",
+      "bytes": 9947,
+      "sha256": "1d3d45450e2b847f18e89e5dbe85cbf7bccdeb3ed3873ba37e4fa2c23e6e703d"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "880 request;2625 delegation",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-research-evidence.helpers.ts",
+    "locators": "10-67 request;76-275 scope/coverage;278-308 projection",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1679ab8e36345772c41eaf7426c736e7a038ab58",
+      "bytes": 11582,
+      "sha256": "a575355a60bf34dc564558643a17245c918381ef85a5006e3db63516907d2fc4"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "1679ab8e36345772c41eaf7426c736e7a038ab58",
+      "bytes": 11582,
+      "sha256": "a575355a60bf34dc564558643a17245c918381ef85a5006e3db63516907d2fc4"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-research-evidence.helpers.spec.ts",
+    "locators": "71-360 scope, snapshot, cursor, hash and withdrawal cases",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "9949c14c14059ea844d7a508090dd7f96e03d635",
+      "bytes": 14257,
+      "sha256": "5c501ef551215fb5133df55f853fc217f43eeddd388ebdc504ae57d4c1b00c86"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "9949c14c14059ea844d7a508090dd7f96e03d635",
+      "bytes": 14257,
+      "sha256": "5c501ef551215fb5133df55f853fc217f43eeddd388ebdc504ae57d4c1b00c86"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-research-handoff.ts",
+    "locators": "immutable attachment and handoff types",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1ad509660e030ca896d224643129c4f4b645463b",
+      "bytes": 7234,
+      "sha256": "4bfbe52019a17ca607e33a2476f2d5d757ebdebe2d57c325b67f026ad6ca0923"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "1ad509660e030ca896d224643129c4f4b645463b",
+      "bytes": 7234,
+      "sha256": "4bfbe52019a17ca607e33a2476f2d5d757ebdebe2d57c325b67f026ad6ca0923"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-bizdev-tools.service.ts",
+    "locators": "159-191;397-448 prospect evidence scope/projection",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "bytes": 35214,
+      "sha256": "c9a2a9f77c132c2b63af1d2c6e71ce5ef43be72fc8e647212efd903ec97a5c1e"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "bytes": 35214,
+      "sha256": "c9a2a9f77c132c2b63af1d2c6e71ce5ef43be72fc8e647212efd903ec97a5c1e"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/business-development/bizdev-meri-scope.service.ts",
+    "locators": "server selected prospect scope",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "bytes": 8411,
+      "sha256": "570e95f5279cf7e3d8521d9b03920fa4dbafc8f301de5a1def76d2ece78e9525"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "bytes": 8411,
+      "sha256": "570e95f5279cf7e3d8521d9b03920fa4dbafc8f301de5a1def76d2ece78e9525"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/business-development/bizdev-evidence.types.ts",
+    "locators": "prospect evidence envelope types",
+    "inspection": "Schema/policy/typed projection/reference assertions only; no copied private implementation or source body.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "1d90361d75000add6514c178389b69a7b363a760",
+      "bytes": 5909,
+      "sha256": "ad668fb1d7efa1943f3ebb0c94829a947d2fd30a8e2f843424301663c11e4a47"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "1d90361d75000add6514c178389b69a7b363a760",
+      "bytes": 5909,
+      "sha256": "ad668fb1d7efa1943f3ebb0c94829a947d2fd30a8e2f843424301663c11e4a47"
+    },
+    "changed": false
+  }
+]

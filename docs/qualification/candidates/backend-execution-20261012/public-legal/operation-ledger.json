@@ -1,0 +1,67 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "operations": [
+    {
+      "id": "search_research_sources",
+      "module": "research-legal-candidates",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+      "independentReview": "5f579cde0f0820f55cc46c7464b7cad10ecdb2f7",
+      "runtimeQualified": false
+    },
+    {
+      "id": "search_legislative_research",
+      "module": "research-legal-legislation",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "independentReview": "742f0aa85a9c3decec8702ccc2137dd65184723e",
+      "runtimeQualified": false
+    },
+    {
+      "id": "get_legal_reference",
+      "module": "research-legal-legislation",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "independentReview": "742f0aa85a9c3decec8702ccc2137dd65184723e",
+      "runtimeQualified": false
+    },
+    {
+      "id": "query_global_data",
+      "module": "public-domain-query",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "independentReview": "20279a574d9035ce623c56070a56225b0664713a",
+      "runtimeQualified": false
+    },
+    {
+      "id": "search_committee_hearings",
+      "module": "public-domain-hearings",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "77522c80132c8454781d54156fa61669bc5c823f",
+      "independentReview": "ccdb00010d8cd83823e42de05295d8d395bb9fbb",
+      "runtimeQualified": false
+    },
+    {
+      "id": "search_legiwatch_news",
+      "module": "research-legal-news",
+      "state": "independently-accepted-source",
+      "next": "Root canonical composition after independent acceptance; current-authority adapter and native qualification remain separate.",
+      "sourceConnected": false,
+      "source": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+      "independentReview": "65639ebdc6dab7fd068ec9cd4e781eafb948e5a4",
+      "runtimeQualified": false
+    }
+  ],
+  "notSecondRegistry": true,
+  "scope": "Six allocated selected operations only; canonical capability inventory unchanged."
+}

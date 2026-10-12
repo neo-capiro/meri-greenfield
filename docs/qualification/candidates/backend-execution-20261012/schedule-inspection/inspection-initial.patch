@@ -1,0 +1,457 @@
+diff --git a/apps/control/schedules/temporal-inspection.mjs b/apps/control/schedules/temporal-inspection.mjs
+new file mode 100644
+index 00000000..02f16edd
+--- /dev/null
++++ b/apps/control/schedules/temporal-inspection.mjs
+@@ -0,0 +1,54 @@
++// Application inspection only. Borrowed SDK client/connection are never closed.
++import { types } from 'node:util';
++import { createOperationLifetime } from '../../../packages/runtime/operation-lifetime.mjs';
++import { snapshotScheduleInspectionBinding, assertScheduleInspectionAuthorization,
++  projectScheduleInspection } from '../../../packages/contracts/schedules-0.2/inspection-validation.mjs';
++
++const ownErrors = new WeakMap();
++const error = code => { const value=Object.assign(new Error(code),{code});ownErrors.set(value,code);return value; };
++function own(value, names) {
++  if (!value || types.isProxy(value) || Object.getPrototypeOf(value)!==Object.prototype) throw error('SCHEDULE_INSPECTION_CONFIGURATION');
++  const d=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(d);
++  if(keys.some(k=>!names.includes(k)) || Object.values(d).some(p=>!p.enumerable||!Object.hasOwn(p,'value')))throw error('SCHEDULE_INSPECTION_CONFIGURATION');
++  return Object.fromEntries(Object.entries(d).map(([k,p])=>[k,p.value]));
++}
++export function createTemporalScheduleInspector(options) {
++  const {scheduleClient,authorize,clock=Date.now}=own(options,['scheduleClient','authorize','clock']);
++  if(!scheduleClient||types.isProxy(scheduleClient)||typeof authorize!=='function'||typeof clock!=='function')throw error('SCHEDULE_INSPECTION_CONFIGURATION');
++  // These are trusted, borrowed SDK ports; retain their receivers and exact identity.
++  const connection=scheduleClient.connection,getHandle=scheduleClient.getHandle;
++  if(!connection||types.isProxy(connection)||typeof getHandle!=='function'||typeof connection.withDeadline!=='function'||typeof connection.withAbortSignal!=='function')throw error('SCHEDULE_INSPECTION_CONFIGURATION');
++  const withDeadline=connection.withDeadline,withAbortSignal=connection.withAbortSignal;
++  async function inspect(request) {
++    const {projection,callerIdentity,deadlineMs,signal}=own(request,['projection','callerIdentity','deadlineMs','signal']);
++    if(signal!==undefined&&(!(signal instanceof AbortSignal)||types.isProxy(signal)))throw error('SCHEDULE_INSPECTION_CONFIGURATION');
++    const binding=snapshotScheduleInspectionBinding({projection,callerIdentity,deadlineMs},clock());
++    const lifetime=createOperationLifetime({deadlineMs,now:clock,signal,errorFactory:code=>error(`SCHEDULE_INSPECTION_${code}`)});
++    let effectiveDeadlineMs=deadlineMs;
++    const limitDeadline=next=>{lifetime.limitDeadline(next);effectiveDeadlineMs=Math.min(effectiveDeadlineMs,next);};
++    async function current(phase) {
++      const receipt=await lifetime.run(signal=>authorize(Object.freeze({phase,projection:binding.projection,callerIdentity:binding.callerIdentity,projectionSha256:binding.projectionSha256,signal,limitDeadline})));
++      const admitted=assertScheduleInspectionAuthorization(receipt,binding);
++      limitDeadline(admitted.expiresAtMs); // Publish before any subsequent port can park.
++    }
++    try {
++      await current('before_describe');
++      const description=await lifetime.run(signal=>withDeadline.call(connection,effectiveDeadlineMs,()=>{lifetime.check();return withAbortSignal.call(connection,signal,()=>{
++        lifetime.check();
++        const handle=getHandle.call(scheduleClient,binding.projection.temporalScheduleId);
++        if(!handle||types.isProxy(handle)||handle.scheduleId!==binding.projection.temporalScheduleId||typeof handle.describe!=='function')throw error('SCHEDULE_INSPECTION_DATA');
++        return handle.describe();
++      });}));
++      const output=projectScheduleInspection(description,binding,clock());
++      await current('before_release');
++      lifetime.check();
++      return output;
++    } catch(cause) {
++      // Never leak SDK service messages, memo, workflow arguments or credentials.
++      const code=ownErrors.get(cause);
++      if(code==='SCHEDULE_INSPECTION_DEADLINE'||code==='SCHEDULE_INSPECTION_CANCELLED')throw error(code);
++      throw error('SCHEDULE_INSPECTION_FAILED');
++    } finally { lifetime.close(); }
++  }
++  return Object.freeze({inspect});
++}
+diff --git a/apps/control/test/temporal-inspection.test.mjs b/apps/control/test/temporal-inspection.test.mjs
+new file mode 100644
+index 00000000..891e4622
+--- /dev/null
++++ b/apps/control/test/temporal-inspection.test.mjs
+@@ -0,0 +1,38 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createTemporalScheduleInspector} from '../schedules/temporal-inspection.mjs';
++const NOW=Date.now(), date=()=>new Date(NOW), id='11111111-1111-4111-8111-111111111111';
++const projection=()=>({scheduleId:id,owner:{tenantId:'tenant',actorId:'owner'},temporalScheduleId:'exact-owned-schedule',timezone:'America/New_York',scopes:[{tenantId:'tenant',kind:'client',resourceId:'client',policyRevision:'p1'}],state:'active',maxCostMicrousd:100,maxRuntimeSeconds:20,retryLimit:0,destinationId:'destination',createdAt:date().toISOString()});
++const caller=()=>({tenantId:'tenant',actorId:'delegate'});
++const action=(n=0)=>({type:'startWorkflow',workflow:{workflowId:`workflow-${n}`,firstExecutionRunId:`original-${n}`}});
++const description=()=>({scheduleId:'exact-owned-schedule',state:{paused:false,remainingActions:undefined},info:{createdAt:date(),lastUpdatedAt:undefined,numActionsTaken:42,numActionsMissedCatchupWindow:3,numActionsSkippedOverlap:2,nextActionTimes:[date()],recentActions:[{scheduledAt:date(),takenAt:date(),action:action()}],runningActions:[action()]}});
++const receipt=q=>({authorized:true,projectionSha256:q.projectionSha256,callerIdentity:q.callerIdentity,expiresAtMs:NOW+1000});
++function fixture(options={}) {
++ const calls=[],d=options.description??description();let capturedSignal;
++ const connection={withDeadline(deadline,fn){calls.push(['deadline',deadline]);return fn();},withAbortSignal(signal,fn){capturedSignal=signal;calls.push(['signal']);return fn();},close(){throw new Error('borrowed close');}};
++ const scheduleClient={connection,getHandle(value){calls.push(['handle',value]);return {scheduleId:value,describe(){calls.push(['describe']);return options.describe?options.describe():d;},delete(){throw new Error('mutation');}};},list(){throw new Error('list');},create(){throw new Error('mutation');}};
++ const authorize=options.authorize??(q=>{calls.push(['authority',q.phase]);return receipt(q);});
++ const inspector=createTemporalScheduleInspector({scheduleClient,authorize,clock:()=>NOW});
++ return {calls,connection,scheduleClient,inspector,d,signal:()=>capturedSignal,request:()=>({projection:projection(),callerIdentity:caller(),deadlineMs:NOW+1000})};
++}
++test('exact schedule describe returns only bounded public fields and original run references',async()=>{const f=fixture(),out=await f.inspector.inspect(f.request());assert.deepEqual(f.calls.map(x=>x[0]),['authority','deadline','signal','handle','describe','authority']);assert.deepEqual(f.calls.find(x=>x[0]==='handle'),['handle','exact-owned-schedule']);assert.equal(out.temporal.recentActions[0].workflow.firstExecutionRunId,'original-0');assert.equal(out.coverage.currentRunIdentityVerified,false);assert.equal(out.coverage.historyComplete,false);assert.equal(out.temporal.remainingActions,null);assert.ok(Object.isFrozen(out));assert.ok(f.signal().aborted);});
++test('delegated same-tenant inspection relies on current callback, not owner equality',async()=>{let seen;const f=fixture({authorize:q=>{seen=q;assert.equal(q.projection.owner.actorId,'owner');assert.equal(q.callerIdentity.actorId,'delegate');return receipt(q);}});await f.inspector.inspect(f.request());assert.ok(Object.isFrozen(seen.projection.scopes[0]));});
++test('cancelled app projection is described and never inferred absent',async()=>{const f=fixture(),r=f.request();r.projection.state='cancelled';const out=await f.inspector.inspect(r);assert.equal(out.projection.state,'cancelled');assert.equal(out.temporal.paused,false);assert.equal(f.calls.filter(x=>x[0]==='describe').length,1);});
++test('request projection and caller are detached before first await',async()=>{let release;const held=new Promise(r=>release=r);const f=fixture({authorize:async q=>{await held;return receipt(q);}}),r=f.request(),pending=f.inspector.inspect(r);r.projection.temporalScheduleId='foreign';r.callerIdentity.actorId='other';release();const out=await pending;assert.equal(out.temporal.scheduleId,'exact-owned-schedule');assert.equal(out.projection.owner.actorId,'owner');});
++test('cross-tenant caller or scope refuses before authority and SDK',async()=>{for(const mutate of [r=>r.callerIdentity.tenantId='foreign',r=>r.projection.scopes[0].tenantId='foreign']){const f=fixture(),r=f.request();mutate(r);await assert.rejects(f.inspector.inspect(r));assert.deepEqual(f.calls,[]);}});
++test('authority denial, substitution and expiry refuse before describe',async()=>{for(const mutate of [r=>r.authorized=false,r=>r.projectionSha256='0'.repeat(64),r=>r.callerIdentity={tenantId:'tenant',actorId:'other'},r=>r.expiresAtMs=NOW]){const f=fixture({authorize:q=>{const r=receipt(q);mutate(r);return r;}});await assert.rejects(f.inspector.inspect(f.request()));assert.equal(f.calls.length,0);}});
++test('revocation at release refuses result without retry',async()=>{let count=0;const f=fixture({authorize:q=>{if(++count===2)throw new Error('revoked');return receipt(q);}});await assert.rejects(f.inspector.inspect(f.request()),/SCHEDULE_INSPECTION_FAILED/);assert.equal(f.calls.filter(x=>x[0]==='describe').length,1);});
++test('known authority expiry is installed in actual SDK scope',async()=>{const f=fixture({authorize:q=>({...receipt(q),expiresAtMs:NOW+200})});await f.inspector.inspect(f.request());assert.equal(f.calls.find(x=>x[0]==='deadline')[1],NOW+200);});
++test('larger authority expiry cannot extend original deadline',async()=>{const f=fixture({authorize:q=>({...receipt(q),expiresAtMs:NOW+5000})}),r=f.request();r.deadlineMs=NOW+500;await f.inspector.inspect(r);assert.equal(f.calls.find(x=>x[0]==='deadline')[1],NOW+500);});
++for(const phase of ['before_describe','before_release'])test(`published authority expiry bounds parked ${phase}`,{timeout:500},async()=>{const f=fixture({authorize:q=>{if(q.phase===phase){q.limitDeadline(NOW+10);return new Promise(()=>{});}return receipt(q);}});await assert.rejects(f.inspector.inspect(f.request()),/SCHEDULE_INSPECTION_DEADLINE/);assert.equal(f.calls.filter(x=>x[0]==='describe').length,phase==='before_describe'?0:1);});
++test('parked SDK describe observes deadline and no late result release', {timeout:500},async()=>{let finish;const f=fixture({authorize:q=>({...receipt(q),expiresAtMs:NOW+10}),describe:()=>new Promise(r=>finish=r)});await assert.rejects(f.inspector.inspect(f.request()),/SCHEDULE_INSPECTION_DEADLINE/);assert.ok(f.signal().aborted);finish(description());await new Promise(r=>setImmediate(r));assert.equal(f.calls.filter(x=>x[0]==='describe').length,1);});
++test('pre-abort invokes no authority or SDK',async()=>{const f=fixture(),c=new AbortController();c.abort();await assert.rejects(f.inspector.inspect({...f.request(),signal:c.signal}));assert.deepEqual(f.calls,[]);});
++test('abort of parked read cancels scoped signal and removes owned listener', {timeout:500},async()=>{const c=new AbortController();let added=0,removed=0;const add=c.signal.addEventListener.bind(c.signal),remove=c.signal.removeEventListener.bind(c.signal);c.signal.addEventListener=(...a)=>{added++;return add(...a);};c.signal.removeEventListener=(...a)=>{removed++;return remove(...a);};const f=fixture({describe:()=>{queueMicrotask(()=>c.abort());return new Promise(()=>{});}});await assert.rejects(f.inspector.inspect({...f.request(),signal:c.signal}),/SCHEDULE_INSPECTION_CANCELLED/);assert.equal(added,removed);assert.ok(f.signal().aborted);});
++test('local call bound refuses invalid or more than60 second deadlines before effects',async()=>{for(const delta of [0,-1,60001,NaN]){const f=fixture(),r=f.request();r.deadlineMs=NOW+delta;await assert.rejects(f.inspector.inspect(r));assert.deepEqual(f.calls,[]);}});
++test('private fields are neither accessed nor projected',async()=>{const d=description();let touched=0;for(const key of ['action','memo','raw','searchAttributes','typedSearchAttributes','policies','spec'])Object.defineProperty(d,key,{get(){touched++;throw new Error('private');},enumerable:true});Object.defineProperty(d.state,'note',{get(){touched++;throw new Error('private');},enumerable:true});const f=fixture({description:d}),out=await f.inspector.inspect(f.request());assert.equal(touched,0);for(const key of ['memo','raw','action','note'])assert.equal(JSON.stringify(out).includes(`"${key}":`),false);});
++test('hostile included fields and invalid Date fail closed',async()=>{for(const mutate of [d=>Object.defineProperty(d.state,'paused',{get(){throw new Error('secret');},enumerable:true}),d=>d.info.createdAt=new Date(NaN),d=>d.info.nextActionTimes=[{toISOString(){throw new Error('execution');}}],d=>d.info.runningActions[0].workflow=new Proxy({},{}),d=>d.info.numActionsTaken=Number.MAX_SAFE_INTEGER+1]){const d=description();mutate(d);const f=fixture({description:d});await assert.rejects(f.inspector.inspect(f.request()),/SCHEDULE_INSPECTION_FAILED/);}});
++test('changed SDK schedule identity refuses even under valid authority',async()=>{const d=description();d.scheduleId='other';const f=fixture({description:d});await assert.rejects(f.inspector.inspect(f.request()));});
++test('each returned window is capped with exact observed omissions, recent keeps newest suffix',async()=>{const d=description();d.info.nextActionTimes=Array.from({length:103},date);d.info.runningActions=Array.from({length:102},(_,i)=>action(i));d.info.recentActions=Array.from({length:105},(_,i)=>({scheduledAt:date(),takenAt:date(),action:action(i)}));const f=fixture({description:d}),out=await f.inspector.inspect(f.request());assert.deepEqual(out.coverage.recentActions,{observed:105,returned:100,omitted:5});assert.equal(out.temporal.recentActions[0].workflow.workflowId,'workflow-5');assert.equal(out.temporal.runningActions.length,100);assert.equal(out.coverage.nextActions.omitted,3);});
++test('empty recent window is still partial history independent of action counter',async()=>{const d=description();d.info.recentActions=[];d.info.runningActions=[];const f=fixture({description:d}),out=await f.inspector.inspect(f.request());assert.equal(out.temporal.numActionsTaken,42);assert.equal(out.coverage.historyComplete,false);});
++test('SDK rejection is sanitized without evaluating hostile error code getter',async()=>{let touched=0;const cause={get code(){touched++;throw new Error('private');}};const f=fixture({describe:()=>Promise.reject(cause)});await assert.rejects(f.inspector.inspect(f.request()),/^Error: SCHEDULE_INSPECTION_FAILED$/);assert.equal(touched,0);});
++test('request accessors and context extras are rejected without execution',async()=>{const f=fixture();let touched=0;await assert.rejects(f.inspector.inspect({...f.request(),get signal(){touched++;return undefined;}}));assert.equal(touched,0);await assert.rejects(f.inspector.inspect({...f.request(),scheduleId:'foreign'}));assert.equal(f.calls.length,0);});
+diff --git a/packages/contracts/schedules-0.2/inspection-validation.mjs b/packages/contracts/schedules-0.2/inspection-validation.mjs
+new file mode 100644
+index 00000000..ce31a173
+--- /dev/null
++++ b/packages/contracts/schedules-0.2/inspection-validation.mjs
+@@ -0,0 +1,77 @@
++// Private inspection boundary: typed correlation is not current authorization.
++import { readFileSync } from 'node:fs';
++import { types } from 'node:util';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import { canonicalSha256 } from '../validate.mjs';
++import { snapshotOperationData } from '../retrieval-0.2/operation-contracts.mjs';
++
++const schema = JSON.parse(readFileSync(new URL('./inspection.schema.json', import.meta.url)));
++const publicSchema = JSON.parse(readFileSync(new URL('../meri.schema.json', import.meta.url)));
++const ajv = new Ajv({ strict: true, allErrors: true });
++addFormats(ajv); ajv.addSchema(publicSchema); ajv.addSchema(schema);
++const validators = new Map(Object.keys(schema.$defs).map(name => [name, ajv.getSchema(`${schema.$id}#/$defs/${name}`)]));
++const fail = () => { throw new Error('SCHEDULE_INSPECTION_DATA'); };
++function shape(name, value) { if (!validators.get(name)?.(value)) fail(); return value; }
++function freeze(value) {
++  if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); }
++  return value;
++}
++function instant(ms) { if (!Number.isSafeInteger(ms)) fail(); try { return new Date(ms).toISOString(); } catch { fail(); } }
++function row(value) {
++  if (!value || types.isProxy(value) || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)) fail();
++  return value;
++}
++// Deliberately read only selected SDK data fields. Never touch omitted args/memo/raw.
++function field(value, name, optional = false) {
++  row(value); const d = Object.getOwnPropertyDescriptor(value, name);
++  if (!d) { if (optional) return undefined; fail(); }
++  if (!Object.hasOwn(d, 'value') || !d.enumerable) fail();
++  return d.value;
++}
++function date(value) {
++  if (types.isProxy(value) || !types.isDate(value)) fail();
++  return instant(Date.prototype.getTime.call(value));
++}
++function window(value, convert, recent = false) {
++  if (!Array.isArray(value) || types.isProxy(value) || Object.getPrototypeOf(value) !== Array.prototype) fail();
++  const observed = value.length, returned = Math.min(observed, 100), start = recent ? observed-returned : 0, items = [];
++  for (let i=start; i<start+returned; i++) {
++    const d=Object.getOwnPropertyDescriptor(value,String(i));
++    if (!d?.enumerable || !Object.hasOwn(d,'value')) fail();
++    items.push(convert(d.value));
++  }
++  return {items, coverage:{observed,returned,omitted:observed-returned}};
++}
++function originalRun(action) {
++  if (field(action,'type') !== 'startWorkflow') fail();
++  const workflow=field(action,'workflow');
++  return {workflowId:field(workflow,'workflowId'),firstExecutionRunId:field(workflow,'firstExecutionRunId')};
++}
++export function snapshotScheduleInspectionBinding(value, nowMs) {
++  const binding=shape('ScheduleInspectionBinding',snapshotOperationData(value));
++  if (!Number.isSafeInteger(nowMs) || binding.deadlineMs <= nowMs || binding.deadlineMs-nowMs > 60000) fail();
++  const {projection,callerIdentity}=binding;
++  if (projection.owner.tenantId !== callerIdentity.tenantId || projection.scopes.some(scope=>scope.tenantId!==callerIdentity.tenantId)) fail();
++  // Owner identity remains separate: the current authority decides delegated access.
++  return freeze({...binding,projectionSha256:canonicalSha256(projection)});
++}
++export function assertScheduleInspectionAuthorization(value, binding) {
++  const receipt=shape('ScheduleInspectionAuthorization',snapshotOperationData(value));
++  if (receipt.projectionSha256 !== binding.projectionSha256 || canonicalSha256(receipt.callerIdentity)!==canonicalSha256(binding.callerIdentity)) fail();
++  return freeze(receipt);
++}
++export function projectScheduleInspection(description, binding, nowMs) {
++  if (field(description,'scheduleId') !== binding.projection.temporalScheduleId) fail();
++  const state=field(description,'state'), info=field(description,'info');
++  const next=window(field(info,'nextActionTimes'),date);
++  const recent=window(field(info,'recentActions'),item=>({scheduledAt:date(field(item,'scheduledAt')),takenAt:date(field(item,'takenAt')),workflow:originalRun(field(item,'action'))}),true);
++  const running=window(field(info,'runningActions'),originalRun);
++  const remaining=field(state,'remainingActions',true), updated=field(info,'lastUpdatedAt',true);
++  const output={projection:binding.projection,projectionSha256:binding.projectionSha256,observedAt:instant(nowMs),temporal:{
++    scheduleId:binding.projection.temporalScheduleId,paused:field(state,'paused'),remainingActions:remaining===undefined?null:remaining,
++    createdAt:date(field(info,'createdAt')),lastUpdatedAt:updated===undefined?null:date(updated),
++    numActionsTaken:field(info,'numActionsTaken'),numActionsMissedCatchupWindow:field(info,'numActionsMissedCatchupWindow'),numActionsSkippedOverlap:field(info,'numActionsSkippedOverlap'),
++    nextActionTimes:next.items,recentActions:recent.items,runningActions:running.items},coverage:{historyComplete:false,currentRunIdentityVerified:false,nextActions:next.coverage,recentActions:recent.coverage,runningActions:running.coverage}};
++  return freeze(shape('ScheduleInspectionOutput',snapshotOperationData(output)));
++}
+diff --git a/packages/contracts/schedules-0.2/inspection.schema.json b/packages/contracts/schedules-0.2/inspection.schema.json
+new file mode 100644
+index 00000000..0d073024
+--- /dev/null
++++ b/packages/contracts/schedules-0.2/inspection.schema.json
+@@ -0,0 +1,264 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:schedules:inspection:0.2.0",
++  "description": "Read-only bounded Temporal observation, not current authorization or complete execution history.",
++  "$defs": {
++    "ScheduleInspectionBinding": {
++      "type": "object",
++      "properties": {
++        "projection": {
++          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
++        },
++        "callerIdentity": {
++          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
++        },
++        "deadlineMs": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "projection",
++        "callerIdentity",
++        "deadlineMs"
++      ],
++      "additionalProperties": false
++    },
++    "ScheduleInspectionAuthorization": {
++      "type": "object",
++      "properties": {
++        "authorized": {
++          "const": true
++        },
++        "projectionSha256": {
++          "type": "string",
++          "pattern": "^[a-f0-9]{64}$"
++        },
++        "callerIdentity": {
++          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
++        },
++        "expiresAtMs": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "authorized",
++        "projectionSha256",
++        "callerIdentity",
++        "expiresAtMs"
++      ],
++      "additionalProperties": false
++    },
++    "ScheduleOriginalRun": {
++      "type": "object",
++      "properties": {
++        "workflowId": {
++          "type": "string",
++          "minLength": 1
++        },
++        "firstExecutionRunId": {
++          "type": "string",
++          "minLength": 1
++        }
++      },
++      "required": [
++        "workflowId",
++        "firstExecutionRunId"
++      ],
++      "additionalProperties": false
++    },
++    "ScheduleRecentAction": {
++      "type": "object",
++      "properties": {
++        "scheduledAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "takenAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "workflow": {
++          "$ref": "#/$defs/ScheduleOriginalRun"
++        }
++      },
++      "required": [
++        "scheduledAt",
++        "takenAt",
++        "workflow"
++      ],
++      "additionalProperties": false
++    },
++    "ScheduleInspectionWindow": {
++      "type": "object",
++      "properties": {
++        "observed": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "returned": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "omitted": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "observed",
++        "returned",
++        "omitted"
++      ],
++      "additionalProperties": false
++    },
++    "ScheduleInspectionOutput": {
++      "type": "object",
++      "properties": {
++        "projection": {
++          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
++        },
++        "projectionSha256": {
++          "type": "string",
++          "pattern": "^[a-f0-9]{64}$"
++        },
++        "observedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "temporal": {
++          "type": "object",
++          "properties": {
++            "scheduleId": {
++              "type": "string",
++              "minLength": 1
++            },
++            "paused": {
++              "type": "boolean"
++            },
++            "remainingActions": {
++              "anyOf": [
++                {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "createdAt": {
++              "type": "string",
++              "format": "date-time"
++            },
++            "lastUpdatedAt": {
++              "anyOf": [
++                {
++                  "type": "string",
++                  "format": "date-time"
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "numActionsTaken": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "numActionsMissedCatchupWindow": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "numActionsSkippedOverlap": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "nextActionTimes": {
++              "type": "array",
++              "items": {
++                "type": "string",
++                "format": "date-time"
++              },
++              "maxItems": 100
++            },
++            "recentActions": {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/ScheduleRecentAction"
++              },
++              "maxItems": 100
++            },
++            "runningActions": {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/ScheduleOriginalRun"
++              },
++              "maxItems": 100
++            }
++          },
++          "required": [
++            "scheduleId",
++            "paused",
++            "remainingActions",
++            "createdAt",
++            "lastUpdatedAt",
++            "numActionsTaken",
++            "numActionsMissedCatchupWindow",
++            "numActionsSkippedOverlap",
++            "nextActionTimes",
++            "recentActions",
++            "runningActions"
++          ],
++          "additionalProperties": false
++        },
++        "coverage": {
++          "type": "object",
++          "properties": {
++            "historyComplete": {
++              "const": false
++            },
++            "currentRunIdentityVerified": {
++              "const": false
++            },
++            "nextActions": {
++              "$ref": "#/$defs/ScheduleInspectionWindow"
++            },
++            "recentActions": {
++              "$ref": "#/$defs/ScheduleInspectionWindow"
++            },
++            "runningActions": {
++              "$ref": "#/$defs/ScheduleInspectionWindow"
++            }
++          },
++          "required": [
++            "historyComplete",
++            "currentRunIdentityVerified",
++            "nextActions",
++            "recentActions",
++            "runningActions"
++          ],
++          "additionalProperties": false
++        }
++      },
++      "required": [
++        "projection",
++        "projectionSha256",
++        "observedAt",
++        "temporal",
++        "coverage"
++      ],
++      "additionalProperties": false
++    }
++  }
++}

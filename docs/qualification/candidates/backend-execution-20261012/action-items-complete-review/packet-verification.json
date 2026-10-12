@@ -1,0 +1,185 @@
+{
+  "authorPacket": "cecffb15a7a4ca8974ac818fa0ec45b9f46e0c88",
+  "members": 25,
+  "manifestSha256": "8c7be52a28b7cee9a957ce83903a54e6bc0a7f4337adf9b1c3216fc3736ed578",
+  "passed": 44,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "exact source",
+      "passed": true
+    },
+    {
+      "name": "25 members",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete.schema.json",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-ACTION-ITEMS-COMPLETE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-ACTION-ITEMS-COMPLETE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/exact-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/exact-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/exact-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/initial-author.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/metadata-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/metadata-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/metadata-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/projection-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/source-identity.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "initial-author absent no timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "initial-author raw stdout",
+      "passed": true
+    },
+    {
+      "name": "initial-author raw stderr",
+      "passed": true
+    },
+    {
+      "name": "exact-source absent no timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "exact-source raw stdout",
+      "passed": true
+    },
+    {
+      "name": "exact-source raw stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit absent no timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit raw stdout",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit raw stderr",
+      "passed": true
+    },
+    {
+      "name": "whitespace absent no timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "whitespace raw stdout",
+      "passed": true
+    },
+    {
+      "name": "whitespace raw stderr",
+      "passed": true
+    },
+    {
+      "name": "initial-author exact tests",
+      "passed": true
+    },
+    {
+      "name": "exact-source exact tests",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete.schema.json source/packet unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete-validation.mjs source/packet unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-action-items-complete.test.mjs source/packet unchanged",
+      "passed": true
+    }
+  ]
+}

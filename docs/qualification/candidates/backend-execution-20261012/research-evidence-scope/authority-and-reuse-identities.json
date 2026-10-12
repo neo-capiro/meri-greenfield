@@ -1,0 +1,82 @@
+[
+  {
+    "ref": "3406ed7e01af3aef85aeebc00fc49f6f41002bc5",
+    "path": "docs/coordination/DECISIONS.md",
+    "locators": "D011 lines9-13",
+    "blob": "64fc779a777d6d128860cfd6ee766b7d5d1825bb",
+    "bytes": 16919,
+    "sha256": "b2aef79714a5d5f965ee7daffc8245ca84f0e3768de9d89a2ea711439fef79e8"
+  },
+  {
+    "ref": "c558b1533e88122f2bc4fb4a11c47e2c5c38768b",
+    "path": "docs/CAPABILITY-SCOPE.md",
+    "locators": "scope rule and ledger row62",
+    "blob": "4b14019d20630731ade648b7ae74fa50787daa2b",
+    "bytes": 43968,
+    "sha256": "b222e0c4614d52dc1d1c0e22e557cf47e2c6bea0fc4929aad42ad7f6194174c6"
+  },
+  {
+    "ref": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+    "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+    "locators": "scope/discrepancies lines11-17",
+    "blob": "c0436b3578b634f0441b7557a64571f21dba2761",
+    "bytes": 5774,
+    "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5"
+  },
+  {
+    "ref": "e14564e6ca4747fe97cf911ede3c816a295ba59c",
+    "path": "docs/coordination/r2/capabilities.json",
+    "locators": "records:Current native tools row27",
+    "blob": "78e155390e13948ec3a9a543214b810d8399ce05",
+    "bytes": 307002,
+    "sha256": "7207b38fd415c1254c5b8cbf80ec0a2910f399f8e65aa7f85b7b9b9f3c2dd4f1"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "docs/plans/MERI-DEPLOYMENT.md",
+    "locators": "authority22;new implementations191",
+    "blob": "c9849375e463e88a064b256f715db7858cd369df",
+    "bytes": 86848,
+    "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+    "locators": "exact existing definitions",
+    "blob": "bb85ef7a841ae274082f79fa12a83d249af642c5",
+    "bytes": 17893,
+    "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+    "locators": "context44-68/results70-116",
+    "blob": "f9758357a332da980f57e31faa676b48bcc6f217",
+    "bytes": 6091,
+    "sha256": "55c006eda93cca6f51f913d70fee93b73f125c2339638eabb6574da0d867f0d2"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+    "locators": "prospect evidence definitions",
+    "blob": "9d964122cfa77e7a6232c51591cb0e53f8c439cb",
+    "bytes": 26703,
+    "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+    "locators": "prospect evidence qualifier",
+    "blob": "eabe1a4316cb0ebed80c19351c53bd3e93901f9a",
+    "bytes": 7517,
+    "sha256": "c6ede747a9ffce2acba96130bef2afd1fdaa0460b54dfd1603bde2b8911ffe5a"
+  },
+  {
+    "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "locators": "original get_research_evidence pending/null",
+    "blob": "1f261f8e3fef9f4c90b68f826eb1e7bab5b1fc2f",
+    "bytes": 253882,
+    "sha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a"
+  }
+]

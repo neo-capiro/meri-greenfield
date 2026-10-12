@@ -1,0 +1,80 @@
+{
+  "ownedGroups": [
+    {
+      "receipt": "test-author-operational-transform.json",
+      "pgid": 344776,
+      "absent": true
+    },
+    {
+      "receipt": "test-author-operational-focused.json",
+      "pgid": 345041,
+      "absent": true
+    },
+    {
+      "receipt": "test-author-operational-inverse.json",
+      "pgid": 345223,
+      "absent": true
+    }
+  ],
+  "removedOnlyKnownOwnedCopies": [
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/ajv",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv",
+      "fileCount": 466,
+      "bytes": 1033496,
+      "fileInventorySha256": "f818eec426e66f1b2972f9659dca75558d0d3c1a14f2e9cfa016532dfedbb56b",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/ajv-formats",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats",
+      "fileCount": 15,
+      "bytes": 56763,
+      "fileInventorySha256": "d33b3bddad711aa04ad5853a48b07a5cb06aa15cfdb61b901d396a2955e15ade",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/canonicalize",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize",
+      "fileCount": 6,
+      "bytes": 24474,
+      "fileInventorySha256": "bd4b923784c10e846495fbdbd4a67564e84ef4081d556eb057519caf36d6f795",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/fast-uri",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri",
+      "fileCount": 44,
+      "bytes": 220886,
+      "fileInventorySha256": "0a94523e6d9fe1dde372ab05f5a48bebee3a2f486ed71e414022b998fee51818",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/fast-deep-equal",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal",
+      "fileCount": 11,
+      "bytes": 12966,
+      "fileInventorySha256": "d3fcf0674b5935f759d197f9e4f9eebd8bd0bd2f607483fe822e1d3f12eccbad",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/json-schema-traverse",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse",
+      "fileCount": 12,
+      "bytes": 22220,
+      "fileInventorySha256": "877672224fbe5befdbddc9f3a4ffbac4a039589bd4d46ac57f252c8608475d5c",
+      "identicalToDonorBeforeRemoval": true
+    },
+    {
+      "path": "/workspace/meri-backend-execution-tests-20261012/node_modules/require-from-string",
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string",
+      "fileCount": 4,
+      "bytes": 3422,
+      "fileInventorySha256": "526de636c081013980fa6ecd3b86dd053b764c674bc79e126b3a4c72d1f9dcec",
+      "identicalToDonorBeforeRemoval": true
+    }
+  ],
+  "donorMutated": false,
+  "nodeModulesDirectoryRemoved": true,
+  "sourceEvidenceWorktreeBranchPreserved": true
+}

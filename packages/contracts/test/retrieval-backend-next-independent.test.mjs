@@ -1,3 +1,4 @@
+import {addedOperations,fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -29,16 +30,16 @@ function output(id){
 const check=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
 
 test('all139 originals and67 prior descriptors/callbacks survive exactly four new mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.10');assert.equal(catalog.operations.length,71);assert.equal(bindings.length,71);
- assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)),oldCatalog.operations);
- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings);
- assert.deepEqual(catalog.originals.map(x=>x.id),oldCatalog.originals.map(x=>x.id));
- assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,26);
- for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
- for(const id of ['query_global_data','create_task','save_memory','get_pe_buyer_workspace'])assert.throws(()=>resolve(id));
+ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+ assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
+ assert.deepEqual(catalog.originals.map(x=>x.id),oldCatalog.originals.map(expectedExistingOriginal).map(x=>x.id));
+ assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
+ for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+ for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])assert.throws(()=>resolve(id));
 });
-test('all71 exact schema byte pins preserve pending closed handlers',()=>{
+test('all84 exact schema byte pins preserve pending closed handlers',()=>{
  for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(raw);
   for(const [name,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[name],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(raw).digest('hex')});
   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);
@@ -64,7 +65,7 @@ for(const id of ids){
   for(const mutate of [(c,d)=>d.inputSchema.sha256='0'.repeat(64),(c,d)=>d.outputSchema.id='urn:unreviewed#/$defs/Unreviewed',(c,d)=>d.handler={module:'unreviewed',export:'run',sourceSha256:'0'.repeat(64)},(c,d)=>d.availability='enabled',(c,d)=>d.retry.maxRetries=1,(c,d)=>d.aliases.push('query_action_items'),c=>c.originals.find(x=>x.id===id).replacement=null]){const bad=copy(catalog);mutate(bad,bad.operations.find(x=>x.operation.id===id));assert.throws(()=>assertCatalog(bad));}
  });
 }
-test('production gateway remains closed before any authority/budget port for all71 reads',async()=>{
+test('production gateway remains closed before any authority/budget port for all84 reads',async()=>{
  const f=fixture(),options={authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('8')},g=createSourceDisabledGateway(options);assert.equal(g.sourceEnabled,false);assert.deepEqual(await g.discover(),[]);
  for(const d of catalog.operations)await assert.rejects(g.execute(JSON.stringify({operation:d.operation,arguments:ids.includes(d.operation.id)?request(d.operation.id):{}}),'synthetic'),/UNAVAILABLE/);
  assert.deepEqual(f.calls,[]);assert.throws(()=>createSourceDisabledGateway({...options,sourceEnabled:true}));assert.deepEqual(f.calls,[]);

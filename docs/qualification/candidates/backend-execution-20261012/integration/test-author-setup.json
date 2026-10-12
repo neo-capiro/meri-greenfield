@@ -1,0 +1,27 @@
+{
+  "dependencyCommit": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "importMerge": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+  "allowedMinimalDependencyDonor": "/workspace/meri-read-continuation-20261012/node_modules",
+  "packages": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-uri",
+    "fast-deep-equal",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "setupCommandFailures": [
+    {
+      "command": "cat .git/info/sparse-checkout",
+      "reason": "worktree .git is a file, used git sparse-checkout list instead"
+    },
+    {
+      "command": "capture-reaped.py --help",
+      "exitCode": 1,
+      "output": "label and command required",
+      "allocatedChild": false
+    }
+  ],
+  "scope": "Local test setup only; no installers or services"
+}

@@ -1,0 +1,15 @@
+{
+  "beforeSha256": "85d8a4e09444034c4929911af3e6fae3c31e2ed3f4148e2dd34ac0cba70a8061",
+  "afterSha256": "0ab29dde5914cc630c5ff40b3e69832f60322cd2aa751f67035eb785b52995c4",
+  "source": "87ee0f35edb510c981eb816fcccb70d27d2de875",
+  "replayYet": false,
+  "corrections": [
+    "Fake SDK handle now includes scheduleId as real pinned SDK does.",
+    "Recent SDK array is oldest-to-newest; newest100 suffix omits index0 rather than index100. Ignored-getter assertion unchanged."
+  ],
+  "setupFailures": [
+    "git sparse-checkout add --no-cone rejected option129; add uses existing configured sparse mode; no mutation occurred before bounded retry.",
+    "Expected author report path absent before packet freeze; source metadata subsequently supplied.",
+    "Exploratory bounded rg under /tmp had daemon directory permission denied; no files modified."
+  ]
+}

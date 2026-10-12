@@ -1,0 +1,35 @@
+✔ one exact family and canonical resolution shape (2.180989ms)
+✔ operation and definition selectors refuse hostile coercion without hooks (0.368835ms)
+✔ required query and explicit nullable client/default limit (1.927398ms)
+✔ query retains wrapper UTF16 clipping without unproved second trim (1.686496ms)
+✔ source finite numeric and string limit truncation/clamp is preserved (0.595776ms)
+✔ closed typed requests reject invented authority and legacy object coercion (0.607343ms)
+✔ context is mandatory and closed, even without client (0.422886ms)
+✔ name selectors require exact trusted resolution, never infer authority (0.424579ms)
+✔ explicit UUID permits case equivalence but never rebinding (0.333031ms)
+✔ six exact candidate variants are admitted without total or absence proof (2.312297ms)
+✔ each projected member is mandatory and rows are closed (5.725299ms)
+✔ metadata is exact and only projected for mail messages and directory notes (0.629587ms)
+✔ raw titles remain stored strings and are not forced to match hidden query text (0.573352ms)
+✔ source table UUIDs are typed while cross-family identity overlap is valid (0.435014ms)
+✔ same-family PK duplicates reject including case aliases (0.487853ms)
+✔ client rows identify themselves; nonclient rows retain null client when unscoped (0.466791ms)
+✔ selected client filters five branches while directory notes remain tenant-wide (1.258392ms)
+✔ per-branch window and final three-times limit are independent bounds (0.796788ms)
+✔ generatedAt is independent of source chronology and currentness (0.517648ms)
+✔ only mail-message occurredAt may be null, sorting null as epoch zero (0.588905ms)
+✔ descending source times and equal-time stable family order are retained (0.653203ms)
+✔ snippet is normalized and capped by UTF16, with no invented ellipsis rule (1.1634ms)
+✔ canonical wire dates intentionally exclude invalid and alternative serialization (0.677889ms)
+✔ query echo and operation cannot substitute a superficially matching result (0.167962ms)
+✔ inert admission rejects accessors, proxies and mutation hooks before running them (0.249385ms)
+✔ inputs and contexts are untouched; normalized values frozen and returned pages detached (0.401864ms)
+✔ source authority flags remain false independently of valid result shape (0.22564ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 228.483706

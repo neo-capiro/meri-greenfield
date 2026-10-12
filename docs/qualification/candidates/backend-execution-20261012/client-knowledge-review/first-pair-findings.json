@@ -1,0 +1,15 @@
+{
+  "candidate": "6c3a4220",
+  "initial": "42 PASS / 2 FAIL",
+  "classification": [
+    "Reviewer graph summary fixture incorrectly expected default effectiveSeed in summary; pinned source uses original optional seed. Corrected only that positive fixture, preserving rejection.",
+    "Reviewer expected ignored string limit fallback; initial candidate typed number|null refused it. Root explicitly allowed disclosed private narrowing, then author independently chose exact ignored-string compatibility in9cc2d0cf. Both test preimages retained."
+  ],
+  "reproducedSourceDefect": {
+    "check": "first-pair-scoped-negative",
+    "result": "43 PASS / 1 FAIL",
+    "consequence": "Client-scoped graph accepted another client-type node that exact source restrictGraphToClient removes. Current authority and non-client ownership are not proved by this check.",
+    "requiredRepair": "Exact case-sensitive selected client node correlation; do not restrict other node types."
+  },
+  "allSixRemainOpen": true
+}

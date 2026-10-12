@@ -1,0 +1,1280 @@
+{
+  "base": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "candidate": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "scope": "31priorrawrequestadvertisements only; additional13 mappings and other accepted source slices belong to combinedreview",
+  "priorBindings": 71,
+  "currentBindings": 84,
+  "inputChanges": 31,
+  "descriptorChanges": 31,
+  "familySourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "bytes": 7887,
+      "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "bytes": 20403,
+      "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "bytes": 17539,
+      "sha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "bytes": 47377,
+      "sha256": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "bytes": 6904,
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+      "bytes": 14083,
+      "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "bytes": 6786,
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "bytes": 8649,
+      "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "bytes": 7290,
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "bytes": 8614,
+      "sha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+      "bytes": 12878,
+      "sha256": "ac017527b6d8da90b91e61c550623144a8eed4cd89a3b020c4a23acd27a8fde2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "bytes": 4243,
+      "sha256": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "bytes": 5479,
+      "sha256": "065ff9d94072c8d54cb1f490957be23c952334ee2c9184bbeb76f5d82c59f691"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "bytes": 7365,
+      "sha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "bytes": 9020,
+      "sha256": "2b8eb948781d2e0c486b58f09fafbe821a6216942eb5ee33797135392f78d100"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "bytes": 3527,
+      "sha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "bytes": 4920,
+      "sha256": "726efeaa4fd06c37790e05da94380f95e1ab97c694d0d8d5ada60a1579ee4cf5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "bytes": 8511,
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "bytes": 15078,
+      "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "bytes": 3703,
+      "sha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "bytes": 20869,
+      "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "bytes": 6189,
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "bytes": 11968,
+      "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "bytes": 3105,
+      "sha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "bytes": 6517,
+      "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "bytes": 5641,
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "bytes": 15855,
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "bytes": 6882,
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "bytes": 24406,
+      "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "bytes": 5660,
+      "sha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "bytes": 9172,
+      "sha256": "3fda16e5e04acb44007ee71de22e887b84fd72a6c9059feceb7c5043fd028dcb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "bytes": 6512,
+      "sha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-data.schema.json",
+      "bytes": 21799,
+      "sha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "bytes": 2320,
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "bytes": 4315,
+      "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833"
+    }
+  ],
+  "checks": [
+    {
+      "name": "Only allocated input definition change query_outreach",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_program_element",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_public_web",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change find_contacts",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change list_members",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change list_global_datasets",
+      "passed": false
+    },
+    {
+      "name": "Only allocated input definition change get_representation",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_research_portfolio_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change mail.read_thread",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change mail.list_messages",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change mail.search_messages",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change meeting.list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change meeting.read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change meeting.query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change query_tasks",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change memory.list_own_proposals",
+      "passed": true
+    },
+    {
+      "name": "Only allocated input definition change query_action_items",
+      "passed": false
+    },
+    {
+      "name": "Only allocated descriptor input ID change mail.read_thread",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change mail.list_messages",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change mail.search_messages",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change meeting.list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change meeting.read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change meeting.query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_tasks",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change memory.list_own_proposals",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_action_items",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_research_portfolio_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change list_members",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change list_global_datasets",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_representation",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change find_contacts",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_public_web",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change query_outreach",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_program_element",
+      "passed": true
+    },
+    {
+      "name": "Only allocated descriptor input ID change get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "Exactly31bindinginputdefinition changes",
+      "passed": true
+    },
+    {
+      "name": "Exactly31descriptorinputIDchanges",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/public-web.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/public-web.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/state-status-votes-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/state-status-votes.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/entity-candidates-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/entity-candidates.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/tracked-bills-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/tracked-bills.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/state-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/state-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/public-data.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/public-data.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original family bytes unchanged packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact candidate bytes packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged packages/contracts/meri.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged packages/contracts/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged packages/contracts/package.json",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged packages/contracts/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged package.json",
+      "passed": true
+    },
+    {
+      "name": "Canonical boundary/public/dependency unchanged package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "Exact composed integration bytes packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact composed integration bytes packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "name": "Exact composed integration bytes packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "name": "Original root31 valid examples preserved",
+      "passed": true
+    },
+    {
+      "name": "Original root22advertisementrefusals preserved",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding query_outreach",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_program_element",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_public_web",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding find_contacts",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding list_members",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "Independent implementation pin matches original root finding lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent baseline",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent baseline-corrected",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent factory-trace",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/factory-trace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Owned group absent canonical-repair",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Raw evidence hash docs/qualification/candidates/backend-execution-20261012/raw-request-review/canonical-repair.stderr.bin",
+      "passed": true
+    }
+  ],
+  "passed": 269,
+  "failed": 2,
+  "runtimeAccepted": false
+}

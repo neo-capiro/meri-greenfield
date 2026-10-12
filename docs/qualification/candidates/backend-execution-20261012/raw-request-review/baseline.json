@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/raw-request-advertisement-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-raw-request-review-20261012",
+  "sourceHead": "348c32b5463aca3f03c36497df3b25b6fc1fcd39",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:27:03.935023+00:00",
+  "durationSeconds": 1.922,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 331110,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stdout.bin",
+      "bytes": 72050,
+      "sha256": "78904f98cf882d211ebf30e63b62df12014d5a1977200aca39acfae1906330fb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

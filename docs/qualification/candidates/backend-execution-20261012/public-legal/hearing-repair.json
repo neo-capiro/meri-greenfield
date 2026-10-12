@@ -1,0 +1,9 @@
+{
+ "originalSource":"8d0cd50069c64075e56db83d7a012ba2d140f7a0",
+ "firstResult":"32/33 pass; author converted ordinary fragment into private fixture but retained updatedAt and copied ordinary ID. Corrected only those fixture fields; original assertion retained.",
+ "negativeSource":"e627ba9eea27005eaef211f8e061200b785305e5",
+ "negativeResult":"33/34 pass; newly added private fragment identity refusal exposed missing copied-ID correlation.",
+ "repair":"Bind present copied fragment id to provenance sourceRecordId; additionally bind whole ordinary sourceKey to projected source identity/official part. Append controls only; no legacy cursor/parser implementation.",
+ "rawFailures":["hearing-focused-first/","hearing-fragment-id-before/"],
+ "privateClaims":"Nested claim extension JSON is preserved because original/edit paths retain input fields; no claim validity, evidence truth, current review or authorization qualification is inferred from schema admission."
+}

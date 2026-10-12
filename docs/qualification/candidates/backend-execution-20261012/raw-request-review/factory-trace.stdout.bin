@@ -1,0 +1,39 @@
+✔ independent instrumented factory admission: query_outreach (3.918819ms)
+✔ independent instrumented factory admission: search_program_elements (1.461586ms)
+✔ independent instrumented factory admission: get_program_element (0.702306ms)
+✔ independent instrumented factory admission: get_pe_budget_timeline (0.593733ms)
+✔ independent instrumented factory admission: search_public_web (0.938811ms)
+✔ independent instrumented factory admission: scrape_web_page (0.763498ms)
+✔ independent instrumented factory admission: search_sam_opportunities (1.825414ms)
+✔ independent instrumented factory admission: get_florida_budget_project (1.23769ms)
+✔ independent instrumented factory admission: get_state_bill_status (1.232678ms)
+✔ independent instrumented factory admission: search_state_floor_votes (0.872561ms)
+✔ independent instrumented factory admission: find_contacts (0.775095ms)
+✔ independent instrumented factory admission: resolve_entity (1.408948ms)
+✔ independent instrumented factory admission: search_tracked_bills (2.171443ms)
+✔ independent instrumented factory admission: get_committee_roster (0.883408ms)
+✔ independent instrumented factory admission: list_members (0.643898ms)
+✔ independent instrumented factory admission: get_pe_contractors (0.709436ms)
+✔ independent instrumented factory admission: get_pe_bills (0.513612ms)
+✔ independent instrumented factory admission: get_pe_report_language (0.470507ms)
+✔ independent instrumented factory admission: get_state_rule_status (0.687674ms)
+✔ independent instrumented factory admission: get_certification_status (6.912689ms)
+✔ independent instrumented factory admission: search_sec_filings (1.170179ms)
+✔ independent instrumented factory admission: search_fara_registrations (1.220234ms)
+✔ independent instrumented factory admission: search_lda_filings (1.087184ms)
+✔ independent instrumented factory admission: get_bill_status (1.093404ms)
+✔ independent instrumented factory admission: search_floor_votes (1.116918ms)
+✔ independent instrumented factory admission: search_state_bills (1.035096ms)
+✔ independent instrumented factory admission: get_state_legislator (0.582775ms)
+✔ independent instrumented factory admission: query_economic_data (1.221767ms)
+✔ independent instrumented factory admission: search_federal_grants (0.87174ms)
+✔ independent instrumented factory admission: search_federal_awards (1.139703ms)
+✔ independent instrumented factory admission: lookup_client_registry (0.599371ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1925.292443

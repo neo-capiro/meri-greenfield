@@ -1,0 +1,21 @@
+{
+  "scope": "Independent source trace of pending four operations; not source acceptance; no private implementation execution or bodies published",
+  "legal": {
+    "owner": "apps/intel-api/src/tracker/research/research.service.ts",
+    "search": "251–423: explicit session, optional compiled query, policy/stage/kind, deduplicated sorted bill IDs, four bounded filters; scans 25 of 26 fetched rows before query evaluation. Cursor after-identity belongs to scanned row25, not necessarily a returned result.",
+    "coverage": "Qualified provider receipt and exact source/inventory fingerprints remain adapter facts. A reference filter can yield complete=false and retainedVersionsOnly=false with qualified message. Empty filtered result may retain a next cursor.",
+    "referenceVariants": "Controller chooses rules or versions only on exact view; otherwise references. Rules include101 notices and at most10 adopted revisions. References include up to101 reference rows and201 related occurrences. Versions expose up to200 of201 ordered identities with sections omitted; order is source identity, not legislative sequence.",
+    "authorization": "Feature flag and active membership via ReportService.authorize; transaction actor/tenant settings; folder access and client memory-wall visibility via KeywordRuleService and ResearchService.context. Trusted DTO resolution establishes none of these current facts."
+  },
+  "news": {
+    "route": "keyword-meri.controller35–85: source, personnel, monitors, default news variants. Source exact kinds include news, budget, personnel and research. Exact source is not a news-only page.",
+    "scope": "Phase8EvidenceService.context72–81 assigns returned scope.clientId from visible folder.clientId after mismatch check. This differs from ResearchService.context, which only validates. A source DTO must not echo raw scope as though the assignment never occurs.",
+    "monitors": "379–400 starts with empty scope; retains actor-owned monitor rows whose individual configured contexts remain visible, suppressing only NotFound/Forbidden. It returns complete stored metadata plus query interpretation; no arbitrary missing-result inference.",
+    "window": "188–251 uses separate source Date.now cutoff. Public publisher inventory is independent of private monitor matching and page trimming. Its reconciliation/intake owner remains to be reviewed.",
+    "personnel": "301–336 preserves year default from local Date.getFullYear, change/registration variants, nullable registration-year inclusion, 100-row page and source-linked notice. No current employment assertion."
+  },
+  "hearings": {
+    "status": "Pending complete retrieval response/published-record branch review; no simplification to anonymous results page or candidate-only output."
+  },
+  "next": "Await exact APIs/source for all four remaining operations; independently audit full raw row DDL and transitive projection owners before acceptance."
+}

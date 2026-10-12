@@ -1,0 +1,86 @@
+✔ attachment manifest and content defaults differ (15.465752ms)
+✔ attachment exact typed bounds and no model authority (1.078462ms)
+✔ attachment explicit locators require attachment and exclude cursor (0.508544ms)
+✔ attachment current context is required and detached (0.426401ms)
+✔ attachment synthetic cursor decoding is correlation not HMAC authentication (5.571076ms)
+✔ attachment cursor every scope dimension binds (1.566835ms)
+✔ attachment cursor mode query attachment and closed shape bind (1.467997ms)
+✔ attachment cursor permits safe continuation positions beyond explicit selector ceiling (0.33906ms)
+✔ attachment cursor bounded canonical encoding rejects padding malformed and short signature (0.677659ms)
+✔ attachment manifest empty is metadata-only and total unknown (35.565157ms)
+✔ attachment manifest unavailable items count toward requested window (0.8245ms)
+✔ attachment manifest next cursor binds query scope and completion (1.066213ms)
+✔ attachment manifest stored scalars and absent original bytes remain distinct (0.915467ms)
+✔ attachment pdf section projection (1.957103ms)
+✔ attachment pptx section projection (0.814765ms)
+✔ attachment xlsx section projection (0.821886ms)
+✔ attachment docx section projection (0.641805ms)
+✔ attachment text section projection (0.569456ms)
+✔ attachment whitespace section can have no records without claiming unavailable (0.444879ms)
+✔ attachment UTF16 coordinates bind astral text (1.197881ms)
+✔ attachment source, result and evidence identities bind exactly (2.50122ms)
+✔ attachment continued source hash and message cannot rotate (1.134887ms)
+✔ attachment completion flags are correlated rather than authority (1.989711ms)
+✔ attachment query miss contains no source row (0.811871ms)
+✔ attachment unavailable extraction and unsupported kinds cannot claim successful content (0.867865ms)
+✔ attachment source data are inert and detached (0.69781ms)
+✔ attachment coordinate branch must match exact reader format (0.594604ms)
+✔ attachment returned section cannot exceed extractor section count (0.914875ms)
+✔ attachment coordinate page must match selected section (0.585961ms)
+✖ attachment no-query text span cannot exceed requested character limit (1.244962ms)
+✖ attachment query miss cannot claim a nonempty character span (0.589426ms)
+✔ attachment manifest defaults and empty query difference (16.855452ms)
+✔ attachment complete manifest does not establish content completeness (34.261482ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (5.219017ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (10.317892ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.785461ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.809898ms)
+✔ attachment partial/empty section is not complete even without next cursor (0.536657ms)
+✔ attachment detached return and hostile nested JSON (0.768005ms)
+✔ attachment coordinate kind and selected section stay bound (2.206617ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 38
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 449.679845
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:51:1
+✖ attachment no-query text span cannot exceed requested character limit (1.244962ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:51:90)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:52:1
+✖ attachment query miss cannot claim a nonempty character span (0.589426ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs:52:168)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

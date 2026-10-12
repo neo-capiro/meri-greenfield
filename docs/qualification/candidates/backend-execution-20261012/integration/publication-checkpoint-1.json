@@ -1,0 +1,20 @@
+{
+  "repository": "neo-capiro/meri-greenfield",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/37",
+  "number": 37,
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "head": "ebd6c6c3c50b529c2a96d5b708cfbde351cf9c8c",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "verifiedAt": "2026-10-12T20:51:41Z",
+  "source": "GitHub create_pull_request returned snapshot after successful git push",
+  "rootBehaviorChecks": {
+    "passed": 59,
+    "failed": 0,
+    "skipped": 0,
+    "ownedGroupAbsent": true
+  },
+  "purpose": "First concrete adapter checkpoint; subsequent accepted source will be appended without rewriting this record",
+  "runtimeAccepted": false
+}

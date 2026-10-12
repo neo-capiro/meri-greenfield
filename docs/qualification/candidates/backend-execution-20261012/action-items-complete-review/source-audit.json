@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/audit.py",
+    "--source",
+    "d0eee05150e25c11971f27709a1e2604d12a1fbd"
+  ],
+  "cwd": "/workspace/meri-action-items-complete-review-20261012",
+  "sourceHead": "a9100ae5a82a961a948a005a133c23323af67f19",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:03:57.779230+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 318985,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "c02928c2e8a84f7f18176e8d95563df099c33d7f90561a0226332c0bb1a9c567"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

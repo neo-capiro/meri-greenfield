@@ -1,0 +1,10 @@
+{
+  "classification": "Independent fixture corrections before candidate inspection",
+  "sourceInspected": false,
+  "preimageSha256": "c64ceabe83c553d2a55d1b5f55c61e1b7e91dd9dffdce0187684149c70a35d3a",
+  "corrections": [
+    "ctx(null,invalidID) intentionally ignores second argument; replace with actual invalid nonnull reference.",
+    "Existing canonical EvidenceRef.note has minLength1 and is explicitly reused. Positive note now nonempty; add explicit empty-note refusal."
+  ],
+  "sourceDefectClaim": false
+}

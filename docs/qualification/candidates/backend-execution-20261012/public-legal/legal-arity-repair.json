@@ -1,0 +1,9 @@
+{
+  "originalSource":"2584818a24dd60fb63ac9e613d48a0c34e8542ba",
+  "independentFailureControls":"16c7819f",
+  "reportedIndependentResult":{"passed":89,"failed":2,"processGroup":320425,"groupAbsent":true},
+  "sourceLocator":"packages/shared/src/legiwatch-query.ts:105-118 at fd8765ec01d292013758606204f2c9d886cd31c1",
+  "defect":"Projected and/or nodes admitted zero or one child although the producer collapses singleton nodes and emits logical nodes only for at least two children.",
+  "repair":"Add minItems:2 only to logical children and append author regression; no parser or grammar implementation and no existing assertion removed.",
+  "reviewerOwnsRawFailure":"backend-execution-20261012/public-legal-review/legal-arity-before.*"
+}

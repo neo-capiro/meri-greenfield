@@ -1,0 +1,620 @@
+{
+  "status": "PASS",
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "tree": "86942db5d0ea216ca6553ab15741809751d999a9",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "originalEntries": 7677,
+  "passed": 58,
+  "total": 58,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/meri/meri-context-plane.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 52829,
+          "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303",
+          "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 52829,
+          "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303",
+          "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/adapters/hearings-retrieval.adapter.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15401,
+          "sha256": "65c2288b804050394efbc9b0dea91d2c3dbdf9275339cd049beca11462d1e2d7",
+          "blob": "3d56f9daaff11f5340de45f83ee1db6df88ebdc6"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15401,
+          "sha256": "65c2288b804050394efbc9b0dea91d2c3dbdf9275339cd049beca11462d1e2d7",
+          "blob": "3d56f9daaff11f5340de45f83ee1db6df88ebdc6"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/adapters/published-hearing-records.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 9058,
+          "sha256": "ba768480419a62a97918626c3d5c264db301021cd2b7565ee977536c4ae3eb26",
+          "blob": "30484d833507d26d05486add8999a1618ff5b0a3"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 9058,
+          "sha256": "ba768480419a62a97918626c3d5c264db301021cd2b7565ee977536c4ae3eb26",
+          "blob": "30484d833507d26d05486add8999a1618ff5b0a3"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/adapters/hearing-content-chunks.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 3631,
+          "sha256": "9012954e62e40339076885ac402ea2f147859e91b7cdf98466bda9b119d1d036",
+          "blob": "b7ea1ccb76f0cc917b15e9b9dffae515f89c946e"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 3631,
+          "sha256": "9012954e62e40339076885ac402ea2f147859e91b7cdf98466bda9b119d1d036",
+          "blob": "b7ea1ccb76f0cc917b15e9b9dffae515f89c946e"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/adapters/government-work-retrieval.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 2967,
+          "sha256": "5e009588dd73db03bdb338c8d49ec596f3593fcf404e18cea35848a6a68ef5f1",
+          "blob": "40b626296f58ae0f9ca99f11b8301f5ba1d6404b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 2967,
+          "sha256": "5e009588dd73db03bdb338c8d49ec596f3593fcf404e18cea35848a6a68ef5f1",
+          "blob": "40b626296f58ae0f9ca99f11b8301f5ba1d6404b"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/retrieval-v2.types.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 11082,
+          "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8",
+          "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 11082,
+          "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8",
+          "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/retrieval-v2.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 12003,
+          "sha256": "bf347134c6a88ea73b404c0a975f366372309319ec113ba9b349b97efafbc5ed",
+          "blob": "2bf79bd83f34db06426bd55bab68b8e960f13fa2"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 12003,
+          "sha256": "bf347134c6a88ea73b404c0a975f366372309319ec113ba9b349b97efafbc5ed",
+          "blob": "2bf79bd83f34db06426bd55bab68b8e960f13fa2"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/retrieval/coverage-manifest.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 3992,
+          "sha256": "71912119efaf73bd6d375e8b8252ec7063fd2dca89081b8c7fe061156d9f4698",
+          "blob": "1d71d0f42347f39bb3db287d1b1f08fead04201a"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 3992,
+          "sha256": "71912119efaf73bd6d375e8b8252ec7063fd2dca89081b8c7fe061156d9f4698",
+          "blob": "1d71d0f42347f39bb3db287d1b1f08fead04201a"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/hearing/hearing-record-retrieval.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 4823,
+          "sha256": "1a720525983fe22082fc593b85ca4badf5acac43a8bd6ea1475c55802161f2f8",
+          "blob": "bfca6048ff3e9b5ac91a616e54e5ef95e5b93081"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 4823,
+          "sha256": "1a720525983fe22082fc593b85ca4badf5acac43a8bd6ea1475c55802161f2f8",
+          "blob": "bfca6048ff3e9b5ac91a616e54e5ef95e5b93081"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/hearing/hearing-record-workflow.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 57502,
+          "sha256": "f0ba1c70c27a4c6a40541241a1b0416f83c5da2af0cb50558f1492604ba7e1ab",
+          "blob": "0c7c29faa9ef4ac5942e94ffca3e382699e73278"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 57502,
+          "sha256": "f0ba1c70c27a4c6a40541241a1b0416f83c5da2af0cb50558f1492604ba7e1ab",
+          "blob": "0c7c29faa9ef4ac5942e94ffca3e382699e73278"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/hearing/published-record-domain.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 7797,
+          "sha256": "1c7821e58f3c3ceb704682ce62bdaaa2a0c7500c4137e90c609f82fc19aa170f",
+          "blob": "755786579d7454084854569d8d27838ff7c5d100"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 7797,
+          "sha256": "1c7821e58f3c3ceb704682ce62bdaaa2a0c7500c4137e90c609f82fc19aa170f",
+          "blob": "755786579d7454084854569d8d27838ff7c5d100"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/sourcedata/hearing-records.repository.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 8202,
+          "sha256": "02f2c046924d6e015cc068c1aaf853e5bb8e4a5fd72c407e9eaf62e731784ea8",
+          "blob": "e3e3396c76d8f2bafac39f9178851728784597da"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 8202,
+          "sha256": "02f2c046924d6e015cc068c1aaf853e5bb8e4a5fd72c407e9eaf62e731784ea8",
+          "blob": "e3e3396c76d8f2bafac39f9178851728784597da"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/hearing/hearing-publication.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 51942,
+          "sha256": "a548da936b30a27ba240aa05696bdcbeaa5f5f0731b7cd3b0e50fb9c936ce67f",
+          "blob": "fe9dd845303c57918dfc5ec177d25798f1b51cad"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 51942,
+          "sha256": "a548da936b30a27ba240aa05696bdcbeaa5f5f0731b7cd3b0e50fb9c936ce67f",
+          "blob": "fe9dd845303c57918dfc5ec177d25798f1b51cad"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/feature-flags/feature-flag.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6863,
+          "sha256": "8f06d7177cff0b7c77c8a2e6d971e568e03dc261e760f62a2c2cf5d98060509f",
+          "blob": "1c1959a276d038a85a17764d1d07352f9ce1db97"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6863,
+          "sha256": "8f06d7177cff0b7c77c8a2e6d971e568e03dc261e760f62a2c2cf5d98060509f",
+          "blob": "1c1959a276d038a85a17764d1d07352f9ce1db97"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/reports/report.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/sourcedata/folder-source-data.repository.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15570,
+          "sha256": "6dbc40304584fbc2c31b4045c1ee6fb7f94c2097400cb7ffa199b20099ea5d4a",
+          "blob": "f77ff9337012ba86697d6bd67dfa2b02ca66d932"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15570,
+          "sha256": "6dbc40304584fbc2c31b4045c1ee6fb7f94c2097400cb7ffa199b20099ea5d4a",
+          "blob": "f77ff9337012ba86697d6bd67dfa2b02ca66d932"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/prisma/migrations/20260913010000_hearing_record_reconciliation/migration.sql",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 3823,
+          "sha256": "9f75a1fc211225e60e8d4fa257c9e58ff86e21aacac006297542b467a689f09d",
+          "blob": "e864459ec9a50f419fa57fa9d0f4d3573b19ca7c"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 3823,
+          "sha256": "9f75a1fc211225e60e8d4fa257c9e58ff86e21aacac006297542b467a689f09d",
+          "blob": "e864459ec9a50f419fa57fa9d0f4d3573b19ca7c"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact exercised source packages/contracts/retrieval-0.2/public-domain-hearings.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/retrieval-0.2/public-domain-hearing-records.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/retrieval-0.2/public-domain-hearings-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all7677 PR35 entries unchanged",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/adapters/hearings-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/adapters/published-hearing-records.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/adapters/hearing-content-chunks.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/adapters/government-work-retrieval.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/retrieval-v2.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/api/src/retrieval/coverage-manifest.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/hearing/hearing-record-retrieval.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/hearing/hearing-record-workflow.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/hearing/published-record-domain.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/sourcedata/hearing-records.repository.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/hearing/hearing-publication.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/feature-flags/feature-flag.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/tracker/reports/report.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/src/sourcedata/folder-source-data.repository.ts",
+      "pass": true
+    },
+    {
+      "name": "unchanged source pair apps/intel-api/prisma/migrations/20260913010000_hearing_record_reconciliation/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "context exact two trusted facts",
+      "pass": true
+    },
+    {
+      "name": "canonical context reused",
+      "pass": true
+    },
+    {
+      "name": "full envelope exact without generatedAt",
+      "pass": true
+    },
+    {
+      "name": "canonical inert/date helpers",
+      "pass": true
+    },
+    {
+      "name": "no runtime/source/parser effects",
+      "pass": true
+    },
+    {
+      "name": "SQL projection complete HearingEventPayload",
+      "pass": true
+    },
+    {
+      "name": "SQL projection complete HearingOfficialPayload",
+      "pass": true
+    },
+    {
+      "name": "SQL projection complete HearingSegmentPayload",
+      "pass": true
+    },
+    {
+      "name": "SQL projection complete HearingIntelligencePayload",
+      "pass": true
+    },
+    {
+      "name": "SQL projection complete HearingRelevancePayload",
+      "pass": true
+    },
+    {
+      "name": "five source projections found",
+      "pass": true
+    },
+    {
+      "name": "ordinary never whole coverage",
+      "pass": true
+    },
+    {
+      "name": "stored hearing ID not invented UUID",
+      "pass": true
+    },
+    {
+      "name": "official null hearing preserved",
+      "pass": true
+    },
+    {
+      "name": "private payload owners present",
+      "pass": true
+    },
+    {
+      "name": "chunk original UTF16 thresholds and plain JSON hash",
+      "pass": true
+    },
+    {
+      "name": "known published continuation mismatch remains source fact",
+      "pass": true
+    },
+    {
+      "name": "read service still verifies declared private content digest",
+      "pass": true
+    },
+    {
+      "name": "private source owner and context remain runtime gates",
+      "pass": true
+    },
+    {
+      "name": "hearing-first exact source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "hearing-first raw hearing-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-first raw hearing-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-first totals",
+      "pass": true
+    },
+    {
+      "name": "hearing-corrected exact source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "hearing-corrected raw hearing-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-corrected raw hearing-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-corrected totals",
+      "pass": true
+    },
+    {
+      "name": "hearing-final exact source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "hearing-final raw hearing-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-final raw hearing-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "hearing-final totals",
+      "pass": true
+    }
+  ],
+  "scope": "All hearing DTO branches only. No current source/actor/client/folder authority, source version truth, private source execution, cryptographic completeness of unseen fragments, published continuation qualification or native/runtime acceptance."
+}

@@ -1,0 +1,975 @@
+{
+  "head": "4e04d449711881965bf9ec302e02a438afd98746",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "originalEntries": 7677,
+  "originalChanges": [],
+  "passed": 241,
+  "total": 241,
+  "checks": [
+    {
+      "check": "reference no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/embeddings/client-kb.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/embeddings/client-kb.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/embeddings/embedder.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/memory/memory-graph.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/memory/memory-wall.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/memory/memory-recall-suppression.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/memory/kg-cache-enrich.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/memory-recall-source.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/prisma/prisma.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference no drift packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-context-plane.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/retrieval/retrieval-v2.types.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-client-context.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/engagement/attachment-content.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-attachment-document.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-attachment-extract.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-attachment.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-artifact-integrity.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/engagement/pptx-extract.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/memory/memory-recall-content.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift packages/meriv2-core/src/memory/governance.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/clients/client-capabilities.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/clients/client-people.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/clients/client-facilities.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/clients/client-advocacy-matter.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/clients/client-hierarchy.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/engagement/engagement.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift apps/api/src/retrieval/adapters/monday-board-scope.ts",
+      "pass": true
+    },
+    {
+      "check": "complete model Client",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.website",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.description",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.productDescription",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.primaryContactName",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.primaryContactEmail",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.primaryContactPhone",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.logoS3Key",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.logoContentType",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.logoUploadedAt",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.sectorTag",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.profileType",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.uei",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.cageCode",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.tangoEntityLastSyncedAt",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.tangoEntityLastAttemptAt",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.tangoEntityLastError",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.createdByUserId",
+      "pass": true
+    },
+    {
+      "check": "nullable Client.canonicalEntityId",
+      "pass": true
+    },
+    {
+      "check": "complete model MailThread",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.clientId",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.connectionId",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.externalId",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.snippet",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.lastMessageAt",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.associationScore",
+      "pass": true
+    },
+    {
+      "check": "nullable MailThread.associationReason",
+      "pass": true
+    },
+    {
+      "check": "complete model EngagementTask",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.clientId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.meetingId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.contactId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.mailThreadId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.description",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.ownerUserId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.dueDate",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.sourceType",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.sourceId",
+      "pass": true
+    },
+    {
+      "check": "nullable EngagementTask.createdByUserId",
+      "pass": true
+    },
+    {
+      "check": "complete model ClientCapability",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.description",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.sector",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.trl",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.mrl",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.peNumber",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.appropriationAccount",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.serviceBranch",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.targetSubcommittee",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.fundingAsk",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.fundingAskLabel",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.justification",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.districtNexus",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.existingContracts",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientCapability.notes",
+      "pass": true
+    },
+    {
+      "check": "int32 ClientCapability.sortOrder",
+      "pass": true
+    },
+    {
+      "check": "complete model ClientPerson",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.title",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.email",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.phone",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.role",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.lastContact",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.notes",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.hierarchyLevel",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.reportsToPersonId",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientPerson.placementConfidence",
+      "pass": true
+    },
+    {
+      "check": "complete model ClientFacility",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.addressLine",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.city",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.state",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.zip",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.congressionalDistrict",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.congressionalDistrictCongress",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.districtSource",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.employeeCount",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.notes",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.latitude",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.longitude",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.stateHouseDistrict",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.stateSenateDistrict",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodedAt",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodeStatus",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodeInputHash",
+      "pass": true
+    },
+    {
+      "check": "int32 ClientFacility.geocodeAttemptCount",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodeNextAttemptAt",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodeLastError",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientFacility.geocodeMatchedAddress",
+      "pass": true
+    },
+    {
+      "check": "complete model ClientSubmissionHistory",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientSubmissionHistory.capabilityId",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientSubmissionHistory.meta",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientSubmissionHistory.outcome",
+      "pass": true
+    },
+    {
+      "check": "nullable ClientSubmissionHistory.notes",
+      "pass": true
+    },
+    {
+      "check": "150 scalar columns",
+      "pass": true
+    },
+    {
+      "check": "all 7677 original tree entries preserved",
+      "pass": true
+    },
+    {
+      "check": "canonical inert data search",
+      "pass": true
+    },
+    {
+      "check": "no private/runtime imports search",
+      "pass": true
+    },
+    {
+      "check": "URN search",
+      "pass": true
+    },
+    {
+      "check": "closed caller ClientKnowledgeSearchRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context ClientKnowledgeSearchRequest",
+      "pass": true
+    },
+    {
+      "check": "closed caller KnowledgeGraphRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context KnowledgeGraphRequest",
+      "pass": true
+    },
+    {
+      "check": "canonical inert data monday",
+      "pass": true
+    },
+    {
+      "check": "no private/runtime imports monday",
+      "pass": true
+    },
+    {
+      "check": "URN monday",
+      "pass": true
+    },
+    {
+      "check": "closed caller ClientKnowledgeMondayRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context ClientKnowledgeMondayRequest",
+      "pass": true
+    },
+    {
+      "check": "canonical inert data attachments",
+      "pass": true
+    },
+    {
+      "check": "no private/runtime imports attachments",
+      "pass": true
+    },
+    {
+      "check": "URN attachments",
+      "pass": true
+    },
+    {
+      "check": "closed caller ClientKnowledgeAttachmentRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context ClientKnowledgeAttachmentRequest",
+      "pass": true
+    },
+    {
+      "check": "canonical inert data memory",
+      "pass": true
+    },
+    {
+      "check": "no private/runtime imports memory",
+      "pass": true
+    },
+    {
+      "check": "URN memory",
+      "pass": true
+    },
+    {
+      "check": "closed caller ClientKnowledgeMemoryRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context ClientKnowledgeMemoryRequest",
+      "pass": true
+    },
+    {
+      "check": "canonical inert data profile",
+      "pass": true
+    },
+    {
+      "check": "no private/runtime imports profile",
+      "pass": true
+    },
+    {
+      "check": "URN profile",
+      "pass": true
+    },
+    {
+      "check": "closed caller ClientKnowledgeProfileRequest",
+      "pass": true
+    },
+    {
+      "check": "caller excludes trusted context ClientKnowledgeProfileRequest",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup memory-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 314272",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup profile-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 316537",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 313404",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup author-packet-final.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 320655",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup projection-audit-import-failure.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 317810",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup memory-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 315509",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-case-negative.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 319788",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-case-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 320287",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup first-pair-scoped-negative.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 307729",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup profile-complete-models.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 318649",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup memory-limitations-negative.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 314668",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup monday-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 309933",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 312327",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup monday-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 311205",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup projection-audit-donor.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 317975",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-span-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 318536",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup first-pair-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 307247",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup first-pair-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 308310",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup projection-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 317837",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup attachments-span-negative.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 316689",
+      "pass": true
+    },
+    {
+      "check": "captured cleanup projection-audit-final.json",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned group absent 318686",
+      "pass": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NO_RUNTIME_ADMISSION"
+}

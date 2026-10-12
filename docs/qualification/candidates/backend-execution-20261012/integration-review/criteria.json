@@ -1,0 +1,38 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "candidateInspected": false,
+  "expectedAdditionalOriginals": [
+    "read_chat_attachments",
+    "read_monday_client_boards",
+    "get_client_context",
+    "search_client_knowledge",
+    "query_knowledge_graph",
+    "search_memory",
+    "search_research_sources",
+    "search_legislative_research",
+    "get_legal_reference",
+    "query_global_data",
+    "search_committee_hearings",
+    "search_legiwatch_news",
+    "query_action_items"
+  ],
+  "scopeCondition": "Only independently accepted exact families may integrate; news/hearings currently pending. Bind final counts to exact freeze/accepted packet. All13 accepted implies84 typed/83mapped/13pending.",
+  "criteria": [
+    "Memory.propose canonical private loader actually composes all3 reviewed methods and4definitions; pending-only result, current binding and immutable hash checks remain connected. Namespace expectation changes reversible; task/artifact/public semantics preserved.",
+    "Every caller-facing input schema must describe raw request fields/defaults, never normalized internal input or trusted context. Full family raw Request vs Input metadata differences must be explicit.",
+    "Generic id-taking client factories remain separately namespaced. No normalizeInput/assertResult collisions or callback selecting another family. Real resolver callbacks exercise all newly integrated modes with exact context stripping.",
+    "Original139/96/43 preserved. Only declared accepted native IDs map; all other rows byte-identical. Prior71 descriptor order retained, except explicitly pinned raw-schema advertisement repairs and successor metadata; old callbacks remain behaviorally identical.",
+    "Original query_action_items stays partial/unavailable/noaliases. Explicit supersededBy metadata permits only exact registered full actions.query same nativeId/version. Original native maps only to new complete successor. Reject cycles/dangling/wrongnative/wrongversion/alias/shadow/promotion/missingtarget/extra supersession and selfmapping.",
+    "Every descriptor remains unimplemented/pending/nullhandler/zero automatic retries; unavailable gateway refusal occurs before authority/source/body execution. No arbitrary activate or qualification switches.",
+    "Integrated families/modules/schemas match independently accepted freezes and complete packet manifests; source errors/mutants/failure evidence retained. Pending family is not accepted by integration.",
+    "Existing-file changes have exact allocated production allowlist and reversible test-expectation manifest; applying inverses reconstructs all prior test bytes and behavior assertions. No public0.1,locks,SDK/worker/proxy/native/frontend changes.",
+    "Review exact root focused/expanded/public source and raw-hash cleanup receipts without rerunning broad suite. Independent focused callback/schema/negative controls only, owned group cleanup checked.",
+    "Mechanical operation-lifetime extraction must preserve gateway createDispatchLifetime API/error vocabulary, shrink-only cutoff, cancelled/parked-port behavior, timer cleanup and markBudgetUncertain bytes/semantics. Review exact separate commit and original deadline/authority/gateway receipts; no cross-app import or runtime qualification.",
+    "Prior raw-schema repairs require an exact enumerated per-binding allowlist tied to actual factory validation of Request. Compare descriptor only inputSchema.id and binding input changes (schema hash/output/callback/context preserved). Reproduce raw defaults/coercible scalar/name selectors accepted by normalizer but rejected by old advertised shape; never infer defect solely from definition names. Root reports31 candidates pending exact audit."
+  ],
+  "limits": [
+    "Source schemas/fixtures are not actual current policy, native transport, SQL durability, deployed/runtime acceptance, or full release completion.",
+    "No private source bodies copied/imported/executed; no native/provider/model/SQL/cloud/customer/credentials actions.",
+    "Approved admin memory self-review exception retained; memory pending-only personal producer remains unimplemented."
+  ]
+}

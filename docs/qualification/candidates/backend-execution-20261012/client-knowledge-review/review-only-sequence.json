@@ -1,0 +1,244 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "through": "8addfbca",
+  "commits": [
+    {
+      "commit": "744712ebecd791b17d72d3ac4c1343479135bae0",
+      "subject": "docs: freeze independent six-operation client knowledge review criteria",
+      "paths": [
+        "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/capture-reaped.py",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/criteria.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/setup.json"
+      ]
+    },
+    {
+      "commit": "6982da2b906ae80652912044b3c2163667741034",
+      "subject": "test: freeze independent client knowledge and graph contract controls",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-controls.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/inspection-corrections.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/reference-identities.json",
+        "packages/contracts/test/retrieval-client-knowledge-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "4be4b2354ca0ad889b969e63abe66ac4bb344f3d",
+      "subject": "test: preserve scoped graph counterexample and source fixture corrections",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-findings.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-test-precorrection.mjs.txt",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-test-typed-admission.mjs.txt",
+        "packages/contracts/test/retrieval-client-knowledge-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "ea9875fb2afc355208b7be638d9eb9798c16e06e",
+      "subject": "review: accept repaired knowledge search pair with retained scope failure",
+      "paths": [
+        "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-verdict.json"
+      ]
+    },
+    {
+      "commit": "ac013547967b1dd155a334beab9621de0750707f",
+      "subject": "test: add independent managed Monday result and paging controls",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "c0b80ca17153f4f0af35240dcf58e515f2a30fec",
+      "subject": "review: preserve managed Monday page-bound counterexample",
+      "paths": [
+        "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-findings.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stdout.bin"
+      ]
+    },
+    {
+      "commit": "b370db8fe94a525040f9b6c2008312cbb7abc29b",
+      "subject": "review: accept exact Monday page-bound repair",
+      "paths": [
+        "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-verdict.json"
+      ]
+    },
+    {
+      "commit": "cb6387d05e43e32c738d794bef17719a884c0a6f",
+      "subject": "test: add independent attachment scope cursor and format controls",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "823714c07fbcaaf4f02307d3877f87a2bc3af67f",
+      "subject": "review: preserve three attachment format correlation failures",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-findings.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stdout.bin"
+      ]
+    },
+    {
+      "commit": "b13506d58c6f4aa96729025ec4d6c73601ebf4f8",
+      "subject": "test: independently exercise complete memory recall projection and continuation",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "e4fb33c8fe09e5bdd69797c35eec772447654309",
+      "subject": "test: preserve memory content-status limitation counterexamples",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "8ba5a904e35062288173b4d05925acb2a2cf2777",
+      "subject": "review: preserve memory limitation negatives and fixture preimage",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitation-findings.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-test-before-limitation-fixture-correction.mjs.txt"
+      ]
+    },
+    {
+      "commit": "2b32de00c0c979fe14f369c381ce7f8be670bc7c",
+      "subject": "test: correct memory positive limitation fixtures from exact source contract",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-fixture-correction.json",
+        "packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "6c1154bb3a18a5e4e5cc7ec096a2bad94123fd11",
+      "subject": "test: independently cover full six-section client profile and trusted resolution",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "9f32a480abace6eb6e56a7c68cfb7d52b66759f2",
+      "subject": "test: preserve attachment requested-span and query-miss counterexamples",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "2442605206309cacf2bb3054398e3d151919602e",
+      "subject": "review: preserve metadata checks and attachment span failure before repair",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachment-test-before-miss-fixture-correction.mjs.txt",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-corrections.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-explicit-donor.mjs.txt",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-import-fix.mjs.txt",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-null-type-fix.mjs.txt",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection.mjs",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-source.py",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/complete-reference-identities.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-profile-scalars.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-first.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/source-audit-first.json",
+        "packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "bed1507cb02e8cdbdd7d7b31cb8f87b5938b6aa7",
+      "subject": "test: correct positive attachment query-miss range fixture",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachment-miss-fixture-correction.json",
+        "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "7ca8c4786967727c3355e6f581e331afd5dd987f",
+      "subject": "test: preserve first-page attachment UUID case compatibility",
+      "paths": [
+        "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs"
+      ]
+    },
+    {
+      "commit": "78f58815c2079f98cccac1e37bcb088248598543",
+      "subject": "review: preserve attachment compatibility failures and completed profile checks",
+      "paths": [
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-followup-findings.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final-result.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stdout.bin"
+      ]
+    },
+    {
+      "commit": "8addfbca637f14988b26513926108b76a2e49a7d",
+      "subject": "review: accept all six exact client and knowledge source contracts",
+      "paths": [
+        "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-packet.py",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-final-packet-audit.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/final-source-verdict.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.json",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.stderr.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.stdout.bin",
+        "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/source-audit-final.json"
+      ]
+    }
+  ],
+  "note": "Manifest closure commit itself follows and must be included separately; merge commits import unchanged author source and are not reviewer edits."
+}

@@ -1,0 +1,1684 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-domain-hearings:0.2.0",
+  "title": "Complete scoped hearing evidence envelope and explicit non-completeness",
+  "$defs": {
+    "PublicDomainHearingsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hearingId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "committeeName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "committee": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recordsView": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recordId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "asOf": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "PublicDomainHearingsContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientResolution": {
+          "$ref": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryContext/properties/clientResolution"
+        }
+      },
+      "required": [
+        "tenantId",
+        "clientResolution"
+      ]
+    },
+    "PublicDomainHearingsInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hearingId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "committeeName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recordsView": {
+          "enum": [
+            null,
+            "published",
+            "briefs",
+            "reconciliation"
+          ]
+        },
+        "recordId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "asOf": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "query",
+        "hearingId",
+        "chamber",
+        "committeeName",
+        "cursor",
+        "clientId",
+        "recordsView",
+        "recordId",
+        "asOf"
+      ]
+    },
+    "HearingEventPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "hearing"
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "committee": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "congress": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "startsAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "eventStatus": {
+          "type": "string"
+        },
+        "coverageStatus": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "witnesses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sourceRevision": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "lastOfficialUpdateAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "syncedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "title",
+        "committee",
+        "chamber",
+        "congress",
+        "date",
+        "startsAt",
+        "timezone",
+        "eventStatus",
+        "coverageStatus",
+        "sourceUrl",
+        "witnesses",
+        "sourceRevision",
+        "lastOfficialUpdateAt",
+        "syncedAt"
+      ]
+    },
+    "HearingOfficialPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "official_transcript_chunk"
+        },
+        "id": {
+          "type": "string"
+        },
+        "hearingId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string"
+        },
+        "characterStart": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "characterEnd": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalCharacters": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "chunkCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "textIsCompleteChunk": {
+          "const": true
+        },
+        "isOfficialTranscript": {
+          "const": true
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "hearingId",
+        "title",
+        "date",
+        "congress",
+        "chamber",
+        "sourceUrl",
+        "publishedAt",
+        "fetchedAt",
+        "text",
+        "characterStart",
+        "characterEnd",
+        "totalCharacters",
+        "chunkCount",
+        "textIsCompleteChunk",
+        "isOfficialTranscript"
+      ]
+    },
+    "HearingSegmentPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "machine_transcript_segment"
+        },
+        "id": {
+          "type": "string"
+        },
+        "hearingId": {
+          "type": "string"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "startMs": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "endMs": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "text": {
+          "type": "string"
+        },
+        "speakerLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "speakerConfidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transcriptionConfidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hasGapBefore": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isOfficialTranscript": {
+          "const": false
+        },
+        "captureStatus": {
+          "type": "string"
+        },
+        "transcriptGapSeconds": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "hearingId",
+        "captureId",
+        "sequence",
+        "startMs",
+        "endMs",
+        "text",
+        "speakerLabel",
+        "speakerConfidence",
+        "transcriptionConfidence",
+        "hasGapBefore",
+        "revision",
+        "sourceUrl",
+        "isOfficialTranscript",
+        "captureStatus",
+        "transcriptGapSeconds"
+      ]
+    },
+    "HearingIntelligencePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "hearing_intelligence"
+        },
+        "id": {
+          "type": "string"
+        },
+        "hearingId": {
+          "type": "string"
+        },
+        "segmentId": {
+          "type": "string"
+        },
+        "startMs": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "endMs": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "insightType": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "evidenceText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "speakerName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preliminary": {
+          "type": "boolean"
+        },
+        "entities": {},
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "derivedFromMachineTranscript": {
+          "const": true
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "hearingId",
+        "segmentId",
+        "startMs",
+        "endMs",
+        "insightType",
+        "title",
+        "summary",
+        "evidenceText",
+        "speakerName",
+        "confidence",
+        "preliminary",
+        "entities",
+        "sourceUrl",
+        "derivedFromMachineTranscript"
+      ]
+    },
+    "HearingRelevancePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "client_hearing_relevance"
+        },
+        "id": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "hearingId": {
+          "type": "string"
+        },
+        "insightId": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "matchedOn": {},
+        "rationale": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "clientId",
+        "hearingId",
+        "insightId",
+        "score",
+        "matchedOn",
+        "rationale",
+        "updatedAt"
+      ]
+    },
+    "HearingJsonFragment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "hearing_evidence_json_chunk"
+        },
+        "originalKind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hearingId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "captureId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "segmentId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startMs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endMs": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "speakerLabel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "speakerName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "speakerConfidence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transcriptionConfidence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preliminary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "isOfficialTranscript": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "derivedFromMachineTranscript": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hasGapBefore": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fetchedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "syncedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contentFormat": {
+          "const": "json_fragment"
+        },
+        "text": {
+          "type": "string"
+        },
+        "characterStart": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "characterEnd": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalCharacters": {
+          "type": "integer",
+          "minimum": 6501
+        },
+        "chunk": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "chunkCount": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "note": {
+          "const": "Complete range of the original record JSON. Join consecutive text fragments to read all fields; this fragment is not the complete record."
+        }
+      },
+      "required": [
+        "kind",
+        "originalKind",
+        "title",
+        "sourceUrl",
+        "contentFormat",
+        "text",
+        "characterStart",
+        "characterEnd",
+        "totalCharacters",
+        "chunk",
+        "chunkCount",
+        "contentHash",
+        "note"
+      ]
+    },
+    "HearingProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "const": "hearings"
+        },
+        "sourceTable": {
+          "enum": [
+            "committee_hearing",
+            "official_hearing_transcript",
+            "public_hearing_transcript_segment",
+            "public_hearing_insight",
+            "tenant_hearing_relevance",
+            "published_legislative_record",
+            "intel_hearing_record_briefs",
+            "intel_hearing_record_reconciliation"
+          ]
+        },
+        "sourceRecordId": {
+          "type": "string"
+        },
+        "hearingId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceKey": {
+          "type": "string"
+        },
+        "tenantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "historical": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "adapter",
+        "sourceTable",
+        "sourceRecordId",
+        "hearingId",
+        "contentHash"
+      ]
+    },
+    "HearingRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "const": "hearings"
+        },
+        "recordId": {
+          "type": "string"
+        },
+        "occurredAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payload": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/HearingEventPayload"
+            },
+            {
+              "$ref": "#/$defs/HearingOfficialPayload"
+            },
+            {
+              "$ref": "#/$defs/HearingSegmentPayload"
+            },
+            {
+              "$ref": "#/$defs/HearingIntelligencePayload"
+            },
+            {
+              "$ref": "#/$defs/HearingRelevancePayload"
+            },
+            {
+              "$ref": "#/$defs/HearingJsonFragment"
+            },
+            {
+              "$ref": "urn:meri:retrieval:public-domain-hearing-records:0.2.0#/$defs/HearingPublishedVersion"
+            },
+            {
+              "$ref": "urn:meri:retrieval:public-domain-hearing-records:0.2.0#/$defs/HearingPublishedBrief"
+            },
+            {
+              "$ref": "urn:meri:retrieval:public-domain-hearing-records:0.2.0#/$defs/HearingReconciliation"
+            }
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/HearingProvenance"
+        }
+      },
+      "required": [
+        "domain",
+        "recordId",
+        "occurredAt",
+        "updatedAt",
+        "payload",
+        "provenance"
+      ]
+    },
+    "HearingSourceCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "const": "hearings"
+        },
+        "sourceStatus": {
+          "enum": [
+            "healthy",
+            "degraded",
+            "unavailable",
+            "unauthorized",
+            "unsupported",
+            "error"
+          ]
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "returned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsEvaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requestedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "searchedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pagesRead": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextCursor": {
+          "type": "string"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "paginationComplete": {
+          "type": "boolean"
+        },
+        "coverageComplete": {
+          "const": false
+        },
+        "lastSyncAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "stopReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "sourceStatus",
+        "returned",
+        "recordsEvaluated",
+        "requestedEntityCount",
+        "searchedEntityCount",
+        "pagesRead",
+        "hasMore",
+        "truncated",
+        "paginationComplete",
+        "coverageComplete",
+        "stopReason"
+      ]
+    },
+    "HearingCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requestedDomains": {
+          "const": [
+            "hearings"
+          ]
+        },
+        "searchedDomains": {
+          "type": "array",
+          "items": {
+            "const": "hearings"
+          },
+          "maxItems": 1
+        },
+        "requestedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "searchedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsEvaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recordsReturned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "paginationComplete": {
+          "type": "boolean"
+        },
+        "unavailableSources": {
+          "type": "array",
+          "items": {
+            "const": "hearings"
+          },
+          "maxItems": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingSourceCoverage"
+          },
+          "maxItems": 1,
+          "minItems": 1
+        },
+        "complete": {
+          "const": false
+        },
+        "stopReason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requestedDomains",
+        "searchedDomains",
+        "requestedEntityCount",
+        "searchedEntityCount",
+        "recordsEvaluated",
+        "recordsReturned",
+        "paginationComplete",
+        "unavailableSources",
+        "sources",
+        "complete",
+        "stopReason"
+      ]
+    },
+    "HearingReranking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "disabled",
+            "skipped",
+            "applied",
+            "fallback"
+          ]
+        },
+        "provider": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "candidateCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rerankedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "durationMs": {
+          "type": "number"
+        },
+        "scores": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "domain": {
+                "const": "hearings"
+              },
+              "recordId": {
+                "type": "string"
+              },
+              "originalRank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "finalRank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "score": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "domain",
+              "recordId",
+              "originalRank",
+              "finalRank",
+              "score"
+            ]
+          }
+        },
+        "fallbackReason": {
+          "type": "string"
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "promptTokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalTokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": []
+        }
+      },
+      "required": [
+        "status",
+        "provider",
+        "model",
+        "candidateCount",
+        "rerankedCount",
+        "durationMs",
+        "scores"
+      ]
+    },
+    "HearingScoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "disabled",
+            "shadow",
+            "applied"
+          ]
+        },
+        "algorithm": {
+          "const": "rrf"
+        },
+        "rrfK": {
+          "type": "number"
+        },
+        "candidateCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scoredCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "applied": {
+          "type": "boolean"
+        },
+        "signalsUsed": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "lexical_exactness",
+              "semantic_similarity",
+              "entity_match_confidence",
+              "source_authority",
+              "freshness",
+              "graph_relationship_relevance",
+              "client_relevance",
+              "temporal_validity"
+            ]
+          }
+        },
+        "scores": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "domain": {
+                "const": "hearings"
+              },
+              "recordId": {
+                "type": "string"
+              },
+              "baselineRank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "currentRank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "proposedRank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "fusedScore": {
+                "type": "number"
+              },
+              "sourceAuthority": {
+                "enum": [
+                  "tenant_system_of_record",
+                  "public_system_of_record",
+                  "knowledge_plane"
+                ]
+              },
+              "components": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "signal": {
+                      "enum": [
+                        "lexical_exactness",
+                        "semantic_similarity",
+                        "entity_match_confidence",
+                        "source_authority",
+                        "freshness",
+                        "graph_relationship_relevance",
+                        "client_relevance",
+                        "temporal_validity"
+                      ]
+                    },
+                    "signalClass": {
+                      "enum": [
+                        "relevance",
+                        "confidence",
+                        "authority",
+                        "freshness",
+                        "validity"
+                      ]
+                    },
+                    "rawValue": {
+                      "type": "number"
+                    },
+                    "signalRank": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "contribution": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "signal",
+                    "signalClass",
+                    "rawValue",
+                    "signalRank",
+                    "contribution"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "domain",
+              "recordId",
+              "baselineRank",
+              "currentRank",
+              "proposedRank",
+              "fusedScore",
+              "sourceAuthority",
+              "components"
+            ]
+          }
+        }
+      },
+      "required": [
+        "status",
+        "algorithm",
+        "rrfK",
+        "candidateCount",
+        "scoredCount",
+        "applied",
+        "signalsUsed",
+        "scores"
+      ]
+    },
+    "HearingObservability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "queryClass": {
+          "const": "lookup"
+        },
+        "requestedDomains": {
+          "const": [
+            "hearings"
+          ]
+        },
+        "queriedDatasets": {
+          "type": "array",
+          "items": {
+            "const": "hearings"
+          },
+          "maxItems": 1
+        },
+        "requestedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queriedEntityCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pagesByDomain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hearings": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "hearings"
+          ]
+        },
+        "sourceHealth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hearings": {
+              "enum": [
+                "healthy",
+                "degraded",
+                "unavailable",
+                "unauthorized",
+                "unsupported",
+                "error"
+              ]
+            }
+          },
+          "required": [
+            "hearings"
+          ]
+        },
+        "freshnessByDomain": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hearings": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "hearings"
+          ]
+        },
+        "coverageComplete": {
+          "const": false
+        },
+        "stopReason": {
+          "type": "string"
+        },
+        "reranking": {
+          "$ref": "#/$defs/HearingReranking"
+        },
+        "scoring": {
+          "$ref": "#/$defs/HearingScoring"
+        }
+      },
+      "required": [
+        "queryClass",
+        "requestedDomains",
+        "queriedDatasets",
+        "requestedEntityCount",
+        "queriedEntityCount",
+        "pagesByDomain",
+        "sourceHealth",
+        "freshnessByDomain",
+        "coverageComplete",
+        "stopReason"
+      ]
+    },
+    "PublicDomainHearingsOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_committee_hearings"
+        },
+        "coverage": {
+          "$ref": "#/$defs/HearingCoverage"
+        },
+        "note": {
+          "const": "One complete evidence chunk per page. Follow the hearings nextCursor for remaining official transcript chunks, machine segments and intelligence. Coverage reports unsupported browser-session material; search results never imply a complete transcript."
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HearingRecord"
+          },
+          "maxItems": 1
+        },
+        "observability": {
+          "$ref": "#/$defs/HearingObservability"
+        }
+      },
+      "required": [
+        "tool",
+        "coverage",
+        "note",
+        "records",
+        "observability"
+      ]
+    }
+  }
+}

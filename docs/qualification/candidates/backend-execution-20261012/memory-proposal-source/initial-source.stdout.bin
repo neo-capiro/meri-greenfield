@@ -1,0 +1,29 @@
+✔ actual dispatcher/authority/handler/HTTP adapter completes fixed-route synthetic loopback exchange (50.806342ms)
+✔ unselected subject preserves own firm/client proposals, not personal-only queue (5.056522ms)
+✔ selected client preserves clientless proposals and selector binding (4.006763ms)
+✔ disabled response remains unavailable coverage with no fabricated records (3.213801ms)
+✔ restricted, truncated and null content remain incomplete unapproved observations (9.150306ms)
+✔ first and advancing continuation uses existing retained context and sends opaque cursor unchanged (6.835066ms)
+✔ unknown or replayed foreign cursor cannot reach source transport (0.667324ms)
+✔ model URL/header/actor/source flags rejected before credential owner (0.880584ms)
+✔ revoked authority, wrong fence, disabled source and denied budget cannot reach credentials (1.969421ms)
+✔ revocation after HTTP response cannot retain, settle or release (2.75421ms)
+✔ credential receipt bound to exact actor/run/task/fence and current expiry (7.732115ms)
+✔ credential accessors and proxies cannot execute effects (2.987541ms)
+✔ credential tokens never come from gateway credential and transport is fixed closed POST (2.776904ms)
+✔ origin refuses nonHTTPS paths queries credentials and operation substitution before I/O (0.420342ms)
+✔ HTTP error/redirect/encoding/media responses refuse without returning body diagnostics (6.783789ms)
+✔ byte caps reject dishonest Content-Length, streaming overflow and malformed UTF8/JSON (6.456197ms)
+✔ source wrong scope/restricted disclosure/false completeness/current-fact upgrade rejected by canonical family (6.859062ms)
+✔ parked credentials is bounded and late completion starts no subsequent work (22.007856ms)
+✔ parked fetch is bounded and late completion starts no subsequent work (23.050654ms)
+✔ parked body is bounded and late completion starts no subsequent work (23.237415ms)
+✔ canonical production gateway stays unavailable and never requests source credentials (9.568816ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2057.753838

@@ -1,0 +1,23 @@
+{
+  "commit": "e0e9130a9560c133d70d401132644d6b556357f5",
+  "paths": [
+    {
+      "sourcePath": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.json",
+      "retainedPath": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.json",
+      "bytes": 1585,
+      "sha256": "112d81b8ad5d1cd8aca59c255a18d75f51bcfc10f4920a262790730ada525545"
+    },
+    {
+      "sourcePath": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stdout.bin",
+      "retainedPath": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.stdout.bin",
+      "bytes": 388834,
+      "sha256": "9409ca7e2bfe7fb3cc705be83595acdbd7f4b18d0a00b826da7a09cfbdb7910a"
+    },
+    {
+      "sourcePath": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stderr.bin",
+      "retainedPath": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -1,0 +1,1057 @@
+{
+  "source": "fd8765ec01d292013758606204f2c9d886cd31c1:apps/api/prisma/schema.prisma",
+  "fields": [
+    {
+      "model": "Client",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "name",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "website",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "description",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "productDescription",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactName",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactEmail",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactPhone",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "logoS3Key",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "logoContentType",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "logoUploadedAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "intakeData",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "status",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "sectorTag",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "profileType",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "profileStatus",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "submissionTracks",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "issueCodes",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "uei",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "cageCode",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "naicsCodes",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "pscCodes",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastSyncedAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastAttemptAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastError",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "applicantTypes",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "setAsideCertifications",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "ldaClientIds",
+      "scalar": "Int",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "Client",
+      "field": "memoryWall",
+      "scalar": "Boolean",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "createdByUserId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "Client",
+      "field": "canonicalEntityId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "connectionId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "source",
+      "scalar": "EngagementSource",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "externalId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "subject",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "snippet",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "participants",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "lastMessageAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "status",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "metadata",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "raw",
+      "scalar": "Json",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationScore",
+      "scalar": "Float",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationReason",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationSignals",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "MailThread",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "meetingId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "contactId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "mailThreadId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "title",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "description",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "ownerUserId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "dueDate",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "status",
+      "scalar": "EngagementTaskStatus",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "sourceType",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "sourceId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "createdByUserId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "name",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "type",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "description",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "sector",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "tags",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "issueCodes",
+      "scalar": "Json",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "trl",
+      "scalar": "Int",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "mrl",
+      "scalar": "Int",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "peNumber",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "peNumbers",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "ClientCapability",
+      "field": "keywords",
+      "scalar": "String",
+      "nullable": false,
+      "array": true
+    },
+    {
+      "model": "ClientCapability",
+      "field": "appropriationAccount",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "serviceBranch",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "targetSubcommittee",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "fundingAsk",
+      "scalar": "Int",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "fundingAskLabel",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "justification",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "districtNexus",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "existingContracts",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "notes",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "sortOrder",
+      "scalar": "Int",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "name",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "title",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "email",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "phone",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "role",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "lastContact",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "notes",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "hierarchyLevel",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "reportsToPersonId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "placementSource",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "placementConfidence",
+      "scalar": "Decimal",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "reviewRequired",
+      "scalar": "Boolean",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "name",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "addressLine",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "city",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "state",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "zip",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "congressionalDistrict",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "congressionalDistrictCongress",
+      "scalar": "Int",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "districtSource",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "employeeCount",
+      "scalar": "Int",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "notes",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "latitude",
+      "scalar": "Float",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "longitude",
+      "scalar": "Float",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "stateHouseDistrict",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "stateSenateDistrict",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodedAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeStatus",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeInputHash",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeAttemptCount",
+      "scalar": "Int",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeNextAttemptAt",
+      "scalar": "DateTime",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeLastError",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeMatchedAddress",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeCandidates",
+      "scalar": "Json",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "id",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "tenantId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "clientId",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "capabilityId",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "fiscalYear",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "title",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "meta",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "outcome",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "outcomeType",
+      "scalar": "String",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "notes",
+      "scalar": "String",
+      "nullable": true,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "createdAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "updatedAt",
+      "scalar": "DateTime",
+      "nullable": false,
+      "array": false
+    }
+  ],
+  "count": 150,
+  "note": "Metadata only, generated from immutable scalar declarations; excludes relation objects not selected by producer. Decimal mixed wire admission is explicitly approved, adapter serialization unqualified."
+}

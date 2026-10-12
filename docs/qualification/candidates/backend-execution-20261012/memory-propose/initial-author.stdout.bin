@@ -1,0 +1,66 @@
+✔ private schema and pending result have exact closed fields (5.108507ms)
+✔ default is personal pending intent, not a saved-memory record (0.216195ms)
+✖ null and blank optional strings preserve absence (0.227632ms)
+✔ scope aliases and case trim are model normalization only (0.634364ms)
+✔ unknown scopes refuse instead of silently selecting personal (1.063278ms)
+✔ content/key UTF16 limits reject truncation including astral characters (0.948646ms)
+✔ content must contain nonblank string (0.666391ms)
+✔ logical key preserves text and punctuation with no storage derivation (0.237447ms)
+✔ positive finite fractional TTL preserves duration and caps365 (0.422375ms)
+✖ nonpositive/absent/null TTL is explicit durable intent without expiry clock (0.266531ms)
+✔ nonfinite/coercible TTL and unadvertised authority fields refuse (1.133854ms)
+✔ client scope requires selected trusted conversation UUID (0.249615ms)
+✔ raw client selector cannot select or substitute conversation client (0.496016ms)
+✔ names and foreign client selectors refuse even outside client scope (0.37253ms)
+✔ closed context carries provenance, no asserted current authorization or clock (0.49251ms)
+✔ direct command requires exact public action and full original binding (1.332402ms)
+✔ direct commands cannot bypass normalized text/scope/TTL or closed keys (2.123151ms)
+✔ direct client command binds exact selected UUID and null outside scope (0.895285ms)
+✔ same-tenant scopes are structural; effective containment remains canonical authorization (0.358248ms)
+✔ result cannot claim saved, committed, approved or execution receipt outcomes (2.625265ms)
+✔ every result field is required, typed, hash-correlated and candidate is UUID (1.409278ms)
+✔ result hash covers exact command identity, idempotency, payload and scopes (1.083058ms)
+✔ all three scopes produce only the pending variant (0.730918ms)
+✔ returned inputs/commands/results detach accepted data from caller mutation (0.387413ms)
+✔ inert admission refuses getters/proxies without executing them at all entries (0.503617ms)
+✔ symbols/hidden fields/inherited prototypes/cycles refuse (0.202314ms)
+✔ canonical immutable approval/hash and recovered executor remain public owners (2.324192ms)
+✔ no role or reviewer field changes the approved administrator policy (0.349105ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 26
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 332.119055
+
+✖ failing tests:
+
+test at packages/contracts/test/commands-memory-propose.test.mjs:25:1
+✖ null and blank optional strings preserve absence (0.227632ms)
+  Error: Operation contract requires inert JSON data
+      at fail (file:///workspace/meri-memory-propose-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///workspace/meri-memory-propose-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:31:7)
+      at Object.normalizeMemoryProposeInput (file:///workspace/meri-memory-propose-20261012/packages/contracts/commands-0.2/memory-propose-validation.mjs:23:15)
+      at TestContext.<anonymous> (file:///workspace/meri-memory-propose-20261012/packages/contracts/test/commands-memory-propose.test.mjs:25:129)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/commands-memory-propose.test.mjs:32:1
+✖ nonpositive/absent/null TTL is explicit durable intent without expiry clock (0.266531ms)
+  Error: Operation contract requires inert JSON data
+      at fail (file:///workspace/meri-memory-propose-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///workspace/meri-memory-propose-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:31:7)
+      at Object.normalizeMemoryProposeInput (file:///workspace/meri-memory-propose-20261012/packages/contracts/commands-0.2/memory-propose-validation.mjs:23:15)
+      at TestContext.<anonymous> (file:///workspace/meri-memory-propose-20261012/packages/contracts/test/commands-memory-propose.test.mjs:32:157)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

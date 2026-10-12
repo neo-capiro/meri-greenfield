@@ -1,0 +1,188 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceHead": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "originalEntries": 7677,
+  "scope": "SOURCE_METADATA_ONLY_NO_SOURCE_EXECUTION",
+  "checks": [
+    {
+      "name": "apps/api/src/auth/roles.guard.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/governed-memory-candidate.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-authorization.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-authorization.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate-rules.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-proposal.controller.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-review-admin-policy.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-review-switch.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-wall.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory-content.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory-proposal-read.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/tool-service-secret.guard.spec.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/tool-service-secret.guard.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/current-tenant.decorator.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/tenant/tenant-context.middleware.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/meri-read-outcome.ts:unchanged",
+      "passed": true
+    },
+    {
+      "name": "fixed controller and POST path",
+      "passed": true
+    },
+    {
+      "name": "ordinary role and service guard",
+      "passed": true
+    },
+    {
+      "name": "user JWT remains tenant identity",
+      "passed": true
+    },
+    {
+      "name": "fixed host service header",
+      "passed": true
+    },
+    {
+      "name": "exact selected tool routes to existing producer",
+      "passed": true
+    },
+    {
+      "name": "producer forces pending",
+      "passed": true
+    },
+    {
+      "name": "producer captures actual tenant/actor",
+      "passed": true
+    },
+    {
+      "name": "producer returns proposal-only claims",
+      "passed": true
+    },
+    {
+      "name": "backend filters own proposer",
+      "passed": true
+    },
+    {
+      "name": "backend pending page uses lookahead",
+      "passed": false
+    },
+    {
+      "name": "backend cursor uses scope hash",
+      "passed": true
+    },
+    {
+      "name": "backend middleware is not globally read only",
+      "passed": true
+    },
+    {
+      "name": "all original source entries exact",
+      "passed": true
+    },
+    {
+      "name": "no original worktree changes",
+      "passed": true
+    },
+    {
+      "name": "only allocated product additions",
+      "passed": true
+    },
+    {
+      "name": "no ambient credentials",
+      "passed": true
+    },
+    {
+      "name": "no SQL or private import",
+      "passed": true
+    },
+    {
+      "name": "canonical snapshot/lifetime reuse",
+      "passed": true
+    }
+  ],
+  "passed": 38,
+  "failed": 1,
+  "sourceIdentities": [
+    {
+      "path": "apps/gateway/sources/memory-proposals/handler.mjs",
+      "bytes": 1992,
+      "sha256": "333c9ae8b12dbda5ca08365f3f28bc7c3347514a42f44d71e0eccf5787597ebf"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/http-adapter.mjs",
+      "bytes": 4891,
+      "sha256": "46213a8f0294a84fb34c27143920cc35f52a721f72236c91408cc0b9c2f8de1c"
+    },
+    {
+      "path": "apps/gateway/sources/memory-proposals/request-context.mjs",
+      "bytes": 2828,
+      "sha256": "8d7288a28e9de9963013cfc10f07578603c2d1eb869ba40f6db01605f9a41e75"
+    },
+    {
+      "path": "apps/gateway/test/memory-proposal-source.test.mjs",
+      "bytes": 14382,
+      "sha256": "d3941d9d157345899da0bdc53df325baf2ed2d0a4862f50238d01c77670866d1"
+    }
+  ]
+}

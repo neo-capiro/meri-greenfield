@@ -1,0 +1,564 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "tree": "86942db5d0ea216ca6553ab15741809751d999a9",
+  "authorPacket": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+  "runtimeAccepted": false,
+  "canonicalIntegrationAccepted": false,
+  "reviewHeadBeforeManifest": "803de2653ebaa6665b553bfcf0ad28b4df288882",
+  "exclusions": [
+    "complete-manifest.json self hash",
+    "complete-manifest-verification.json binds manifest"
+  ],
+  "historicalManifests": {
+    "stage-two-manifest.json": "35f4bf378c96df4d20fe8ca135ab5c7a8f62895e",
+    "final-manifest.json": "13bdb2fe1f74534d572bd945afc06f53922a3e6b"
+  },
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-LEGAL-REVIEW-20261012.md",
+      "bytes": 19412,
+      "sha256": "ccf7d1572197dfc895b420662e69bc968541d902e2aad6eb704d8bc51147b0c0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/complete-integrity.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/complete-integrity.stdout.json",
+      "bytes": 43809,
+      "sha256": "f97ea731449c336c43aa23af63b61393dcc07327ee5683977d0fe6f09d88db51"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/complete-review-only-commits.json",
+      "bytes": 1456,
+      "sha256": "d1e0b8fe3bfe9e061f1f903286e13916c9c50f966d2984a121e2bc2ccb1ae9b0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/criteria.md",
+      "bytes": 4239,
+      "sha256": "a2c4f26f6b33f07cb02997e50d672bd547da5816346b76d071a4fa9eecc16440"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/final-integrity.py",
+      "bytes": 6507,
+      "sha256": "67b80c884d67e8edb4c1e4f290eb631e3f54717b73db60c1d67e4661595aee87"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/final-integrity.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/final-integrity.stdout.json",
+      "bytes": 43253,
+      "sha256": "805e28d6c6643eb4e8ed4f04d453fdae758110b8fcfd9dad460a135f38539448"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/final-manifest-verification.json",
+      "bytes": 277,
+      "sha256": "7c4b83d7d2c36f497c55151134ce8961e6a66191707b1843a1caac58da948685"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/final-manifest.json",
+      "bytes": 24065,
+      "sha256": "d32f350637e9bce9a70b14ff64603ae01574a48f7ba8cd5582f5f900f7e9470b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-independent.test.mjs.txt",
+      "bytes": 12389,
+      "sha256": "1596c3dca549ab0ae21c75cbd1a64993374fecdf11d2d69cbff53b61d3594243"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-replay-correction.json",
+      "bytes": 1060,
+      "sha256": "3063f3a3dda649eaed4d6a1087026ed24e665ff2e3633fe0f74fac8ce4455ea7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.json",
+      "bytes": 1385,
+      "sha256": "0d589d4fcf0c177cab7e1d3fb08898ef6a6cbf41a01f5eded2e5851370dcd9d9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stdout.bin",
+      "bytes": 4596,
+      "sha256": "fc9deed7bb288b4cd3e6fa40ee37dfa31920c81b94abd8aed995d2d9c03a021d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-criteria.md",
+      "bytes": 2876,
+      "sha256": "98fd4b96ef3dfd93b9f0b8e92eb761d3061a834be8da2bdf84f88f3e60856ba5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first-independent.test.mjs.txt",
+      "bytes": 12798,
+      "sha256": "6309265ebf0fb4a3c4c3b6b7ac8920238feb1c1cd56942777385e19683afdc8e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.json",
+      "bytes": 1377,
+      "sha256": "3927abea49154ede4d0807ff380f854e970d7b62494ff396b0c820cfd032a049"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stdout.bin",
+      "bytes": 3585,
+      "sha256": "7b5652f7b39be96d1b6fb8805263e9b3555b5748c73937d0bb7e1e59cfbd23cf"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-harness-correction.json",
+      "bytes": 404,
+      "sha256": "a9ef3517edc37d05a4c6af561fad8d9440d5682b2e7150e8473289570ad8eba0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.mjs.txt",
+      "bytes": 6959,
+      "sha256": "83cf3512ea170565216d93921e76b85ca9d96106966b185b796fc26dbb4e3a29"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stderr.txt",
+      "bytes": 2632,
+      "sha256": "b76b0b0b973083a6cfbaa5891a99004da6a34ab49c39c72dbe03378f626806f2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.mjs.txt",
+      "bytes": 6962,
+      "sha256": "9ca55a4304bf4f77a55428d8bf6921ce10a5586911532b5fa0f5352fbb31c79c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stderr.txt",
+      "bytes": 1165,
+      "sha256": "60ee5e6de9cf4b0736265eadebaffaba3310eab68d5bf4e2b583e02778678415"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.mjs",
+      "bytes": 6983,
+      "sha256": "b4c93f4af6a3093cb20c8395e2eaac3be618aef66e4bf743d429bf37132b145c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stdout.json",
+      "bytes": 15121,
+      "sha256": "336a54b1b70bdfdc9cab2f4eec97f2454c27f8167b0128fbcdd818c94982b885"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-audit.py",
+      "bytes": 7630,
+      "sha256": "3ab7c06cccbe38c9c12210f8959150f713fa97c8ec8b9410333ff385394d208b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-audit.stdout.json",
+      "bytes": 20675,
+      "sha256": "f36e368baf61b1101b36f6196c53fc3b8ca88d01d0cab2a5849353d88ceacc5e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-corrected.json",
+      "bytes": 1390,
+      "sha256": "e7ea58d2ca63ebbfec895df3ab03968215e21221331b9af422569e52f88c047c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-corrected.stdout.bin",
+      "bytes": 7762,
+      "sha256": "fe31529ad32b8f62956e77535672b461df63d207ecccceed3043d3ebd3d50d53"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-criteria.md",
+      "bytes": 1917,
+      "sha256": "235d03470911f578a6031c9cadcf002bd4b9bf14654e76ee53dad1e377bfba51"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-final.json",
+      "bytes": 1382,
+      "sha256": "29f702ab2460364844ad405259734b8e5e55d670874f11d85231c8112d7ead04"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-final.stdout.bin",
+      "bytes": 8790,
+      "sha256": "e1289726f6503bf63f102078fe43f1a3f896388712e21921b5bce5179d384581"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first-correction.json",
+      "bytes": 589,
+      "sha256": "6699414362ee01ac781f032420e3719c0f3f10c92e6e0d5df7b753ed069a576c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first-independent.test.mjs.txt",
+      "bytes": 20896,
+      "sha256": "d2962f94b87ae1a2d44928ab475a31abbb8b1bf266805f6a5d356861b682af3f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.json",
+      "bytes": 1383,
+      "sha256": "799492f2a7081263603fff5a2616054f202aa5281d304fa2d41698faa7347531"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stdout.bin",
+      "bytes": 34345,
+      "sha256": "6b2c3ec59d7f3159daaa4582230499f28c024ff614c87f4e1212c291dc76f68f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-negative-isolated.json",
+      "bytes": 1406,
+      "sha256": "d0b47c370dbe9546931ec0d9fc86d88fad311021c2f78fcc65a81e4a2d4abfac"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-negative-isolated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-negative-isolated.stdout.bin",
+      "bytes": 8787,
+      "sha256": "e7624effb8a5eef418586b28c836032f7097c5ed563ac1fc8fe738ceb4b0fe20"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/initial-reference-identities.json",
+      "bytes": 7734,
+      "sha256": "b4835bba203f4f7ffdd04a225bd98cf5f5c841ac7eaac275d41f9ffa3554e57a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.json",
+      "bytes": 1398,
+      "sha256": "d76970e901f5fd9e938e49b384193707f2f7fbb08c80da98c604dfdd19e72d50"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stdout.bin",
+      "bytes": 10296,
+      "sha256": "8393ebc2d89384f5ef5b4ac565cb11276553956b58d66b2861dd584cb0f4d518"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-repaired.json",
+      "bytes": 1401,
+      "sha256": "a932aab188dc53b6b8bb6cb116ab07d79f9bf379a1e0bd53108dc1e30676e098"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-repaired.stdout.bin",
+      "bytes": 8482,
+      "sha256": "944e1115c0103dac2dc8bde11bb5b8c35d5fb75f5d2fbcf5544cd2ee37bd3c71"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-audit.py",
+      "bytes": 7484,
+      "sha256": "0b0ceabdbeca3f3e724b77ef11a79dd90074711ef7a49ee37bd14def072ba59a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-audit.stdout.json",
+      "bytes": 15477,
+      "sha256": "ea4df3616c60cbb21584a16047cc37ef9d543ee9ea24c1cd5402d2b17fb00a90"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-corrected.json",
+      "bytes": 1391,
+      "sha256": "bb6297cf2832b3dadfaa3bcdc494e576cfb3aa15113d8c8b6d6361a9d1503e01"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-corrected.stdout.bin",
+      "bytes": 7813,
+      "sha256": "0772988f0723aa4959647cde91da58360a3214189a2edb46389c73318b87d5c5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first-correction.json",
+      "bytes": 899,
+      "sha256": "55b5ea7488b1c690d5794b18bb1508cc2dddba2c65df5dc3e91e5953b1430b08"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first-independent.test.mjs.txt",
+      "bytes": 25194,
+      "sha256": "7a7ff313f4f82ee127dc6f079dea08e915674d39fc6df4682fab733482948702"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first.json",
+      "bytes": 1384,
+      "sha256": "bd592715b91455334a022318030852fbf60749ac4a5774783ecd7765e9f3d02a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first.stdout.bin",
+      "bytes": 18279,
+      "sha256": "7754d7b0f9b448ff6d003bc9132bab832678ed7ec28db08be1d1029669404bca"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/local-check-setup.json",
+      "bytes": 644,
+      "sha256": "788ff0758cecaad46e77e6aa3511781b51d02b2e656b650d23db9135606da256"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/metadata-check-correction.json",
+      "bytes": 599,
+      "sha256": "c2470b59063fba3dfabf1f44a1b7c1e3bc8959e04d31f8f0c612a50715b90185"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/metadata-first-final-integrity.py",
+      "bytes": 5314,
+      "sha256": "579c36d18544a0b75642118a0efd64d28cf04a5acee5809701a5cbd2a7c1f620"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/metadata-first-final-integrity.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/metadata-first-final-integrity.stdout.json",
+      "bytes": 36220,
+      "sha256": "ce570517500cbdf7603dc85f5ebddea06905b223e2f1eabe3329bf934560db5d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/negative-isolation-cleanup.json",
+      "bytes": 982,
+      "sha256": "8c499d11f9064df18c49ac061d2d0ba96892292fc7ea825a4be5b755ee9a001a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/negative-isolation-strengthening.json",
+      "bytes": 409,
+      "sha256": "783522d4f83ab70596f7d8704a85366f1a47efa819082146a14ae9f2e056eeb6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-audit.py",
+      "bytes": 7481,
+      "sha256": "d96f1c57366386fe7333445434fd7956c67d45c464130cecd0ac215a3fd5ebe8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-audit.stdout.json",
+      "bytes": 16349,
+      "sha256": "3f1e422d986b611f9cd5cbddb979c58be13951195c2bc5569501b06d2e6f8aad"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-corrected.json",
+      "bytes": 1383,
+      "sha256": "3a1cd11b88c00849604da4f74a67f5dd29c809d1bdb338adda8a2bae0585db40"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-corrected.stdout.bin",
+      "bytes": 10878,
+      "sha256": "554b1230c8503b4ceb0e9687ffd109377b7ba7cd7f1937b152d74131e9cd4ec8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-criteria.md",
+      "bytes": 1872,
+      "sha256": "e7be76182bffada4c2c347e94f84841a1727ed596e1dfc934c3c8d275ac4f1cb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-final.json",
+      "bytes": 1375,
+      "sha256": "daa3a33ee5a36ced65d5d1411796197cf6daeb1a9f1c2fdd0a57ba18f7e621c2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-final.stdout.bin",
+      "bytes": 11295,
+      "sha256": "619dcab3cb100a9c51fe6acfa632a04054228691e155b705a9f437a9536ab2ce"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first-independent.test.mjs.txt",
+      "bytes": 41815,
+      "sha256": "6a3bf53309906f48ba8cb09463f373d4114efd3a28a6feef6ade2941549e81b3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first.json",
+      "bytes": 1374,
+      "sha256": "76334560a7b58899d098dd1d119209b080c13b8a6018e84071ba8d4979311fbb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first.stdout.bin",
+      "bytes": 4963,
+      "sha256": "df6e7678c91cd71709522699192c4a7befd3ce4bdd38553b2396ccbc91e622ff"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-harness-correction.json",
+      "bytes": 394,
+      "sha256": "11c4cf68508495bf60e7d97752314c481a3c2e373a54f200a08d1bcbec9a40d1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/owned-cleanup.json",
+      "bytes": 2319,
+      "sha256": "86d18ab91ee1a856ce51c0df5a3bee3caa410ddce7214fe2f3252d8979c8b384"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-branch-findings.json",
+      "bytes": 2962,
+      "sha256": "5c9de5f173a80af4156099660f648f58322ba8a645ee83c0b6e5c03aca94f6a3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-policy-reference-identities.json",
+      "bytes": 4177,
+      "sha256": "fbb6d38c6ba53af7e031e4c598607192e3c663a3bbbad11e3ab98e171480422e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.py",
+      "bytes": 4760,
+      "sha256": "4f2d5e22702144db3b327b3cd81695b575be6ef92b3534937f1eb745d05bcc3c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stdout.json",
+      "bytes": 5701,
+      "sha256": "a734df2c9ccc5e45d0f55810864b04b0be0493d28467f1474d8b1fa2925a5560"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.json",
+      "bytes": 1396,
+      "sha256": "8c0a34264d6014f1fde0ccc525aef0e9478358c113dfb802be1275f40f42c0ba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stdout.bin",
+      "bytes": 5167,
+      "sha256": "8cc8b64f4d3987e70530e760b73e5731a0cd1db66d86889daefbc8492c05acc6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.json",
+      "bytes": 1377,
+      "sha256": "7e7aa64e4f448130897e38d2b048849ffd8ca3af364d9e0676e3abd60b5d8669"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stdout.bin",
+      "bytes": 8329,
+      "sha256": "cad6273ef2d93006e77b1caac470e7923d1829bbec08474afe0ed82fe7b0a73e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/review-only-commits.json",
+      "bytes": 1312,
+      "sha256": "9733991e4843ce926ede1ea30066b791ad5510bcfce4b6f648176a2a3b3af21b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/review-whitespace.json",
+      "bytes": 112,
+      "sha256": "b5b260e57a74cf2fab4f480cf2c7cd3274ba7ce4acfeed6fb3dc9e29e4fa8747"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/review-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/review-whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/stage-two-manifest.json",
+      "bytes": 9360,
+      "sha256": "891b3a9b02022e077a6135cf114fa08de2b07ada366ef61c4ef5e9d4e3bd5310"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/stage-two-verification.json",
+      "bytes": 6457,
+      "sha256": "b9c7475712c68676c516fce7e0009b8e866090edc1ba86ebadd249c1398d327c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+      "bytes": 32835,
+      "sha256": "8eed7fd3cbb56b19cc0848a7c3527372640b236b09450ad3534d2f3e94d8e827"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+      "bytes": 44569,
+      "sha256": "e119fa6de79a6c1a36107c0ae0f3faed2240e9bb60df26bf2f2582fd3caaaf91"
+    }
+  ]
+}

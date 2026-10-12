@@ -1,0 +1,7 @@
+{
+  "reason": "Positive synthetic limitations corrected to exact emitted source literals; neither failing assertion removed.",
+  "beforeSha256": "444483b19edc973c32cec7fc9a020217f6e1deca5c475dffa30de28c77157121",
+  "afterSha256": "4a481577c22f6f600800f49ba000a341c05b5813a53c94e0c8cb02ef842e6e66",
+  "sourceCandidate": "b24d87c2",
+  "sourceLiteralIndependentComparisonPending": true
+}

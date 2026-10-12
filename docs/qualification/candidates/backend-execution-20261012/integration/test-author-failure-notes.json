@@ -1,0 +1,7 @@
+{
+  "initialPredecessorCapture": "Setup/mixed-source diagnostic only. The run started against exact canonical dependency and unchanged19 tests, but a concurrent failed expectation transform wrote10 tests before it finished; it is not an exact baseline receipt. Raw output and partial diff preserved.",
+  "inverseFailure": "Old string-count inverse could not distinguish new pending13 count from an existing13 count; switched to exact positional inversion and atomic all-file validation before writes.",
+  "missingFixture": "Historical action-review fixture.mjs absent from sparse materialization. Will restore exact immutable Git bytes, never edit fixture.",
+  "firstUpdatedPredecessor": "629/634 passed. Three expectation issues: dataset profile row expected in wrong order, exact historical descriptor hash needed explicit inverse field transform, stale query_action_items pending loop. Two failures were same missing immutable sparse capabilities.json prerequisite. All fixed without production changes;634/634 final pass.",
+  "initialConnected": "32/33 passed. Profile fixture read undefined schema const, while schema declares only string and validator owns exact note. Fixture corrected to accepted producer literal; no assertion or production changes."
+}

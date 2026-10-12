@@ -1,0 +1,72 @@
+✔ independent pair inventory and canonical namespace (1.682951ms)
+✔ KB trims query only and keeps raw truthy client selector (1.525093ms)
+✔ KB requires query but no invented short query cap (0.592781ms)
+✔ KB finite numeric clamp preserves fractions under typed numeric admission (0.512741ms)
+✔ KB filters only the four exact source kind names (0.269595ms)
+✔ observation clock is mandatory but is not current authority (1.341627ms)
+✔ KB missing-client envelope has no query or fabricated client fields (0.458028ms)
+✔ KB caught-failure envelope retains selected query and client but no rows (0.584999ms)
+✔ KB healthy empty and source failure remain distinct without absence claims (0.634163ms)
+✔ KB exact request echoes prevent substitution (0.702205ms)
+✔ KB IDs are opaque source IDs and score has explicit lower threshold only (0.879903ms)
+✔ KB title and snippet preserve same-text prefix and UTF16 bounds (1.046243ms)
+✔ KB source normalization permits post-cap trailing space but no internal newline (0.397778ms)
+✔ KB selected kind must match projected rows (0.569887ms)
+✔ KB result count is bounded without forcing post-filter fullness (0.402044ms)
+✔ KB projection closes row fields and preserves nullable-free declared strings (0.465109ms)
+✔ graph typed normalization retains exact numeric vs string parse behavior (0.667323ms)
+✔ graph capped UTF16 selectors retain post-cap whitespace (0.185108ms)
+✔ graph context is empty and cannot accept model-owned role or clock (0.201433ms)
+✔ invalid graph client projects only the established error branch (0.908616ms)
+✔ graph conflicting client seed cannot be accepted as another branch (0.293281ms)
+✔ graph empty uses edges and populated uses connections, with no invented tool fields (0.639882ms)
+✖ graph original absent seed remains absent from summary without fresh authority claims (0.81829ms)
+✔ graph node projection preserves opaque type and label strings without narrow vocabulary (0.150145ms)
+✔ graph IDs and types must agree and node identity cannot duplicate (0.218669ms)
+✔ graph advertised counts bind returned rows but retain pre-cap connection count (0.722346ms)
+✔ graph connections are opaque prose and locale sorting is not invented (0.131928ms)
+✔ source flags and coverage are not admitted into either projection (0.361373ms)
+✔ independent request/context getter and proxy controls are inert (0.148744ms)
+✔ result admission detaches both families without executing payload accessors (0.400902ms)
+✔ KB defaults preserve raw client and reject missing query (7.299164ms)
+✔ KB context observation is required canonical and not model supplied (0.452ms)
+✔ KB missing client and explicit failure remain distinct (6.715897ms)
+✔ KB raw client truthiness and fractional limit remain (0.427192ms)
+✔ KB all kinds accept opaque IDs and finite scores above threshold (1.05124ms)
+✔ KB selectors and observation are bound (0.801535ms)
+✔ KB excerpt is same normalized UTF16 prefix, with source trailing truncation space (0.563958ms)
+✔ KB result returned as detached nested value (0.918596ms)
+✔ graph preserves numeric fraction and parseInt string semantics (3.347363ms)
+✔ graph three branches and exact scoped refusal (5.122712ms)
+✔ graph summary counts reflect pre-cap edges and original seed (0.840544ms)
+✔ graph duplicate and type identity refused without inventing label vocabulary (0.43234ms)
+✔ raw getters and proxies are never invoked (0.289065ms)
+✔ result getters and unrelated contexts refused (0.25222ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 43
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.593814
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:118:1
+✖ graph original absent seed remains absent from summary without fresh authority claims (0.81829ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:120:80)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

@@ -1,0 +1,10 @@
+{
+  "checks": 8191,
+  "passed": 8191,
+  "failed": 0,
+  "failures": [],
+  "privateReferenceObjectsChecked": true,
+  "runtimeActionsExecuted": false,
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "manifestSha256": "6c605c066870babb9feb007024e19a225f4e39e5c24bda1a9fea961280f4505a"
+}

@@ -1,0 +1,9 @@
+# News review controls before candidate inspection
+
+Candidate offered64853d38. Do not conflate default news, personnel, monitors and source views; source contains news, budget, personnel and research exact kinds. The source wrapper adds tool/generatedAt/result/authority. Four remaining operations were not accepted merely by earlier source inspection; this news candidate has not been inspected when these controls are frozen.
+
+Use closed branch-dependent trusted facts: client resolution, effective returned scope (folder-derived assignment is real), independent news cutoff observation, personnel default local-calendar year, and current monitor owner identity. These are producer observations, not current authority. Monitors ignores raw scope after wrapper client resolution. No monotonic relation among clocks or generatedAt inference.
+
+Test source numeric defaults/truncation/clamps, both q UTF16 caps, actual offset differences, source parameter aliases, exact output raw columns and optional stored config values. Keep body-null/check constraint, source rights and row limits, separate retained coverage/intake/corpus truth, full-text versus headline semantics, source-derived aliases and exact raw source preservation. News/budget/personnel observedAt aliases lose Date milliseconds through String(Date); research keeps exact ISO. No current employment, corpus absence, publisher success or source access inferred from DTO validation.
+
+Check all source kinds, default news nullable projection and cutoff/order/pagination, monitors actor identity and query-interpretation modes, personnel source-linked scope, returned detached data, opaque guidance and hostile JSON. Record complete DDL/projection/policy reference identities and source-only facts. No parser copy or private source execution. Preserve raw source failures and reviewer fixture errors separately.

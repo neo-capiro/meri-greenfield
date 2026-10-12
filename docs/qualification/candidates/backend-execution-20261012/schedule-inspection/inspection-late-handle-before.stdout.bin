@@ -1,0 +1,50 @@
+✔ exact schedule describe returns only bounded public fields and original run references (7.710538ms)
+✔ delegated same-tenant inspection relies on current callback, not owner equality (1.232955ms)
+✔ cancelled app projection is described and never inferred absent (1.174156ms)
+✔ request projection and caller are detached before first await (0.868026ms)
+✔ cross-tenant caller or scope refuses before authority and SDK (0.892803ms)
+✔ authority denial, substitution and expiry refuse before describe (2.0015ms)
+✔ revocation at release refuses result without retry (1.026804ms)
+✔ known authority expiry is installed in actual SDK scope (0.765953ms)
+✔ larger authority expiry cannot extend original deadline (0.766173ms)
+✔ published authority expiry bounds parked before_describe (12.682842ms)
+✔ published authority expiry bounds parked before_release (11.331665ms)
+✔ parked SDK describe observes deadline and no late result release (11.320517ms)
+✔ pre-abort invokes no authority or SDK (0.500112ms)
+✔ abort of parked read cancels scoped signal and removes owned listener (0.590257ms)
+✔ local call bound refuses invalid or more than60 second deadlines before effects (0.559682ms)
+✔ private fields are neither accessed nor projected (0.743949ms)
+✔ hostile included fields and invalid Date fail closed (1.639977ms)
+✔ changed SDK schedule identity refuses even under valid authority (0.386301ms)
+✔ each returned window is capped with exact observed omissions, recent keeps newest suffix (3.355567ms)
+✔ empty recent window is still partial history independent of action counter (0.567364ms)
+✔ SDK rejection is sanitized without evaluating hostile error code getter (0.565611ms)
+✔ request accessors and context extras are rejected without execution (0.236615ms)
+✖ getHandle completion after deadline cannot begin describe (1.185423ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 22
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 388.395871
+
+✖ failing tests:
+
+test at apps/control/test/temporal-inspection.test.mjs:39:1
+✖ getHandle completion after deadline cannot begin describe (1.185423ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-inspection-20261012/apps/control/test/temporal-inspection.test.mjs:39:444)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

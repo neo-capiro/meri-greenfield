@@ -1,0 +1,374 @@
+diff --git a/packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs b/packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs
+new file mode 100644
+index 00000000..685672a2
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs
+@@ -0,0 +1,47 @@
++// Managed-source projections only; no MCP client, retrieval or access decision.
++import {snapshotOperationData} from './operation-contracts.mjs';
++const fail = message => { throw new Error(message); };
++const operation = 'read_monday_client_boards';
++const optional = (value, cap) => typeof value === 'string' ? value.trim().slice(0, cap) || null : null;
++export function createClientKnowledgeMondayValidators({validateShape, schema}) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Monday contract configuration');
++  function requireOperation(id) { if (id !== operation) fail('Unknown Monday operation'); }
++  const inputDefinition = id => { requireOperation(id); return 'ClientKnowledgeMondayInput'; };
++  const outputDefinition = id => { requireOperation(id); return 'ClientKnowledgeMondayOutput'; };
++  function normalizeInput(id, request, context = {}) {
++    requireOperation(id);
++    const raw = snapshotOperationData(request), ctx = snapshotOperationData(context);
++    validateShape('ClientKnowledgeMondayRequest', raw); validateShape('ClientKnowledgeMondayContext', ctx);
++    const parsed = typeof raw.pageSize === 'number' ? raw.pageSize : typeof raw.pageSize === 'string' ? Number(raw.pageSize) : NaN;
++    const pageSize = raw.pageSize === undefined ? null : Math.min(100, Math.max(1, Number.isFinite(parsed) ? Math.trunc(parsed) : 100));
++    const input = {clientId: optional(raw.clientId, 80), boardContext: optional(raw.boardContext, 2000),
++      cursor: optional(raw.cursor, 512), pageSize, requireComplete: pageSize === null && !optional(raw.cursor, 512)};
++    validateShape(inputDefinition(id), input);
++    return Object.freeze({input: Object.freeze(input), metadata: Object.freeze({sourceConnected: false,
++      authoritative: false, currentPolicyQualified: false, absenceEvidence: false,
++      pagination: input.requireComplete ? 'requested-complete' : 'explicit-page'})});
++  }
++  function assertResult(id, value, request, context = {}) {
++    const {input} = normalizeInput(id, request, context), page = snapshotOperationData(value);
++    validateShape(outputDefinition(id), page);
++    if (page.clientId !== input.clientId || page.currentStatus !== (page.coverage.sources[0]?.sourceStatus ?? 'unavailable'))
++      fail('Monday wrapper identity/status substitution');
++    if (page.coverage.requestedDomains.length !== 1 || page.coverage.requestedDomains[0] !== 'monday' ||
++        page.coverage.sources.some(source => source.domain !== 'monday')) fail('Monday coverage domain substitution');
++    const ids = new Set();
++    for (const row of page.records) {
++      const p = row.payload, o = p.origin, provenance = row.provenance;
++      if (p.clientId !== input.clientId || row.recordId !== `${o.boardId}:${o.itemId}` || ids.has(row.recordId)) fail('Monday record identity substitution');
++      ids.add(row.recordId);
++      if (provenance.boardId !== o.boardId || provenance.itemId !== o.itemId || provenance.parentItemId !== o.parentItemId ||
++          (o.itemType === 'subitem') !== (typeof o.parentItemId === 'string' && !!o.parentItemId)) fail('Monday origin mismatch');
++      if (p.status !== null && (!p.status || p.status.trim() !== p.status)) fail('Monday status normalization mismatch');
++      if (p.url !== null && !/^https:\/\/[a-z0-9-]+\.monday\.com\//i.test(p.url)) fail('Monday URL projection mismatch');
++    }
++    // Provider fields/columns are inert JSON, not a reconstructed provider API.
++    // Coverage is reported source metadata. Wall checks, source rescan/snapshot,
++    // external-tool schema, actor binding and budget/deadline require execution.
++    return page;
++  }
++  return Object.freeze({schemaId: schema.$id, operationIds: Object.freeze([operation]), inputDefinition, outputDefinition, normalizeInput, assertResult});
++}
+diff --git a/packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json b/packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json
+new file mode 100644
+index 00000000..3e5a8fce
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json
+@@ -0,0 +1,288 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:client-knowledge-monday:0.2.0",
++  "$defs": {
++    "ClientKnowledgeMondayContext": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {},
++      "required": []
++    },
++    "ClientKnowledgeMondayRequest": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string"
++        },
++        "boardContext": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "cursor": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "pageSize": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "clientId"
++      ]
++    },
++    "ClientKnowledgeMondayInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "boardContext": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "cursor": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "pageSize": {
++          "type": [
++            "integer",
++            "null"
++          ],
++          "minimum": 1,
++          "maximum": 100
++        },
++        "requireComplete": {
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "clientId",
++        "boardContext",
++        "cursor",
++        "pageSize",
++        "requireComplete"
++      ]
++    },
++    "ClientKnowledgeMondayRecord": {
++      "allOf": [
++        {
++          "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/RetrievalRecord"
++        },
++        {
++          "properties": {
++            "domain": {
++              "const": "monday"
++            },
++            "payload": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "clientId": {
++                  "type": "string"
++                },
++                "sourceActorUserId": {
++                  "type": "string"
++                },
++                "title": {
++                  "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                },
++                "status": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "owners": {
++                  "type": "array",
++                  "items": {
++                    "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                  }
++                },
++                "dueDate": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "updatedAt": {
++                  "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                },
++                "description": {
++                  "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                },
++                "origin": {
++                  "type": "object",
++                  "additionalProperties": false,
++                  "properties": {
++                    "provider": {
++                      "const": "monday"
++                    },
++                    "boardId": {
++                      "type": "string",
++                      "pattern": "^[0-9]+$"
++                    },
++                    "itemId": {
++                      "type": "string",
++                      "pattern": "^[0-9]+$"
++                    },
++                    "parentItemId": {
++                      "type": "string"
++                    },
++                    "itemType": {
++                      "enum": [
++                        "item",
++                        "subitem"
++                      ]
++                    },
++                    "scope": {
++                      "enum": [
++                        "request",
++                        "saved_mapping"
++                      ]
++                    }
++                  },
++                  "required": [
++                    "provider",
++                    "boardId",
++                    "itemId",
++                    "itemType",
++                    "scope"
++                  ]
++                },
++                "updates": {
++                  "type": "array",
++                  "items": {
++                    "type": "object",
++                    "additionalProperties": false,
++                    "properties": {
++                      "id": {
++                        "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                      },
++                      "body": {
++                        "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                      },
++                      "createdAt": {
++                        "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                      },
++                      "creator": {
++                        "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                      }
++                    },
++                    "required": []
++                  }
++                },
++                "columns": {
++                  "type": "array",
++                  "items": {
++                    "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/KnowledgeJsonValue"
++                  }
++                },
++                "url": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                }
++              },
++              "required": [
++                "clientId",
++                "sourceActorUserId",
++                "status",
++                "owners",
++                "dueDate",
++                "origin",
++                "updates",
++                "columns",
++                "url"
++              ]
++            },
++            "provenance": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "source": {
++                  "const": "managed_monday_mcp"
++                },
++                "boardId": {
++                  "type": "string"
++                },
++                "itemId": {
++                  "type": "string"
++                },
++                "parentItemId": {
++                  "type": "string"
++                }
++              },
++              "required": [
++                "source",
++                "boardId",
++                "itemId"
++              ]
++            }
++          },
++          "required": [
++            "provenance"
++          ]
++        }
++      ]
++    },
++    "ClientKnowledgeMondayOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "read_monday_client_boards"
++        },
++        "authoritativeOwner": {
++          "const": "managed_monday_mcp"
++        },
++        "currentStatus": {
++          "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/RetrievalSourceStatus"
++        },
++        "clientId": {
++          "type": "string"
++        },
++        "records": {
++          "type": "array",
++          "maxItems": 3000,
++          "items": {
++            "$ref": "#/$defs/ClientKnowledgeMondayRecord"
++          }
++        },
++        "coverage": {
++          "$ref": "urn:meri:retrieval:data-search:0.2.0#/$defs/CoverageManifest"
++        }
++      },
++      "required": [
++        "tool",
++        "authoritativeOwner",
++        "currentStatus",
++        "clientId",
++        "records",
++        "coverage"
++      ]
++    }
++  }
++}
+diff --git a/packages/contracts/test/retrieval-client-knowledge-monday.test.mjs b/packages/contracts/test/retrieval-client-knowledge-monday.test.mjs
+new file mode 100644
+index 00000000..12405de8
+--- /dev/null
++++ b/packages/contracts/test/retrieval-client-knowledge-monday.test.mjs
+@@ -0,0 +1,21 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import Ajv from 'ajv/dist/2020.js';
++import formats from 'ajv-formats';
++import {createClientKnowledgeMondayValidators} from '../retrieval-0.2/client-knowledge-monday-validation.mjs';
++const load=name=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${name}.schema.json`,import.meta.url)));
++const schema=load('client-knowledge-monday'),ajv=new Ajv({strict:true,allErrors:true});formats(ajv);ajv.addSchema(load('data-search'));ajv.addSchema(schema);
++const v=createClientKnowledgeMondayValidators({schema,validateShape:(name,value)=>{const fn=ajv.getSchema(`${schema.$id}#/$defs/${name}`);if(!fn(value))throw new Error(JSON.stringify(fn.errors));}});
++const id='read_monday_client_boards', clientId='11111111-1111-1111-1111-111111111111';
++const source={domain:'monday',sourceStatus:'healthy',returned:1,recordsEvaluated:1,requestedEntityCount:1,searchedEntityCount:1,pagesRead:1,hasMore:false,truncated:false,paginationComplete:true,coverageComplete:true,stopReason:'monday_mapped_boards_complete'};
++const row=()=>({domain:'monday',recordId:'1:2',payload:{clientId,sourceActorUserId:'actor',title:{opaque:true},status:null,owners:[{id:5}],dueDate:'provider date',origin:{provider:'monday',boardId:'1',itemId:'2',itemType:'item',scope:'saved_mapping'},updates:[{}],columns:[null,{value:{data:'external'}}],url:null},provenance:{source:'managed_monday_mcp',boardId:'1',itemId:'2'}});
++const page=()=>({tool:id,authoritativeOwner:'managed_monday_mcp',currentStatus:'healthy',clientId,records:[row()],coverage:{requestedDomains:['monday'],searchedDomains:['monday'],requestedEntityCount:1,searchedEntityCount:1,recordsEvaluated:1,recordsReturned:1,paginationComplete:true,unavailableSources:[],sources:[structuredClone(source)],complete:true,stopReason:'done'}});
++test('Monday normalized complete/page distinction and Number string semantics',()=>{assert.deepEqual(v.normalizeInput(id,{clientId}).input,{clientId,boardContext:null,cursor:null,pageSize:null,requireComplete:true});for(const [raw,n] of [['',1],['2.9',2],['2junk',100],[null,100],[200,100]])assert.equal(v.normalizeInput(id,{clientId,pageSize:raw}).input.pageSize,n);assert.equal(v.normalizeInput(id,{clientId,cursor:' opaque '}).input.requireComplete,false);});
++test('Monday requires UUID and bounded trimmed selectors',()=>{assert.throws(()=>v.normalizeInput(id,{clientId:'name'}));assert.equal(v.normalizeInput(id,{clientId,boardContext:' x '.repeat(1000)}).input.boardContext.length,2000);});
++test('Monday full provider JSON fields stay inert without invented scalar types',()=>v.assertResult(id,page(),{clientId}));
++test('Monday parent and provenance binding preserves subitems',()=>{const p=page();p.records[0].payload.origin.parentItemId='3';p.records[0].payload.origin.itemType='subitem';p.records[0].provenance.parentItemId='3';v.assertResult(id,p,{clientId});p.records[0].provenance.parentItemId='4';assert.throws(()=>v.assertResult(id,p,{clientId}));});
++test('Monday current status echoes first coverage source including unavailable',()=>{const p=page();p.currentStatus='unavailable';assert.throws(()=>v.assertResult(id,p,{clientId}));p.records=[];p.coverage.sources=[];v.assertResult(id,p,{clientId});});
++test('Monday client, record, domain and duplicate substitutions fail',()=>{for(const mutate of [p=>p.clientId='other',p=>p.records[0].payload.clientId='other',p=>p.records[0].recordId='1:3',p=>p.records.push(row()),p=>p.coverage.requestedDomains=['mail']]){const p=page();mutate(p);assert.throws(()=>v.assertResult(id,p,{clientId}));}});
++test('Monday invalid cursors remain bounded request data awaiting source refusal',()=>{assert.equal(v.normalizeInput(id,{clientId,cursor:'not-signed'}).input.cursor,'not-signed');const p=page();p.records=[];p.currentStatus='error';p.coverage.sources[0].sourceStatus='error';p.coverage.sources[0].stopReason='monday_cursor_invalid';v.assertResult(id,p,{clientId,cursor:'not-signed'});});
++test('Monday source-only data detaches and rejects getters',()=>{const p=page(),out=v.assertResult(id,p,{clientId});assert.notEqual(out.records[0].payload.columns,p.records[0].payload.columns);let touched=0;assert.throws(()=>v.normalizeInput(id,{get clientId(){touched++;return clientId;}}));assert.equal(touched,0);});

@@ -1,0 +1,152 @@
+{
+  "source": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+  "authorPacket": "cecffb15a7a4ca8974ac818fa0ec45b9f46e0c88",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "packages/contracts/test/retrieval-action-items-complete-independent.test.mjs",
+      "bytes": 15503,
+      "sha256": "ba5f395f957758d50fd03450b6e5e9349f791308d806577635d55d053c214f40"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ACTION-ITEMS-COMPLETE-REVIEW-20261012.md",
+      "bytes": 4978,
+      "sha256": "b26f659e58e77badb1e8baf3d92c7931a175d08e916091502b89de6eaf54bbfd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/audit.py",
+      "bytes": 3551,
+      "sha256": "2a2e6d3c850f218bdbbd969096b3d7be037478eaad384cb010d61cbbb70db68d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/baseline-absent.json",
+      "bytes": 1348,
+      "sha256": "a0ec6bccaae209d8cf967a9d959052566d1117287a254ca185c66559cfcef95c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/baseline-absent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/baseline-absent.stdout.bin",
+      "bytes": 1740,
+      "sha256": "4936a59138294946842779cc2f4b8e0f96d5d9540b8ab40f4e80dfda51152230"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/cleanup-verification.json",
+      "bytes": 689,
+      "sha256": "992cd7efaeac5c19162748dbdb7810ec46b9fb701166b87f6a4dc568e5ecdffd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/criteria.json",
+      "bytes": 2422,
+      "sha256": "c9bd42761fa48c2ece251d443d52c4ca2f68c57ce744a5a99aebe49264bc2e45"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/dependencies.json",
+      "bytes": 1182,
+      "sha256": "1f19063a61cb7356f3c9fe44861b5b694a2c1ae839893c8b8ae5273d74f7b6e4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/exact28.json",
+      "bytes": 1332,
+      "sha256": "f5ebfe3a48bb0325a7a9728ca9b9ad3cf972009f0af3bd603b3545eccbf787e5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/exact28.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/exact28.stdout.bin",
+      "bytes": 2965,
+      "sha256": "ade4e48ea9f8e5d3e1543e203e244e0a527151d1a5ea355a42d2bc0e5133e381"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/final-audit.json",
+      "bytes": 1502,
+      "sha256": "5d8e0d3e4b8fd270168429e1e06feed020cef8aa2f08b0ddb3e3d2710a94736d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/final-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "d5556727a00b8272f1ccf9fe3e256b6b7bd22cdebb5162055acdc92467328c97"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/initial-independent-test.mjs",
+      "bytes": 15572,
+      "sha256": "c64ceabe83c553d2a55d1b5f55c61e1b7e91dd9dffdce0187684149c70a35d3a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/packet-audit.json",
+      "bytes": 1383,
+      "sha256": "706cd2cd818bfd076f589742bde9df06c8259769f35580d873fb73a86d31bde2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/packet-audit.py",
+      "bytes": 2008,
+      "sha256": "b02d686baaa9c5db3a6832798cdda78cd3c35a65db7d2358362e9c31d7d68e42"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/packet-audit.stdout.bin",
+      "bytes": 43,
+      "sha256": "a9972888f4fccfda84004571f3481be988e02e41220d9a4393f6d7aa54c9d343"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/packet-verification.json",
+      "bytes": 5482,
+      "sha256": "ccaa7e20b4d34642eac3b5a2b7a93aacf58b689847ae55628296edeaa29f6698"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/pre-candidate-fixture-correction.json",
+      "bytes": 513,
+      "sha256": "1672772a45e53c5c75a16fa0acd78f88f7e8f927755bf7ff754e08d146ec7cfd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/reference-identities.json",
+      "bytes": 6739,
+      "sha256": "b916242dcc841e35c8956f5e82aa7f665ce0ad0340b81e94d8a00de041c96b0d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-audit.json",
+      "bytes": 1440,
+      "sha256": "3317c605138f0bf128dc1b6fe2623a37b7476470ff717c4e017c5f4d04ca42f4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-audit.stdout.bin",
+      "bytes": 53,
+      "sha256": "c02928c2e8a84f7f18176e8d95563df099c33d7f90561a0226332c0bb1a9c567"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/source-preservation.json",
+      "bytes": 4081,
+      "sha256": "57db886cf1ab0769af23ebdfad60d8cbf6d2013eebe8fce2037ec9d8d3943a59"
+    }
+  ]
+}

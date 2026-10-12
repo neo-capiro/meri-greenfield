@@ -1,0 +1,23 @@
+{
+  "authoredSupplementCommand": [
+    "git",
+    "diff",
+    "--cached",
+    "--check",
+    "--",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-audit.py",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-nineteen-expectation-updates.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-outline.md",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-transform.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-nineteen-update-script.py",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-dependency-cleanup.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-report.md",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-audit-results.json",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-failure-provenance.json"
+  ],
+  "exitCode": 0,
+  "rawImportedRootStreams": "Preserved exact bytes; previous known raw formatting is not normalized."
+}

@@ -1,0 +1,9 @@
+{
+  "firstCandidate": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "beforeTestSha256": "a4cbdab95d487846ebdd42119e4dee1b0bb1d34d7ed97b702b26bb0624f044c1",
+  "firstResult": {
+    "passed": 26,
+    "failed": 1
+  },
+  "reason": "Reviewer fixture incorrectly assumed Monday name resolution. Accepted ClientKnowledgeMondayInput requires UUID, with no trusted clientResolution context for this operation. Replace only positive client selector with whitespace-wrapped UUID and add explicit name rejection; preserve pageSize and trim assertions. No production repair or policy narrowing requested."
+}

@@ -1,0 +1,53 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-tests-20261012",
+  "sourceHead": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+  "sourceDiffSha256": "fe0ab460a37934dd202bd1a2a5a7d10bc49c1554508ba77cd55c3e902711f9cc",
+  "sourceDiffBytes": 83884,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T21:31:47.666288+00:00",
+  "durationSeconds": 29.605,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 335191,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-updated.stdout.bin",
+      "bytes": 68314,
+      "sha256": "78090338325efe4fd14c62bfb9354aa5149564605543605ace0cb8c85d5072a2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-updated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

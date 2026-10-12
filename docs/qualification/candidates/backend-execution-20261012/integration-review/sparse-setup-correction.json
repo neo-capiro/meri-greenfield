@@ -1,0 +1,7 @@
+{
+  "operation": "git sparse-checkout add --no-cone /apps/gateway/ /packages/runtime/",
+  "observation": "Installed Git add subcommand rejects --no-cone; existing worktree was already configured non-cone. Corrected add /apps/gateway/ /packages/runtime/ then read-tree -mu HEAD succeeded.",
+  "productSourceChanged": false,
+  "rawDiagnostic": "error: unknown option `no-cone'",
+  "scope": "Setup-only observation; no test or source defect."
+}

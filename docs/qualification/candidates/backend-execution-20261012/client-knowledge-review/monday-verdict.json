@@ -1,0 +1,32 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "5ee5446521caf47597b584166c435b5f1cde9804",
+  "operations": [
+    "read_monday_client_boards"
+  ],
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json",
+      "sha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs",
+      "sha256": "5887b8194cd047715b88301ef0bf4abdcceb36936a139f84dbdb11d767112ec2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "sha256": "8200b40eefc110747fd739afec0dd80705d186a38e86431abbd0308b8a08a512"
+    }
+  ],
+  "checks": "24/24 (15 independent + 9 author)",
+  "failurePreserved": "monday-initial:22/23, explicit page size output overrun",
+  "limits": [
+    "Payload/coverage correlation only; no current membership, wall, board access, provider, cursor authentication or completeness qualification.",
+    "All handlers remain unavailable; author complete packet audit pending."
+  ],
+  "remainingOperations": [
+    "read_chat_attachments",
+    "search_memory",
+    "get_client_context"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "ownedCaptureCount": 9,
+  "groups": [
+    {
+      "receipt": "test-author-connected-final.json",
+      "pgid": 337073,
+      "exitCode": 0,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-connected-initial.json",
+      "pgid": 336533,
+      "exitCode": 1,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-expectation-transform-final.json",
+      "pgid": 336433,
+      "exitCode": 0,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-expectation-transform-fixed.json",
+      "pgid": 335085,
+      "exitCode": 0,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-expectation-transform.json",
+      "pgid": 334186,
+      "exitCode": 1,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-predecessor-before.json",
+      "pgid": 333888,
+      "exitCode": 1,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-predecessor-final.json",
+      "pgid": 336575,
+      "exitCode": 0,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-predecessor-updated.json",
+      "pgid": 335191,
+      "exitCode": 1,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    },
+    {
+      "receipt": "test-author-preservation.json",
+      "pgid": 337478,
+      "exitCode": 0,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false
+    }
+  ],
+  "scope": "Only task-owned process groups checked; no other owner processes inspected or touched."
+}

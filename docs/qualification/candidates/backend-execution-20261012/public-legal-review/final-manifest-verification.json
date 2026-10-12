@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "members": 99,
+  "verified": 99,
+  "manifestBytes": 24065,
+  "manifestSha256": "d32f350637e9bce9a70b14ff64603ae01574a48f7ba8cd5582f5f900f7e9470b",
+  "scope": "Read-only final current packet membership and exact byte identity; not runtime acceptance."
+}

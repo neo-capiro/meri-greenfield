@@ -1,0 +1,5 @@
+{
+  "command": "git diff --cached --check 1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "exitCode": 0,
+  "status": "PASS"
+}

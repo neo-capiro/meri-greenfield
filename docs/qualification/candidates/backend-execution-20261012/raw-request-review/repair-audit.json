@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/backend-execution-20261012/raw-request-review/audit-repair.mjs"
+  ],
+  "cwd": "/workspace/meri-raw-request-review-20261012",
+  "sourceHead": "326c5c2b100e5b4035f23687d371e23280829080",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:30:02.667518+00:00",
+  "durationSeconds": 0.317,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 333934,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit.stdout.bin",
+      "bytes": 107,
+      "sha256": "fd79c7126ec15c04f4b65d125ffc8c47d349e5c8517edae9bb925fb0cae8ebf4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/repair-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

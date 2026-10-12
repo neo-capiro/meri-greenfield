@@ -1,0 +1,1 @@
+{"kind":"read-only-path-diagnostic","command":"cat docs/standards/IMPLEMENTATION-STANDARDS.md","exitCode":1,"reason":"ENOENT; AGENTS.md names docs/IMPLEMENTATION-STANDARDS.md, read successfully immediately afterward","sourceMutation":false}

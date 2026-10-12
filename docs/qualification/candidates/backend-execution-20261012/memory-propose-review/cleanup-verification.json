@@ -1,0 +1,42 @@
+{
+  "groups": [
+    {
+      "label": "baseline-absent",
+      "pgid": 312149,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "initial31",
+      "pgid": 312853,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "exact31",
+      "pgid": 313293,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "source-audit",
+      "pgid": 313821,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "final-audit",
+      "pgid": 314087,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "packet-audit",
+      "pgid": 314132,
+      "receiptAbsent": true,
+      "presentMembers": []
+    }
+  ],
+  "allAbsent": true,
+  "otherOwnerProcessesSignaled": false
+}

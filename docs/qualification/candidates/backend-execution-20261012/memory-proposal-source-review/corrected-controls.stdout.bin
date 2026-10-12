@@ -1,0 +1,33 @@
+✔ independent concrete adapter and handler compose existing source/authority/budget release (37.282546ms)
+✔ independent source factory leaves actual production catalog disabled (7.12305ms)
+✔ independent model cannot inject identity/source transport or trusted continuation (2.350164ms)
+✔ independent exact HTTPS origin rejects paths, credentials and alternate schemes before allocation (0.728595ms)
+✔ independent selected client comes only from current authority and includes clientless rows (6.701876ms)
+✔ independent unrestricted own queue may return client proposals and restricted data stays redacted (4.01731ms)
+✔ independent disabled source cannot claim queue absence (9.268956ms)
+✔ independent credential full-binding mismatches and expiry refuse before fetch (18.341296ms)
+✔ independent credential receipt getter/proxy never executes caller hooks (3.128484ms)
+✔ independent status/redirect and content-type failures never retain or settle (6.959574ms)
+✔ independent malformed/oversize/truncated UTF8/JSON never becomes source evidence (8.912391ms)
+✔ independent output tenant/actor/client/approval/status and restricted-content substitutions refuse (15.005381ms)
+✔ independent page limit/order/stalled cursor and false completeness refuse (6.05895ms)
+✔ independent retained continuation uses actual adapter and exact prior scope (7.781139ms)
+✔ independent unknown or poisoned continuation cannot invoke concrete source (12.313904ms)
+✔ independent source revocation during fetch prevents release and preserves uncertainty (2.109953ms)
+✔ independent late source policy/fence changes prevent release (4.133645ms)
+✔ independent abort during parked credential port starts no fetch (11.757718ms)
+✔ independent abort during parked fetch cancels late owned body and starts no release (2.928103ms)
+✔ independent abort during parked body read cancels stream and never settles (2.392026ms)
+✔ independent expire during parked credential port starts no fetch (2.664807ms)
+✔ independent expire during parked fetch cancels late owned body and starts no release (2.393128ms)
+✔ independent expire during parked body read cancels stream and never settles (1.78199ms)
+✔ independent credential expiry is narrower than still-current capability during body read (2.034279ms)
+✔ independent final authority after settlement cannot release revoked or stale success (6.763279ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2036.220755

@@ -1,0 +1,88 @@
+✔ Monday normalized complete/page distinction and Number string semantics (6.144458ms)
+✔ Monday requires UUID and bounded trimmed selectors (0.450868ms)
+✖ Monday full provider JSON fields stay inert without invented scalar types (7.752366ms)
+✖ Monday parent and provenance binding preserves subitems (2.10848ms)
+✖ Monday current status echoes first coverage source including unavailable (1.810763ms)
+✔ Monday client, record, domain and duplicate substitutions fail (5.406649ms)
+✖ Monday invalid cursors remain bounded request data awaiting source refusal (1.368818ms)
+✖ Monday source-only data detaches and rejects getters (1.697312ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 3
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.980697
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-monday.test.mjs:16:1
+✖ Monday full provider JSON fields stay inert without invented scalar types (7.752366ms)
+  Error: strict mode: missing type "object" for keyword "required" at "urn:meri:retrieval:client-knowledge-monday:0.2.0#/allOf/1" (strictTypes)
+      at checkStrictMode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+      at strictTypesError (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+      at checkKeywordTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:261:17)
+      at checkStrictTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:233:5)
+      at schemaKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+      at typeAndKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+      at subSchemaObjCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+      at subschemaCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+      at KeywordCxt.subschema (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+      at /workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/vocabularies/applicator/allOf.js:16:32
+
+test at packages/contracts/test/retrieval-client-knowledge-monday.test.mjs:17:1
+✖ Monday parent and provenance binding preserves subitems (2.10848ms)
+  Error: strict mode: missing type "object" for keyword "required" at "urn:meri:retrieval:client-knowledge-monday:0.2.0#/allOf/1" (strictTypes)
+      at checkStrictMode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+      at strictTypesError (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+      at checkKeywordTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:261:17)
+      at checkStrictTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:233:5)
+      at schemaKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+      at typeAndKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+      at subSchemaObjCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+      at subschemaCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+      at KeywordCxt.subschema (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+      at /workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/vocabularies/applicator/allOf.js:16:32
+
+test at packages/contracts/test/retrieval-client-knowledge-monday.test.mjs:18:1
+✖ Monday current status echoes first coverage source including unavailable (1.810763ms)
+  Error: strict mode: missing type "object" for keyword "required" at "urn:meri:retrieval:client-knowledge-monday:0.2.0#/allOf/1" (strictTypes)
+      at checkStrictMode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+      at strictTypesError (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+      at checkKeywordTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:261:17)
+      at checkStrictTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:233:5)
+      at schemaKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+      at typeAndKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+      at subSchemaObjCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+      at subschemaCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+      at KeywordCxt.subschema (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+      at /workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/vocabularies/applicator/allOf.js:16:32
+
+test at packages/contracts/test/retrieval-client-knowledge-monday.test.mjs:20:1
+✖ Monday invalid cursors remain bounded request data awaiting source refusal (1.368818ms)
+  Error: strict mode: missing type "object" for keyword "required" at "urn:meri:retrieval:client-knowledge-monday:0.2.0#/allOf/1" (strictTypes)
+      at checkStrictMode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+      at strictTypesError (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+      at checkKeywordTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:261:17)
+      at checkStrictTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:233:5)
+      at schemaKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+      at typeAndKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+      at subSchemaObjCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+      at subschemaCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+      at KeywordCxt.subschema (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+      at /workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/vocabularies/applicator/allOf.js:16:32
+
+test at packages/contracts/test/retrieval-client-knowledge-monday.test.mjs:21:1
+✖ Monday source-only data detaches and rejects getters (1.697312ms)
+  Error: strict mode: missing type "object" for keyword "required" at "urn:meri:retrieval:client-knowledge-monday:0.2.0#/allOf/1" (strictTypes)
+      at checkStrictMode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+      at strictTypesError (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+      at checkKeywordTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:261:17)
+      at checkStrictTypes (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:233:5)
+      at schemaKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+      at typeAndKeywords (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+      at subSchemaObjCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+      at subschemaCode (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+      at KeywordCxt.subschema (/workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+      at /workspace/meri-client-knowledge-20261012/node_modules/ajv/dist/vocabularies/applicator/allOf.js:16:32

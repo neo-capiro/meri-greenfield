@@ -1,0 +1,905 @@
+✔ independent raw factory oracle: query_outreach (3.576024ms)
+✖ independent advertised caller: query_outreach (0.69187ms)
+✔ independent caller closure: query_outreach (1.853536ms)
+✔ independent inert canonical admission: query_outreach (0.258749ms)
+✔ independent raw factory oracle: search_program_elements (1.225261ms)
+✖ independent advertised caller: search_program_elements (0.396165ms)
+✔ independent caller closure: search_program_elements (2.360257ms)
+✔ independent inert canonical admission: search_program_elements (0.158458ms)
+✔ independent raw factory oracle: get_program_element (0.494152ms)
+✖ independent advertised caller: get_program_element (0.430607ms)
+✔ independent caller closure: get_program_element (2.918947ms)
+✔ independent inert canonical admission: get_program_element (0.197858ms)
+✔ independent raw factory oracle: get_pe_budget_timeline (0.415104ms)
+✖ independent advertised caller: get_pe_budget_timeline (0.416096ms)
+✔ independent caller closure: get_pe_budget_timeline (2.017032ms)
+✔ independent inert canonical admission: get_pe_budget_timeline (0.122544ms)
+✔ independent raw factory oracle: search_public_web (0.813543ms)
+✖ independent advertised caller: search_public_web (0.264207ms)
+✔ independent caller closure: search_public_web (1.323739ms)
+✔ independent inert canonical admission: search_public_web (0.09335ms)
+✔ independent raw factory oracle: scrape_web_page (0.592321ms)
+✖ independent advertised caller: scrape_web_page (0.217617ms)
+✔ independent caller closure: scrape_web_page (1.253113ms)
+✔ independent inert canonical admission: scrape_web_page (0.162534ms)
+✔ independent raw factory oracle: search_sam_opportunities (1.560946ms)
+✖ independent advertised caller: search_sam_opportunities (0.197597ms)
+✔ independent caller closure: search_sam_opportunities (1.196317ms)
+✔ independent inert canonical admission: search_sam_opportunities (0.111137ms)
+✖ independent raw factory oracle: get_florida_budget_project (1.008516ms)
+✖ independent advertised caller: get_florida_budget_project (0.209215ms)
+✔ independent caller closure: get_florida_budget_project (1.206483ms)
+✔ independent inert canonical admission: get_florida_budget_project (0.089013ms)
+✔ independent raw factory oracle: get_state_bill_status (0.750798ms)
+✖ independent advertised caller: get_state_bill_status (0.216946ms)
+✔ independent caller closure: get_state_bill_status (1.426244ms)
+✔ independent inert canonical admission: get_state_bill_status (0.092199ms)
+✔ independent raw factory oracle: search_state_floor_votes (0.502866ms)
+✖ independent advertised caller: search_state_floor_votes (0.222364ms)
+✔ independent caller closure: search_state_floor_votes (1.210148ms)
+✔ independent inert canonical admission: search_state_floor_votes (0.085539ms)
+✔ independent raw factory oracle: find_contacts (0.779731ms)
+✖ independent advertised caller: find_contacts (0.175614ms)
+✔ independent caller closure: find_contacts (0.983328ms)
+✔ independent inert canonical admission: find_contacts (0.089585ms)
+✔ independent raw factory oracle: resolve_entity (1.079933ms)
+✖ independent advertised caller: resolve_entity (0.323386ms)
+✔ independent caller closure: resolve_entity (1.261286ms)
+✔ independent inert canonical admission: resolve_entity (0.084417ms)
+✔ independent raw factory oracle: search_tracked_bills (2.180707ms)
+✖ independent advertised caller: search_tracked_bills (0.169034ms)
+✔ independent caller closure: search_tracked_bills (1.241946ms)
+✔ independent inert canonical admission: search_tracked_bills (0.082004ms)
+✔ independent raw factory oracle: get_committee_roster (0.553091ms)
+✖ independent advertised caller: get_committee_roster (0.283636ms)
+✔ independent caller closure: get_committee_roster (1.239102ms)
+✔ independent inert canonical admission: get_committee_roster (0.080441ms)
+✔ independent raw factory oracle: list_members (0.476556ms)
+✖ independent advertised caller: list_members (1.167033ms)
+✔ independent caller closure: list_members (1.535888ms)
+✔ independent inert canonical admission: list_members (0.087912ms)
+✔ independent raw factory oracle: get_pe_contractors (0.436396ms)
+✖ independent advertised caller: get_pe_contractors (0.283336ms)
+✔ independent caller closure: get_pe_contractors (1.507715ms)
+✔ independent inert canonical admission: get_pe_contractors (0.101603ms)
+✔ independent raw factory oracle: get_pe_bills (0.380001ms)
+✖ independent advertised caller: get_pe_bills (0.289254ms)
+✔ independent caller closure: get_pe_bills (1.74326ms)
+✔ independent inert canonical admission: get_pe_bills (0.081893ms)
+✔ independent raw factory oracle: get_pe_report_language (0.396375ms)
+✖ independent advertised caller: get_pe_report_language (0.231708ms)
+✔ independent caller closure: get_pe_report_language (1.796429ms)
+✔ independent inert canonical admission: get_pe_report_language (0.082694ms)
+✔ independent raw factory oracle: get_state_rule_status (0.664498ms)
+✖ independent advertised caller: get_state_rule_status (0.267451ms)
+✔ independent caller closure: get_state_rule_status (1.642428ms)
+✔ independent inert canonical admission: get_state_rule_status (0.081792ms)
+✔ independent raw factory oracle: get_certification_status (6.718506ms)
+✔ independent advertised caller: get_certification_status (0.252319ms)
+✔ independent caller closure: get_certification_status (1.151431ms)
+✔ independent inert canonical admission: get_certification_status (0.118988ms)
+✔ independent raw factory oracle: search_sec_filings (0.801715ms)
+✖ independent advertised caller: search_sec_filings (0.269966ms)
+✔ independent caller closure: search_sec_filings (1.187935ms)
+✔ independent inert canonical admission: search_sec_filings (0.08675ms)
+✔ independent raw factory oracle: search_fara_registrations (0.718309ms)
+✖ independent advertised caller: search_fara_registrations (0.260261ms)
+✔ independent caller closure: search_fara_registrations (1.246604ms)
+✔ independent inert canonical admission: search_fara_registrations (0.080621ms)
+✔ independent raw factory oracle: search_lda_filings (1.02425ms)
+✖ independent advertised caller: search_lda_filings (0.237397ms)
+✔ independent caller closure: search_lda_filings (1.347275ms)
+✔ independent inert canonical admission: search_lda_filings (0.12018ms)
+✖ independent raw factory oracle: get_bill_status (1.611251ms)
+✖ independent advertised caller: get_bill_status (0.373651ms)
+✔ independent caller closure: get_bill_status (2.119224ms)
+✔ independent inert canonical admission: get_bill_status (0.081883ms)
+✔ independent raw factory oracle: search_floor_votes (1.055256ms)
+✖ independent advertised caller: search_floor_votes (0.305439ms)
+✔ independent caller closure: search_floor_votes (2.48257ms)
+✔ independent inert canonical admission: search_floor_votes (0.084957ms)
+✔ independent raw factory oracle: search_state_bills (0.794304ms)
+✖ independent advertised caller: search_state_bills (0.200972ms)
+✔ independent caller closure: search_state_bills (1.180314ms)
+✔ independent inert canonical admission: search_state_bills (0.193941ms)
+✔ independent raw factory oracle: get_state_legislator (0.575545ms)
+✖ independent advertised caller: get_state_legislator (0.221242ms)
+✔ independent caller closure: get_state_legislator (1.087705ms)
+✔ independent inert canonical admission: get_state_legislator (0.082153ms)
+✔ independent raw factory oracle: query_economic_data (0.921585ms)
+✖ independent advertised caller: query_economic_data (0.263666ms)
+✔ independent caller closure: query_economic_data (1.773575ms)
+✔ independent inert canonical admission: query_economic_data (0.080982ms)
+✔ independent raw factory oracle: search_federal_grants (0.653883ms)
+✖ independent advertised caller: search_federal_grants (0.303696ms)
+✔ independent caller closure: search_federal_grants (1.724472ms)
+✔ independent inert canonical admission: search_federal_grants (0.088784ms)
+✔ independent raw factory oracle: search_federal_awards (0.61245ms)
+✖ independent advertised caller: search_federal_awards (0.285299ms)
+✔ independent caller closure: search_federal_awards (1.764051ms)
+✔ independent inert canonical admission: search_federal_awards (0.088022ms)
+✔ independent raw factory oracle: lookup_client_registry (0.484609ms)
+✔ independent advertised caller: lookup_client_registry (0.358959ms)
+✔ independent caller closure: lookup_client_registry (0.781435ms)
+✔ independent inert canonical admission: lookup_client_registry (0.081563ms)
+✖ independent exact31 raw bindings advertise actual admitted request definitions (0.376466ms)
+✖ independent advertised defaults: query_outreach (0.468614ms)
+✖ independent advertised defaults: search_program_elements (0.448644ms)
+✔ independent advertised defaults: get_program_element (0.388764ms)
+✔ independent advertised defaults: get_pe_budget_timeline (0.396546ms)
+✖ independent advertised defaults: search_public_web (0.271778ms)
+✖ independent advertised defaults: scrape_web_page (0.256145ms)
+✖ independent advertised defaults: search_sam_opportunities (0.341594ms)
+✖ independent advertised defaults: get_florida_budget_project (0.388314ms)
+✔ independent advertised defaults: get_state_bill_status (0.267461ms)
+✖ independent advertised defaults: search_state_floor_votes (0.267482ms)
+✖ independent advertised defaults: find_contacts (0.242585ms)
+✖ independent advertised defaults: resolve_entity (0.240782ms)
+✖ independent advertised defaults: search_tracked_bills (0.395033ms)
+✔ independent advertised defaults: get_committee_roster (0.313391ms)
+✖ independent advertised defaults: list_members (0.259731ms)
+✔ independent advertised defaults: get_pe_contractors (0.374442ms)
+✔ independent advertised defaults: get_pe_bills (0.317918ms)
+✔ independent advertised defaults: get_pe_report_language (0.271938ms)
+✔ independent advertised defaults: get_state_rule_status (0.290677ms)
+✔ independent advertised defaults: get_certification_status (0.310156ms)
+✖ independent advertised defaults: search_sec_filings (0.261883ms)
+✖ independent advertised defaults: search_fara_registrations (0.234392ms)
+✖ independent advertised defaults: search_lda_filings (0.385209ms)
+✖ independent advertised defaults: get_bill_status (0.276926ms)
+✖ independent advertised defaults: search_floor_votes (0.31918ms)
+✖ independent advertised defaults: search_state_bills (0.29935ms)
+✖ independent advertised defaults: get_state_legislator (0.253141ms)
+✖ independent advertised defaults: query_economic_data (0.345209ms)
+✖ independent advertised defaults: search_federal_grants (0.314683ms)
+✖ independent advertised defaults: search_federal_awards (0.274222ms)
+✔ independent advertised defaults: lookup_client_registry (0.194542ms)
+✔ independent trusted resolution remains external, UUID cannot be rebound (0.501654ms)
+✔ independent required caller fields remain required (0.500231ms)
+✖ independent Request advertisement is not normalized validity or current authority (0.300601ms)
+ℹ tests 159
+ℹ suites 0
+ℹ pass 105
+ℹ fail 54
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1870.605125
+
+✖ failing tests:
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: query_outreach (0.69187ms)
+  Error: OutreachQueryInput: data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/clientId must match format "uuid", data/clientId must be null, data/clientId must match a schema in anyOf, data/limit must be integer, data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_program_elements (0.396165ms)
+  Error: ProgramElementSearchInput: data must have required property 'query', data must have required property 'service', data must have required property 'budgetActivity', data must NOT have additional properties, data/hasData must be boolean, data/hasData must be null, data/hasData must match a schema in anyOf, data/page must be integer, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_program_element (0.430607ms)
+  Error: ProgramElementDetailInput: data/peCode must NOT have more than 32 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_pe_budget_timeline (0.416096ms)
+  Error: ProgramElementTimelineInput: data/peCode must NOT have more than 32 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_public_web (0.264207ms)
+  Error: PublicWebSearchInput: data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: scrape_web_page (0.217617ms)
+  Error: PublicWebPageInput: data/maxChars must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_sam_opportunities (0.197597ms)
+  Error: SamOpportunitiesInput: data must have required property 'includeInactive', data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:51:2
+✖ independent raw factory oracle: get_florida_budget_project (1.008516ms)
+  Error: FloridaBudgetInput: data/offset must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at selection (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/florida-budget-validation.mjs:51:5)
+      at Object.normalizeInput (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/florida-budget-validation.mjs:70:32)
+      at Object.normalize (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:45:77)
+      at Object.normalizeInput (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:91:36)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:51:104)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_florida_budget_project (0.209215ms)
+  Error: FloridaBudgetInput: data must have required property 'fiscalYear', data must have required property 'projectId', data must have required property 'sessionKey', data must have required property 'folderId', data must have required property 'clientId', data/offset must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_state_bill_status (0.216946ms)
+  Error: StateBillStatusInput: data must NOT have additional properties
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_state_floor_votes (0.222364ms)
+  Error: StateFloorVotesInput: data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: find_contacts (0.175614ms)
+  Error: TenantContactsInput: data must have required property 'clientId', data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: resolve_entity (0.323386ms)
+  Error: EntityCandidatesInput: data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_tracked_bills (0.169034ms)
+  Error: TrackedBillsInput: data/clientId must match format "uuid"
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_committee_roster (0.283636ms)
+  Error: CommitteeRosterInput: data/state must NOT have more than 2 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: list_members (1.167033ms)
+  Error: MemberListInput: data/chamber must be equal to one of the allowed values, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_pe_contractors (0.283336ms)
+  Error: PeContractorsInput: data/peCode must NOT have more than 32 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_pe_bills (0.289254ms)
+  Error: PeBillsInput: data/peCode must NOT have more than 32 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_pe_report_language (0.231708ms)
+  Error: PeReportLanguageInput: data/peCode must NOT have more than 32 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_state_rule_status (0.267451ms)
+  Error: RuleStatusInput: data/state must NOT have more than 2 characters
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_sec_filings (0.269966ms)
+  Error: DisclosuresSecInput: data must NOT have additional properties, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_fara_registrations (0.260261ms)
+  Error: DisclosuresFaraInput: data must NOT have additional properties, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_lda_filings (0.237397ms)
+  Error: DisclosuresLdaInput: data must have required property 'limit', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/year must be integer, data/page must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:51:2
+✖ independent raw factory oracle: get_bill_status (1.611251ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   billId: '119-hr-7'
+  -   billId: 'hr7-119'
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:51:148)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { billId: '119-hr-7' },
+    expected: { billId: 'hr7-119' },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_bill_status (0.373651ms)
+  Error: FederalBillStatusInput: data must have required property 'billId', data must NOT have additional properties
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_floor_votes (0.305439ms)
+  Error: FederalFloorVotesInput: data must have required property 'billId', data must have required property 'query', data must have required property 'bioguideId', data must have required property 'congress', data/chamber must be equal to one of the allowed values, data/chamber must be null, data/chamber must match a schema in anyOf, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_state_bills (0.200972ms)
+  Error: StateBillSearchInput: data/state must NOT have more than 2 characters, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: get_state_legislator (0.221242ms)
+  Error: StateLegislatorInput: data/state must NOT have more than 2 characters, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: query_economic_data (0.263666ms)
+  Error: PublicEconomicInput: data must NOT have additional properties, data/state must NOT have more than 2 characters, data/year must be integer, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_federal_grants (0.303696ms)
+  Error: PublicGrantInput: data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:2
+✖ independent advertised caller: search_federal_awards (0.285299ms)
+  Error: PublicAwardInput: data/page must be integer, data/limit must be integer
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:52:72)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:56:1
+✖ independent exact31 raw bindings advertise actual admitted request definitions (0.376466ms)
+  AssertionError [ERR_ASSERTION]: query_outreach
+  + actual - expected
+  
+  + 'OutreachQueryInput'
+  - 'OutreachQueryRequest'
+                  ^
+  
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:56:208)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'OutreachQueryInput',
+    expected: 'OutreachQueryRequest',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: query_outreach (0.468614ms)
+  Error: OutreachQueryInput: data must have required property 'outreachId', data must have required property 'clientId', data must have required property 'status', data must have required property 'limit', data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_program_elements (0.448644ms)
+  Error: ProgramElementSearchInput: data must have required property 'query', data must have required property 'service', data must have required property 'budgetActivity', data must have required property 'hasData', data must have required property 'page', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_public_web (0.271778ms)
+  Error: PublicWebSearchInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: scrape_web_page (0.256145ms)
+  Error: PublicWebPageInput: data must have required property 'mode', data must have required property 'maxChars'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_sam_opportunities (0.341594ms)
+  Error: SamOpportunitiesInput: data must have required property 'query', data must have required property 'naics', data must have required property 'includeInactive', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: get_florida_budget_project (0.388314ms)
+  Error: FloridaBudgetInput: data must have required property 'q', data must have required property 'fiscalYear', data must have required property 'projectId', data must have required property 'offset', data must have required property 'sessionKey', data must have required property 'folderId', data must have required property 'clientId'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_state_floor_votes (0.267482ms)
+  Error: StateFloorVotesInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: find_contacts (0.242585ms)
+  Error: TenantContactsInput: data must have required property 'clientId', data must have required property 'domain', data must have required property 'query', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: resolve_entity (0.240782ms)
+  Error: EntityCandidatesInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_tracked_bills (0.395033ms)
+  Error: TrackedBillsInput: data/clientId must match format "uuid"
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: list_members (0.259731ms)
+  Error: MemberListInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_sec_filings (0.261883ms)
+  Error: DisclosuresSecInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_fara_registrations (0.234392ms)
+  Error: DisclosuresFaraInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_lda_filings (0.385209ms)
+  Error: DisclosuresLdaInput: data must have required property 'limit', data must have required property 'page'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: get_bill_status (0.276926ms)
+  Error: FederalBillStatusInput: data must have required property 'billId'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_floor_votes (0.31918ms)
+  Error: FederalFloorVotesInput: data must have required property 'billId', data must have required property 'query', data must have required property 'member', data must have required property 'bioguideId', data must have required property 'chamber', data must have required property 'congress', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_state_bills (0.29935ms)
+  Error: StateBillSearchInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: get_state_legislator (0.253141ms)
+  Error: StateLegislatorInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: query_economic_data (0.345209ms)
+  Error: PublicEconomicInput: data must have required property 'source', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_federal_grants (0.314683ms)
+  Error: PublicGrantInput: data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:23
+✖ independent advertised defaults: search_federal_awards (0.274222ms)
+  Error: PublicAwardInput: data must have required property 'page', data must have required property 'limit'
+      at validateShape (file:///workspace/meri-raw-request-review-20261012/packages/contracts/retrieval-0.2/validate.mjs:60:28)
+      at advertised (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:49:222)
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:58:167)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/raw-request-advertisement-independent.test.mjs:61:1
+✖ independent Request advertisement is not normalized validity or current authority (0.300601ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - false
+  
+      at TestContext.<anonymous> (file:///workspace/meri-raw-request-review-20261012/packages/contracts/test/raw-request-advertisement-independent.test.mjs:61:261)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

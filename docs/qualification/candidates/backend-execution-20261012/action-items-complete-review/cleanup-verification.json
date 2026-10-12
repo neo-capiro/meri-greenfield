@@ -1,0 +1,36 @@
+{
+  "allAbsent": true,
+  "groups": [
+    {
+      "label": "baseline-absent",
+      "pgid": 317124,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "exact28",
+      "pgid": 318874,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "source-audit",
+      "pgid": 318985,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "final-audit",
+      "pgid": 319834,
+      "receiptAbsent": true,
+      "presentMembers": []
+    },
+    {
+      "label": "packet-audit",
+      "pgid": 319878,
+      "receiptAbsent": true,
+      "presentMembers": []
+    }
+  ],
+  "otherOwnerProcessesSignaled": false
+}

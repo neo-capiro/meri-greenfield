@@ -1,0 +1,443 @@
+{
+  "checks": [
+    {
+      "check": "twenty exact original paths",
+      "passed": true
+    },
+    {
+      "check": "historical nineteen records unchanged",
+      "passed": true
+    },
+    {
+      "check": "historical nineteen manifest exact committed preimage",
+      "passed": true
+    },
+    {
+      "check": "historical script exact committed preimage",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: accepted test bytes unchanged",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-operational-reads.test.mjs: predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-operational-reads.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-operational-reads.test.mjs: exact forward",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-operational-reads.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "only new allocated test changed",
+      "passed": true
+    },
+    {
+      "check": "backend-execution-connected.test.mjs: exact accepted bytes",
+      "passed": true
+    },
+    {
+      "check": "backend-execution-expectations.mjs: exact accepted bytes",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.json: root failure exact bytes",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stdout.bin: root failure exact bytes",
+      "passed": true
+    },
+    {
+      "check": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.stderr.bin: root failure exact bytes",
+      "passed": true
+    }
+  ],
+  "passed": 109,
+  "total": 109,
+  "scope": "Read-only test inversion and source preservation, no runtime qualification"
+}

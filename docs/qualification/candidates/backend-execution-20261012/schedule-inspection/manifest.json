@@ -1,0 +1,176 @@
+{
+  "sourceFreeze": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "scope": "SOURCE_ONLY_NO_SERVICE",
+  "members": [
+    {
+      "path": "apps/control/schedules/temporal-inspection.mjs",
+      "bytes": 4345,
+      "sha256": "48cde95e629b57944d46fac9b54f4756e55a81330f3b8abcc1ddb60150c7cdc8"
+    },
+    {
+      "path": "apps/control/test/temporal-inspection.test.mjs",
+      "bytes": 11702,
+      "sha256": "d45a115628b6b3f6409f81e6815b44efc71af2f2a0d43519a1aab7660a57d341"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "bytes": 6795,
+      "sha256": "fe1705ec557dc26be5cbd9f755fb10402f097f92e7a2569d775ec3b757ff7d78"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "bytes": 4704,
+      "sha256": "b3d2b1ed7931f13ab2174caf7b4ba272c8b4ad9a67556e213b95f16bd9c6bce4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/failure-notes.json",
+      "bytes": 702,
+      "sha256": "191f8279427126fddf88f3d540a268eeaf244174bf90bfe2094ad014c2feb03d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.json",
+      "bytes": 1342,
+      "sha256": "6e99bc1a66354e6bf422ef9541a54aa6fe22018b0be458d15b24a91b98412826"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stdout.bin",
+      "bytes": 1913,
+      "sha256": "3b0633e7f34dbfe407b97ee08e0f1e0e8d60bad9d56bfb58e09d38012435c3fc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.json",
+      "bytes": 1349,
+      "sha256": "ea11437a3b47f29cddb5a438d38237849710cc9e02722d3ef7ab57a770e31186"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.patch",
+      "bytes": 28258,
+      "sha256": "a68ce4f6e05d2c2857e5a32bbd63ec5bb3c79591902e5a174f5455752a463a43"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stdout.bin",
+      "bytes": 1914,
+      "sha256": "81e291e6ab8a9c0c64bafe676ce72e9455ae8f56cb451d0d54a077b9d4ff08ac"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.json",
+      "bytes": 1371,
+      "sha256": "ea4f5df3e6803554fb2fa124327d5487a776d27f912741fd44974ed34306951b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.patch",
+      "bytes": 1855,
+      "sha256": "3b319dbaca3f277564fab3a84f22215699bf617327ed090b68b4cfb251edfba9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-before.stdout.bin",
+      "bytes": 2660,
+      "sha256": "c9492d8c8314cf331d84a3d063e57a31583635d96f07382613044536bef2f118"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.json",
+      "bytes": 1375,
+      "sha256": "5dd1a87aff4b9900d0c2256d48fec8539dc747b263b5c4b814c5d0df7d2044b8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-late-handle-repaired.stdout.bin",
+      "bytes": 2071,
+      "sha256": "4216b3a7def24d84ed3faec3571510c22b3e3d7e6431929cf5e90fc244433c5c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.json",
+      "bytes": 1355,
+      "sha256": "c10d3c5e4df13943a35643ada77c97b6900af4b63d46a06168481f24ca1bf861"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-repair-exact.stdout.bin",
+      "bytes": 2072,
+      "sha256": "6fb0890893a963440a38f1f7ab44942f938eff29bdae197f84fe637c070b8e0d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stdout.bin",
+      "bytes": 294,
+      "sha256": "dc13450b5625e31ffe544388ec9f7fca9db2d66c89544b7c970ccb206ebb705b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/sdk-metadata.json",
+      "bytes": 2837,
+      "sha256": "800ecc20024892e3a8d20cafd66e70f61ea19222776d6a8657b768e4aae02cc4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/setup-observations.json",
+      "bytes": 649,
+      "sha256": "a724013237a8575e9d246e18c22463da050a58874140dd81692b243355fc1c15"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit-87ee0f35.json",
+      "bytes": 1955,
+      "sha256": "cc678ce74b3e637cdcc661c5ceac249398d6f4b0b88bb41f46fb5bbfe9cc97c9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit.json",
+      "bytes": 3077,
+      "sha256": "161e4e3943574ea9f7c9b6fa9893bc772b6d72a57d0c1704784d32d601ec6f06"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/verify-source.py",
+      "bytes": 2553,
+      "sha256": "eba9f7f4b8b5c20099d15df921f069638b162659cb761ec8748bc365f771c654"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/whitespace.json",
+      "bytes": 1520,
+      "sha256": "627eded6eb4a5e2a108883a11a40764404235107cd38d4dc3b19c101edb45631"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "bytes": 5177,
+      "sha256": "bb96d966fc4fe83efffc4cafafed26f7337c7ad74ee13ed189ac7d5462731c81"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection.schema.json",
+      "bytes": 6806,
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2596,
+      "sha256": "cee9966de6b7317eded1ed8a588e41a17324ac1eb98cfed70a70cf434dc0a72e"
+    }
+  ]
+}

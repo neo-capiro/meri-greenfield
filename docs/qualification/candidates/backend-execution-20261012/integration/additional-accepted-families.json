@@ -1,0 +1,37 @@
+[
+  [
+    "research-legal-news",
+    "ResearchLegalNews",
+    false,
+    [
+      "clientResolution",
+      "effectiveScope",
+      "windowAsOf",
+      "defaultYear",
+      "owner"
+    ],
+    [
+      [
+        "search_legiwatch_news",
+        "ResearchLegalNewsRequest",
+        "ResearchLegalNewsOutput"
+      ]
+    ]
+  ],
+  [
+    "public-domain-hearings",
+    "PublicDomainHearings",
+    false,
+    [
+      "tenantId",
+      "clientResolution"
+    ],
+    [
+      [
+        "search_committee_hearings",
+        "PublicDomainHearingsRequest",
+        "PublicDomainHearingsOutput"
+      ]
+    ]
+  ]
+]

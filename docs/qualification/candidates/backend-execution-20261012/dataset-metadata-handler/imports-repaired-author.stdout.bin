@@ -1,0 +1,82 @@
+✔ actual registry/handler/canonical contract/authority/dispatch returns exact12datasets88fields (15.951817ms)
+✔ generatedAt means injected local construction time and adds no sourcehealth facts (6.620078ms)
+✔ reservation and settlement carry actual normalized/result hashes and exact bytes (6.505687ms)
+✔ registry remains immutable and returned result detaches from its sole provider (4.677076ms)
+✔ canonical profile supplies empty context and does not require retention/source ports (5.382582ms)
+✔ raw shape/model authority refuses before trusted identity/reservation (2.215152ms)
+✔ factory requires branded sole registry and inert closed options without invoking getters (0.361364ms)
+✔ handler direct input/digest mismatch refuses without altered registry (5.439573ms)
+✔ handler direct malformed/foreign authority cannot produce lineage (7.51822ms)
+✔ handler ignores no effectful call fields or fake signals (6.493378ms)
+✖ handler checks real abort and deadline again at response construction (10.593185ms)
+✖ preaborted dispatch never reserves or invokes metadata handler (0.334953ms)
+✔ revoked, stale fence and missing grants refuse before metadata access (1.943643ms)
+✔ budget refusal prevents handler and retains uncertainty without success (0.745822ms)
+✔ exact wrapper correlation rejects operation/digest/lineage/additional fields (14.500613ms)
+✔ raw result still passes canonical family; invalid flags/duplicates/dates refuse (14.362005ms)
+✔ release revocation cannot leak otherwise valid static metadata (3.188576ms)
+✔ settlement-ACK loss stays uncertain and does not release metadata (3.385633ms)
+✔ postsettlement revocation/stale fence denies release without refund/retry (7.885812ms)
+✔ output budget limit refuses before settlement/release (1.92114ms)
+✔ parked current authority times out without source invocation (25.64018ms)
+✔ production remains null/unimplemented/pending/source disabled with zero ports (7.310237ms)
+✔ handler code uses one provider and canonical boundary, no outbound configuration (0.526652ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 21
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2112.456495
+
+✖ failing tests:
+
+test at apps/gateway/test/dataset-metadata-handler.test.mjs:37:1
+✖ handler checks real abort and deadline again at response construction (10.593185ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: CANCELLED
+      at async TestContext.<anonymous> (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/test/dataset-metadata-handler.test.mjs:37:317)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: CANCELLED
+        at safeFailure (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+        at Object.execute [as handler] (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/sources/dataset-metadata/handler.mjs:51:27)
+        at TestContext.<anonymous> (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/test/dataset-metadata-handler.test.mjs:37:333)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/dataset-metadata-handler.test.mjs:38:1
+✖ preaborted dispatch never reserves or invokes metadata handler (0.334953ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: DEADLINE
+      at async TestContext.<anonymous> (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/test/dataset-metadata-handler.test.mjs:38:131)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: DEADLINE
+        at deny (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/dispatch/operation-result.mjs:12:37)
+        at createDispatchLifetime (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/dispatch/dispatch-lifetime.mjs:6:79)
+        at Object.execute (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/dispatch/tool-dispatch.mjs:37:27)
+        at TestContext.<anonymous> (file:///workspace/meri-dataset-metadata-handler-20261012/apps/gateway/test/dataset-metadata-handler.test.mjs:38:156)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1382:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+        at Test.postRun (node:internal/test_runner/test:1522:19)
+        at Test.run (node:internal/test_runner/test:1447:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

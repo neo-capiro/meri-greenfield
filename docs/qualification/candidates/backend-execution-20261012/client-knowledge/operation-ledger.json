@@ -1,0 +1,107 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "operations": [
+    {
+      "originalId": "search_client_knowledge",
+      "family": "search",
+      "schemaId": "urn:meri:retrieval:client-knowledge-search:0.2.0",
+      "inputDefinition": "ClientKnowledgeSearchInput",
+      "outputDefinition": "ClientKnowledgeSearchOutput",
+      "contextKeys": [
+        "asOf"
+      ],
+      "sourceFreeze": "9cc2d0cf62e0816f53cecd2b27a49cb5f450fe39",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "ClientKnowledgeSearchRequest"
+    },
+    {
+      "originalId": "query_knowledge_graph",
+      "family": "search",
+      "schemaId": "urn:meri:retrieval:client-knowledge-search:0.2.0",
+      "inputDefinition": "KnowledgeGraphInput",
+      "outputDefinition": "KnowledgeGraphOutput",
+      "contextKeys": [],
+      "sourceFreeze": "9cc2d0cf62e0816f53cecd2b27a49cb5f450fe39",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "KnowledgeGraphRequest"
+    },
+    {
+      "originalId": "read_monday_client_boards",
+      "family": "monday",
+      "schemaId": "urn:meri:retrieval:client-knowledge-monday:0.2.0",
+      "inputDefinition": "ClientKnowledgeMondayInput",
+      "outputDefinition": "ClientKnowledgeMondayOutput",
+      "contextKeys": [],
+      "sourceFreeze": "5ee5446521caf47597b584166c435b5f1cde9804",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "ClientKnowledgeMondayRequest"
+    },
+    {
+      "originalId": "read_chat_attachments",
+      "family": "attachments",
+      "schemaId": "urn:meri:retrieval:client-knowledge-attachments:0.2.0",
+      "inputDefinition": "ClientKnowledgeAttachmentInput",
+      "outputDefinition": "ClientKnowledgeAttachmentOutput",
+      "contextKeys": [
+        "asOf",
+        "scope"
+      ],
+      "sourceFreeze": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "ClientKnowledgeAttachmentRequest"
+    },
+    {
+      "originalId": "search_memory",
+      "family": "memory",
+      "schemaId": "urn:meri:retrieval:client-knowledge-memory:0.2.0",
+      "inputDefinition": "ClientKnowledgeMemoryInput",
+      "outputDefinition": "ClientKnowledgeMemoryOutput",
+      "contextKeys": [
+        "tenantId",
+        "userId"
+      ],
+      "sourceFreeze": "b24d87c2ad2e13d9d9f83bf5328a1328fd03762f",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "ClientKnowledgeMemoryRequest"
+    },
+    {
+      "originalId": "get_client_context",
+      "family": "profile",
+      "schemaId": "urn:meri:retrieval:client-knowledge-profile:0.2.0",
+      "inputDefinition": "ClientKnowledgeProfileInput",
+      "outputDefinition": "ClientKnowledgeProfileOutput",
+      "contextKeys": [
+        "asOf",
+        "clientResolution"
+      ],
+      "sourceFreeze": "47e8eb3c942942fc0f1d017eb8211374cc713b9f",
+      "sourceAvailability": false,
+      "runtimeAccepted": false,
+      "status": "CANDIDATE_SOURCE_REVIEW",
+      "normalizerReturn": "{input,metadata}",
+      "resultReturn": "detached inert JSON",
+      "requestDefinition": "ClientKnowledgeProfileRequest"
+    }
+  ],
+  "scope": "All six selected original IDs implemented as candidate contract families, none deferred or silently omitted."
+}

@@ -1,0 +1,225 @@
+{
+  "authorPacket": "907e7f05aff0c5433577dace76a8fb4a3cd037e0",
+  "manifestSha256": "7300db4a835bc4221fc27cc9e86279e06a4d3af4fbafcfbb471f848af3bcf06e",
+  "members": 30,
+  "checks": [
+    {
+      "name": "exact source pin",
+      "passed": true
+    },
+    {
+      "name": "30 members",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose.schema.json",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/commands-memory-propose.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/tasks/CODEX-MEMORY-PROPOSE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-MEMORY-PROPOSE-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/corrected-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/exact-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/metadata-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/source-identity.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/backend-execution-20261012/memory-propose/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "initial-author exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "initial-author raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "initial-author raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "corrected-author exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "corrected-author raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "corrected-author raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "metadata-audit raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "exact-source exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "exact-source raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "exact-source raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "exact-audit exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "exact-audit raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "exact-audit raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "whitespace exited/reaped",
+      "passed": true
+    },
+    {
+      "name": "whitespace raw stream stdout",
+      "passed": true
+    },
+    {
+      "name": "whitespace raw stream stderr",
+      "passed": true
+    },
+    {
+      "name": "original26/28 failed author fixture preserved",
+      "passed": true
+    },
+    {
+      "name": "final30/30 author checks preserved",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose-validation.mjs no production repair",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose.schema.json no production repair",
+      "passed": true
+    }
+  ],
+  "passed": 54,
+  "failed": 0
+}

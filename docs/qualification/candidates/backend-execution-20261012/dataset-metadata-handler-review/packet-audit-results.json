@@ -1,0 +1,278 @@
+{
+  "source": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+  "packet": "3dbf6b796bacad59a5f1366c83ad7d9372125f5c",
+  "packetTree": "a6c4c053fb910eef0f52d1b5e31cd40dc7514509",
+  "manifestSha256": "5cb0c16ee27ef569f52c8fa2e72870cbf8003c34e08e79315fae7ab0b4699890",
+  "members": 28,
+  "passed": 54,
+  "checks": [
+    {
+      "check": "manifest docs/coordination/reports/CODEX-DATASET-METADATA-HANDLER-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/coordination/tasks/CODEX-DATASET-METADATA-HANDLER-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/.gitattributes",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "manifest docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/source-audit.py",
+      "pass": true
+    },
+    {
+      "check": "exact final source apps/gateway/sources/dataset-metadata/handler.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact final source apps/gateway/dispatch/operation-context.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact final source apps/gateway/dispatch/read-result-envelope.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact final source packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact final source apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "owned cleanup docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.json",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "capture stream docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.stderr.bin",
+      "pass": true
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-negative.json",
+      "sourceHead": "465d1963ba0d9d0d1e0584f5ae20045dd02a4425",
+      "sourceDiffBytes": 1466,
+      "exitCode": 1,
+      "pgid": 327183
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/clock-cancel-repaired.json",
+      "sourceHead": "e96eec4e991f12f7e4e1158edea55a40bf8ef6ab",
+      "sourceDiffBytes": 752,
+      "exitCode": 0,
+      "pgid": 327972
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.json",
+      "sourceHead": "f78eb75c2a9aee919712ee1c497c8c2b5c27e99e",
+      "sourceDiffBytes": 5973,
+      "exitCode": 0,
+      "pgid": 326056
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-source-audit.json",
+      "sourceHead": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+      "sourceDiffBytes": 0,
+      "exitCode": 0,
+      "pgid": 328128
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/imports-repaired-author.json",
+      "sourceHead": "36e2893559819892924d5a665c7012874de826d2",
+      "sourceDiffBytes": 7814,
+      "exitCode": 1,
+      "pgid": 325503
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/initial-author.json",
+      "sourceHead": "03f838ec56b28c4bc30b97697e37a82e16994978",
+      "sourceDiffBytes": 3766,
+      "exitCode": 1,
+      "pgid": 324186
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/preserved-compatibility.json",
+      "sourceHead": "465d1963ba0d9d0d1e0584f5ae20045dd02a4425",
+      "sourceDiffBytes": 0,
+      "exitCode": 1,
+      "pgid": 326572
+    }
+  ],
+  "limits": "Author historical local checks and bytes only; no native/current authority/physical runtime claim."
+}

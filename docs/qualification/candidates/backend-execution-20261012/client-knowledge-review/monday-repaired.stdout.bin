@@ -1,0 +1,32 @@
+✔ Monday reuses existing coverage schema and exposes one exact operation (1.491972ms)
+✔ omitted page size differs from explicit null and preserves requireComplete (0.978099ms)
+✔ source numeric conversion clamps and truncates explicit page sizes (0.415644ms)
+✔ cursor opts into paging and selectors retain UTF16 caps (0.200271ms)
+✔ client UUID is wrapper-owned syntax but model authority and unknown fields refuse (0.342685ms)
+✔ managed row supports omitted untyped provider fields and inert opaque values (2.74144ms)
+✔ item and subitem provenance are exact without inventing parent visibility (0.576977ms)
+✔ record identity and client correlation prevent substitutions and duplicate IDs (1.252261ms)
+✔ status is nullable or trimmed source text with no provider status enum (1.250749ms)
+✔ URL is nullable or source-accepted Monday tenant URL without generic trust claim (0.956097ms)
+✔ wrapper status correlates first source and domains remain Monday (0.267061ms)
+✔ explicit requested page size bounds even degraded result records (0.854534ms)
+✔ unavailable and empty source observations never acquire absence flags (0.345109ms)
+✔ current source actor is only an observation until adapter authority is qualified (0.262053ms)
+✔ Monday result is detached and getters/proxies never execute (0.370396ms)
+✔ Monday normalized complete/page distinction and Number string semantics (7.028983ms)
+✔ Monday requires UUID and bounded trimmed selectors (0.408053ms)
+✔ Monday full provider JSON fields stay inert without invented scalar types (26.529317ms)
+✔ Monday parent and provenance binding preserves subitems (1.080614ms)
+✔ Monday current status echoes first coverage source including unavailable (0.588435ms)
+✔ Monday client, record, domain and duplicate substitutions fail (1.983511ms)
+✔ Monday invalid cursors remain bounded request data awaiting source refusal (0.349515ms)
+✔ Monday source-only data detaches and rejects getters (0.589086ms)
+✔ Monday explicit page size bounds both healthy and degraded records (1.486534ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 186.014296

@@ -1,0 +1,15 @@
+{
+  "captureDonor": "/workspace/meri-outreach-query-review-20261012/docs/qualification/candidates/read-continuation-20261012/outreach-query-review/capture-reaped.py",
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "dependencies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "dependencyMethod": "Copied only seven already installed directories into newly owned node_modules; no install/network/donor write.",
+  "cleanupOwner": "review lane only; preserve all donor files and other worktrees."
+}

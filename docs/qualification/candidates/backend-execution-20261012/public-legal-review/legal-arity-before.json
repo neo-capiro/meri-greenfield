@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+    "packages/contracts/test/retrieval-research-legal-legislation.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-legal-review-20261012",
+  "sourceHead": "16c7819f5f8e883a07ccdf5e69a3f0be9f04a2fd",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:05:52.314590+00:00",
+  "durationSeconds": 0.365,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 320425,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stdout.bin",
+      "bytes": 10296,
+      "sha256": "8393ebc2d89384f5ef5b4ac565cb11276553956b58d66b2861dd584cb0f4d518"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

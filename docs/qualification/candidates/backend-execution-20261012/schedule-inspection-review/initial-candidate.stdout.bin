@@ -1,0 +1,95 @@
+✔ independent: exact borrowed read path permits authorized same-tenant delegate and detaches output (7.890079ms)
+✔ independent: application paused does not claim server absence (1.160015ms)
+✔ independent: application cancelled does not claim server absence (0.927746ms)
+✔ independent: mismatched caller tenant denies before SDK (0.482837ms)
+✔ independent: mismatched scope tenant denies before SDK (0.237777ms)
+✔ independent: authority authorized substitution refuses (0.50554ms)
+✔ independent: authority projectionSha256 substitution refuses (0.417128ms)
+✔ independent: authority callerIdentity substitution refuses (0.810049ms)
+✔ independent: authority expiresAtMs substitution refuses (0.503387ms)
+✔ independent: authority extra substitution refuses (0.495786ms)
+✔ independent: revocation at release suppresses already obtained result (1.058743ms)
+✔ independent: invalid absolute deadline delta 0 refuses inertly (0.22559ms)
+✔ independent: invalid absolute deadline delta -1 refuses inertly (0.149615ms)
+✔ independent: invalid absolute deadline delta 60001 refuses inertly (0.164187ms)
+✔ independent: invalid absolute deadline delta NaN refuses inertly (0.188924ms)
+✔ independent: invalid absolute deadline delta Infinity refuses inertly (0.092549ms)
+✔ independent: invalid absolute deadline delta 1.5 refuses inertly (0.15264ms)
+✔ independent: pre-abort has no authority or SDK effects (0.351178ms)
+✔ independent: trusted projection getters and proxy traps never execute (0.315915ms)
+✔ independent: pending authority sees immutable detached trusted facts (10.974048ms)
+✔ independent: cancel parked authority, then late completion causes no further effects (1.081086ms)
+✔ independent: cancel parked deadline, then late completion causes no further effects (0.660895ms)
+✔ independent: cancel parked abort, then late completion causes no further effects (0.618941ms)
+✔ independent: cancel parked describe, then late completion causes no further effects (0.694074ms)
+✔ independent: cancel parked release, then late completion causes no further effects (0.758231ms)
+✔ independent: before_describe published short expiry bounds its own parked authority (80.210951ms)
+✔ independent: before_release published short expiry bounds its own parked authority (80.644734ms)
+✔ independent: receipt expiry constrains actual connection deadline and parked describe (80.809728ms)
+✔ independent: callback cannot extend original deadline (0.959123ms)
+✔ independent: synchronous describe crossing original deadline is rejected before release (0.423597ms)
+✔ independent: description id substitution denies (0.363667ms)
+✔ independent: ignored sensitive SDK fields are never read or serialized (0.600714ms)
+✔ independent: three returned windows cap100 without touching omitted tail and retain exact counts (2.814404ms)
+✔ independent: Date methods are intrinsic; overridden methods never run (0.585802ms)
+✔ independent: invalid/non-native selected date refuses object (0.292389ms)
+✔ independent: invalid/non-native selected date refuses string (0.329546ms)
+✔ independent: invalid/non-native selected date refuses object (0.317107ms)
+✔ independent: invalid count refuses -1 (0.4455ms)
+✔ independent: invalid count refuses 1.5 (0.431539ms)
+✔ independent: invalid count refuses Infinity (0.453692ms)
+✔ independent: invalid count refuses 9007199254740992 (0.369055ms)
+✔ independent: invalid count refuses 1 (0.405731ms)
+✔ independent: selected accessors refuse without invocation (0.313551ms)
+✔ independent: missing optional values mapnull but zero remains zero (0.568986ms)
+✔ independent: opaque downstream error is sanitized and borrowed resources stayopen (0.610188ms)
+✖ independent: getHandle returning after deadline must not start describe (1.489851ms)
+✔ exact schedule describe returns only bounded public fields and original run references (7.5585ms)
+✔ delegated same-tenant inspection relies on current callback, not owner equality (1.180856ms)
+✔ cancelled app projection is described and never inferred absent (1.200005ms)
+✔ request projection and caller are detached before first await (0.881015ms)
+✔ cross-tenant caller or scope refuses before authority and SDK (0.885933ms)
+✔ authority denial, substitution and expiry refuse before describe (1.835921ms)
+✔ revocation at release refuses result without retry (0.937029ms)
+✔ known authority expiry is installed in actual SDK scope (0.703688ms)
+✔ larger authority expiry cannot extend original deadline (0.735025ms)
+✔ published authority expiry bounds parked before_describe (10.778244ms)
+✔ published authority expiry bounds parked before_release (11.662394ms)
+✔ parked SDK describe observes deadline and no late result release (10.447897ms)
+✔ pre-abort invokes no authority or SDK (0.457288ms)
+✔ abort of parked read cancels scoped signal and removes owned listener (0.55188ms)
+✔ local call bound refuses invalid or more than60 second deadlines before effects (0.489587ms)
+✔ private fields are neither accessed nor projected (0.707244ms)
+✔ hostile included fields and invalid Date fail closed (1.921241ms)
+✔ changed SDK schedule identity refuses even under valid authority (0.324658ms)
+✔ each returned window is capped with exact observed omissions, recent keeps newest suffix (2.80518ms)
+✔ empty recent window is still partial history independent of action counter (0.563127ms)
+✔ SDK rejection is sanitized without evaluating hostile error code getter (0.487904ms)
+✔ request accessors and context extras are rejected without execution (0.180782ms)
+ℹ tests 68
+ℹ suites 0
+ℹ pass 67
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 595.168029
+
+✖ failing tests:
+
+test at apps/control/schedules/test/temporal-inspection-independent.test.mjs:51:1
+✖ independent: getHandle returning after deadline must not start describe (1.489851ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-inspection-review-20261012/apps/control/schedules/test/temporal-inspection-independent.test.mjs:51:453)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

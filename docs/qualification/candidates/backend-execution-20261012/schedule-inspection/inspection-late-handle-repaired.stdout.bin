@@ -1,0 +1,32 @@
+✔ exact schedule describe returns only bounded public fields and original run references (7.117699ms)
+✔ delegated same-tenant inspection relies on current callback, not owner equality (1.126122ms)
+✔ cancelled app projection is described and never inferred absent (0.972121ms)
+✔ request projection and caller are detached before first await (0.885231ms)
+✔ cross-tenant caller or scope refuses before authority and SDK (0.753503ms)
+✔ authority denial, substitution and expiry refuse before describe (1.681398ms)
+✔ revocation at release refuses result without retry (0.954676ms)
+✔ known authority expiry is installed in actual SDK scope (1.001035ms)
+✔ larger authority expiry cannot extend original deadline (0.941225ms)
+✔ published authority expiry bounds parked before_describe (10.400304ms)
+✔ published authority expiry bounds parked before_release (11.278623ms)
+✔ parked SDK describe observes deadline and no late result release (11.031392ms)
+✔ pre-abort invokes no authority or SDK (0.417418ms)
+✔ abort of parked read cancels scoped signal and removes owned listener (0.484768ms)
+✔ local call bound refuses invalid or more than60 second deadlines before effects (0.531559ms)
+✔ private fields are neither accessed nor projected (0.622355ms)
+✔ hostile included fields and invalid Date fail closed (1.527807ms)
+✔ changed SDK schedule identity refuses even under valid authority (0.30557ms)
+✔ each returned window is capped with exact observed omissions, recent keeps newest suffix (2.853179ms)
+✔ empty recent window is still partial history independent of action counter (0.51935ms)
+✔ SDK rejection is sanitized without evaluating hostile error code getter (0.55207ms)
+✔ request accessors and context extras are rejected without execution (0.424307ms)
+✔ getHandle completion after deadline cannot begin describe (0.881034ms)
+✔ handle data accessors cannot run or swap describe after validation (0.504629ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 360.491317

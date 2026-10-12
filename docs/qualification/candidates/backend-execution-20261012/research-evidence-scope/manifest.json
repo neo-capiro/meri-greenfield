@@ -1,0 +1,66 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "status": "SCOPE_TRACE_AND_API_PROPOSAL_ONLY",
+  "exclusions": {
+    "manifest.json": "self recursion",
+    "verify-result.json": "verifier output binds manifest",
+    "verify-stderr.txt": "verifier output"
+  },
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
+      "bytes": 11641,
+      "sha256": "8d4f04c67b2cd77b6fa159be81d9fdca0c25e320ff136da5b65e8aa583db49a1"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-20261012.md",
+      "bytes": 1907,
+      "sha256": "93cbda20300fd062c14f3fc0be34f7f295648e2a91c639522dd2b0afac831bc8"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/api-proposal.json",
+      "bytes": 6651,
+      "sha256": "b03a4b01596040cd87e44ccd581184fa1e7acbddf3d2b696f846299f081d4443"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/authority-and-reuse-identities.json",
+      "bytes": 3336,
+      "sha256": "db9a3be2f1e6c0da573df7f7817a63645d7f7ae31492b32e3365b68f3e4f3ce0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/collect-identities.py",
+      "bytes": 5789,
+      "sha256": "38a31c931ae6a5161dcc8ade8216df071de1fe7e55e1d99e8d3ed4b339893afd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/independent-findings.json",
+      "bytes": 993,
+      "sha256": "a34c75ba49b9d23d07064274b2455838ff6b65200e732f0c44e8497171fe756e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/read-limitations.json",
+      "bytes": 1635,
+      "sha256": "b0ceead0cf8c354f7961ddd2a2a8c117827f5dbab4ee6458bd8feb6a31011622"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/source-preservation.json",
+      "bytes": 374,
+      "sha256": "a6391eaf7e4a11947d30a40549ff82d8dbd0270bcc35be2e849be143a9c35f42"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/source-reference-identities.json",
+      "bytes": 15612,
+      "sha256": "86d6afa5540cd63d5858d0671e5bff6af000b98f9e76780f94f2d1fd73b8295f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/storage-field-census.json",
+      "bytes": 4356,
+      "sha256": "1f3f061d839b6ac2474acf555224d4751c51b189da01e74f3f6dfea25c1d4665"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/verify.py",
+      "bytes": 4154,
+      "sha256": "245a8ba99c67664ee22923ca849dfcf663fb3cc56dc55af698fd3d2a38d429dd"
+    }
+  ]
+}

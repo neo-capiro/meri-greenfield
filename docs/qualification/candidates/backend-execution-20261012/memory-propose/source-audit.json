@@ -1,0 +1,106 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceHead": "2084f947ede709dfea0705bf2b67e62c3e929438",
+  "originalEntries": 7677,
+  "checks": [
+    {
+      "name": "unchanged pair apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/meri/meri-memory.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/meri/meri-memory.helpers.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-candidate.service.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-candidate-rules.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-candidate-rules.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-candidate.atomicity.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-review-admin-policy.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-authorization.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/src/memory/memory-wall.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "unchanged pair apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "name": "wrapper content4000",
+      "passed": true
+    },
+    {
+      "name": "wrapper key120",
+      "passed": true
+    },
+    {
+      "name": "wrapper TTL finite admission",
+      "passed": true
+    },
+    {
+      "name": "helper positive fractional duration capped365",
+      "passed": true
+    },
+    {
+      "name": "legacy expiry uses ambient clock",
+      "passed": true
+    },
+    {
+      "name": "legacy calls actual save producer",
+      "passed": true
+    },
+    {
+      "name": "all original source entries unchanged",
+      "passed": true
+    },
+    {
+      "name": "no tracked base changes pending",
+      "passed": true
+    },
+    {
+      "name": "canonical inert helper reused",
+      "passed": true
+    },
+    {
+      "name": "no IO/legacy implementation imports",
+      "passed": true
+    },
+    {
+      "name": "no ambient expiry clock",
+      "passed": true
+    },
+    {
+      "name": "no admin-policy ownership",
+      "passed": true
+    },
+    {
+      "name": "detached result return",
+      "passed": true
+    }
+  ],
+  "passed": 24,
+  "privateBodiesPublished": false,
+  "runtimeQualified": false
+}

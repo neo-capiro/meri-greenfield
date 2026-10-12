@@ -1,0 +1,205 @@
+{
+  "status": "PASS",
+  "source": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+  "sourceTree": "ac5d2d8644c6d6fae4ee7018d7f393452204f0f5",
+  "production": "1b52df122e0eb660dd74e79386fc3bbf8983c98e",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "originalEntries": 7677,
+  "passed": 48,
+  "total": 48,
+  "checks": [
+    {
+      "name": "all PR35 original entries mode/blob preserved",
+      "pass": true
+    },
+    {
+      "name": "exact three new family files only",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/retrieval-0.2/research-legal-candidates.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact exercised source packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "private namespace",
+      "pass": true
+    },
+    {
+      "name": "canonical trusted resolution shape reused",
+      "pass": true
+    },
+    {
+      "name": "canonical inert snapshot and date owner reused",
+      "pass": true
+    },
+    {
+      "name": "no producer/ambient clock/service execution",
+      "pass": true
+    },
+    {
+      "name": "first-family operation only; no six-family acceptance inferred",
+      "pass": true
+    },
+    {
+      "name": "six complete discriminated source variants",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateClient exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateMeeting exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateMailThread exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateMailMessage exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateClioNote exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "ResearchCandidateDirectoryNote exact mandatory projection",
+      "pass": true
+    },
+    {
+      "name": "directory notes preserve tenant-only client exception",
+      "pass": true
+    },
+    {
+      "name": "opaque directory ID has no invented UUID restriction",
+      "pass": true
+    },
+    {
+      "name": "note empty-title fallback faithfully admitted",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/meri-tools.service.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/meri-tools.service.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/prisma/schema.prisma fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/prisma/schema.prisma 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/engagement/engagement-access.helpers.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/engagement/engagement-access.helpers.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin packages/shared/src/index.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin packages/shared/src/index.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/research/research.service.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/research/research.service.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/editorial/evidence.service.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/editorial/evidence.service.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/analytics/query-spec-compiler.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/analytics/query-spec-compiler.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/analytics/global-dataset-registry.ts fd8765ec",
+      "pass": true
+    },
+    {
+      "name": "source pin apps/api/src/meri/analytics/global-dataset-registry.ts 4be13b0b",
+      "pass": true
+    },
+    {
+      "name": "all ten inspected interface/reference pairs unchanged",
+      "pass": true
+    },
+    {
+      "name": "research-first raw exit and owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "research-first research-first.stdout.bin raw bytes",
+      "pass": true
+    },
+    {
+      "name": "research-first research-first.stderr.bin raw bytes",
+      "pass": true
+    },
+    {
+      "name": "research-corrected raw exit and owned cleanup",
+      "pass": true
+    },
+    {
+      "name": "research-corrected research-corrected.stdout.bin raw bytes",
+      "pass": true
+    },
+    {
+      "name": "research-corrected research-corrected.stderr.bin raw bytes",
+      "pass": true
+    },
+    {
+      "name": "28 independent plus27 author exact final pass",
+      "pass": true
+    }
+  ],
+  "qualification": "search_research_sources source only; remaining five operations and runtime not accepted"
+}

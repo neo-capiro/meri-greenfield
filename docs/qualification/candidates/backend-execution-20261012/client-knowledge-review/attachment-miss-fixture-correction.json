@@ -1,0 +1,5 @@
+{
+  "reason": "Positive miss fixture now uses source start=end and derived completion flags; original failing source negatives unchanged.",
+  "beforeSha256": "a76ad4091e25f8ab77f37cd8e9a2e501aebfbb95d14db2a28a637dc3ce7c60e9",
+  "afterSha256": "797390b7377f99284305fffcf5fa585f69bf02c6cb7d9989f8ccace46da675fd"
+}

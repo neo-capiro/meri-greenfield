@@ -1,0 +1,82 @@
+{
+  "base": "7e128127e666242102ed83b6c10afc1e5b7fd3f8",
+  "draftScriptSha256": "c05241436baabc9d80ebc7c98d115dbc2a4fc6f11543a47cdfac2cfec13f9701",
+  "tests": [
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "sha256": "d1f1e781e3ccb156c7ed2166df9f7210a8aad0a33d5e445f3012b489c8cf83c0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "sha256": "fb20dddf591e6d1e734510ed40a2c97690a42517f4515e726a48a74143788d7c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "sha256": "ea73fae4ed3872e693cb2cca2a24d7fda6a620187713ec3f3586b40118297adc"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "sha256": "dc3ebc1b06847a7f9ae09720791c7319a3c55b08f6916ae7e662947a0da065df"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "sha256": "0e34d8c6dd3b1bae17bcce661b917cf8742174c160d4850f878c0d3cf356fa0e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "sha256": "f79c363baa5cc74bb215288a3298192355e03ccdfab609b1230e4754b12929d3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "sha256": "349f8397a95e7148c08dd4f91d59df261e3ac8c9c039b9efa11df75b26d56b3b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "sha256": "54ff7006180b6353eb50da72e11e7b4504929ca7269f05f300d2f4cb7811b403"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "sha256": "8f42c594be0549c0b116b608be722055afc526e084078bd9943f0a024a251644"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "sha256": "4f07eeb78baa4d3e55eabcc02a87975786aad84c3430dae9d90cc4c442edcf42"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "sha256": "641075f26a43cbca0e0d8740e5128db4e18b495ad0f8eea87ac565b1d6b4d156"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "sha256": "daf3268cdb8e33d91abb13ed1610aa3894c6b30b7287b2da65c8c9ece051c64e"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "sha256": "2cad02a488b58b06a03e8e4b8e817f2d4f00f10443f290f086cccb24bf0a2252"
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "sha256": "fe45863dd355362a77b5397a309f452b9aed390dc0ab7aa94497e625722f4d78"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "sha256": "f72a8bc353cc23d7819ef3740714dade2aaa848de2b3265a942012d6a982e83b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "sha256": "86be02602a79ad287fc155923beaa4d2fd8352e5699f29bf001e6bd5f155280c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "sha256": "b1e413be3d370d0fc1a58d1f590b330c7a45f57a7efb4a378457a2b375c8a40d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "sha256": "d5a2389934c072af411cf3b7b35b36693ea5d8a6bea3edbf585608d3d6953ff4"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "sha256": "a0e91db09215e1f4722efe1e603c7ff032890ff14dcd350ad18625bbdfd5fa3c"
+    }
+  ]
+}

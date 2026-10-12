@@ -1,0 +1,135 @@
+{
+  "status": "PROPOSAL_ONLY_REQUIRES_ROOT_INTERFACE_REVIEW",
+  "operation": "get_research_evidence",
+  "meaning": "New authorized ResearchPortfolio evidence read; explicitly not Clio or whole deferred workflow parity",
+  "originalMappingRemains": "pending/null",
+  "schemaId": "urn:meri:retrieval:research-portfolio-evidence:0.2.0",
+  "proposedOwnedPaths": [
+    "packages/contracts/retrieval-0.2/research-portfolio-evidence.schema.json",
+    "packages/contracts/retrieval-0.2/research-portfolio-evidence-validation.mjs",
+    "packages/contracts/test/retrieval-research-portfolio-evidence.test.mjs"
+  ],
+  "factory": "createResearchPortfolioEvidenceValidators({validateShape,assertSubject,canonicalSha256})",
+  "exports": [
+    "normalizeResearchPortfolioEvidenceInput(id,request,{binding,subject}) -> {input,metadata}",
+    "assertResearchPortfolioEvidenceOutput(id,page,request,{binding,subject}) -> detached JSON"
+  ],
+  "requestAuthorityFields": false,
+  "contextKeys": [
+    "binding",
+    "subject"
+  ],
+  "contextPolicy": "Reuse canonical single research-portfolio entity subject, actor/tenant/binding/conversation equality; no grant inferred from DTO.",
+  "variants": [
+    {
+      "origin": "review",
+      "request": {
+        "conversationId": "optional; must match binding",
+        "recordId": "required review UUID"
+      },
+      "dataProjection": [
+        "id",
+        "portfolioId",
+        "targetKind",
+        "targetId",
+        "revision",
+        "updatedAt",
+        "evidenceFor",
+        "evidenceAgainst"
+      ],
+      "evidenceItems": {
+        "sourceRevisionId": "plain string",
+        "locator": "inert JSON object",
+        "quote": "string|null",
+        "stance": "for|against"
+      },
+      "sourceRead": "viewer-granted listReviews; new exact-record projection may select only matching authorized returned review, no lane/workflow action",
+      "paging": "Exact one-record read; evidence arrays remain complete/order-preserving; no fabricated native cursor. Oversized data refuses, never silently drops.",
+      "coverage": "one explicit authorized record only; not whole portfolio evidence or source corpus",
+      "sourceSelectionSeam": "Existing listReviews is lane-partitioned (mine/team/deferred/resolved). New exact-ID projection requires an explicit adapter read under current viewer/tenant/portfolio policy, or qualified complete lane coverage; a missing row from a default/incomplete lane does not establish absence. Refusal is not corpus absence."
+    },
+    {
+      "origin": "snapshot",
+      "request": {
+        "conversationId": "optional; must match binding",
+        "recordId": "required snapshot UUID"
+      },
+      "dataProjection": [
+        "id",
+        "portfolioId",
+        "portfolioRevision",
+        "contentHash",
+        "calculationVersion",
+        "capturedAt",
+        "observedAt",
+        "readAt",
+        "projection.contributions",
+        "versions",
+        "limitations",
+        "clientAccessRequirements"
+      ],
+      "sourceRead": "existing viewer-gated retained snapshot read, no analytics/createSnapshot invocation",
+      "paging": "Exact one-record read; retain every contribution and referenced-version entry or refuse oversized payload; no native cursor",
+      "coverage": "retained snapshot evidence only; not current analytics, source-byte integrity or corpus completeness",
+      "historicalSnapshotCaveat": "Retain actual stored clientAccessRequirements. The pinned writer emits[] for public-research snapshots, but older/differently sourced rows are not proven empty or authorized by that convention."
+    },
+    {
+      "origin": "current_continuity",
+      "request": {
+        "conversationId": "optional; must match binding"
+      },
+      "forbiddenSelectors": [
+        "recordId",
+        "decisionIds",
+        "knownAt",
+        "asOfFiscalYear",
+        "historical",
+        "cursor",
+        "limit"
+      ],
+      "dataProjection": [
+        "current returned continuity identities",
+        "currentDecisionId",
+        "priorDecisionId",
+        "persisted",
+        "originalEvidence",
+        "sourceEdition",
+        "retained temporal/retention limitations"
+      ],
+      "sourceRead": "getAnnualReview exposes only current defaults and latest decision per target with100-decision guard; originalEvidence may be synthesized for persisted:false. Exact extraction must preserve that distinction.",
+      "paging": "Preserve full current bounded read or source refusal; do not invent historical selection or continuation.",
+      "coverage": "current annual-projection evidence view; not arbitrary historical decision/ledger storage; no claim of native read without current derivation",
+      "executionBoundary": "The native current annual read derives continuity facts even with persistence disabled. This proposal retains that source-owner qualification gate; no retained-only execution claim. A new retained-only projection would require its own explicit selector/exposure contract."
+    }
+  ],
+  "newCompatibility": "Carrier discriminator and exact-record review/snapshot selection are new Meri read interfaces, not legacy request parity. Portfolio ID only comes from trusted subject. Root must explicitly accept source inclusion/coverage before canonical mapping.",
+  "excludedExecution": [
+    "Clio attachment access",
+    "source dereference/byte download",
+    "analytics recomputation",
+    "snapshot creation",
+    "review decisions/assignment",
+    "fit/rules/import/output workflows"
+  ],
+  "notAutomaticallyExcludedEvidence": [
+    "raw member evidence",
+    "older decision/continuity storage",
+    "any additional retained carrier with established disclosure rights"
+  ],
+  "remainingOwnerFacts": [
+    {
+      "owner": "ResearchPortfolio source/access owner + root integration",
+      "question": "Does complete selected evidence scope include raw member.evidence? If yes, specify exact projection, source classification and current reader policy; existing MemberDto omits it."
+    },
+    {
+      "owner": "ResearchPortfolio review/history owner + root integration",
+      "question": "Does the new read include all historical decisions/continuity rows or only current already-exposed annual view? No unrestricted historical read is established by getAnnualReview."
+    },
+    {
+      "owner": "root + independent reviewer",
+      "question": "Confirm retained snapshot/current review/current annual coverage and classify operational JSON/fit inputs separately; do not mark review-only or these proposed variants as whole mapping by default."
+    }
+  ],
+  "runtimeQualified": false,
+  "sourceConnected": false
+}

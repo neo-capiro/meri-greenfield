@@ -1,0 +1,6 @@
+{
+  "members": 65,
+  "passed": 65,
+  "manifestSha256": "abeac2b2643fd66d5b82790d8c86e9efc6af2961c7f7cc0f0cd7676c127aa0c7",
+  "scope": "Exact reviewer files; self-excluded manifest/verification"
+}

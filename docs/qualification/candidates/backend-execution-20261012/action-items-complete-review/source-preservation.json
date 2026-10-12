@@ -1,0 +1,150 @@
+{
+  "source": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+  "sourceTree": "0ec4ffb13b7ba457f37058ec69dd22505966c8db",
+  "originalEntries": 7677,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/action-items-complete-validation.mjs",
+      "bytes": 3926,
+      "sha256": "5bbf8e00fab3fa2c64aa078e133a50a04570dfc7810fe45c9a5d3de9d17eda0d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/action-items-complete.schema.json",
+      "bytes": 9324,
+      "sha256": "3d2f05ce303d3196d57222b322532591349cd6a353f918e459eab4e965400825"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-items-complete.test.mjs",
+      "bytes": 15406,
+      "sha256": "6a9670671dd09c26d00b967c68b4ab8cc97072da50afd2caeac3a39641609f5a"
+    }
+  ],
+  "passed": 31,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all originals exact author source",
+      "passed": true
+    },
+    {
+      "name": "all originals exact reviewer tree",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete-validation.mjs exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/action-items-complete.schema.json exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-action-items-complete.test.mjs exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "author source adds only allocated paths",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/actions/action-recommendation-read.service.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/actions/action-recommendation.types.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/actions/action-recommendation.types.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-item-read.helpers.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-item-read.helpers.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-item-read.proof.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-action-item-read.proof.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-wall.helpers.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-wall.helpers.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri.controller.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "sole snapshot import",
+      "passed": true
+    },
+    {
+      "name": "no source effect or clock token",
+      "passed": true
+    },
+    {
+      "name": "existing scoped validator and full binding remain connected",
+      "passed": true
+    },
+    {
+      "name": "input reuses canonical raw shape",
+      "passed": true
+    },
+    {
+      "name": "unscoped exact envelope",
+      "passed": true
+    },
+    {
+      "name": "packet source unchanged",
+      "passed": true
+    },
+    {
+      "name": "packet original preservation",
+      "passed": true
+    }
+  ]
+}

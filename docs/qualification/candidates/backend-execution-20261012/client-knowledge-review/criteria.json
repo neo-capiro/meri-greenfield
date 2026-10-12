@@ -1,0 +1,45 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "beforeCandidateInspection": true,
+  "role": "independent reviewer; no production edits",
+  "operations": [
+    {
+      "id": "read_chat_attachments",
+      "status": "OPEN; source projection and full variant review required"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "status": "OPEN; source projection and full variant review required"
+    },
+    {
+      "id": "get_client_context",
+      "status": "OPEN; source projection and full variant review required"
+    },
+    {
+      "id": "search_client_knowledge",
+      "status": "OPEN; source projection and full variant review required"
+    },
+    {
+      "id": "query_knowledge_graph",
+      "status": "OPEN; source projection and full variant review required"
+    },
+    {
+      "id": "search_memory",
+      "status": "OPEN; source projection and full variant review required"
+    }
+  ],
+  "criteria": [
+    "Trace exact pinned wrapper and transitive producer/schema/policy references at fd8765ec01d292013758606204f2c9d886cd31c1 and compare observed4be13b0; publish hashes/locators/analysis only.",
+    "Preserve complete operation variants and explicit source failure/refusal envelopes; empty/partial/unavailable records do not become global absence or successful complete evidence.",
+    "Normalize only established input scalar/alias/cap/default/cursor behavior; disclose approved private admission narrowing and avoid invented UUID, tenant, role, or business enums.",
+    "Server-owned tenant/actor/conversation/client/source authority stays separate from model selectors; any trusted resolution must correlate original effective selector and cannot rebind UUID or establish missing scopes.",
+    "Bind returned paging/cursor/filter/window facts as source establishes; retain independently observed totals, full pre-truncation counts, row versus character limits, and mixed representation variants.",
+    "Review all nested result DTOs including opaque JSON and strings without claiming their content is authoritative; no copied producer implementation, new registry, JSON walker, or approval engine.",
+    "Reuse canonical inert snapshot admission; test hostile accessors/proxies without effects and detached results; canonical resolver owns recursion/freezing.",
+    "Memory search must separate approved/readable memory, pending proposals, source failures and content paging, retaining approved administrator exception without changing governance.",
+    "Use meaningful independent positive/negative controls and exact immutable author source/packet checks; preserve failures and fixture corrections explicitly.",
+    "No runtime/native/database/provider/model/cloud/customer actions; source acceptance cannot qualify actual authority, persistence, source access or negative evidence.",
+    "All six selected operations stay on ledger if subset source freezes; no unilateral deferral or reduced fixture scope."
+  ],
+  "verification": "bounded focused source tests and metadata audit via owned subreaper; inspect all receipts and record physical owned-group absence; shared broad integration belongs root"
+}

@@ -1,0 +1,49 @@
+{
+  "recordedAt": "2026-10-12T21:49:48.540935+00:00",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "canonicalProductionFreeze": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "fullTestFreeze": "90c747dd61320998494cd947ad6f3ad072106310",
+  "acceptedRoot": "9fbeefcd221fbbd3b3f94004d249062709ae0880",
+  "independentReview": "5357dc276189213d2a06fb83c8952abaf29e5319",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "checks": {
+    "combined": {
+      "pass": 4254,
+      "fail": 0,
+      "skip": 0
+    },
+    "publicGeneration": true,
+    "publicTypes": true,
+    "publicTests": 7,
+    "independentBehavior": 27,
+    "independentSource": 398,
+    "independentInversePreservation": 8752,
+    "independentPacket": 1869,
+    "independentRootReceipt": 88,
+    "independentFinalManifest": 65
+  },
+  "inventory": {
+    "originals": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 83,
+    "pendingSelected": 13,
+    "typedUnavailable": 84
+  },
+  "wholeRequirements": {
+    "total": 53,
+    "completeSourceDiscovery": 2,
+    "wholePending": 51,
+    "wholeRuntimeQualified": 0
+  },
+  "gateState": {
+    "G0": "ACCEPTED",
+    "G1": "OPEN",
+    "G2-G7": "UNENTERED"
+  },
+  "sourceEnabled": false,
+  "publicContractChanged": false,
+  "runtimeActionsPerformed": false,
+  "ownedResourcesClosed": true
+}

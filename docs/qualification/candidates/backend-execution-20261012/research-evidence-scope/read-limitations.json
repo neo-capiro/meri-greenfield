@@ -1,0 +1,27 @@
+{
+  "privateBodiesPublished": false,
+  "privateCodeExecuted": false,
+  "sourceOperationsExecuted": false,
+  "exploratoryReadFailures": [
+    {
+      "kind": "wrong repository",
+      "detail": "Attempted Meri commit3406ed7e or Capiro spec path in the other checkout; corrected explicit repository reads succeeded."
+    },
+    {
+      "kind": "unavailable path",
+      "detail": "Initial guesses docs/coordination/SCOPE.md and CODEX-PLAN-R2-ADOPTION.md were absent; rg --files located docs/CAPABILITY-SCOPE.md and CODEX-R2-ADOPTION.md."
+    },
+    {
+      "kind": "placeholder read",
+      "detail": "One accidental does-not-exist Git path read failed128; no body returned and no source or ref changed."
+    },
+    {
+      "kind": "skill directory absent",
+      "detail": ".agents is absent at this base; git ls-tree confirms no tracked .agents paths."
+    }
+  ],
+  "originalFailureEvidence": "Original tool outputs retained in the session; no reconstructed stdout/stderr is presented as an original capture.",
+  "metadataCollection": "collect-identities.py is an exact copy of the authored local metadata generator; it only reads Git bytes and writes derived hashes/name-type census in this owned packet.",
+  "draftLocatorCorrection": "Initial draft called Current native tools workbook sheet Native backend; corrected from actual R2 sheet field before freeze. Original values/row27 not changed.",
+  "sparseStagingFailure": "Initial git add refused allocated evidence files outside sparse checkout; no commit occurred. Corrected using git add --sparse for exactly owned paths, without broadening checkout or changing other source."
+}

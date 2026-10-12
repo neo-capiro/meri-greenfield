@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-backend-execution-integration-review-20261012/docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets.py", line 40, in <module>
+    members = manifest['members']
+              ~~~~~~~~^^^^^^^^^^^
+KeyError: 'members'

@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-12T21:42:24.514682+00:00",
+  "initialLayout": "owned whole node_modules symlink to borrowed donor",
+  "failures": [
+    "Generated browser bundle drift from donor module paths",
+    "Node permission sandbox refused donor Ajv module path"
+  ],
+  "productionEdited": false,
+  "donorEdited": false,
+  "newLayout": "seven original minimal packages copied inside package; generator and type tools borrowed by individual symlinks",
+  "copies": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-deep-equal",
+    "fast-uri",
+    "json-schema-traverse",
+    "require-from-string"
+  ]
+}

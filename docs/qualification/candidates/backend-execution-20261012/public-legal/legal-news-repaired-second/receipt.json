@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+    "packages/contracts/test/retrieval-research-legal-news.test.mjs"
+  ],
+  "source": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+  "sourceDiff": "",
+  "producerSha256": "cef1710b11214f700499a8219cfe013fc0788b0e7ecac33c2e38df737919c0d4",
+  "startedAt": "2026-10-12T21:07:38.483749+00:00",
+  "endedAt": "2026-10-12T21:07:39.043702+00:00",
+  "exitCode": 0,
+  "timeout": false,
+  "processGroup": 321756,
+  "groupAbsent": true,
+  "stdoutSha256": "f9449bf357391764a62cebdc23de4c0b537d80a0e62cbe748406760038dc030a",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

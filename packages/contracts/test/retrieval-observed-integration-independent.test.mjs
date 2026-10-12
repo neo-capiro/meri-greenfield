@@ -1,3 +1,4 @@
+import {fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -8,7 +9,7 @@ import {resolveOperationContract,assertCatalog} from '../retrieval-0.2/validate.
 import {CATALOG_OPERATION_BINDINGS as bindings} from '../retrieval-0.2/catalog-validation.mjs';
 import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
 import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
-const backendIds=["query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline"];
+const backendIds=["query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
 const ids=['search_public_web','scrape_web_page','search_sam_opportunities','get_florida_budget_project'];
 const [SEARCH,PAGE,SAM,FLORIDA]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/',import.meta.url);
@@ -27,13 +28,13 @@ const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).as
 const samRow=()=>({id:U,noticeId:'notice',solicitationNumber:null,title:'Synthetic notice',noticeType:'stored',agency:null,office:null,pscCode:null,naicsCode:'541100',postedDate:null,responseDeadline:null,description:'Synthetic description.',sourceUrl:null,active:true});
 
 test('original139 rows and63 descriptors/callbacks survive exactly four full mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,71);assert.equal(bindings.length,71);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)),oldCatalog.operations);
- assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,70);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,26);
- for(const old of oldCatalog.originals)assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!backendIds.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings);assert.equal(catalog.originals.find(x=>x.id==='query_action_items').replacement,null);
- for(const id of ['query_global_data','save_memory','create_task','run_analysis'])assert.throws(()=>resolve(id));
+ assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+ assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
+ for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+ for(const id of ['save_memory','create_task','run_analysis'])assert.throws(()=>resolve(id));
 });
-test('all71 descriptors have exact schema byte pins and no implementation admission',()=>{
+test('all84 descriptors have exact schema byte pins and no implementation admission',()=>{
  for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
 });
 for(const id of ids){
@@ -74,8 +75,8 @@ test('SAM independent status and health clocks are consumed by real callbacks',(
 test('SAM count races, active selector and trusted mode are distinct from completeness',()=>{
  const p=output(SAM);p.results=[samRow()];p.total=0;check(SAM,p);assert.throws(()=>check(SAM,p,{}, {...context(SAM),evidenceAccuracyMode:'enforce'}));check(SAM,output(SAM),{}, {...context(SAM),evidenceAccuracyMode:'enforce'});p.results[0].active=false;assert.throws(()=>check(SAM,p));check(SAM,p,{includeInactive:true});p.results[0].active=true;assert.throws(()=>check(SAM,p,{naics:'99'}));check(SAM,p,{naics:'541'});assert.equal(resolve(SAM).normalizeInput({query:'😀'.repeat(130)},context(SAM)).input.query.length,240);
 });
-test('Florida normalized Input pin retains raw defaults and named client resolution',()=>{
- const contract=resolve(FLORIDA);assert.equal(contract.binding.input,'FloridaBudgetInput');const n=contract.normalizeInput({},context(FLORIDA));assert.equal(n.input.fiscalYear,'2026-27');assert.equal(n.input.offset,0);assert.deepEqual(n.request,{});const c=context(FLORIDA);c.effectiveScope.clientId=U;c.clientResolution={selector:'Named client',clientId:U};assert.equal(contract.normalizeInput({clientId:' Named client '},c).input.clientId,U);const p=output(FLORIDA);p.result.scope=c.effectiveScope;check(FLORIDA,p,{clientId:'Named client'},c);assert.throws(()=>contract.normalizeInput({clientId:V},{...c,clientResolution:{selector:V,clientId:U}}));assert.equal(n.metadata.authorizationEstablished,false);
+test('Florida raw Request pin admits defaults and named client resolution',()=>{
+ const contract=resolve(FLORIDA);assert.equal(contract.binding.input,'FloridaBudgetRequest');const n=contract.normalizeInput({},context(FLORIDA));assert.equal(n.input.fiscalYear,'2026-27');assert.equal(n.input.offset,0);assert.deepEqual(n.request,{});const c=context(FLORIDA);c.effectiveScope.clientId=U;c.clientResolution={selector:'Named client',clientId:U};assert.equal(contract.normalizeInput({clientId:' Named client '},c).input.clientId,U);const p=output(FLORIDA);p.result.scope=c.effectiveScope;check(FLORIDA,p,{clientId:'Named client'},c);assert.throws(()=>contract.normalizeInput({clientId:V},{...c,clientResolution:{selector:V,clientId:U}}));assert.equal(n.metadata.authorizationEstablished,false);
 });
 test('Florida nested output callback binds all scope facts and request continuation',()=>{
  const p=output(FLORIDA);for(const field of ['jurisdiction','sessionKey','folderId','clientId']){const bad=copy(p);bad.result.scope[field]='other';assert.throws(()=>check(FLORIDA,bad));}assert.throws(()=>check(FLORIDA,{...p,generatedAt:'2026-10-12T12:00:01.000Z'}));const bad=copy(p);bad.result.nextOffset=100;assert.throws(()=>check(FLORIDA,bad));assert.throws(()=>check(FLORIDA,p,{fiscalYear:'2027-28'}));

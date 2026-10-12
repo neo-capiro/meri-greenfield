@@ -1,0 +1,15 @@
+{
+  "checks": 8172,
+  "passed": 8171,
+  "failed": 1,
+  "failures": [
+    {
+      "check": "155 tests, no failures or skips",
+      "passed": false
+    }
+  ],
+  "privateReferenceObjectsChecked": true,
+  "runtimeActionsExecuted": false,
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "manifestSha256": "b3fc1f60abcfc93783c76bc4e044bbc407c254ab0ba40a0ef1f459adb8fa396a"
+}

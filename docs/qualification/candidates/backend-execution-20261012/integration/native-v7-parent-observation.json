@@ -1,0 +1,29 @@
+{
+  "recordedAt": "2026-10-12T21:30:54.721513+00:00",
+  "provenance": "Parent thread01a0ff18-26cd-7609-beba-87726d0300c6 explicit update; portable manifest/archive not yet available in this environment",
+  "reported": {
+    "officeFiles": 11,
+    "pageImages": 4,
+    "xlsx": "Formula-preserving blank-cache to6 result",
+    "sdkWireResultBody": "MERI_WIRE_DONE",
+    "sdkWireResultBytes": 14,
+    "sourceChecks": 143,
+    "independentControls": 12,
+    "bothDatabasesUnchanged": true,
+    "ownedRuntimeContainersAndClientGroupsGone": true,
+    "nativeOwnerContinuing": "browser/renderer sandbox gate",
+    "G1Accepted": false,
+    "openProductionFindings": 54,
+    "sealedPacket": "V7"
+  },
+  "localJoin": "PENDING_EXACT_SAFE_ARTIFACT_LOCATOR_AND_MANIFEST_DIGEST",
+  "earlierNativeSourceObjectAvailable": false,
+  "earlierNativeSourceObject": "8acbb0ee66cc078523087c4c8e23c01ad020152a",
+  "noRuntimeRerun": true,
+  "wholeRequirements": {
+    "total": 53,
+    "completedSourceDiscovery": 2,
+    "wholePending": 51,
+    "wholeRuntimeQualified": 0
+  }
+}

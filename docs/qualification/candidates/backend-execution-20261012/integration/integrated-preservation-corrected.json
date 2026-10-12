@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-preservation.py",
+    "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+    "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+    "20"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T21:45:45.939491+00:00",
+  "durationSeconds": 0.217,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 346710,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation-corrected.stdout.bin",
+      "bytes": 2297,
+      "sha256": "f3b1e2483374c7e89891f9b40547043c6850641735d2dd4c6de72b29756ed27c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Previous root invocation omitted explicit new20-file argument and used historical19 default; only two count assertions failed, all8750 remaining checks passed. No source/audit script change.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,9 @@
+# Research evidence scope reconciliation
+
+Base: PR35 `1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8`; isolated branch `task/meri-research-evidence-scope-20261012`. This lane owns this task, the matching report and `docs/qualification/candidates/backend-execution-20261012/research-evidence-scope/**` only. Production contracts and canonical registry remain unchanged until root reviews a concrete API proposal.
+
+Trace recorded D011 at `3406ed7e01af3aef85aeebc00fc49f6f41002bc5`, the accepted capability ledger and adopted R2, then compare their exact intended scope with immutable `fd8765ec01d292013758606204f2c9d886cd31c1` schema/policy/projection metadata and observed `4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace` drift. Distinguish implementation scope, legacy operation parity and current source authority. Determine whether the recorded approvals already resolve the ResearchPortfolio versus Clio meaning; avoid inventing another approval gate or silently choosing conflicting meanings.
+
+Reuse analysis covers the accepted ResearchPortfolio detail/changes and BusinessDevelopment evidence contracts. The proposal must name exact caller request, trusted context, output projection, owner/policy dependencies, compatibility differences and remaining adapter qualification. A new scoped read may be authorized without implying that a deferred management/review workflow is selected. If no concrete source-closed proposal follows from existing authority, report the smallest remaining decision with exact evidence.
+
+Independent reviewer: native_supervisor_author. Read-only Git/file metadata and JSON verification only; no private source bodies copied, private imports/execution, SQL, services, provider/model/native actions, package acquisition, cloud or external messages. No dependency installation or delegation. Initial bounded trace: 30 minutes; checkpoint with concrete findings before any implementation.

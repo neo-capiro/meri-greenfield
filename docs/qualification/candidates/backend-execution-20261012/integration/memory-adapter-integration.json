@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/memory-proposal-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "fd0fcfbb6e0fcf8ddacf857d924815fe6aa24228",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T20:47:44.502777+00:00",
+  "durationSeconds": 2.826,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 310022,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-adapter-integration.stdout.bin",
+      "bytes": 5911,
+      "sha256": "bd1368102adc9840c369f52fc9e28ebcee08453886301c090d3b7557e5423498"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-adapter-integration.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

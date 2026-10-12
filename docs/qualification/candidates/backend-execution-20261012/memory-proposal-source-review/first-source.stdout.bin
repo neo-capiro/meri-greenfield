@@ -1,0 +1,69 @@
+✖ independent concrete adapter and handler compose existing source/authority/budget release (41.672831ms)
+✔ independent source factory leaves actual production catalog disabled (8.750564ms)
+✔ independent model cannot inject identity/source transport or trusted continuation (1.893196ms)
+✔ independent exact HTTPS origin rejects paths, credentials and alternate schemes before allocation (0.648314ms)
+✔ independent selected client comes only from current authority and includes clientless rows (6.995561ms)
+✔ independent unrestricted own queue may return client proposals and restricted data stays redacted (3.227622ms)
+✔ independent disabled source cannot claim queue absence (3.75839ms)
+✔ independent credential full-binding mismatches and expiry refuse before fetch (18.198768ms)
+✔ independent credential receipt getter/proxy never executes caller hooks (3.490167ms)
+✔ independent status/redirect and content-type failures never retain or settle (7.183509ms)
+✔ independent malformed/oversize/truncated UTF8/JSON never becomes source evidence (12.107211ms)
+✔ independent output tenant/actor/client/approval/status and restricted-content substitutions refuse (19.077038ms)
+✔ independent page limit/order/stalled cursor and false completeness refuse (5.996314ms)
+✔ independent retained continuation uses actual adapter and exact prior scope (6.026109ms)
+✔ independent unknown or poisoned continuation cannot invoke concrete source (9.938952ms)
+✔ independent source revocation during fetch prevents release and preserves uncertainty (2.015199ms)
+✔ independent late source policy/fence changes prevent release (4.239663ms)
+✔ independent abort during parked credential port starts no fetch (7.931032ms)
+✔ independent abort during parked fetch cancels late owned body and starts no release (2.648412ms)
+✔ independent abort during parked body read cancels stream and never settles (2.400939ms)
+✔ independent expire during parked credential port starts no fetch (1.818414ms)
+✔ independent expire during parked fetch cancels late owned body and starts no release (1.831063ms)
+✔ independent expire during parked body read cancels stream and never settles (1.888008ms)
+✔ independent credential expiry is narrower than still-current capability during body read (1.956452ms)
+✖ independent final authority after settlement cannot release revoked or stale success (5.382191ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 23
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2180.56232
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-proposal-source-independent.test.mjs:39:1
+✖ independent concrete adapter and handler compose existing source/authority/budget release (41.672831ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'error' !== 'manual'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-proposal-source-review-20261012/apps/gateway/test/memory-proposal-source-independent.test.mjs:41:175)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'error',
+    expected: 'manual',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-proposal-source-independent.test.mjs:65:1
+✖ independent final authority after settlement cannot release revoked or stale success (5.382191ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/meri-memory-proposal-source-review-20261012/apps/gateway/test/memory-proposal-source-independent.test.mjs:65:525)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

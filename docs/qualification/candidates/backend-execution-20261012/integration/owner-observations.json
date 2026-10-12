@@ -1,0 +1,38 @@
+{
+  "observations": [
+    {
+      "reportedAt": "2026-10-12T20:41:00Z",
+      "owner": "parent/native worker owner",
+      "status": "parent-reported; immutable receipt packet not yet joined here",
+      "sourceCommit": "8acbb0ee66cc078523087c4c8e23c01ad020152a",
+      "image": "sha256:a055ec4798de62d5ede3501afc1b4bdc4119b32b863ad9cff475fa772c4ef7b3",
+      "nativeCapture": "PASS: 1 query, 2 Messages requests, 1 wire effect",
+      "processes": "zero exits and physical cleanup reported",
+      "database": "both databases unchanged reported",
+      "storage": "20.9GB free on native environment after optimized worker; no resize/security change",
+      "limits": [
+        "SDK result-body verification limited",
+        "native owner continues existing Office export/render/recalculation probe and result-body gap",
+        "G1 remains OPEN; no runtime qualification inferred here"
+      ]
+    },
+    {
+      "owner": "parent/shipping owner",
+      "buildId": "18b3316a-9403-40f9-807b-3ddf24c40d7b",
+      "finishedAt": "2026-10-12T20:06:43Z",
+      "status": "FAILED",
+      "dockerExitCode": 1,
+      "imageProduced": false,
+      "scanProduced": false,
+      "supersedes": "Earlier running observation in immutable PR36; not the separate native image report above"
+    }
+  ],
+  "requirementsReference": {
+    "commit": "cbbd8c5a7fe94d977b7da896ff7d01c959815fac",
+    "requirements": 53,
+    "completedSourceDiscovery": 2,
+    "wholePending": 51,
+    "wholeRuntimeQualified": 0,
+    "statusChanges": []
+  }
+}

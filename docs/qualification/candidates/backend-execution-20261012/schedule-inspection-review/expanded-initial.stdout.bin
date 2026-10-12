@@ -1,0 +1,105 @@
+✔ independent: exact borrowed read path permits authorized same-tenant delegate and detaches output (7.511495ms)
+✔ independent: application paused does not claim server absence (1.198703ms)
+✔ independent: application cancelled does not claim server absence (1.237201ms)
+✔ independent: mismatched caller tenant denies before SDK (0.515515ms)
+✔ independent: mismatched scope tenant denies before SDK (0.300542ms)
+✔ independent: authority authorized substitution refuses (0.497128ms)
+✔ independent: authority projectionSha256 substitution refuses (0.5055ms)
+✔ independent: authority callerIdentity substitution refuses (0.430427ms)
+✔ independent: authority expiresAtMs substitution refuses (0.659161ms)
+✔ independent: authority extra substitution refuses (0.586772ms)
+✔ independent: revocation at release suppresses already obtained result (0.81744ms)
+✔ independent: invalid absolute deadline delta 0 refuses inertly (0.464298ms)
+✔ independent: invalid absolute deadline delta -1 refuses inertly (0.179931ms)
+✔ independent: invalid absolute deadline delta 60001 refuses inertly (0.168423ms)
+✔ independent: invalid absolute deadline delta NaN refuses inertly (0.217076ms)
+✔ independent: invalid absolute deadline delta Infinity refuses inertly (0.100691ms)
+✔ independent: invalid absolute deadline delta 1.5 refuses inertly (0.15972ms)
+✔ independent: pre-abort has no authority or SDK effects (0.35888ms)
+✔ independent: trusted projection getters and proxy traps never execute (0.308294ms)
+✔ independent: pending authority sees immutable detached trusted facts (9.082877ms)
+✔ independent: cancel parked authority, then late completion causes no further effects (0.846673ms)
+✔ independent: cancel parked deadline, then late completion causes no further effects (0.663358ms)
+✔ independent: cancel parked abort, then late completion causes no further effects (0.813313ms)
+✔ independent: cancel parked describe, then late completion causes no further effects (0.872962ms)
+✔ independent: cancel parked release, then late completion causes no further effects (1.076609ms)
+✔ independent: before_describe published short expiry bounds its own parked authority (81.234345ms)
+✔ independent: before_release published short expiry bounds its own parked authority (81.848875ms)
+✔ independent: receipt expiry constrains actual connection deadline and parked describe (81.682812ms)
+✔ independent: callback cannot extend original deadline (1.07701ms)
+✔ independent: synchronous describe crossing original deadline is rejected before release (0.463146ms)
+✔ independent: description id substitution denies (0.402576ms)
+✔ independent: ignored sensitive SDK fields are never read or serialized (0.747114ms)
+✔ independent: three returned windows cap100 without touching omitted tail and retain exact counts (3.243447ms)
+✔ independent: Date methods are intrinsic; overridden methods never run (0.524078ms)
+✔ independent: invalid/non-native selected date refuses object (0.326431ms)
+✔ independent: invalid/non-native selected date refuses string (0.437367ms)
+✔ independent: invalid/non-native selected date refuses object (0.414554ms)
+✔ independent: invalid count refuses -1 (0.615957ms)
+✔ independent: invalid count refuses 1.5 (0.487273ms)
+✔ independent: invalid count refuses Infinity (0.371478ms)
+✔ independent: invalid count refuses 9007199254740992 (0.455455ms)
+✔ independent: invalid count refuses 1 (0.501024ms)
+✔ independent: selected accessors refuse without invocation (0.338299ms)
+✔ independent: missing optional values mapnull but zero remains zero (0.569226ms)
+✔ independent: opaque downstream error is sanitized and borrowed resources stayopen (0.522957ms)
+✖ independent: getHandle returning after deadline must not start describe (1.139173ms)
+✖ independent: substituted handle scheduleId getter is inertly refused (0.876678ms)
+✖ independent: substituted handle describe getter is inertly refused (0.763027ms)
+✔ independent: SDK methods retain borrowed receivers and exact original run labels (0.808606ms)
+✔ independent: recent keeps latest suffix while next/running keep first100 (4.532896ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 47
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 597.997162
+
+✖ failing tests:
+
+test at apps/control/schedules/test/temporal-inspection-independent.test.mjs:51:1
+✖ independent: getHandle returning after deadline must not start describe (1.139173ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-schedule-inspection-review-20261012/apps/control/schedules/test/temporal-inspection-independent.test.mjs:51:453)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/control/schedules/test/temporal-inspection-independent.test.mjs:52:49
+✖ independent: substituted handle scheduleId getter is inertly refused (0.876678ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-inspection-review-20261012/apps/control/schedules/test/temporal-inspection-independent.test.mjs:52:598)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/schedules/test/temporal-inspection-independent.test.mjs:52:49
+✖ independent: substituted handle describe getter is inertly refused (0.763027ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-inspection-review-20261012/apps/control/schedules/test/temporal-inspection-independent.test.mjs:52:598)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

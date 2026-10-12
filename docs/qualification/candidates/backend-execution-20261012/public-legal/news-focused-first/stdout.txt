@@ -1,0 +1,32 @@
+/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/util.js:174
+        throw new Error(msg);
+              ^
+
+Error: strict mode: use allowUnionTypes to allow union type keyword at "urn:meri:retrieval:research-legal-news:0.2.0#/$defs/ResearchLegalNewsRequest/properties/limit" (strictTypes)
+    at checkStrictMode (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/util.js:174:15)
+    at strictTypesError (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:285:32)
+    at checkMultipleTypes (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:251:9)
+    at checkStrictTypes (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:232:9)
+    at schemaKeywords (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:189:9)
+    at typeAndKeywords (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:128:5)
+    at subSchemaObjCode (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:115:5)
+    at subschemaCode (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:91:13)
+    at KeywordCxt.subschema (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/compile/validate/index.js:438:9)
+    at applyPropertySchema (/workspace/meri-public-legal-20261012/node_modules/ajv/dist/vocabularies/applicator/properties.js:45:17)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-research-legal-news.test.mjs (130.612059ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.277483
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-research-legal-news.test.mjs:1:1
+✖ packages/contracts/test/retrieval-research-legal-news.test.mjs (130.612059ms)
+  'test failed'

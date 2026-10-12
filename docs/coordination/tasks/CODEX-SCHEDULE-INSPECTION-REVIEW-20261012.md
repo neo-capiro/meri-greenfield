@@ -1,0 +1,13 @@
+# Temporal schedule inspection independent review outline
+
+Exact base PR35 `1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8`; isolated branch `review/meri-schedule-inspection-20261012`. This reviewer owns only the independent test, this task/report and schedule-inspection-review evidence. Author source is not yet inspected. No production/shared lifecycle edits, service/native/SQL/provider/cloud calls, schedule mutations or recursive delegation.
+
+Use public ScheduleProjection/Identity/Scope, canonical inert JSON admission/hash and the root-owned extraction of gateway lifetime. Same-tenant consistency is structural; a different actor in the same tenant may inspect only when the current read-policy callback authorizes. No new owner-only or delegation policy is chosen.
+
+Review the exact SDK1.24.0 commit1fd1c81a0383f5f5c7923dd735472c7d1ffdc867 read API and temporal type fields as source. Borrowed ScheduleClient/connection must never close. Only exact trusted temporalScheduleId may be described: no search/list/store, workflow execution, create/update/delete/pause/unpause/trigger/backfill or schedule policy copy.
+
+Freeze controls for immutable trusted projection/caller before await; raw getters/proxies/cycles and model authority rejected; both authorization stages bind full snapshot/digest/caller and publish expiry synchronously before later ports. Request deadline is absolute and at most60 seconds. Reuse canonical monotone lifetime; cancellation/deadline prevents result release and later callback-driven RPC effects, even when earlier connection/authorization/describe ports resolve late. No retries or physical cancellation claim. Cleanup owned timers/listeners; leave borrowed resources open.
+
+SDK output includes valid native Dates, validated finite counts and only selected read metadata. Project state/next/recent/running references with original firstExecutionRunId wording. At most100 entries per array, explicit observed/returned/omitted accounting; history and current-run identity remain unverified. Omitted args/memo/credentials/notes/raw response/search attributes must not be read or returned, including getters in ignored fields. Dates and selected values are safely admitted without arbitrary object method execution. Application cancelled/paused state never substitutes for an authorized describe or claims Temporal absence.
+
+Meaningful focused tests use injected inert clients only, retaining actual failures, mutant controls where useful, exact source hashes and captured process cleanup. Source acceptance is separate from actual namespace/client authentication, Temporal service availability, access policy and native/runtime qualification.

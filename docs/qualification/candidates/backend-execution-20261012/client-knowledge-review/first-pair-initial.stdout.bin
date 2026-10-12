@@ -1,0 +1,82 @@
+✔ independent pair inventory and canonical namespace (2.001539ms)
+✔ KB trims query only and keeps raw truthy client selector (1.772184ms)
+✔ KB requires query but no invented short query cap (0.516957ms)
+✖ KB finite numeric clamp preserves fractions while nonnumeric strings use default (0.496306ms)
+✔ KB filters only the four exact source kind names (0.382485ms)
+✔ observation clock is mandatory but is not current authority (1.125522ms)
+✔ KB missing-client envelope has no query or fabricated client fields (0.36532ms)
+✔ KB caught-failure envelope retains selected query and client but no rows (0.48564ms)
+✔ KB healthy empty and source failure remain distinct without absence claims (0.429105ms)
+✔ KB exact request echoes prevent substitution (0.526601ms)
+✔ KB IDs are opaque source IDs and score has explicit lower threshold only (0.719011ms)
+✔ KB title and snippet preserve same-text prefix and UTF16 bounds (0.5921ms)
+✔ KB source normalization permits post-cap trailing space but no internal newline (0.294713ms)
+✔ KB selected kind must match projected rows (0.264027ms)
+✔ KB result count is bounded without forcing post-filter fullness (0.267091ms)
+✔ KB projection closes row fields and preserves nullable-free declared strings (0.481714ms)
+✔ graph typed normalization retains exact numeric vs string parse behavior (0.616697ms)
+✔ graph capped UTF16 selectors retain post-cap whitespace (0.17285ms)
+✔ graph context is empty and cannot accept model-owned role or clock (0.186881ms)
+✔ invalid graph client projects only the established error branch (0.801966ms)
+✔ graph conflicting client seed cannot be accepted as another branch (0.289396ms)
+✔ graph empty uses edges and populated uses connections, with no invented tool fields (0.456236ms)
+✖ graph default scoped seed is reflected without fresh authority claims (0.183286ms)
+✔ graph node projection preserves opaque type and label strings without narrow vocabulary (0.151217ms)
+✔ graph IDs and types must agree and node identity cannot duplicate (0.216085ms)
+✔ graph advertised counts bind returned rows but retain pre-cap connection count (1.061125ms)
+✔ graph connections are opaque prose and locale sorting is not invented (0.154953ms)
+✔ source flags and coverage are not admitted into either projection (0.290847ms)
+✔ independent request/context getter and proxy controls are inert (0.141774ms)
+✔ result admission detaches both families without executing payload accessors (0.380382ms)
+✔ KB defaults preserve raw client and reject missing query (6.541339ms)
+✔ KB context observation is required canonical and not model supplied (0.391729ms)
+✔ KB missing client and explicit failure remain distinct (6.693654ms)
+✔ KB raw client truthiness and fractional limit remain (0.327021ms)
+✔ KB all kinds accept opaque IDs and finite scores above threshold (0.96498ms)
+✔ KB selectors and observation are bound (0.57174ms)
+✔ KB excerpt is same normalized UTF16 prefix, with source trailing truncation space (0.433942ms)
+✔ KB result returned as detached nested value (0.387263ms)
+✔ graph preserves numeric fraction and parseInt string semantics (2.968474ms)
+✔ graph three branches and exact scoped refusal (4.597603ms)
+✔ graph summary counts reflect pre-cap edges and original seed (0.905651ms)
+✔ graph duplicate and type identity refused without inventing label vocabulary (0.355335ms)
+✔ raw getters and proxies are never invoked (0.234712ms)
+✔ result getters and unrelated contexts refused (0.251658ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 42
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.370576
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:41:1
+✖ KB finite numeric clamp preserves fractions while nonnumeric strings use default (0.496306ms)
+  Error: data/limit must be number,null
+      at validateShape (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:10:129)
+      at Object.normalizeInput (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs:27:5)
+      at kn (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:18:30)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:42:85)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:118:1
+✖ graph default scoped seed is reflected without fresh authority claims (0.183286ms)
+  Error: Knowledge graph summary mismatch
+      at fail (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs:3:33)
+      at Object.assertResult (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs:86:98)
+      at gc (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:25:35)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-review-20261012/packages/contracts/test/retrieval-client-knowledge-independent.test.mjs:119:65)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

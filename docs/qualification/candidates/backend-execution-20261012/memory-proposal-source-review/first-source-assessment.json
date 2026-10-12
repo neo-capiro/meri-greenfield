@@ -1,0 +1,13 @@
+{
+  "source": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "tests": 25,
+  "passed": 23,
+  "failed": 2,
+  "preimageSha256": "b89fca88a4e7a65a5aea3684214a33003c97d94a07da2e0e0c8535e84e461300",
+  "assessment": "Both failures are independent test assumptions; no production change requested.",
+  "corrections": [
+    "Accept manual or error redirect mode, both prevent redirect following; original test unnecessarily prescribed manual. Actual adapter chooses error and separately rejects redirected responses.",
+    "Clock expiry inside settle occurs before existing lifetime admits settlement ACK, so existing dispatch conservatively marks uncertainty. Revocation/fence changes after admitted settlement still require no uncertainty. No automatic refund or result release is accepted."
+  ],
+  "preserved": "All25 cases and other assertions unchanged, raw first-source streams retained."
+}

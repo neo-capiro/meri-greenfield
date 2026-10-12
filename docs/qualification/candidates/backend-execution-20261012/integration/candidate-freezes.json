@@ -1,0 +1,139 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "families": [
+    {
+      "group": "client-knowledge-search",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "authorPacketCommit": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "reviewCommit": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c",
+      "limitations": [
+        "Client knowledge search remains candidate retrieval, and graph node labels do not establish source ownership. Only explicit client-type nodes are correlated to the selected client; current source policy remains external."
+      ]
+    },
+    {
+      "group": "client-knowledge-monday",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "authorPacketCommit": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "reviewCommit": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1",
+      "limitations": [
+        "Managed Monday boards preserve explicit paging windows and opaque inert provider JSON. Provider content and metadata are not authority or instructions; current managed access is unqualified."
+      ]
+    },
+    {
+      "group": "client-knowledge-attachments",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "authorPacketCommit": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "reviewCommit": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "a1ae9025b43fed97bbef2eed217bef3f3d6c49e3d3799317decad58eeb5a375e",
+      "limitations": [
+        "Manifest, content sections, query matches and no-match spans preserve their distinct projections. Cursor body correlation does not authenticate a cursor or qualify attachment ownership/current content."
+      ]
+    },
+    {
+      "group": "client-knowledge-memory",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "authorPacketCommit": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "reviewCommit": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "589d07bbffa8923116071a3d6d2770e4feaa4180e9a1cf67f58ca1d0483d748d",
+      "limitations": [
+        "Personal, client and firm recall preserves separate result/status/limitation projections. Tenant and user facts correlate legacy context hashes only; current memory policy and approval semantics are external."
+      ]
+    },
+    {
+      "group": "client-knowledge-profile",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "authorPacketCommit": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "reviewCommit": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d",
+      "limitations": [
+        "Full profile sections and source references preserve Decimal precision, coverage and continuation declarations. Recent engagement is not complete history; summaries and inferred facility confidence are not verified evidence."
+      ]
+    },
+    {
+      "group": "research-legal-candidates",
+      "sourceCommit": "1b52df122e0eb660dd74e79386fc3bbf8983c98e",
+      "authorPacketCommit": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "reviewCommit": "5f579cde0f0820f55cc46c7464b7cad10ecdb2f7",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "a10095eb41c9185259b65189a966294cc92b8e53236a889d5029d70f09b76aae",
+      "limitations": [
+        "Six source row variants preserve separate client-scoped and tenant-wide contact-note behavior. Candidate retrieval does not establish decisive evidence, complete history or a current client grant."
+      ]
+    },
+    {
+      "group": "public-domain-query",
+      "sourceCommit": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "authorPacketCommit": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "reviewCommit": "20279a574d9035ce623c56070a56225b0664713a",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "6562176a188bd59a1e64f8133f1a6791d418fe46635e25647132cf21ff37cd3e",
+      "limitations": [
+        "Typed query selection uses the one immutable 12-dataset/88-field metadata registry. SQL text is intentionally excluded from the private result; actual query-role enforcement, audit effects, source state and database wire serialization remain unqualified."
+      ]
+    },
+    {
+      "group": "research-legal-legislation",
+      "sourceCommit": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "authorPacketCommit": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "reviewCommit": "742f0aa85a9c3decec8702ccc2137dd65184723e",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0",
+      "limitations": [
+        "References, rules, occurrences and source-version payloads preserve separate branches. Parsed citation and client-resolution facts are producer assertions, not a replacement parser or source attestation; typed QueryAst data cannot authorize SQL execution."
+      ]
+    },
+    {
+      "group": "action-items-complete",
+      "sourceCommit": "d0eee05150e25c11971f27709a1e2604d12a1fbd",
+      "authorPacketCommit": "cecffb15a7a4ca8974ac818fa0ec45b9f46e0c88",
+      "reviewCommit": "c522d3dfde2b7e932fc0c505c9660df2ab843334",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "3d2f05ce303d3196d57222b322532591349cd6a353f918e459eab4e965400825",
+      "limitations": [
+        "Scoped mode reuses the original canonical validator and full run binding; unscoped raw listing preserves tenant-only source behavior and count races. This does not add client-wall requirements to the unscoped path.",
+        "Inherited scoped nested grammar is a narrower private admission than arbitrary stored casts; opaque cursor presence does not prove native cursor identity or immutable pagination."
+      ]
+    },
+    {
+      "group": "research-legal-news",
+      "sourceCommit": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+      "authorPacketCommit": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "reviewCommit": "65639ebdc6dab7fd068ec9cd4e781eafb948e5a4",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "bf7f7bd427c8c7b4c47e25e3ac1e0dcb649b4269e8e7910bb3366d9df22bdf5f",
+      "limitations": [
+        "News, personnel, private monitors and four exact-source variants retain separate context and result branches. Effective client scope may come from a visible folder. Tenant/owner correlation and typed query AST do not establish current authorization or execute a query."
+      ]
+    },
+    {
+      "group": "public-domain-hearings",
+      "sourceCommit": "77522c80132c8454781d54156fa61669bc5c823f",
+      "authorPacketCommit": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "reviewCommit": "ccdb00010d8cd83823e42de05295d8d395bb9fbb",
+      "verdict": "ACCEPT_SOURCE",
+      "schemaSha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca",
+      "limitations": [
+        "All five ordinary record families, exact published versions, private briefs/reconciliation, fragments, coverage and observability remain declared. A decoded cursor or supplied cutoff is not authenticated continuation or complete source history.",
+        "The inherited producer cursor parser rejects published/private prefixes on later pages. This source contract does not repair that producer defect or qualify native pagination."
+      ],
+      "dependencySchemas": [
+        {
+          "group": "public-domain-hearing-records",
+          "sha256": "36d9653125f39e4a69fbf52cd4cd603b7229b8893c4b14c7195ca18ccb7455a3"
+        }
+      ]
+    }
+  ],
+  "pending": [],
+  "sourceEnabled": false,
+  "completePublicLegalReviewPacketCommit": "fb7fd02d2b38c1c64b315b3df8d43e053c2bbe6b",
+  "rawRequestReviewPacketCommit": "10b79037683421d2e07ffbe17b98e8ab36d16cc6",
+  "testAuthorPacketCommit": "36af89b921f37adcc15032b913d520bc9fbac25d"
+}

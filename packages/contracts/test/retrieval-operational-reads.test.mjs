@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { canonicalSha256 } from '../validate.mjs';
 import {
   assertCatalog, assertSkillManifest, assertTaskReadInput, assertTaskReadPage,
-  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES,
+  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES, resolveOperationContract,
 } from '../retrieval-0.2/validate.mjs';
 
 // Literal synthetic DATA only. No handlers, real identities, tasks, recommendations or source access.
@@ -399,7 +399,7 @@ test('operational-read schema objects stay closed and package public exports sta
   assert(!JSON.stringify(pkg.exports).includes('retrieval-0.2'));
   assert(!pkg.files.includes('retrieval-0.2'));
 });
-test('private task and partial action registration keep native action items unmapped and expose no live handler or skill', () => {
+test('private task and partial action registration preserve the full native successor without a live handler or skill', () => {
   const catalog = JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json', import.meta.url)));
   assertCatalog(catalog);
   const task = catalog.operations.find(operation => operation.operation.id === 'query_tasks');
@@ -407,7 +407,21 @@ test('private task and partial action registration keep native action items unma
   assert.equal(task.qualification, 'pending'); assert.equal(task.operation.version, '0.2.0');
   assert.deepEqual(catalog.originals.find(row => row.id === 'query_tasks').replacement, { id: 'query_tasks', version: '0.2.0' });
   const actionItems = catalog.originals.find(row => row.id === 'query_action_items');
-  assert.equal(actionItems.state, 'pending'); assert.equal(actionItems.replacement, null);
+  assert.equal(actionItems.state, 'mapped');
+  assert.deepEqual(actionItems.replacement, { id: 'actions.query', version: '0.2.0' });
+  const partial = resolveOperationContract({ id: 'query_action_items', version: '0.2.0' });
+  const successor = resolveOperationContract(actionItems.replacement);
+  assert.equal(partial.binding.nativeCoverage, 'partial');
+  assert.equal(partial.binding.nativeId, 'query_action_items');
+  assert.equal(partial.binding.supersededBy, successor.binding.id);
+  assert.equal(successor.binding.nativeId, partial.binding.nativeId);
+  assert.notEqual(successor.binding.nativeCoverage, 'partial');
+  assert.deepEqual(partial.descriptor.replacement, successor.descriptor.operation);
+  for (const operation of [partial.descriptor, successor.descriptor]) {
+    assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented');
+    assert.equal(operation.qualification, 'pending'); assert.equal(operation.retry.maxRetries, 0);
+  }
+  assert.throws(() => partial.normalizeInput({}, { actorId, nowMs }), /Unscoped/);
   assert.ok(catalog.operations.some(operation => operation.operation.id === 'query_action_items'));
   assert.deepEqual(catalog.operations.find(operation => operation.operation.id === 'query_action_items').aliases, []);
   for (const id of ['operational-reads.task-read', 'operational-reads.action-item-read']) {

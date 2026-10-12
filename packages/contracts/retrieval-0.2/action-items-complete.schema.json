@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:action-items-complete:0.2.0",
+  "title": "Two-mode action-item source transport, unavailable until separately qualified",
+  "$defs": {
+    "ActionItemsCompleteInput": {
+      "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionItemReadInput"
+    },
+    "ActionItemsCompleteContext": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "clientResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80
+                },
+                "clientId": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              },
+              "required": [
+                "reference",
+                "clientId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "clientResolution"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemsCompleteNormalized": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "client_scoped"
+            },
+            "selection": {
+              "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionItemClientScopedSelection"
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "mode",
+            "selection",
+            "cursor"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "unscoped_list"
+            },
+            "selection": {
+              "type": "object",
+              "properties": {
+                "clientId": {
+                  "type": "null"
+                },
+                "status": {
+                  "anyOf": [
+                    {
+                      "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionStatus"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "sort": {
+                  "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionSort"
+                },
+                "limit": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                }
+              },
+              "required": [
+                "clientId",
+                "status",
+                "sort",
+                "limit"
+              ],
+              "additionalProperties": false
+            },
+            "cursor": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "mode",
+            "selection",
+            "cursor"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ActionItemsUnscopedCard": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "districtKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 8
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "clientName": {
+          "type": "string"
+        },
+        "peCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 16
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "programId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deltaId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actionType": {
+          "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionType"
+        },
+        "issueTitle": {
+          "type": "string"
+        },
+        "whatChanged": {
+          "type": "string"
+        },
+        "whyItMatters": {
+          "type": "string"
+        },
+        "recommendedAction": {
+          "type": "string"
+        },
+        "targetAudience": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/AudienceMember"
+          }
+        },
+        "suggestedArtifactType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deadlineSource": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/DeadlineSource"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ownerUserId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "confidence": {
+          "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ConfidenceBands"
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/EvidenceRef"
+          }
+        },
+        "status": {
+          "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionStatus"
+        },
+        "dismissalReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        }
+      },
+      "required": [
+        "id",
+        "districtKey",
+        "clientId",
+        "peCode",
+        "programId",
+        "deltaId",
+        "actionType",
+        "issueTitle",
+        "whatChanged",
+        "whyItMatters",
+        "recommendedAction",
+        "targetAudience",
+        "suggestedArtifactType",
+        "deadline",
+        "deadlineSource",
+        "ownerUserId",
+        "priority",
+        "confidence",
+        "uncertainty",
+        "evidence",
+        "status",
+        "dismissalReason",
+        "outcome",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemsUnscopedPage": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "query_action_items"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "actions": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/ActionItemsUnscopedCard"
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "actions"
+      ],
+      "additionalProperties": false
+    },
+    "ActionItemsCompleteResult": {
+      "oneOf": [
+        {
+          "$ref": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionItemClientScopedPage"
+        },
+        {
+          "$ref": "#/$defs/ActionItemsUnscopedPage"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "failure": "Overbroad import regex traversed comment-to-from tokens and produced an oversized transformed token-name list in tool output, rather than import declarations only.",
+  "correction": "Stopped regex extraction. TypeScript top-level ImportDeclaration-only extraction returned bounded module/name metadata. No token output or private source body is copied into this packet.",
+  "sourceChanged": false
+}

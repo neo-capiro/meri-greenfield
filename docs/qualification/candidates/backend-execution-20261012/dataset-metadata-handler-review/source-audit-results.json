@@ -1,0 +1,89 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "candidate": "ed307ab4d5653e3972fd82d8ebe3b54345a3ca4e",
+  "candidateTree": "7a70b3ac2addb3231ca93f1ef390d4b28a2c5201",
+  "checks": [
+    {
+      "check": "only3 allocated prior source paths changed",
+      "pass": true
+    },
+    {
+      "check": "all other base entries preserved",
+      "pass": true
+    },
+    {
+      "check": "canonical binding only one dataset dispatchProfile insertion",
+      "pass": true
+    },
+    {
+      "check": "envelope existing behavior retained except explicit dataset profile",
+      "pass": true
+    },
+    {
+      "check": "context prior memory mail and no-profile code exact after allocated addition inverse",
+      "pass": true
+    },
+    {
+      "check": "provider exact accepted dependency packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "pass": true
+    },
+    {
+      "check": "provider exact accepted dependency packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "pass": true
+    },
+    {
+      "check": "all71 descriptors remain same as base",
+      "pass": true
+    },
+    {
+      "check": "all handlers null and unavailable",
+      "pass": true
+    }
+  ],
+  "passed": 9,
+  "baseEntries": 7677,
+  "preservedEntries": 7674,
+  "allowedChanges": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/dispatch/read-result-envelope.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs"
+  ],
+  "sourceIdentities": [
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "bytes": 2524,
+      "sha256": "234d9424d13949f61c0f9b4538a38f97346c540e55161858fc86a38cddebc542"
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "bytes": 988,
+      "sha256": "8f8a038802dd91170b3f775ca7fc7fd228772eb0052274ed14d01a3355549e70"
+    },
+    {
+      "path": "apps/gateway/sources/dataset-metadata/handler.mjs",
+      "bytes": 4119,
+      "sha256": "5aa22cf08876bc43bc8e12120234bb6ef98c1b15129a0968f1f0b7b51a54f4af"
+    },
+    {
+      "path": "apps/gateway/test/dataset-metadata-handler.test.mjs",
+      "bytes": 13141,
+      "sha256": "d98f34b15b9e4bb0dcce1956b5746e7f9ee5da5c4f25e55a810cddd0cc92fb5b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 42549,
+      "sha256": "6e89613a536f1a1c90584bc5837d859c8ab6dbf7053a7a432020d1f6e6b9fddc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "bytes": 26495,
+      "sha256": "ebfd0d113ef66c4151301a3b4432f4e78646921f0a74462d076611a3d25c0865"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "bytes": 2286,
+      "sha256": "62672e810dbf7a86206bf42133bb827102e3d41af79e528bb3e2b4537fe0ba6f"
+    }
+  ],
+  "scope": "OFFLINE_SOURCE_PRESERVATION_NOT_RUNTIME"
+}

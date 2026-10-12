@@ -1,0 +1,29 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "Read-only adapter and private schema/validator; separately owned shared lifetime review remains external",
+  "source": "c78a4dff30f825441da5c32015d90647be107b3a",
+  "sourceTree": "f03baa65c7c494af5be35c2f36591e1671080b89",
+  "sharedDependency": "37f84fcb3bf2d34ae59673b1644fac64f1ef798c",
+  "tests": {
+    "independent": 50,
+    "author": 24,
+    "passed": 74,
+    "failed": 0
+  },
+  "sourceAudit": {
+    "passed": 40,
+    "failed": 0,
+    "originalEntriesPreserved": 7677
+  },
+  "sourceFailuresPreserved": [
+    "initial-candidate:67/68",
+    "expanded-initial:47/50"
+  ],
+  "runtimeAccepted": false,
+  "serviceExecuted": false,
+  "authorPacket": "f6413801acf949141dea3bb86f7bcd5233eef3f5",
+  "authorPacketAudit": {
+    "passed": 77,
+    "failed": 0
+  }
+}

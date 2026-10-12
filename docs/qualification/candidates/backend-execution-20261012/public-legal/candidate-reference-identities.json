@@ -1,0 +1,70 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "6776-6971;9789-9827;9941-9955;10044-10048;10285-10289;10476-10478",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/prisma/schema.prisma",
+    "locators": "Client845;DirectoryContactNote1104;Meeting1219;MailThread1312;MailMessage1343;ClioNote2264",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+    "locators": "36-42;67-78",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+      "bytes": 5101,
+      "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+      "bytes": 5101,
+      "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/engagement/mail-message-state.ts",
+    "locators": "activeMailThreadWhere and activeMailMessageWhere",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "326a8c84b4385ab89db9332d09e6a5e3ef3a9ad4",
+      "bytes": 4403,
+      "sha256": "121422b52fedf561c6c385081282e05a5cb70390d738b4d0e0c06c2ce0a64970"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "326a8c84b4385ab89db9332d09e6a5e3ef3a9ad4",
+      "bytes": 4403,
+      "sha256": "121422b52fedf561c6c385081282e05a5cb70390d738b4d0e0c06c2ce0a64970"
+    },
+    "changed": false
+  }
+]

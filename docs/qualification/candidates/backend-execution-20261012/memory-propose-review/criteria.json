@@ -1,0 +1,34 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "candidateInspected": false,
+  "api": [
+    "normalizeMemoryProposeInput",
+    "assertMemoryProposeCommand",
+    "assertMemoryProposeResult"
+  ],
+  "context": [
+    "binding",
+    "conversationClientId"
+  ],
+  "criteria": [
+    "Only a new private payload contract: canonical public Command and original full binding reused; no loader/catalog/public changes in author source.",
+    "Exact pending-only three-field candidateId/commandSha256/status result for all scopes; reject saved/committed/approved/auto_committed or extra effect claims. Digest binds entire command including scopes and idempotencyKey. Receipt shape is not persistence or approval proof.",
+    "Trusted selected conversation client required for client scope, UUID correlation case-insensitive; no model tenant/actor/owner/admin/sourceKind authority. Nonclient arguments clientId null. Full same-tenant public scopes structural only.",
+    "Content/key trim with UTF16 4000/120 ceiling and reject overflow, no silent truncate. Default/blank/user_private scope personal, unknown scope reject. Key logical nullable, no copied storage-key derivation.",
+    "Finite positive numeric TTL min365 retains fractions; nonpositive/null/absent null; wrong scalar types refuse, no ambient clock or expiry computation.",
+    "Raw/context/command/result closed inert JSON; getters/proxies/toJSON/coercion are not invoked. Detached snapshot return at every validated boundary.",
+    "Canonical source readonly preservation; old tests unchanged, focused adversarial checks retain every failure/preimage; native/source producer remains unrun."
+  ],
+  "explicitCompatibilityChanges": [
+    "Unknown scopes refused instead of personal fallback.",
+    "Client intent without trusted client refused instead of personal fallback.",
+    "Oversized text/key refused instead of truncation.",
+    "Wrong typed TTL refused instead of ignored.",
+    "Pending personal proposal differs from legacy same-call auto-commit; source adapter remains missing."
+  ],
+  "policy": "Approved active user_admin/capiro_admin self-review exception unchanged; no new grant predicate or mandatory different reviewer.",
+  "limits": [
+    "No current visibility/wall, broker/source authorization, durable candidate persistence, deduplication, restart/idempotency execution, or runtime acceptance.",
+    "No source body copied/imported/executed; no providers/SQL/native/network."
+  ]
+}

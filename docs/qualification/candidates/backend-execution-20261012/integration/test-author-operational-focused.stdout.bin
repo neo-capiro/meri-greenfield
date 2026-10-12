@@ -1,0 +1,23 @@
+✔ task read materializes verified defaults without mutating strict input (2.424474ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (1.253243ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (22.827227ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (1.342338ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (2.262771ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (1.435417ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (14.349336ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (2.4356ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (0.761144ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (1.629219ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (1.45038ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (14.50536ms)
+✔ operational source observations retain their pending timestamp boundary (0.616366ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (0.647954ms)
+✔ private task and partial action registration preserve the full native successor without a live handler or skill (19.891024ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2489.711229

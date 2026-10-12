@@ -1,0 +1,13 @@
+{
+  "kind": "REVIEWER_FIXTURE_CORRECTION",
+  "sourceUnchanged": true,
+  "initialSource": "2584818a24dd60fb63ac9e613d48a0c34e8542ba",
+  "initialResult": "77 pass / 8 fail across 85 cases",
+  "preimageSha256": "7a7ff313f4f82ee127dc6f079dea08e915674d39fc6df4682fab733482948702",
+  "corrections": [
+    "Create fresh scope for each page so deliberate caller mutation in detachment test does not poison subsequent fixtures.",
+    "Use empty string billTitle and billIdentifier: source view joins StateBill required String columns; nullable document title/kind remain unchanged.",
+    "Use nonempty query and valid typed compilation in filtered scan/cursor fixtures: without query source returns every scanned row."
+  ],
+  "proof": "Pinned view joins state_bill and Prisma StateBill identifier/title required; original search251-423 and shared QueryCompilation interface inspected as source/data only."
+}

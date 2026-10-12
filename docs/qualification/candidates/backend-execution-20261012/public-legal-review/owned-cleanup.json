@@ -1,0 +1,106 @@
+{
+  "status": "PASS",
+  "scope": "Only seven reviewer-owned copied dependency directories removed; donor and other owners untouched. No processes killed.",
+  "removedOwnedDependencies": [
+    {
+      "name": "ajv",
+      "files": 466
+    },
+    {
+      "name": "ajv-formats",
+      "files": 15
+    },
+    {
+      "name": "canonicalize",
+      "files": 6
+    },
+    {
+      "name": "fast-deep-equal",
+      "files": 11
+    },
+    {
+      "name": "fast-uri",
+      "files": 44
+    },
+    {
+      "name": "json-schema-traverse",
+      "files": 12
+    },
+    {
+      "name": "require-from-string",
+      "files": 4
+    }
+  ],
+  "processGroups": [
+    {
+      "receipt": "global-corrected.json",
+      "ownedProcessGroup": 311914,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "global-first.json",
+      "ownedProcessGroup": 311744,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "hearing-corrected.json",
+      "ownedProcessGroup": 329982,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "hearing-final.json",
+      "ownedProcessGroup": 330585,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "hearing-first.json",
+      "ownedProcessGroup": 329454,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "legal-arity-before.json",
+      "ownedProcessGroup": 320425,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "legal-arity-repaired.json",
+      "ownedProcessGroup": 321293,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "legal-corrected.json",
+      "ownedProcessGroup": 319531,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "legal-first.json",
+      "ownedProcessGroup": 318340,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "news-corrected.json",
+      "ownedProcessGroup": 324273,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "news-final.json",
+      "ownedProcessGroup": 324600,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "news-first.json",
+      "ownedProcessGroup": 324008,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "research-corrected.json",
+      "ownedProcessGroup": 308436,
+      "absentAtCloseout": true
+    },
+    {
+      "receipt": "research-first.json",
+      "ownedProcessGroup": 307976,
+      "absentAtCloseout": true
+    }
+  ]
+}

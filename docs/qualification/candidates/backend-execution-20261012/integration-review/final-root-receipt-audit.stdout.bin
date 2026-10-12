@@ -1,0 +1,267 @@
+{
+  "scope": "ROOT_RECEIPT_VERIFICATION_NOT_TEST_RERUN_OR_RUNTIME",
+  "target": "9fbeefcd221fbbd3b3f94004d249062709ae0880",
+  "checks": 88,
+  "passed": 88,
+  "failures": [],
+  "finalResults": [
+    {
+      "kind": "broad",
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-corrected.json",
+      "source": "90c747dd61320998494cd947ad6f3ad072106310",
+      "testCounts": [
+        4254
+      ],
+      "durationSeconds": 92.64,
+      "group": 345926,
+      "reapedDescendants": [
+        {
+          "pid": 346307,
+          "status": 0
+        },
+        {
+          "pid": 346326,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "kind": "public",
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-corrected.json",
+      "source": "e0e9130a9560c133d70d401132644d6b556357f5",
+      "testCounts": [
+        7
+      ],
+      "durationSeconds": 3.131,
+      "group": 344570,
+      "reapedDescendants": [
+        {
+          "pid": 344607,
+          "status": 0
+        },
+        {
+          "pid": 344701,
+          "status": 0
+        },
+        {
+          "pid": 344720,
+          "status": 0
+        }
+      ]
+    }
+  ],
+  "capturesIncludingRetainedFailures": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/canonical-import.json",
+      "source": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+      "exitCode": 0,
+      "ownedPidAndPgid": 332026,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-check.json",
+      "source": "f9e0471c3795861460167692826401bc27fb6b33",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339565,
+      "reapedDescendants": [
+        {
+          "pid": 341251,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/combined-source-corrected.json",
+      "source": "90c747dd61320998494cd947ad6f3ad072106310",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345926,
+      "reapedDescendants": [
+        {
+          "pid": 346307,
+          "status": 0
+        },
+        {
+          "pid": 346326,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation-corrected.json",
+      "source": "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+      "exitCode": 0,
+      "ownedPidAndPgid": 346710,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/integrated-preservation.json",
+      "source": "951e9a4e9506b31a6c768e6da9e01c63b235d47f",
+      "exitCode": 1,
+      "ownedPidAndPgid": 346437,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/lifetime-shared.json",
+      "source": "37f84fcb3bf2d34ae59673b1644fac64f1ef798c",
+      "exitCode": 0,
+      "ownedPidAndPgid": 322863,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-adapter-integration.json",
+      "source": "fd0fcfbb6e0fcf8ddacf857d924815fe6aa24228",
+      "exitCode": 0,
+      "ownedPidAndPgid": 310022,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/memory-command-integration.json",
+      "source": "46a722c97477e2bac28789ddc292d049f31eca5a",
+      "exitCode": 0,
+      "ownedPidAndPgid": 316824,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/product-whitespace.json",
+      "source": "5551fae06870d8e6ce2f55d6cf10846fffc06064",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345560,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-check.json",
+      "source": "f9e0471c3795861460167692826401bc27fb6b33",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339639,
+      "reapedDescendants": [
+        {
+          "pid": 339716,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/public-distribution-corrected.json",
+      "source": "e0e9130a9560c133d70d401132644d6b556357f5",
+      "exitCode": 0,
+      "ownedPidAndPgid": 344570,
+      "reapedDescendants": [
+        {
+          "pid": 344607,
+          "status": 0
+        },
+        {
+          "pid": 344701,
+          "status": 0
+        },
+        {
+          "pid": 344720,
+          "status": 0
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/raw-request-baseline.json",
+      "source": "1b95bcc16cdb681931212d8f87c0797c7f8c2759",
+      "exitCode": 0,
+      "ownedPidAndPgid": 326945,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-connected-final.json",
+      "source": "60ef3f099107886565d2f20723ce0a01fcb9ca82",
+      "exitCode": 0,
+      "ownedPidAndPgid": 337073,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-connected-initial.json",
+      "source": "5c87a258caf638738de45ef3b5a05310ea20f75e",
+      "exitCode": 1,
+      "ownedPidAndPgid": 336533,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform-final.json",
+      "source": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+      "exitCode": 0,
+      "ownedPidAndPgid": 336433,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform-fixed.json",
+      "source": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+      "exitCode": 0,
+      "ownedPidAndPgid": 335085,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform.json",
+      "source": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+      "exitCode": 1,
+      "ownedPidAndPgid": 334186,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-focused.json",
+      "source": "f8e80bc3e2d35887caead8cd953afe58c2224e58",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345041,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-inverse.json",
+      "source": "f8e80bc3e2d35887caead8cd953afe58c2224e58",
+      "exitCode": 0,
+      "ownedPidAndPgid": 345223,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-operational-transform.json",
+      "source": "36af89b921f37adcc15032b913d520bc9fbac25d",
+      "exitCode": 0,
+      "ownedPidAndPgid": 344776,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-before.json",
+      "source": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+      "exitCode": 1,
+      "ownedPidAndPgid": 333888,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-final.json",
+      "source": "5c87a258caf638738de45ef3b5a05310ea20f75e",
+      "exitCode": 0,
+      "ownedPidAndPgid": 336575,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-updated.json",
+      "source": "d64d3dd982e93d179f56eeb22cc8a82ba3eeafb8",
+      "exitCode": 1,
+      "ownedPidAndPgid": 335191,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-preservation.json",
+      "source": "60ef3f099107886565d2f20723ce0a01fcb9ca82",
+      "exitCode": 0,
+      "ownedPidAndPgid": 337478,
+      "reapedDescendants": []
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-root-combined-source-check.json",
+      "source": "f9e0471c3795861460167692826401bc27fb6b33",
+      "exitCode": 1,
+      "ownedPidAndPgid": 339565,
+      "reapedDescendants": [
+        {
+          "pid": 341251,
+          "status": 0
+        }
+      ]
+    }
+  ]
+}

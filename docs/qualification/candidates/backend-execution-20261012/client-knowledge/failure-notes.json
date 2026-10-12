@@ -1,0 +1,32 @@
+{
+  "retained": [
+    {
+      "label": "search-initial",
+      "note": "Passed14; initial capture at untracked source showed empty git diff. Exact files were then frozen6c3a422; this capture alone is not a source-hash binding."
+    },
+    {
+      "label": "monday-initial",
+      "note": "3 pass/5 fail strict Ajv missing object type for allOf refinement. Full staged patch retained; added type only, strict settings unchanged."
+    },
+    {
+      "label": "attachments-initial",
+      "note": "7 pass/1 fail: synthetic empty-section fixture requested offset3 but coverage locator still0. Preimage patch retained; corrected fixture locator, no production relaxation."
+    },
+    {
+      "label": "attachments-span-before",
+      "note": "Nine pass/two fail on prior packet3798c578 with additive regressions: no-query span exceeded requested limit; query miss retained nonzero span. Exact preimage patch/raw retained. Two narrow guards repaired both; query-match context may exceed limit."
+    },
+    {
+      "label": "attachments-uuid-before",
+      "note": "Eleven pass/one fail on prior packet a6d8ef48. Uppercase first-page attachment UUID is accepted by typed database lookup and emitted lowercase. Repaired returned source/emitted cursor UUID identity only; raw input cursor selector/scope remain exact. Patch/raw preserved."
+    }
+  ],
+  "reviewerFailures": [
+    "Scoped graph admitted foreign client node at6c3a422; repaired9cc2d0cf.",
+    "Explicit Monday page size not bound at27cc746; repaired5ee54465.",
+    "Attachment coordinate kind/count/selected section missing atff59080a; repairedd46e3e5a.",
+    "Memory contentStatus/contentLimitation inconsistency atadf34cc4; repaired b24d87c2 with source-owned literals and preserved initial fixture.",
+    "Attachment no-query limit and query-miss span gaps at d46e3e5a; repaired4ecc4dfc. Reviewer negative9f32a480 retained independently."
+  ],
+  "helperNote": "Reused capture helper retains historical Florida wording in rerunReason. Command/cwd/label/source diff and raw output identify each actual client-knowledge check; helper bytes intentionally unchanged."
+}

@@ -1,0 +1,210 @@
+{
+  "scope": "Name/type census of source/evidence/payload/basis/hash-like scalar fields in ResearchPortfolio-prefixed Prisma models. This is not a source exposure allowlist or proof that every JSON field is evidence.",
+  "source": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "models": [
+    {
+      "model": "ResearchPortfolioMember",
+      "line": 15231,
+      "fields": [
+        {
+          "name": "evidence",
+          "prismaType": "Json"
+        },
+        {
+          "name": "unresolvedInput",
+          "prismaType": "Json?"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioEvent",
+      "line": 15262,
+      "fields": [
+        {
+          "name": "payloadFingerprint",
+          "prismaType": "String?"
+        },
+        {
+          "name": "payload",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioTemplateVersion",
+      "line": 15463,
+      "fields": [
+        {
+          "name": "payloadFingerprint",
+          "prismaType": "String"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioRuleVersion",
+      "line": 15494,
+      "fields": [
+        {
+          "name": "previewHash",
+          "prismaType": "String"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioRulePreview",
+      "line": 15525,
+      "fields": [
+        {
+          "name": "previewHash",
+          "prismaType": "String"
+        },
+        {
+          "name": "manifest",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioReview",
+      "line": 15575,
+      "fields": [
+        {
+          "name": "evidenceFor",
+          "prismaType": "Json"
+        },
+        {
+          "name": "evidenceAgainst",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioDecision",
+      "line": 15606,
+      "fields": [
+        {
+          "name": "evidenceFor",
+          "prismaType": "Json"
+        },
+        {
+          "name": "evidenceAgainst",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioContinuityLedger",
+      "line": 15633,
+      "fields": [
+        {
+          "name": "originalEvidence",
+          "prismaType": "Json"
+        },
+        {
+          "name": "sourceEdition",
+          "prismaType": "String?"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioImportJob",
+      "line": 15663,
+      "fields": [
+        {
+          "name": "originalHash",
+          "prismaType": "String"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioImportEffect",
+      "line": 15782,
+      "fields": [
+        {
+          "name": "payload",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioImportCompensationReceipt",
+      "line": 15807,
+      "fields": [
+        {
+          "name": "previewHash",
+          "prismaType": "String"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioSnapshot",
+      "line": 15937,
+      "fields": [
+        {
+          "name": "contentHash",
+          "prismaType": "String"
+        },
+        {
+          "name": "basis",
+          "prismaType": "Json"
+        },
+        {
+          "name": "sourceVersions",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioOutputRequest",
+      "line": 15973,
+      "fields": [
+        {
+          "name": "snapshotId",
+          "prismaType": "String?"
+        },
+        {
+          "name": "requestHash",
+          "prismaType": "String"
+        },
+        {
+          "name": "includeSourceAppendix",
+          "prismaType": "Boolean"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioOutputArtifact",
+      "line": 16060,
+      "fields": [
+        {
+          "name": "contentHash",
+          "prismaType": "String"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioFitVersion",
+      "line": 16284,
+      "fields": [
+        {
+          "name": "basisFingerprint",
+          "prismaType": "String"
+        },
+        {
+          "name": "inputBasis",
+          "prismaType": "Json"
+        }
+      ]
+    },
+    {
+      "model": "ResearchPortfolioClientFilingJob",
+      "line": 16399,
+      "fields": [
+        {
+          "name": "requestHash",
+          "prismaType": "String"
+        }
+      ]
+    }
+  ]
+}

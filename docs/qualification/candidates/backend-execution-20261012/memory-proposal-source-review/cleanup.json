@@ -1,0 +1,38 @@
+{
+  "ownedCaptures": [
+    {
+      "capture": "first-source.json",
+      "group": 306390,
+      "exitCode": 1,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "corrected-controls.json",
+      "group": 306939,
+      "exitCode": 0,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "source-audit.json",
+      "group": 308110,
+      "exitCode": 0,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "author-packet-audit.json",
+      "group": 309259,
+      "exitCode": 0,
+      "absent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "unownedProcessesTouched": false,
+  "scope": "Local source checks only; no native task/socket teardown proof."
+}
