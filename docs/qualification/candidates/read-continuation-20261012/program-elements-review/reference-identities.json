@@ -1,0 +1,277 @@
+{
+  "scope": "Metadata only; no private source bodies retained or executed",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "locators": "236-237;2568-2584;5027-5257;9938-9962;10044-10048",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read.service.ts",
+      "locators": "60-83;264-547;950-1075;1083-1318",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738",
+        "bytes": 125497,
+        "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738",
+        "bytes": 125497,
+        "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "locators": "27-208",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ea718e05cef88f99a9f65b4dc8bf8983e11653e7",
+        "bytes": 8205,
+        "sha256": "debfa5525c2cc48a280e907646cbd802e3a83c54b3d1ad9997e1e448ee5a4b0c"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ea718e05cef88f99a9f65b4dc8bf8983e11653e7",
+        "bytes": 8205,
+        "sha256": "debfa5525c2cc48a280e907646cbd802e3a83c54b3d1ad9997e1e448ee5a4b0c"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/funding-claim.helpers.ts",
+      "locators": "26-117",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "109da6109488659d65211a7dd941fb6fe25ee10a",
+        "bytes": 3327,
+        "sha256": "d232ec61f00c34c8b93a8d30673372e84db21407d02e2229a4c422aa26e1ac80"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "109da6109488659d65211a7dd941fb6fe25ee10a",
+        "bytes": 3327,
+        "sha256": "d232ec61f00c34c8b93a8d30673372e84db21407d02e2229a4c422aa26e1ac80"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/funding-claim.ts",
+      "locators": "1-130;292-334;356-384;447-483;488-502",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "834cfdc097ac170d4f96b79edc88fa669bb56039",
+        "bytes": 25949,
+        "sha256": "2f820f5891ff140038224b4a8114c4ec83f3353c4083ec362e0730f2a14a77ab"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "834cfdc097ac170d4f96b79edc88fa669bb56039",
+        "bytes": 25949,
+        "sha256": "2f820f5891ff140038224b4a8114c4ec83f3353c4083ec362e0730f2a14a77ab"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "locators": "2026-2180;2232-2242;2282-2440;2474-2505",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/shared/src/defense-budget-line.ts",
+      "locators": "8-108",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "a88968b2f2891af495b2248a074990cb64d4728b",
+        "bytes": 5738,
+        "sha256": "8e31070879a32f1b46792630c6f5689483109c98f93521fbb531a32ea0bd51e9"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "a88968b2f2891af495b2248a074990cb64d4728b",
+        "bytes": 5738,
+        "sha256": "8e31070879a32f1b46792630c6f5689483109c98f93521fbb531a32ea0bd51e9"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/service-filter.ts",
+      "locators": "1-50",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "61d2b57b053940193efb626308e25f91cefda634",
+        "bytes": 1302,
+        "sha256": "b6bbadf3557fbf6bd82fb62b5e650941d60f974913f8a2cbfc28a3308ad878e5"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "61d2b57b053940193efb626308e25f91cefda634",
+        "bytes": 1302,
+        "sha256": "b6bbadf3557fbf6bd82fb62b5e650941d60f974913f8a2cbfc28a3308ad878e5"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/budget-line-lineage.ts",
+      "locators": "1-51",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "16e6ba6e175b851dad614b60e4a9b59978e8ea05",
+        "bytes": 1472,
+        "sha256": "17183dbb6e7e6ecc2f959b8cc641897795d91ef7c9b6a6b195b9dc2f83d46b0f"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "16e6ba6e175b851dad614b60e4a9b59978e8ea05",
+        "bytes": 1472,
+        "sha256": "17183dbb6e7e6ecc2f959b8cc641897795d91ef7c9b6a6b195b9dc2f83d46b0f"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/program-element/models/conference-probability.service.ts",
+      "locators": "1-100;190-248",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9f7b1d57e4a70a9635202736438f1a92dcdc3d28",
+        "bytes": 10840,
+        "sha256": "b04584ce38a0f52cbdf0ea786368bdb9a02df0b6f59dd0bdcf83a2a4f10ee835"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9f7b1d57e4a70a9635202736438f1a92dcdc3d28",
+        "bytes": 10840,
+        "sha256": "b04584ce38a0f52cbdf0ea786368bdb9a02df0b6f59dd0bdcf83a2a4f10ee835"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "locators": "4638-4665;4761-4791;5048-5065",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "locators": "1-33",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+        "bytes": 943,
+        "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+        "bytes": 943,
+        "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/meriv2-core/src/rollout/evidence-accuracy.ts",
+      "locators": "1-36",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "af2aa6b6ceafb25fd928819aac0c824d185f5fbb",
+        "bytes": 829,
+        "sha256": "f9c2cf97d04bb2ea01e1eabd9ae11ab629c2778f31d4a57f7d81df8304e9d39d"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "af2aa6b6ceafb25fd928819aac0c824d185f5fbb",
+        "bytes": 829,
+        "sha256": "f9c2cf97d04bb2ea01e1eabd9ae11ab629c2778f31d4a57f7d81df8304e9d39d"
+      },
+      "changed": false
+    },
+    {
+      "path": "packages/meriv2-core/src/rollout/capability-rollout.ts",
+      "locators": "79-99",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "8836646b4501fe0ee04e7f60f9b2c032cfc72c90",
+        "bytes": 3633,
+        "sha256": "e364d327b66fa8830622173f0ade3adf60655acb8a27d8025696aade8cbc007d"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "8836646b4501fe0ee04e7f60f9b2c032cfc72c90",
+        "bytes": 3633,
+        "sha256": "e364d327b66fa8830622173f0ade3adf60655acb8a27d8025696aade8cbc007d"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "locators": "1-178",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f0a4062a9e2333f4827d340ccd6a62c2d3a5210a",
+        "bytes": 6545,
+        "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f0a4062a9e2333f4827d340ccd6a62c2d3a5210a",
+        "bytes": 6545,
+        "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72"
+      },
+      "changed": false
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.defense-budget.spec.ts",
+      "locators": "1-225",
+      "frozen": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "49129af96503e990dfcaf1cca0b716ccec063564",
+        "bytes": 10993,
+        "sha256": "6effbc1abdf3079d349ebc73a0c3f75e6015b75f7662fc6aeb5947c24748f061"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "49129af96503e990dfcaf1cca0b716ccec063564",
+        "bytes": 10993,
+        "sha256": "6effbc1abdf3079d349ebc73a0c3f75e6015b75f7662fc6aeb5947c24748f061"
+      },
+      "changed": false
+    }
+  ]
+}

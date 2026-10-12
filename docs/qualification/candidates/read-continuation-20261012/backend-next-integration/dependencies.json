@@ -1,0 +1,55 @@
+{
+  "donor": "/workspace/meri-read-continuation-20261012",
+  "copies": [
+    {
+      "path": "node_modules/ajv",
+      "files": 466,
+      "bytes": 1033496,
+      "pathAndDigestSha256": "5d421faa0c3dc7ff62225b653c5f176e9a8ecee1a1673a41d6db06340d8faf0b"
+    },
+    {
+      "path": "node_modules/ajv-formats",
+      "files": 15,
+      "bytes": 56763,
+      "pathAndDigestSha256": "015f83ec7a9e2ac63c596312f404eee3c2964ac27487e48828943a5d9a225472"
+    },
+    {
+      "path": "node_modules/canonicalize",
+      "files": 6,
+      "bytes": 24474,
+      "pathAndDigestSha256": "eab5950ab939f4350e571380fdc2502df04534d6a8bd5d8395f5b44ce8fe8834"
+    },
+    {
+      "path": "node_modules/fast-uri",
+      "files": 44,
+      "bytes": 220886,
+      "pathAndDigestSha256": "a2546caa9ae90f9a8010357d876b4bafbb824c79b56c51ec82f95a9a5eeb883f"
+    },
+    {
+      "path": "node_modules/fast-deep-equal",
+      "files": 11,
+      "bytes": 12966,
+      "pathAndDigestSha256": "e6023659292983af97a84b41ae18378a8c062262868c638b890e5db1d33002cb"
+    },
+    {
+      "path": "node_modules/json-schema-traverse",
+      "files": 12,
+      "bytes": 22220,
+      "pathAndDigestSha256": "17bdb7bcb1cda3a7af54d5147bb5cd9c70677eebaced95cc354b15ae2d32cac1"
+    },
+    {
+      "path": "node_modules/require-from-string",
+      "files": 4,
+      "bytes": 3422,
+      "pathAndDigestSha256": "b49e7d15e5a8500bee8b145a1e08657522604e4030bf243a958556c0ca6f105a"
+    },
+    {
+      "path": "packages/contracts/node_modules",
+      "files": 2836,
+      "bytes": 52567446,
+      "pathAndDigestSha256": "3443d90cc892d73e867d63a5d34e95f4cd81a3e60bcfc6a36b6ac71206ad8241"
+    }
+  ],
+  "installRun": false,
+  "lockChanges": false
+}

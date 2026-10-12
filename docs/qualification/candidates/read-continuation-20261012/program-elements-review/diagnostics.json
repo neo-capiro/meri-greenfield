@@ -1,0 +1,11 @@
+{
+  "failedDiscovery": [
+    {
+      "command": "rg missing local domain-source-next metadata directory",
+      "exit": 2,
+      "resolution": "Read immutable4b836850 Git objects; no source/body publication"
+    }
+  ],
+  "captureProvenance": "Historical capture helper retains Florida rerunReason text; actual PE commands/cwd/source hashes identify these captures.",
+  "criteriaClarification": "Root approved closed mode-only context, no observation clock correlation asserted; generatedAt is canonical wire only. Explicit raw-year Decimal string normalization is adapter prerequisite, not numeric-mock proof of legacy serialization."
+}

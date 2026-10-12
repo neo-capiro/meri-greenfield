@@ -1,0 +1,93 @@
+{
+  "sourceCommit": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "sourceTree": "f242534f5a55495a0d0f421eb97c2fd746d88748",
+  "reviewExecutionCommit": "046296980b1185c9eb04a6224233a220a3a2a6bc",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 3867,
+      "sha256": "04a5a9719d21cd4d97184b5f0aaf4d31ac3f9f27eb58a4aa0750de1d8fbff94d"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/audit-integration.py",
+      "bytes": 5957,
+      "sha256": "2c57e20eb75cbc2e6aca9b31e1cba755cbfe96c0caaee002112ef5b2ee328a5b"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "7a4767e794597887f9a7c5bb051300e4aadbd6db5e134b0b8a8b0fe2aecd87e9"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/cleanup.json",
+      "bytes": 1996,
+      "sha256": "3dafeeb10ce4b7a6f2dc53cb0c0b2dfa4857e0087428d36a54a2f83a528c6279"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/connected-first.json",
+      "bytes": 1547,
+      "sha256": "038bc3547c0775e8f3bf17e3d2437f73c45768b6e72fa10e94e1ee655ddcee8a"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "bytes": 12895,
+      "sha256": "bbf63499f909e6d7bafa8cef73bd11db1bc012084044adfa3e226ba3a376c51e"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/criteria-amendment.md",
+      "bytes": 1331,
+      "sha256": "9dfe099a6d8166ffd37416959a1c536048afb77230185a4baf8aea1933f0f4d3"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/criteria.md",
+      "bytes": 4054,
+      "sha256": "d604ee442afc849de38124ffb4b72342300681f94399012d6b3364031c570bb5"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/dependencies.json",
+      "bytes": 1437,
+      "sha256": "facd3db35879a7e36b8d038bb0cda263a7e4068752dcaf95681db9a2c00e8eab"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/root-receipt-binding.json",
+      "bytes": 984,
+      "sha256": "db979a62c23af8d648cbde6e2c07bb377f68d028c9269e3942cd35e1482b3b64"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/source-audit.json",
+      "bytes": 1300,
+      "sha256": "6c5aa74002347bd5ee13000d7ee4661293ac195451918f632cb9e29b7f678b47"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/source-audit.stdout.bin",
+      "bytes": 33285,
+      "sha256": "78c43bd777678bc7a8fa6a597debfc6814c553b19c026bf1d69b70fe76c10c79"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/verify-packet.py",
+      "bytes": 2935,
+      "sha256": "b4c3fa28940b3f32791ae09f7519d329ade1448c08b1515e90f59bd674121801"
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "bytes": 16884,
+      "sha256": "c48e263e5e4f8d66a742bd577efea5fc8c92133d9a9960607c92f267a9a6400a"
+    }
+  ],
+  "derivedExcluded": [
+    "manifest.json",
+    "packet-verification.json"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "base": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+  "source": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "originalEntries": 7161,
+  "originalEntriesPreserved": 7161,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "bytes": 20403,
+      "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "bytes": 7887,
+      "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "bytes": 15705,
+      "sha256": "9cae563d262d6a0a056c3c89ab2b0d27222267cabb36308bbf5b931196cb5156"
+    }
+  ],
+  "passed": 7229,
+  "failed": 0,
+  "scope": "LOCAL_SOURCE_ONLY; no runtime or database proof"
+}

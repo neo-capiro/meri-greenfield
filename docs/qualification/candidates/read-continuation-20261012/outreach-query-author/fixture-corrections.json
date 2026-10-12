@@ -1,0 +1,10 @@
+{
+  "firstRun": "focused-first",
+  "result": "35 PASS / 2 FAIL",
+  "productionChanged": false,
+  "corrections": [
+    "Canonical snapshot admits inert own __proto__ JSON keys without prototype mutation; test now verifies inert own data and unchanged prototype. It does not execute getters/proxies.",
+    "Standalone canonical snapshot returns detached data, not recursively frozen data; resolver owns recursive freezing. The corrected test retains deep independence without inventing family-owned freezing."
+  ],
+  "initialSourceBindings": "first-source-identities.json"
+}

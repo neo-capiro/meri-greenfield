@@ -1,0 +1,402 @@
+{
+  "scope": "SOURCE_PROJECTION_AND_POLICY_METADATA_ONLY",
+  "privateBodiesRetained": false,
+  "sourceExecuted": false,
+  "models": {
+    "OutreachRecord": {
+      "line": 1825,
+      "scalarFields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "tenantId",
+          "type": "String"
+        },
+        {
+          "field": "clientId",
+          "type": "String?"
+        },
+        {
+          "field": "meetingId",
+          "type": "String?"
+        },
+        {
+          "field": "createdByUserId",
+          "type": "String?"
+        },
+        {
+          "field": "type",
+          "type": "String"
+        },
+        {
+          "field": "status",
+          "type": "String"
+        },
+        {
+          "field": "title",
+          "type": "String"
+        },
+        {
+          "field": "subject",
+          "type": "String?"
+        },
+        {
+          "field": "body",
+          "type": "String?"
+        },
+        {
+          "field": "recipients",
+          "type": "Json"
+        },
+        {
+          "field": "recipientCount",
+          "type": "Int"
+        },
+        {
+          "field": "stats",
+          "type": "Json"
+        },
+        {
+          "field": "metadata",
+          "type": "Json"
+        },
+        {
+          "field": "lastStep",
+          "type": "Int"
+        },
+        {
+          "field": "sentAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "openedInEmailAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "deletedAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "deletedByUserId",
+          "type": "String?"
+        },
+        {
+          "field": "createdAt",
+          "type": "DateTime"
+        },
+        {
+          "field": "updatedAt",
+          "type": "DateTime"
+        }
+      ]
+    },
+    "MeetingPrep": {
+      "line": 1599,
+      "scalarFields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "tenantId",
+          "type": "String"
+        },
+        {
+          "field": "meetingId",
+          "type": "String"
+        },
+        {
+          "field": "clientId",
+          "type": "String?"
+        },
+        {
+          "field": "status",
+          "type": "MeetingPrepStatus"
+        },
+        {
+          "field": "agenda",
+          "type": "Json"
+        },
+        {
+          "field": "talkingPoints",
+          "type": "Json"
+        },
+        {
+          "field": "risks",
+          "type": "Json"
+        },
+        {
+          "field": "followUps",
+          "type": "Json"
+        },
+        {
+          "field": "emailEvidence",
+          "type": "Json"
+        },
+        {
+          "field": "summary",
+          "type": "String?"
+        },
+        {
+          "field": "provider",
+          "type": "String?"
+        },
+        {
+          "field": "model",
+          "type": "String?"
+        },
+        {
+          "field": "promptHash",
+          "type": "String?"
+        },
+        {
+          "field": "generatedFrom",
+          "type": "Json"
+        },
+        {
+          "field": "editedByUserId",
+          "type": "String?"
+        },
+        {
+          "field": "sharedAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "sharedByUserId",
+          "type": "String?"
+        },
+        {
+          "field": "createdAt",
+          "type": "DateTime"
+        },
+        {
+          "field": "updatedAt",
+          "type": "DateTime"
+        }
+      ]
+    },
+    "MeetingDebrief": {
+      "line": 1636,
+      "scalarFields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "tenantId",
+          "type": "String"
+        },
+        {
+          "field": "meetingId",
+          "type": "String"
+        },
+        {
+          "field": "clientId",
+          "type": "String?"
+        },
+        {
+          "field": "authorUserId",
+          "type": "String?"
+        },
+        {
+          "field": "bodyCiphertext",
+          "type": "String"
+        },
+        {
+          "field": "iv",
+          "type": "String"
+        },
+        {
+          "field": "authTag",
+          "type": "String"
+        },
+        {
+          "field": "keyVersion",
+          "type": "String?"
+        },
+        {
+          "field": "confidential",
+          "type": "Boolean"
+        },
+        {
+          "field": "accessLevel",
+          "type": "String"
+        },
+        {
+          "field": "status",
+          "type": "MeetingDebriefStatus"
+        },
+        {
+          "field": "sharedAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "sharedByUserId",
+          "type": "String?"
+        },
+        {
+          "field": "createdAt",
+          "type": "DateTime"
+        },
+        {
+          "field": "updatedAt",
+          "type": "DateTime"
+        }
+      ]
+    },
+    "EngagementCampaign": {
+      "line": 3680,
+      "scalarFields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "tenantId",
+          "type": "String"
+        },
+        {
+          "field": "clientId",
+          "type": "String?"
+        },
+        {
+          "field": "createdByUserId",
+          "type": "String"
+        },
+        {
+          "field": "name",
+          "type": "String"
+        },
+        {
+          "field": "type",
+          "type": "String"
+        },
+        {
+          "field": "status",
+          "type": "String"
+        },
+        {
+          "field": "subject",
+          "type": "String?"
+        },
+        {
+          "field": "body",
+          "type": "String?"
+        },
+        {
+          "field": "sourceContext",
+          "type": "Json"
+        },
+        {
+          "field": "metadata",
+          "type": "Json"
+        },
+        {
+          "field": "sentAt",
+          "type": "DateTime?"
+        },
+        {
+          "field": "createdAt",
+          "type": "DateTime"
+        },
+        {
+          "field": "updatedAt",
+          "type": "DateTime"
+        }
+      ]
+    }
+  },
+  "exactBranch": {
+    "registrationHasOutreachId": true,
+    "registrationHasNoRequiredClientId": true,
+    "dispatchMapsToWrapper": true,
+    "serviceParameterCount": 2,
+    "wrapperArgumentCount": 2,
+    "policy": [
+      "tenant equality",
+      "exact primary id",
+      "createdByUserId equals context user",
+      "deletedAt null",
+      "type excludes internal outreach_v3"
+    ],
+    "result": "all21 OutreachRecord scalar fields with body replaced by summary; client, meeting and createdBy relations only",
+    "runtimeReachability": "Signature and declared branch are compatible; actual permission/data/DB behavior not executed or established"
+  },
+  "listBranch": {
+    "policy": "tenant filter with optional resolved visible active client and exact status; not creator-only",
+    "normalization": "wrapper optional trim/cap80 client and cap40 status; client resolver and campaign service trim again; returned resolved client ID is reassigned",
+    "count": "one full campaigns array then total length and slice; returned length=min(total,limit)",
+    "order": "source updatedAt descending; updatedAt is not returned, so createdAt ordering cannot be inferred",
+    "creator": "nullable email string, distinct from exact creator object",
+    "typeStatus": "Prisma String and campaign migration TEXT without enum CHECK"
+  },
+  "relations": {
+    "client": [
+      "id",
+      "name",
+      "website",
+      "primaryContactName",
+      "primaryContactEmail",
+      "intakeData"
+    ],
+    "creator": [
+      "id",
+      "email",
+      "firstName",
+      "lastName"
+    ],
+    "meeting": [
+      "id",
+      "clientId",
+      "subject",
+      "startsAt",
+      "endsAt",
+      "location",
+      "organizerEmail",
+      "organizerName",
+      "metadata",
+      "client",
+      "attendees",
+      "preps",
+      "debriefs"
+    ],
+    "attendee": [
+      "id",
+      "email",
+      "name",
+      "role"
+    ],
+    "prep": "all model scalar fields, newest createdAt row, take1; no selected jobs/relations",
+    "debrief": [
+      "id",
+      "meetingId",
+      "clientId",
+      "authorUserId",
+      "author",
+      "confidential",
+      "accessLevel",
+      "status",
+      "keyVersion",
+      "sharedAt",
+      "sharedByUserId",
+      "createdAt",
+      "updatedAt"
+    ],
+    "debriefExcluded": [
+      "bodyCiphertext",
+      "iv",
+      "authTag",
+      "decrypted body"
+    ]
+  },
+  "limits": [
+    "attendees not source capped",
+    "opaque JSON is not count or authority proof",
+    "body whitespace normalized then capped2000 UTF16; when truncated prefix1997 plus three dots, but exactly2000 original text need not end with dots",
+    "withTenant transaction-local tenant set_config observed, no execution",
+    "canonical four-digit millisecond UTC JSON admission is narrower than every possible historical Date serialization",
+    "actual migration application/current row truth remains unqualified"
+  ]
+}

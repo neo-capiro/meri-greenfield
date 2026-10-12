@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-payloads-20261012",
+  "sourceHead": "8c1f4a5f4287b282f478f3e18aeb376573e53ddd",
+  "sourceDiffSha256": "ef12aca0ed71cfcd87b7c97d7d1a811775a344a51d952a5a0734454881d02af7",
+  "sourceDiffBytes": 1410,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:11:43.337203+00:00",
+  "durationSeconds": 0.517,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 266857,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "bytes": 5415,
+      "sha256": "fcba1143069fc48d0325ce13cb54beb34cfc9733f50e3a6be65d018f1c9219eb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

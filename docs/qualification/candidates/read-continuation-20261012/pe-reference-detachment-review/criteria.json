@@ -1,0 +1,15 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "scope": "Direct private API detached return ownership only; canonical resolver already snapshots, no gateway bypass claim.",
+  "criteria": [
+    "Each of three operations validates a detached inert snapshot and returns it, never caller value.",
+    "All nested arrays and objects are detached in both mutation directions, including full contractor evidence and provenance.",
+    "Fallback contractor envelope and empty report compatibility remain intact.",
+    "Existing shape, correlation, ordering, source labels, coverage notes and context boundaries remain unchanged.",
+    "Hostile getters and proxies cannot run through admission.",
+    "Exact production diff is return value -> return page; original strict identity author assertion change is explicit and inverse-auditable; every other original file/assertion preserved.",
+    "Run unchanged independent probes on base then candidate, retain raw failures and process group exit; no native/source queries."
+  ],
+  "candidateProvidedButNotInspected": "8dcc6e1",
+  "outline": "Build independent synthetic closed envelopes using existing canonical schema, inject strict Ajv, assert nested ownership and malformed controls, then exact source/preservation audit."
+}

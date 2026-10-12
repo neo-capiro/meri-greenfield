@@ -1,0 +1,86 @@
+✔ single canonical operation and explicit definitions (2.050121ms)
+✔ unselected and blank list selectors normalize with default limit (2.451329ms)
+✔ exact selection suppresses all valid list selectors (0.548314ms)
+✔ exact selector is not narrowed to UUID and caps UTF16 after initial trim (0.33268ms)
+✔ trusted resolution is required only for effective list client selection (0.861485ms)
+✔ resolved UUID identity preserves case equivalence and cannot be rebound (0.468394ms)
+✔ client and status are trimmed again after wrapper UTF16 truncation (0.550978ms)
+✔ original finite numeric conversion, truncation and clamp are preserved (0.368253ms)
+✔ wrong scalar and unknown authority fields are explicit private admission refusals (0.875937ms)
+✔ standalone normalized selectors and trusted references enforce UTF16 bounds (0.797629ms)
+✔ normalization is detached and immutable (0.187923ms)
+✔ complete exact record including nested prep and debrief metadata is admitted (6.71397ms)
+✔ nullable relations and opaque JSON values retain producer scalar compatibility (0.494793ms)
+✔ record storage types include outbound campaign but exclude internal records (5.506935ms)
+✔ record status and widened step bounds follow pinned migration constraints (2.474709ms)
+✔ known deleted records and expanded scalar output are refused (0.857819ms)
+✔ source scalar fields are required including nullable fields (1.608948ms)
+✔ body is normalized and capped in UTF16 with no invented max-length ellipsis rule (2.412305ms)
+✔ selected record ID is bound without creating an existence or authority claim (0.968215ms)
+✔ no-match and branch substitutions are not successful result variants (1.012782ms)
+✔ non-null included relations match scalar identities (1.169157ms)
+✔ prep and debrief rows belong to selected meeting without current client reassignment (1.378962ms)
+✔ at most one latest prep and debrief but attendees are uncapped (3.560952ms)
+✔ all prep scalars are retained and exact enums are enforced (2.869122ms)
+✔ debrief encrypted body fields and unselected tenant fields never enter projection (2.758966ms)
+✔ stored dates are canonical values with no freshness or chronological invention (0.426371ms)
+✔ nested invalid calendar dates and alternate wire representations refuse (1.973796ms)
+✔ empty campaigns are a projection, not evidence of system absence (0.38544ms)
+✔ campaign projection retains nullable email string rather than creator object (0.931139ms)
+✔ campaign total is exact full-array count before selected slice (0.538089ms)
+✔ campaign selected client and status must match every row (0.535114ms)
+✔ hidden updatedAt order does not imply createdAt order or date relationships (0.268954ms)
+✔ campaign and attendee IDs cannot repeat even in different UUID case (0.382755ms)
+✔ complete envelope is closed and campaign derived count has no arbitrary small bound (0.727053ms)
+✔ getters and proxies are refused before any observation (0.356045ms)
+✖ hostile nested JSON and prototype-bearing output are refused inertly (4.446657ms)
+✖ validated complete output is a detached deeply frozen snapshot (4.971331ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 35
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 328.733676
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-outreach-query.test.mjs:183:1
+✖ hostile nested JSON and prototype-bearing output are refused inertly (4.446657ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-outreach-query-20261012/packages/contracts/test/retrieval-outreach-query.test.mjs:186:87)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-outreach-query.test.mjs:188:1
+✖ validated complete output is a detached deeply frozen snapshot (4.971331ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(Object.isFrozen(out.record.meeting.preps[0].agenda))
+  
+      at TestContext.<anonymous> (file:///workspace/meri-outreach-query-20261012/packages/contracts/test/retrieval-outreach-query.test.mjs:190:61)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

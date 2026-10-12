@@ -1,0 +1,20 @@
+{
+  "binding": "Untracked candidate unchanged during focused-initial; capture Git diff excludes new untracked files, these identities bind them.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "bytes": 43609,
+      "sha256": "b4a45f1711f611f078174e362f1c9eff49c4d692c491a8aaf45575a7b6709435"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "bytes": 7459,
+      "sha256": "0eab2f97182ca1a97cdc3934333e4137770c2b7a16f2b4a1cfe690240dbc3e28"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-program-elements.test.mjs",
+      "bytes": 14543,
+      "sha256": "5f9e904c11bdc11a188adac1f0aba9548f755911e9342fde8ef859f95cb947e9"
+    }
+  ]
+}

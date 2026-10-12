@@ -1,0 +1,95 @@
+{
+  "candidate": "8dcc6e13f360c15d9ba0f7c9fbd3419f1318afe3",
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-PE-REFERENCE-DETACHMENT-REVIEW-20261012.md",
+      "bytes": 3099,
+      "sha256": "cbac403fa33c77420e38d2a81c942e91022f9da4ce831bbca4f1fa2a02754581"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit-result.json",
+      "bytes": 4746,
+      "sha256": "994c1c8c280bb1b47ac557d15412dccc1561f14c7c5d866a898db1c816880037"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/audit.py",
+      "bytes": 3761,
+      "sha256": "65e745fd8f7fb29e07e96fe6abbe5d9011d8070d9c0bfb9cd58062f39d9179af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.json",
+      "bytes": 1415,
+      "sha256": "113ca45f731f5b761a7b37b6042f61a9820dd1ab9bb2c2769e277f3ceb3072c8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-corrected.stdout.bin",
+      "bytes": 16221,
+      "sha256": "1fc8d05fbae34de03325bd4bffb438b0443f2d22d898bf2d9e778b2c4bd88309"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.json",
+      "bytes": 1416,
+      "sha256": "0c5bccc49f27a1bdd44109d315cdfd5c54588009a7c630dd7f2c84ff130b8097"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/baseline-independent.stdout.bin",
+      "bytes": 17210,
+      "sha256": "4195b617b350470ebdda57ab424f5a452d4efad0bac535a234d0526ea0951431"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/criteria.json",
+      "bytes": 1277,
+      "sha256": "00f9eb8d1ddd3f21bd23648a669763f923450513a316fad3c0ff1e7839872e26"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/dependency-copy.json",
+      "bytes": 336,
+      "sha256": "b812b3c12533e26a0e4e52c8b0c3c7d95d5d85e68fec287202d8e7b718bc8243"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/discovery-errors.json",
+      "bytes": 256,
+      "sha256": "1f3c3de260b12c8b612c8e96953b5ff135a5a23b01312a76453db233c31d1b03"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/fixture-correction.md",
+      "bytes": 603,
+      "sha256": "73263a5e98eaa002a23db5507d75fafc691d500397dd27ac36234f92129785d0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.json",
+      "bytes": 1415,
+      "sha256": "544f920aede71deef0e6191b959275cc6ad5322d13ae4b21e7f6a039ca5af17b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment-review/repaired-independent.stdout.bin",
+      "bytes": 1409,
+      "sha256": "fa7157a0e562f8225cc0d214c18aac3b1830a57c8566868dd83f57a248e9e41a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs",
+      "bytes": 7914,
+      "sha256": "267d869cbe0aaa5173534e4d44423069c2c3c9535d413c0ccf6ac0ab6e0492ea"
+    }
+  ]
+}

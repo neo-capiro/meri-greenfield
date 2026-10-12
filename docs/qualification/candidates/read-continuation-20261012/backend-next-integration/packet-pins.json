@@ -1,0 +1,34 @@
+{
+  "packets": [
+    {
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json"
+    },
+    {
+      "reference": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/manifest.json"
+    },
+    {
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/packet-manifest.json"
+    },
+    {
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json"
+    },
+    {
+      "reference": "790638e4908429f190dd6414814ee872145fa289",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/manifest.json"
+    },
+    {
+      "reference": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/manifest.json"
+    }
+  ],
+  "additionalCode": [
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "reference": "1df6ef0acdb834634283eaa2bf7ff2dfd3d4f717"
+    }
+  ]
+}

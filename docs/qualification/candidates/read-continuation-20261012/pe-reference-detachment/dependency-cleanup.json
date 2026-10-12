@@ -1,0 +1,13 @@
+{
+  "verifiedFiles": 558,
+  "removedOwnedCopies": [
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/ajv",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/ajv-formats",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/canonicalize",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/fast-uri",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/fast-deep-equal",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/json-schema-traverse",
+    "/workspace/meri-pe-reference-detachment-20261012/node_modules/require-from-string"
+  ],
+  "sharedDonorUnchanged": true
+}

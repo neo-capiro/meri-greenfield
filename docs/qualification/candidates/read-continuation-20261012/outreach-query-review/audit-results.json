@@ -1,0 +1,175 @@
+{
+  "scope": "SOURCE_AND_DATA_METADATA_ONLY",
+  "sourceCommit": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "sourceTree": "c8bccc24fefd239707389df8114157411dca4807",
+  "baselineCount": 7161,
+  "pairedReferenceCount": 11,
+  "passed": 41,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "all7161 baseline blobs preserved",
+      "passed": true
+    },
+    {
+      "name": "only three package additions",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/outreach-query.schema.json exact working source",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs exact working source",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-outreach-query.test.mjs exact working source",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement-access.helpers.ts 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/index.ts 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/prisma/prisma.service.ts 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260505203000_engagement_outreach_records/migration.sql pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260505203000_engagement_outreach_records/migration.sql fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260505203000_engagement_outreach_records/migration.sql 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260609002500_widen_outreach_last_step_check/migration.sql pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260609002500_widen_outreach_last_step_check/migration.sql fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260609002500_widen_outreach_last_step_check/migration.sql 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20261120210000_outreach_records_outreach_v3_type/migration.sql pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20261120210000_outreach_records_outreach_v3_type/migration.sql fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20261120210000_outreach_records_outreach_v3_type/migration.sql 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260519015221_add_engagement_campaigns/migration.sql pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260519015221_add_engagement_campaigns/migration.sql fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260519015221_add_engagement_campaigns/migration.sql 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260507030000_outbound_campaign_templates/migration.sql pinned no drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260507030000_outbound_campaign_templates/migration.sql fd8765ec",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260507030000_outbound_campaign_templates/migration.sql 4be13b0b",
+      "passed": true
+    },
+    {
+      "name": "private namespace",
+      "passed": true
+    },
+    {
+      "name": "canonical inert snapshot owner used",
+      "passed": true
+    },
+    {
+      "name": "no private implementation import",
+      "passed": true
+    }
+  ]
+}

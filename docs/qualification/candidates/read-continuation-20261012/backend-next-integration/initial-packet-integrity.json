@@ -1,0 +1,32 @@
+{
+  "passed": 877,
+  "failed": 0,
+  "packets": [
+    {
+      "reference": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json",
+      "members": 43,
+      "sha256": "a4d4e4d6239c0e608f5fd8fe157752f5622d09b694dfca920405ff282c1f8862"
+    },
+    {
+      "reference": "ec3e54045fcdf62941629e2ed7b4f40455ed04c4",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/manifest.json",
+      "members": 20,
+      "sha256": "79908a1693103e42fe676eb8d31bea8070ba51844eeb85f5d7ec30e452b6f311"
+    },
+    {
+      "reference": "d710e9c62a6455a5f512646ef3014117498aa99c",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/command-contracts-integration/packet-manifest.json",
+      "members": 172,
+      "sha256": "6326d7bb012692cd8e04dbfc0a190efe0b40ad04e2c30f9d7fa4531d758a8600"
+    },
+    {
+      "reference": "cb5310d34cddd13d04b2233c937f271b5b4713d1",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/pe-reference-detachment/packet-manifest.json",
+      "members": 53,
+      "sha256": "fe8fc1f3760eca91ba1af0658b979bbf56fa5edd19a079930eea6f4750b0fc6c"
+    }
+  ],
+  "boundCodeFiles": 18,
+  "runtimeAccepted": false
+}

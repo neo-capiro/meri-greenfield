@@ -1,0 +1,136 @@
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (8.684841ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (13.604284ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (1306.549585ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (13.889032ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (23.81598ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (279.115409ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.523717ms)
+✔ family default materialization and argument digest happen before dispatch (4.005689ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (3.350806ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (11.592991ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.962546ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (6.862152ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.67206ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (10.931367ms)
+✔ get_pe_bills: direct result excludes later caller mutation (3.800492ms)
+✔ get_pe_bills: result mutation cannot change caller data (0.457878ms)
+✔ get_pe_bills: canonical resolver already detaches caller data (2.814319ms)
+✔ get_pe_report_language: direct result excludes later caller mutation (1.551021ms)
+✔ get_pe_report_language: result mutation cannot change caller data (0.247291ms)
+✔ get_pe_report_language: canonical resolver already detaches caller data (1.077069ms)
+✔ get_pe_contractors: direct result excludes later caller mutation (1.615207ms)
+✔ get_pe_contractors: result mutation cannot change caller data (0.175794ms)
+✔ get_pe_contractors: canonical resolver already detaches caller data (1.59024ms)
+✔ independent complete stored bill report contractor and missing-table variants admit (8.031419ms)
+✔ closed required selector uses exact trim and UTF16 cap without case or authority inference (2.752136ms)
+✔ empty trusted context refuses model authority and omitted non-JSON context (0.38591ms)
+✔ operation and own-data admission reject coercion getters and proxies without effects (0.296316ms)
+✔ report echo is exact while original bill contractor envelopes cannot prove requested PE (2.573307ms)
+✔ bill nullable fields are required and unselected fields cannot leak (1.001495ms)
+✔ bill stored columns and signed values are not manufactured from canonical identity (0.518579ms)
+✔ bill nullable links and packages retain nonrejected stored semantics (0.579511ms)
+✔ bill specificity then date order is checked without global freshness claim (0.589456ms)
+✔ bill identity duplication and source100 window refuse without count proof (4.244668ms)
+✔ bill SQL date-only projection and canonical generatedAt reject invalid time shapes (0.50615ms)
+✔ report empty coverage requires exact loaded-source caveat not a global absence proof (0.40571ms)
+✔ program-only and mixed report language keep per-item and aggregate attribution caveats (0.806212ms)
+✔ report basis establishes scope without turning candidate into accepted (1.544511ms)
+✔ report status precedes basis FY and confidence but source winner is not reconstructed (0.344748ms)
+✔ report confidence ties and out-of-range stored Float remain projection facts (0.454553ms)
+✔ report unique identity and50cap do not certify completeness (1.365271ms)
+✔ report nullable fields are complete fields not optional proof markers (0.792461ms)
+✔ missing award table fallback cannot carry normal evidence or fabricate rows (0.795986ms)
+✔ normal contractor projection keeps fixed24month award provenance apart from exhibit FY (1.297059ms)
+✔ contractor direct and candidate buckets correlate only returned grouped awards (0.63922ms)
+✔ named exhibit money never inflates federal accepted-direct obligations (0.376165ms)
+✔ unmatched zero bucket and caveat do not become invented inventory (1.109798ms)
+✔ negative award adjustments and negative exhibit values remain distinct finite numbers (0.427453ms)
+✔ contractor source and attribution text cannot promote a candidate or named prime (0.693112ms)
+✔ grouped contractor names unique while repeated exhibit names remain valid separate rows (0.434393ms)
+✔ source descending contractor ordering and null exhibit sentinel are preserved (0.489045ms)
+✔ contractor missing nullable fields extra money authority and malformed dates refuse (1.206343ms)
+✔ nested output getters symbols and cycles refuse without observable effects (0.336836ms)
+✔ bill link itself may be null but both retained evidence sources require String evidence (0.189064ms)
+✔ aggregate award count may exceed one stored Int32 row without becoming an unsafe number (1.000163ms)
+✔ contractor source windows stop at ten groups and twentyfive exhibit rows (0.75834ms)
+✔ three required selectors trim/cap UTF-16 and preserve case (2.697354ms)
+✔ missing and non-string selectors are typed refusals, never fabricated empty source pages (1.474566ms)
+✔ closed model and context objects accept no authority or request aliases (0.657298ms)
+✔ operation admission rejects unknowns and hostile coercion without effects (0.234612ms)
+✔ all success and fallback envelopes round-trip without caller mutation (6.069711ms)
+✔ bill envelope has no invented PE echo, source coverage or total (1.223779ms)
+✔ bill optional storage values remain nullable and links/package preserve their exact tuples (0.587644ms)
+✔ independent stored bill identity columns and unknown values are not normalized into fabricated facts (0.245229ms)
+✔ bill specificity then stored date ordering permits ties and null epoch semantics (0.985501ms)
+✔ bill source cap and unique stored IDs are enforced (2.524464ms)
+✔ bill SQL Date and all generated timestamps retain exact canonical serialization (0.591849ms)
+✔ contractor absent-table fallback cannot carry fabricated rows or success evidence (0.949487ms)
+✔ R-3 exhibit money cannot be included in award buckets or award count (1.078921ms)
+✔ candidate and uninventory buckets remain distinct; zeros do not grant coverage (1.390259ms)
+✔ award window/provenance/unit/category attribution cannot be silently upgraded (0.99124ms)
+✔ negative award adjustments and nullable exhibit costs preserve finite arithmetic (0.486712ms)
+✔ exhibit attribution follows null defaults and page truthiness without invented positive numeric constraints (0.441404ms)
+✔ contractor count/money correlations and own sorted group identity are enforced (1.434265ms)
+✔ contractor data and named performer source caps cannot imply population totals (0.92495ms)
+✔ report echoed PE binds only the selected syntax (0.341022ms)
+✔ empty report requires loaded-source caveat and cannot certify global absence (0.481904ms)
+✔ any program-level row requires aggregate caution and exact per-row caveat (0.543887ms)
+✔ source link scope is basis-derived including future unknown bases (0.352319ms)
+✔ accepted and candidate links preserve source evidence without approving candidate (0.581464ms)
+✔ report dedup cannot impose accepted-over-stronger-basis selection (0.424548ms)
+✔ report sorting is review status, basis, FY, confidence with ties allowed (0.594764ms)
+✔ report cap, nullable Int pages and unknown committee/action values remain distinct (1.267785ms)
+✔ inert admission rejects getters/proxies/cycles/nonfinite fields before effects (0.284708ms)
+✔ present bill links require stored string evidence, while the whole link may be null (0.561744ms)
+✔ derived award counts can exceed one stored Int32 without overflow or truncation (0.298789ms)
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-pe-reference-detachment-20261012/apps/gateway/index.mjs' imported from /workspace/meri-pe-reference-detachment-20261012/packages/contracts/test/retrieval-reference-integration-independent.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///workspace/meri-pe-reference-detachment-20261012/apps/gateway/index.mjs'
+}
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-reference-integration-independent.test.mjs (69.983068ms)
+ℹ tests 86
+ℹ suites 0
+ℹ pass 84
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6176.485961
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:16:1
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (8.684841ms)
+  Error: ENOENT: no such file or directory, open '/workspace/meri-pe-reference-detachment-20261012/docs/coordination/r2/capabilities.json'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:18:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/workspace/meri-pe-reference-detachment-20261012/docs/coordination/r2/capabilities.json'
+  }
+
+test at packages/contracts/test/retrieval-reference-integration-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-reference-integration-independent.test.mjs (69.983068ms)
+  'test failed'

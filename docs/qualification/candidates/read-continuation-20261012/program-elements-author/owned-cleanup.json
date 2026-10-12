@@ -1,0 +1,151 @@
+{
+  "sourceHead": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+  "scope": "only author-owned captured groups",
+  "checks": [
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.json",
+      "group": 293332,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.json",
+      "group": 289386,
+      "exitCode": 1,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.json",
+      "group": 292058,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.json",
+      "group": 292047,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.json",
+      "group": 293303,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.json",
+      "group": 291213,
+      "exitCode": 1,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.json",
+      "group": 291632,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.json",
+      "group": 290977,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.json",
+      "group": 290543,
+      "exitCode": 1,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.json",
+      "group": 293038,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.json",
+      "group": 292922,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.json",
+      "group": 287569,
+      "exitCode": 1,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.json",
+      "group": 287702,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.json",
+      "group": 291843,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.json",
+      "group": 288512,
+      "exitCode": 1,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.json",
+      "group": 288651,
+      "exitCode": 0,
+      "capturedAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
+    }
+  ],
+  "allAbsent": true
+}

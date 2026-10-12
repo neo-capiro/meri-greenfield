@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=model-facing claim|model-facing stage|explicitly null detail|request conflict list|appropriation token containing|large Decimal native",
+    "packages/contracts/test/retrieval-program-elements-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-program-elements-review-20261012",
+  "sourceHead": "c20cf222464a040120007511402e01c3af1b5eaf",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3",
+  "startedAt": "2026-10-12T19:54:08.843225+00:00",
+  "durationSeconds": 0.469,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 292401,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stdout.bin",
+      "bytes": 7634,
+      "sha256": "6cbb113b029ffd6740a113fbb7c663d798d19ffd76984696b07ab487be7dfafb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired focused Florida source verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

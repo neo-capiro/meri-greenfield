@@ -1,0 +1,45 @@
+✔ single canonical operation and explicit definitions (2.16915ms)
+✔ unselected and blank list selectors normalize with default limit (1.322887ms)
+✔ exact selection suppresses all valid list selectors (0.474934ms)
+✔ exact selector is not narrowed to UUID and caps UTF16 after initial trim (0.245579ms)
+✔ trusted resolution is required only for effective list client selection (0.490327ms)
+✔ resolved UUID identity preserves case equivalence and cannot be rebound (0.313981ms)
+✔ client and status are trimmed again after wrapper UTF16 truncation (0.332319ms)
+✔ original finite numeric conversion, truncation and clamp are preserved (0.328704ms)
+✔ wrong scalar and unknown authority fields are explicit private admission refusals (0.588914ms)
+✔ standalone normalized selectors and trusted references enforce UTF16 bounds (0.668735ms)
+✔ normalization is detached and immutable (0.200671ms)
+✔ complete exact record including nested prep and debrief metadata is admitted (4.887574ms)
+✔ nullable relations and opaque JSON values retain producer scalar compatibility (0.592189ms)
+✔ record storage types include outbound campaign but exclude internal records (2.288598ms)
+✔ record status and widened step bounds follow pinned migration constraints (1.8832ms)
+✔ known deleted records and expanded scalar output are refused (0.794434ms)
+✔ source scalar fields are required including nullable fields (1.48423ms)
+✔ body is normalized and capped in UTF16 with no invented max-length ellipsis rule (2.213647ms)
+✔ selected record ID is bound without creating an existence or authority claim (0.996437ms)
+✔ no-match and branch substitutions are not successful result variants (0.601073ms)
+✔ non-null included relations match scalar identities (1.1314ms)
+✔ prep and debrief rows belong to selected meeting without current client reassignment (0.787564ms)
+✔ at most one latest prep and debrief but attendees are uncapped (1.653916ms)
+✔ all prep scalars are retained and exact enums are enforced (2.509761ms)
+✔ debrief encrypted body fields and unselected tenant fields never enter projection (1.329989ms)
+✔ stored dates are canonical values with no freshness or chronological invention (0.313431ms)
+✔ nested invalid calendar dates and alternate wire representations refuse (0.903938ms)
+✔ empty campaigns are a projection, not evidence of system absence (0.21933ms)
+✔ campaign projection retains nullable email string rather than creator object (0.766071ms)
+✔ campaign total is exact full-array count before selected slice (0.496666ms)
+✔ campaign selected client and status must match every row (0.378148ms)
+✔ hidden updatedAt order does not imply createdAt order or date relationships (0.198688ms)
+✔ campaign and attendee IDs cannot repeat even in different UUID case (0.363345ms)
+✔ complete envelope is closed and campaign derived count has no arbitrary small bound (0.571188ms)
+✔ getters and proxies are refused before any observation (0.188273ms)
+✔ hostile nested JSON and prototype-bearing output are refused inertly (1.549849ms)
+✔ validated complete output is detached; canonical resolver owns recursive freezing (0.624648ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 257.621826

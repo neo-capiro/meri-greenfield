@@ -1,0 +1,8 @@
+[
+  {
+    "command": "cat packages/contracts/retrieval-0.2/pe-reference-contractors-validation.mjs",
+    "exit": 1,
+    "stderr": "No such file or directory",
+    "resolution": "rg identified existing pe-contractors-validation.mjs; no source change"
+  }
+]

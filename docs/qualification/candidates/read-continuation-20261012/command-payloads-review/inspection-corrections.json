@@ -1,0 +1,10 @@
+{
+  "boundedReadCorrections": [
+    "Initial intended review cwd missing before setup; worktree created after parent explicit allocation.",
+    "Prior discovery metadata was read from exact Git commits because not in PR31 checkout; guessed operation-matrix filename absent, actual command-boundaries located by git ls-tree.",
+    "Attempt to read earlier public-web test path in PR31 returned missing file; inspected prior owned review worktree instead."
+  ],
+  "noChecksMisreportedAsRun": true,
+  "sourceTraceError": "branch-correction.json",
+  "fixtureAndCheckerFailures": "All raw replay streams and before/after test corrections preserved."
+}

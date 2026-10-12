@@ -1,0 +1,78 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "sourceTree": "72e9d582153dcbf749254d4030d448169b8fcbf1",
+  "authorPacket": "844b9b00639d3fa712e15ed5e0872702ee1a974d",
+  "authorPacketTree": "73a53040ca883a2c278e6f535a8d13144f300bf8",
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "focused": {
+    "independent": 47,
+    "author": 50,
+    "pass": 97,
+    "fail": 0
+  },
+  "sourceAudit": {
+    "pass": 63,
+    "fail": 0,
+    "originalsPreserved": 6947,
+    "privateReferencePairs": 11
+  },
+  "packetAudit": {
+    "pass": 208,
+    "fail": 0,
+    "manifestEntries": 78
+  },
+  "currentSemantics": {
+    "taskResult": "exact six fields and todo; normalized title/client/date equality, no owner",
+    "taskDate": "trim blank\u2192null; nonblank canonical date-only or UTC-midnight admission",
+    "filingPreStorage": "failed only; pending pre-storage is refused",
+    "filingPending": "persisted quarantine; full document tuple and not_indexed",
+    "filingReason": "present for pending/failed; string may be empty",
+    "fileName": "found/persisted rows string including empty; null only failed/no tuple",
+    "receipt": "supplied outcome, exact command correlation, stable4 binding, recovered attempt/worker/fence allowed",
+    "authority": "No inferred current authorization, effective scope union, durable effects, aggregate outcome, indexing completeness or readability"
+  },
+  "supersedesMisclassification": "branch-correction.json explicitly supersedes earlier pre-storage-pending metadata/test claims. Author pin audit exposed actual reviewer trace error, not merely checker issue.",
+  "sourceConnected": false,
+  "runtimeAccepted": false,
+  "remaining": [
+    "Canonical private loader and connected integration review",
+    "Trusted producer/client/object mapping and ordinary task authorizer",
+    "Current tenant/client-wall/effective-scope/expiry/revocation checks",
+    "Durable idempotency and aggregate receipt policy",
+    "Real DB/date/storage/indexing and runtime qualification"
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3951,
+      "sha256": "5d90523200ed2d8589bd893075ff7ddb42a112b29b9c717bc81e72dd0370ada4"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "bytes": 3827,
+      "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3494,
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "bytes": 9809,
+      "sha256": "bd633422dc010e15b63c3205d8d18e19885bcd34a10f6f5b488b46b4a53a3f17"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "bytes": 11370,
+      "sha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925"
+    }
+  ],
+  "ownedGroups": 12
+}

@@ -1,0 +1,113 @@
+{
+  "sourceCommit": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "sourceTree": "c8bccc24fefd239707389df8114157411dca4807",
+  "authorPacket": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-OUTREACH-QUERY-REVIEW-20261012.md",
+      "bytes": 4256,
+      "sha256": "214e312273202aafcc847669b37658f8853c9e3e5524ef697fe84034d1ed3da7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-author-packet.py",
+      "bytes": 4040,
+      "sha256": "24616b930591400bda029f5843a2bd99df0406b4100048f79fc56bc1dfe0dbfe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-results.json",
+      "bytes": 5117,
+      "sha256": "dd7dbcaf20fd6a346de69c8590cec5975e3dcefe850f497e4c595881d8887a8d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/audit-source.py",
+      "bytes": 2753,
+      "sha256": "95b63fd7ca86eea13e3e3cf688c32d468e3309ef2baba89882a7ad0eefcd3e88"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/author-packet-audit.json",
+      "bytes": 11164,
+      "sha256": "9101f189bfad78cbc933f358a44bd938454eb3067259f56910690fa9697e1a8f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/cleanup.json",
+      "bytes": 1994,
+      "sha256": "a3f06c268263307a96f4c7541e7877b7f1285f4a9cdba0173ea417d5f190cc37"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/control-trace-correction.md",
+      "bytes": 710,
+      "sha256": "3e6223102198499bb7147d50d85b8c9ca75ba9e05bb954daa6055d22e8a5cab4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/criteria.md",
+      "bytes": 2934,
+      "sha256": "33a06e179d9e43a9948a3b726b26bd3eb556289295461c6e010080e5e3decf9a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/dependencies.json",
+      "bytes": 1437,
+      "sha256": "facd3db35879a7e36b8d038bb0cda263a7e4068752dcaf95681db9a2c00e8eab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.json",
+      "bytes": 1381,
+      "sha256": "41e6ea38f39d5e4b5aacd685a07d1f31dc8daba97dc8e754a3a897372c074675"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/focused-first.stdout.bin",
+      "bytes": 6309,
+      "sha256": "8e56e7f96278d26a3390d1658394f2f5e259dffc3c75a4d461af4b14495ecb1e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/reference-identities.json",
+      "bytes": 7465,
+      "sha256": "e1f50eaf79bef06a8b11a06a54ab5dceabb241b11d9082552e55417ca7a221ec"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.json",
+      "bytes": 1376,
+      "sha256": "afefba30b1db5135fea63ecfaa66262975233ade9af963caca576c43fd39a67b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-audit.stdout.bin",
+      "bytes": 5117,
+      "sha256": "dd7dbcaf20fd6a346de69c8590cec5975e3dcefe850f497e4c595881d8887a8d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/source-findings.json",
+      "bytes": 9078,
+      "sha256": "883fb9c9bec8a02834b4c013669c3800bf8984ea9b78946ba102bcadc6445c0d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-review/verify-packet.py",
+      "bytes": 3001,
+      "sha256": "eab80561461734aa6062700697082ea3e6db10aa5c719cb70cb7b5c64042073d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-outreach-query-independent.test.mjs",
+      "bytes": 15799,
+      "sha256": "aa0ea9e0802a0aca9ea546a4debd963286ccfbf95428ad654eca464a6d5160b7"
+    }
+  ],
+  "derivedExcluded": [
+    "manifest.json",
+    "packet-verification.json"
+  ]
+}

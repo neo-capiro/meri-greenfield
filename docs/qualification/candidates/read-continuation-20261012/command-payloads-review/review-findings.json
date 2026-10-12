@@ -1,0 +1,32 @@
+{
+  "initialCandidate": "0565003a32a7311658a86cfc7689036b6b450f57",
+  "preFreezeStaticFindings": [
+    "pending before storage has no document tuple",
+    "task dueDate @db.Date is date-column midnight",
+    "direct command UUID resolution must check consistency"
+  ],
+  "firstIndependentRun": {
+    "pass": 83,
+    "fail": 4,
+    "cause": "Reviewer receipt/proposal fixture inserted contractVersion not present in unchanged public schemas; two fixture keys removed, all assertions unchanged"
+  },
+  "correctedRun": {
+    "pass": 87,
+    "fail": 0,
+    "independent": 42,
+    "author": 45
+  },
+  "addedControls": {
+    "pass": 42,
+    "fail": 4,
+    "failures": [
+      "blank optional client/date must map null with null resolution",
+      "date selector whitespace trimmed before narrowed date syntax",
+      "found/persisted filename cannot be null",
+      "caught empty Error.message is valid explicit failed reason string"
+    ],
+    "raw": "compatibility-negative.stdout.bin"
+  },
+  "sourceConnected": false,
+  "runtimeAccepted": false
+}

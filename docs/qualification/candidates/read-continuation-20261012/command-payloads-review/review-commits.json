@@ -1,0 +1,26 @@
+{
+  "orderedReviewOnlyBeforeManifestCommit": [
+    "013c2b0d152f5330b29eadb8771c13369e7a85d6",
+    "8d8c89e0bcae8bd6f09bbe5f0402cbec42d249ad",
+    "c624580bd18f346c12633866dcd464c82b2fe8a0",
+    "3a4a6d78479bcff8622cf74ef86658b41567db8a",
+    "7f846853b782e98e884d16cd993be44cfca0822a",
+    "b4632f2e921ce86c2632ffb711ced1ad713ddd75",
+    "bb9138778d441b9084ea4d6618da0ecb58c2a349",
+    "e70b7345e3a5e612fa3aa33d006aaa508f6a4ee1",
+    "11bf4e1592b56af882e42463578994c2fa762799",
+    "ee336f29c7d9c4e0ec7d9bf558a8f699f49bcc9c",
+    "edbe5682cf62dc5805b485b989a93334ad72dd79",
+    "12a90df815e5db7c5208d5a25aad19e206479841",
+    "64dfe9e57b11a682de16c0167a199b4c70e7895e",
+    "2261198afed11258fe067f1cdad14b16d0da9f58",
+    "84290ff41388d20a904b4ad6ac0d5184a1610a33",
+    "34013a480c3dca8608973b7fcc6966278b4a9ece"
+  ],
+  "sourceMergesExcluded": [
+    "77a8eff5ea6324e0e3b25fe71d63c3dccfe1a038",
+    "cde9758cc6c89a297fc9a4bebbb2cff6587a80a5",
+    "a9141bae15d62ab4ccb991b0e78251b482083e54"
+  ],
+  "finalManifestCommitProvidedByFinalResponse": true
+}

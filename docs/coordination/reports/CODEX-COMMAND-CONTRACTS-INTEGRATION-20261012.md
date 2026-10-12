@@ -1,0 +1,35 @@
+# Accepted private command payload integration
+
+**ACCEPT_SOURCE** for `5fca98580c5d93c9f9aa4a3ed518e926e087846c`, tree `f242534f5a55495a0d0f421eb97c2fd746d88748`, independently reviewed at `97de9c3fb44284dffc5ac88c8265057bfdf967fc`. Base is PR31 `cff71e1ba8ca8dea8970ad0c778b580a73f84815`. Runtime/auth/storage/aggregate policy remain HOLD; G1 OPEN, G2–G7 unentered.
+
+The additive private 0.2 module composes independently accepted task.create and artifact.file payload validators through the 38-line `packages/contracts/commands-0.2/validate.mjs`. It reuses strict Ajv 2020, existing public 0.1 schemas/canonical hash and the inert data snapshot boundary. All 6947 baseline tracked files remain byte/mode-identical. No existing public contract, registry, policy engine, handler, worker, frontend, dependency or infrastructure file changes.
+
+Task creation admits title/client/date arguments and correlates the six-field result. Client names require a trusted resolution fact; UUID identity cannot be rebound. The private admission intentionally rejects overlength title/client instead of clipping and restricts the source SQL Date field to date-only or canonical UTC midnight; blank optional client/date become null. Arbitrary dates and times are not silently truncated. Current ordinary task permissions and execution scopes remain unresolved canonical execution obligations.
+
+Artifact filing admits 1–10 immutable ObjectReferences and a correlated destination fact, producing exactly one correlated outcome per object. Missing attachments or bytes/mediaType are FAILED. PENDING represents persisted quarantine and retains the full persistence tuple; saved outcomes likewise retain persistence and indexing data. Empty stored filenames and empty error messages are preserved where the source allows them. Receipt helpers bind supplied command identity/hash/idempotency, stable tenant/actor/conversation/run and scope facts, without deriving an aggregate effect outcome. Optional ArtifactVersion validation binds tenant and exact selected object; it makes no additional parent/actor/run or current-authority assertion. Logical and storage version identities remain distinct.
+
+Verification: root 107/107 focused checks and 7243/7243 source/packet checks passed. Independent integration 143/143 comprises 36 connected loader controls, 97 accepted family checks and 10 public protocol checks; independent source/evidence 172/172 and final packet 26/26 passed. Root and reviewer owned process groups are absent, with no timeout/kill. All six accepted family files match `bdbb14603cfab0d52d483956f7f1a7e373abb3cb`; author packet `844b9b00639d3fa712e15ed5e0872702ee1a974d` and independent family review `757e3e691f4578781116d81fb516b5c9f454325a` retain 139 original manifest members. No production repair was required by combined integration review.
+
+Raw failed fixtures, negative controls and source corrections remain preserved, including the independently corrected mistaken missing-bytes PENDING interpretation. The final source restores FAILED before storage and requires persistence for PENDING; inverse patches preserve the original assertions and their documented source-based corrections. The review does not hide failures or weaken unrelated tests.
+
+This branch leaves the PR31 read catalog untouched at 62mapped-unavailable / 34 pending/63 typed-unavailable. The parallel observed-read continuation advances that read ledger separately to66/30/67. Neither command payload family activates or remaps its original capability. No command executor, approval service, persistence adapter, scheduler or actual storage/provider/SQL/model/cloud call is introduced. There is no new literal scope-union policy; canonical authorization must resolve command/object/destination scope and ordinary task rights. task.update and Temporal action allocation remain pending. The approved memory administrator exception remains unchanged.
+
+The final packet manifest binds new source, reports and raw evidence; later publication receipts are excluded from that frozen manifest. Original author/reviewer refs remain preserved. This is source acceptance, not functional product, runtime or deployment acceptance.
+
+## Historical implementation outline
+
+The following is the pre-implementation record; its pending-review statements describe that earlier point in time.
+
+# Private command payload integration
+
+## Outline before integration
+
+Base is PR31 `cff71e1ba8ca8dea8970ad0c778b580a73f84815`; this separate `task/meri-command-contracts-20261012` worktree owns command contract integration. Root retains the canonical new `packages/contracts/commands-0.2/validate.mjs` loader. The separate author owns task-create/artifact-file schemas and validators; independent review must accept exact source before import. No review verdict is implied by this outline.
+
+Compose the two private family factories through one small strict Ajv2020 loader. Reuse the existing public0.1 schema/validators/canonical hash, and the existing inert snapshot boundary. Export deliberately named task-create and artifact-file normalization/correlation functions. Do not add an action registry, approval service, policy engine, execution port, persistence adapter, scheduler or source handler. No existing contract/schema/source/test file needs modification; this namespace is additive and private.
+
+Task creation covers the declared title/client/date arguments and six projected result fields. Artifact filing covers one-to-ten exact immutable object references, trusted destination assertion and distinct per-object source outcomes. Optional public receipt/version helpers correlate supplied immutable facts; they establish neither aggregate outcome nor actual storage, indexing, authorization or execution. Original producer provenance and recovered executor provenance remain distinct under the existing public protocol.
+
+Ordinary task permissions, effective command/object/destination scope computation, durable effect reconciliation and current source authorization remain canonical execution-owner gates. No literal scope-union policy is invented. Public task.update and Temporal action allocation remain absent; memory administrator approval policy is unchanged. Raw private admission changes must be explicit and source counterexamples preserved. No command capability is remapped into the read catalog or enabled by these payload contracts; the entire139original/96selected/43deferred ledger remains untouched.
+
+After source review, preserve author/reviewer commits and raw failures, then add the loader and run focused family plus independent connected controls, strict compilation and exact baseline/source/packet audits. Independent integration review owns its separate controls and evidence. Relevant public protocol regression tests verify unchanged public reuse. Record bounded process cleanup. No model/provider/SQL/native/cloud/security/network/database action, credentials, spend, image build/launch, deployment or merge is authorized.

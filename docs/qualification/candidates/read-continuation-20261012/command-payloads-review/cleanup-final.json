@@ -1,0 +1,102 @@
+{
+  "ownedGroups": [
+    {
+      "capture": "author-packet-audit-corrected.json",
+      "pgid": 269189,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "author-packet-audit.json",
+      "pgid": 268968,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "compatibility-negative.json",
+      "pgid": 265031,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "independent-corrected.json",
+      "pgid": 264490,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "independent-final.json",
+      "pgid": 267613,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "independent-first.json",
+      "pgid": 264293,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "independent-repaired.json",
+      "pgid": 266180,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "pending-negative.json",
+      "pgid": 267268,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "repaired-unchanged.json",
+      "pgid": 266026,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "source-audit-final.json",
+      "pgid": 268031,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "source-audit-restored-pending.json",
+      "pgid": 267780,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    },
+    {
+      "capture": "source-audit.json",
+      "pgid": 266488,
+      "absentAtCapture": true,
+      "absentNow": true,
+      "timedOut": false,
+      "groupKillRequired": false
+    }
+  ],
+  "allAbsent": true,
+  "otherOwnersTouched": false
+}

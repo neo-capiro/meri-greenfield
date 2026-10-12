@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-program-elements.test.mjs"
+  ],
+  "cwd": "/workspace/meri-program-elements-20261012",
+  "sourceHead": "8854d1c0bb47d8b8b002643ee00e8edebe49ef41",
+  "sourceDiffSha256": "0078b86fa0115278817425290683c649068301a86df1af6740d0bf6ce6b50ddf",
+  "sourceDiffBytes": 25695,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:57:33.493062+00:00",
+  "durationSeconds": 0.569,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 292922,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stdout.bin",
+      "bytes": 4034,
+      "sha256": "65a8f974b1acde8ab7b9fb81db9b684d5addeb4d43eabc6db058361c4937d4f7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

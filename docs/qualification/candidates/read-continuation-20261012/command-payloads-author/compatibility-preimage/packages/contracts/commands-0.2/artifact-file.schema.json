@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:commands:artifact-file:0.2.0",
+  "title": "Private exact-version filing payloads and per-object observations",
+  "$defs": {
+    "ArtifactFileRaw": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+          },
+          "minItems": 1,
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "clientId",
+        "conversationId",
+        "objects"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactFileContext": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "clientId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "clientId",
+            "conversationId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "binding",
+        "destination"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactFileArguments": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "clientId",
+        "conversationId"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactFileObservation": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ObjectReference"
+        },
+        "status": {
+          "enum": [
+            "saved",
+            "pending",
+            "failed"
+          ]
+        },
+        "fileName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "indexingStatus": {
+          "enum": [
+            "pending",
+            "indexed",
+            "not_indexed"
+          ]
+        },
+        "reused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "status",
+        "fileName"
+      ],
+      "additionalProperties": false
+    },
+    "ArtifactFileResult": {
+      "type": "object",
+      "properties": {
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/ArtifactFileObservation"
+          }
+        }
+      },
+      "required": [
+        "commandSha256",
+        "files"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

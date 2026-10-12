@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-task-create.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/boundaries.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-contracts-review-20261012",
+  "sourceHead": "046296980b1185c9eb04a6224233a220a3a2a6bc",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "7a4767e794597887f9a7c5bb051300e4aadbd6db5e134b0b8a8b0fe2aecd87e9",
+  "startedAt": "2026-10-12T19:18:59.375199+00:00",
+  "durationSeconds": 0.926,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 271797,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stdout.bin",
+      "bytes": 12895,
+      "sha256": "bbf63499f909e6d7bafa8cef73bd11db1bc012084044adfa3e226ba3a376c51e"
+    },
+    {
+      "path": "docs/qualification/candidates/command-contracts-integration-review/connected-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

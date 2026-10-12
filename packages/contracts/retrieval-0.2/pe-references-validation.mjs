@@ -48,7 +48,7 @@ export function createPeReferenceValidators({validateShape,schema}) {
     if(operation==='get_pe_bills')bills(page);
     else if(operation==='get_pe_report_language')provisions(page,input);
     else {assertPeContractorCorrelations(page);if(page.todo===null)instant(page.evidence.federalAwards.provenance.asOf);}
-    return value;
+    return page;
   }
   return {normalizePeReferenceInput,assertPeReferenceOutput};
 }
