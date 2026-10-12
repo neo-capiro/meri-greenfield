@@ -1,0 +1,34 @@
+✔ exact two-operation API and private definitions (1.754005ms)
+✔ normalization preserves source clamps and mode-specific defaults (2.498074ms)
+✔ strict JSON scalar admission and required selectors (0.868906ms)
+✔ UTF16 slicing and no second trim or mode case folding (0.447833ms)
+✔ page URL syntax rejects schemes and credentials without certifying network admission (0.403576ms)
+✔ tavily: exact provider row nullability and returned count (3.536445ms)
+✔ serper: exact provider row nullability and returned count (0.654152ms)
+✔ duckduckgo: exact provider row nullability and returned count (0.663998ms)
+✔ publication text is opaque required provider text, omitted in DuckDuckGo (0.892331ms)
+✔ DuckDuckGo raw nonempty URL is not strengthened into normalized provider URL (0.686331ms)
+✔ search retains duplicate rows and empty discovery without absence proof (0.679702ms)
+✔ search field caps are UTF16 normalized excerpts without fabricated date parsing (0.995316ms)
+✔ HTML exact untrusted owner, raw-byte hash syntax and coverage (3.341041ms)
+✔ HTML truncated unknown totals and complete empty text remain distinct (0.519441ms)
+✔ HTML title is nullable unbounded source text, no invented title length limit (0.590998ms)
+✔ HTML link cap, URL uniqueness and nullable 120-unit labels (0.929768ms)
+✔ HTML and PDF content classification differs including suffix fallback (0.975396ms)
+✔ PDF exact fields preserve zero pages and differ from HTML (1.22422ms)
+✔ PDF totalChars is full normalized extraction count, not displayed length when truncated (0.900363ms)
+✔ maxChars context bounds UTF16 output and exact PDF truncation threshold (0.816097ms)
+✔ redirect final URL differs; generatedAt and hash do not attest request bytes or freshness (0.668825ms)
+✔ canonical instant narrowing does not use an ambient clock (0.895215ms)
+✔ input/output are detached and normalized input metadata frozen (0.381383ms)
+✔ model authority and unknown context/properties are refused (0.555405ms)
+✔ hostile selectors and JSON hooks are rejected without effects (0.622966ms)
+✔ canonical resolver binds immutable normalized hash and zero context keys without activation (2.192986ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 445.488004
