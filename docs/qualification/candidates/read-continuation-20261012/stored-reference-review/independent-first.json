@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+    "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-stored-reference-review-20261012",
+  "sourceHead": "44ddd1bb55ac510435dcc355b4f010380698bb05",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:33:16.312497+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 192907,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stdout.bin",
+      "bytes": 5339,
+      "sha256": "9bdf4a2287020f67d22322b54628ef15fefda7f988cb81a1103dd9fe4a7250b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

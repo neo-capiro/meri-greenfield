@@ -1,0 +1,92 @@
+{
+  "source": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "checks": 21,
+  "passed": 21,
+  "failed": 0,
+  "results": [
+    {
+      "name": "docs/coordination/reports/CODEX-STORED-REFERENCE-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/audit-packet-first.py.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/inspect-references-first.cjs.txt",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/inspect-references.cjs",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-interrupted.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-interrupted.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/reference-audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/reference-audit-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/verify-review.py",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact unique safe membership",
+      "pass": true
+    }
+  ]
+}
