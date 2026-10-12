@@ -1,0 +1,26 @@
+{
+  "base": "bcf36777b6f3fab94bec144c129e9143c18c8857",
+  "helperCommit": "621346846aeb7920bde674b6ce217df76942ced4",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "bytes": 1484,
+      "sha256": "7253543c521a8ac2476e01bdbb34e100c99b2badba121ae5ba645a9b67534109"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "bytes": 24406,
+      "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "bytes": 6882,
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-legislation.test.mjs",
+      "bytes": 19900,
+      "sha256": "e2a6cc049723a23bada3a8fcc92842c9e0953b5decfb5ec1e324dc1c461f2e99"
+    }
+  ]
+}
