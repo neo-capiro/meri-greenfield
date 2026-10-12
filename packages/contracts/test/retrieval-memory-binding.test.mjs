@@ -1,3 +1,5 @@
+// Explicit reviewed continuation allowlist; the original13-descriptor hash is unchanged.
+const continuationIds = ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "read_client_documents", "query_economic_data", "search_federal_grants", "search_federal_awards", "get_district_nexus_context", "get_district_nexus_changes", "search_state_bills", "get_state_legislator", "search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports"];
 // Independently specified synthetic DTOs; no source access or authorization.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -176,7 +178,7 @@ test('catalog preserves the original thirteen descriptors and complete selected/
   // Canonical hash of the thirteen descriptors at the assigned source base.
   assert.equal(canonicalSha256(catalog.operations.filter(value=>![reference.id,'query_action_items',
     'lookup_client_registry','get_business_development_context','get_business_development_evidence',
-    'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes'].includes(value.operation.id))),
+    'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds].includes(value.operation.id))),
     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');
   assert.equal(catalog.operations.length,37);assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(value=>value.disposition==='selected').length,96);
