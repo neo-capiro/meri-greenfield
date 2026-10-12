@@ -1,0 +1,40 @@
+{
+  "scope": "Owned local source-check groups only; no other session/process cleanup",
+  "groups": [
+    {
+      "label": "initial-connected",
+      "pidAndPgid": 377668,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "canonical-output",
+      "pidAndPgid": 378690,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "late-release-repair",
+      "pidAndPgid": 380502,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "frozen-connected",
+      "pidAndPgid": 381191,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    },
+    {
+      "label": "source-preservation",
+      "pidAndPgid": 381697,
+      "absent": true,
+      "timeout": false,
+      "killRequired": false
+    }
+  ]
+}

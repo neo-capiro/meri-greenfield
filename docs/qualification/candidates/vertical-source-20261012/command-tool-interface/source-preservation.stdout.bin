@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "source": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+  "base": "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+  "rootDependency": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "originalGitEntriesUnchanged": 8735,
+  "newProductionAndTestPaths": [
+    "apps/control/commands/tool-interface.mjs",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "packages/contracts/commands-0.2/tool-interface-validation.mjs",
+    "packages/contracts/commands-0.2/tool-interface.schema.json"
+  ],
+  "receipts": [
+    {
+      "label": "initial-connected",
+      "sourceHead": "ef0bab0be59991d9460f3abd96cbc4b13881031b",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedPidAndPgid": 377668,
+      "freshAbsent": true
+    },
+    {
+      "label": "canonical-output",
+      "sourceHead": "ef0bab0be59991d9460f3abd96cbc4b13881031b",
+      "sourceDiffSha256": "e7f87b8ba9cec12d72d4b45016f0e10ec7dda4362fd79385fcd912b18603dd4e",
+      "ownedPidAndPgid": 378690,
+      "freshAbsent": true
+    },
+    {
+      "label": "late-release-repair",
+      "sourceHead": "83d2e2afeff4b121cc64880cf5374cfc420ac3fd",
+      "sourceDiffSha256": "048b3f5debf673342be2f3d0cc9ab781dd7bff958c3bd8db12a2c464f4b72ae7",
+      "ownedPidAndPgid": 380502,
+      "freshAbsent": true
+    },
+    {
+      "label": "frozen-connected",
+      "sourceHead": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+      "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedPidAndPgid": 381191,
+      "freshAbsent": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NO_RUNTIME_ADMISSION"
+}
