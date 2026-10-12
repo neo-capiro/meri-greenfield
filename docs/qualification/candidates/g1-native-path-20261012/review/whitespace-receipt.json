@@ -1,0 +1,19 @@
+{
+  "allStagedExit": 2,
+  "sourceAndCoordinationExcludingRawPatchExit": 0,
+  "preservedEvidenceException": "docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff",
+  "reason": "Raw Git patch includes space-prefixed blank context lines; preserve byte-exact evidence. No executable/source file has whitespace changes.",
+  "finalRawEvidenceExclusions": [
+    "docs/qualification/candidates/g1-native-path-20261012/review/phase-reference-repair.diff",
+    "docs/qualification/candidates/g1-native-path-20261012/review/whitespace-all.stdout.txt"
+  ],
+  "secondStagedCheck": {
+    "exit": 2,
+    "reason": "Newly staged raw first-check stdout repeats original space-prefixed patch lines; same preserved data, no source defect."
+  },
+  "finalSourceAndCoordinationCheck": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

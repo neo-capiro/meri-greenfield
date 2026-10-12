@@ -1,0 +1,143 @@
+{
+  "reviewScope": "Static source inspections at exact Git refs; not renewed acceptance of all PR16 implementation or private wrapper evidence",
+  "files": [
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "docs/decisions/MEMORY-ADMIN-SELF-APPROVAL-20261012.md",
+      "bytes": 5769,
+      "sha256": "54d41f5eb09a6625e1f4fd241a144a619ba326f7420629b0f4b4bff823b4c8b0"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "docs/coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "bytes": 12082,
+      "sha256": "d295755c0b85b24305c21193197721d0f912e5e3b3dbd1e12cb53e7def5c6a17"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 79211,
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "docs/coordination/r2/skills.json",
+      "bytes": 25018,
+      "sha256": "bfd0b14953b858d351a58a778f435f2d546c1a420050ee6c31ae5e489f1f17b6"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-temporal/recovery-workflow.ts",
+      "bytes": 1403,
+      "sha256": "f720e4eaf3d064fd34f82638b2663946667b0b83527628241622d2f5f1457057"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-temporal/recovery-activities.mjs",
+      "bytes": 12344,
+      "sha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-temporal/README.md",
+      "bytes": 12556,
+      "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-sdk-fixture/service/run-stop.mjs",
+      "bytes": 6757,
+      "sha256": "5be0412841282d19bed28fac0b41556ac012bbdff4523e4e2fac45c43446623b"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/worker/qualification/probes/owned-probe-child.mjs",
+      "bytes": 7410,
+      "sha256": "c24e00e9bfcce6d864e84419bc556480c5c8d490ba14d958a35f493905336472"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "bytes": 16986,
+      "sha256": "d72e4aa4188ffdf7fc26e39d261c642030e2b1c6226dd83d6ecf20df1d3927ce"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/worker/qualification/README.md",
+      "bytes": 16027,
+      "sha256": "7a55b8f45fd24e7630f77fbaf394f603d27754a4d505d97a607216ed49bc23fa"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/gateway/index.mjs",
+      "bytes": 2604,
+      "sha256": "7d65135ff62b319e628bca08417aaa1fe23e88056fc8e849ce2ad3499001e1f2"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/gateway/test/postgres-tool-budget.test.mjs",
+      "bytes": 1833,
+      "sha256": "2e9a6f2f15bc78b57dd1bfa84beb2e8e124acb699294f340a878f0f3fc023407"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/proxy/qualification/test/test_postgres_state.py",
+      "bytes": 20024,
+      "sha256": "53b81e46edc3562a365836281ad8885665b039f95a7b130603b3b972ca688ad7"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-sdk-fixture/service/test/registry-ingress.test.mjs",
+      "bytes": 5231,
+      "sha256": "8a98b32b8a7253cf040126f4f29c04a650a56aa5202f779b0f1f61425437c23c"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "bytes": 14935,
+      "sha256": "0835d0845e4d8f5e8e6a6dbd197fc4abd5b008d93a36463838bccfd4fcf4d4ad"
+    },
+    {
+      "ref": "e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5",
+      "path": "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "bytes": 4306,
+      "sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b"
+    },
+    {
+      "ref": "72f228b32257acd25c81e74674d5231aac7087d8",
+      "path": "docs/coordination/tasks/MERI-G1-NATIVE-PATH-20261012.md",
+      "bytes": 6144,
+      "sha256": "395b86aaa46d1020a0d04fabfe2604a9be52fc12713335009411524d5abae72d"
+    },
+    {
+      "ref": "72f228b32257acd25c81e74674d5231aac7087d8",
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 19724,
+      "sha256": "05ed3d02721f425192852e3f14c4d2df91062d0e00d1b66cbc7358be7c8922f0"
+    },
+    {
+      "ref": "f3db1505cbd2987244875097712d78a69da190c3",
+      "path": "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "bytes": 19783,
+      "sha256": "da59996bed741513e16ef139be5b6c4b87e00894e8f9759c42c2a9848872ba68"
+    }
+  ]
+}
