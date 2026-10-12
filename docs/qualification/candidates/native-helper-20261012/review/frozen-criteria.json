@@ -1,0 +1,70 @@
+{
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "criteria": [
+    {
+      "id": "NH1",
+      "assertion": "Independently pin exact helper, collector and full candidate bytes before parsing. No private-source execution/import/compilation or private body/path publication."
+    },
+    {
+      "id": "NH2",
+      "assertion": "Extract actual Same field equality semantics and recompute all35 before/after pairs plus named/opened executable comparisons; distinguish exact comparator field set from every JSON field and retain12access-time-only differences."
+    },
+    {
+      "id": "NH3",
+      "assertion": "Trace Named/GetInfo handle access/share/disposition/flags and identity/plain metadata source, error propagation and cleanup/disposal. Inspect actual API use without claiming native behavior from source alone."
+    },
+    {
+      "id": "NH4",
+      "assertion": "Trace Hash stopwatch/cancellation creation, open and before/during/after metadata order, size/cap/chunk/EOF checks, synchronous/asynchronous waits and exact disposal order. Identify post-return deadline and late-output consequences without inventing a hard bound."
+    },
+    {
+      "id": "NH5",
+      "assertion": "Recompute collector acceptance from actual helper semantics and exact record, not merely reported flags. Preserve recorded rejection, historical source-hash limitations, missing complete executable/dependency/ancestor qualification and native HOLD."
+    },
+    {
+      "id": "NH6",
+      "assertion": "Keep private collector/helper separate from canonical inventory/wrapper/writer predicates and prior accepted repairs. Propose only an actual independently justified canonical behavior defect; production paths require explicit root allocation. No atime waiver/restoration or copied private implementation."
+    },
+    {
+      "id": "NH7",
+      "assertion": "For an allocated correction, freeze meaningful observable source controls, original tests/negative controls and failing source receipts, then independently test exact author freeze with inert ports only. No native source import or target process execution."
+    },
+    {
+      "id": "NH8",
+      "assertion": "Preserve source/context/contract/catalog/lock/migration/frozen evidence accounting and full R2 scope; state exact reviewed source/packet hashes, passed/failed/unrun and physical-evidence limitations; bounded ordinary checks leave no owned jobs."
+    },
+    {
+      "id": "NH9",
+      "assertion": "Respect latest PG403 restriction: no metadata rerouting via host/mirror/relay/local computer, no repeated failed research or manufactured fixture work. If no supported independent change remains, return precise prerequisites."
+    }
+  ],
+  "sourceAnchors": [
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/supervision.py",
+      "bytes": 7846,
+      "sha256": "418ad3d9a5537f5ab4f97ddc748ab3529e4d491919e171c52754f772d69be142"
+    },
+    {
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    }
+  ],
+  "helperPin": {
+    "member": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+  },
+  "authorFindingsRead": false,
+  "nativeExecution": false
+}
