@@ -1,0 +1,19 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "23f2ba78879972538fd1b7b7a56b2f8e2626a6c3",
+    "HEAD",
+    "--",
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+    "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review"
+  ],
+  "exitCode": 2,
+  "stdoutBytes": 2424,
+  "stderrBytes": 0,
+  "stdoutSha256": "ca4098732b32490809246d702a9380fa06cef642ee2cc59d4e43a152d5b849eb",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,14 @@
+{
+  "exitCode": 0,
+  "scope": [
+    "apps/artifacts/test/postgres-service-independent.test.mjs",
+    "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+    "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-REVIEW-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-review",
+    ":(exclude)**/*.stdout.bin",
+    ":(exclude)**/*.stderr.bin"
+  ],
+  "stdout": "",
+  "stderr": "",
+  "reason": "Only original raw stdout/stderr bytes excluded; authored source/report/scripts and preimages remain checked."
+}
