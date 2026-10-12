@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-reports:0.2.0",
+  "title": "Private unavailable stored-public-report search projections",
+  "$defs": {
+    "PublicReportInstant": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "PublicReportDate": {
+      "$ref": "#/$defs/PublicReportInstant"
+    },
+    "CboCostEstimateSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "billId": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25,
+          "default": 10
+        }
+      },
+      "required": []
+    },
+    "GaoReportSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "reportType": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        }
+      },
+      "required": []
+    },
+    "CrsReportSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        }
+      },
+      "required": []
+    },
+    "CboCostEstimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "billId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "billType": {
+          "type": "string"
+        },
+        "billNumber": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pubDate": {
+          "$ref": "#/$defs/PublicReportInstant"
+        },
+        "cboUrl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "billId",
+        "congress",
+        "billType",
+        "billNumber",
+        "title",
+        "description",
+        "pubDate",
+        "cboUrl"
+      ]
+    },
+    "GaoReportExcerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publishDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicReportDate"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reportType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "agencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "recommendations": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "publishDate",
+        "reportType",
+        "topics",
+        "agencies",
+        "summary",
+        "recommendations"
+      ]
+    },
+    "CrsReportExcerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicReportDate"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "pdfUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "htmlUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "date",
+        "authors",
+        "topics",
+        "summary",
+        "pdfUrl",
+        "htmlUrl"
+      ]
+    },
+    "CboCostEstimateSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_cbo_cost_estimates"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/PublicReportInstant"
+        },
+        "estimatesFound": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "estimates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CboCostEstimate"
+          },
+          "maxItems": 25
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "estimatesFound",
+        "estimates"
+      ]
+    },
+    "GaoReportSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_gao_reports"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/PublicReportInstant"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GaoReportExcerpt"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data"
+      ]
+    },
+    "CrsReportSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_crs_reports"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/PublicReportInstant"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CrsReportExcerpt"
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data"
+      ]
+    }
+  }
+}
