@@ -1,6 +1,6 @@
 {
   "scope": "DERIVED_SOURCE_EVIDENCE_NOT_EXECUTABLE_NOT_A_REGISTRY",
-  "sourceHead": "2e0745d4ad3eabbc0094d7aa4fd11ef117e6384c",
+  "sourceHead": "d0f4ca2ca0bbeda0b336130cfd4fb36f4ab60d59",
   "preservedBase": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
   "canonicalCatalog": {
     "path": "packages/contracts/retrieval-0.2/catalog.json",
@@ -16,12 +16,14 @@
   "sourceChanges": [
     "packages/contracts/retrieval-0.2/catalog-validation.mjs",
     "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
     "packages/contracts/retrieval-0.2/operation-contracts.mjs",
     "packages/contracts/retrieval-0.2/validate.mjs",
     "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
     "packages/contracts/test/retrieval-mail.test.mjs",
     "packages/contracts/test/retrieval-memory-binding.test.mjs",
-    "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+    "packages/contracts/test/retrieval-memory-review-policy.test.mjs"
   ],
   "counts": {
     "original": 139,

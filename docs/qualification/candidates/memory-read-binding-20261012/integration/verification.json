@@ -1,0 +1,113 @@
+{
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "testedSource": "d0f4ca2ca0bbeda0b336130cfd4fb36f4ab60d59",
+  "testedTree": "d12b28a50e91709ee8cc888ea24f4d96c5361f0a",
+  "preservedBase": "7ba0e9d10ebf684e162dcc7c143915afdbf00f32",
+  "baseTrackedFiles": 1965,
+  "unchangedBaseFiles": 1956,
+  "unchangedManifestSha256": "2360ddd266909b87658417a29fca4aac54d3a6dfadeac26a27986e44125c5dd0",
+  "reviewedSource": [
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "91d1aba15ecd2d0c7094e33f3893cee1ac7af62de548dbe621b4342c7499cb98",
+      "bytes": 11874
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce",
+      "bytes": 79211
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+      "authorCommit": "81be4ebf1a7483e80ae96fe787404c770958622e",
+      "sha256": "088d64a80ea10eaad4e9c6bd6028fb128a96d79f5ce7af3c60a314fa13894ff8",
+      "bytes": 8319
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "400065b146861f629915c6c26bfb99c3f75395563861d7a07b40c4865beb3adb",
+      "bytes": 5335
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "36247f9ef66bd98dbd7bf1aded6971b8b6b38c8d648d4cfc3128d423d3a198df",
+      "bytes": 17184
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "5a8856da6dc45303cf416722540e4a22da9de3a9f6e359d2d620acb34436e487",
+      "bytes": 13569
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "294cdf427adce6d52d1892df7f0caf78b545d8c00cdec8136bf66acb3d97b5a6",
+      "bytes": 29989
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "90a7429b1f79fc5baeb68144a5acc3e0532f6f51e6a2d3d0c855cfa048aa1003",
+      "bytes": 13468
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+      "authorCommit": "a210db8445537ccfad301d1266e9c53ea71201ac",
+      "sha256": "9f6981e2877abda950f74789a40fdd27dbeda805e23a5f65acb04f53a189343b",
+      "bytes": 12940
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+      "authorCommit": "81be4ebf1a7483e80ae96fe787404c770958622e",
+      "sha256": "89305181c698699a3576f96179a481d982a8b3dbce0b544ed7d1af765307ae19",
+      "bytes": 7972
+    }
+  ],
+  "checks": [
+    {
+      "receipt": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-root.json",
+      "sha256": "4b57115bb905d4c15e1a350241bd6b8dc1a69bef6c673b7d0caa7b74ace89736",
+      "ownedPidAndPgid": 16757,
+      "ownedGroupAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-gateway.json",
+      "sha256": "36449e1f3d7750251b7310d04245e2aac15582d26e9b8224393748238ab76f01",
+      "ownedPidAndPgid": 16743,
+      "ownedGroupAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-independent.json",
+      "sha256": "de4429a7086359d69c34f73b7c11e38c4386024b8ea7bad24ddc71ea75345ab7",
+      "ownedPidAndPgid": 16779,
+      "ownedGroupAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/memory-read-binding-20261012/integration/combined-public.json",
+      "sha256": "a5a9acfd824b8307e6060ab21eba655b34187178d658f955879514db26190ac9",
+      "ownedPidAndPgid": 17095,
+      "ownedGroupAbsent": true
+    },
+    {
+      "receipt": "docs/qualification/candidates/memory-read-binding-20261012/integration/original-release-control.json",
+      "sha256": "db40987af3aedec8a90ec6789c273293c2cb5c98c72a80193f995328f9e7280c",
+      "ownedPidAndPgid": 16762,
+      "ownedGroupAbsent": true
+    }
+  ],
+  "capabilityDocumentationMatches139Rows": true,
+  "accounting": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 14,
+    "selectedUnmapped": 82
+  },
+  "runtimeAcceptance": false,
+  "allOperationsUnavailable": true
+}
