@@ -15,7 +15,7 @@ const binding={tenantId:tenant,actorId:actor,conversationId:conversation,runId:u
 const legal={clientResolution:null,citationResolution:null};
 const cases=[
  ['read_chat_attachments',{conversationId:conversation},{asOf:at,scope:{tenantId:tenant,userId:actor,conversationId:conversation,clientId:null,conversationVersion:at}},x=>{assert.equal(x.limit,10);assert.equal(x.conversationId,conversation);assert.equal(x.attachmentId,null);}],
- ['read_monday_client_boards',{clientId:' Client reference ',pageSize:'7'},{},x=>{assert.equal(x.clientId,'Client reference');assert.equal(x.pageSize,7);assert.equal(x.requireComplete,false);}],
+ ['read_monday_client_boards',{clientId:` ${client} `,pageSize:'7'},{},x=>{assert.equal(x.clientId,client);assert.equal(x.pageSize,7);assert.equal(x.requireComplete,false);}],
  ['get_client_context',{clientId:'Example client'},{asOf:at,clientResolution:{selector:'Example client',clientId:client}},x=>{assert.equal(x.clientId,client);assert.equal(x.limit,25);assert.equal(x.representation,'summary');}],
  ['search_client_knowledge',{query:' topic '},{asOf:at},x=>{assert.equal(x.query,'topic');assert.equal(x.clientId,null);assert.equal(x.limit,8);}],
  ['query_knowledge_graph',{depth:'3tail'},{},x=>{assert.equal(x.depth,3);assert.equal(x.seed,null);}],
@@ -55,6 +55,7 @@ for(const [id,raw,ctx,page] of pageCases)test(`actual ${id} output callback stri
  assert.throws(()=>c.assertOutput(page,{request:raw,...ctx,callerAuthority:true}));
 });
 test('client request references cannot substitute current trusted resolution or scope',()=>{
+ assert.throws(()=>resolve('read_monday_client_boards').normalizeInput({clientId:'Client reference'},{}));
  assert.throws(()=>resolve('get_client_context').normalizeInput({clientId:client},{asOf:at,clientResolution:{selector:client,clientId:uuid('9')}}));
  assert.throws(()=>resolve('read_chat_attachments').normalizeInput({conversationId:uuid('9')},cases[0][2]));
  assert.throws(()=>resolve('search_research_sources').normalizeInput({query:'x',clientId:client},{clientResolution:{reference:client,clientId:uuid('9')}}));
