@@ -1,3 +1,25 @@
+# Accepted observed-read source integration
+
+**ACCEPT_SOURCE** for canonical source `753566baf2d230ed241941dcdeca41625277cb1d`, independently reviewed at `ab637c786bb344719bb096630314949b4b99e657`. Expanded test source is `005cb30d7e8c1be28792e4c722c62005e728862f`; final root test receipts are `4c40fb4c35d716dcd1e3b09ec29647ccca5a1326`. Base is PR31 `cff71e1ba8ca8dea8970ad0c778b580a73f84815`. Runtime remains HOLD: G1 OPEN, G2–G7 unentered.
+
+The private0.2 canonical catalog now describes `search_public_web`, `scrape_web_page`, `search_sam_opportunities` and `get_florida_budget_project`. The entire139-original ledger remains96selected/43deferred:66mapped-unavailable and30selected-pending. There are67typed-unavailable descriptors because the partial action-item descriptor does not map its native original. Catalog0.2.9 retains private contract0.2.0 and unchanged public0.1.0. Every descriptor remains pending/unimplemented with a null handler; connectivity is disabled.
+
+Three separately reviewed family modules own projected-data normalization and correlation. The existing loader composes their exact source; Florida generic methods are namespaced to avoid collisions. Public web admits provider-specific discovery/page projections; SAM preserves stored records and three separate observation clocks; Florida preserves fiscal-stage distinctions, nullable stored data and trusted client-resolution/scope facts. These facts do not establish current authorization, actual fetching, parser execution, source completeness or provenance. The APIs implement no source adapter or external execution.
+
+Verification passed: root focused755/755; expanded2817/2817 with zero skips (including all27 independent integration controls); source preservation7415/7415; imported family packet171/171; public generation/typechecking and7/7 tests. Independent review passed27/27 controls,311/311 preservation/packet checks and46/46 root-receipt checks. Root and reviewer owned process groups are absent, with no timeout or kill; capture receipts record reaped zero-exit descendants.
+
+Of6947 baseline tracked files,6927 are byte/mode-identical. Changes are limited to three canonical composition files and17 explicit, reversible test expectation files. All nine accepted family source/schema/author-test files are exact; prior63 descriptors retain values, order and callback source. The recorded expectation patches reverse to the original test bytes. All153 original family manifest members remain intact.
+
+Raw failures and their corrections remain in the author/reviewer packets. Production fixes included the public-web truncated-prefix bound and Florida UUID-selector and detached-result corrections. SAM's initial strict-Ajv schema failure was repaired without weakening assertions. Reviewer-only context-order, manifest-case and typecheck-script assumptions are explicitly corrected and preserved. No failure is relabeled as a successful runtime check.
+
+Actual source querying, provider/SQL access, current authorization and clock capture, native SDK/checkpoint/browser/renderer/artifact qualification, durable budgets, infrastructure and deployment remain UNRUN. No paid model, cloud image, customer data or infrastructure action occurred. Thirty selected originals remain pending; typed unavailable mappings are source-contract progress, not product completion. Private command contracts have a separate additive continuation.
+
+The candidate-freezes ledger pins every family source, author packet and independent review. The final packet manifest binds changed source, reports and raw evidence; a later publication receipt is excluded to avoid self-reference. Original author/reviewer branches are preserved.
+
+## Historical implementation outline
+
+The following is the pre-implementation record; its pending-review statements describe that earlier point in time.
+
 # Observed source read integration
 
 ## Outline before implementation
