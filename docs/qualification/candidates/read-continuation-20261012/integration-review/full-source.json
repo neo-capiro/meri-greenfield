@@ -1,0 +1,34 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-read-continuation-integration-review-20261012",
+  "sourceHead": "cb1d4e26ba7372d67f15f5d16f1f80184e21b749",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:53:13.287554+00:00",
+  "durationSeconds": 19.481,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 164493,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/full-source.stdout.bin",
+      "bytes": 94318,
+      "sha256": "c13185e23019b45b5704e714c5ac7019df850f4d24c1339a77327297b55a381c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration-review/full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
