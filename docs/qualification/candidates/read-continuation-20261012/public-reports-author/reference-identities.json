@@ -1,0 +1,51 @@
+{
+  "scope": "Metadata only; no private producer bodies retained or executed. Three directly relevant references independently inspected; broader fourteen-reference discovery is separately pinned.",
+  "discoveryFreeze": "d34da1a39aa68dd6f8af41ca5caee730ad1cdbfe",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pinnedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "bytes": 415704,
+      "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true,
+      "locators": {
+        "CBO": "1187-1192;4398-4438",
+        "GAO": "1292-1296;5443-5485",
+        "CRS": "1389-1392;6444-6483",
+        "normalization": "9948-9954;10044-10049;10285-10289",
+        "authority": "executeScoped current request-active guard; GAO/CRS withSystem read owner"
+      }
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pinnedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "bytes": 968034,
+      "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true,
+      "locators": {
+        "CboCostEstimate": "4186-4201",
+        "GaoReport": "6619-6633",
+        "CrsReport": "7041-7054"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri-cbo-tool.spec.ts",
+      "pinnedCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pinnedBlob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "sha256": "8e939595d3b1e7615d2afd4c405c4eb31966278b5af4e613ac84525a13410cc2",
+      "bytes": 1746,
+      "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "observedBlob": "30a58daf21f0cc6fb90e73cd7237d7732c21d8ef",
+      "unchanged": true,
+      "locators": {
+        "tests": "positive selected estimate and bill-specific no-estimate disclosure"
+      }
+    }
+  ]
+}

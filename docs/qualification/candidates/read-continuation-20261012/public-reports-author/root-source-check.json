@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-public-reports-20261012",
+  "sourceHead": "d86c0710b534fad7626856075bb873715e54b596",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:40:42.491731+00:00",
+  "durationSeconds": 13.942,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 156355,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 156526,
+      "status": 0
+    },
+    {
+      "pid": 156576,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stdout.bin",
+      "bytes": 49699,
+      "sha256": "67bd9fd35701a1efb8272917ee825085de2e0bad07583592ff148a8562685503"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-reports-author/root-source-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

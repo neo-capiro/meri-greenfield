@@ -1,0 +1,39 @@
+✔ three exact operation definitions, schema identity and unknown IDs (1.692066ms)
+✔ search_cbo_cost_estimates: immutable input and closed projection remain inert (3.136391ms)
+✔ search_cbo_cost_estimates: default/minimum/maximum limit and strict numeric boundaries (2.924761ms)
+✔ search_cbo_cost_estimates: model authority, foreign operation and unprojected output refuse (1.134147ms)
+✔ search_cbo_cost_estimates: producer timestamps must be finite canonical JSON instants (0.501645ms)
+✔ search_cbo_cost_estimates: duplicate primary keys and ascending non-null dates refuse (0.431499ms)
+✔ search_gao_reports: immutable input and closed projection remain inert (1.020116ms)
+✔ search_gao_reports: default/minimum/maximum limit and strict numeric boundaries (2.192489ms)
+✔ search_gao_reports: model authority, foreign operation and unprojected output refuse (1.174518ms)
+✔ search_gao_reports: producer timestamps must be finite canonical JSON instants (0.996069ms)
+✔ search_gao_reports: duplicate primary keys and ascending non-null dates refuse (0.559162ms)
+✔ search_crs_reports: immutable input and closed projection remain inert (0.984331ms)
+✔ search_crs_reports: default/minimum/maximum limit and strict numeric boundaries (2.785382ms)
+✔ search_crs_reports: model authority, foreign operation and unprojected output refuse (1.793799ms)
+✔ search_crs_reports: producer timestamps must be finite canonical JSON instants (0.306481ms)
+✔ search_crs_reports: duplicate primary keys and ascending non-null dates refuse (0.357298ms)
+✔ exact input trim and UTF-16 caps retain separate search semantics (0.509246ms)
+✔ CBO lowercases effective bill only, preserving original clipped label and expansion (0.449636ms)
+✔ CBO clipped trailing whitespace belongs to note label but not effective filter (0.154823ms)
+✔ CBO congress strict stored Int preserves negatives, zero means no filter (0.575096ms)
+✔ CBO returned count and exact zero-window disclaimer cannot invent a score (0.832423ms)
+✔ search_gao_reports: total is separate local observation, including total less than returned (0.700094ms)
+✔ search_gao_reports: summaries use normalized UTF-16 bounds without invented truncation (1.138183ms)
+✔ search_gao_reports: nullable stored dates and URLs remain nullable, null order is not fabricated (0.494714ms)
+✔ search_crs_reports: total is separate local observation, including total less than returned (0.481465ms)
+✔ search_crs_reports: summaries use normalized UTF-16 bounds without invented truncation (1.077481ms)
+✔ search_crs_reports: nullable stored dates and URLs remain nullable, null order is not fabricated (0.287693ms)
+✔ GAO stored nullable recommendation Int and reportType are not invented enums or unsigned values (0.671982ms)
+✔ CRS active-only selection is an adapter obligation, not an invented projected proof (0.243106ms)
+✔ input and output accessors/proxies/cycles/coercion hooks are rejected without execution (0.353442ms)
+✔ canonical resolver supplies immutable original request, normalized digest and no context keys (1.537744ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 396.983853

@@ -1,0 +1,31 @@
+{
+  "base": "dd1433d164b4144f6f9d9ed14187459e7c9761f4",
+  "sourceFreeze": "d86c0710b534fad7626856075bb873715e54b596",
+  "sourceTree": "51c25cd183d7ef0c529bf1da0e2c09516444bb2a",
+  "originalFiles": 5268,
+  "originalChangedOrDeleted": [],
+  "added": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-reports-validation.mjs",
+      "gitBlob": "cd9fc9fa024e115b7e985236455ecaab33d51207",
+      "bytes": 6200,
+      "sha256": "ee9f65b7f4df1f870c92752855a6fd11378824214fcf16b1073092e9c53a980b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-reports.schema.json",
+      "gitBlob": "b896db39f305de0e4ce48b7417cf9332de5629e5",
+      "bytes": 7748,
+      "sha256": "9b066631d4201ed291e23bc87c07946a1de0d34e5689acf2ef4b9fc58cadc45f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-reports.test.mjs",
+      "gitBlob": "718d3a3125c1a7f279418db0e1ef01ebc9ac7de5",
+      "bytes": 13659,
+      "sha256": "5778261428cdae5a1694be410f113aa428cff0add4ea258be978c128a728f0d4"
+    }
+  ],
+  "public0.1": "All original Git objects unchanged",
+  "sharedLoaderCatalogContractsLocksRuntime": "All original Git objects unchanged",
+  "dependencies": "Existing physical copied exact dependency trees supplied by root; no install/lock changes; left untouched",
+  "sourceOnly": true
+}
