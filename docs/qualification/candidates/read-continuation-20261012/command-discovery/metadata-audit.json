@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/read-continuation-20261012/command-discovery/verify-checkpoint.py"
+  ],
+  "cwd": "/workspace/meri-command-contract-discovery-20261012",
+  "sourceHead": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:51:17.597274+00:00",
+  "durationSeconds": 12.065,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 207573,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.stdout.bin",
+      "bytes": 215,
+      "sha256": "f95c581d8561a31f6e9e7614aa8f4c84f347a8ef5038620226f5dcb3e4a05b49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

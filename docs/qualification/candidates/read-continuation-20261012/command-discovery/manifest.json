@@ -1,0 +1,52 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "classification": "DISCOVERY_CHECKPOINT_ONLY",
+  "productionChanges": false,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACT-DISCOVERY-20261012.md",
+      "bytes": 12024,
+      "sha256": "f29860e68c4a6bd9ff8f4aab7bcc1ab51caf1e736c628fdc1c1b54a1ef1e2b86"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/command-boundaries.json",
+      "bytes": 22752,
+      "sha256": "522e0aa7b139df70120835d01a849c49dfe999c74ab38fd1d450d93dd02708bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/inspection-limitations.json",
+      "bytes": 2227,
+      "sha256": "93d9df153fcab88c187409d43fa6fd025f11c9bb41762a0d1c935ab4b0f1781e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.json",
+      "bytes": 1329,
+      "sha256": "0677636c319bdde3a1f30f5ad571ba07883b5e12f4c7faad1dd1fe5f85e0bb04"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/metadata-audit.stdout.bin",
+      "bytes": 215,
+      "sha256": "f95c581d8561a31f6e9e7614aa8f4c84f347a8ef5038620226f5dcb3e4a05b49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/reference-identities.json",
+      "bytes": 18134,
+      "sha256": "edbaca62f4dd9e05ddccd35009b942b16fc2333b24df5f9404e2046a2b50e1d2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/command-discovery/verify-checkpoint.py",
+      "bytes": 3575,
+      "sha256": "1e06b19f1af7fabba67337c7d73105a42419948767abb6529429f69f2a0f2393"
+    }
+  ]
+}

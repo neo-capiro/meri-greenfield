@@ -1,0 +1,499 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "status": "DISCOVERY_CHECKPOINT_NOT_IMPLEMENTATION_OR_ACCEPTANCE",
+  "allUnavailable": true,
+  "sourceConnectivityEnabled": false,
+  "records": [
+    {
+      "id": "save_memory",
+      "request": {
+        "required": [
+          "content:string(max4000 wrapper)"
+        ],
+        "optional": [
+          "key:string(max120)",
+          "scope:string(max20)",
+          "ttlDays",
+          "clientId:string(max64)"
+        ],
+        "scopeBoundary": "selected candidate-only memory.propose; historical record scopes firm/user_private/client"
+      },
+      "result": {
+        "pending": [
+          "saved:false",
+          "scope",
+          "candidateId",
+          "message"
+        ],
+        "legacyAutoCommitted": [
+          "saved:true",
+          "scope",
+          "key",
+          "value",
+          "optional expiresAt",
+          "message"
+        ],
+        "service": [
+          "candidateId",
+          "status:auto_committed|pending",
+          "memoryId:null|string",
+          "ruleId",
+          "reason"
+        ]
+      },
+      "currentAuthority": "Current effective actor/tenant/client/walls plus canonical governed-memory service. Approved user_admin/capiro_admin self-approval and assignment exception remain; no wall bypass; reject/withdraw/personal paths distinct.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Candidate immutable revision and exact proposal/idempotency correlation needed; do not use fabricated sourceKind or old success boolean as pending receipt.",
+      "effects": "Historical service persists candidate and can commit personal memory.",
+      "sourceContractReadiness": "READY pure selected proposal payload; execution adapter is not closed by old saved receipt.",
+      "remaining": "Backend owner MemoryCandidateService must supply proposal-only behavior without changing approved memory review policy; wrapper another-reviewer wording remains known source-owner handoff, not unresolved policy.",
+      "references": [
+        "meri-tools.service.ts:1550,2908\u20132973",
+        "meri-memory.helpers.ts",
+        "memory-candidate.service.ts",
+        "MEMORY-ADMIN-SELF-APPROVAL-20261012"
+      ]
+    },
+    {
+      "id": "save_chat_attachments",
+      "request": {
+        "required": [
+          "clientId",
+          "conversationId",
+          "attachmentIds[1..10]"
+        ],
+        "sourceAdmission": "filing owner checks UUID identities"
+      },
+      "result": {
+        "envelope": [
+          "tool",
+          "status",
+          "generatedAt",
+          "clientId",
+          "clientName",
+          "location",
+          "savedCount",
+          "pendingCount",
+          "failedCount",
+          "files"
+        ],
+        "file": [
+          "attachmentId",
+          "fileName:null|string",
+          "status:saved|pending|failed",
+          "optional documentId/location/reason/indexingStatus/reused"
+        ],
+        "indexingStatus": "pending|indexed|not_indexed"
+      },
+      "currentAuthority": "Current selected client/wall and conversation owner; originals authorized by tenant/user/conversation-message relation.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Per-source attachment identity reuse; preserve successful siblings; original bytes and current scan readiness; do not rerun ambiguous writes or equate pending indexing with failed storage.",
+      "effects": "Writes canonical client-document storage/indexing paths.",
+      "sourceContractReadiness": "READY private filing request plus per-item receipt/correlation family under artifact.file.",
+      "remaining": "Bind exact authorized attachment/version bytes to immutable public ObjectReference and command; establish current source receipt adapter; arbitrary folder/attachment scope excluded.",
+      "references": [
+        "meri-tools.service.ts:1470,7083\u20137090",
+        "meri-client-filing.service.ts:9,28\u201350,118\u2013191",
+        "meri-client-filing.service.spec.ts"
+      ]
+    },
+    {
+      "id": "create_task",
+      "request": {
+        "required": [
+          "title:string(max240)"
+        ],
+        "optional": [
+          "clientId:string(max80)",
+          "dueDate:string(max40)"
+        ],
+        "notAdvertised": "wrapper also consumes description(max2000); broad service supports owner/meeting/contact/mail associations but not accepted tool expansion"
+      },
+      "result": {
+        "envelope": [
+          "tool",
+          "generatedAt",
+          "created:true",
+          "task"
+        ],
+        "task": [
+          "id",
+          "title",
+          "status",
+          "dueDate:null|ISO",
+          "clientId:null|string",
+          "createdAt:ISO"
+        ]
+      },
+      "currentAuthority": "Trusted actor/tenant; client visibility when supplied. Service assigns source task fields; no model owner/grant input.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Immutable task.create command exists; wrapper does not pass service internal sourceType/sourceId; stored task has indexes but no source-key uniqueness shown. Durable command-to-task correlation still required.",
+      "effects": "Creates engagement task database row.",
+      "sourceContractReadiness": "READY private advertised payload + closed projected task receipt under existing task.create.",
+      "remaining": "Omit unadvertised description/ownership expansion unless explicitly allocated; implement one-outcome transaction/receipt rather than relying on source-ID uniqueness.",
+      "references": [
+        "meri-tools.service.ts:1902,8969\u20138996",
+        "engagement.service.ts:212,5629\u20135647",
+        "schema.prisma:EngagementTask"
+      ]
+    },
+    {
+      "id": "update_task",
+      "request": {
+        "required": [
+          "taskId:string(max80)"
+        ],
+        "optional": [
+          "status:string(max30)",
+          "dueDate:string(max40)",
+          "title:string(max240)"
+        ],
+        "constraint": "at least one update; wrapper normalizes status; stored enum todo/in_progress/done/blocked/canceled"
+      },
+      "result": {
+        "envelope": [
+          "tool",
+          "generatedAt",
+          "updated:true",
+          "task"
+        ],
+        "task": [
+          "id",
+          "title",
+          "status",
+          "dueDate:null|ISO",
+          "clientId:null|string",
+          "updatedAt:ISO"
+        ]
+      },
+      "currentAuthority": "Tenant lookup plus RP-source-specific creator/owner/artifact guard are observed. Complete ordinary task current-actor/wall authority not established by this limited trace.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "No advertised expectedRevision or dedup field; preserve exact immutable intended patch and expected resource/current authority before effect.",
+      "effects": "Updates engagement task database row.",
+      "sourceContractReadiness": "READY pure shape/patch receipt family; runtime authorization and public action selection unresolved.",
+      "remaining": "Central action/version decision: public Command lacks task.update. Source adapter owner must establish ordinary-task current authorizer; no inference that tenant membership permits every update.",
+      "references": [
+        "meri-tools.service.ts:1911,8998\u20139033",
+        "engagement.service.ts:223,5676\u20135694",
+        "research-portfolio-task-access.ts"
+      ]
+    },
+    {
+      "id": "schedule_task",
+      "request": {
+        "required": [
+          "name",
+          "prompt",
+          "intervalMinutes>=60"
+        ],
+        "legacyOptional": [
+          "dailyAtUtc",
+          "localTime",
+          "timeZone",
+          "weekday",
+          "clientId",
+          "emailBriefing",
+          "deliverEmailTo",
+          "toolAllowList"
+        ],
+        "legacyDefaults": "local time default America/New_York; min interval60; tenant quota25; not adopted new product defaults"
+      },
+      "result": {
+        "legacySuccess": [
+          "tool",
+          "scheduled",
+          "active",
+          "creationConfirmed:true",
+          "task",
+          "optional reconciled/note"
+        ],
+        "task": [
+          "id",
+          "name",
+          "intervalMinutes",
+          "nextRunAt",
+          "enabled",
+          "lastStatus",
+          "active",
+          "creationConfirmed:true"
+        ],
+        "failure": [
+          "tool",
+          "scheduled:false",
+          "error"
+        ]
+      },
+      "currentAuthority": "New application Temporal owner, initiating actor/tenant/scope/timezone/budget; legacy scheduled-store ownership is reference only. Recheck membership/role/walls/revocation before each controlled effect.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Original action-proposal schedule receipt can reconcile lost creation acknowledgment; historical canceled receipt confirms past creation without active status; absence remains unknown. New Temporal identity/outcome must be bound independently.",
+      "effects": "Historical source inserts ClioScheduledTask and may later deliver controlled email; new selected Temporal schedule is different.",
+      "sourceContractReadiness": "READY new private schedule intent from existing ScheduleProjection and selected boundary; no legacy scheduler copied.",
+      "remaining": "Central command action surface; owner-defined cadence/update/run_now/overlap/cancel-inflight semantics; destination/allowed operations approved within existing boundary. Legacy automatic email/tool expansion not inherited.",
+      "references": [
+        "meri-tools.service.ts:1701,326,8051\u20138296",
+        "meri-schedule.helpers.ts",
+        "meri-schedule-execution-boundary.spec.ts",
+        "meri-action-proposal.service.spec.ts"
+      ]
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "request": {
+        "required": [
+          "taskId:string(max80)"
+        ]
+      },
+      "result": {
+        "success": [
+          "tool",
+          "canceled:true",
+          "taskId"
+        ],
+        "notFound": [
+          "tool",
+          "canceled:false",
+          "error"
+        ]
+      },
+      "currentAuthority": "New application Temporal owner, initiating actor/tenant/scope/timezone/budget; legacy scheduled-store ownership is reference only. Recheck membership/role/walls/revocation before each controlled effect.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Historical owner updateMany false is not authoritative Temporal cancellation; preserve accepted cancellation versus final in-flight outcome/run history.",
+      "effects": "Historical row disable/cancel; selected new Temporal cancellation.",
+      "sourceContractReadiness": "READY pure owner-bound cancel intent/receipt design; no source activation.",
+      "remaining": "Public action surface and explicit in-flight cancellation policy not decided by historical boolean.",
+      "references": [
+        "meri-tools.service.ts:1739,8319\u20138332",
+        "meri-action-logical-outcome.ts"
+      ]
+    },
+    {
+      "id": "update_scheduled_task",
+      "request": {
+        "required": [
+          "taskId:string(max80)",
+          "action:pause|resume|run_now"
+        ]
+      },
+      "result": {
+        "success": [
+          "tool",
+          "updated:true",
+          "taskId",
+          "action",
+          "enabled",
+          "optional unchanged/nextRunAt"
+        ],
+        "failure": [
+          "tool",
+          "updated:false",
+          "taskId",
+          "action",
+          "error"
+        ]
+      },
+      "currentAuthority": "New application Temporal owner, initiating actor/tenant/scope/timezone/budget; legacy scheduled-store ownership is reference only. Recheck membership/role/walls/revocation before each controlled effect.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Historical paused/running guards and compare-update prevent some races; no authority to automatically rerun unknown operations. New Temporal receipt/version binding required.",
+      "effects": "Historical schedule update; new selected application controls only.",
+      "sourceContractReadiness": "READY pure action-shape boundary; run_now compatibility is an explicit product choice, not silently accepted schedule expansion.",
+      "remaining": "Public action surface; new supported update operations/overlap policy; current owner readback and durable receipt.",
+      "references": [
+        "meri-tools.service.ts:1740,8341\u20138418",
+        "meri-tools.schedule-controls.spec.ts"
+      ]
+    },
+    {
+      "id": "create_word",
+      "request": {
+        "declaredSpec": {
+          "title": "string",
+          "subtitle": "null|string",
+          "sections": "heading/paragraphs/bullets/tables/images descriptors"
+        },
+        "legacyOptional": [
+          "clientId",
+          "conversationId"
+        ],
+        "compatibility": "legacy docx/pdf/txt; txt exact UTF-8 text has separate creation receipt"
+      },
+      "result": {
+        "legacyEnvelope": [
+          "tool",
+          "format",
+          "title",
+          "filename",
+          "mimeType",
+          "artifact",
+          "downloadUrl",
+          "downloads",
+          "note"
+        ],
+        "newCanonical": "ArtifactVersion with exact ObjectReference, binding, scopes, evidence, parentVersionId, generation/preview statuses",
+        "textOnlyReceipt": [
+          "artifactId",
+          "operationId",
+          "sha256",
+          "byteLength",
+          "operationReceipt"
+        ]
+      },
+      "currentAuthority": "Server current input scope/conversation/client; local generation is not source filing approval; immutable approved version and source scopes for any later artifact.file.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Every revision new ArtifactVersion; preserve originals. Legacy text receipt/current-proposal type exists but Office receipt parity is not a complete native version/inspection protocol.",
+      "effects": "Historical generator then persists artifact/bytes metadata in Capiro; selected new local native generation, source filing separate.",
+      "sourceContractReadiness": "READY bounded pure input-spec and existing ArtifactVersion correlation proposal; normalizer limits require follow-up exact characterization before implementation.",
+      "remaining": "Native bytes/render/editability/inspection sandbox and original skills unqualified; full legacy artifact raw-row projection and format/error/download variants not fully closed in this checkpoint. No legacy generator copied.",
+      "references": [
+        "meri-tools.service.ts:1622\u20131699,7619\u20137786,9710\u20139733",
+        "meri-docgen.helpers.ts:DTOs",
+        "meri-text-artifact-receipt.ts",
+        "meri-text-artifact-current-proposal.ts"
+      ]
+    },
+    {
+      "id": "create_excel",
+      "request": {
+        "declaredSpec": {
+          "title": "string",
+          "sheets": "name/headers:string[]/rows:string[][]"
+        },
+        "legacyOptional": [
+          "clientId",
+          "conversationId"
+        ],
+        "compatibility": "new original/formula/recalculation/reference-total requirements exceed legacy string-cell shape"
+      },
+      "result": {
+        "legacyEnvelope": [
+          "tool",
+          "format",
+          "title",
+          "filename",
+          "mimeType",
+          "artifact",
+          "downloadUrl",
+          "downloads",
+          "note"
+        ],
+        "newCanonical": "ArtifactVersion with exact ObjectReference, binding, scopes, evidence, parentVersionId, generation/preview statuses",
+        "textOnlyReceipt": [
+          "artifactId",
+          "operationId",
+          "sha256",
+          "byteLength",
+          "operationReceipt"
+        ]
+      },
+      "currentAuthority": "Server current input scope/conversation/client; local generation is not source filing approval; immutable approved version and source scopes for any later artifact.file.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Every revision new ArtifactVersion; preserve originals. Legacy text receipt/current-proposal type exists but Office receipt parity is not a complete native version/inspection protocol.",
+      "effects": "Historical generator then persists artifact/bytes metadata in Capiro; selected new local native generation, source filing separate.",
+      "sourceContractReadiness": "READY bounded pure input-spec and existing ArtifactVersion correlation proposal; normalizer limits require follow-up exact characterization before implementation.",
+      "remaining": "Native bytes/render/editability/inspection sandbox and original skills unqualified; full legacy artifact raw-row projection and format/error/download variants not fully closed in this checkpoint. No legacy generator copied.",
+      "references": [
+        "meri-tools.service.ts:1622\u20131699,7619\u20137786,9710\u20139733",
+        "meri-docgen.helpers.ts:DTOs",
+        "meri-text-artifact-receipt.ts",
+        "meri-text-artifact-current-proposal.ts"
+      ]
+    },
+    {
+      "id": "create_powerpoint",
+      "request": {
+        "declaredSpec": {
+          "title": "string",
+          "subtitle": "null|string",
+          "slides": "title/bullets/table/images/notes"
+        },
+        "legacyOptional": [
+          "clientId",
+          "conversationId"
+        ],
+        "compatibility": "new editable/per-slide-render/immutable revision requirements exceed generation receipt"
+      },
+      "result": {
+        "legacyEnvelope": [
+          "tool",
+          "format",
+          "title",
+          "filename",
+          "mimeType",
+          "artifact",
+          "downloadUrl",
+          "downloads",
+          "note"
+        ],
+        "newCanonical": "ArtifactVersion with exact ObjectReference, binding, scopes, evidence, parentVersionId, generation/preview statuses",
+        "textOnlyReceipt": [
+          "artifactId",
+          "operationId",
+          "sha256",
+          "byteLength",
+          "operationReceipt"
+        ]
+      },
+      "currentAuthority": "Server current input scope/conversation/client; local generation is not source filing approval; immutable approved version and source scopes for any later artifact.file.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Every revision new ArtifactVersion; preserve originals. Legacy text receipt/current-proposal type exists but Office receipt parity is not a complete native version/inspection protocol.",
+      "effects": "Historical generator then persists artifact/bytes metadata in Capiro; selected new local native generation, source filing separate.",
+      "sourceContractReadiness": "READY bounded pure input-spec and existing ArtifactVersion correlation proposal; normalizer limits require follow-up exact characterization before implementation.",
+      "remaining": "Native bytes/render/editability/inspection sandbox and original skills unqualified; full legacy artifact raw-row projection and format/error/download variants not fully closed in this checkpoint. No legacy generator copied.",
+      "references": [
+        "meri-tools.service.ts:1622\u20131699,7619\u20137786,9710\u20139733",
+        "meri-docgen.helpers.ts:DTOs",
+        "meri-text-artifact-receipt.ts",
+        "meri-text-artifact-current-proposal.ts"
+      ]
+    },
+    {
+      "id": "run_analysis",
+      "request": {
+        "required": [
+          "code:string"
+        ],
+        "optional": [
+          "datasets:[{name:string,rows:object[]}]",
+          "purpose:string"
+        ]
+      },
+      "result": {
+        "refusal": [
+          "tool",
+          "generatedAt",
+          "ok:false",
+          "error"
+        ],
+        "execution": [
+          "tool",
+          "generatedAt",
+          "ok",
+          "exitCode:null|number",
+          "timedOut",
+          "durationMs",
+          "stdout",
+          "optional stderr",
+          "results:unknown",
+          "chartCount",
+          "optional artifacts"
+        ],
+        "artifact": [
+          "title",
+          "kind",
+          "contentType",
+          "metadata{imageBase64,filename,codeSha256}"
+        ],
+        "limits": "wrapper truncates stdout12000/stderr4000; not adopted application execution budget"
+      },
+      "currentAuthority": "Authorized input data/object references and current scopes; model-provided dataset names/rows not source authority.",
+      "immutableReview": "Reuse canonical Meri Command/ApprovalProposal/Decision/Receipt where action exists; a shape does not grant approval.",
+      "idempotencyAndReconciliation": "Canonical immutable input/code/output hashes; explicit analysis outcome/artifact versions; analysis result unknown can be bounded JSON without pretending scalar/content correctness.",
+      "effects": "Historical HTTP sandbox execution and auditLog write; selected new reproducible local analysis no source mutation; local runtime unqualified.",
+      "sourceContractReadiness": "READY pure bounded request/outcome design, reusing canonical ObjectReference/ArtifactVersion; not a missing named DTO blocker.",
+      "remaining": "Sandbox results is unknown JSON; output semantic schema/numeric/plot provenance and new code/data transport ceilings need explicit contract design, not inference of verified computations. No runner/harness copied or executed.",
+      "references": [
+        "meri-tools.service.ts:1052,2339\u20132464",
+        "meri-analysis-provenance.ts"
+      ]
+    }
+  ]
+}

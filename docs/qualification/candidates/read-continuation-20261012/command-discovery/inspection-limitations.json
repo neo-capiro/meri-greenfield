@@ -1,0 +1,45 @@
+{
+  "sourceBodyPublication": false,
+  "productionChanges": false,
+  "nativeActions": false,
+  "uncompletedInspection": [
+    "Detailed artifact normalizer bounds and all raw persisted-artifact/error/download variants",
+    "Complete ordinary non-RP task actor/wall policy chain beyond inspected wrapper/service/source-specific guard",
+    "Full sandbox results semantics and selected new reproducible input/output protocol",
+    "New Temporal lifecycle action/cadence/overlap/cancel-inflight decisions and durable transport mapping"
+  ],
+  "preservedInspectionErrors": [
+    {
+      "kind": "guessedPathAbsent",
+      "path": "apps/api/src/memory/dto/create-memory-candidate.dto.ts",
+      "result": "Caught metadata lookup failure, not evidence that source DTO is missing; actual inline types traced.",
+      "rawReceipt": "Original interactive tool transcript only; no file capture was made."
+    },
+    {
+      "kind": "guessedPathAbsent",
+      "path": "apps/api/src/memory/governed-memory.contracts.ts",
+      "result": "Caught metadata lookup failure, not evidence that source DTO is missing; actual inline types traced.",
+      "rawReceipt": "Original interactive tool transcript only; no file capture was made."
+    },
+    {
+      "kind": "guessedPathAbsent",
+      "path": "apps/api/src/meri/meri-tool-context.ts",
+      "result": "Caught metadata lookup failure, not evidence that source DTO is missing; actual inline types traced.",
+      "rawReceipt": "Original interactive tool transcript only; no file capture was made."
+    },
+    {
+      "kind": "rgPathAbsent",
+      "path": "packages/contracts/schema.json",
+      "exitCode": 2,
+      "resolution": "Actual canonical file is packages/contracts/meri.schema.json.",
+      "rawReceipt": "Original interactive tool transcript only; no file capture was made."
+    },
+    {
+      "kind": "rgDirectoryAbsent",
+      "path": ".agents",
+      "resolution": "No checkout-local .agents; /workspace/.agents listing had no applicable skill files.",
+      "rawReceipt": "Original interactive tool transcript only."
+    }
+  ],
+  "privacy": "Only own summaries, DTO metadata, symbol/line references and cryptographic identities retained; no private implementation bodies."
+}
