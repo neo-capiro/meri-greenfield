@@ -1,0 +1,247 @@
+{
+  "sourceFreeze": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "base": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "scope": "SOURCE_ONLY; excludes this self-referential manifest; no runtime approval",
+  "members": [
+    {
+      "path": "apps/control/schedules/tool-interface.mjs",
+      "bytes": 4367,
+      "sha256": "8311d6524a18dd69cedeb4c344c4f5df17a87c45591cdc1bcaa0b7fbdc3618c2"
+    },
+    {
+      "path": "apps/control/test/schedule-tool-interface.test.mjs",
+      "bytes": 7781,
+      "sha256": "49c2470e90c32d198cab59bc1fc338d5737593725e472c62724de8605421daa4"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "bytes": 6560,
+      "sha256": "142c2481a1f1ec1bb269efe444402faa8650ad81a70d95a0e0f20e00f2e3d067"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-SCHEDULE-TOOL-INTERFACE-20261012.md",
+      "bytes": 4272,
+      "sha256": "d5bcfa77cd8320b935e0447fc0f4859edd6e449d95adc763d7f0aa4b9fc8738c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.json",
+      "bytes": 12224,
+      "sha256": "e4cca710f45eca6bf7d656725df9c69af608263c8d7ab50e814451f92286f3ab"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/audit.py",
+      "bytes": 5128,
+      "sha256": "9d444b555004a35d2b49cbf0286d3a6479237c8f01e1fd96020802e555723d6f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/capture-reaped.py",
+      "bytes": 3390,
+      "sha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.json",
+      "bytes": 1424,
+      "sha256": "3f7db628beffa8fa86f0e1ee68f3562f9a1d21d0bef92045b4589cc7c3e998eb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/connected-tool-author.stdout.bin",
+      "bytes": 2940,
+      "sha256": "90a57afd69341c6a5200855e2fc5ca2e7ffc50a74175b206654054503e54c753"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/dependency-cleanup.json",
+      "bytes": 2509,
+      "sha256": "fc5be514d390a81d008cb7295e75c3279b75c1dba3f4683dcbad32d68ae0a27a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.json",
+      "bytes": 1434,
+      "sha256": "df39040509c668d094f64e12703abf153eecb411b23dfa3146670ee0a6a26e5d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/disposition-negative.stdout.bin",
+      "bytes": 2922,
+      "sha256": "88980fa0bab5d3b8479b54b94807e4c7771438ba2494eb7995a14447f8d7d83e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.json",
+      "bytes": 1472,
+      "sha256": "e40b023eee3ad7b8a79ce1c301d5c04bd869eff7f3d4cc6927a47a0bd5334c06"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/extracted-lifecycle.stdout.bin",
+      "bytes": 4074,
+      "sha256": "4bd6743dfd62ba980f3a91384f5ab8dd49a87d23f8f052cfd0f25580343414f9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.json",
+      "bytes": 1420,
+      "sha256": "17efd52025130243c8d803144f761948c5ed834e0e47038812f6623cfb7c9e41"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/initial-tool-author.stdout.bin",
+      "bytes": 2387,
+      "sha256": "11e13eaf5a187d56ecfb56e83d4d8fde9ad88075a662d7c236b267ef29a7ea90"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.json",
+      "bytes": 1430,
+      "sha256": "b53425f9ba90b299686767c20acdfbd6f6c3db824ea4f3f8c3cdb19187a2cf4b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-negative.stdout.bin",
+      "bytes": 3109,
+      "sha256": "a8e1b389e02649421751fcaaa2d3be88aebb4cee37748c2dbd1bec8b361b12c2"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.json",
+      "bytes": 1420,
+      "sha256": "822e8174b08e0a4f956b323b676a8bd32cc861f6dc676f157e50c4c2d07b2d80"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/inspection-repaired.stdout.bin",
+      "bytes": 3217,
+      "sha256": "0fb6a2e3698e2d6bb1260b135da80a73c6074037bdfa39a1c1d2585d87b229ce"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.json",
+      "bytes": 1433,
+      "sha256": "4f1bdc5b0c1181810eb52627b58dc49f94ca908fe5dcc5f0da57bba3b8914591"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-negative.stdout.bin",
+      "bytes": 2114,
+      "sha256": "718ce7129b7601646a08e5f72ec0a90073e8ec0824ff8eb3463f46df6087dad1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.json",
+      "bytes": 1596,
+      "sha256": "0e7cda5026970fdcf8de6fc6515a920b3d24bf241aff0c9bcc7b1c05e9e7cd09"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/instruction-repaired.stdout.bin",
+      "bytes": 7396,
+      "sha256": "42a524df5ea6228be40a756081cbe9f705cdc2a1c593dcf5d7e18e57f49d5880"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/integration-api.json",
+      "bytes": 2261,
+      "sha256": "9b271d299b399b4913ee8de0c14b5a8af36576adb2945cef20b7a83b557b48eb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.json",
+      "bytes": 1422,
+      "sha256": "56c6ad6c981dba613460dc24b5827238bc598a5ea6dd16b526482b68c93996cb"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/repaired-tool-author.stdout.bin",
+      "bytes": 2569,
+      "sha256": "bf497aa104c12dadfba634289783f0ddbbaf6ce247834ce11036c7caee08e92f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/report-write-first-failure.json",
+      "bytes": 473,
+      "sha256": "3b73237d3fb3fa69d2fc8690027072ed05976aa07965705821c9eb74647a7c2f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/verify-packet.py",
+      "bytes": 821,
+      "sha256": "716698ab7a5ccebe3a8b7f4d6b35db94ceb8fd7f6941275cdd4b9887ddeac1b7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-authored.json",
+      "bytes": 1647,
+      "sha256": "4871f3030948b18dfa757014ed621ef83b49879c674eb898cac6a45d75e72b9d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.json",
+      "bytes": 431,
+      "sha256": "196c990acdcc9047535572b89f12584b247037544629b2eb0174de8b6b478155"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-author/whitespace-first.stdout.bin",
+      "bytes": 548,
+      "sha256": "83ed25efec5b613ac3effc774b801f5fa8476f4000b783e856b0eca34fc759ee"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "bytes": 4553,
+      "sha256": "26ab4b12156f969dd36cfe776c8ccf7606df7e5c55a0ffb90e9f3e1e16fc2a34"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "bytes": 18610,
+      "sha256": "0b391e3e94fc3278de6d061694772a853c54c083630f874c5dc54c82a01f5001"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface-validation.mjs",
+      "bytes": 9000,
+      "sha256": "36891fa03f59250353d750b3fea8cada3d01f7c3d9a24a470ac7cfa24d93cd20"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/tool-interface.schema.json",
+      "bytes": 24305,
+      "sha256": "2de8450111ea263876553f86b895d7fe93bca65ec55bcd649421e21a6f6d3fcf"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface-fixtures.mjs",
+      "bytes": 3773,
+      "sha256": "94d37031d0d2d9cff02c33d9c5e1de6c22099b86256b7971297f899056474c32"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-interface.test.mjs",
+      "bytes": 6696,
+      "sha256": "3dd13e9ab6e155d2baf4de3fd4c363bde73732a9d5fd48e7141ec2932de8c499"
+    }
+  ]
+}
