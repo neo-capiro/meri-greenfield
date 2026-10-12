@@ -1,0 +1,1481 @@
+{
+  "verdict": "PASS",
+  "candidate": "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a",
+  "tree": "6efd7f22a4e849917ab054932b77a65712fae985",
+  "checksPassed": 345,
+  "checksTotal": 345,
+  "originalBlobsPreserved": 7269,
+  "originalBlobs": 7269,
+  "authorManifestMembers": 38,
+  "receiptRecords": 22,
+  "negativeControls": [
+    {
+      "name": "remove requirement",
+      "expected": "exact53membership",
+      "observed": [
+        "exact53membership"
+      ],
+      "pass": true
+    },
+    {
+      "name": "duplicate requirement",
+      "expected": "exact53membership",
+      "observed": [
+        "exact53membership"
+      ],
+      "pass": true
+    },
+    {
+      "name": "change governing requirement",
+      "expected": "originalRequirement",
+      "observed": [
+        "originalRequirement"
+      ],
+      "pass": true
+    },
+    {
+      "name": "promote source to runtime",
+      "expected": "wholeGatePromotion",
+      "observed": [
+        "wholeGatePromotion"
+      ],
+      "pass": true
+    },
+    {
+      "name": "close G1 with component passes",
+      "expected": "wholeGatePromotion",
+      "observed": [
+        "wholeGatePromotion"
+      ],
+      "pass": true
+    },
+    {
+      "name": "reopen accepted W00 discovery",
+      "expected": "wholeGatePromotion",
+      "observed": [
+        "wholeGatePromotion"
+      ],
+      "pass": true
+    },
+    {
+      "name": "remove accountable owner",
+      "expected": "missingActionableOwnerOrGap",
+      "observed": [
+        "missingActionableOwnerOrGap"
+      ],
+      "pass": true
+    },
+    {
+      "name": "invent receipt pointer",
+      "expected": "danglingReceipt",
+      "observed": [
+        "danglingReceipt"
+      ],
+      "pass": true
+    },
+    {
+      "name": "promote native reported pass",
+      "expected": "promotedParentReport",
+      "observed": [
+        "promotedParentReport"
+      ],
+      "pass": true
+    },
+    {
+      "name": "forge parent report local identity",
+      "expected": "promotedParentReport",
+      "observed": [
+        "promotedParentReport"
+      ],
+      "pass": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact governing base",
+      "pass": true
+    },
+    {
+      "name": "independent structural and provenance oracle",
+      "pass": true
+    },
+    {
+      "name": "baseline exact53 normative families",
+      "pass": true
+    },
+    {
+      "name": "W00 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W00 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W00 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W00 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W01 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W01 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W01 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W01 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W02 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W02 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W02 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W02 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W03 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W03 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W03 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W03 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W04 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W04 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W04 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W04 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W05 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W05 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W05 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W05 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W06 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W06 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W06 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W06 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W07 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W07 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W07 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W07 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W08 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W08 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W08 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W08 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W09 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W09 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W09 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W09 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W10 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W10 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W10 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W10 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "W11 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "W11 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "W11 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "W11 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-01 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-01 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-01 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-01 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-02 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-02 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-02 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-02 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-03 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-03 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-03 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-03 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-04 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-04 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-04 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-04 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-05 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-05 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-05 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-05 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-06 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-06 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-06 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-06 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-07 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-07 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-07 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-07 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-08 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-08 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-08 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-08 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-09 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-09 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-09 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-09 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-10 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-10 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-10 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-10 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-11 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-11 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-11 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-11 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "R-12 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "R-12 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "R-12 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "R-12 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-01 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-01 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-01 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-01 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-02 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-02 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-02 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-02 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-03 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-03 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-03 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-03 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-04 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-04 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-04 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-04 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-05 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-05 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-05 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-05 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-06 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-06 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-06 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-06 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-07 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-07 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-07 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-07 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-08 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-08 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-08 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-08 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "REL-09 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "REL-09 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "REL-09 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "REL-09 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G0 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G0 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G0 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G0 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G1 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G1 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G1 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G1 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G2 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G2 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G2 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G2 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G3 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G3 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G3 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G3 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G4 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G4 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G4 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G4 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G5 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G5 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G5 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G5 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G6 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G6 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G6 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G6 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "G7 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "G7 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "G7 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "G7 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-01 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-01 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-01 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-01 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-02 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-02 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-02 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-02 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-03 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-03 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-03 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-03 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-04 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-04 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-04 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-04 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-05 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-05 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-05 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-05 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-06 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-06 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-06 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-06 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-07 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-07 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-07 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-07 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-08 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-08 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-08 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-08 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-09 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-09 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-09 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-09 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-10 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-10 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-10 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-10 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-11 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-11 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-11 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-11 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "RG-12 exact governing plan line",
+      "pass": true
+    },
+    {
+      "name": "RG-12 original full record identity",
+      "pass": true
+    },
+    {
+      "name": "RG-12 supporting receipt links",
+      "pass": true
+    },
+    {
+      "name": "RG-12 receipt lists",
+      "pass": true
+    },
+    {
+      "name": "six optional obligations retained",
+      "pass": true
+    },
+    {
+      "name": "optional qualification remains distinct",
+      "pass": true
+    },
+    {
+      "name": "exact G0-G7 states",
+      "pass": true
+    },
+    {
+      "name": "unique original and added discovery receipt records",
+      "pass": true
+    },
+    {
+      "name": "plan-index actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "plan-index scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "g0 actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "g0 scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "g0-discovery actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "g0-discovery scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "r2-adoption actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "r2-adoption scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "read-source actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "read-source scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "read-catalog actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "read-catalog scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "command-source actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "command-source scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "contracts actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "contracts scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "skills actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "skills scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "runtime-source actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "runtime-source scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "benchmark actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "benchmark scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "scope actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "scope scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "image-history actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "image-history scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "pe-source actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "pe-source scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "combined-source actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "combined-source scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "combined-review actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "combined-review scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "backend-publication actual immutable Git bytes",
+      "pass": true
+    },
+    {
+      "name": "backend-publication scope and limit explicit",
+      "pass": true
+    },
+    {
+      "name": "source identity ledger exactly matches receipt links",
+      "pass": true
+    },
+    {
+      "name": "original index identity",
+      "pass": true
+    },
+    {
+      "name": "W00 completed discovery has exact prior acceptance and adopted plan receipts",
+      "pass": true
+    },
+    {
+      "name": "later native observations do not reopen discovery",
+      "pass": true
+    },
+    {
+      "name": "optional other-owner execution not globally asserted unrun",
+      "pass": true
+    },
+    {
+      "name": "exact accepted independent source verdict",
+      "pass": true
+    },
+    {
+      "name": "verdict covers exact accepted source",
+      "pass": true
+    },
+    {
+      "name": "local draft publication binds source",
+      "pass": true
+    },
+    {
+      "name": "current and historical descriptor counts",
+      "pass": true
+    },
+    {
+      "name": "current mapping accounting",
+      "pass": true
+    },
+    {
+      "name": "unchanged13996/43 denominator",
+      "pass": true
+    },
+    {
+      "name": "all original identities and selection preserved",
+      "pass": true
+    },
+    {
+      "name": "all71 unavailable unqualified",
+      "pass": true
+    },
+    {
+      "name": "four actual native row states unchanged",
+      "pass": true
+    },
+    {
+      "name": "four tensions named exactly",
+      "pass": true
+    },
+    {
+      "name": "fourteen original skills retained",
+      "pass": true
+    },
+    {
+      "name": "original DOCX release thresholds retained",
+      "pass": true
+    },
+    {
+      "name": "R2 real cohorts supplement originals",
+      "pass": true
+    },
+    {
+      "name": "strict cohort provenance limit explicit",
+      "pass": true
+    },
+    {
+      "name": "native observations distinct cohorts",
+      "pass": true
+    },
+    {
+      "name": "native reported positive observations retained",
+      "pass": true
+    },
+    {
+      "name": "cleanup not image acceptance",
+      "pass": true
+    },
+    {
+      "name": "shipping dated start identity",
+      "pass": true
+    },
+    {
+      "name": "no invented terminal shipping result",
+      "pass": true
+    },
+    {
+      "name": "five frontend metadata files only",
+      "pass": true
+    },
+    {
+      "name": "README.md retained frontend bytes match recorded blob",
+      "pass": true
+    },
+    {
+      "name": "README.md frontend locator matches recorded origin",
+      "pass": true
+    },
+    {
+      "name": "README.md exact failed-copy preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "STATUS.json retained frontend bytes match recorded blob",
+      "pass": true
+    },
+    {
+      "name": "STATUS.json frontend locator matches recorded origin",
+      "pass": true
+    },
+    {
+      "name": "STATUS.json exact failed-copy preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "SOURCE.json retained frontend bytes match recorded blob",
+      "pass": true
+    },
+    {
+      "name": "SOURCE.json frontend locator matches recorded origin",
+      "pass": true
+    },
+    {
+      "name": "SOURCE.json exact failed-copy preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "REMAINING.md retained frontend bytes match recorded blob",
+      "pass": true
+    },
+    {
+      "name": "REMAINING.md frontend locator matches recorded origin",
+      "pass": true
+    },
+    {
+      "name": "REMAINING.md exact failed-copy preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "publication-review.md retained frontend bytes match recorded blob",
+      "pass": true
+    },
+    {
+      "name": "publication-review.md frontend locator matches recorded origin",
+      "pass": true
+    },
+    {
+      "name": "publication-review.md exact failed-copy preimage preserved",
+      "pass": true
+    },
+    {
+      "name": "frontend source and publication distinction",
+      "pass": true
+    },
+    {
+      "name": "frontend remaining and native limits",
+      "pass": true
+    },
+    {
+      "name": "frontend combined local cohort count",
+      "pass": true
+    },
+    {
+      "name": "frontend separate browser/Elements cohorts",
+      "pass": true
+    },
+    {
+      "name": "frontend reported initial failure retained",
+      "pass": true
+    },
+    {
+      "name": "older frozen shipping source distinct from current reviewed repairs",
+      "pass": true
+    },
+    {
+      "name": "earlier parent cohort not overwritten or added",
+      "pass": true
+    },
+    {
+      "name": "every governing-base blob and mode preserved",
+      "pass": true
+    },
+    {
+      "name": "exclusive additive metadata paths",
+      "pass": true
+    },
+    {
+      "name": "manifest names unique",
+      "pass": true
+    },
+    {
+      "name": "complete exact author manifest membership",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-PLAN-RECEIPT-JOIN-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "manifest before-pr35-update.json",
+      "pass": true
+    },
+    {
+      "name": "manifest boundaries.json",
+      "pass": true
+    },
+    {
+      "name": "manifest build.py",
+      "pass": true
+    },
+    {
+      "name": "manifest build.stderr",
+      "pass": true
+    },
+    {
+      "name": "manifest build.stdout",
+      "pass": true
+    },
+    {
+      "name": "manifest collection-notes.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/PR14-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/README.md",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/REMAINING.md",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/SOURCE.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/STATUS.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/initial-extra-newline.README.md",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/initial-extra-newline.REMAINING.md",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/initial-extra-newline.SOURCE.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/initial-extra-newline.STATUS.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/initial-extra-newline.publication-review.md",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/materialization-failure.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/origins.json",
+      "pass": true
+    },
+    {
+      "name": "manifest frontend/publication-review.md",
+      "pass": true
+    },
+    {
+      "name": "manifest precision-correction/finding-and-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "manifest precision-correction/prior-verification.json",
+      "pass": true
+    },
+    {
+      "name": "manifest precision-correction/prior-verify.stderr",
+      "pass": true
+    },
+    {
+      "name": "manifest precision-correction/prior-verify.stdout",
+      "pass": true
+    },
+    {
+      "name": "manifest receipts.json",
+      "pass": true
+    },
+    {
+      "name": "manifest requirements.json",
+      "pass": true
+    },
+    {
+      "name": "manifest source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "manifest verification.json",
+      "pass": true
+    },
+    {
+      "name": "manifest verify.py",
+      "pass": true
+    },
+    {
+      "name": "manifest verify.stderr",
+      "pass": true
+    },
+    {
+      "name": "manifest verify.stdout",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-all.json",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-all.stderr",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-all.stdout",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-authored.json",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-authored.stderr",
+      "pass": true
+    },
+    {
+      "name": "manifest whitespace-authored.stdout",
+      "pass": true
+    },
+    {
+      "name": "author verification source and raw streams bound",
+      "pass": true
+    },
+    {
+      "name": "author documentary checks receipt matches raw output; not rerun",
+      "pass": true
+    },
+    {
+      "name": "ten independent negative controls refuse promotion or loss",
+      "pass": true
+    }
+  ],
+  "limits": [
+    "Only local immutable Git and retained JSON bytes read.",
+    "No author generator/verifier or project/native code executed.",
+    "Frontend origin blob correspondence verified against author retained connector identities, without a new remote fetch or full raw suite audit.",
+    "Native and shipping remain parent-reported; G1 OPEN/G2-G7 unentered."
+  ]
+}
