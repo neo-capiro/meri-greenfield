@@ -1,0 +1,24 @@
+✖ late cleanup connection after original cleanup deadline cannot start another transaction (2.481949ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2987.411307
+
+✖ failing tests:
+
+test at apps/control/test/commands-independent-pipeline.test.mjs:57:1
+✖ late cleanup connection after original cleanup deadline cannot start another transaction (2.481949ms)
+  Error [CommandError]: INVALID_COMMAND
+      at deny (file:///workspace/meri-command-execution-20261012/apps/control/commands/protocol.mjs:6:32)
+      at own (file:///workspace/meri-command-execution-20261012/apps/control/commands/protocol.mjs:10:166)
+      at createCommandExecutor (file:///workspace/meri-command-execution-20261012/apps/control/commands/executor.mjs:8:122)
+      at Object.make (file:///workspace/meri-command-execution-review-20261012/apps/control/test/commands-independent-fixture.mjs:81:25)
+      at TestContext.<anonymous> (file:///workspace/meri-command-execution-review-20261012/apps/control/test/commands-independent-pipeline.test.mjs:61:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
