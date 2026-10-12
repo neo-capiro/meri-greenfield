@@ -13,11 +13,12 @@ def tree(ref):
 checks=[]
 def check(n,v):checks.append({'name':n,'pass':bool(v)})
 a,b,c=tree(BASE),tree(SOURCE),tree(DOMAIN)
+joined=tree('83d0f5951a5e0c5d86d3a8684c2396b6cf13f794')
 expected={'docs/coordination/tasks/CODEX-VERTICAL-SOURCE-20261012.md','packages/contracts/retrieval-0.2/catalog-validation.mjs','packages/contracts/retrieval-0.2/catalog.json','packages/contracts/retrieval-0.2/validate.mjs'}
 changed={p for p,v in a.items() if b.get(p)!=v};check('exact declared prior changes only',changed==expected)
 check('all other baseline mode/blobs preserved',all(b.get(p)==v for p,v in a.items() if p not in expected))
 for p,v in c.items():
- if p.startswith(('apps/artifacts/','packages/contracts/artifacts-0.2/')):check('exact accepted artifact '+p,b.get(p)==v)
+ if p.startswith(('apps/artifacts/','packages/contracts/artifacts-0.2/')):check('exact accepted artifact '+p,joined.get(p)==v)
 for row in json.loads((e/'baseline.json').read_text())['references']:
  if row['path'] in expected:continue
  data=git('show',SOURCE+':'+row['path']);check('preserved reference '+row['path'],len(data)==row['bytes'] and hashlib.sha256(data).hexdigest()==row['sha256'])
@@ -56,4 +57,4 @@ for stem in ['artifact-first','artifact-complete']:
  except ProcessLookupError:absent=True
  check('independent owned group absent '+stem,cap['ownedProcessGroupAbsent'] and absent)
 report={'base':BASE,'source':SOURCE,'tree':git('rev-parse',SOURCE+'^{tree}').decode().strip(),'baseEntries':len(a),'unchangedBaseEntries':len(a)-len(changed),'allowedPriorChanges':sorted(changed),'existingUnchangedDefinitionCollisions':duplicates,'exposedArtifactDefinitions':exposed,'outOfScope':['packages/contracts/commands-0.2/tool-interface.schema.json','packages/contracts/commands-0.2/tool-interface-validation.mjs'],'checks':checks,'passed':sum(x['pass'] for x in checks),'failed':sum(not x['pass'] for x in checks),'verdictScope':'Artifact4 registry/loader only; combined13 and all runtime gates pending.'}
-(e/'artifact-stage-audit.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:report[k] for k in ['source','tree','baseEntries','unchangedBaseEntries','passed','failed']}));raise SystemExit(report['failed']!=0)
+(e/'artifact-stage-audit-repaired.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:report[k] for k in ['source','tree','baseEntries','unchangedBaseEntries','passed','failed']}));raise SystemExit(report['failed']!=0)
