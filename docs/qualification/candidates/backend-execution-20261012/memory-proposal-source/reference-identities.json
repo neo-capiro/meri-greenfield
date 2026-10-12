@@ -1,0 +1,320 @@
+{
+  "privateBodiesPublished": false,
+  "references": [
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+        "bytes": 2703,
+        "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+        "bytes": 2703,
+        "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/governed-memory-candidate.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "913979ddb246b11c88b8d3c2e39da4ccfca96123",
+        "bytes": 21792,
+        "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "913979ddb246b11c88b8d3c2e39da4ccfca96123",
+        "bytes": 21792,
+        "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-authorization.helpers.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "542f8362f834126b5dad16bef72ffa6998d0cf27",
+        "bytes": 7526,
+        "sha256": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "542f8362f834126b5dad16bef72ffa6998d0cf27",
+        "bytes": 7526,
+        "sha256": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-authorization.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "926d5a2cc08833c4ab4e27ea718128252477df96",
+        "bytes": 12831,
+        "sha256": "65331cb6735a79d8589bee389c3b2ebba1bd088ef89ec10c71f864bbe6699320"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "926d5a2cc08833c4ab4e27ea718128252477df96",
+        "bytes": 12831,
+        "sha256": "65331cb6735a79d8589bee389c3b2ebba1bd088ef89ec10c71f864bbe6699320"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate-rules.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+        "bytes": 6467,
+        "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "2ea105ac9b533f16ce6ed03f83d7a4b7672c7b2f",
+        "bytes": 6467,
+        "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+        "bytes": 39448,
+        "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+        "bytes": 39448,
+        "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-proposal.controller.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "25887a46c04bf220763f3feb706dc10cb2e4693d",
+        "bytes": 2047,
+        "sha256": "4386644ce08483ea2d2f80fe62e39d1b0fc7e76b38d39baf54db8cd35dbb9c9e"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "25887a46c04bf220763f3feb706dc10cb2e4693d",
+        "bytes": 2047,
+        "sha256": "4386644ce08483ea2d2f80fe62e39d1b0fc7e76b38d39baf54db8cd35dbb9c9e"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-admin-policy.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+        "bytes": 687,
+        "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "1f214b076d172b13648f1bf842d7c83363b944d3",
+        "bytes": 687,
+        "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-switch.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "4a6da51d731d6ed0fdd17ff7f32955eb672dc63d",
+        "bytes": 878,
+        "sha256": "5d80d21bdb3f9f06fbf4ed9c980939295b5f61916f89994ffffd9e3e51958ecb"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "4a6da51d731d6ed0fdd17ff7f32955eb672dc63d",
+        "bytes": 878,
+        "sha256": "5d80d21bdb3f9f06fbf4ed9c980939295b5f61916f89994ffffd9e3e51958ecb"
+      }
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+        "bytes": 7833,
+        "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+        "bytes": 7833,
+        "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory-content.helpers.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "206af36d7bdd8211228a21cad1b53903aef9a301",
+        "bytes": 5709,
+        "sha256": "269859235ff3a5d1427f0448c366884b4b4d072e6c84f902059ed24edb567a2b"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "206af36d7bdd8211228a21cad1b53903aef9a301",
+        "bytes": 5709,
+        "sha256": "269859235ff3a5d1427f0448c366884b4b4d072e6c84f902059ed24edb567a2b"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory-proposal-read.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "148f458b8f17194e72aa01b1a35405df6052e71f",
+        "bytes": 3701,
+        "sha256": "c0791012a1025e690169d249c2a08b632e19e17ef57c51db300c6293f1782f69"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "148f458b8f17194e72aa01b1a35405df6052e71f",
+        "bytes": 3701,
+        "sha256": "c0791012a1025e690169d249c2a08b632e19e17ef57c51db300c6293f1782f69"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri-memory.helpers.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+        "bytes": 6507,
+        "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "823d7e59550c84f961beba1a3bfa836f87d5e420",
+        "bytes": 6507,
+        "sha256": "646fe989ad50770d2b4ea119bb596310361e08eb2e59cca6811494d9a3b9fa66"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "598e9146e5568349f213cbd548de0213113dc924",
+        "bytes": 44992,
+        "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "598e9146e5568349f213cbd548de0213113dc924",
+        "bytes": 44992,
+        "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.spec.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "96bcd73d92641818dea150fe0baacd5e40de68b2",
+        "bytes": 2779,
+        "sha256": "df59f1213971d632b83b80317ae0ff8a9bc17e8fac5e740cd00aa20ebbbce0be"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "96bcd73d92641818dea150fe0baacd5e40de68b2",
+        "bytes": 2779,
+        "sha256": "df59f1213971d632b83b80317ae0ff8a9bc17e8fac5e740cd00aa20ebbbce0be"
+      }
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+      }
+    },
+    {
+      "path": "apps/api/src/tenant/current-tenant.decorator.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "40fbcf7d5ad5c4bf1b75963c97ac41207ebf64b6",
+        "bytes": 776,
+        "sha256": "4709acfb1164a4e71fa508e03534a9015a0c8e7fc4ccc452264099e913281647"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "40fbcf7d5ad5c4bf1b75963c97ac41207ebf64b6",
+        "bytes": 776,
+        "sha256": "4709acfb1164a4e71fa508e03534a9015a0c8e7fc4ccc452264099e913281647"
+      }
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "fece0915d869778984cd9987840e1bd41c203e01",
+        "bytes": 22931,
+        "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "fece0915d869778984cd9987840e1bd41c203e01",
+        "bytes": 22931,
+        "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+      }
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+        "bytes": 273389,
+        "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f"
+      }
+    },
+    {
+      "path": "packages/shared/src/meri-read-outcome.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "gitBlob": "412541d5a529a0fb34248a7120cea0222a1d2987",
+        "bytes": 35614,
+        "sha256": "691393b5aa888bc4ab5e6b3de73fe22bf8649722eded4de5722fee6aa590992c"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "gitBlob": "412541d5a529a0fb34248a7120cea0222a1d2987",
+        "bytes": 35614,
+        "sha256": "691393b5aa888bc4ab5e6b3de73fe22bf8649722eded4de5722fee6aa590992c"
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+✔ memory dispatch consumes canonical raw DTO inside current request/lineage wrapper (13.452046ms)
+✔ memory shape rejects model supplied subject/previous and legacy context before business ports (1.409028ms)
+✔ selected client comes from fresh server authority and model client substitution refuses (3.490285ms)
+✔ stable authority cannot drift between preflight and normalized authorization (1.046412ms)
+✔ refreshed decision IDs do not change stable subject selection or prevent release (2.080637ms)
+✔ trusted retained first page enables advancing continuation without model-supplied history (5.495088ms)
+✔ missing context ports and unknown cursor cannot execute or reserve (1.226223ms)
+✔ retained pages reject corrupt digest, wrong run fence/operation/subject and stale or future times (15.881858ms)
+✔ even correctly digested retained substitution must pass canonical limit/cursor/order validation (8.080805ms)
+✔ result wrapper must bind exact operation/digest/lineage and preserve raw pending DTO semantics (6.5342ms)
+✔ loadPrevious: parked trusted context is bounded; late completion starts no further effect (22.927286ms)
+✔ retain: parked trusted context is bounded; late completion starts no further effect (20.532558ms)
+✔ revocation during retention cannot release a result after budget settlement (2.314518ms)
+✔ actual dispatcher/authority/handler/HTTP adapter completes fixed-route synthetic loopback exchange (58.406247ms)
+✔ unselected subject preserves own firm/client proposals, not personal-only queue (5.783993ms)
+✔ selected client preserves clientless proposals and selector binding (3.950066ms)
+✔ disabled response remains unavailable coverage with no fabricated records (3.236283ms)
+✔ restricted, truncated and null content remain incomplete unapproved observations (9.645276ms)
+✔ first and advancing continuation uses existing retained context and sends opaque cursor unchanged (6.486829ms)
+✔ unknown or replayed foreign cursor cannot reach source transport (0.777268ms)
+✔ model URL/header/actor/source flags rejected before credential owner (0.853203ms)
+✔ revoked authority, wrong fence, disabled source and denied budget cannot reach credentials (1.932945ms)
+✔ revocation after HTTP response cannot retain, settle or release (2.833208ms)
+✔ credential receipt bound to exact actor/run/task/fence and current expiry (8.901268ms)
+✔ credential accessors and proxies cannot execute effects (3.494352ms)
+✔ credential tokens never come from gateway credential and transport is fixed closed POST (3.031936ms)
+✔ origin refuses nonHTTPS paths queries credentials and operation substitution before I/O (0.408494ms)
+✔ HTTP error/redirect/encoding/media responses refuse without returning body diagnostics (7.181843ms)
+✔ byte caps reject dishonest Content-Length, streaming overflow and malformed UTF8/JSON (6.023923ms)
+✔ source wrong scope/restricted disclosure/false completeness/current-fact upgrade rejected by canonical family (6.807191ms)
+✔ parked credentials is bounded and late completion starts no subsequent work (22.182307ms)
+✔ parked fetch is bounded and late completion starts no subsequent work (23.384499ms)
+✔ parked body is bounded and late completion starts no subsequent work (22.214154ms)
+✔ canonical production gateway stays unavailable and never requests source credentials (7.558329ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2496.0796

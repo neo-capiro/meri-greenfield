@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python",
+    "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/verify-source.py"
+  ],
+  "cwd": "/workspace/meri-memory-proposal-source-20261012",
+  "sourceHead": "4834dc4af368fe99675bd4fad3005e8b6b9d6c62",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T20:42:31.577999+00:00",
+  "durationSeconds": 0.666,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 307046,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/audit-initial.stdout.bin",
+      "bytes": 147,
+      "sha256": "fe71f06f01d8de5237a2eb15c6b9251f326e31df4928f8275250b7e90dad2235"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/audit-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
