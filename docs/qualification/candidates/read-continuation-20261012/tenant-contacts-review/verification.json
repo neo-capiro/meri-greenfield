@@ -1,0 +1,88 @@
+{
+  "source": "0aba55ef096a68a3cfd92f770783dec3fddfea22",
+  "checks": 20,
+  "passed": 20,
+  "failed": 0,
+  "results": [
+    {
+      "name": "docs/coordination/reports/CODEX-TENANT-CONTACTS-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-date-boundary.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/inspect-references.cjs",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/packet-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit-with-notes.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/reference-audit.json",
+      "pass": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-review/verify-review.py",
+      "pass": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-tenant-contacts-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact safe unique membership",
+      "pass": true
+    }
+  ]
+}

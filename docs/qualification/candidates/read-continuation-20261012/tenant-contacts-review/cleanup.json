@@ -1,0 +1,13 @@
+{
+  "removedOnlyOwnedSymlinks": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "borrowedInstalledTargetsRetained": true,
+  "ownedCaptureGroupsAbsent": [
+    234842,
+    235823,
+    236429
+  ],
+  "sourceServicesStarted": false
+}

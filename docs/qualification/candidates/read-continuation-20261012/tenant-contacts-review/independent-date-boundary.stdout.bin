@@ -1,0 +1,42 @@
+✔ contacts independent: selectorless defaults and null/blank selectors (4.531561ms)
+✔ contacts independent: finite legacy number/string clamp and fallback are retained (0.900163ms)
+✔ contacts independent: raw admission ceilings are explicit rather than source caps (0.927103ms)
+✔ contacts independent: post-truncation trims differ from client reference (0.16667ms)
+✔ contacts independent: UTF16 split boundary and lowercase expansion preserved (0.285439ms)
+✔ contacts independent: normalization preserves input case except domain and never mutates request (0.204317ms)
+✔ contacts independent: unknown aliases and model authorization fields are excluded (0.674133ms)
+✔ contacts independent: context is closed for both functions (0.331197ms)
+✔ contacts independent: refusal cannot carry a normal envelope or contacts (0.906792ms)
+✔ contacts independent: selectors require normal envelope even for an empty returned window (1.682468ms)
+✔ contacts independent: exact supplied query/domain bind matchedOn fields (0.708755ms)
+✔ contacts independent: resolved client UUID is not forced equal to input alias or a UUID version (0.442585ms)
+✔ contacts independent: selected-client presence is required, current visibility is not inferred (1.021335ms)
+✔ contacts independent: client-derived domain is an unreturned source assertion (0.476075ms)
+✔ contacts independent: OR within tenant never becomes a client AND domain AND query filter (0.214242ms)
+✔ contacts independent: no client and all predicate columns NULL cannot match a search (0.547062ms)
+✔ contacts independent: nine projected fields required with six nullable values (0.753522ms)
+✔ contacts independent: raw string values are not email phone enum or normalized-name formats (0.156064ms)
+✔ contacts independent: contact IDs and authority/coverage extensions never appear (0.750248ms)
+✔ contacts independent: repeated name/email rows remain legitimate window rows (0.15281ms)
+✔ contacts independent: supplied limits constrain returned rows without implying total (0.25282ms)
+✔ contacts independent: blank normalized email has no history but name can still be on profile (0.734815ms)
+✔ contacts independent: mail count and nullable mail/calendar dates do not imply each other (0.263156ms)
+✔ contacts independent: counts are safe nonnegative integers (0.458159ms)
+✔ contacts independent: returned history descends with ties and null last (0.371849ms)
+✔ contacts independent: no timestamp bound against generatedAt or ambient now is invented (0.144758ms)
+✔ contacts independent: date aliases invalid calendars and noncanonical strings refuse (0.522796ms)
+✔ contacts independent: onProfile needs client and some normalized identity but not invented truth (0.329686ms)
+✔ contacts independent: source note counts the returned rows and missing profiles (0.408284ms)
+✔ contacts independent: source guidance cannot grant profile update or execution options (0.378749ms)
+✔ contacts independent: getters proxies coercion and toJSON hooks stay inert (0.313732ms)
+✔ contacts independent: cycles sparse arrays hidden keys and prototypes refuse (0.228403ms)
+✔ contacts independent: output validation preserves original data (0.314292ms)
+✔ contacts independent: disclosed date wire admission excludes expanded native Date years (0.502575ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.419224
