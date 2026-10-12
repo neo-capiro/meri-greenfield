@@ -1,0 +1,481 @@
+{
+  "status": "PASS",
+  "passed": 57,
+  "total": 57,
+  "source": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+  "sourceTree": "f561ea0c46a17335d93311b63c775e107441e7bc",
+  "originalCandidate": "2584818a24dd60fb63ac9e613d48a0c34e8542ba",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "baseEntries": 7677,
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 5101,
+          "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf",
+          "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6935,
+          "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e",
+          "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6935,
+          "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e",
+          "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 3416,
+          "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed",
+          "blob": "13c4b888669c6245d2de5db80d5ac08305d21403"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 3416,
+          "sha256": "741ec7710ee6d95136d85262da48ad0b7b113daf06e1ab5e51163deeec4509ed",
+          "blob": "13c4b888669c6245d2de5db80d5ac08305d21403"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/research/research.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 37618,
+          "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285",
+          "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 37618,
+          "sha256": "a11102bd18d875af9ff8af0dc7673a1471ad7f5708f2ab3ac0e8840db8395285",
+          "blob": "2f7be267858af4de0039f33c73d139b7dd7bb562"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/reports/report.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15398,
+          "sha256": "bde15d5d3bc45437ac915f64bcea3b9242e74a644d25a157dd301ae9f24c83c2",
+          "blob": "9ca4b418dc3085b8f2397f1d192ba4bcd469db13"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 18633,
+          "sha256": "fc56b23146338711645744cb4787a1d9b0d8c6ce189082c3cc289f4833cf68f8",
+          "blob": "306eff20a66e20e091839fbcfbbe1de68a00e808"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 31547,
+          "sha256": "94c30c05db367ce4dfe7b526d1ed6d8693c157321fac70a3cf83c6a858ecedac",
+          "blob": "54d6b4d39312ee00a39a07d586225a67663562aa"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/sourcedata/folder-source-data.repository.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 15570,
+          "sha256": "6dbc40304584fbc2c31b4045c1ee6fb7f94c2097400cb7ffa199b20099ea5d4a",
+          "blob": "f77ff9337012ba86697d6bd67dfa2b02ca66d932"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 15570,
+          "sha256": "6dbc40304584fbc2c31b4045c1ee6fb7f94c2097400cb7ffa199b20099ea5d4a",
+          "blob": "f77ff9337012ba86697d6bd67dfa2b02ca66d932"
+        }
+      ]
+    },
+    {
+      "path": "apps/intel-api/src/feature-flags/feature-flag.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6863,
+          "sha256": "8f06d7177cff0b7c77c8a2e6d971e568e03dc261e760f62a2c2cf5d98060509f",
+          "blob": "1c1959a276d038a85a17764d1d07352f9ce1db97"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6863,
+          "sha256": "8f06d7177cff0b7c77c8a2e6d971e568e03dc261e760f62a2c2cf5d98060509f",
+          "blob": "1c1959a276d038a85a17764d1d07352f9ce1db97"
+        }
+      ]
+    },
+    {
+      "path": "packages/shared/src/legislative-research.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 13892,
+          "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826",
+          "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 13892,
+          "sha256": "1ca1772ecb3ac924660f41eb181bf252c4d7989747287af7e238402491295826",
+          "blob": "ce3c93ae310885884a20f0a169062a9378dcdfb0"
+        }
+      ]
+    },
+    {
+      "path": "packages/shared/src/legiwatch-query.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 10141,
+          "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c",
+          "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 10141,
+          "sha256": "94a5cfcdbbff33132a9a8b0766e6a1f2856e2d395bdba180af5da20fe41a045c",
+          "blob": "9eb7ee5feefa95c514d46c87f291c9b2c36190ba"
+        }
+      ]
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "bytes": 6134,
+          "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754",
+          "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "bytes": 6134,
+          "sha256": "8765717e8721622753a2edd0271104c7187e4f3d86ade2eb42ead30974124754",
+          "blob": "c5f88b11c13178a14c31ec4da16e7e7d39da2a5b"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "all PR35 original mode/blob entries preserved",
+      "pass": true
+    },
+    {
+      "name": "exact exercised packages/contracts/retrieval-0.2/research-legal-legislation.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact exercised packages/contracts/retrieval-0.2/research-legal-legislation-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact exercised packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "only three legal files added at first legal candidate",
+      "pass": true
+    },
+    {
+      "name": "repair does not alter validator",
+      "pass": true
+    },
+    {
+      "name": "exact sole schema semantic change is logical minItems2",
+      "pass": true
+    },
+    {
+      "name": "author original tests retained as complete prefix",
+      "pass": true
+    },
+    {
+      "name": "canonical client-resolution shape reused",
+      "pass": true
+    },
+    {
+      "name": "closed context with exactly two facts",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalVersion",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalSearchItem",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalReferenceRow",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalOccurrence",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalSearchResult",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalVersionsResult",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalReferencesResult",
+      "pass": true
+    },
+    {
+      "name": "complete exact projection ResearchLegalRulesResult",
+      "pass": true
+    },
+    {
+      "name": "ResearchLegalVersion nullable actual view kind/title",
+      "pass": true
+    },
+    {
+      "name": "ResearchLegalSearchItem nullable actual view kind/title",
+      "pass": true
+    },
+    {
+      "name": "raw inert JSON preserved subdivisions",
+      "pass": true
+    },
+    {
+      "name": "raw inert JSON preserved identity",
+      "pass": true
+    },
+    {
+      "name": "raw inert JSON preserved sections",
+      "pass": true
+    },
+    {
+      "name": "raw inert JSON preserved coverage",
+      "pass": true
+    },
+    {
+      "name": "occurrence exact DB relation enum",
+      "pass": true
+    },
+    {
+      "name": "canonical inert/date helpers reused",
+      "pass": true
+    },
+    {
+      "name": "no private producer imports or live interfaces",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/api/src/engagement/engagement-access.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/keywords/internal-workflow.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/research/research.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/reports/report.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/keywords/keyword-rule.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/tracker/folders/folder-tracker.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/sourcedata/folder-source-data.repository.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/intel-api/src/feature-flags/feature-flag.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees packages/shared/src/legislative-research.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees packages/shared/src/legiwatch-query.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen/current source pin agrees apps/api/prisma/migrations/20280913030000_legiwatch_research_evidence/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "legal-first exact raw result/cleanup",
+      "pass": true
+    },
+    {
+      "name": "legal-first legal-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-first legal-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-corrected exact raw result/cleanup",
+      "pass": true
+    },
+    {
+      "name": "legal-corrected legal-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-corrected legal-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-before exact raw result/cleanup",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-before legal-arity-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-before legal-arity-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-repaired exact raw result/cleanup",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-repaired legal-arity-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-repaired legal-arity-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "legal-first actual test totals",
+      "pass": true
+    },
+    {
+      "name": "legal-corrected actual test totals",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-before actual test totals",
+      "pass": true
+    },
+    {
+      "name": "legal-arity-repaired actual test totals",
+      "pass": true
+    }
+  ],
+  "limits": "Only search_legislative_research/get_legal_reference DTO branches. Unreviewed news in repair ancestry is excluded. No current authority, parser/evaluation/cursor/inventory truth or native/runtime acceptance."
+}
