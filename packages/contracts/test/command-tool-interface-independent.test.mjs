@@ -68,7 +68,7 @@ for(const [native,action] of [['create_task','task.create'],['update_task','task
   const t=setup(action),contract=canonical.resolveOperationContract({id:native,version:'0.2.0'});
   assert.equal(contract.descriptor.handler,null);assert.equal(contract.descriptor.availability,'unimplemented');assert.equal(contract.descriptor.qualification,'pending');assert.equal(contract.descriptor.retry.maxRetries,0);
   const gateway=createSourceDisabledGateway({authorityPorts:t.f.ports,budget:t.f.budget,limits:{maxRequestMs:500,maxRequestBytes:65536,maxResponseBytes:65536,maxArgumentBytes:65536,maxCleanupMs:30,maxBudgetAckBytes:4096,maxFactBytes:65536},now:()=>t.f.state.now,newId:()=>id(30)});
-  await assert.rejects(gateway.execute(JSON.stringify({operation:{id:native,version:'0.2.0'},arguments:t.raw}),'synthetic'),/UNAVAILABLE/);
+  await assert.rejects(gateway.execute(JSON.stringify({operation:{id:native,version:'0.2.0'},arguments:t.raw}),'synthetic'),native==='save_chat_attachments'?/INVALID_ARGUMENTS/:/UNAVAILABLE/);
   assert.deepEqual(t.f.calls,[]);assert.equal(t.f.state.effects,0);assert.equal(gateway.sourceEnabled,false);
  });
 }

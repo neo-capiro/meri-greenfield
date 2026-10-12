@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-tool-interface-review-20261012",
+  "sourceHead": "4248c3ebae46a4093b9dc76a8ac475bcb5688b77",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:45:46.541174+00:00",
+  "durationSeconds": 2.977,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 381287,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stdout.bin",
+      "bytes": 3850,
+      "sha256": "26bbd363bceb60667082936752fea2f009901a912498a11266a78ff344f8dff6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-review/exact-interface.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
