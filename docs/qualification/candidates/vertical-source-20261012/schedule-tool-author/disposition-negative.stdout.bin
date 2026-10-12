@@ -1,0 +1,58 @@
+✖ tool errors retain uncertain effect disposition from accepted lifecycle (94.28039ms)
+✖ revocation after acknowledged lifecycle preserves not-released disposition (11.560707ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 465.85791
+
+✖ failing tests:
+
+test at apps/control/test/schedule-tool-interface.test.mjs:15:1
+✖ tool errors retain uncertain effect disposition from accepted lifecycle (94.28039ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: SCHEDULE_TOOL_FAILED
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/test/schedule-tool-interface.test.mjs:15:305)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: SCHEDULE_TOOL_FAILED
+        at Object.execute (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/schedules/tool-interface.mjs:49:27)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/test/schedule-tool-interface.test.mjs:15:305)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/test/schedule-tool-interface.test.mjs:16:1
+✖ revocation after acknowledged lifecycle preserves not-released disposition (11.560707ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: SCHEDULE_TOOL_FAILED
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/test/schedule-tool-interface.test.mjs:16:192)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: SCHEDULE_TOOL_FAILED
+        at Object.execute (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/schedules/tool-interface.mjs:49:27)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-schedule-tool-interface-20261012/apps/control/test/schedule-tool-interface.test.mjs:16:192)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

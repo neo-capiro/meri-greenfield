@@ -1,0 +1,42 @@
+✔ pending proposal uses current authority and performs no SDK lifecycle mutation (93.984131ms)
+✔ approved schedule_task invokes accepted lifecycle with exact private intent (9.376543ms)
+✔ approved update_scheduled_task invokes accepted lifecycle with exact private intent (6.954763ms)
+✔ approved cancel_scheduled_task invokes accepted lifecycle with exact private intent (6.517265ms)
+✔ list invokes accepted application owner page and preserves partial history (26.451898ms)
+✔ current proposal revocation prevents pending release (2.714771ms)
+✔ fresh authority deadline bounds pending callback before any lifecycle effect (12.072386ms)
+✔ approval expiry bounds a parked proposal authority before lifecycle dispatch (11.875539ms)
+✔ model and trusted data snapshot before first await (2.34818ms)
+✔ borrowed error messages never become model output (1.405032ms)
+✔ pre-abort and hostile option getters perform no borrowed operations (1.592304ms)
+✔ tool errors retain uncertain effect disposition from accepted lifecycle (2.266887ms)
+✔ revocation after acknowledged lifecycle preserves not-released disposition (3.136785ms)
+✔ connected schedule_task traverses actual approved owner and SDK adapter (5.132464ms)
+✔ connected update_scheduled_task traverses actual approved owner and SDK adapter (4.12483ms)
+✔ connected cancel_scheduled_task traverses actual approved owner and SDK adapter (2.753689ms)
+✔ connected listing preserves actual inspector and original execution summary (8.554297ms)
+✔ schedule_task produces complete review proposal without model authority (91.39544ms)
+✔ update_scheduled_task produces complete review proposal without model authority (5.945927ms)
+✔ cancel_scheduled_task produces complete review proposal without model authority (7.19934ms)
+✔ list defaults use full bounded accepted page and history limits (8.232364ms)
+✔ all raw request schemas exclude authority fields (4.513804ms)
+✔ instruction trim and destination trim bind only canonical requested values (1.217069ms)
+✔ wrong trusted request resolution is rejected (0.727724ms)
+✔ wrong trusted instruction resolution is rejected (0.826222ms)
+✔ wrong trusted destination resolution is rejected (0.833512ms)
+✔ wrong trusted limits resolution is rejected (0.81176ms)
+✔ wrong trusted current resolution is rejected (0.523477ms)
+✔ effective limits cannot exceed requested ceilings and are disclosed in review (1.159432ms)
+✔ approved digest covers private template/task as well as visible policy (5.423832ms)
+✔ intent semantics refuse invalid interval before a pending proposal (0.529836ms)
+✔ pending context cannot forge an acknowledged result (1.690832ms)
+✔ pending result cannot hide altered instruction or target (1.73608ms)
+✔ hostile context/data admission is inert (0.416195ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 592.952399

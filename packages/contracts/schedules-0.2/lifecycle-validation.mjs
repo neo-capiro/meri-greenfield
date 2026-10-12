@@ -32,6 +32,27 @@ function projection(p,tenant) {
   if(p.owner.tenantId!==tenant||p.scopes.some(s=>s.tenantId!==tenant))denySchedule('SCHEDULE_TENANT');
   date(p.createdAt);
 }
+export function assertScheduleIntent(intent,tenant) {
+  const i=scheduleShape('Intent',intent),p=i.projection;
+  projection(p,tenant);
+  if(!Number.isSafeInteger(p.maxRuntimeSeconds*1000)||!Number.isSafeInteger(p.retryLimit+1))denySchedule('SCHEDULE_BUDGET');
+  if(i.generation!==i.expectedGeneration+1)denySchedule('SCHEDULE_GENERATION');
+  if(i.operation==='schedule_task' ? i.expectedGeneration!==0||i.previousProjectionSha256!==null : i.expectedGeneration<1||i.previousProjectionSha256===null)denySchedule('SCHEDULE_GENERATION');
+  if(i.operation==='cancel_scheduled_task') {
+    if(Object.hasOwn(i,'taskInstructionSha256')||i.configuration!==null||!i.cancel||p.state!==(i.cancel.mode==='delete'?'cancelled':'paused')||(i.cancel.running==='leave'&&i.cancel.runs.length))denySchedule('SCHEDULE_CANCEL');
+    if(new Set(i.cancel.runs.map(r=>canonicalSha256(r))).size!==i.cancel.runs.length)denySchedule('SCHEDULE_RUN');
+  } else {
+    const c=i.configuration;
+    if(!c||i.cancel!==null||p.state!==(c.paused?'paused':'active')||p.timezone!==c.spec.timezone||(i.operation==='update_scheduled_task'&&c.runNow))denySchedule('SCHEDULE_CONFIGURATION');
+    const s=c.spec;
+    if(!s.calendars.length&&!s.intervals.length&&!s.cronExpressions.length)denySchedule('SCHEDULE_SPEC');
+    if(s.startAt!==null)date(s.startAt);if(s.endAt!==null)date(s.endAt);
+    if(s.startAt!==null&&s.endAt!==null&&date(s.startAt)>date(s.endAt))denySchedule('SCHEDULE_SPEC');
+    for(const v of s.intervals)if(v.offset>=v.every||v.every%1000||v.offset%1000)denySchedule('SCHEDULE_INTERVAL');
+    for(const c of [...s.calendars,...s.skip])for(const [key,ranges]of Object.entries(c))if(key!=='comment'&&ranges!=='*')for(const r of ranges)if(typeof r.start==='number'&&r.end<r.start)denySchedule('SCHEDULE_RANGE');
+  }
+  return i;
+}
 export function snapshotScheduleCall(kind,value,now) {
   const call=scheduleShape(kind,value);
   if(!Number.isSafeInteger(now)||call.deadlineMs<=now||call.deadlineMs-now>60000)denySchedule('SCHEDULE_DEADLINE');
@@ -39,25 +60,8 @@ export function snapshotScheduleCall(kind,value,now) {
   if(kind==='List') {
     if(call.selection.owner.tenantId!==tenant)denySchedule('SCHEDULE_TENANT');
   } else {
-    const i=call.intent,p=i.projection,a=call.approval;
-    projection(p,tenant);
-    if(!Number.isSafeInteger(p.maxRuntimeSeconds*1000)||!Number.isSafeInteger(p.retryLimit+1))denySchedule('SCHEDULE_BUDGET');
-    if(i.generation!==i.expectedGeneration+1)denySchedule('SCHEDULE_GENERATION');
-    if(i.operation==='schedule_task' ? i.expectedGeneration!==0||i.previousProjectionSha256!==null : i.expectedGeneration<1||i.previousProjectionSha256===null)denySchedule('SCHEDULE_GENERATION');
+    const i=assertScheduleIntent(call.intent,tenant),a=call.approval;
     if(a.decision!=='approved'||a.proposalId!==i.intentId||a.commandSha256!==canonicalSha256(i)||a.approver.tenantId!==tenant||date(a.decidedAt)>now||date(a.expiresAt)<=now||date(a.decidedAt)>=date(a.expiresAt))denySchedule('SCHEDULE_APPROVAL');
-    if(i.operation==='cancel_scheduled_task') {
-      if(i.configuration!==null||!i.cancel||p.state!==(i.cancel.mode==='delete'?'cancelled':'paused')||(i.cancel.running==='leave'&&i.cancel.runs.length))denySchedule('SCHEDULE_CANCEL');
-      if(new Set(i.cancel.runs.map(r=>canonicalSha256(r))).size!==i.cancel.runs.length)denySchedule('SCHEDULE_RUN');
-    } else {
-      const c=i.configuration;
-      if(!c||i.cancel!==null||p.state!==(c.paused?'paused':'active')||p.timezone!==c.spec.timezone||(i.operation==='update_scheduled_task'&&c.runNow))denySchedule('SCHEDULE_CONFIGURATION');
-      const s=c.spec;
-      if(!s.calendars.length&&!s.intervals.length&&!s.cronExpressions.length)denySchedule('SCHEDULE_SPEC');
-      if(s.startAt!==null)date(s.startAt);if(s.endAt!==null)date(s.endAt);
-      if(s.startAt!==null&&s.endAt!==null&&date(s.startAt)>date(s.endAt))denySchedule('SCHEDULE_SPEC');
-      for(const v of s.intervals)if(v.offset>=v.every||v.every%1000||v.offset%1000)denySchedule('SCHEDULE_INTERVAL');
-      for(const c of [...s.calendars,...s.skip])for(const [key,ranges]of Object.entries(c))if(key!=='comment'&&ranges!=='*')for(const r of ranges)if(typeof r.start==='number'&&r.end<r.start)denySchedule('SCHEDULE_RANGE');
-    }
   }
   return frozenScheduleData({...call,bindingSha256:canonicalSha256(call)});
 }

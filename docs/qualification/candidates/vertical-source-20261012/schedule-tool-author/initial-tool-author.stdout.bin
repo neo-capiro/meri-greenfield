@@ -1,0 +1,36 @@
+✔ pending proposal uses current authority and performs no SDK lifecycle mutation (90.167127ms)
+✔ approved schedule_task invokes accepted lifecycle with exact private intent (8.384964ms)
+✔ approved update_scheduled_task invokes accepted lifecycle with exact private intent (6.211046ms)
+✔ approved cancel_scheduled_task invokes accepted lifecycle with exact private intent (5.600568ms)
+✔ list invokes accepted application owner page and preserves partial history (28.525036ms)
+✔ current proposal revocation prevents pending release (2.619287ms)
+✔ fresh authority deadline bounds pending callback before any lifecycle effect (12.479828ms)
+✔ approval expiry bounds a parked proposal authority before lifecycle dispatch (12.113528ms)
+✔ model and trusted data snapshot before first await (3.001351ms)
+✔ borrowed error messages never become model output (1.542208ms)
+✔ pre-abort and hostile option getters perform no borrowed operations (1.285893ms)
+✔ schedule_task produces complete review proposal without model authority (94.941905ms)
+✔ update_scheduled_task produces complete review proposal without model authority (5.043901ms)
+✔ cancel_scheduled_task produces complete review proposal without model authority (6.62008ms)
+✔ list defaults use full bounded accepted page and history limits (7.882218ms)
+✔ all raw request schemas exclude authority fields (4.35114ms)
+✔ instruction trim and destination trim bind only canonical requested values (1.040254ms)
+✔ wrong trusted request resolution is rejected (0.686763ms)
+✔ wrong trusted instruction resolution is rejected (0.653312ms)
+✔ wrong trusted destination resolution is rejected (0.626862ms)
+✔ wrong trusted limits resolution is rejected (0.632601ms)
+✔ wrong trusted current resolution is rejected (0.561123ms)
+✔ effective limits cannot exceed requested ceilings and are disclosed in review (1.294977ms)
+✔ approved digest covers private template/task as well as visible policy (6.003093ms)
+✔ intent semantics refuse invalid interval before a pending proposal (0.570537ms)
+✔ pending context cannot forge an acknowledged result (2.178424ms)
+✔ pending result cannot hide altered instruction or target (1.636209ms)
+✔ hostile context/data admission is inert (0.481554ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 497.366358
