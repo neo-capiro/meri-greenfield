@@ -101,16 +101,21 @@
       "unchanged": true
     },
     {
-      "path": "apps/api/src/auth/tool-service-secret.guard.ts",
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
       "frozen": {
-        "available": false
+        "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
       },
       "observed": {
-        "available": false
+        "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
       },
       "unchanged": true
     }
   ],
   "privateBodiesRetained": false,
-  "privateSourceExecuted": false
+  "privateSourceExecuted": false,
+  "lookupCorrection": "Initial guessed auth/tool-service-secret.guard.ts path absent; exact meri/tool-service-secret.guard.ts resolved by immutable tree path listing. Initial manifest preserved, not a source failure."
 }

@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/audit.py",
+    "a25516ae8d2c44638800e492e439e212098dc750",
+    "a25516ae8d2c44638800e492e439e212098dc750"
+  ],
+  "cwd": "/workspace/meri-state-status-votes-review-20261012",
+  "sourceHead": "0996692e793e074b53664539108558d43762eee5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T18:05:08.860808+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 232303,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "827cd7c8bc2d00ace0cc4e118457d42562650a0fa097193c3e9eaa95fc135020"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/state-status-votes-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
