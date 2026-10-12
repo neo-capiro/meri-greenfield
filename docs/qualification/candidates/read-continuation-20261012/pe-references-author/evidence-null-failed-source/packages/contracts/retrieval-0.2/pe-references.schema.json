@@ -1,0 +1,919 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:pe-references:0.2.0",
+  "title": "Private stored PE reference projections; shape grants no source authority",
+  "$defs": {
+    "PeReferenceContext": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "PeBillsRequest": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeBillsInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorsRequest": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorsInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeReportLanguageRequest": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeReportLanguageInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "PeBillLink": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "evidence": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 1048576,
+          "not": {
+            "const": "rejected"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "confidence",
+        "evidence",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "PeBudgetPackage": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "fiscalYear": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "track": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "stage": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "name",
+        "fiscalYear",
+        "track",
+        "stage"
+      ],
+      "additionalProperties": false
+    },
+    "PeBill": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "billType": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "billNumber": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "policyArea": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestActionText": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestActionDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sponsor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "committee": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peCodeCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "link": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PeBillLink"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetPackage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PeBudgetPackage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "congress",
+        "billType",
+        "billNumber",
+        "title",
+        "policyArea",
+        "latestActionText",
+        "latestActionDate",
+        "url",
+        "sponsor",
+        "committee",
+        "peCodeCount",
+        "link",
+        "budgetPackage"
+      ],
+      "additionalProperties": false
+    },
+    "PeBillsOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_bills"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "bills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PeBill"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "bills"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorRow": {
+      "type": "object",
+      "properties": {
+        "contractorName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "amount": {
+          "type": "number"
+        },
+        "awards": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "source": {
+          "enum": [
+            "direct",
+            "program"
+          ]
+        },
+        "attribution": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "contractorName",
+        "amount",
+        "awards",
+        "source",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "PeNamedPrime": {
+      "type": "object",
+      "properties": {
+        "contractorName": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contractMethod": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "totalCostM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fy": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pageNumber": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publisher": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attribution": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "contractorName",
+        "location",
+        "contractMethod",
+        "totalCostM",
+        "fy",
+        "sourceUrl",
+        "pageNumber",
+        "publisher",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "PeAwardBuckets": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "object",
+          "properties": {
+            "evidenceClass": {
+              "const": "accepted_direct"
+            },
+            "amountM": {
+              "type": "number"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "label": {
+              "const": "Accepted / direct evidence (named prime or PE-coded award)"
+            }
+          },
+          "required": [
+            "evidenceClass",
+            "amountM",
+            "count",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "evidenceClass": {
+              "const": "candidate"
+            },
+            "amountM": {
+              "type": "number"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "label": {
+              "const": "Candidate evidence (program-linked or unreviewed match)"
+            }
+          },
+          "required": [
+            "evidenceClass",
+            "amountM",
+            "count",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "evidenceClass": {
+              "const": "unmatched_dollars"
+            },
+            "amountM": {
+              "type": "number"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2147483647
+            },
+            "label": {
+              "const": "Unmatched dollars (not attributed to this PE)"
+            }
+          },
+          "required": [
+            "evidenceClass",
+            "amountM",
+            "count",
+            "label"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "items": false,
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "PeGovernmentExhibit": {
+      "type": "object",
+      "properties": {
+        "amountM": {
+          "type": "number"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "unit": {
+          "const": "USD millions"
+        },
+        "label": {
+          "const": "Government-named performer value (R-3 exhibit)"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "legacy_compatibility"
+            },
+            "source": {
+              "const": "R-3"
+            },
+            "table": {
+              "const": "program_element_performer"
+            },
+            "reason": {
+              "const": "canonical_rdte_performer carries no money axis (moneyRule: none), so the exhibit value has no canonical source; the read stays on the compatibility table"
+            }
+          },
+          "required": [
+            "kind",
+            "source",
+            "table",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "amountM",
+        "count",
+        "unit",
+        "label",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "PeFederalAwards": {
+      "type": "object",
+      "properties": {
+        "amountM": {
+          "type": "number"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "unit": {
+          "const": "USD millions"
+        },
+        "label": {
+          "const": "Recent federal award obligations (USAspending)"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "live_external"
+            },
+            "source": {
+              "const": "USAspending"
+            },
+            "asOf": {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            "windowMonths": {
+              "const": 24
+            }
+          },
+          "required": [
+            "kind",
+            "source",
+            "asOf",
+            "windowMonths"
+          ],
+          "additionalProperties": false
+        },
+        "buckets": {
+          "$ref": "#/$defs/PeAwardBuckets"
+        }
+      },
+      "required": [
+        "amountM",
+        "count",
+        "unit",
+        "label",
+        "provenance",
+        "buckets"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorEvidence": {
+      "type": "object",
+      "properties": {
+        "governmentExhibit": {
+          "$ref": "#/$defs/PeGovernmentExhibit"
+        },
+        "federalAwards": {
+          "$ref": "#/$defs/PeFederalAwards"
+        }
+      },
+      "required": [
+        "governmentExhibit",
+        "federalAwards"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorEvidenceNote": {
+      "const": "accepted_direct = PE-coded awards + R-3 named primes; candidate = MDAP-program-linked awards; unmatched_dollars not inventoried here (fail closed / listed as 0)."
+    },
+    "PeContractorsMissingTable": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_contractors"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PeContractorRow"
+          },
+          "maxItems": 0
+        },
+        "todo": {
+          "const": "federal_award table not yet created (Step 28)"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "data",
+        "todo"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorsAvailable": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_contractors"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "namedPrimes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PeNamedPrime"
+          },
+          "maxItems": 25
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PeContractorRow"
+          },
+          "maxItems": 10
+        },
+        "evidence": {
+          "$ref": "#/$defs/PeContractorEvidence"
+        },
+        "evidenceNote": {
+          "$ref": "#/$defs/PeContractorEvidenceNote"
+        },
+        "todo": {
+          "const": null
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "namedPrimes",
+        "data",
+        "evidence",
+        "evidenceNote",
+        "todo"
+      ],
+      "additionalProperties": false
+    },
+    "PeContractorsOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/PeContractorsMissingTable"
+        },
+        {
+          "$ref": "#/$defs/PeContractorsAvailable"
+        }
+      ]
+    },
+    "PeProgramAttributionCaveat": {
+      "const": "Program-level match: this provision names a program that maps to this PE, not this PE code directly. It may apply to sibling PEs in the same program — attribute it at the program level, not exclusively to this PE."
+    },
+    "PeProvision": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "committee": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "fy": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "heading": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "pageStart": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pageEnd": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actionType": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "matchBasis": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "reviewStatus": {
+          "enum": [
+            "accepted",
+            "candidate"
+          ]
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "matchScope": {
+          "enum": [
+            "pe_specific",
+            "program_level"
+          ]
+        },
+        "attributionCaveat": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "committee",
+        "fy",
+        "heading",
+        "text",
+        "pageStart",
+        "pageEnd",
+        "actionType",
+        "sourceUrl",
+        "matchBasis",
+        "reviewStatus",
+        "confidence",
+        "matchScope",
+        "attributionCaveat"
+      ],
+      "additionalProperties": false
+    },
+    "PeNoReportNote": {
+      "const": "No committee report language is linked to this budget line in Capiro's loaded source coverage. Do not infer why a mark changed. This is not proof that no language exists outside the loaded source set. Capiro does NOT currently load complete coverage for: Execution / reprogramming feeds (unsupported); MILCON / C-1 (unsupported); Reserve component exhibits (unsupported); Remaining P-5 / P-21 / P-3A / OP-5 depth (blocked). Do not imply those families are available. Treat missing justification or marks as absent from loaded sources, not as proof of non-existence."
+    },
+    "PeReportLanguageOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_report_language"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "provisions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PeProvision"
+          },
+          "maxItems": 50
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 1048576
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "peCode",
+        "provisions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

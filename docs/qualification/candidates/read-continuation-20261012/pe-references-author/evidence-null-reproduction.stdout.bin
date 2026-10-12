@@ -1,0 +1,57 @@
+✔ three required selectors trim/cap UTF-16 and preserve case (2.677174ms)
+✔ missing and non-string selectors are typed refusals, never fabricated empty source pages (1.818784ms)
+✔ closed model and context objects accept no authority or request aliases (0.777278ms)
+✔ operation admission rejects unknowns and hostile coercion without effects (0.257868ms)
+✔ all success and fallback envelopes round-trip without caller mutation (8.657984ms)
+✔ bill envelope has no invented PE echo, source coverage or total (0.932462ms)
+✔ bill optional storage values remain nullable and links/package preserve their exact tuples (0.602395ms)
+✔ independent stored bill identity columns and unknown values are not normalized into fabricated facts (0.421083ms)
+✔ bill specificity then stored date ordering permits ties and null epoch semantics (0.795225ms)
+✔ bill source cap and unique stored IDs are enforced (2.003212ms)
+✔ bill SQL Date and all generated timestamps retain exact canonical serialization (0.597989ms)
+✔ contractor absent-table fallback cannot carry fabricated rows or success evidence (0.916598ms)
+✔ R-3 exhibit money cannot be included in award buckets or award count (1.298481ms)
+✔ candidate and uninventory buckets remain distinct; zeros do not grant coverage (1.223659ms)
+✔ award window/provenance/unit/category attribution cannot be silently upgraded (1.391201ms)
+✔ negative award adjustments and nullable exhibit costs preserve finite arithmetic (0.422385ms)
+✔ exhibit attribution follows null defaults and page truthiness without invented positive numeric constraints (0.574894ms)
+✔ contractor count/money correlations and own sorted group identity are enforced (1.227305ms)
+✔ contractor data and named performer source caps cannot imply population totals (0.835846ms)
+✔ report echoed PE binds only the selected syntax (0.790488ms)
+✔ empty report requires loaded-source caveat and cannot certify global absence (0.258579ms)
+✔ any program-level row requires aggregate caution and exact per-row caveat (0.455375ms)
+✔ source link scope is basis-derived including future unknown bases (0.33903ms)
+✔ accepted and candidate links preserve source evidence without approving candidate (0.658861ms)
+✔ report dedup cannot impose accepted-over-stronger-basis selection (0.278529ms)
+✔ report sorting is review status, basis, FY, confidence with ties allowed (0.285669ms)
+✔ report cap, nullable Int pages and unknown committee/action values remain distinct (0.928476ms)
+✔ inert admission rejects getters/proxies/cycles/nonfinite fields before effects (0.451389ms)
+✖ present bill links require stored string evidence, while the whole link may be null (0.443767ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 363.055577
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-pe-references.test.mjs:138:1
+✖ present bill links require stored string evidence, while the whole link may be null (0.443767ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-pe-references-20261012/packages/contracts/test/retrieval-pe-references.test.mjs:140:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
