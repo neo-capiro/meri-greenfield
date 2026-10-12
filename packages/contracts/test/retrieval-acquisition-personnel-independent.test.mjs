@@ -156,3 +156,41 @@ test('detail: no invented source cap, chronology/identity stays meaningful', () 
   out.person.sources = [{ ...mention(), observedAt: OLD }, { ...mention(), id: UUID, observedAt: NOW }]; assert.throws(() => check(DETAIL, out));
   out.person.sources.reverse(); assert.doesNotThrow(() => check(DETAIL, out));
 });
+test('list: nullable query alias has exact fallback without broad coercion', () => {
+  for (const input of [{ query: null, q: ' wanted ' }, { query: '', q: 'wanted' }, { q: 'wanted' }, { query: 'wanted', q: 'ignored' }]) assert.deepEqual(normalize(LIST, input).input, { query: 'wanted', page: 1, limit: 20 });
+  for (const input of [{ query: null, q: null }, { query: ' ', q: '\t' }]) assert.deepEqual(normalize(LIST, input).input, { page: 1, limit: 20 });
+  for (const value of [false, 1, {}, []]) for (const key of ['query', 'q']) assert.throws(() => normalize(LIST, { [key]: value }));
+  for (const key of ['service', 'role', 'organization', 'peCode']) assert.throws(() => normalize(LIST, { [key]: null }));
+});
+test('list: alias clipping precedes owner fuzzy trim and effective count semantics', () => {
+  const clipped = normalize(LIST, { q: 'A'.repeat(239) + ' Z' }).input;
+  assert.equal(clipped.query, 'A'.repeat(239)); assert.equal(Object.hasOwn(clipped, 'q'), false);
+  assert.equal(normalize(LIST, { query: null, q: 'wanted' }).metadata.countScope, 'paged-fuzzy-candidates-before-filters');
+  assert.equal(normalize(LIST, { query: null, q: null }).metadata.countScope, 'separate-local-count');
+  assert.throws(() => check(LIST, { ...result(LIST), total: 21 }, { query: null, q: 'wanted' }));
+  assert.doesNotThrow(() => check(LIST, { ...result(LIST), total: 0 }, { query: null, q: null }));
+});
+test('opaque current metadata never invokes nested coercion/getter/proxy hooks', () => {
+  let hooks = 0; const out = result(DETAIL);
+  out.person.metadata = { nested: Object.defineProperty({}, 'email', { enumerable: true, get() { hooks++; return 'not-observed'; } }) };
+  assert.throws(() => check(DETAIL, out));
+  out.person.metadata = { nested: new Proxy({}, { get() { hooks++; return null; }, ownKeys() { hooks++; return []; } }) }; assert.throws(() => check(DETAIL, out));
+  out.person.metadata = { toJSON() { hooks++; return {}; } }; assert.throws(() => check(DETAIL, out));
+  assert.equal(hooks, 0);
+});
+test('canonical resolver separates immutable model arguments from rechecked current role', async () => {
+  const { createOperationContracts } = await import(pathToFileURL(path.join(root, 'packages/contracts/retrieval-0.2/operation-contracts.mjs')));
+  const { canonicalSha256 } = await import(pathToFileURL(path.join(root, 'packages/contracts/validate.mjs')));
+  const bindings = OPS.map(id => ({ id, version: '0.2.0', contextKeys: ['actorRole'], normalize: (_, input, context) => normalize(id, input, context), outputAssert: (_, output, input, context) => check(id, output, input, { actorRole: context.actorRole }) }));
+  const catalog = { operations: OPS.map(id => ({ operation: { id, version: '0.2.0' }, handler: null, status: 'unavailable' })) };
+  const resolver = createOperationContracts({ catalog, bindings, validators: v, assertCatalog() {}, canonicalSha256 });
+  for (const id of OPS) {
+    const contract = resolver.resolveOperationContract({ id, version: '0.2.0' }), input = id === LIST ? { q: 'name' } : request(id);
+    const n = contract.normalizeInput(input, ADMIN); assert.ok(Object.isFrozen(n.request)); assert.equal(n.argumentsSha256, canonicalSha256(n.input));
+    assert.throws(() => contract.normalizeInput(input, { ...ADMIN, actorId: 'fake' }));
+    const out = result(id); subject(id, out).email = 'synthetic@example.invalid';
+    assert.doesNotThrow(() => contract.assertOutput(out, { request: n.request, ...ADMIN }));
+    assert.throws(() => contract.assertOutput(out, { request: n.request, ...STANDARD }));
+    assert.throws(() => contract.assertOutput(out, { request: n.request }));
+  }
+});
