@@ -1,0 +1,8 @@
+{
+  "stage": "author packet verifier",
+  "failure": "Verifier expected TAP # summaries; original Node stdout is the spec reporter with \u2139 summaries. Original raw output explicitly records155pass0fail0skip.",
+  "exitCode": 1,
+  "result": "8171 passed,1 failed",
+  "repair": "Accept exact anchored TAP or spec summary prefix; preserve required155/0/0 counters and original streams.",
+  "runtimeActionsExecuted": false
+}

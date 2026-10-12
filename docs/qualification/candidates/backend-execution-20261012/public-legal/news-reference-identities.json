@@ -1,0 +1,128 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "2504-2566",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+    "locators": "48-85",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+      "bytes": 6935,
+      "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "890922b0c4ab130a0eb93b1406200c2b8aa21bd9",
+      "bytes": 6935,
+      "sha256": "eeef2903f2bb7e017941b122ed125ec223a9e3ae50e7cace5e09afa7f3a4305e"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/editorial/evidence.service.ts",
+    "locators": "31-325;363-399",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+      "bytes": 35726,
+      "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "dcad88537fa3890ee0e0298ef345c235ef3a78a1",
+      "bytes": 35726,
+      "sha256": "eadf0323ef6862e0122e6088cc88658d1f2b4eadb701599829df0a21813ff92e"
+    },
+    "changed": false
+  },
+  {
+    "path": "packages/shared/src/legiwatch-phase8.ts",
+    "locators": "1-49",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "fac862c0a96fdc47d92800629b566c0caef78981",
+      "bytes": 8328,
+      "sha256": "11ea686e845a02f022f2bd2fc0687b08a2a0be464ada912e0ae40e94f616f6f0"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "fac862c0a96fdc47d92800629b566c0caef78981",
+      "bytes": 8328,
+      "sha256": "11ea686e845a02f022f2bd2fc0687b08a2a0be464ada912e0ae40e94f616f6f0"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/src/tracker/editorial/publisher-coverage.ts",
+    "locators": "1-183",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "97469ba25111d14a8e0600f94f20dc2e623a1083",
+      "bytes": 6455,
+      "sha256": "58ef06632d863765677fbfc85ce8a7ee699d5113a44976cb7b8f9aeb5a6dc458"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "97469ba25111d14a8e0600f94f20dc2e623a1083",
+      "bytes": 6455,
+      "sha256": "58ef06632d863765677fbfc85ce8a7ee699d5113a44976cb7b8f9aeb5a6dc458"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/prisma/migrations/20280914030000_legiwatch_news_fiscal/migration.sql",
+    "locators": "1-58",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "594361b0723f118e93a192bda126e35e2fa9775e",
+      "bytes": 5370,
+      "sha256": "c3094f0aff192ed219da9cc752153ac6e7a745fa9f12c4811d484ede79f27798"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "594361b0723f118e93a192bda126e35e2fa9775e",
+      "bytes": 5370,
+      "sha256": "c3094f0aff192ed219da9cc752153ac6e7a745fa9f12c4811d484ede79f27798"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/intel-api/prisma/migrations/20260914030000_legiwatch_news_editorial/migration.sql",
+    "locators": "1-24",
+    "inspection": "Schema, policy or returned producer projection only; no private source body published or imported.",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed",
+      "bytes": 5034,
+      "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "80fb35d806012b6b92d9853a33e1532ac23e20ed",
+      "bytes": 5034,
+      "sha256": "d5022a966dda0a942d3f71bbb5f850a8876e3f8c9e2b2a0269244bf9c898d30d"
+    },
+    "changed": false
+  }
+]

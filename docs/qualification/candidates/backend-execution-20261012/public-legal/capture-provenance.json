@@ -1,0 +1,8 @@
+{
+  "archivalCommit": "8d0cd50069c64075e56db83d7a012ba2d140f7a0",
+  "archivalPath": "docs/qualification/candidates/backend-execution-20261012/public-legal/capture-focused.py",
+  "sha256": "cef1710b11214f700499a8219cfe013fc0788b0e7ecac33c2e38df737919c0d4",
+  "qualificationSource": "Each receipt.source binds product test bytes; it need not contain the then-uncommitted local capture helper.",
+  "producerBinding": "producerSha256 records helper bytes at capture; later immutable archive is compared by hash, without implying it was already committed.",
+  "metadataFailure": "metadata-first-failure preserves erroneous verifier assumption and raw traceback; no product tests were rerun."
+}

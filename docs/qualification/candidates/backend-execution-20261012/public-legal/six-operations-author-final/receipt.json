@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs",
+    "packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+    "packages/contracts/test/retrieval-research-legal-news.test.mjs",
+    "packages/contracts/test/retrieval-public-domain-hearings.test.mjs"
+  ],
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "sourceDiff": "",
+  "producerSha256": "cef1710b11214f700499a8219cfe013fc0788b0e7ecac33c2e38df737919c0d4",
+  "startedAt": "2026-10-12T21:17:55.959723+00:00",
+  "endedAt": "2026-10-12T21:17:57.390626+00:00",
+  "exitCode": 0,
+  "timeout": false,
+  "processGroup": 327587,
+  "groupAbsent": true,
+  "stdoutSha256": "607fda7875ca44f7bd6cf7459a1fb5296f6053445d915a22e49f723469c5ef00",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

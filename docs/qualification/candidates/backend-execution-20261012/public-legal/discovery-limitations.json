@@ -1,0 +1,11 @@
+{
+  "privateSourceExecution":false,
+  "privateBodiesPublished":false,
+  "readOnlyDiscoveryFailures":[
+    "An rg lookup was initially run in the capirov2 repository for a Meri private-contract path; path did not exist there. Corrected repository read succeeded.",
+    "One MeriTools locator used meri-tools.ts instead of meri-tools.service.ts; exact pinned service path was subsequently verified.",
+    "One exploratory git-show command used an abbreviated mistyped source pin and returned no body; all published reference identities use the exact immutable supplied pin."
+  ],
+  "rawReadFailureLocation":"Original tool interaction outputs; these were not test/qualification receipts and were not reconstructed as authenticated raw files.",
+  "failedCaptureProvenance":"legal-news-repaired contains original node streams, original helper source and an explicit exception description; the Python exception itself was visible in the tool interaction but was not separately redirected to an original stderr file."
+}

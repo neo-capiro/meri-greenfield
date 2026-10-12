@@ -1,0 +1,115 @@
+{
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "note": "All 18 new product/test files; both hearing schemas and immutable dataset provider included. No production source is activated.",
+  "members": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "blob": "ce8d69062095dd87ce7503e4843de9bab3723946",
+      "bytes": 26495,
+      "sha256": "ebfd0d113ef66c4151301a3b4432f4e78646921f0a74462d076611a3d25c0865"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearing-records.schema.json",
+      "blob": "e60af3f68fb0fb3ffd1f0b72379db282e7cbdb1b",
+      "bytes": 18745,
+      "sha256": "36d9653125f39e4a69fbf52cd4cd603b7229b8893c4b14c7195ca18ccb7455a3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearings-validation.mjs",
+      "blob": "c39246d880e796317a95a90be1077552d0ca5b5c",
+      "bytes": 12111,
+      "sha256": "55171b160162c91e9dcef8695a43698b6abc98d66ca4840b4ac6d53f04ec39f1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearings.schema.json",
+      "blob": "cf94c9fc9bad0cb1bbcbe805000afe7b288438f5",
+      "bytes": 36999,
+      "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "blob": "c929fee2bfb3d57cb3a36fa4255d35c811bbf5e9",
+      "bytes": 9287,
+      "sha256": "c8dfbf18960b03c7a953c9c27640ac0e50f18613ae0d347d661bf10710cbdf61"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "blob": "ae3b00a3e408db2f5521c7a6e0ae1887140f0dae",
+      "bytes": 7015,
+      "sha256": "6562176a188bd59a1e64f8133f1a6791d418fe46635e25647132cf21ff37cd3e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "blob": "6609762ec98f3ac9afd36d6826e4fc4cf7f37eab",
+      "bytes": 2286,
+      "sha256": "62672e810dbf7a86206bf42133bb827102e3d41af79e528bb3e2b4537fe0ba6f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs",
+      "blob": "267d313badc2ad52a9e3258ed574ca7eff47abaf",
+      "bytes": 5630,
+      "sha256": "1f7a82b92d42d838982172dc0b51656ec519b0912c95d933c82bf17ea7daf15c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-candidates.schema.json",
+      "blob": "a0089b4302ac1259978571802aab75f06228a160",
+      "bytes": 8843,
+      "sha256": "a10095eb41c9185259b65189a966294cc92b8e53236a889d5029d70f09b76aae"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-legislation-validation.mjs",
+      "blob": "28e7621316f5a313fe65bee6214897c325651630",
+      "bytes": 11301,
+      "sha256": "e70fa87cca43b86380fc3782f7fcf1d22d886e79b8a4524f0b6087bae650cbe7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-legislation.schema.json",
+      "blob": "7da4d961eca011539163df48b2124570b4904c05",
+      "bytes": 30314,
+      "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-news-validation.mjs",
+      "blob": "6e5606f0c12015b0030aff055e15c36e08bfaab2",
+      "bytes": 11100,
+      "sha256": "3d7df4dbe3c1c26eb28f7263fbbcd16a7fad03cd52faaf16e3d7e2e137320910"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-news.schema.json",
+      "blob": "b003f4017e1b4253875aec262473610e2f963bdb",
+      "bytes": 39544,
+      "sha256": "bf7f7bd427c8c7b4c47e25e3ac1e0dcb649b4269e8e7910bb3366d9df22bdf5f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "blob": "3d9c8c780facde22cd74a0e3004f7cad841bf9a4",
+      "bytes": 17384,
+      "sha256": "2eb2dac4a0c283210e0ee824de5fc8c70d379f9482b1859b024e93c4430aa46c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "blob": "7a9389e38db7045e1cc72fd1097b213c1f76d1ee",
+      "bytes": 14362,
+      "sha256": "59a75f0b86d2a0bb9247be5458a6974eeefb6953d05ef2b915c28783b2ba97c5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "blob": "35d7468b43fd29028ed3c4a15e66f75b3dc7e3d9",
+      "bytes": 12721,
+      "sha256": "6e36d2fc5a4df4d70ce479d6646ed8160f049970ce4a05a6e26763940110268f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "blob": "1d89e8a88062eae9baac36cf1235034f4ac4f41a",
+      "bytes": 14741,
+      "sha256": "523aa01d7cc90de8888e2ef308949e05e2b5f7b52352d2b9fcb7b55991b37403"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "blob": "addfcfcaf19a26ec9a081db90e06d307c4e41de2",
+      "bytes": 14989,
+      "sha256": "929d9c6c5a3378e5fb2ccffd8f9fdc32421661ce660aed34de8bcd51864c942e"
+    }
+  ]
+}

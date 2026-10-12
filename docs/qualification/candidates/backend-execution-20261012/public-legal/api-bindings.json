@@ -1,0 +1,142 @@
+{
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "bindingRule": "Catalog inputSchema binds Request. Factory Input definition selectors name internal normalized selection, never caller authority fields. All normalizers return {input,metadata}; output callbacks must filter request-bearing options to exact declared context keys.",
+  "defaultFactoryInputs": [
+    "validateShape",
+    "schema"
+  ],
+  "families": [
+    {
+      "group": "researchLegalCandidates",
+      "module": "research-legal-candidates",
+      "factory": "createResearchLegalCandidatesValidators",
+      "operations": [
+        "search_research_sources"
+      ],
+      "requestDefinitions": [
+        "ResearchLegalCandidatesRequest"
+      ],
+      "outputDefinitions": [
+        "ResearchLegalCandidatesOutput"
+      ],
+      "contextKeys": [
+        "clientResolution"
+      ],
+      "normalize": "normalizeResearchLegalCandidatesInput",
+      "assertOutput": "assertResearchLegalCandidatesOutput",
+      "dependencies": [
+        "outreach-query"
+      ]
+    },
+    {
+      "group": "publicDomainQuery",
+      "module": "public-domain-query",
+      "factory": "createPublicDomainQueryValidators",
+      "operations": [
+        "query_global_data"
+      ],
+      "requestDefinitions": [
+        "PublicDomainQueryRequest"
+      ],
+      "outputDefinitions": [
+        "PublicDomainQueryOutput"
+      ],
+      "contextKeys": [
+        "defaultAsOf"
+      ],
+      "normalize": "normalizePublicDomainQueryInput",
+      "assertOutput": "assertPublicDomainQueryOutput",
+      "dependencies": [
+        "canonical DatasetMetadataSummary",
+        "public-domain-registry.mjs",
+        "public-domain-datasets.json"
+      ],
+      "additionalFactoryInputs": [
+        "canonicalSha256",
+        "datasetRegistry"
+      ],
+      "datasetFactory": "createPublicDomainDatasetRegistry({canonicalSha256,validateMetadata(name,value)})"
+    },
+    {
+      "group": "researchLegalLegislation",
+      "module": "research-legal-legislation",
+      "factory": "createResearchLegalLegislationValidators",
+      "operations": [
+        "search_legislative_research",
+        "get_legal_reference"
+      ],
+      "requestDefinitions": [
+        "ResearchLegalLegislationSearchRequest",
+        "ResearchLegalLegislationReferenceRequest"
+      ],
+      "outputDefinitions": [
+        "ResearchLegalLegislationSearchOutput",
+        "ResearchLegalLegislationReferenceOutput"
+      ],
+      "contextKeys": [
+        "clientResolution",
+        "citationResolution"
+      ],
+      "normalize": "normalizeResearchLegalLegislationInput",
+      "assertOutput": "assertResearchLegalLegislationOutput",
+      "dependencies": [
+        "outreach-query"
+      ]
+    },
+    {
+      "group": "researchLegalNews",
+      "module": "research-legal-news",
+      "factory": "createResearchLegalNewsValidators",
+      "operations": [
+        "search_legiwatch_news"
+      ],
+      "requestDefinitions": [
+        "ResearchLegalNewsRequest"
+      ],
+      "outputDefinitions": [
+        "ResearchLegalNewsOutput"
+      ],
+      "contextKeys": [
+        "clientResolution",
+        "effectiveScope",
+        "windowAsOf",
+        "defaultYear",
+        "owner"
+      ],
+      "normalize": "normalizeResearchLegalNewsInput",
+      "assertOutput": "assertResearchLegalNewsOutput",
+      "dependencies": [
+        "outreach-query",
+        "research-legal-legislation",
+        "florida-budget"
+      ]
+    },
+    {
+      "group": "publicDomainHearings",
+      "module": "public-domain-hearings",
+      "factory": "createPublicDomainHearingsValidators",
+      "operations": [
+        "search_committee_hearings"
+      ],
+      "requestDefinitions": [
+        "PublicDomainHearingsRequest"
+      ],
+      "outputDefinitions": [
+        "PublicDomainHearingsOutput"
+      ],
+      "contextKeys": [
+        "tenantId",
+        "clientResolution"
+      ],
+      "normalize": "normalizePublicDomainHearingsInput",
+      "assertOutput": "assertPublicDomainHearingsOutput",
+      "dependencies": [
+        "outreach-query",
+        "public-domain-hearing-records"
+      ],
+      "additionalSchema": "public-domain-hearing-records.schema.json"
+    }
+  ],
+  "registryRule": "Create exactly one immutable public-domain dataset provider for typed query and future metadata handler; no SQL expression/table metadata exposed.",
+  "auditEffect": "Legacy global producer attempts audit logging for reads. Logical intent remains read; no business mutation or new approval gate. Audit and database access remain unqualified."
+}

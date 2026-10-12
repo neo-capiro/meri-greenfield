@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-12T21:28:44.178319+00:00",
+  "removedOnlyOwnedDependencies": [
+    {
+      "directory": "node_modules/ajv",
+      "files": 466,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/ajv-formats",
+      "files": 15,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/canonicalize",
+      "files": 6,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/fast-deep-equal",
+      "files": 11,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/fast-uri",
+      "files": 44,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/json-schema-traverse",
+      "files": 12,
+      "ownedPhysicalCopy": true
+    },
+    {
+      "directory": "node_modules/require-from-string",
+      "files": 4,
+      "ownedPhysicalCopy": true
+    }
+  ],
+  "ownNodeModulesAbsent": true,
+  "borrowedSourceTreeUntouched": true,
+  "sourceOrEvidenceDeleted": false,
+  "noProcessSignalSent": true,
+  "processEvidence": "Each ten durably recorded test receipts reports its owned group absent after collection; the earlier capture failure has explicitly bounded PID provenance."
+}

@@ -1,0 +1,43 @@
+✔ one exact read with full envelope and no generatedAt invention (11.532852ms)
+✔ hostile operation/definition selectors are never coerced (0.180121ms)
+✔ caller scope hints never contain trusted tenant/resolution or page-size control (0.301013ms)
+✔ nullable selectors preserve wrapper clipping and downstream second query trim (0.207893ms)
+✔ committeeName wins alias and irrelevant recordId is dropped in ordinary mode (0.168683ms)
+✔ finite historical timestamp requires published mode and normalizes canonical ISO (0.995427ms)
+✔ client names need resolution and UUIDs cannot rebind (0.450637ms)
+✔ missing exact selectors can return explicit unsupported evidence, not empty-complete (0.457728ms)
+✔ all five ordinary payload variants preserve nulls and unconstrained stored scalar labels (15.079326ms)
+✔ ordinary full JSON hash proves local consistency only and cannot be substituted (0.916818ms)
+✔ official SQL chunks count Unicode code points while JS string length differs (1.268948ms)
+✔ empty official text can retain a zero-count source chunk (0.362125ms)
+✔ exact hearing selector binds both payload and provenance (0.916337ms)
+✔ private relevance requires tenant provenance and selected client correlation (0.690809ms)
+✔ public ordinary evidence cannot acquire private tenant provenance (0.624008ms)
+✔ final hearing coverage remains degraded/incomplete even when pagination is done (0.719282ms)
+✔ coverage counts, queried domains and observability cannot diverge (0.888726ms)
+✔ unavailable source never manufactures retained records (0.308243ms)
+✔ one evidence chunk per page is retained (0.435615ms)
+✔ hasMore and final truncation differ through governed merge (0.523998ms)
+✔ JSON fragments retain UTF16 exact bounds and full-source hash declaration (1.089969ms)
+✔ split surrogates remain valid fragment data, never parsed as a complete record (0.616878ms)
+✔ fragment attribution lengths and content hash agree without whole-record reconstruction (0.663638ms)
+✔ published exact version retains source evidence and current/asOf distinction (0.902207ms)
+✔ published historical cutoff forbids newer observed version (0.533332ms)
+✔ private reviewed brief preserves separate source authority and binds selected client (2.692028ms)
+✔ brief local content hash is verified without current grant proof (0.400923ms)
+✔ private reconciliation is owner evidence and may have no client observation (0.879052ms)
+✔ private historical run may be superseded but cannot predate creation (0.696518ms)
+✔ published/private JSON fragments do not pretend inherited decoder accepts next cursor (0.384028ms)
+✔ pure source normalization frozen and returned nested evidence detached (0.386931ms)
+✔ inert boundary rejects getters/cycles with no hook execution (0.243446ms)
+✔ imported boundary and checks need no ambient current time (0.462124ms)
+✔ private fragment retains copied exact record ID when present (1.031481ms)
+✔ whole ordinary source key cannot substitute identity while retaining matching recordId (0.567604ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 353.214826

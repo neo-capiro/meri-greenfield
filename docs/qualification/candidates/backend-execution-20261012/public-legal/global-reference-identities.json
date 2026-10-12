@@ -1,0 +1,70 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "locators": "4778-4861;10030-10043",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+    "locators": "metadata/defaultLimit/maxLimit only; getDataset327-329",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+      "bytes": 18687,
+      "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+      "bytes": 18687,
+      "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/analytics/query-spec-compiler.ts",
+    "locators": "typed QuerySpec and admission/output columns only; no compiler copied",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+      "bytes": 15620,
+      "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "09f725aafc574122a5e3c1472172b428ce8f7990",
+      "bytes": 15620,
+      "sha256": "05adaab570c9aeb95c8ef09a8ef71aa671c75550bb3cb69d8dda5c10d75dd4e2"
+    },
+    "changed": false
+  },
+  {
+    "path": "apps/api/src/meri/analytics/analytics-db.service.ts",
+    "locators": "driver scalar serialization and read-role policy only; no execution",
+    "frozen": {
+      "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+      "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5",
+      "bytes": 5505,
+      "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056"
+    },
+    "observed": {
+      "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "blob": "9837cc5bcbc3c6bdb716c762243bd02758a5e5e5",
+      "bytes": 5505,
+      "sha256": "4db4114db5ffd13372a7406f78ce9a2fbc9ef202c06654b2b9fac09b09dc3056"
+    },
+    "changed": false
+  }
+]

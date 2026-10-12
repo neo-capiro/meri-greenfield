@@ -1,0 +1,16 @@
+{
+  "stage": "author packet verifier",
+  "failure": "Verifier assumed capture helper existed in every receipt source commit; legal-news receipt predates helper archival commit. Product test source and producer hash are separate identities.",
+  "originalCommand": [
+    "python3",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/backend-execution-20261012/public-legal/verify-packet.py",
+    "--capiro-repo",
+    "/workspace/capirov2"
+  ],
+  "outerShellExit": 0,
+  "outerShellCaveat": "Subsequent cat commands returned zero; original Python exception stderr is preserved, no inferred test success.",
+  "runtimeActionsExecuted": false,
+  "repair": "Resolve exact capture-helper bytes at archival commit8d0cd500, then compare receipt producerSha256; do not modify receipt or original test source."
+}
