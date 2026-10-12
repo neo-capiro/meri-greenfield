@@ -1,0 +1,503 @@
+{
+  "authorPacket": "790638e4908429f190dd6414814ee872145fa289",
+  "source": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+  "manifestSha256": "d92df8a1549c715d2d02a5b78aa97404a7ac02e749f9af7a6beec7ce3e3729cf",
+  "members": 70,
+  "capturedGroups": 16,
+  "checks": [
+    {
+      "name": "source pin",
+      "pass": true
+    },
+    {
+      "name": "unique manifest paths",
+      "pass": true
+    },
+    {
+      "name": "member docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/ast-helper-failure.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/generate-schema.py",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/integration-api.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/outline.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/owned-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/scalar-inventory.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.8854.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "name": "member docs/qualification/candidates/read-continuation-20261012/program-elements-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "name": "member packages/contracts/test/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-final-exact.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-current.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-fixtures-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/correlation-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/enforced-envelope-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/final-visible-correlations.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/full-correlation-controls.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned cleanup docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "capture stream docs/qualification/candidates/read-continuation-20261012/program-elements-author/reachable-branches-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "source unchanged packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "name": "source unchanged packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "source unchanged packages/contracts/test/retrieval-program-elements.test.mjs",
+      "pass": true
+    }
+  ],
+  "passed": 123,
+  "scope": "Offline immutable packet hash/provenance checks; no source/provider/native execution"
+}

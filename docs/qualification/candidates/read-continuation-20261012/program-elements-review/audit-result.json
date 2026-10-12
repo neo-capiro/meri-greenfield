@@ -1,0 +1,250 @@
+{
+  "base": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "candidate": "1f7ad5726541f0ab5a103b9e0b2152c260350dbd",
+  "tree": "760f2f7af5cc7f225d6282d847239bddc82ff4f4",
+  "originalsPreserved": 7186,
+  "ownedSourceFiles": [
+    "packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+    "packages/contracts/retrieval-0.2/program-elements.schema.json",
+    "packages/contracts/test/retrieval-program-elements.test.mjs"
+  ],
+  "sourceHashes": {
+    "packages/contracts/retrieval-0.2/program-elements-validation.mjs": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311",
+    "packages/contracts/retrieval-0.2/program-elements.schema.json": "ebfc84bab72005e26dee338fcce33905cb2e4e2a5046440226a48fabf02f4477",
+    "packages/contracts/test/retrieval-program-elements.test.mjs": "4a5b6bd4c6f4443f9f10e4705afad07132b28b203e4b16ef7dab4d18001cfc62"
+  },
+  "passed": 56,
+  "checks": [
+    {
+      "name": "all original paths preserved",
+      "pass": true
+    },
+    {
+      "name": "no original source or test edits",
+      "pass": true
+    },
+    {
+      "name": "working source exact packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "working source exact packages/contracts/retrieval-0.2/program-elements.schema.json",
+      "pass": true
+    },
+    {
+      "name": "working source exact packages/contracts/test/retrieval-program-elements.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/program-element/program-element-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/program-element/funding-claim.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/program-element/funding-claim.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen packages/shared/src/funding-claim.ts",
+      "pass": true
+    },
+    {
+      "name": "observed packages/shared/src/funding-claim.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "observed packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen packages/shared/src/defense-budget-line.ts",
+      "pass": true
+    },
+    {
+      "name": "observed packages/shared/src/defense-budget-line.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/program-element/service-filter.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/program-element/service-filter.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/program-element/budget-line-lineage.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/program-element/budget-line-lineage.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/program-element/models/conference-probability.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/program-element/models/conference-probability.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen packages/meriv2-core/src/rollout/evidence-accuracy.ts",
+      "pass": true
+    },
+    {
+      "name": "observed packages/meriv2-core/src/rollout/evidence-accuracy.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen packages/meriv2-core/src/rollout/capability-rollout.ts",
+      "pass": true
+    },
+    {
+      "name": "observed packages/meriv2-core/src/rollout/capability-rollout.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen apps/api/src/meri/meri-tools.defense-budget.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed apps/api/src/meri/meri-tools.defense-budget.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "branch-repaired-independent.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "branch-repaired-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "branch-repaired-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/branch-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "claim-shape-edges.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "claim-shape-edges.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "claim-shape-edges.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/claim-shape-edges.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "correlation-edge-cases.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "correlation-edge-cases.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "correlation-edge-cases.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-edge-cases.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "correlation-repaired-independent.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "correlation-repaired-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "correlation-repaired-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/correlation-repaired-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final-independent.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "final-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "final-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/final-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "initial-independent.json bounded physical cleanup",
+      "pass": true
+    },
+    {
+      "name": "initial-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "initial-independent.json docs/qualification/candidates/read-continuation-20261012/program-elements-review/initial-independent.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "no private/runtime dependencies packages/contracts/retrieval-0.2/program-elements-validation.mjs",
+      "pass": true
+    }
+  ],
+  "unrun": [
+    "Native runtime",
+    "SQL/DB",
+    "Private producers",
+    "Provider/model calls",
+    "Broad/public suites"
+  ]
+}
