@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes"
+  ],
+  "cwd": "scripts/qualification",
+  "exit_code": 1
+}
