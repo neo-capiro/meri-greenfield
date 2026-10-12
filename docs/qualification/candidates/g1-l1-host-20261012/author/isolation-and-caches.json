@@ -1,0 +1,79 @@
+{
+  "sysctlAndIdentityMetadata": [
+    {
+      "path": "/proc/sys/kernel/unprivileged_userns_clone",
+      "exists": false,
+      "errorType": "FileNotFoundError",
+      "errno": 2
+    },
+    {
+      "path": "/proc/sys/user/max_user_namespaces",
+      "exists": true,
+      "text": "2147483647\n",
+      "bytes": 11,
+      "sha256": "4225294e0b1c479988ce8e032ef662c1166728a7a0c1f6bbefef1d45a2b02581"
+    },
+    {
+      "path": "/proc/self/uid_map",
+      "exists": true,
+      "text": "      1000          0          1\n",
+      "bytes": 33,
+      "sha256": "4c113e41f08ab5174cd79106c3815eff0d44e072a9ecce62766b7434716b3cdd"
+    },
+    {
+      "path": "/proc/self/gid_map",
+      "exists": true,
+      "text": "      1000          0          1\n",
+      "bytes": 33,
+      "sha256": "4c113e41f08ab5174cd79106c3815eff0d44e072a9ecce62766b7434716b3cdd"
+    }
+  ],
+  "aptArchiveTopLevel": [
+    {
+      "name": "lock",
+      "mode": "-rw-r-----",
+      "bytes": 0,
+      "isSymlink": false
+    },
+    {
+      "name": "partial",
+      "mode": "drwx------",
+      "bytes": 27,
+      "isSymlink": false
+    }
+  ],
+  "distributionAndDriverMetadata": [
+    {
+      "path": "/usr/lib/python3/dist-packages/psycopg2",
+      "exists": true,
+      "queriedMetadataOnly": true
+    },
+    {
+      "path": "/usr/lib/python3/dist-packages/psycopg2-2.9.10.egg-info",
+      "exists": true,
+      "queriedMetadataOnly": true
+    },
+    {
+      "path": "/workspace/meri-g1-owner-continuation-20261012/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false,
+      "queriedMetadataOnly": true
+    },
+    {
+      "path": "/workspace/meri-g1-budget-native-tests-20261012/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false,
+      "queriedMetadataOnly": true
+    },
+    {
+      "path": "/workspace/meri-g1-native-path-20261012/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false,
+      "queriedMetadataOnly": true
+    },
+    {
+      "path": "/workspace/meri-greenfield/apps/control/qualification-sdk-fixture/state/node_modules/pg/package.json",
+      "exists": false,
+      "queriedMetadataOnly": true
+    }
+  ],
+  "namespaceProbeRun": false,
+  "caveat": "Sysctl values, namespace IDs, executable modes and Docker SecurityOptions do not prove userns or process/network isolation works or is authorized. No filesystem or network namespace creation tested."
+}

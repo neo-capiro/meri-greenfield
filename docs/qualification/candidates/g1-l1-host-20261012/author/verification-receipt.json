@@ -1,0 +1,46 @@
+{
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "frozenAtUtc": "2026-10-12T06:32:32.350674+00:00",
+  "status": "SOURCE_PACKET_AWAITING_INDEPENDENT_REVIEW",
+  "runtimeAdmission": "HOLD_NOT_EXECUTABLE",
+  "launcherCreated": false,
+  "checks": 72,
+  "exitCode": 0,
+  "argv": [
+    "python",
+    "-I",
+    "-B",
+    "docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py"
+  ],
+  "passed": true,
+  "targetRuntimeNamespaceDatabaseContainerCloudActions": 0,
+  "metadataApiCalls": "Read-only local Docker version/info/images/context; dpkg-query/apt-cache; stdlib file/package metadata. Explicit source/raw scope retained.",
+  "backgroundTargetServicesOrJobsCreated": 0,
+  "cleanup": "All synchronous metadata subprocesses exited; no target service, namespace or background runtime created. Docker daemon pre-existed and was not modified. Empty private-free Docker metadata config directory is task-local and not Git material.",
+  "files": {
+    "manifest.json": {
+      "bytes": 5608,
+      "sha256": "e01f4fa22d8bab57b1c173df7f3ad225983200f14c84895f06c9d6812c37357b"
+    },
+    "setup-packet.json": {
+      "bytes": 9446,
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2"
+    },
+    "host-metadata.json": {
+      "bytes": 6244,
+      "sha256": "6205761a4acf8f75b501cef7b8c2a17412dc73d5bac8214ec3a75688619df96e"
+    },
+    "metadata-commands.json": {
+      "bytes": 4949,
+      "sha256": "5b2efb85438ad98c68c1d089236ad04161edb57cef5f1b370b0f1ada89d335f3"
+    },
+    "verify.stdout.json": {
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    "verify.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

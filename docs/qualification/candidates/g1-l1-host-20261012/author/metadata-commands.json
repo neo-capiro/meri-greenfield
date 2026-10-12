@@ -1,0 +1,144 @@
+{
+  "commands": [
+    {
+      "name": "dpkg-postgresql",
+      "argv": [
+        "/usr/bin/dpkg-query",
+        "-W",
+        "-f=${binary:Package}\t${Version}\t${db:Status-Status}\n",
+        "postgresql*",
+        "libpq*",
+        "python3-psycopg*"
+      ],
+      "startedUtc": "2026-10-12T06:21:49Z",
+      "elapsedSeconds": 0.019798179000645177,
+      "exitCode": 0,
+      "timeout": false,
+      "metadataOnly": true,
+      "outputLimitExceeded": false,
+      "stdout": {
+        "bytes": 179,
+        "sha256": "0de33abd4331841e3bf5a61564fde54491ed832517111d629216c916283de251"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "docker-version",
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-20261012/docs/qualification/candidates/g1-l1-host-20261012/author/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "startedUtc": "2026-10-12T06:21:49Z",
+      "elapsedSeconds": 0.03660656600186485,
+      "exitCode": 0,
+      "timeout": false,
+      "metadataOnly": true,
+      "outputLimitExceeded": false,
+      "stdout": {
+        "bytes": 1012,
+        "sha256": "72ed632ba67bedf12e3311e92fbf7054a961b5f2df27dd677dbdcd849caaa7f5"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "docker-info",
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-20261012/docs/qualification/candidates/g1-l1-host-20261012/author/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "info",
+        "--format",
+        "{\"serverVersion\":{{json .ServerVersion}},\"operatingSystem\":{{json .OperatingSystem}},\"osType\":{{json .OSType}},\"architecture\":{{json .Architecture}},\"kernelVersion\":{{json .KernelVersion}},\"driver\":{{json .Driver}},\"securityOptions\":{{json .SecurityOptions}},\"cgroupDriver\":{{json .CgroupDriver}},\"cgroupVersion\":{{json .CgroupVersion}},\"images\":{{json .Images}},\"containers\":{{json .Containers}},\"containersRunning\":{{json .ContainersRunning}},\"cpus\":{{json .NCPU}},\"memoryTotal\":{{json .MemTotal}},\"rootDir\":{{json .DockerRootDir}}}"
+      ],
+      "startedUtc": "2026-10-12T06:21:49Z",
+      "elapsedSeconds": 0.06340542800171534,
+      "exitCode": 0,
+      "timeout": false,
+      "metadataOnly": true,
+      "outputLimitExceeded": false,
+      "stdout": {
+        "bytes": 398,
+        "sha256": "b4e12b19c7e43ef0a1c6d4c04ebfa9cee49835fd870cd39237bb09a56b1fdd1f"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "docker-images",
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-20261012/docs/qualification/candidates/g1-l1-host-20261012/author/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "image",
+        "ls",
+        "--all",
+        "--digests",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "startedUtc": "2026-10-12T06:21:49Z",
+      "elapsedSeconds": 0.013012571998842759,
+      "exitCode": 0,
+      "timeout": false,
+      "metadataOnly": true,
+      "outputLimitExceeded": false,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "docker-context",
+      "argv": [
+        "/usr/local/bin/docker",
+        "--config",
+        "/workspace/meri-l1-host-20261012/docs/qualification/candidates/g1-l1-host-20261012/author/docker-client-config-empty",
+        "--host",
+        "unix:///var/run/docker.sock",
+        "context",
+        "ls",
+        "--format",
+        "{\"name\":{{json .Name}},\"current\":{{json .Current}},\"endpoint\":{{json .DockerEndpoint}}}"
+      ],
+      "startedUtc": "2026-10-12T06:21:49Z",
+      "elapsedSeconds": 0.011927071998798056,
+      "exitCode": 0,
+      "timeout": false,
+      "metadataOnly": true,
+      "outputLimitExceeded": false,
+      "stdout": {
+        "bytes": 75,
+        "sha256": "16a17082f67634f8eb3fd4f4c34526371aaa6de287a66c4e141a4d91c9d368ef"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "dockerConfig": "Empty task-owned config; avoids reading user Docker credentials/contexts. Only explicit local UNIX socket queried.",
+  "mutationCommandsIssued": false
+}
