@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/budget-containment.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769981.571385,
+  "elapsedSeconds": 0.9182803630828857,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-budget-containment.stdout.txt",
+      "bytes": 1532,
+      "sha256": "f40886a71245e67bb8be191b83750627c0c545f65a1766c1f7d963d827b35b52"
+    },
+    "stderr": {
+      "path": "preserved-budget-containment.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
