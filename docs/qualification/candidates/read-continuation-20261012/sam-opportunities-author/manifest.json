@@ -1,0 +1,143 @@
+{
+  "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "sourceTree": "e38ab9d7dd189d7ea23deaeb4adb40bc7b5627ed",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "preservedFirstSource": "ac1c8d86cbef293d1afb82268ce755be975b8e49",
+  "outsideEvidence": [
+    "docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+    "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+    "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+    "packages/contracts/test/retrieval-sam-opportunities.test.mjs"
+  ],
+  "exclusions": [
+    "manifest.json self reference",
+    "verification.json derived result"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+      "bytes": 5726,
+      "sha256": "9be6d2ef066583821e19eaf4e9f6946baa50da6c28f02095de74643c5b2f8266"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/audit-packet.py",
+      "bytes": 6165,
+      "sha256": "29ac0b732de5f2d760e10bee6e5011dadba32812a32a092aedecfb27e30554bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/cleanup.json",
+      "bytes": 189,
+      "sha256": "88e50cbe947a00505c853752a8eea003e4fcd3be4f182351f94ee54b68a21cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.json",
+      "bytes": 1421,
+      "sha256": "b553b5f6bb222989cfff95a87c8a18b2ee5d2df79559c9880e44b011c224b783"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "bytes": 2850,
+      "sha256": "207ff92a7ec2fb82829eb5d4ad6c02753fb5211bc56dc497538e748045adf50f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.json",
+      "bytes": 1297,
+      "sha256": "16c45c36806e6ddfc2066e942e9542439074ffac08427ea2aebbf92462459133"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "bytes": 2086,
+      "sha256": "12073f15d5d6c8e826eefae4b5d3fbbaf0e64eea7e54cf1225b24bbc51ef756d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/health-metadata.jsonl",
+      "bytes": 1080,
+      "sha256": "1b70f4ac9daa2ea1b78c967177082a0c443b17efdd75c3fc4048caca744211c8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/inspect-source.cjs",
+      "bytes": 2459,
+      "sha256": "2d726f45c1badb4ca74cfd65e3e22c8cc9afd40988ac6eee9335c069ad83d5a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.json",
+      "bytes": 1336,
+      "sha256": "aa85032d9f84c36e1eaaac0d040363c800b23b238ded3cff4b5df9dc3bee3798"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "bytes": 7746,
+      "sha256": "d3c41a7695625fa9daaa011b02ac37372675ca2ea7527e366ff670d78ee7de4d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/note-identities.json",
+      "bytes": 455,
+      "sha256": "06b9a5e4020a86ebf45ccfb88c8bb8ec7807ca045731aca36e9ed41360cb7824"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/outline.md",
+      "bytes": 2896,
+      "sha256": "b68761f2de50d031c0e5b9cdab3e8d13212ec58ca98991470310a31a9b9a2110"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/read-metadata.jsonl",
+      "bytes": 3283,
+      "sha256": "13a94f378cb7fa324748e76693f9be3cb6a9d8e36962d59eb001a471350b5acb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/reference-identities.json",
+      "bytes": 5989,
+      "sha256": "b95121ad3e77b53d44d84684ff287397d07ff148b1aa0b11af32d6fd6d886638"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/selected-model-fields.json",
+      "bytes": 1969,
+      "sha256": "61ccef464a79182377c6962f617d47774b4cb98e2f838fce0c45dcd984502450"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verify-manifest.py",
+      "bytes": 1447,
+      "sha256": "0c5120396547ebe36b0a050b29553f4fbb89bae46f4628ce03922d73807d6446"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/wrapper-metadata.jsonl",
+      "bytes": 4167,
+      "sha256": "250f3038953c8b5e7f1bcf0250e4130c3a98ec542c7848e1245c888104d0f732"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "bytes": 6786,
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "bytes": 8649,
+      "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "bytes": 13461,
+      "sha256": "5d64926f9474ebcc7ab19610acbdc75a52056301ab7ff1e21467db9e156363b5"
+    }
+  ]
+}

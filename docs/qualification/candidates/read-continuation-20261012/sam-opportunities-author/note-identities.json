@@ -1,0 +1,15 @@
+{
+  "sourcePath": "apps/api/src/meri/meri-tools.service.ts",
+  "symbol": "searchSamOpportunities",
+  "noteContractLiterals": [
+    {
+      "characters": 135,
+      "sha256": "a53a9f0d0dc917928a9aa001611fff09260398d4d5f3ad4001297058983b6bca"
+    },
+    {
+      "characters": 118,
+      "sha256": "ed0ecec2f15f54f2d00c71710512ac2db5fb1bf00c4b534b6dd0adbedf11f344"
+    }
+  ],
+  "scope": "Two exact inert result field literals only; no implementation body"
+}
