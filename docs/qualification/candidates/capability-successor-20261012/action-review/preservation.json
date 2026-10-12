@@ -1,0 +1,30 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/capability-successor-20261012/action-review/audit-preservation.py"
+  ],
+  "cwd": "/workspace/meri-capability-action-review-20261012",
+  "sourceRoot": null,
+  "startUnixSeconds": 1791815861.1551971,
+  "elapsedSeconds": 0.11417293548583984,
+  "exitCode": 0,
+  "ownedPidAndGroup": 124343,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "preservation.stdout.txt",
+      "bytes": 3952,
+      "sha256": "888f6225d9c95275b9d3f293ce946c9bb4663d2daf7e8c363c4c1b877c1bde0d"
+    },
+    "stderr": {
+      "path": "preservation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
