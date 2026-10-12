@@ -1,0 +1,25 @@
+file:///workspace/meri-action-items-source-20261012/apps/gateway/sources/action-items/request-context.mjs:4
+import {assertSubject,normalizeActionItemsCompleteInput} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../../../../packages/contracts/retrieval-0.2/validate.mjs' does not provide an export named 'normalizeActionItemsCompleteInput'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ apps/gateway/test/action-items-source.test.mjs (121.448104ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 138.462494
+
+✖ failing tests:
+
+test at apps/gateway/test/action-items-source.test.mjs:1:1
+✖ apps/gateway/test/action-items-source.test.mjs (121.448104ms)
+  'test failed'

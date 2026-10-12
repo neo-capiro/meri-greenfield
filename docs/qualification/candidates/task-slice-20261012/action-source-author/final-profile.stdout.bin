@@ -1,0 +1,30 @@
+✔ actual resolver authority dispatch handler adapter completes nonempty recommendation with unchanged source proof (67.507737ms)
+✔ Meri receipt fields never upgrade native coverage or source currentness (11.92399ms)
+✔ opaque scoped continuation forwarded unchanged without fabricated cursor authentication (13.494846ms)
+✔ empty native absence assertion is preserved but no Meri negative evidence emitted (7.488544ms)
+✔ unscoped native adapter preserves count race; selected connected handler refuses it (4.73772ms)
+✔ unselected/name/foreign selected client refuse before source allocation (2.420157ms)
+✔ closed model arguments reject actor URL headers and policy injection before trusted calls (4.811912ms)
+✔ source scope/content/proof/completion/extra property corruption refuses before settlement (30.677985ms)
+✔ fixed origin/configuration is closed and inert (0.631789ms)
+✔ credential full binding and expiry cannot drift (33.45493ms)
+✔ hostile getters and proxies cause zero introspection effects (5.104231ms)
+✔ direct input normalization/digest/binding substitutions refuse (2.94124ms)
+✔ HTTP errors/media/encoding/redirect never leak body diagnostics (9.495941ms)
+✔ byte bound and fatal UTF8/JSON/content length handled by canonical reader (16.453998ms)
+✔ parked credentials deadline and late completion cannot start later work (22.580476ms)
+✔ parked fetch deadline and late completion cannot start later work (25.570715ms)
+✔ parked body deadline and late completion cannot start later work (24.516485ms)
+✔ original abort during response acquisition cancels late body and cannot settle (3.382664ms)
+✔ clock-induced abort at final direct release cannot return success (2.54817ms)
+✔ current authorization and budgets gate source effect (2.994751ms)
+✔ revocation after read suppresses settlement; revocation after settle suppresses release without refund (14.097377ms)
+✔ all actual catalog descriptors stay unavailable and production gateway remains disabled (9.234378ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4352.219958
