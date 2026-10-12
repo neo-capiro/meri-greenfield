@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/action-lookup-slice.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-slice-20261012",
+  "sourceHead": "a51f060c4d0bd7898d401feec4456ee4df78ed23",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:52:58.540404+00:00",
+  "durationSeconds": 3.125,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 417718,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.stdout.bin",
+      "bytes": 689,
+      "sha256": "97edc1a690b53e3495b22bb9d7d390f01d69d83d8767da1dbd32c4eac4ea6745"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/integration/actual-slice.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
