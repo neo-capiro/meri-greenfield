@@ -21,6 +21,7 @@ function row(type, n = types.indexOf(type) + 10) {
   const r = {type, id: uuid(n), clientId: null, title: '', snippet: '', occurredAt: at};
   if (type === 'client') r.clientId = r.id;
   if (type === 'mail_message') {r.occurredAt = null; r.metadata = {threadId: uuid(100)};}
+  if (type === 'clio_note') r.title = 'Meri note';
   if (type === 'directory_contact_note') r.metadata = {directoryContactId: 'opaque directory key'};
   return r;
 }
@@ -155,4 +156,8 @@ test('independent research: metadata cannot smuggle source bodies or cross-kind 
 test('independent research: hostile output data is rejected inertly', () => {
   let effects=0;const p=page();Object.defineProperty(p,'results',{enumerable:true,get(){effects++;return [];}});assert.throws(()=>check(p));assert.equal(effects,0);
   const q=page();q.results.push(q);assert.throws(()=>check(q));
+});
+test('independent research: empty note title cannot bypass the original nonempty fallback', () => {
+  const r=row('clio_note');r.title='';assert.throws(()=>check(page([r])));
+  r.title=' ';check(page([r]));
 });

@@ -1,0 +1,79 @@
+✔ independent research: schema namespace and exact operation selectors (1.616891ms)
+✔ independent research: detached frozen normalized defaults retain explicit null client (2.263122ms)
+✔ independent research: missing or blank required query and unknown selectors refuse (0.661334ms)
+✔ independent research: query uses UTF16 clipping without an invented second trim (0.383296ms)
+✔ independent research: numeric-string limits follow finite truncation clamp and fallback (1.008576ms)
+✔ independent research: trusted client resolution matches trimmed capped reference (0.721354ms)
+✔ independent research: supplied UUID cannot rebind, case-equivalent UUID can (0.382886ms)
+✔ independent research: context is required closed data and grants no extra authority (0.407192ms)
+✔ independent research: request and context accessors/proxies are rejected without execution (0.294252ms)
+✖ independent research: all six exact variants and metadata projections survive (2.635471ms)
+✔ independent research: candidate output is detached through metadata (0.790859ms)
+✔ independent research: empty candidates are not a corpus or authorization claim (0.454012ms)
+✔ independent research: query echo and operation identity cannot substitute (0.405089ms)
+✖ independent research: candidate caps enforce overall3limit and individual source limit (0.323726ms)
+✔ independent research: row identity is per source kind, never global UUID uniqueness (0.799181ms)
+✔ independent research: UUID scalar identities do not impose version4 (0.529386ms)
+✖ independent research: client row self-ID and resolved branch client correlation (0.904009ms)
+✔ independent research: tenant directory notes intentionally escape requested client filter (0.347122ms)
+✔ independent research: unscoped nullable clients retain ordinary String titles (0.674533ms)
+✔ independent research: snippets normalize whitespace and use360 UTF16 units (0.967555ms)
+✔ independent research: only message timestamp is nullable (0.40572ms)
+✔ independent research: descending source time uses null as epoch0, not universally last (0.387543ms)
+✔ independent research: equal timestamp order retains original source concatenation order (0.238269ms)
+✔ independent research: canonical date admission never uses generatedAt as currentness proof (0.518158ms)
+✔ independent research: unreturned matching text is not a title or snippet predicate (0.168634ms)
+✔ independent research: metadata cannot smuggle source bodies or cross-kind fields (0.783938ms)
+✔ independent research: hostile output data is rejected inertly (0.172469ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 24
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 218.46792
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-research-legal-independent.test.mjs:81:1
+✖ independent research: all six exact variants and metadata projections survive (2.635471ms)
+  Error: ResearchLegalCandidatesOutput: data/results/3/type must be equal to constant, data/results/3/clientId must be string, data/results/3/type must be equal to constant, data/results/3/type must be equal to constant, data/results/3 must have required property 'metadata', data/results/3/type must be equal to constant, data/results/3/title must NOT have fewer than 1 characters, data/results/3 must have required property 'metadata', data/results/3/type must be equal to constant, data/results/3 must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:14:30)
+      at validateResearchLegalCandidatesShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:23:48)
+      at Object.assertResearchLegalCandidatesOutput (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:53:18)
+      at check (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:29:77)
+      at TestContext.<anonymous> (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:83:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-research-legal-independent.test.mjs:98:1
+✖ independent research: candidate caps enforce overall3limit and individual source limit (0.323726ms)
+  Error: ResearchLegalCandidatesOutput: data/results/2/type must be equal to constant, data/results/2/clientId must be string, data/results/2/type must be equal to constant, data/results/2/type must be equal to constant, data/results/2 must have required property 'metadata', data/results/2/type must be equal to constant, data/results/2/title must NOT have fewer than 1 characters, data/results/2 must have required property 'metadata', data/results/2/type must be equal to constant, data/results/2 must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:14:30)
+      at validateResearchLegalCandidatesShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:23:48)
+      at Object.assertResearchLegalCandidatesOutput (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:53:18)
+      at check (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:29:77)
+      at TestContext.<anonymous> (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:99:68)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-research-legal-independent.test.mjs:112:1
+✖ independent research: client row self-ID and resolved branch client correlation (0.904009ms)
+  Error: ResearchLegalCandidatesOutput: data/results/0/type must be equal to constant, data/results/0/type must be equal to constant, data/results/0/type must be equal to constant, data/results/0 must have required property 'metadata', data/results/0/type must be equal to constant, data/results/0/title must NOT have fewer than 1 characters, data/results/0 must have required property 'metadata', data/results/0/type must be equal to constant, data/results/0/clientId must be null, data/results/0 must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:14:30)
+      at validateResearchLegalCandidatesShape (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:23:48)
+      at Object.assertResearchLegalCandidatesOutput (file:///workspace/meri-public-legal-review-20261012/packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs:53:18)
+      at check (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:29:77)
+      at TestContext.<anonymous> (file:///workspace/meri-public-legal-review-20261012/packages/contracts/test/retrieval-research-legal-independent.test.mjs:116:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
