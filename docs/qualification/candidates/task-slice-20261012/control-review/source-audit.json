@@ -1,0 +1,320 @@
+{
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "source": "6eec40b28bd7f10fd163108ea13e75a0ced477b2",
+  "originals": 9667,
+  "changedOriginals": [],
+  "sourceFiles": [
+    {
+      "path": "apps/control/task-lookup/binding.mjs",
+      "bytes": 8086,
+      "sha256": "eeb2cb69e3f20eacf123206d0faa2da7170ef53e8bdea624e7947bc9e81a1aeb"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.mjs",
+      "bytes": 4418,
+      "sha256": "014e0a5520861ddbf87f315d8a57fdf124c2a5536df582189fa3d543a5bf8df2"
+    },
+    {
+      "path": "apps/control/task-lookup/delivery.test.mjs",
+      "bytes": 7120,
+      "sha256": "42da417333b2891bbf19e31285ab5377549801a09526ec4e11d50711440f2dde"
+    },
+    {
+      "path": "apps/control/task-lookup/fixtures.mjs",
+      "bytes": 3811,
+      "sha256": "8ef8aa4e9ce23350ee0a026c7ed38958d165dda80c2d41bb3e1df6a9ef8d4d87"
+    },
+    {
+      "path": "apps/control/task-lookup/index.mjs",
+      "bytes": 291,
+      "sha256": "8a2d9db7f009a12a9f66fd6b2b9bfff6fa0371d379d63a87393d1440dbcdf275"
+    },
+    {
+      "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "bytes": 1024,
+      "sha256": "ae3197c4f898c5a8a493b2bee4cd6c5da16c62730ad3447e4f07ebfeaf1c100f"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-fixture.mjs",
+      "bytes": 2700,
+      "sha256": "403f2837f27155f3176efffcca21dbe3b1c5ddd9f6a5d39081df163c6ff34008"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.mjs",
+      "bytes": 5080,
+      "sha256": "741ff9ffb81b2245c836ea4b010272394a0e194028519d2685f17b016be4e98b"
+    },
+    {
+      "path": "apps/control/task-lookup/postgres-results.test.mjs",
+      "bytes": 4061,
+      "sha256": "ce7f741f29a424eaabc57b62c6ba4ea48fd457ed5dd572a9bbef392b102ff7bc"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.json",
+      "head": "3ac3e71d9826ecf0ca28113db9f456d57a60441e",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "pgid": 412766
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-first.json",
+      "head": "d02ea370752a134639a35259f610b9e4e946af3f",
+      "exitCode": 1,
+      "sourceDiffBytes": 28655,
+      "pgid": 410222
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.json",
+      "head": "a89083f4934ee6369d9a227b7c1567ecb8431d24",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "pgid": 415326
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.json",
+      "head": "e61274f4849117f0ca22860884f73ef0d654fbe4",
+      "exitCode": 1,
+      "sourceDiffBytes": 0,
+      "pgid": 412978
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.json",
+      "head": "92ab6218a914db865820e5b733630b4ddeb7e868",
+      "exitCode": 1,
+      "sourceDiffBytes": 0,
+      "pgid": 408233
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.json",
+      "head": "13afff6bc0c45d0bd9c0c1551b2e40a5a127681c",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "pgid": 408399
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.json",
+      "head": "627a69fc72b18bdc80c8f53be28fe7a3f91e789a",
+      "exitCode": 1,
+      "sourceDiffBytes": 0,
+      "pgid": 414349
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.json",
+      "head": "9ff8d9fb4268a752394b72e4d523b4cca397a29c",
+      "exitCode": 1,
+      "sourceDiffBytes": 0,
+      "pgid": 413865
+    }
+  ],
+  "checks": [
+    {
+      "check": "all base tracked blobs unchanged",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/binding.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/delivery.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/fixtures.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/index.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/migrations/0001_task_lookup.sql",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/postgres-fixture.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/postgres-results.mjs",
+      "pass": true
+    },
+    {
+      "check": "exact frozen apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "original test prefix apps/control/task-lookup/delivery.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "original test prefix apps/control/task-lookup/postgres-results.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "public UIEvent reused",
+      "pass": true
+    },
+    {
+      "check": "shared lifetime reused",
+      "pass": true
+    },
+    {
+      "check": "fixed actions query",
+      "pass": true
+    },
+    {
+      "check": "original subject scope exact",
+      "pass": true
+    },
+    {
+      "check": "immutable result reference read case only",
+      "pass": true
+    },
+    {
+      "check": "tenant keyed lookup",
+      "pass": true
+    },
+    {
+      "check": "tenant keyed result uniqueness",
+      "pass": true
+    },
+    {
+      "check": "run event sequence uniqueness",
+      "pass": true
+    },
+    {
+      "check": "event ownership FK",
+      "pass": true
+    },
+    {
+      "check": "result state record equivalence",
+      "pass": true
+    },
+    {
+      "check": "row lock transitions",
+      "pass": true
+    },
+    {
+      "check": "only undispatched or dispatched may ERROR",
+      "pass": true
+    },
+    {
+      "check": "uncertain transaction evicts client",
+      "pass": true
+    },
+    {
+      "check": "no pool close",
+      "pass": true
+    },
+    {
+      "check": "no store install/import driver",
+      "pass": true
+    },
+    {
+      "check": "control-baseline-corrected.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "control-baseline-corrected.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "control-baseline-corrected.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "control-first.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "control-first.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "control-first.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "control-repaired.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "control-repaired.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "control-repaired.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "control-scope-negative.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "control-scope-negative.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "control-scope-negative.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-initial.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "fixture-initial.json raw docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-initial.json raw docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-repaired.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "fixture-repaired.json raw docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "fixture-repaired.json raw docs/qualification/candidates/task-slice-20261012/control-review/fixture-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "store-baseline-corrected.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "store-baseline-corrected.json raw docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "store-baseline-corrected.json raw docs/qualification/candidates/task-slice-20261012/control-review/store-baseline-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "store-original-negative.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "store-original-negative.json raw docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "store-original-negative.json raw docs/qualification/candidates/task-slice-20261012/control-review/store-original-negative.stderr.bin",
+      "pass": true
+    }
+  ],
+  "passed": 51,
+  "failed": 0,
+  "scope": "source/data only; no PostgreSQL or service operation"
+}
