@@ -1,0 +1,39 @@
+[
+  {
+    "label": "standardwebhooks-source",
+    "url": "https://codeload.github.com/standard-webhooks/standard-webhooks/tar.gz/b4d2c14fc5b4ccff3ff271e3b087dff812254c59",
+    "status": 200,
+    "bytes": 109731,
+    "sha256": "6543b0f8db7eed216fa67856e1d6607cadd87e3a50bd4d6481403694c315f3de",
+    "notices": [
+      {
+        "member": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/LICENSE",
+        "bytes": 11357,
+        "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "retainedFile": "notices/standardwebhooks-source-960e57ee7f33-LICENSE"
+      },
+      {
+        "member": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/LICENSE",
+        "bytes": 1088,
+        "sha256": "5ec8c7b26b64d881a6706617bed25c049f97f2f35de034c756de8546fd6dbe27",
+        "retainedFile": "notices/standardwebhooks-source-7d29cecdb761-LICENSE"
+      },
+      {
+        "member": "standard-webhooks-b4d2c14fc5b4ccff3ff271e3b087dff812254c59/libraries/python/LICENSE",
+        "bytes": 1078,
+        "sha256": "7fc0e108ffa3c85ff70f06077588445b16a564da88aa4f4905dc3b3636a75536",
+        "retainedFile": "notices/standardwebhooks-source-6b994f9e906d-LICENSE"
+      }
+    ]
+  },
+  {
+    "label": "chromium-tag-license",
+    "url": "https://chromium.googlesource.com/chromium/src/+/155.0.8059.12/LICENSE?format=TEXT",
+    "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "url": "https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.12/linux64/chrome-linux64.zip",
+    "range": "bytes=198335284-198335305",
+    "error": "URLError(OSError('Tunnel connection failed: 403 Forbidden'))"
+  }
+]

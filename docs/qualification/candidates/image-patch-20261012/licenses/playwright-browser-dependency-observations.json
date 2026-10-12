@@ -1,0 +1,402 @@
+{
+  "scope": "Exact pinned package source inspection; no browser install or execution",
+  "sourceArchiveSha256": "54ad1d38174d6ef56d1f165e52547ece8e6c24b865f2a072d9ebaacfbad1ca47",
+  "observations": [
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 32269,
+      "excerpt": "          \"ffmpeg\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34065,
+      "excerpt": "      \"chromium-headless-shell\": {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34089,
+      "excerpt": "      \"ffmpeg\": {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34091,
+      "excerpt": "        \"linux-x64\": [\"ffmpeg-linux\"],"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34092,
+      "excerpt": "        \"linux-arm64\": [\"ffmpeg-linux\"],"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34093,
+      "excerpt": "        \"mac-x64\": [\"ffmpeg-mac\"],"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34094,
+      "excerpt": "        \"mac-arm64\": [\"ffmpeg-mac\"],"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34095,
+      "excerpt": "        \"win-x64\": [\"ffmpeg-win64.exe\"]"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34142,
+      "excerpt": "      \"chromium-headless-shell\": {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34247,
+      "excerpt": "      \"ffmpeg\": {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34251,
+      "excerpt": "        \"ubuntu22.04-x64\": \"builds/ffmpeg/%s/ffmpeg-linux.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34252,
+      "excerpt": "        \"ubuntu24.04-x64\": \"builds/ffmpeg/%s/ffmpeg-linux.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34253,
+      "excerpt": "        \"ubuntu26.04-x64\": \"builds/ffmpeg/%s/ffmpeg-linux.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34256,
+      "excerpt": "        \"ubuntu22.04-arm64\": \"builds/ffmpeg/%s/ffmpeg-linux-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34257,
+      "excerpt": "        \"ubuntu24.04-arm64\": \"builds/ffmpeg/%s/ffmpeg-linux-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34258,
+      "excerpt": "        \"ubuntu26.04-arm64\": \"builds/ffmpeg/%s/ffmpeg-linux-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34261,
+      "excerpt": "        \"debian12-x64\": \"builds/ffmpeg/%s/ffmpeg-linux.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34262,
+      "excerpt": "        \"debian12-arm64\": \"builds/ffmpeg/%s/ffmpeg-linux-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34263,
+      "excerpt": "        \"debian13-x64\": \"builds/ffmpeg/%s/ffmpeg-linux.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34264,
+      "excerpt": "        \"debian13-arm64\": \"builds/ffmpeg/%s/ffmpeg-linux-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34274,
+      "excerpt": "        \"mac14\": \"builds/ffmpeg/%s/ffmpeg-mac.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34275,
+      "excerpt": "        \"mac14-arm64\": \"builds/ffmpeg/%s/ffmpeg-mac-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34276,
+      "excerpt": "        \"mac15\": \"builds/ffmpeg/%s/ffmpeg-mac.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34277,
+      "excerpt": "        \"mac15-arm64\": \"builds/ffmpeg/%s/ffmpeg-mac-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34278,
+      "excerpt": "        \"mac26\": \"builds/ffmpeg/%s/ffmpeg-mac.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34279,
+      "excerpt": "        \"mac26-arm64\": \"builds/ffmpeg/%s/ffmpeg-mac-arm64.zip\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34280,
+      "excerpt": "        \"win64\": \"builds/ffmpeg/%s/ffmpeg-win64.zip\""
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34367,
+      "excerpt": "    allDownloadableDirectoriesThatEverExisted = [\"android\", \"chromium\", \"firefox\", \"webkit\", \"ffmpeg\", \"firefox-beta\", \"chromium-tip-of-tree\", \"chromium-headless-shell\", \"chromium-tip-of-tree-headless-shell\", \"winldd\"];"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34384,
+      "excerpt": "            const isFfmpeg = name === \"ffmpeg\";"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34397,
+      "excerpt": "                `Video rendering requires ffmpeg binary.`,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34401,
+      "excerpt": "                `    ${buildPlaywrightCLICommand(sdkLanguage, \"install ffmpeg\")}`,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34439,
+      "excerpt": "        const chromiumHeadlessShell = descriptors.find((d) => d.name === \"chromium-headless-shell\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34440,
+      "excerpt": "        const chromiumHeadlessShellExecutable = findExecutablePath(chromiumHeadlessShell.dir, \"chromium-headless-shell\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34442,
+      "excerpt": "          name: \"chromium-headless-shell\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34611,
+      "excerpt": "        const ffmpeg = descriptors.find((d) => d.name === \"ffmpeg\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34612,
+      "excerpt": "        const ffmpegExecutable = findExecutablePath(ffmpeg.dir, \"ffmpeg\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34614,
+      "excerpt": "          name: \"ffmpeg\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34616,
+      "excerpt": "          directory: ffmpeg.dir,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34617,
+      "excerpt": "          executablePath: () => ffmpegExecutable,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34618,
+      "excerpt": "          executablePathOrDie: (sdkLanguage) => executablePathOrDie(\"ffmpeg\", ffmpegExecutable, ffmpeg.installByDefault, sdkLanguage),"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34619,
+      "excerpt": "          installType: ffmpeg.installByDefault ? \"download-by-default\" : \"download-on-demand\","
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34621,
+      "excerpt": "          downloadURLs: this._downloadURLs(ffmpeg),"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34622,
+      "excerpt": "          title: ffmpeg.title,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34623,
+      "excerpt": "          revision: ffmpeg.revision,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34624,
+      "excerpt": "          _install: (force) => this._downloadExecutable(ffmpeg, force, ffmpegExecutable),"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 34936,
+      "excerpt": "          return word === \"ffmpeg\" ? \"FFmpeg\" : word.charAt(0).toUpperCase() + word.slice(1);"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 35059,
+      "excerpt": "          executables = executables.filter((e) => e.name !== \"chromium-headless-shell\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 35084,
+      "excerpt": "            executables.push(this.findExecutable(\"ffmpeg\"));"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 35091,
+      "excerpt": "              handleArgument(\"chromium-headless-shell\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38192,
+      "excerpt": "    // A larger placeholder can make ffmpeg mistake a short progressive JPEG for an interlaced"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38294,
+      "excerpt": "        const ffmpegPath = registry.findExecutable(\"ffmpeg\").executablePathOrDie(this._screencast.page.browserContext._browser.sdkLanguage());"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38305,
+      "excerpt": "        this._videoRecorder = new FfmpegVideoRecorder(ffmpegPath, videoSize, options.fps ?? kDefaultFps, outputFile2);"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38324,
+      "excerpt": "      constructor(ffmpegPath, size, fps, outputFile2) {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38333,
+      "excerpt": "        this._ffmpegPath = ffmpegPath;"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38350,
+      "excerpt": "          command: this._ffmpegPath,"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38360,
+      "excerpt": "            debugLogger.log(\"browser\", `ffmpeg onkill exitCode=${exitCode} signal=${signal}`);"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38364,
+      "excerpt": "          debugLogger.log(\"browser\", \"ffmpeg finished input.\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38367,
+      "excerpt": "          debugLogger.log(\"browser\", \"ffmpeg error.\");"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 38407,
+      "excerpt": "          debugLogger.log(\"error\", `ffmpeg failed to stop: ${String(e)}`);"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 44644,
+      "excerpt": "        return options.headless ? \"chromium-headless-shell\" : \"chromium\";"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 75537,
+      "excerpt": "  const target = error.message.includes(\"ffmpeg\") ? \"ffmpeg\" : config.browser.launchOptions?.channel ?? config.browser.browserName;"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 75538,
+      "excerpt": "  const label = target === \"ffmpeg\" ? \"FFmpeg\" : `Browser \"${target}\"`;"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 75730,
+      "excerpt": "      Install custom browsers, supports chromium, firefox, webkit, chromium-headless-shell.`);"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 75731,
+      "excerpt": "  program4.command(\"uninstall\").description(\"Removes browsers used by this installation of Playwright from the system (chromium, firefox, webkit, ffmpeg). This does not include branded channels.\").option(\"--all\", \"Removes all browsers used by any Playwright installation from the system.\").action(async (options) => {"
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 75748,
+      "excerpt": "      Install dependencies for specific browsers, supports chromium, firefox, webkit, chromium-headless-shell."
+    },
+    {
+      "member": "package/lib/coreBundle.js",
+      "memberSha256": "cd6730be1bbcff00771a0fc1390f200306d28428ce68e305420ca623cb39cdeb",
+      "line": 76458,
+      "excerpt": "    await resolveAndInstall(\"ffmpeg\");"
+    }
+  ]
+}

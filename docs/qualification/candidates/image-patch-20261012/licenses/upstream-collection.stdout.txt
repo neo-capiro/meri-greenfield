@@ -1,0 +1,62 @@
+{
+  "documents": [
+    [
+      "node-v24.21.0-LICENSE.txt",
+      200,
+      null
+    ],
+    [
+      "cpython-v3.13.5-LICENSE.txt",
+      200,
+      null
+    ],
+    [
+      "standardwebhooks-exact-LICENSE.txt",
+      200,
+      null
+    ],
+    [
+      "canvas-exact-gitmodules.txt",
+      200,
+      null
+    ],
+    [
+      "canvas-exact-tree.json",
+      null,
+      "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    ],
+    [
+      "cpython-v3.13.5-abi.rst",
+      200,
+      null
+    ],
+    [
+      "lxml-installation.html",
+      null,
+      "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    ],
+    [
+      "sdk-legal-and-compliance.html",
+      null,
+      "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    ],
+    [
+      "sdk-commercial-terms.html",
+      null,
+      "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>"
+    ],
+    [
+      null,
+      null,
+      null
+    ]
+  ],
+  "browser": {
+    "url": "https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.12/linux64/chrome-linux64.zip",
+    "expectedArchiveBytes": 198335306,
+    "fullArchiveHashVerified": false,
+    "status": "FAILED",
+    "error": "BadZipFile: File is not a zip file",
+    "rangeBytes": 0
+  }
+}

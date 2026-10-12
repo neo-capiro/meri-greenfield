@@ -1,0 +1,18 @@
+{
+  "observedAt": "2026-10-12T03:27:07.671217+00:00",
+  "collectorSessions": [
+    {
+      "sessionId": 80591,
+      "exit": 0
+    },
+    {
+      "sessionId": 40472,
+      "exit": 0
+    }
+  ],
+  "ownedProcessMatches": [],
+  "readelfChildren": "All eight replay subprocess.run calls completed/reaped; originals recorded exit0",
+  "otherOwnersTouched": false,
+  "rawArtifactsPreserved": "/tmp/meri-image-license-evidence-20261012",
+  "result": "PASS"
+}
