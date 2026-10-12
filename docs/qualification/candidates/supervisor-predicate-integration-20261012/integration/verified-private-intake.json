@@ -1,0 +1,85 @@
+{
+  "members": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+      "mode": "0600",
+      "executed": false
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1",
+      "mode": "0600",
+      "executed": false
+    }
+  ],
+  "directoryMode": "0700",
+  "origin": "Parent supplied gzip+base64 relay of previously root-verified private ZIP",
+  "sameEvidenceNotNewAuthority": true,
+  "transcriptionFailuresPreservedPrivately": {
+    "candidate": 2,
+    "collector": 1
+  },
+  "admissionUnchanged": true,
+  "privateBytesPublished": false,
+  "privateRawTranscriptionsPreserved": true,
+  "validationRule": "Accept only exact supplied expanded byte size and SHA256; gzip/base64 decode never executes source",
+  "observedPrivateFiles": [
+    {
+      "role": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+      "mode": "0600"
+    },
+    {
+      "role": "candidate-relay-attempt-1.b64",
+      "bytes": 10329,
+      "sha256": "05f4e56ea2aaec3193e1c7e25254002ddbf0e3b890e40fe3dbe8dcfdf686bd11",
+      "mode": "0600"
+    },
+    {
+      "role": "candidate-relay-attempt-2.b64",
+      "bytes": 3759,
+      "sha256": "b6d4ee09133818c753bf457ee755f4e24ceb8a23bf3c866ff423aa490f1cc202",
+      "mode": "0600"
+    },
+    {
+      "role": "candidate-relay-attempt-3.b64",
+      "bytes": 3756,
+      "sha256": "fcbf9db208d9d26b69a07cfef12bbd445e8c044bf29498633a9deef1395b036d",
+      "mode": "0600"
+    },
+    {
+      "role": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1",
+      "mode": "0600"
+    },
+    {
+      "role": "collector-prefix-transcription.b64",
+      "bytes": 2512,
+      "sha256": "2f0d27c0e0ee7b22e3e506e81aa6a158774a99c614d3e7af56dcf3d651cc18dc",
+      "mode": "0600"
+    },
+    {
+      "role": "collector-relay-attempt-1.b64",
+      "bytes": 10889,
+      "sha256": "a4367d0cdfc74dfcbccf35f085cda379bbdf32cc6bd0e6c1972fa19aaa9d19e1",
+      "mode": "0600"
+    },
+    {
+      "role": "collector-relay-attempt-2.b64",
+      "bytes": 10888,
+      "sha256": "317420fca385de4887f5bf26edae3c6f47f77317090933cdea0d87114563e236",
+      "mode": "0600"
+    },
+    {
+      "role": "verified-intake.json",
+      "bytes": 704,
+      "sha256": "d8818eb890f5877f13c85e0fa2384ba1910877737e320f15070748e7df09a8ed",
+      "mode": "0600"
+    }
+  ]
+}
