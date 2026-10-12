@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/workspace/meri-selected-next-integration-review-20261012/docs/qualification/candidates/read-continuation-20261012/integration-next-review/audit.py", line 32, in <module>
+    manifest=root/'docs/qualification/candidates/read-continuation-20261012'/lane/'manifest.json';j=json.loads(manifest.read_text());members=j.get('members',j.get('files',[]));check(lane+' manifest nonempty',bool(members))
+                                                                                                               ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/workspace/meri-selected-next-integration-review-20261012/docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/manifest.json'

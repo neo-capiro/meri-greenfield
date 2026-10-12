@@ -1,0 +1,6 @@
+{
+  "initial": "source-receipt-audit stopped at missing guessed federal manifest.json filename",
+  "actual": "federal-legislation-review/review-manifest.json, as exact report states",
+  "repair": "Use exact manifest member name; preserve failed checker and stderr",
+  "sourceChanged": false
+}

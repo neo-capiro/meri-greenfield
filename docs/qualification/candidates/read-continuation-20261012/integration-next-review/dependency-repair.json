@@ -1,0 +1,7 @@
+{
+  "initial": "independent-focused failed before loading tests: missing ajv in newly created isolated worktree",
+  "repair": "Physical copy of existing authorized packages/contracts/node_modules from completed bill-text reviewer worktree; no network/install or lockfile edits",
+  "sourceChanged": false,
+  "testChanged": false,
+  "originalReceiptRetained": true
+}
