@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-facility-representation-review-20261012",
+  "sourceHead": "419e67522588d0715c0a7a82e8f5845f06642b97",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:39:50.003285+00:00",
+  "durationSeconds": 25.481,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 197442,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 197628,
+      "status": 0
+    },
+    {
+      "pid": 197681,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stdout.bin",
+      "bytes": 126425,
+      "sha256": "69fcc6646f1d840067352035c010d9e55d09af7deae9b29f355fbce6b7eee1bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
