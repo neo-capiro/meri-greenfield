@@ -1,0 +1,28 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "candidateInspected": false,
+  "proposedAPI": [
+    "normalizeActionItemsCompleteInput",
+    "assertActionItemsCompleteResult"
+  ],
+  "contextProposal": [
+    "binding",
+    "clientResolution"
+  ],
+  "criteria": [
+    "Two modes: canonical client-scoped page reused unchanged, distinct exact tool/generatedAt/total/actions raw unscoped list; no fake output lineage wrapper.",
+    "Full raw ActionCard identity, nullable strings and optional clientName; typed nested DTO narrowing explicit because source JSON fields use casts, not validation. No invented proof, completed-task or saved/delivery claims.",
+    "Client alias resolution is an exact trusted reference+resolved UUID correlation; a raw UUID cannot substitute another. Full original binding and actor for scoped output. Resolution and DTO are not current authority.",
+    "Unscoped service is tenant/RLS-only. No new client wall/actor grant requirement is invented. Current authentication/source rights remain unqualified.",
+    "Unscoped take bounds and result count: rows/count concurrent so total may be below rows; sorting follows deadline nullslast and priority with ties, no ID tiebreak. No absence/complete/history/freshness claim.",
+    "Scope selection/limit/status/sort normalization and pagination are explicit. Strict legacy-partial numeric/enum guards may stay as documented wire narrowing; no silent claim full legacy coercion compatibility.",
+    "Inherited opaque cursor bounds do not establish native cursor authenticity, decoded actor/tenant/filter/page correlation, snapshot or continuation proof. New claims require actual controls and implementation.",
+    "All inputs/context/output inert closed JSON, no getter/proxy/toJSON effects, returned admitted value detached. SQLDate/canonical timestamps and finite signed priority checked against actual declared projection.",
+    "Keep old partial/schema/loader/catalog/public0.1/tests and all base entries byte-identical. Only new family files, focused tests and metadata. No policy decision, source or runtime activation."
+  ],
+  "limits": [
+    "No Capiro code copied/imported/executed or private body stored.",
+    "No native, service, database, provider/model/cloud/customer/credential actions; focused local checks only.",
+    "No full release or whole original capability parity claim from pure transport source acceptance."
+  ]
+}
