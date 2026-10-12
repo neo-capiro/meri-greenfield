@@ -381,6 +381,8 @@
       "productionAvailable": false,
       "runtimeQualified": false,
       "sourceEvidence": {
+        "generalBudgetSource": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+        "generalBudgetReview": "207d9f084e335b7bd7051ff97b1c844f0671e425",
         "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
         "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
         "operations": [
@@ -391,7 +393,7 @@
         ],
         "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
         "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority.",
         "remaining": [
           "Native Office rendering/recalculation/quality and sandbox admission",
           "Production storage/current-authority and general inspection/publication adapters",
@@ -1540,6 +1542,8 @@
       "productionAvailable": false,
       "runtimeQualified": false,
       "sourceEvidence": {
+        "generalBudgetSource": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+        "generalBudgetReview": "207d9f084e335b7bd7051ff97b1c844f0671e425",
         "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
         "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
         "operations": [
@@ -1550,7 +1554,7 @@
         ],
         "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
         "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority.",
         "remaining": [
           "Native Office rendering/recalculation/quality and sandbox admission",
           "Production storage/current-authority and general inspection/publication adapters",
@@ -1571,6 +1575,8 @@
       "productionAvailable": false,
       "runtimeQualified": false,
       "sourceEvidence": {
+        "generalBudgetSource": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+        "generalBudgetReview": "207d9f084e335b7bd7051ff97b1c844f0671e425",
         "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
         "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
         "operations": [
@@ -1581,7 +1587,7 @@
         ],
         "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
         "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority.",
         "remaining": [
           "Native Office rendering/recalculation/quality and sandbox admission",
           "Production storage/current-authority and general inspection/publication adapters",
@@ -1602,6 +1608,8 @@
       "productionAvailable": false,
       "runtimeQualified": false,
       "sourceEvidence": {
+        "generalBudgetSource": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+        "generalBudgetReview": "207d9f084e335b7bd7051ff97b1c844f0671e425",
         "typedBudgetSource": "a73b65dc05b7554c0592bec22d940ef781344dd6",
         "typedBudgetReview": "7f29b5270f790bcdceed9b5533815fc99561ecdc",
         "operations": [
@@ -1612,7 +1620,7 @@
         ],
         "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
         "review": "3e4166b3d164ad5d589b8dbdcf87c9f144cd1cbe",
-        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical durable budget composition, and admitted general-program boundary.",
+        "behavior": "Concrete local library creation/revision/inspection/download with immutable provenance, canonical typed and general durable budget compositions, and admitted general-program boundary with fresh pre-dispatch authority.",
         "remaining": [
           "Native Office rendering/recalculation/quality and sandbox admission",
           "Production storage/current-authority and general inspection/publication adapters",
