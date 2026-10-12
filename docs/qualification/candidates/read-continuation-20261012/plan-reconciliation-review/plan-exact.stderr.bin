@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/workspace/meri-plan-reconciliation-review-20261012/docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit.py", line 184, in <module>
+    summary.update(audit_plan(sys.argv[1]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-plan-reconciliation-review-20261012/docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit.py", line 150, in audit_plan
+    check('original paragraph ' + str(n), row['text'] == nonempty[n] and row['runtimeQualification'] == 'not-established-by-this-lane')
+                                                         ~~~~~~~~^^^
+KeyError: 47

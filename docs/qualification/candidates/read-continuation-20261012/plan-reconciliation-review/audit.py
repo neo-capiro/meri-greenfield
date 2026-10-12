@@ -3,6 +3,7 @@ import hashlib
 import io
 import json
 import pathlib
+import re
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -112,8 +113,81 @@ def audit_scope():
     return {'scope': SCOPE, 'scopeTree': git('rev-parse', SCOPE+'^{tree}').decode().strip(), 'scopeReferences': len(refs), 'scopeManifestMembers': len(manifest['members']), 'baseTrackedFiles': len(git('ls-tree', '-r', '--name-only', BASE).splitlines())}
 
 
+def audit_plan(ref):
+    path = PREFIX + 'plan-reconciliation/'
+    identities = obj(ref, path + 'source-identities.json')
+    for source in identities['files']:
+        raw = blob(source['ref'], source['path'])
+        check('plan reference ' + source['ref'][:8] + ':' + source['path'], len(raw) == source['bytes'] and hashlib.sha256(raw).hexdigest() == source['sha256'] and git('rev-parse', source['ref']+':'+source['path']).decode().strip() == source['blob'])
+    data = obj(ref, path + 'workbook-requirements.json')
+    wb = worksheets(blob(data['source']['ref'], data['source']['path']))
+    expected = {(name, n) for name, rows in wb.items() if name != 'Overview' for n in rows if n > 7}
+    rows = data['rows']
+    check('all705 actual workbook data rows exactly once', len(rows) == 705 and len(expected) == 705 and {(r['locator']['sheet'], r['locator']['row']) for r in rows} == expected)
+    check('workbook formulas never recalculated', data['formulasRecalculated'] is False)
+    for row in rows:
+        loc = row['locator']; cells = wb[loc['sheet']][loc['row']]; headers = wb[loc['sheet']][7]
+        fields = {heading: cells.get(re.sub('[0-9]+$', '', column)+str(loc['row']), '') for column,heading in headers.items() if heading}
+        check('workbook original fields ' + row['id'], row['originalFields'] == {k:v for k,v in fields.items() if v != ''})
+        if loc['sheet'] == 'Current native tools':
+            native = {o['id']:o for o in obj('753566baf2d230ed241941dcdeca41625277cb1d','packages/contracts/retrieval-0.2/catalog.json')['originals']}[row['originalId']]
+            status = {'mapped':'mapped contract only','pending':'full native mapping pending','deferred':'deferred legacy native ID; authority review separate'}[native['state']]
+            safe_join = row['canonicalOriginalAtReadFreeze'] == native and row['sourceAcceptance'] == status and 'does not imply' in row['implementationJoin']
+        else:
+            safe_join = 'pending' in row['sourceAcceptance'] and 'individual' in row['implementationJoin']
+        check('row ' + row['id'] + ' is not completion proof', row['runtimeQualification'] == 'not-established-by-this-lane' and safe_join)
+    groups = {g['id']:g for g in obj(ref, path + 'groups.json')}
+    check('all20 requirement groups retained', set(groups) == {'scope','catalog','evidence','skills','ui','sdk','durability','schedules','memory','commands','artifacts','uploads','browser','security','retention','benchmark','optional','deployment','process','unresolved'})
+    for group in groups.values():
+        check('group ' + group['id'] + ' retains runtime limit', group['runtimeQualified'] is False and 'unknown' in group['runtimeBoundary'].lower() or group['runtimeQualified'] is False and 'not inspected' in group['runtimeBoundary'].lower())
+    by_id = {r['id']:r for r in rows}
+    cross = {'New Meri:N-001': {'deployment'}, 'New Meri:N-028': {'retention'}, 'New Meri:N-033': {'retention','security'}, 'New Meri:N-084': {'schedules','artifacts'}, 'Deployment work:REL-05': {'sdk'}, 'Deployment work:REL-09': {'deployment','process','benchmark'}}
+    for id, required in cross.items():
+        row = by_id[id]
+        check('cross-cutting ownership ' + id, required <= {row['group'], *row.get('additionalGroups', [])})
+    document = obj(ref, path + 'original-docx-coverage.json')
+    xml = zipfile.ZipFile(io.BytesIO(blob(BASE, 'docs/plans/Meri_Greenfield_Agent_Plan.docx'))).read('word/document.xml')
+    ns = {'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+    paragraphs = [''.join(p.itertext()) for p in ET.fromstring(xml).findall('.//w:p',ns)]
+    nonempty = {i+1:text for i,text in enumerate(paragraphs) if text.strip()}
+    check('all315 XML /307 nonempty original paragraphs', len(paragraphs) == 315 and len(nonempty) == 307 and len(document['paragraphs']) == 315 and sum(bool(r['text'].strip()) for r in document['paragraphs']) == 307 and {r['locator']['xmlParagraph'] for r in document['paragraphs']} == set(range(1,316)))
+    for row in document['paragraphs']:
+        n = row['locator']['xmlParagraph']
+        check('original paragraph ' + str(n), row['text'] == paragraphs[n-1] and row['runtimeQualification'] == 'not-established-by-this-lane')
+    units = obj(ref, path + 'plan-line-coverage.json')['units']
+    paths = {v['locator']['path'] for v in units}
+    for file in sorted(paths):
+        indexed = [v for v in units if v['locator']['path'] == file]
+        original = blob(BASE,file).decode().splitlines()
+        check('every line preserved ' + file, [v['locator']['line'] for v in indexed] == list(range(1,len(original)+1)) and [v['text'] for v in indexed] == original and all(v['runtimeQualification'] == 'not-established-by-this-lane' for v in indexed))
+    named = obj(ref, path + 'normative-id-ledger.json')['requirements']
+    expected_ids = {f'W{i:02}' for i in range(12)} | {f'R-{i:02}' for i in range(1,13)} | {f'REL-{i:02}' for i in range(1,10)} | {f'RG-{i:02}' for i in range(1,13)} | {f'G{i}' for i in range(8)}
+    check('all53 R/REL/RG/W/G IDs exactly once', len(named) == 53 and {r['id'] for r in named} == expected_ids)
+    for row in named:
+        check('exact requirement ' + row['id'], row['requirement'] == blob(BASE,row['locator']['path']).decode().splitlines()[row['locator']['line']-1])
+    summary = obj(ref,path+'coverage-summary.json')
+    skills = obj(BASE,'docs/coordination/r2/skills.json')
+    # The retained skills document is a separate14-intent record, not all93 legacy workflow rows.
+    skill_rows = skills['records']
+    check('all14 named skills', len(summary['quickSkills']) == 14 and set(summary['quickSkills']) == {r['fields']['ID'] for r in skill_rows})
+    check('93 original workflow rows retained separately', sum(r['locator']['sheet'] == 'Current workflows' for r in rows) == 93)
+    boundary = obj(ref,path+'current-source-boundary.json')
+    cat = obj(boundary['readSource'],'packages/contracts/retrieval-0.2/catalog.json')
+    registry = blob(boundary['readSource'],'packages/contracts/retrieval-0.2/catalog-validation.mjs').decode()
+    partial = set(re.findall(r"id: '([^']+)', nativeId: '[^']+', nativeCoverage: 'partial'", registry))
+    check('partial status pinned to canonical registry', partial == {'query_action_items'})
+    expected_ops = [{'id':o['operation']['id'],'version':o['operation']['version'],'availability':o['availability'],'handler':o['handler'],'nativeCoverage':'partial' if o['operation']['id'] in partial else None} for o in cat['operations']]
+    check('exact67 operation IDs versions and partial coverage', boundary['operations'] == expected_ops and len(expected_ops) == 67)
+    check('correct source-only gate/count limits', boundary['typedOperations'] == 67 and boundary['canonicalStates'] == {'deferred':43,'mapped':66,'pending':30} and boundary['gateState'] == {'G0':'accepted discovery','G1':'OPEN','G2-G7':'unentered'} and all(o['handler'] is None and o['availability'] == 'unimplemented' for o in expected_ops))
+    changed = git('diff','--name-status',BASE,ref).decode().splitlines()
+    check('plan only allocated metadata additions', all(line.startswith('A\t') and (line[2:].startswith(path) or line[2:] == 'docs/coordination/reports/CODEX-PLAN-RECONCILIATION-20261012.md') for line in changed))
+    return {'plan':ref,'planTree':git('rev-parse',ref+'^{tree}').decode().strip(),'planReferences':len(identities['files']),'workbookRows':len(rows),'nonemptyDocxParagraphs':len(nonempty),'markdownLines':len(units),'normativeIds':len(named)}
+
+
 if __name__ == '__main__':
     summary = audit_scope()
+    if len(sys.argv) == 2:
+        summary.update(audit_plan(sys.argv[1]))
     summary.update(passed=sum(c['pass'] for c in checks), failed=sum(not c['pass'] for c in checks), checks=checks, limits='Read-only Git object and ZIP/XML metadata validation; no runtime, private producer import, native/SQL/provider execution, workbook formulas or package installs.')
     print(json.dumps(summary, indent=2))
     sys.exit(bool(summary['failed']))

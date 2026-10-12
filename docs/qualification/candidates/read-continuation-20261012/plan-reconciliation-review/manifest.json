@@ -1,0 +1,150 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "scopeFreeze": "79efba457f41ce436b91f76741dac783ba82010b",
+  "planFreeze": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+  "excluded": [
+    "manifest.json self-reference"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-REVIEW-20261012.md",
+      "bytes": 6477,
+      "sha256": "913fd184442dc31dc0f967409e974ff934559b233fe9f558b5c0c898640c19e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-initial.py.txt",
+      "bytes": 7552,
+      "sha256": "7aab17982de67738df1d7f31f5095524c605a293b21f781403840de84df4c018"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-pre-blank-paragraph-fix.py.txt",
+      "bytes": 14451,
+      "sha256": "30db4545a94ec0b0781ae3727aaadd31e8c49c1eddbe892915f1097ca39507bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit-pre-cell-join-fix.py.txt",
+      "bytes": 14531,
+      "sha256": "5ff59da6a59071df6adb053f5202d6505099e04469f2348e2b0c454f018baa7c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/audit.py",
+      "bytes": 15173,
+      "sha256": "20c7cc371a4f8c774e8984e18b491212eca51ce412c2a7202ff29f158b668f25"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/criteria.md",
+      "bytes": 2024,
+      "sha256": "847871ba5f4ee06cb744b04337905842e78c710e5aa3b0acbdaac1404ca73b87"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/draft-crosscutting-links.json",
+      "bytes": 4930,
+      "sha256": "5d32c06c272a097985045c4c18cbb35f077614bd50f166058c63de57cc48d02a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/draft-null-operation-identities.json",
+      "bytes": 11512,
+      "sha256": "834af143af56f6df562e669ea5670301ff9ccfc8b43d189cb856b7a09d5ee9c9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/final-audit.json",
+      "bytes": 1460,
+      "sha256": "5c0ec1f7d839da1c424ca5719d0dabdd72a66e59140a77d406bacfe8172f2a92"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/independent-trace.json",
+      "bytes": 10439,
+      "sha256": "66b57919b20d9f6f1c39aa146203fb0651968a344609c6a6b68786ce181de393"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.json",
+      "bytes": 346,
+      "sha256": "96ef5d7d254b1cf15aa1770c185d78ddcb69375c213debb5684e089c18402384"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-corrected.stdout.bin",
+      "bytes": 221072,
+      "sha256": "ac37198e95f6965686a30494d248ec98d7eac4973122c416b500e7d228861962"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.json",
+      "bytes": 346,
+      "sha256": "91ce55bd7314ea401d8db4ffb9ba3a9d8c483d8532a79253d6300f1356370406"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.stderr.bin",
+      "bytes": 696,
+      "sha256": "7eb8314285c311b9da839ed3747c8b9707fe9030fb20822c15ad67b9f4e665e2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-exact.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.json",
+      "bytes": 346,
+      "sha256": "17dc54843882f38c973a9d1a4baf2f3357349372f65b46cf6d6dbf4f80108adc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-final.stdout.bin",
+      "bytes": 220825,
+      "sha256": "83834299dfa4cff40d959a64828c6442ce104252f5cd442d2a4ee138526f5298"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/plan-packet-audit.json",
+      "bytes": 4836,
+      "sha256": "fc4aae5a105c81ba337f4352118a344cff94e964efd26cd5f35a5251fc46f68c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/review-diagnostics.json",
+      "bytes": 2882,
+      "sha256": "852a0c73f6bf5c7eda07a06af8cd1fd62cac172d00ea7a5cc948c5986a793227"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.json",
+      "bytes": 346,
+      "sha256": "5acf2720a2683d8215d80bc16a6e759fe04c26b76a2c6e08741fb27d8915d9a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-corrected.stdout.bin",
+      "bytes": 40269,
+      "sha256": "e3bc235a2bfe5ab263681255673ab992fb7186a2544d1a1d2e785244e7a1740c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.json",
+      "bytes": 346,
+      "sha256": "cfa70213497cd2940eb15649220f2a515f14e3ee949db9544eae72320c520a69"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/scope-independent.stdout.bin",
+      "bytes": 40313,
+      "sha256": "05122177d9cb499e1941349b26f9d43235f77312239a12f080ad4aff74b4d4e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation-review/setup-failure.json",
+      "bytes": 516,
+      "sha256": "9e65c3ac3a06f9a08a34103328296df988c144d327cbaee308ea2c6a493942e1"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "candidate": "6a3770bf4368f5b111dd588848c7bc0f45885837",
+  "manifestSha256": "c6de0a94f194a4ebb28524a3b3a6ec8d6124343f9155628e76f4773fdffd8f88",
+  "members": 30,
+  "passed": 30,
+  "failed": 0,
+  "checks": [
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-20261012.md",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build-ledger.py.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.build.stdout",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.py.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/binding-repair-failed.verify.stdout",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.before-review.py.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.initial.py.txt",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build-ledger.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/build.stdout",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/checks.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/coverage-summary.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/current-source-boundary.before-review.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/current-source-boundary.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/groups.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial-receipt.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/initial.stdout",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/original-docx-coverage.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/plan-line-coverage.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/review-corrections.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/review-projection-failure.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/source-identities.json",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.py",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.stderr",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/verify.stdout",
+      "pass": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/workbook-requirements.json",
+      "pass": true
+    }
+  ],
+  "limits": "Direct Git metadata reads only; each subprocess completed/reaped through check_output. No runtime check or detached process."
+}
