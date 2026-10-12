@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-rule-status-review-20261012",
+  "sourceHead": "88d28e8c05741d31c1b583c1974e981cb9c9534f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:33:19.047524+00:00",
+  "durationSeconds": 5.93,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 192963,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 193129,
+      "status": 0
+    },
+    {
+      "pid": 193314,
+      "status": 0
+    },
+    {
+      "pid": 193333,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "ede14f951e256e837c6d51ca95753db8c817e75852939d31bba821642283a04d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

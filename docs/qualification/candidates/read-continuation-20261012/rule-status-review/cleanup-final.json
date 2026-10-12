@@ -1,0 +1,43 @@
+{
+  "groups": [
+    {
+      "label": "full-root",
+      "pgid": 192983,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 2
+    },
+    {
+      "label": "independent-first",
+      "pgid": 192662,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "policy-audit-corrected",
+      "pgid": 194190,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "policy-audit",
+      "pgid": 193888,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "public-distribution",
+      "pgid": 192963,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 3
+    },
+    {
+      "label": "source-audit",
+      "pgid": 194230,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    }
+  ],
+  "allAbsent": true,
+  "reapedExitedDescendants": 5,
+  "noInstall": true
+}
