@@ -1,0 +1,38 @@
+{
+  "status":"CONTRACT_REFERENCE_READY_WITH_EXPLICIT_ADAPTER_EFFECTS",
+  "sourceCommit":"fd8765ec01d292013758606204f2c9d886cd31c1",
+  "family":"acquisition-personnel",
+  "operations":[
+    {
+      "id":"search_acquisition_personnel",
+      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchAcquisitionPersonnel","line":5316,"endLine":5343},
+      "owner":{"path":"apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts","symbol":"listPersonnel","line":66,"endLine":199},
+      "input":{"query":"optional240 UTF-16 units; wins over q alias","q":"optional240 fallback","service":"optional60","organization":"optional200","role":"optional60","peCode":"optional32, maps to owner pe_code","page":"clamp1..100/default1","limit":"clamp1..50/default20"},
+      "normalization":"Shared optionalString trims then slices; clampInt uses finite numeric coercion/truncation. Owner normalizes page/limit again. Do not silently expose extra ListPersonnelDto selectors pe_aligned/sort/include_superseded: Meri wrapper does not pass them.",
+      "querySemantics":"withTenant callback; default excludes supersededAt nonnull. Exact service/role; organization contains case-insensitively; PE primary equality or secondary has. Nonempty trimmed q invokes fuzzy SQL ID lookup with page skip and take before remaining row filters; orderByIds restores ID rank.",
+      "countCaveat":"With q, total is the length of the already paged fuzzy ID array, not all matches; later filters may reduce data further. Without q, total comes from model count. Do not infer full count, hasMore or terminal absence from fuzzy total.",
+      "output":{"envelope":["tool","generatedAt","data","total","page","limit"],"row":{"id":"UUID string","fullName":"string","service":"string|null","organization":"string|null","title":"string|null","role":"string|null","pePrimary":"string|null","peSecondary":"string[]","emailDomain":"string|null","email":"stored string|null ONLY for exact current ctx.role capiro_admin; otherwise null","publicProfileUrl":"string|null","headshotUrl":"metadata object field headshotUrl or null; source does not check the field value type","confidence":"Prisma Float, no source-proven0..1 restriction","status":"string","firstSeenAt":"ISO DateTime string","lastSeenAt":"ISO DateTime string","sourceCount":"included sources array length"}},
+      "namedContracts":["ListPersonnelDto:6","PersonnelListItemDto:77","PersonnelListResponseDto:107"],
+      "dtoLimits":"List DTO additionally declares optional roles/crmLinkBlocked/crmLinkBlockedReason; this Meri-used owner projection does not produce them. DTO headshotUrl string|null is stronger than actual metadata passthrough; a typed output refusal for malformed scalar needs explicit documentation, not invented string conversion.",
+      "effect":{"kind":"audit write inside withTenant","line":145,"action":"acquisition_personnel.list","entityType":"acquisition_personnel","entityId":"null","actorFields":["ctx.tenantId","ctx.userId","ctx.role"],"afterFields":["filters","page","limit","total"],"locallyCaught":false}
+    },
+    {
+      "id":"get_acquisition_person",
+      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"getAcquisitionPerson","line":5345,"endLine":5353},
+      "owner":{"path":"apps/api/src/acquisition-personnel/acquisition-personnel-read.service.ts","symbol":"getPersonDetail","line":201,"endLine":257},
+      "input":{"id":"required trimmed string capped80 by source helper; underlying identity column UUID"},
+      "output":{"envelope":["tool","generatedAt","person"],"person":{"id":"UUID string","fullName":"string","nameKey":"string","service":"string|null","organization":"string|null","title":"string|null","role":"string|null","programOfRecord":"string|null","pePrimary":"string|null","peSecondary":"string[]","emailDomain":"string|null","publicProfileUrl":"string|null","confidence":"Float","status":"string","firstSeenAt":"ISO DateTime string","lastSeenAt":"ISO DateTime string","metadata":"opaque stored JSON","sources":"PersonSourceDto[] with id/source/sourceUrl/snippet/observedAt/confidence/metadata"}},
+      "namedContracts":["PersonSourceDto:1","PersonDetailDto:11"],
+      "privacy":"No separate email/headshotUrl top-level fields in detail projection; opaque metadata and source metadata remain in the producer. Treat as untrusted reported data, not authority; do not silently claim those JSON bodies have no personal/contact values.",
+      "bounds":"Sources ordered observedAt descending, no producer take/continuation cap. Canonical inert JSON/output budgets may refuse oversize; do not invent a complete truncated page.",
+      "notFound":"Owner throws NotFoundException after its withTenant callback; no successful person:null branch is established.",
+      "effect":{"kind":"audit write inside withTenant","line":212,"action":"acquisition_personnel.detail","entityType":"acquisition_personnel","entityId":"requested id","actorFields":["ctx.tenantId","ctx.userId","ctx.role"],"after":"Prisma.JsonNull","locallyCaught":false,"missingRecord":"Audit call is unconditional in callback before the outer not-found throw."}
+    }
+  ],
+  "authority":"Meri authenticated TenantContext/request-control entry; both methods receive ctx and owner uses withTenant. Email admission is exact equality to capiro_admin, not arbitrary privileged-role inference or model option. Models have no tenantId field; withTenant establishes execution/audit context rather than a demonstrated tenant-private row partition. Future gateway current authority and privacy projection must be trusted and rechecked.",
+  "effectsAndQualification":"These are source-readable contracts, not effect-free adapter calls. Both audit inserts are awaited with no local try/catch; errors propagate. Fuzzy lookup performs stored SELECT via tx.$queryRaw; no ingestion/provider/network call identified in these owner paths. Qualify audit transaction, current actor/role, budgets and error behavior before any handler activation; do not remove audit writes silently or mislabel them missing DTOs.",
+  "correction":{"earlierShorthand":"Email and headshot described together as metadata-derived in an early parent message.","exactSource":"Email is p.email gated by exact ctx.role capiro_admin; only headshotUrl is metadata-derived.","sourceChange":false},
+  "sourceExecuted":false,
+  "privateBodiesPublished":false,
+  "catalogChanged":false
+}
