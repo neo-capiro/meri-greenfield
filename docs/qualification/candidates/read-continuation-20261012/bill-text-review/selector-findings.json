@@ -1,0 +1,14 @@
+{
+  "originalSource": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+  "authorDiscovered": true,
+  "independentBaseline": {
+    "passed": 62,
+    "failed": 2
+  },
+  "findings": [
+    "metadata activeSince must constrain latestActionDate, not updateDate; invalid selector cannot yield successful metadata page",
+    "text-query congress must constrain bill ID prefix; metadata-only activeSince ignored in text branch"
+  ],
+  "sourceMetadataCorrection": "Prior next-discovery metadata prose incorrectly said updateDate for activeSince. Exact LdaIntel line498 selects latestActionDate; current correction does not rewrite original packet.",
+  "unchangedReplayRequired": true
+}
