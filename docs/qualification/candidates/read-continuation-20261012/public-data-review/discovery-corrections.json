@@ -1,0 +1,18 @@
+{
+  "correction": "Truthy responseDateDesc forces structured unknown; no datetime parse attempt",
+  "earlierReviewerStatement": "Incorrectly described preferred responseDateDesc as passed to datetime parser. This was inferred from a conditional call while object argument values had not yet been inspected.",
+  "independentRecheck": {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "lines": [
+      5409,
+      5410,
+      5411
+    ],
+    "trueBranchValueKind": "NullKeyword",
+    "trueBranchKind": "date",
+    "falseBranchValueProperty": "closeDate",
+    "falseBranchKind": "date"
+  },
+  "impact": "Preserve possible difference between legacy deadlineStatus and structured unknown. No source change requested; future tests must reject ISO-looking rawText promoted to a known structured deadline."
+}
