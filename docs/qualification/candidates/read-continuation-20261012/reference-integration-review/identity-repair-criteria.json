@@ -1,0 +1,12 @@
+{
+  "originalIntegration": "0e579078b71146d12a1783b9b3cfde6e4ea06800",
+  "observedFailure": "Root initial focused capture0/2 failed before tests: canonical SchemaRef requires urn:meri, but two accepted standalone schemas use https identifiers.",
+  "authorizedRepair": "Exactly directory/rule schema $id strings, three matching catalog references and raw file hash pins. Canonical catalog schema unchanged.",
+  "criteria": [
+    "Two patched raw schemas must equal exact accepted source bytes after one literal $id replacement only.",
+    "Remaining20 family source/test files exact.",
+    "Old HTTPS SchemaRefs continue to reject; new URN SchemaRefs accept without catalog-schema relaxation.",
+    "Original58 independent controls preserved; one added namespace regression.",
+    "Root original raw failure and initial source stay immutable."
+  ]
+}
