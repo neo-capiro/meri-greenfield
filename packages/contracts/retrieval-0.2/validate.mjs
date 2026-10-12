@@ -1,3 +1,4 @@
+import { createBillTextValidators } from './bill-text-validation.mjs';
 import { createFederalLegislationValidators } from './federal-legislation-validation.mjs';
 import { createAcquisitionPersonnelValidators } from './acquisition-personnel-validation.mjs';
 import { createDisclosuresValidators } from './disclosures-validation.mjs';
@@ -25,7 +26,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -215,6 +216,8 @@ const disclosuresValidators = createDisclosuresValidators({validateShape});
 const acquisitionPersonnelValidators = createAcquisitionPersonnelValidators({validateShape, schema: schemas[groups.indexOf('acquisition-personnel')]});
 const federalLegislationValidators = createFederalLegislationValidators({validateShape, schema: schemas[groups.indexOf('federal-legislation')]});
 
+const billTextValidators = createBillTextValidators({validateShape, schema: schemas[groups.indexOf('bill-text')]});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -256,4 +259,4 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators,
     ...researchPortfolioValidators, ...businessDevelopmentValidators,
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,
-    ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators})});
+    ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators})});

@@ -12,6 +12,14 @@ const searched = result => ({input: result.input, metadata: {clientScope: result
 const federal = result => ({input: result.query, metadata: {queryScope: result.queryScope, clientScope: result.clientScope}});
 
 export const CATALOG_OPERATION_BINDINGS = Object.freeze([
+  Object.freeze({id: 'search_congress_bills', nativeId: 'search_congress_bills', group: 'bill-text', input: 'CongressBillSearchInput', output: 'CongressBillSearchOutput', version: '0.2.0',
+    contextKeys: Object.freeze(['defaultCongress']),
+    normalize: (v, request, context, binding) => v.normalizeBillTextInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.assertBillTextOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
+  Object.freeze({id: 'read_bill_text', nativeId: 'read_bill_text', group: 'bill-text', input: 'BillTextReadInput', output: 'BillTextReadOutput', version: '0.2.0',
+    contextKeys: Object.freeze(['defaultCongress']),
+    normalize: (v, request, context, binding) => v.normalizeBillTextInput(binding.id, request, clock(context, binding.contextKeys)),
+    outputAssert: (v, page, request, context, binding) => v.assertBillTextOutput(binding.id, page, request, clock(context, binding.contextKeys))}),
   Object.freeze({id: 'search_sec_filings', nativeId: 'search_sec_filings', group: 'disclosures', input: 'DisclosuresSecInput', output: 'DisclosuresSecOutput', version: '0.2.0',
     contextKeys: Object.freeze([]),
     normalize: (v, request, context, binding) => ({input: v.normalizeDisclosuresInput(binding.id, request, clock(context, binding.contextKeys))}),
