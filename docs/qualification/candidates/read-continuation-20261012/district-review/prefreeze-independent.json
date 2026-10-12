@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-district-nexus-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-district-nexus-review-20261012",
+  "sourceHead": "2cbe6fe291b6fabc783798afc91075444904cad5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:34:03.485121+00:00",
+  "durationSeconds": 1.374,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 153341,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stdout.bin",
+      "bytes": 3830,
+      "sha256": "1e7feff155507ae9c7876565ecfe1048c82e66f417ac335940ea61701344e0ed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
