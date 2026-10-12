@@ -1,0 +1,40 @@
+{
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "read_only_discovery": true,
+  "database_execution": false,
+  "native_execution": false,
+  "files": {
+    "scripts/qualification/sdk-native-evidence-owner.mjs": {
+      "bytes": 7065,
+      "sha256": "e3dc2b73e5b5bee2f2464a57da6a4397b5f44083c6585dd27dc32730244c597f"
+    },
+    "scripts/qualification/sdk-stale-worker-challenge.mjs": {
+      "bytes": 3542,
+      "sha256": "8cf5066f6c1be96b88bc99111da914bb88ad2dcd5fe4c75acaffc562382b01b3"
+    },
+    "apps/control/qualification-sdk-fixture/service/control.mjs": {
+      "bytes": 4060,
+      "sha256": "dc56b528d8f5b111b8372084e898881827469c57de79b082e90fe56eb4656481"
+    },
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs": {
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510"
+    },
+    "apps/control/qualification-sdk-fixture/state/registry.mjs": {
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720"
+    },
+    "apps/control/qualification-temporal/workflow.ts": {
+      "bytes": 7703,
+      "sha256": "31ed39577ef3c60f83fcb6bbea23a5c627a217adb48052d205517cd984528650"
+    },
+    "apps/control/qualification-temporal/activities.ts": {
+      "bytes": 1837,
+      "sha256": "952015320fa259c2afd510eada5e1426fe1f1daad04bf1bfec80c3e5f5b35fd5"
+    },
+    "apps/worker/qualification/probes/sdk-interruption.mjs": {
+      "bytes": 12617,
+      "sha256": "2764babd954e95f07caf964ac14e57ee8a5a7d148d1527f97d1af4ea16b9040f"
+    }
+  }
+}
