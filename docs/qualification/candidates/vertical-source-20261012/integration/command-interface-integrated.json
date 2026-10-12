@@ -1,0 +1,40 @@
+{
+  "command": [
+    "env",
+    "MERI_REVIEW_SOURCE_ROOT=/workspace/meri-vertical-source-20261012",
+    "node",
+    "--test",
+    "--test-concurrency=2",
+    "apps/control/test/commands-tool-interface.test.mjs",
+    "apps/control/test/commands-tool-interface-independent.test.mjs",
+    "packages/contracts/test/command-tool-interface-independent.test.mjs",
+    "apps/control/test/commands-durable-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "92e28ca94073b5aee584c6ee3683719879493d48",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:57:20.418979+00:00",
+  "durationSeconds": 6.504,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 389172,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/command-interface-integrated.stdout.bin",
+      "bytes": 8500,
+      "sha256": "29006ee103fe9736673e6ce0c946707801858ec6c3463f45c6977c810086550a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/command-interface-integrated.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
