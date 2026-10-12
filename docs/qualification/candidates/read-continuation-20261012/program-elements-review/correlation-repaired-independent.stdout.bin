@@ -1,0 +1,128 @@
+✔ normalization preserves alias fallback, scalar defaults and clamps (6.914422ms)
+✔ UTF16 caps and detail32 selector preserve meaningful original admissions (1.37753ms)
+✔ context is required closed trusted mode and model arguments cannot supply it (1.184651ms)
+✔ detail full projection admitted in off (25.192503ms)
+✔ timeline null conflict projection admitted in off (16.59441ms)
+✔ detail full projection admitted in shadow (0.683227ms)
+✔ timeline null conflict projection admitted in shadow (0.516636ms)
+✔ detail full projection admitted in enforce (1.14448ms)
+✔ timeline null conflict projection admitted in enforce (0.93138ms)
+✔ search nullable residual claims preserve stored empty axes (14.25226ms)
+✔ search fully unavailable money retains null model claim (0.393672ms)
+✔ timeline unknown cycle and none claim are reachable with all null marks (0.665831ms)
+✔ detail selector case may differ through uppercase cache key (1.355798ms)
+✔ catalog detail cycle may differ from own row; no invented equality to rendered summary (0.371868ms)
+✔ all outputs are recursively detached from caller JSON (0.485619ms)
+✔ raw Decimal exact signed upper precision is distinct from numeric derived amounts (2.483663ms)
+✔ bad output data and hostile getters fail before execution (0.356065ms)
+✔ source-derived raw claims cannot substitute year amount (0.618079ms)
+✔ detail cycle anchor must echo programElement cycle (0.435684ms)
+✔ top current claim must match emitted current year claim (0.513201ms)
+✔ null year claim cannot conceal a valid integer year (0.613562ms)
+✔ enactment and vehicle fields cannot contradict stage (0.788986ms)
+✔ enforced semantics cannot invent enactment or amount (0.535244ms)
+✔ search funding label cannot contradict derived model claim (1.107754ms)
+✔ search funding warning cannot be rewritten as complete coverage (0.628725ms)
+✔ search request stage cannot emit a comparison direction (0.643967ms)
+✔ search total cannot be less than rows from same COUNT window (0.496026ms)
+✔ false hasData remains no filter and empty page total0 is allowed (0.263907ms)
+✔ trusted source identity does not arise from arbitrary exhibit pair (0.517237ms)
+✔ explicit procurement appropriation overrides PE-like code (0.294783ms)
+✔ search explicit line type outranks appropriation (0.284487ms)
+✔ lineage cannot reference only foreign endpoints (0.797839ms)
+✔ candidate lineage is permitted without identity merge claim (0.896988ms)
+✔ timeline current field cannot contradict request ladder (3.106518ms)
+✔ timeline cycle must match emitted global cycle FY (0.769136ms)
+✔ timeline null request cannot be classified present (0.558239ms)
+✔ timeline actual track absence cannot claim not applicable (0.410036ms)
+✔ timeline zero request conflicts suppress delta and preserve signed values (0.65264ms)
+✔ timeline conflicts cannot include zero or duplicate observations (0.942797ms)
+✔ timeline provenance observation dates must be finite canonical serialized times (0.571779ms)
+✔ forecast cached confidence remains finite but not invented percentage range (0.420983ms)
+✔ milestones preserve SQL date nulls and reject nonmidnight serialization (1.036758ms)
+✔ source arrays cannot invent unknown keys or duplicate yearly identities (1.343509ms)
+✔ NDAA-only mark establishes cycle while later request stays outyear (0.54589ms)
+✔ enacted zero wins ladder and remains enacted on an earlier historical year (0.297397ms)
+✖ outyear missing mark cannot invent active process or authorization gap (0.618229ms)
+✖ timeline arbitrary declared cycle cannot replace actual mark-bearing FY (0.527223ms)
+✔ timeline current delta must equal same-row signed amount difference (0.562796ms)
+✔ forecast fields are one nullable prediction projection rather than partial fabricated data (0.51295ms)
+✔ milestone projected unique type cannot be duplicated with different ID (0.584669ms)
+✔ milestones preserve observed planned-date ordering without collation assumptions (0.623477ms)
+✖ raw year FY and source firstSeenFY respect signed stored Int range (0.521714ms)
+✔ search total includes skipped rows when populated page uses same COUNT window (0.495165ms)
+✔ nonempty service or budget selector cannot return null filter fields (0.56548ms)
+✔ no ambient clock or synthetic tool authority is needed by pure normalization (0.105458ms)
+✔ search residual claims cannot contradict their retained labeled money (1.008546ms)
+✔ search comparable pair uses enacted-FY request rather than newest request (0.549566ms)
+✔ search same-year current direction describes actual sign, without money authority (0.522505ms)
+✔ derived signed delta retains native floating arithmetic while raw amounts stay lossless strings (0.449205ms)
+✔ cycles, sparse containers and callable values cannot enter raw JSON (0.565319ms)
+✔ unknown operation and hostile trusted context fail without supplied code execution (0.17282ms)
+✔ serialized dates cannot retain leap-second NaN or omit UTC milliseconds (0.947023ms)
+ℹ tests 62
+ℹ suites 0
+ℹ pass 59
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 464.86074
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:79:1
+✖ outyear missing mark cannot invent active process or authorization gap (0.618229ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:79:297)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:80:1
+✖ timeline arbitrary declared cycle cannot replace actual mark-bearing FY (0.527223ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:80:84)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-program-elements-independent.test.mjs:85:1
+✖ raw year FY and source firstSeenFY respect signed stored Int range (0.521714ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at rejectMutation (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:34:144)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-review-20261012/packages/contracts/test/retrieval-program-elements-independent.test.mjs:85:121)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
