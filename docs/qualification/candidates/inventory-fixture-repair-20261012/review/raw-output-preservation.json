@@ -1,0 +1,4 @@
+{
+  "observation": "Initial git diff --cached --check flagged two trailing-space lines in raw Node assertion output baseline.stdout.txt, at lines41/54.",
+  "preservation": "Original raw bytes retained exactly. Directory-local .gitattributes marks stdout/stderr as unnormalized raw evidence, following existing qualification evidence convention. No source/test line or failing assertion was changed."
+}

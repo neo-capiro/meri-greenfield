@@ -1,0 +1,102 @@
+✔ pre-aborted authorizeFixturePhase does not start any port (4.18914ms)
+✔ pre-aborted commitFixtureCheckpoint does not start any port (0.860982ms)
+✔ pre-aborted loadFixtureCheckpoint does not start any port (1.162435ms)
+✔ pre-aborted verifyFixtureCheckpoint does not start any port (0.92566ms)
+✔ cancelled authorizeFixturePhase final response is refused (2.536618ms)
+✔ cancelled commitFixtureCheckpoint final response is refused (12.00217ms)
+✔ cancelled loadFixtureCheckpoint final response is refused (5.282181ms)
+✔ cancelled verifyFixtureCheckpoint final response is refused (3.447325ms)
+✔ expiry after object preparation prevents publication (0.953031ms)
+✔ abort during late ambiguous publish propagates ambiguity without starting reconciliation (3.368819ms)
+✔ expiry during ambiguity readback refuses a successful response (2.715678ms)
+✔ expired historical A does not block current B load or verification (6.312989ms)
+✖ parked ambiguity readback abort preserves original uncertainty (3.733105ms)
+✖ parked ambiguity readback expiry preserves original uncertainty (2.842308ms)
+✖ parked ambiguity readback rejection preserves original uncertainty (2.275697ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 12
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 467.176759
+
+✖ failing tests:
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:73:56
+✖ parked ambiguity readback abort preserves original uncertainty (3.733105ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: FIXTURE_SERVICE_REFUSED
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: FIXTURE_SERVICE_REFUSED
+        at fail (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:12:28)
+        at active (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:69:26)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:119:7)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:73:56
+✖ parked ambiguity readback expiry preserves original uncertainty (2.842308ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: FIXTURE_CLOCK_OR_EXPIRY
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: FIXTURE_CLOCK_OR_EXPIRY
+        at fail (file:///workspace/meri-g1-next-behavior-20261012/packages/contracts/qualification-sdk/validate.mjs:21:30)
+        at clock (file:///workspace/meri-g1-next-behavior-20261012/packages/contracts/qualification-sdk/validate.mjs:69:70)
+        at assertFixtureContext (file:///workspace/meri-g1-next-behavior-20261012/packages/contracts/qualification-sdk/validate.mjs:72:45)
+        at active (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:70:5)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:119:7)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:73:56
+✖ parked ambiguity readback rejection preserves original uncertainty (2.275697ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: synthetic-readback-unavailable
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: synthetic-readback-unavailable
+        at file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:84:41
+        at async port (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:16:59)
+        at async Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:118:24)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs:89:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

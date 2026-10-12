@@ -1,0 +1,28 @@
+{
+  "sourceOnly": true,
+  "runtimeAdmitted": false,
+  "buildAuthorized": false,
+  "contextMembers": 53,
+  "contextTotalBytes": 996428,
+  "contextManifestSha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+  "assemblerSha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851",
+  "historicalContextSha256": "18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda",
+  "historicalAssemblerSha256": "67c1cf554e80c62eeb56b6dcb9be00106adf9b1b8b40beba85249de662b835eb",
+  "baselineBuildSuite": {
+    "passed": 34,
+    "failed": 1,
+    "errors": 1
+  },
+  "candidateBuildSuite": {
+    "passed": 35,
+    "failed": 0,
+    "errors": 1,
+    "error": "fixed owner Python runtime: required unchanged Windows3.12.14 executable is absent on this Linux executor"
+  },
+  "inventorySuite": {
+    "passed": 26
+  },
+  "contextSuite": {
+    "passed": 17
+  }
+}

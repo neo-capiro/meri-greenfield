@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/worker-source-guards-20261012/review/guard-controls.py",
+    "/workspace/meri-g1-executable-source-20261012",
+    "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/g1-next-behavior-20261012/integration/source-guard-controls.json",
+    "0cc7d99"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "0cc7d9929a279f10726cc969b075ac8d71c6fe4e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:57:18.450622+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 42179,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/independent-source-guards.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/independent-source-guards.stderr.bin",
+      "bytes": 1048,
+      "sha256": "f36a472450f8a5f63496016b74018539068b997f54ff8a5c4af0898d6d28a945"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

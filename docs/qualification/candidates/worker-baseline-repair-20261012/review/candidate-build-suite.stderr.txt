@@ -1,0 +1,54 @@
+test_authority_credentials_refused (test_worker_image_build.Controls.test_authority_credentials_refused) ... ok
+test_authority_full_identity_and_role (test_worker_image_build.Controls.test_authority_full_identity_and_role) ... ok
+test_bounded_bundle_prefix_and_exclusions (test_worker_image_build.Controls.test_bounded_bundle_prefix_and_exclusions) ... ok
+test_build_ack_full_source_and_retry (test_worker_image_build.Controls.test_build_ack_full_source_and_retry) ... ok
+test_bundle_after_copy_metadata_failure_retained (test_worker_image_build.Controls.test_bundle_after_copy_metadata_failure_retained) ... ok
+test_cleanup_inspect_retains_exact_cid_and_volume_set (test_worker_image_build.Controls.test_cleanup_inspect_retains_exact_cid_and_volume_set) ... ok
+test_collector_full_source_preflight_and_drift (test_worker_image_build.Controls.test_collector_full_source_preflight_and_drift) ... ok
+test_context_manifest_pin_tracks_candidate_bytes (test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes) ... ok
+test_create_ack_bound_to_owned_inspect_before_artifacts (test_worker_image_build.Controls.test_create_ack_bound_to_owned_inspect_before_artifacts) ... ok
+test_dispatch_one_upload_one_start (test_worker_image_build.Controls.test_dispatch_one_upload_one_start) ... ok
+test_foreign_create_never_remove (test_worker_image_build.Controls.test_foreign_create_never_remove) ... ok
+test_full_ack_retry_fields_are_closed_integer_zero (test_worker_image_build.Controls.test_full_ack_retry_fields_are_closed_integer_zero) ... ok
+test_full_ack_zero_counter_does_not_waive_other_bindings (test_worker_image_build.Controls.test_full_ack_zero_counter_does_not_waive_other_bindings) ... ok
+test_image_iid_platform_volumes_credentials (test_worker_image_build.Controls.test_image_iid_platform_volumes_credentials) ... ok
+test_initial_full_ack_with_zero_retry_counter (test_worker_image_build.Controls.test_initial_full_ack_with_zero_retry_counter) ... ok
+test_inventory_frozen_binary_pins_and_source_entries (test_worker_image_build.Controls.test_inventory_frozen_binary_pins_and_source_entries) ... ok
+test_json_finite_floats_preserved (test_worker_image_build.Controls.test_json_finite_floats_preserved) ... ok
+test_json_float_overflow_and_nested_nonfinite_refused (test_worker_image_build.Controls.test_json_float_overflow_and_nested_nonfinite_refused) ... ok
+test_lost_ack_consumes_forever (test_worker_image_build.Controls.test_lost_ack_consumes_forever) ... ok
+test_lost_create_ack_owned_cleanup_both_volumes (test_worker_image_build.Controls.test_lost_create_ack_owned_cleanup_both_volumes) ... ok
+test_membership_rejects_extra_missing_duplicate_and_wrong_shape (test_worker_image_build.Controls.test_membership_rejects_extra_missing_duplicate_and_wrong_shape) ... ok
+test_pagination_before_reserve (test_worker_image_build.Controls.test_pagination_before_reserve) ... ok
+test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins) ... ERROR
+test_recipe_fixed_build_only (test_worker_image_build.Controls.test_recipe_fixed_build_only) ... ok
+test_review_separate_exact_and_fresh (test_worker_image_build.Controls.test_review_separate_exact_and_fresh) ... ok
+test_source_missing_and_duplicate_before_output (test_worker_image_build.Controls.test_source_missing_and_duplicate_before_output) ... ok
+test_strict_json (test_worker_image_build.Controls.test_strict_json) ... ok
+test_tar_exact_regular (test_worker_image_build.Controls.test_tar_exact_regular) ... ok
+test_two_owned_anonymous_volumes (test_worker_image_build.Controls.test_two_owned_anonymous_volumes) ... ok
+test_version_no_null_and_no_retry (test_worker_image_build.Controls.test_version_no_null_and_no_retry) ... ok
+test_cli_invalid_binding_and_override_refuse_before_cloud_or_slot (test_worker_image_build.FreshRunnerBinding.test_cli_invalid_binding_and_override_refuse_before_cloud_or_slot) ... ok
+test_distinct_review_binds_complete_proposal_and_ten_minute_window (test_worker_image_build.FreshRunnerBinding.test_distinct_review_binds_complete_proposal_and_ten_minute_window) ... ok
+test_exact_new_binding_preserves_historical_execution_identity (test_worker_image_build.FreshRunnerBinding.test_exact_new_binding_preserves_historical_execution_identity) ... ok
+test_missing_fresh_observation_and_stale_write_identity_refused (test_worker_image_build.FreshRunnerBinding.test_missing_fresh_observation_and_stale_write_identity_refused) ... ok
+test_proposal_refuses_missing_extra_duplicate_and_unsafe_files (test_worker_image_build.FreshRunnerBinding.test_proposal_refuses_missing_extra_duplicate_and_unsafe_files) ... ok
+test_proposal_refuses_wrong_target_or_unpinned_closure (test_worker_image_build.FreshRunnerBinding.test_proposal_refuses_wrong_target_or_unpinned_closure) ... ok
+
+======================================================================
+ERROR: test_real_owner_execution_closure_pins (test_worker_image_build.Controls.test_real_owner_execution_closure_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/test_worker_image_build.py", line 151, in test_real_owner_execution_closure_pins
+    rows = build.pins(); values = {r['path']: r for r in rows}
+           ^^^^^^^^^^^^
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_build.py", line 59, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.041s
+
+FAILED (errors=1)

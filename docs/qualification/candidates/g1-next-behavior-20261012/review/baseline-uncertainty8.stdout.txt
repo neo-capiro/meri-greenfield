@@ -1,0 +1,165 @@
+✖ independent canceled unknown publication preserves original error without readback (30.814323ms)
+✖ independent abort during parked readback preserves original uncertain liability (2.992351ms)
+✖ independent expiry during parked readback preserves original uncertain liability (2.292581ms)
+✖ independent readback outage retains original unknown commit, without retry (2.261565ms)
+✖ independent foreign readback remains typed uncertain with content-free refusal (2.513933ms)
+✖ independent absent readback remains typed uncertain with content-free refusal (2.282586ms)
+✖ independent malformed readback remains typed uncertain with content-free refusal (2.14467ms)
+✔ independent current exact immutable readback resolves uncertainty and releases canonical receipt (2.869076ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 1
+ℹ fail 7
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 566.48058
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:39:1
+✖ independent canceled unknown publication preserves original error without readback (30.814323ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  AssertionError [ERR_ASSERTION]: readback forbidden
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:41:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: AssertionError [ERR_ASSERTION]: readback forbidden
+        at file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:40:32
+        at Object.readPublication (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:22:59)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:98:39)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:41:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:45:43
+✖ independent abort during parked readback preserves original uncertain liability (2.992351ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:57:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:45:43
+✖ independent expiry during parked readback preserves original uncertain liability (2.292581ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:57:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:61:1
+✖ independent readback outage retains original unknown commit, without retry (2.261565ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: synthetic read unavailable
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:63:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: synthetic read unavailable
+        at file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:62:33
+        at Object.readPublication (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:22:59)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:98:39)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:63:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:67:59
+✖ independent foreign readback remains typed uncertain with content-free refusal (2.513933ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: FIXTURE_SERVICE_REFUSED
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: FIXTURE_SERVICE_REFUSED
+        at fail (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:12:28)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:99:91)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:67:59
+✖ independent absent readback remains typed uncertain with content-free refusal (2.282586ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: FIXTURE_SERVICE_REFUSED
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: FIXTURE_SERVICE_REFUSED
+        at fail (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:12:28)
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:99:91)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:67:59
+✖ independent malformed readback remains typed uncertain with content-free refusal (2.14467ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  TypeError: Cannot read properties of null (reading 'outcome')
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: TypeError: Cannot read properties of null (reading 'outcome')
+        at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-review-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:99:20)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs:71:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }

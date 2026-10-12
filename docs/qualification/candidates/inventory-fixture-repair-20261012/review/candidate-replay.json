@@ -1,0 +1,112 @@
+{
+  "candidate_commit": "0ea9b778c983108f664455e7fc4e195a0a33148a",
+  "candidate_tree": "212590b14e9b737e3ca27dfba5f80530898e604b",
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "reviewed_at_utc": "2026-10-12T03:46:06.822033+00:00",
+  "existing_modified_paths": [
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "original_test_exact_prefix_after_removing_setup": true,
+  "original_tests": 25,
+  "candidate_tests": 26,
+  "test": {
+    "bytes": 27407,
+    "sha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3"
+  },
+  "production_probe": {
+    "bytes": 17978,
+    "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+    "unchanged": true
+  },
+  "context": {
+    "members": 53,
+    "bytes": 996428,
+    "manifest_bytes": 11180,
+    "manifest_sha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+    "assembler_sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+  },
+  "checks": [
+    {
+      "label": "candidate-original-and-appended",
+      "argv": [
+        "node",
+        "--test",
+        "apps/worker/qualification/probes/image-inventory.test.mjs"
+      ],
+      "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "duration_seconds": 4.141
+    },
+    {
+      "label": "candidate-context-suite",
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/qualification",
+        "-p",
+        "worker_context_test.py",
+        "-v"
+      ],
+      "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "duration_seconds": 0.485
+    },
+    {
+      "label": "candidate-independent-mutations",
+      "argv": [
+        "python3",
+        "-B",
+        "/workspace/meri-inventory-fixture-review-20261012/docs/qualification/candidates/inventory-fixture-repair-20261012/review/mutation-controls.py",
+        "/workspace/meri-inventory-fixture-repair-20261012/apps/worker/qualification/probes/image-inventory.py",
+        "/workspace/meri-inventory-fixture-review-20261012/docs/qualification/candidates/inventory-fixture-repair-20261012/review/candidate-mutation-controls.json"
+      ],
+      "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+      "exit_code": 0,
+      "expected_exit": 0,
+      "duration_seconds": 0.105
+    },
+    {
+      "label": "candidate-stale-context-guard",
+      "argv": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "test_worker_image_build.Controls.test_context_manifest_pin_tracks_candidate_bytes"
+      ],
+      "cwd": "/workspace/meri-inventory-fixture-repair-20261012/scripts/qualification",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "duration_seconds": 0.129
+    },
+    {
+      "label": "candidate-size-blind-mutant",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=directory sizes remain captured",
+        "/tmp/meri-inventory-review-mutant-v234jfh_/image-inventory.test.mjs"
+      ],
+      "cwd": "/workspace/meri-inventory-fixture-repair-20261012",
+      "exit_code": 1,
+      "expected_exit": 1,
+      "duration_seconds": 0.196
+    }
+  ],
+  "size_blind_mutant": {
+    "production_sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+    "mutant_sha256": "dbea6d6f3385c43769a67aba3f435c21ba891a8b07134dd1a776bcb3da5884c1",
+    "mutation": "Only st_size is replaced with0 in _identity, in an isolated temporary copy.",
+    "test_bytes_match_candidate": true,
+    "temp_removed_after": "/tmp/meri-inventory-review-mutant-v234jfh_",
+    "temporary_copy_removed": true
+  },
+  "author_worktree_clean": true,
+  "no_image_native_cloud_provider_calls": true
+}

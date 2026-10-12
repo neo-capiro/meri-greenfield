@@ -1,0 +1,33 @@
+✔ independent positive authorizeFixturePhase (7.156435ms)
+✔ independent positive commitFixtureCheckpoint (13.597626ms)
+✔ independent positive loadFixtureCheckpoint (6.82641ms)
+✔ independent positive verifyFixtureCheckpoint (5.629655ms)
+✔ independent aborted before authorizeFixturePhase starts zero ports (1.446419ms)
+✔ independent aborted before commitFixtureCheckpoint starts zero ports (0.595714ms)
+✔ independent aborted before loadFixtureCheckpoint starts zero ports (0.658368ms)
+✔ independent aborted before verifyFixtureCheckpoint starts zero ports (0.535313ms)
+✔ independent abort after parked authorizeFixturePhase/authorize:1 causes no next port or success (1.223815ms)
+✔ independent abort after parked commitFixtureCheckpoint/authorize:1 causes no next port or success (0.739909ms)
+✔ independent abort after parked commitFixtureCheckpoint/prepare:1 causes no next port or success (0.746209ms)
+✔ independent abort after parked commitFixtureCheckpoint/publish:1 causes no next port or success (2.816535ms)
+✔ independent abort after parked loadFixtureCheckpoint/load:1 causes no next port or success (0.548042ms)
+✔ independent abort after parked loadFixtureCheckpoint/objects:1 causes no next port or success (0.655343ms)
+✔ independent abort after parked loadFixtureCheckpoint/load:2 causes no next port or success (2.316155ms)
+✔ independent abort after parked verifyFixtureCheckpoint/load:1 causes no next port or success (0.532889ms)
+✔ independent abort after parked verifyFixtureCheckpoint/objects:1 causes no next port or success (0.544437ms)
+✔ independent abort after parked verifyFixtureCheckpoint/verify:1 causes no next port or success (2.765188ms)
+✔ independent expiry during final commitFixtureCheckpoint port never releases success (3.254251ms)
+✔ independent expiry during final loadFixtureCheckpoint port never releases success (2.504477ms)
+✔ independent expiry during final verifyFixtureCheckpoint port never releases success (4.365909ms)
+✔ independent ambiguous commit aborted before catch starts no reconciliation (2.807641ms)
+✔ independent abort during ambiguity readback never releases reconciled receipt (2.716044ms)
+✔ independent expiry during ambiguity readback never releases reconciled receipt (2.763646ms)
+✔ independent active ambiguous commit still reconciles original identity (3.897326ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 883.647789

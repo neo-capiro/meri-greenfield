@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/meri-worker-baseline-review-20261012/docs/qualification/candidates/worker-baseline-repair-20261012/review/baseline-controls.py",
+    "/workspace/meri-g1-executable-source-20261012",
+    "a511cc15adb737386e0a9fe51127d4d10805b1e2",
+    "/workspace/meri-worker-baseline-review-20261012/docs/qualification/candidates/worker-baseline-repair-20261012/review/independent-controls.json"
+  ],
+  "exit_code": 0,
+  "duration_seconds": 0.428
+}

@@ -23,8 +23,8 @@ import worker_image_collect as collector
 import worker_image_manifest as manifest_owner
 
 ROOT = Path(__file__).resolve().parents[2]
-# Reviewed private wire decoding is part of the immutable worker source baseline.
-REFERENCE = 'f118ff55dfb96ba4b44099953e6c9724064b723d'
+# Accepted PR7 includes reviewed recovery/native-evidence source; runtime remains unqualified.
+REFERENCE = '5ee46446b5f60034916f00b2a665b3e2bef9cf60'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'

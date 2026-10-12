@@ -1,0 +1,14 @@
+✔ pre-checkpoint revocation locks run then grant, records once, and denies future authorization (7.19356ms)
+✔ every stored run and grant field must match before mutation (18.523064ms)
+✔ expired exact context can revoke; future admission, invalid DB clock and missing rows cannot (2.234969ms)
+✔ stale A cannot revoke current B and wrong peer cannot revoke current A (0.763477ms)
+✔ detached input survives caller mutation during lock wait; accessors fail before transaction (1.451722ms)
+✔ unknown commit acknowledgement propagates without retry or inferred success (1.511281ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 465.892724

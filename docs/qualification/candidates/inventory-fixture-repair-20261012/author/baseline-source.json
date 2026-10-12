@@ -1,0 +1,10 @@
+{
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "testPath": "apps/worker/qualification/probes/image-inventory.test.mjs",
+  "testSha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7",
+  "testBytes": 25547,
+  "productionProbeSha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+  "captureSource": "docs/qualification/candidates/source-continuation-20261012/capture-reaped.py",
+  "captureSourceSha256": "fb022939142f296b5d6bbf90d73933c0933852ab23e99ac8ce8be48d1659a4c3",
+  "captureAdaptation": "Owned evidence root depth, 120-second command bound and explicit per-command reason; same process-group subreaper cleanup."
+}

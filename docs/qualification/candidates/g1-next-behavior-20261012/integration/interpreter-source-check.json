@@ -1,0 +1,34 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/native-interpreter-recovery-20261012/author/static-readback.py"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "82195128fb2de6a8f330436fc710c87214740b02",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:56:06.851670+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 41961,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/interpreter-source-check.stdout.bin",
+      "bytes": 6577,
+      "sha256": "21f4ceae1739093845ac19b2f12ce530788b558019480f352a8ac6443fe0910e"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/interpreter-source-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

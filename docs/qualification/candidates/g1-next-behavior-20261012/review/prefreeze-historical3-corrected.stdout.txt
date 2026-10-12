@@ -1,0 +1,11 @@
+✔ independent historical A expiry canonical semantics loadFixtureCheckpoint (20.357185ms)
+✔ independent historical A expiry canonical semantics verifyFixtureCheckpoint (7.418272ms)
+✔ independent historical A expiry canonical semantics authorizeFixturePhase (1.839513ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 752.873359

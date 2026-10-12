@@ -1,0 +1,23 @@
+test_aggregate_bound_refused_before_allocation (worker_context_test.WorkerContextTests.test_aggregate_bound_refused_before_allocation) ... ok
+test_context_extra_missing_and_drift_each_refused (worker_context_test.WorkerContextTests.test_context_extra_missing_and_drift_each_refused) ... ok
+test_deadline_refused_before_allocation (worker_context_test.WorkerContextTests.test_deadline_refused_before_allocation) ... ok
+test_exact_raw_copy_excludes_private_and_unselected_files (worker_context_test.WorkerContextTests.test_exact_raw_copy_excludes_private_and_unselected_files) ... ok
+test_existing_output_is_unchanged (worker_context_test.WorkerContextTests.test_existing_output_is_unchanged) ... ok
+test_extra_directory_and_output_file_refused (worker_context_test.WorkerContextTests.test_extra_directory_and_output_file_refused) ... ok
+test_file_bound_refused_before_allocation (worker_context_test.WorkerContextTests.test_file_bound_refused_before_allocation) ... ok
+test_hardlink_source_refused_before_allocation (worker_context_test.WorkerContextTests.test_hardlink_source_refused_before_allocation) ... ok
+test_manifest_unknown_duplicate_and_wrong_member_refused (worker_context_test.WorkerContextTests.test_manifest_unknown_duplicate_and_wrong_member_refused) ... ok
+test_missing_source_refused_before_output_allocation (worker_context_test.WorkerContextTests.test_missing_source_refused_before_output_allocation) ... ok
+test_partial_write_is_retained_and_cannot_be_reused (worker_context_test.WorkerContextTests.test_partial_write_is_retained_and_cannot_be_reused) ... ok
+test_real_native_observation_import_closure_is_in_fixed_context (worker_context_test.WorkerContextTests.test_real_native_observation_import_closure_is_in_fixed_context)
+Check image relocation, not just a synthetic copy of member rows. ... ok
+test_relative_and_parent_traversal_output_refused (worker_context_test.WorkerContextTests.test_relative_and_parent_traversal_output_refused) ... ok
+test_source_after_assembly_drift_refused (worker_context_test.WorkerContextTests.test_source_after_assembly_drift_refused) ... ok
+test_source_drift_during_copy_refused_without_manifest (worker_context_test.WorkerContextTests.test_source_drift_during_copy_refused_without_manifest) ... ok
+test_source_identity_change_late_in_verification_refused (worker_context_test.WorkerContextTests.test_source_identity_change_late_in_verification_refused) ... ok
+test_symlink_source_refused_before_allocation (worker_context_test.WorkerContextTests.test_symlink_source_refused_before_allocation) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.376s
+
+OK

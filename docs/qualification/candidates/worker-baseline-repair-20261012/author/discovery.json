@@ -1,0 +1,277 @@
+{
+  "historicalReference": "f118ff55dfb96ba4b44099953e6c9724064b723d",
+  "proposedAcceptedReference": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "stableMembers": 44,
+  "historicalDriftCount": 17,
+  "historicalMissingCount": 9,
+  "historicalChangedCount": 8,
+  "allCurrentStableBytesEqualAcceptedPR7": true,
+  "records": [
+    {
+      "path": "apps/worker/qualification/requirements.lock.txt",
+      "historical": "100644 blob 40ae212b4089621ed69cf059f876f3cee7118bb6",
+      "current": "100644 blob 40ae212b4089621ed69cf059f876f3cee7118bb6",
+      "acceptedPR7": "100644 blob 40ae212b4089621ed69cf059f876f3cee7118bb6"
+    },
+    {
+      "path": "apps/worker/qualification/sdk-options.mjs",
+      "historical": "100644 blob 4f8f2097b616469bf353904c18c23ee238019a50",
+      "current": "100644 blob 4f8f2097b616469bf353904c18c23ee238019a50",
+      "acceptedPR7": "100644 blob 4f8f2097b616469bf353904c18c23ee238019a50"
+    },
+    {
+      "path": "apps/worker/qualification/vendor/capiro-meri-contracts-0.1.0.tgz",
+      "historical": "100644 blob ad34bb186699fd0af365b973ca5de9e820802c0c",
+      "current": "100644 blob ad34bb186699fd0af365b973ca5de9e820802c0c",
+      "acceptedPR7": "100644 blob ad34bb186699fd0af365b973ca5de9e820802c0c"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/native-session-files.mjs",
+      "historical": "100644 blob 58c0287dddf62e62fdb000a97e2fe7f31d1d387c",
+      "current": "100644 blob ac138c990adeae889c1a4624acab523324669c37",
+      "acceptedPR7": "100644 blob ac138c990adeae889c1a4624acab523324669c37"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.mjs",
+      "historical": "100644 blob 62df796b6ca136f5f3ff581fe8faadf15ff8aed0",
+      "current": "100644 blob c19b6d13a44e37ff7bad5f3dc243262551706925",
+      "acceptedPR7": "100644 blob c19b6d13a44e37ff7bad5f3dc243262551706925"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-channel.test.mjs",
+      "historical": "100644 blob f4304bbf76f2d1d1c2279eddf3cb4d08b1528534",
+      "current": "100644 blob 399c25ad10f4d2949a945fba664c7739408b8190",
+      "acceptedPR7": "100644 blob 399c25ad10f4d2949a945fba664c7739408b8190"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.mjs",
+      "historical": "100644 blob 80ddde5b38c8502815ee9e56dc9835ee19af06e6",
+      "current": "100644 blob 80ddde5b38c8502815ee9e56dc9835ee19af06e6",
+      "acceptedPR7": "100644 blob 80ddde5b38c8502815ee9e56dc9835ee19af06e6"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-transport.test.mjs",
+      "historical": "100644 blob 0d05f657418be0a1a231d5c17f1526cc09022071",
+      "current": "100644 blob 0d05f657418be0a1a231d5c17f1526cc09022071",
+      "acceptedPR7": "100644 blob 0d05f657418be0a1a231d5c17f1526cc09022071"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "historical": null,
+      "current": "100644 blob 673897f40e40271b785e848b8429452d5b6889ff",
+      "acceptedPR7": "100644 blob 673897f40e40271b785e848b8429452d5b6889ff"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.test.mjs",
+      "historical": null,
+      "current": "100644 blob 3c2e70c5d25d23bc0b245c7887b188c8b4ac53d9",
+      "acceptedPR7": "100644 blob 3c2e70c5d25d23bc0b245c7887b188c8b4ac53d9"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.mjs",
+      "historical": null,
+      "current": "100644 blob 50c92785b6e2316daf3b299555c4f8d46c4d6a5b",
+      "acceptedPR7": "100644 blob 50c92785b6e2316daf3b299555c4f8d46c4d6a5b"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/fixture-sentinel.test.mjs",
+      "historical": null,
+      "current": "100644 blob c269addaaff054ded85aaac3b9c1c5352a992de0",
+      "acceptedPR7": "100644 blob c269addaaff054ded85aaac3b9c1c5352a992de0"
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.mjs",
+      "historical": "100644 blob 97d3ccd7b94b1596fae8af8be0300b259bc4870e",
+      "current": "100644 blob 97d3ccd7b94b1596fae8af8be0300b259bc4870e",
+      "acceptedPR7": "100644 blob 97d3ccd7b94b1596fae8af8be0300b259bc4870e"
+    },
+    {
+      "path": "apps/worker/qualification/probes/artifacts.py",
+      "historical": "100644 blob b3504a60cec4feec286871266ed237a7c59ff970",
+      "current": "100644 blob b3504a60cec4feec286871266ed237a7c59ff970",
+      "acceptedPR7": "100644 blob b3504a60cec4feec286871266ed237a7c59ff970"
+    },
+    {
+      "path": "apps/worker/qualification/probes/browser.mjs",
+      "historical": "100644 blob e30bc8b0c60f5d405f3f11b9c0217a7bbec4ba2b",
+      "current": "100644 blob e30bc8b0c60f5d405f3f11b9c0217a7bbec4ba2b",
+      "acceptedPR7": "100644 blob e30bc8b0c60f5d405f3f11b9c0217a7bbec4ba2b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.mjs",
+      "historical": "100644 blob 5fadcc2556aa377fbf64913f43006940a3d524c7",
+      "current": "100644 blob 5fadcc2556aa377fbf64913f43006940a3d524c7",
+      "acceptedPR7": "100644 blob 5fadcc2556aa377fbf64913f43006940a3d524c7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-export.test.mjs",
+      "historical": "100644 blob cada9978d77c410974e7c912336ab7e826b53928",
+      "current": "100644 blob cada9978d77c410974e7c912336ab7e826b53928",
+      "acceptedPR7": "100644 blob cada9978d77c410974e7c912336ab7e826b53928"
+    },
+    {
+      "path": "apps/worker/qualification/probes/office-reconstruct.mjs",
+      "historical": "100644 blob ee97f951488c2c3e63d287ad0b8e78050d075529",
+      "current": "100644 blob ee97f951488c2c3e63d287ad0b8e78050d075529",
+      "acceptedPR7": "100644 blob ee97f951488c2c3e63d287ad0b8e78050d075529"
+    },
+    {
+      "path": "apps/worker/qualification/probes/runtime.mjs",
+      "historical": "100644 blob 0d03204ebbd431731ef775e6bb42d4bc98178273",
+      "current": "100644 blob 0d03204ebbd431731ef775e6bb42d4bc98178273",
+      "acceptedPR7": "100644 blob 0d03204ebbd431731ef775e6bb42d4bc98178273"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.mjs",
+      "historical": "100644 blob 1ecbfb495fe2dce7abfda606ca5464ad94f46625",
+      "current": "100644 blob f4a88923d76071f626d1c4185df3d951e8709bb1",
+      "acceptedPR7": "100644 blob f4a88923d76071f626d1c4185df3d951e8709bb1"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture.test.mjs",
+      "historical": "100644 blob 6bb8cfc737075202b53f40effc370a9c99e08835",
+      "current": "100644 blob 0a1fff8bc3d0122ab272ba6435c7923ae798ee5d",
+      "acceptedPR7": "100644 blob 0a1fff8bc3d0122ab272ba6435c7923ae798ee5d"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-observations.mjs",
+      "historical": null,
+      "current": "100644 blob 4883956527e67ef9cdd99e0b1e3bbc3fa5716553",
+      "acceptedPR7": "100644 blob 4883956527e67ef9cdd99e0b1e3bbc3fa5716553"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-stream-observer.mjs",
+      "historical": null,
+      "current": "100644 blob 83b3d84e0012d9dd4896ebf57c18af01a7c56e78",
+      "acceptedPR7": "100644 blob 83b3d84e0012d9dd4896ebf57c18af01a7c56e78"
+    },
+    {
+      "path": "apps/worker/qualification/probes/native-namespace-observer.mjs",
+      "historical": null,
+      "current": "100644 blob a341c24b4765b4005b18eec554ee4b312c317dd7",
+      "acceptedPR7": "100644 blob a341c24b4765b4005b18eec554ee4b312c317dd7"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-capture-options.mjs",
+      "historical": "100644 blob b3fda1d1579f2d96aed9ccfd76a34dda3138b740",
+      "current": "100644 blob b3fda1d1579f2d96aed9ccfd76a34dda3138b740",
+      "acceptedPR7": "100644 blob b3fda1d1579f2d96aed9ccfd76a34dda3138b740"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.mjs",
+      "historical": "100644 blob 55d9aba11a9b73fbdc67ed18aab3ac492553b21b",
+      "current": "100644 blob 55d9aba11a9b73fbdc67ed18aab3ac492553b21b",
+      "acceptedPR7": "100644 blob 55d9aba11a9b73fbdc67ed18aab3ac492553b21b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-options.test.mjs",
+      "historical": "100644 blob 17f6c19c24c8dc18d1d878532b462c2e05dfa6b6",
+      "current": "100644 blob 17f6c19c24c8dc18d1d878532b462c2e05dfa6b6",
+      "acceptedPR7": "100644 blob 17f6c19c24c8dc18d1d878532b462c2e05dfa6b6"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.mjs",
+      "historical": "100644 blob 5c8eb172459f516d7fe55304556f266a625e0378",
+      "current": "100644 blob 5c8eb172459f516d7fe55304556f266a625e0378",
+      "acceptedPR7": "100644 blob 5c8eb172459f516d7fe55304556f266a625e0378"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-discovery-tools.test.mjs",
+      "historical": "100644 blob 77f797014fa84ef1b612a0ae6113884291d7a09f",
+      "current": "100644 blob 77f797014fa84ef1b612a0ae6113884291d7a09f",
+      "acceptedPR7": "100644 blob 77f797014fa84ef1b612a0ae6113884291d7a09f"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.mjs",
+      "historical": "100644 blob 1fc638c269742776d6036c7605ebd6350bffc503",
+      "current": "100644 blob 75803a2a6079cc687708f3628ffc462c50a3e1e4",
+      "acceptedPR7": "100644 blob 75803a2a6079cc687708f3628ffc462c50a3e1e4"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption.test.mjs",
+      "historical": "100644 blob 4560f43d308535101782a8616cf8722948176bc8",
+      "current": "100644 blob 2047a97d6ea67e015c14548e548392cb2dd9ce4b",
+      "acceptedPR7": "100644 blob 2047a97d6ea67e015c14548e548392cb2dd9ce4b"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-options.mjs",
+      "historical": "100644 blob a1461381c43d729007098bf70351d5737b173e6d",
+      "current": "100644 blob a1461381c43d729007098bf70351d5737b173e6d",
+      "acceptedPR7": "100644 blob a1461381c43d729007098bf70351d5737b173e6d"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.mjs",
+      "historical": "100644 blob c7708d03e4284662ad04409d8f1217a07f47a860",
+      "current": "100644 blob c7708d03e4284662ad04409d8f1217a07f47a860",
+      "acceptedPR7": "100644 blob c7708d03e4284662ad04409d8f1217a07f47a860"
+    },
+    {
+      "path": "apps/worker/qualification/probes/sdk-interruption-loopback.test.mjs",
+      "historical": "100644 blob b2f21ee253f632b712ecfc6362d9074e18aa4c8e",
+      "current": "100644 blob b2f21ee253f632b712ecfc6362d9074e18aa4c8e",
+      "acceptedPR7": "100644 blob b2f21ee253f632b712ecfc6362d9074e18aa4c8e"
+    },
+    {
+      "path": "scripts/sdk-capture/json-records.mjs",
+      "historical": "100644 blob fa8ab20d712358feede92b337e86547dd732a5fa",
+      "current": "100644 blob fa8ab20d712358feede92b337e86547dd732a5fa",
+      "acceptedPR7": "100644 blob fa8ab20d712358feede92b337e86547dd732a5fa"
+    },
+    {
+      "path": "scripts/sdk-capture/protocol.mjs",
+      "historical": "100644 blob 77daa19549383ffe9d09c8893cfbd6811c382e6a",
+      "current": "100644 blob 77daa19549383ffe9d09c8893cfbd6811c382e6a",
+      "acceptedPR7": "100644 blob 77daa19549383ffe9d09c8893cfbd6811c382e6a"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "historical": "100644 blob 2effe37084e7d20c20a33dc0104baea237f7d309",
+      "current": "100644 blob 2effe37084e7d20c20a33dc0104baea237f7d309",
+      "acceptedPR7": "100644 blob 2effe37084e7d20c20a33dc0104baea237f7d309"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "historical": "100644 blob d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "current": "100644 blob d7b3c22491ae81c5e875243754413aa7d35097e3",
+      "acceptedPR7": "100644 blob d7b3c22491ae81c5e875243754413aa7d35097e3"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "historical": "100644 blob de2af109f72c07ecaec06edc0411d034e753881a",
+      "current": "100644 blob 827e3c6f29cd77ef62fa9d341df2e2c45c7be187",
+      "acceptedPR7": "100644 blob 827e3c6f29cd77ef62fa9d341df2e2c45c7be187"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "historical": "100644 blob f643c958081f531922121a368cf02c265a85fdd7",
+      "current": "100644 blob f643c958081f531922121a368cf02c265a85fdd7",
+      "acceptedPR7": "100644 blob f643c958081f531922121a368cf02c265a85fdd7"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "historical": "100644 blob ba6207f79be5dda007b7a89cd69be00ae8a53b15",
+      "current": "100644 blob ba6207f79be5dda007b7a89cd69be00ae8a53b15",
+      "acceptedPR7": "100644 blob ba6207f79be5dda007b7a89cd69be00ae8a53b15"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "historical": null,
+      "current": "100644 blob 2ff2d20a3eab5d4c3a326c33260c953858dca1fb",
+      "acceptedPR7": "100644 blob 2ff2d20a3eab5d4c3a326c33260c953858dca1fb"
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "historical": null,
+      "current": "100644 blob aa2bfc00d5a481e07c22aa1c35ffc0e51491fe21",
+      "acceptedPR7": "100644 blob aa2bfc00d5a481e07c22aa1c35ffc0e51491fe21"
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "historical": "100644 blob 9baf896d605f1b84411733e4045eddbd06d9e2db",
+      "current": "100644 blob 9baf896d605f1b84411733e4045eddbd06d9e2db",
+      "acceptedPR7": "100644 blob 9baf896d605f1b84411733e4045eddbd06d9e2db"
+    }
+  ],
+  "initialLocalHistoricalObject": "Absent: git ls-tree failed128. Read-only git fetch --no-tags origin exactReference succeeded. No source/reference changed during recovery.",
+  "runtimeAuthority": false
+}

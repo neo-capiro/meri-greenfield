@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/worker-baseline-repair-20261012/review/baseline-controls.py",
+    "/workspace/meri-g1-executable-source-20261012",
+    "2d570b0015637572beb413f813f6e486751216ad",
+    "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/g1-next-behavior-20261012/integration/baseline-controls.json"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "2d570b0015637572beb413f813f6e486751216ad",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:07:29.332425+00:00",
+  "durationSeconds": 0.469,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 43878,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-baseline-controls.stdout.bin",
+      "bytes": 28,
+      "sha256": "d803fe1e0117a925b539af3d02204c4c8ae237cb9855fc97f821c2cf8f46eed7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-baseline-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "test_worker_image_build",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012/scripts/qualification",
+  "exit_code": 1,
+  "duration_seconds": 0.187
+}

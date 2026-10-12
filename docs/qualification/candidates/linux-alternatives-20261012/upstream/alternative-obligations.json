@@ -1,0 +1,2018 @@
+{
+  "schemaVersion": 1,
+  "dateUtc": "2026-10-12",
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "derivedFrom": {
+    "path": "docs/qualification/candidates/image-patch-20261012/upstream/upstream-matrix.json",
+    "sha256": "4235a8074c314e497071afc8858eeaf26d7adf43d6afd89ba8f3fd322a1e7ad5"
+  },
+  "counts": {
+    "cohorts": {
+      "CURRENT_47": 47,
+      "HISTORICAL_OMITTED_TWO": 2,
+      "OLDER_FIVE": 5
+    },
+    "current47Severity": {
+      "CRITICAL": 5,
+      "HIGH": 17,
+      "LOW": 7,
+      "MEDIUM": 17,
+      "UNDEFINED": 1
+    },
+    "disposition": {
+      "OPEN": 54
+    },
+    "total": 54
+  },
+  "executionAdmission": "NOT_EXECUTABLE",
+  "sourceDecision": "SUPPORTED_COMPOSITION_PROPOSALS_WITH_OPEN_SECURITY",
+  "securityAdmission": "HOLD",
+  "approvedRecipeDelta": null,
+  "approvedVersionDelta": null,
+  "rows": [
+    {
+      "cve": "CVE-2026-107655",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107655",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107655",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-8927",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "CRITICAL",
+      "originalSourcePackage": "curl",
+      "originalSourceVersion": "8.14.1-2+deb13u5",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "26.04",
+          "vendorStatus": "Fixed 8.18.0-1ubuntu2.2",
+          "url": "https://ubuntu.com/security/CVE-2026-8927",
+          "sourceLastUpdated": "25 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "24.04",
+          "vendorStatus": "Fixed 8.5.0-2ubuntu10.10",
+          "url": "https://ubuntu.com/security/CVE-2026-8927",
+          "sourceLastUpdated": "25 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-24882",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "gnupg2",
+      "originalSourceVersion": "2.4.7-21+deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-24882",
+          "fixedVersion": null,
+          "attempts": [
+            "SCOPED_STATUS_FACTS_RETURNED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "gnupg2",
+          "release": "24.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2026-24882",
+          "sourceLastUpdated": "9 February 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-39314",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-39314",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-39314",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-105326",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-105326",
+          "sourceLastUpdated": "7 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-105326",
+          "sourceLastUpdated": "7 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-85091",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "zlib",
+      "originalSourceVersion": "1.3.dfsg+really1.3.1-1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1:1.3.dfsg+really1.3.1-1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_VULNERABLE",
+          "sourcePackage": "zlib",
+          "release": "26.04",
+          "vendorStatus": "Vulnerable, fix deferred",
+          "url": "https://ubuntu.com/security/CVE-2026-85091",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_VULNERABLE",
+          "sourcePackage": "zlib",
+          "release": "24.04",
+          "vendorStatus": "Vulnerable, fix deferred",
+          "url": "https://ubuntu.com/security/CVE-2026-85091",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86143",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/CVE-2026-86143",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10",
+          "url": "https://ubuntu.com/security/CVE-2026-86143",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-95210",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "CRITICAL",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95210",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95210",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2025-68471",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "avahi",
+      "originalSourceVersion": "0.8-16",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2025-68471",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2025-68471",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-93990",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "expat",
+      "originalSourceVersion": "2.8.3-1~deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "expat",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-93990",
+          "sourceLastUpdated": "1 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "expat",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-93990",
+          "sourceLastUpdated": "1 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86142",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/CVE-2026-86142",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10",
+          "url": "https://ubuntu.com/security/CVE-2026-86142",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-95184",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95184",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95184",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107886",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107886",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107886",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-74860",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.2",
+          "url": "https://ubuntu.com/security/CVE-2026-74860",
+          "sourceLastUpdated": "21 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.9",
+          "url": "https://ubuntu.com/security/CVE-2026-74860",
+          "sourceLastUpdated": "21 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2024-52616",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "avahi",
+      "originalSourceVersion": "0.8-16",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "avahi",
+          "release": "26.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2024-52616",
+          "sourceLastUpdated": "23 April 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_VULNERABLE",
+          "sourcePackage": "avahi",
+          "release": "24.04",
+          "vendorStatus": "Vulnerable",
+          "url": "https://ubuntu.com/security/CVE-2024-52616",
+          "sourceLastUpdated": "23 April 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-39316",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "cups",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.4.16-1ubuntu1.2",
+          "url": "https://ubuntu.com/security/CVE-2026-39316",
+          "sourceLastUpdated": "8 June 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "cups",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.4.7-1.2ubuntu7.13",
+          "url": "https://ubuntu.com/security/CVE-2026-39316",
+          "sourceLastUpdated": "8 June 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86137",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-86137",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-86137",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-88647",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "CRITICAL",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-88647",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-88647",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2025-68468",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "avahi",
+      "originalSourceVersion": "0.8-16",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2025-68468",
+          "fixedVersion": null,
+          "attempts": [
+            "SCOPED_STATUS_FACTS_RETURNED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "avahi",
+          "release": "24.04",
+          "vendorStatus": "Fixed 0.8-13ubuntu6.1",
+          "url": "https://ubuntu.com/security/CVE-2025-68468",
+          "sourceLastUpdated": "19 January 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-24401",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "avahi",
+      "originalSourceVersion": "0.8-16",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "avahi",
+          "release": "26.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2026-24401",
+          "sourceLastUpdated": "14 May 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "avahi",
+          "release": "24.04",
+          "vendorStatus": "Fixed 0.8-13ubuntu6.2",
+          "url": "https://ubuntu.com/security/CVE-2026-24401",
+          "sourceLastUpdated": "14 May 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86141",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2026-86141",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2026-86141",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-88648",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "UNDEFINED",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-88648",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-88648",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107890",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107890",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107890",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-34980",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-34980",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-34980",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107888",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107888",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107888",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-95209",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95209",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95209",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107161",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "cyrus-sasl2",
+      "originalSourceVersion": "2.1.28+dfsg1-9",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.1.28+dfsg1-9"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cyrus-sasl2",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-107161",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cyrus-sasl2",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-107161",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107885",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107885",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107885",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86139",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/CVE-2026-86139",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NOT_AFFECTED_SCOPED",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Not affected",
+          "url": "https://ubuntu.com/security/CVE-2026-86139",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86144",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/CVE-2026-86144",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10",
+          "url": "https://ubuntu.com/security/CVE-2026-86144",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107705",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "poppler",
+      "originalSourceVersion": "25.03.0-5+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "25.03.0-5+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107705",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107705",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-87875",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-87875",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-87875",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-8924",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "CRITICAL",
+      "originalSourcePackage": "curl",
+      "originalSourceVersion": "8.14.1-2+deb13u5",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "26.04",
+          "vendorStatus": "Fixed 8.18.0-1ubuntu2.2",
+          "url": "https://ubuntu.com/security/CVE-2026-8924",
+          "sourceLastUpdated": "24 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "24.04",
+          "vendorStatus": "Fixed 8.5.0-2ubuntu10.10",
+          "url": "https://ubuntu.com/security/CVE-2026-8924",
+          "sourceLastUpdated": "24 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-77214",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "expat",
+      "originalSourceVersion": "2.8.3-1~deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.8.3-1~deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "expat",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-77214",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "expat",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-77214",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-34979",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-34979",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-34979",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-41079",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "cups",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.4.16-1ubuntu1.2",
+          "url": "https://ubuntu.com/security/CVE-2026-41079",
+          "sourceLastUpdated": "8 June 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "cups",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.4.7-1.2ubuntu7.13",
+          "url": "https://ubuntu.com/security/CVE-2026-41079",
+          "sourceLastUpdated": "8 June 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-18495",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "tiff",
+      "originalSourceVersion": "4.7.0-3+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "tiff",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-18495",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "tiff",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-18495",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86138",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/notices/USN-8910-1",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10",
+          "url": "https://ubuntu.com/security/notices/USN-8910-1",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-52490",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "CRITICAL",
+      "originalSourcePackage": "tiff",
+      "originalSourceVersion": "4.7.0-3+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "4.7.0-3+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-52490",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-52490",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-67693",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "gnutls28",
+      "originalSourceVersion": "3.8.9-3+deb13u4",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "3.8.9-3+deb13u4"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-67693",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-67693",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-86140",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.2",
+          "url": "https://ubuntu.com/security/CVE-2026-86140",
+          "sourceLastUpdated": "21 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.9",
+          "url": "https://ubuntu.com/security/CVE-2026-86140",
+          "sourceLastUpdated": "21 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-87876",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "cups",
+      "originalSourceVersion": "2.4.10-3+deb13u2",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.10-3+deb13u2"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-87876",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "cups",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-87876",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-57062",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "LOW",
+      "originalSourcePackage": "gnupg2",
+      "originalSourceVersion": "2.4.7-21+deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.4.7-21+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "gnupg2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.4.8-4ubuntu3.1",
+          "url": "https://ubuntu.com/security/CVE-2026-57062",
+          "sourceLastUpdated": "4 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "gnupg2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.4.4-2ubuntu17.6",
+          "url": "https://ubuntu.com/security/CVE-2026-57062",
+          "sourceLastUpdated": "4 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-76781",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "libxml2",
+      "originalSourceVersion": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "26.04",
+          "vendorStatus": "Fixed 2.15.2+dfsg-0.1ubuntu0.3",
+          "url": "https://ubuntu.com/security/CVE-2026-76781",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "libxml2",
+          "release": "24.04",
+          "vendorStatus": "Fixed 2.9.14+dfsg-1.3ubuntu3.10",
+          "url": "https://ubuntu.com/security/CVE-2026-76781",
+          "sourceLastUpdated": "8 October 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Map OS parser and each bundled copy separately; lxml PyPI wheel does not inherit OS fixes. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-8286",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "curl",
+      "originalSourceVersion": "8.14.1-2+deb13u5",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "8.14.1-2+deb13u5"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "26.04",
+          "vendorStatus": "Fixed 8.18.0-1ubuntu2.2",
+          "url": "https://ubuntu.com/security/CVE-2026-8286",
+          "sourceLastUpdated": "9 July 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "curl",
+          "release": "24.04",
+          "vendorStatus": "Fixed 8.5.0-2ubuntu10.10",
+          "url": "https://ubuntu.com/security/CVE-2026-8286",
+          "sourceLastUpdated": "9 July 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-58055",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "nghttp2",
+      "originalSourceVersion": "1.64.0-1.1+deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.64.0-1.1+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-58055",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-58055",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2025-68276",
+      "cohort": "CURRENT_47",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "avahi",
+      "originalSourceVersion": "0.8-16",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "0.8-16"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2025-68276",
+          "fixedVersion": null,
+          "attempts": [
+            "SCOPED_STATUS_FACTS_RETURNED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_FIXED_LEAD",
+          "sourcePackage": "avahi",
+          "release": "24.04",
+          "vendorStatus": "Fixed 0.8-13ubuntu6.1",
+          "url": "https://ubuntu.com/security/CVE-2025-68276",
+          "sourceLastUpdated": "19 January 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-95619",
+      "cohort": "OLDER_FIVE",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "gcc-14",
+      "originalSourceVersion": "12.2.0-14+deb12u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "14.2.0-19"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "PROVIDER_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95619",
+          "fixedVersion": null,
+          "attempts": [
+            "SCOPED_STATUS_FACTS_RETURNED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "PROVIDER_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-95619",
+          "fixedVersion": null,
+          "attempts": [
+            "SCOPED_STATUS_FACTS_RETURNED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Resolve the actual libstdc++6 provider and bundled C++ runtime; gcc-12/13 vendor statuses do not adjudicate gcc-14/15/16. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-78410",
+      "cohort": "OLDER_FIVE",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "util-linux",
+      "originalSourceVersion": "2.38.1-5+deb12u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "util-linux",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-78410",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "util-linux",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-78410",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-78408",
+      "cohort": "OLDER_FIVE",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "util-linux",
+      "originalSourceVersion": "2.38.1-5+deb12u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "util-linux",
+          "release": "26.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-78408",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_NEEDS_EVALUATION",
+          "sourcePackage": "util-linux",
+          "release": "24.04",
+          "vendorStatus": "Needs evaluation",
+          "url": "https://ubuntu.com/security/CVE-2026-78408",
+          "sourceLastUpdated": "16 September 2026",
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-76642",
+      "cohort": "OLDER_FIVE",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "util-linux",
+      "originalSourceVersion": "2.38.1-5+deb12u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-76642",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-76642",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-78409",
+      "cohort": "OLDER_FIVE",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "util-linux",
+      "originalSourceVersion": "2.38.1-5+deb12u3",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "2.41.5-0+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-78409",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-78409",
+          "fixedVersion": null,
+          "attempts": [
+            "METADATA_ONLY",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Retain required behavior and obtain exact vendor/provider disposition. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107708",
+      "cohort": "HISTORICAL_OMITTED_TWO",
+      "scannerSeverity": "MEDIUM",
+      "originalSourcePackage": "krb5",
+      "originalSourceVersion": "1.21.3-5+deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.21.3-5+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107708",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107708",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    },
+    {
+      "cve": "CVE-2026-107778",
+      "cohort": "HISTORICAL_OMITTED_TWO",
+      "scannerSeverity": "HIGH",
+      "originalSourcePackage": "krb5",
+      "originalSourceVersion": "1.21.3-5+deb13u1",
+      "heldTrixieDisposition": {
+        "fixedVersionVerified": null,
+        "status": "VULNERABLE",
+        "version": "1.21.3-5+deb13u1"
+      },
+      "ubuntu": {
+        "26.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107778",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        },
+        "24.04": {
+          "status": "VENDOR_STATUS_UNRESOLVED",
+          "url": "https://ubuntu.com/security/CVE-2026-107778",
+          "fixedVersion": null,
+          "attempts": [
+            "READ_FAILED",
+            "READ_FAILED"
+          ],
+          "authenticatedSnapshotVersion": null,
+          "installedOrBundledCopyAdjudication": "UNRUN"
+        }
+      },
+      "disposition": "OPEN",
+      "nextDependency": "Pinned Playwright Chromium requires libcups2t64; Ubuntu26 libcups metadata retains GnuTLS, Avahi, krb5 and zlib. Resolve the exact installed code path and vendor fix; no daemon/library equivalence or dependency deletion. Authenticate one-suite package closure and immutable artifacts, independent review, then separately authorized build, fresh scan and runtime qualification."
+    }
+  ]
+}

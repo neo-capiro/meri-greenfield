@@ -1,0 +1,108 @@
+{
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "candidate": "60bf49961514b8f479ae517089736d545ad0ee0e",
+  "baseTrackedFiles": 2884,
+  "unchangedOriginalFiles": 2876,
+  "onlyChangedOriginalFiles": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+    "apps/control/qualification-sdk-fixture/state/README.md",
+    "apps/control/qualification-sdk-fixture/state/registry.mjs",
+    "apps/worker/qualification/probes/image-inventory.test.mjs",
+    "scripts/qualification/test_worker_image_build.py",
+    "scripts/qualification/worker_image_build.py",
+    "scripts/qualification/worker_image_collect.py"
+  ],
+  "acceptedSourceRecords": [
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "acceptedAuthor": "a511cc15adb737386e0a9fe51127d4d10805b1e2",
+      "gitEntry": "100644 blob 0adbba3ed59f5daea1182f7e906c68610d10b8c6",
+      "bytes": 33031,
+      "sha256": "4295ac8f34cc107ff8fda4ceb31e07661b0501c29cc89e637d557fc2e0eee927"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "acceptedAuthor": "0ea9b778c983108f664455e7fc4e195a0a33148a",
+      "gitEntry": "100644 blob 449095452e1b612517a9f82412a429fa88b0921f",
+      "bytes": 27407,
+      "sha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3"
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "acceptedAuthor": "9ee511d0db08ade12650b9c0e0679a0a2842de08",
+      "gitEntry": "100644 blob f931b937070f49f6631b7c2c4e158be772993d79",
+      "bytes": 29750,
+      "sha256": "8bb65ced3c9f9ab463936a2f2a3443c10c412c38cace5347a5eb5e6870695748"
+    },
+    {
+      "path": "scripts/qualification/test_worker_image_build.py",
+      "acceptedAuthor": "9ee511d0db08ade12650b9c0e0679a0a2842de08",
+      "gitEntry": "100644 blob 3e1a29f81a685156c65b7f85a63f43e5f2ad2be6",
+      "bytes": 36538,
+      "sha256": "ad32728d8e661f90597b9e140bf47e1034289e4777b0b00db13923eb0c705313"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 24a7c305b874db63645900fd755cf42426ff625b",
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/README.md",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 4f91aee8ba3d38bf3e537608d2e3e69054692751",
+      "bytes": 6408,
+      "sha256": "52c970e177766d24eb2476d05ba218235a4e9fbcbb24a49ff874335d3a3c40de"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/revocation.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob a1750497f6e548f9a88fa97ac3b7b4d75652b3c5",
+      "bytes": 2623,
+      "sha256": "cd020d2874f14db039dc84cd299762246697ad153c5da6d45d47ce6acd145154"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 628068bea7bfc8322c5afe55c0e893c95eba478c",
+      "bytes": 6796,
+      "sha256": "5cd415d4ae8f71d1b1922ea4f62b3b1e40ae755fba685918d261fb90479f06ad"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 452a240052281316f387033d18a588ab8772e602",
+      "bytes": 4306,
+      "sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 84224f9ca8aca1a1a6e1bfefbaba51bf83034860",
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/README.md",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob dbefe47b593bcc13ca490b33d0892212636baa0b",
+      "bytes": 9656,
+      "sha256": "ab82e4e5a278b4f1d1b46f41cdd33f5c48f37c377fa845a2a278b742dd7bf360"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+      "acceptedAuthor": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+      "gitEntry": "100644 blob 9ccfd37fb3d877ddb0f706af31e46f7125d1b39f",
+      "bytes": 5802,
+      "sha256": "b67d238abe2e6cad5b350412ed82d326b1ef01e46cd2eb8c52f690aa3f03922a"
+    }
+  ],
+  "stableHistoricalWorkerContextReference": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "stableHistoricalMembersUnchanged": 44,
+  "canonicalContractsRegistryLocksMigrationsUnchanged": true,
+  "fixtureProductionInventoryUnchanged": true,
+  "newBuildAuthority": false,
+  "newRuntimeAcceptance": false
+}

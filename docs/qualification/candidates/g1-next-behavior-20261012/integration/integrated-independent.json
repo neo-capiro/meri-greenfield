@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/commit-uncertainty-independent.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/historical-context-positive.test.mjs",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "d7e8b620a5d44a74341610a44afdfd01987552d4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:59:33.100329+00:00",
+  "durationSeconds": 2.131,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 42368,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-independent.stdout.bin",
+      "bytes": 7107,
+      "sha256": "686af8d07310c8d0b8005719aff9dbb23fb572864f63eff21675251fc9d89a4f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

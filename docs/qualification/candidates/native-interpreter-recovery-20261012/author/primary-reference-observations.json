@@ -1,0 +1,35 @@
+{
+  "observedAt": "2026-10-12T03:55:01.768729+00:00",
+  "method": "Public primary pages read through web tool; concise paraphrases, no full article or binary retained.",
+  "references": [
+    {
+      "url": "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4",
+      "observation": "Microsoft identifies 0xA0000003 as IO_REPARSE_TAG_MOUNT_POINT."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants",
+      "observation": "Directory attribute is0x10; reparse attribute is0x400."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions",
+      "observation": "Junctions are implemented using reparse points and can reference directories on different local volumes."
+    },
+    {
+      "url": "https://docs.python.org/3.11/library/sys.html#sys.base_prefix",
+      "observation": "base_prefix records the base installation and remains distinct from virtual-environment prefix."
+    },
+    {
+      "url": "https://docs.python.org/3.11/using/windows.html#finding-modules",
+      "observation": "Startup search can use installation, pyvenv.cfg, registry, ZIP and ._pth configuration; no concrete local configuration inferred."
+    },
+    {
+      "url": "https://docs.python.org/3.11/using/cmdline.html",
+      "observation": "-I isolated Python paths/environment, -S site suppression and -B bytecode-write suppression are distinct controls."
+    },
+    {
+      "url": "https://www.python.org/downloads/release/python-31115/",
+      "observation": "3.11.15 is source-only; official binary installers ended at3.11.9. This is not evidence about a particular existing Windows binary."
+    }
+  ],
+  "limitations": "Current3.11 docs render as3.11.17 documentation; used for documented semantics, not as proof of pinned3.11.15 binary behavior."
+}

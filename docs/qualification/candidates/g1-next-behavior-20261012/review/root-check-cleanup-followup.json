@@ -1,0 +1,30 @@
+{
+  "observedUnixSeconds": 1791777461.2140367,
+  "rootCheckReceipt": "final-root244.json",
+  "rootCheckExited": true,
+  "receiptOwnedProcessGroupAbsent": false,
+  "observedGroup": 41668,
+  "members": [
+    {
+      "pid": 41810,
+      "command": "esbuild",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 41668,
+      "session": 41668,
+      "startClockTicks": 797512
+    },
+    {
+      "pid": 41835,
+      "command": "esbuild",
+      "state": "Z",
+      "parentPid": 1,
+      "processGroup": 41668,
+      "session": 41668,
+      "startClockTicks": 797570
+    }
+  ],
+  "liveGroupMembers": [],
+  "interpretation": "Observed remaining members have exited and are PID1-owned zombies, not live work. They cannot be reaped by this reviewer. No signal was sent to PID1 or other owners. The original capture omitted its leader PID: this process-group attribution is based on contemporaneous inspection and matching test timing, not a retained launch-PID proof. Do not claim complete process-group disappearance.",
+  "action": "Original receipt preserved; parent uses child subreaper for integration checks."
+}

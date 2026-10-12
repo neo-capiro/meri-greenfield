@@ -1,0 +1,36 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/linux-alternatives-20261012/upstream/verify-packet.py"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "60bf49961514b8f479ae517089736d545ad0ee0e",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T04:05:02.061703+00:00",
+  "durationSeconds": 0.064,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 43631,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/linux-alternatives-packet.stdout.bin",
+      "bytes": 9564,
+      "sha256": "d587cc53940cc2ea7e5d72790bc286b77c1dda3d7c69e2a67c85b7dda4317d02"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/linux-alternatives-packet.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

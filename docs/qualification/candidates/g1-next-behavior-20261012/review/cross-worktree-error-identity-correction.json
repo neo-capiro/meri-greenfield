@@ -1,0 +1,10 @@
+{
+  "classification": "REVIEW_HARNESS_ERROR_NOT_SOURCE_DEFECT",
+  "originalTestCommit": "edfdbc2",
+  "originalTestSha256": "3a357f9fa1f92a50daf3df507d90ee0ba889be2f5e3f94bea6e901a92f1f0676",
+  "observed": "23PASS/2FAIL",
+  "rawFailure": "prefreeze-cancellation25.stdout.txt",
+  "cause": "Test injected CommitUncertain from reviewer worktree while candidate handler correctly used instanceof against author worktree error class.",
+  "onlyChange": "Import existing CommitUncertain class from same G1_REVIEW_SOURCE_ROOT as the handler. All assertions preserved.",
+  "correctedTestSha256": "376bd763df67da39af7a5de2806fed8fcd606618bb56c3fe573e76df8199b5ef"
+}

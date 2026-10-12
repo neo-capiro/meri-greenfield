@@ -1,0 +1,291 @@
+{
+  "result": "PASS_STATIC_SOURCE_ONLY",
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "sources": [
+    {
+      "path": "scripts/qualification/worker_runner_capture.py",
+      "bytes": 10069,
+      "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c",
+      "functions": [
+        {
+          "name": "encoded",
+          "firstLine": 28,
+          "lastLine": 29
+        },
+        {
+          "name": "observed_runtime",
+          "firstLine": 32,
+          "lastLine": 34
+        },
+        {
+          "name": "validate_config",
+          "firstLine": 37,
+          "lastLine": 46
+        },
+        {
+          "name": "native_version",
+          "firstLine": 53,
+          "lastLine": 133
+        },
+        {
+          "name": "capture",
+          "firstLine": 136,
+          "lastLine": 187
+        },
+        {
+          "name": "main",
+          "firstLine": 190,
+          "lastLine": 205
+        }
+      ]
+    },
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "bytes": 13224,
+      "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9",
+      "functions": [
+        {
+          "name": "identity",
+          "firstLine": 36,
+          "lastLine": 38
+        },
+        {
+          "name": "check_deadline",
+          "firstLine": 41,
+          "lastLine": 43
+        },
+        {
+          "name": "plain",
+          "firstLine": 46,
+          "lastLine": 55
+        },
+        {
+          "name": "ancestors",
+          "firstLine": 58,
+          "lastLine": 63
+        },
+        {
+          "name": "hash_file",
+          "firstLine": 66,
+          "lastLine": 99
+        },
+        {
+          "name": "selected_paths",
+          "firstLine": 102,
+          "lastLine": 170
+        },
+        {
+          "name": "inventory",
+          "firstLine": 173,
+          "lastLine": 212
+        },
+        {
+          "name": "write_result",
+          "firstLine": 215,
+          "lastLine": 285
+        }
+      ]
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53",
+      "functions": [
+        {
+          "name": "_hash",
+          "firstLine": 18,
+          "lastLine": 19
+        },
+        {
+          "name": "_windows_path",
+          "firstLine": 22,
+          "lastLine": 28
+        },
+        {
+          "name": "_records",
+          "firstLine": 31,
+          "lastLine": 49
+        },
+        {
+          "name": "validate_proposal",
+          "firstLine": 52,
+          "lastLine": 86
+        },
+        {
+          "name": "validate_review",
+          "firstLine": 89,
+          "lastLine": 109
+        },
+        {
+          "name": "require_observed_binding",
+          "firstLine": 112,
+          "lastLine": 118
+        }
+      ]
+    },
+    {
+      "path": "scripts/qualification/worker_image_build.py",
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9",
+      "functions": [
+        {
+          "name": "pins",
+          "firstLine": 58,
+          "lastLine": 66
+        },
+        {
+          "name": "slot",
+          "firstLine": 69,
+          "lastLine": 77
+        },
+        {
+          "name": "git_files",
+          "firstLine": 80,
+          "lastLine": 98
+        },
+        {
+          "name": "baseline",
+          "firstLine": 101,
+          "lastLine": 110
+        },
+        {
+          "name": "context_manifest_sha",
+          "firstLine": 113,
+          "lastLine": 120
+        },
+        {
+          "name": "validate_repository",
+          "firstLine": 123,
+          "lastLine": 135
+        },
+        {
+          "name": "validate_authority",
+          "firstLine": 138,
+          "lastLine": 164
+        },
+        {
+          "name": "recipe",
+          "firstLine": 167,
+          "lastLine": 192
+        },
+        {
+          "name": "publication",
+          "firstLine": 195,
+          "lastLine": 197
+        },
+        {
+          "name": "prepare",
+          "firstLine": 200,
+          "lastLine": 244
+        },
+        {
+          "name": "load",
+          "firstLine": 247,
+          "lastLine": 285
+        },
+        {
+          "name": "check_review",
+          "firstLine": 288,
+          "lastLine": 297
+        },
+        {
+          "name": "start_input",
+          "firstLine": 300,
+          "lastLine": 308
+        },
+        {
+          "name": "validate_build",
+          "firstLine": 311,
+          "lastLine": 332
+        },
+        {
+          "name": "dispatch",
+          "firstLine": 335,
+          "lastLine": 375
+        },
+        {
+          "name": "execute",
+          "firstLine": 378,
+          "lastLine": 387
+        },
+        {
+          "name": "reconcile",
+          "firstLine": 390,
+          "lastLine": 411
+        },
+        {
+          "name": "main",
+          "firstLine": 414,
+          "lastLine": 447
+        }
+      ]
+    },
+    {
+      "path": "docs/qualification/candidates/native-ancestor-diagnosis-20261012/inspect-ancestor-metadata.py",
+      "bytes": 6297,
+      "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd",
+      "functions": [
+        {
+          "name": "deadline",
+          "firstLine": 33,
+          "lastLine": 35
+        },
+        {
+          "name": "local_syntax",
+          "firstLine": 38,
+          "lastLine": 45
+        },
+        {
+          "name": "fixed_drive",
+          "firstLine": 48,
+          "lastLine": 56
+        },
+        {
+          "name": "numeric",
+          "firstLine": 59,
+          "lastLine": 60
+        },
+        {
+          "name": "inspect_role",
+          "firstLine": 63,
+          "lastLine": 100
+        },
+        {
+          "name": "metadata",
+          "firstLine": 103,
+          "lastLine": 124
+        },
+        {
+          "name": "main",
+          "firstLine": 127,
+          "lastLine": 151
+        }
+      ]
+    }
+  ],
+  "captureRuntimeVersion": [
+    3,
+    11,
+    15
+  ],
+  "historicalBuilderRuntimeVersion": [
+    3,
+    12,
+    14
+  ],
+  "captureInvokesLegacyPins": false,
+  "diagnosticCoversExecutable": false,
+  "baseBuilderHelpers": 9,
+  "captureHelperCount": 12,
+  "inspectBindingExpectedHelperCount": 10,
+  "reportedNumericDecode": {
+    "directory": true,
+    "symbolicLink": false,
+    "reparseAttribute": true,
+    "attributesHex": "0x410",
+    "tagHex": "0xa0000003"
+  },
+  "targetModulesImported": false,
+  "nativeCollectorExecuted": false,
+  "nativeIdentityVerified": false
+}

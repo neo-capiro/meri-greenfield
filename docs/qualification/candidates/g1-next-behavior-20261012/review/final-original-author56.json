@@ -1,0 +1,30 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs",
+    "apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-20261012",
+  "startUnixSeconds": 1791777360.0745995,
+  "elapsedSeconds": 2.100604772567749,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-original-author56.stdout.txt",
+      "bytes": 5294,
+      "sha256": "dc41fecb1380ffe7eb142ea840a79a095ac4954b7fdd0989e58c6940a6570f5a"
+    },
+    "stderr": {
+      "path": "final-original-author56.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

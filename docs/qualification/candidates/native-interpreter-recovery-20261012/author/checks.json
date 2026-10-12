@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/native-interpreter-recovery-20261012/author/static-readback.py"
+  ],
+  "exitCode": 0,
+  "stderrBytes": 0,
+  "exactDiagnosticVerified": true,
+  "fiveInspectedSourcesMatchBase": true,
+  "existingTrackedSourceChanged": false,
+  "targetModulesImported": false,
+  "nativeExecutionPerformed": false,
+  "backgroundProcessesCreated": false,
+  "localReadbackProcessCompleted": true,
+  "readLookupFailures": [
+    "Shortened MERI-NATIVE-ANCESTOR-DIAGNOSIS report name absent; corrected to DIAGNOSTIC.",
+    "Shortened MERI-NATIVE-CAPTURE-DIAGNOSIS report name absent; corrected to STATIC-DIAGNOSIS."
+  ],
+  "noLibraryRetry": true
+}

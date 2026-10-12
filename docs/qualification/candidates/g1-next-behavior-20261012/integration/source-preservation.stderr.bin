@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/g1-next-behavior-20261012/integration/verify-source.py", line 63, in <module>
+    assert all(new[p] == reference[p] for p in stable)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

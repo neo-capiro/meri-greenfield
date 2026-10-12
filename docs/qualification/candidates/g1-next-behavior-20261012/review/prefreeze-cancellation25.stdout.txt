@@ -1,0 +1,71 @@
+✔ independent positive authorizeFixturePhase (8.025353ms)
+✔ independent positive commitFixtureCheckpoint (14.122723ms)
+✔ independent positive loadFixtureCheckpoint (7.251931ms)
+✔ independent positive verifyFixtureCheckpoint (6.479372ms)
+✔ independent aborted before authorizeFixturePhase starts zero ports (1.640975ms)
+✔ independent aborted before commitFixtureCheckpoint starts zero ports (0.743096ms)
+✔ independent aborted before loadFixtureCheckpoint starts zero ports (0.609375ms)
+✔ independent aborted before verifyFixtureCheckpoint starts zero ports (0.691419ms)
+✔ independent abort after parked authorizeFixturePhase/authorize:1 causes no next port or success (1.068314ms)
+✔ independent abort after parked commitFixtureCheckpoint/authorize:1 causes no next port or success (0.804928ms)
+✔ independent abort after parked commitFixtureCheckpoint/prepare:1 causes no next port or success (0.775836ms)
+✔ independent abort after parked commitFixtureCheckpoint/publish:1 causes no next port or success (2.708218ms)
+✔ independent abort after parked loadFixtureCheckpoint/load:1 causes no next port or success (0.590307ms)
+✔ independent abort after parked loadFixtureCheckpoint/objects:1 causes no next port or success (0.595845ms)
+✔ independent abort after parked loadFixtureCheckpoint/load:2 causes no next port or success (2.378162ms)
+✔ independent abort after parked verifyFixtureCheckpoint/load:1 causes no next port or success (0.650818ms)
+✔ independent abort after parked verifyFixtureCheckpoint/objects:1 causes no next port or success (0.634853ms)
+✔ independent abort after parked verifyFixtureCheckpoint/verify:1 causes no next port or success (2.857722ms)
+✔ independent expiry during final commitFixtureCheckpoint port never releases success (2.987477ms)
+✔ independent expiry during final loadFixtureCheckpoint port never releases success (2.637481ms)
+✔ independent expiry during final verifyFixtureCheckpoint port never releases success (2.557341ms)
+✔ independent ambiguous commit aborted before catch starts no reconciliation (4.501791ms)
+✖ independent abort during ambiguity readback never releases reconciled receipt (4.012697ms)
+✔ independent expiry during ambiguity readback never releases reconciled receipt (2.720676ms)
+✖ independent active ambiguous commit still reconciles original identity (2.539494ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 23
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 739.139521
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:29:1
+✖ independent abort during ambiguity readback never releases reconciled receipt (4.012697ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'authorize:1',
+      'prepare:1',
+      'publish:1',
+  -   'reconcile:1'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:29:330)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'authorize:1', 'prepare:1', 'publish:1' ],
+    expected: [ 'authorize:1', 'prepare:1', 'publish:1', 'reconcile:1' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:31:1
+✖ independent active ambiguous commit still reconciles original identity (2.539494ms)
+  CommitUncertain: COMMIT_ACKNOWLEDGEMENT_UNKNOWN
+      at file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:31:144
+      at run (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:13:191)
+      at Object.publishCommit (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:14:115)
+      at Object.commitFixtureCheckpoint (file:///workspace/meri-g1-next-behavior-20261012/apps/control/qualification-sdk-fixture/service/handlers.mjs:108:37)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:31:182)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'COMMIT_ACKNOWLEDGEMENT_UNKNOWN'
+  }

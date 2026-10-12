@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check",
+    "--prefix",
+    "packages/contracts"
+  ],
+  "cwd": "/workspace/meri-g1-executable-source-20261012",
+  "sourceHead": "d7e8b620a5d44a74341610a44afdfd01987552d4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T03:59:51.214594+00:00",
+  "durationSeconds": 3.137,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 42729,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 42767,
+      "status": 0
+    },
+    {
+      "pid": 42861,
+      "status": 0
+    },
+    {
+      "pid": 42880,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-public.stdout.bin",
+      "bytes": 1944,
+      "sha256": "08634f2aaefb95a8011c6b53247d1cec2cf0030bc72f06be6fc07f903aca8439"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-next-behavior-20261012/integration/integrated-public.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

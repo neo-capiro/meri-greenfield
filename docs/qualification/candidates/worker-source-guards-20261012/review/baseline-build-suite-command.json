@@ -1,0 +1,13 @@
+{
+  "args": [
+    "python3",
+    "-B",
+    "-m",
+    "unittest",
+    "test_worker_image_build",
+    "-v"
+  ],
+  "cwd": "scripts/qualification",
+  "exit_code": 1,
+  "duration_seconds": 0.156
+}

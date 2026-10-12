@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/worker-source-guards-20261012/review/guard-controls.py", line 36, in <module>
+    check('current-input-preflight-only',validate(value)==value)
+                                         ^^^^^^^^^^^^^^^
+  File "/workspace/meri-g1-executable-source-20261012/docs/qualification/candidates/worker-source-guards-20261012/review/guard-controls.py", line 35, in validate
+    raw=collect.encoded(v);return collect.validate_input(target,raw,sha(raw))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_collect.py", line 112, in validate_input
+    need(set(value) == ({'schema', 'sourceCommit', 'runUuid', 'members', 'contextManifestSha256'} |
+  File "/workspace/meri-g1-executable-source-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: worker input schema

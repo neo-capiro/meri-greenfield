@@ -1,0 +1,142 @@
+{
+  "schema": "meri.inventory-fixture-repair-evidence/1",
+  "baseCommit": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/.gitattributes",
+      "bytes": 13,
+      "sha256": "c7c6541111ee53947140bac154f1275c6b1b244c40c045b190662f23226509c9"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-original.json",
+      "bytes": 1331,
+      "sha256": "17f2778bd4120886cd2bf3b4552e887b76d00ecfc7b97d690202ed33e450b173"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-original.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-original.stdout.bin",
+      "bytes": 6670,
+      "sha256": "2b891d9abc522533a5d8046f78e4145bc3665867da3cb3797fcafa46bc3fd1ff"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/baseline-source.json",
+      "bytes": 680,
+      "sha256": "6625b0ef6777082f67d4a300ff9e73ac11b47d4ee77963864a2d01ddb8c92608"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-identity-proposal.json",
+      "bytes": 544,
+      "sha256": "18eede816bd0cfb872a709a71754787306aa963f5cac07e20f7da398d60340cf"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-manifest-1.json",
+      "bytes": 11180,
+      "sha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-manifest-2.json",
+      "bytes": 11180,
+      "sha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-suite.json",
+      "bytes": 1428,
+      "sha256": "bbf0fb47091b7990baf83b59c842bd5a790ec934b434629067c3090b6eec38ab"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-suite.stderr.bin",
+      "bytes": 2657,
+      "sha256": "35443fe8ba904fb41b64b0ad8d74244414c45fa3793f74b95d95daa8ad0f9e84"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/context-suite.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/final-checks.json",
+      "bytes": 970,
+      "sha256": "b42b064f9e48c4c067d58b754e435b297646021d7d1ecd9a17b36eae3fe70677"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/image-inventory.original.test.mjs",
+      "bytes": 25547,
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repair-controls.json",
+      "bytes": 1424,
+      "sha256": "47beef0874568ba51a1539aea17445dbf63713d656a0abda52c412adb0ff0143"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repair-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repair-controls.stdout.bin",
+      "bytes": 796,
+      "sha256": "05005932817c989e87e747a5a05b0b859056a38464601f8f852ad87ac692ed75"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repaired-suite.json",
+      "bytes": 1408,
+      "sha256": "22700d7351377a3b91e0e708dfd4401d4d1b64e1abbb5fc8bfbdb31182a5b5aa"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repaired-suite.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/repaired-suite.stdout.bin",
+      "bytes": 2507,
+      "sha256": "c8bbf24410882abce67c865072d4bb6117323a5d7dadbbba1fc6215070660160"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/size-blind-mutant.json",
+      "bytes": 597,
+      "sha256": "2c1297ac610662a17a5d7b21cb7498b22717b61d7e4059a3bafd88e2a20c77ed"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/size-blind-mutant.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/size-blind-mutant.stdout.bin",
+      "bytes": 1010,
+      "sha256": "c0c9c0ae0d4527b544442e46bb1a8c8c6f3a259ed3ae42be44f128a2362f1eee"
+    },
+    {
+      "path": "docs/qualification/candidates/inventory-fixture-repair-20261012/author/verify-repair.py",
+      "bytes": 4423,
+      "sha256": "86d97ee078e892924df648cdc6519ab35947b94d1f6c7b1d51ce6a9c0bbd77ff"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-INVENTORY-FIXTURE-REPAIR-20261012.md",
+      "bytes": 2440,
+      "sha256": "d4e8b927c5d58c3dd1919bf1dbe07dabca452b1bb49e0e7e4d1b2f1797f25274"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-INVENTORY-FIXTURE-REPAIR-20261012.md",
+      "bytes": 6929,
+      "sha256": "42be14e34ad96692e40214651fa32bbf749448cc35a7837d45c919e55dac8a12"
+    },
+    {
+      "path": "apps/worker/qualification/probes/image-inventory.test.mjs",
+      "bytes": 27407,
+      "sha256": "845473b633ded89e8c94d1fe59637cee87418a7c0a2cdc3d2fe131971961b1b3"
+    }
+  ]
+}
