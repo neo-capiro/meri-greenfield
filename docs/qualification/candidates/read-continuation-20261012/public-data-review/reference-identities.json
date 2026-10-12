@@ -1,0 +1,369 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "frozenCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "bytes": 415704,
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "bytes": 968034,
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/federal-spending/federal-market.service.ts",
+      "bytes": 34809,
+      "blob": "b3cdb456644eda3ff7e318f2c883931a27a29000",
+      "sha256": "17a0ef958c21db7beaa9eaa76126a899d043660c270cca4d134cd77cff073459",
+      "observedBlob": "b3cdb456644eda3ff7e318f2c883931a27a29000",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/federal-spending/federal-market.types.ts",
+      "bytes": 4795,
+      "blob": "33a7e55c09cc5c524bea85fc85eb749883279c18",
+      "sha256": "8002445accb857fd6d18f192058bac4f4dd009c921339ad6f40a50e1c7ffd2f4",
+      "observedBlob": "33a7e55c09cc5c524bea85fc85eb749883279c18",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/federal-award-date-serialization.ts",
+      "bytes": 1583,
+      "blob": "06a20f6b7fd27b5f8072576928faa083aa740dc0",
+      "sha256": "8b0dd25032fee5c3fa3e7aff2b87eaa3f6907d45b2a9fb13a89f9825d6b88cb1",
+      "observedBlob": "06a20f6b7fd27b5f8072576928faa083aa740dc0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/meri-evidence-accuracy-flags.ts",
+      "bytes": 943,
+      "blob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+      "sha256": "8ad0a799f03ebdc11301969123c48b817d0669efc8240d7be154ff3745ade161",
+      "observedBlob": "85da1c54f1ea81e505bed6e97ca9ac697234b8cb",
+      "unchanged": true
+    },
+    {
+      "path": "packages/meriv2-core/src/rollout/evidence-accuracy.ts",
+      "bytes": 829,
+      "blob": "af2aa6b6ceafb25fd928819aac0c824d185f5fbb",
+      "sha256": "f9c2cf97d04bb2ea01e1eabd9ae11ab629c2778f31d4a57f7d81df8304e9d39d",
+      "observedBlob": "af2aa6b6ceafb25fd928819aac0c824d185f5fbb",
+      "unchanged": true
+    },
+    {
+      "path": "packages/meriv2-core/src/rollout/capability-rollout.ts",
+      "bytes": 3633,
+      "blob": "8836646b4501fe0ee04e7f60f9b2c032cfc72c90",
+      "sha256": "e364d327b66fa8830622173f0ade3adf60655acb8a27d8025696aade8cbc007d",
+      "observedBlob": "8836646b4501fe0ee04e7f60f9b2c032cfc72c90",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/schedule/deadline.ts",
+      "bytes": 2333,
+      "blob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "sha256": "69aab17c2a329fcfded00e7f3e8ebf3ebffebb1800b37e555efacb6901f08c9e",
+      "observedBlob": "f16e2aee4f71a5b0bd2b57b881a189e6e64a496f",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/schedule/time-zone.ts",
+      "bytes": 3231,
+      "blob": "eba9e249d3c92d897c062f725f1c137fcc0fe132",
+      "sha256": "4f76a48e72d911780ec149223d49ee3ab1126238132a4dd53d400935e947a378",
+      "observedBlob": "eba9e249d3c92d897c062f725f1c137fcc0fe132",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/intelligence/time-bounds.ts",
+      "bytes": 2506,
+      "blob": "7a0fffa2d4602b5db40ce5a65e4bfbb282c0a2aa",
+      "sha256": "514b87ab881cd6472bf841237f9ab29d1599676428968540b91eaa6fcc14e6c1",
+      "observedBlob": "7a0fffa2d4602b5db40ce5a65e4bfbb282c0a2aa",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.federal-grants-deadline.spec.ts",
+      "bytes": 2823,
+      "blob": "b1bf4839e785d85d1bdf70c91e9706c4106e76ee",
+      "sha256": "04e99a20377c70f2a8c34dbdd0d2ffd3fd6a19fc0047df31080250e1d1f55e26",
+      "observedBlob": "b1bf4839e785d85d1bdf70c91e9706c4106e76ee",
+      "unchanged": true
+    }
+  ],
+  "projectedStorageFields": {
+    "CensusDistrict": {
+      "line": 6301,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "congress",
+          "type": "Int"
+        },
+        {
+          "field": "state",
+          "type": "String"
+        },
+        {
+          "field": "district",
+          "type": "String"
+        },
+        {
+          "field": "totalPopulation",
+          "type": "Int?"
+        },
+        {
+          "field": "medianHouseholdIncome",
+          "type": "Int?"
+        },
+        {
+          "field": "medianAge",
+          "type": "Float?"
+        },
+        {
+          "field": "percentBachelorPlus",
+          "type": "Float?"
+        },
+        {
+          "field": "percentPoverty",
+          "type": "Float?"
+        },
+        {
+          "field": "laborForceSize",
+          "type": "Int?"
+        },
+        {
+          "field": "unemploymentRate",
+          "type": "Float?"
+        },
+        {
+          "field": "topIndustries",
+          "type": "Json"
+        }
+      ]
+    },
+    "BlsSeries": {
+      "line": 6266,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "title",
+          "type": "String"
+        },
+        {
+          "field": "surveyName",
+          "type": "String?"
+        },
+        {
+          "field": "periodType",
+          "type": "String"
+        }
+      ]
+    },
+    "BlsDataPoint": {
+      "line": 6280,
+      "fields": [
+        {
+          "field": "year",
+          "type": "Int"
+        },
+        {
+          "field": "period",
+          "type": "String"
+        },
+        {
+          "field": "value",
+          "type": "Float"
+        }
+      ]
+    },
+    "BeaData": {
+      "line": 6468,
+      "fields": [
+        {
+          "field": "datasetName",
+          "type": "String"
+        },
+        {
+          "field": "tableName",
+          "type": "String"
+        },
+        {
+          "field": "description",
+          "type": "String"
+        },
+        {
+          "field": "year",
+          "type": "Int"
+        },
+        {
+          "field": "period",
+          "type": "String"
+        },
+        {
+          "field": "value",
+          "type": "Float?"
+        },
+        {
+          "field": "units",
+          "type": "String?"
+        }
+      ]
+    },
+    "FederalGrant": {
+      "line": 6555,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "title",
+          "type": "String"
+        },
+        {
+          "field": "agency",
+          "type": "String"
+        },
+        {
+          "field": "subAgency",
+          "type": "String?"
+        },
+        {
+          "field": "opportunityNumber",
+          "type": "String?"
+        },
+        {
+          "field": "category",
+          "type": "String?"
+        },
+        {
+          "field": "eligibility",
+          "type": "String[]"
+        },
+        {
+          "field": "awardCeiling",
+          "type": "Float?"
+        },
+        {
+          "field": "awardFloor",
+          "type": "Float?"
+        },
+        {
+          "field": "estimatedFunding",
+          "type": "Float?"
+        },
+        {
+          "field": "openDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "closeDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "status",
+          "type": "String?"
+        },
+        {
+          "field": "url",
+          "type": "String?"
+        },
+        {
+          "field": "responseDateDesc",
+          "type": "String?"
+        }
+      ]
+    },
+    "FederalAward": {
+      "line": 8086,
+      "fields": [
+        {
+          "field": "id",
+          "type": "String"
+        },
+        {
+          "field": "piid",
+          "type": "String?"
+        },
+        {
+          "field": "awardingAgency",
+          "type": "String?"
+        },
+        {
+          "field": "awardingSubTier",
+          "type": "String?"
+        },
+        {
+          "field": "contractorName",
+          "type": "String?"
+        },
+        {
+          "field": "amount",
+          "type": "Decimal?"
+        },
+        {
+          "field": "description",
+          "type": "String?"
+        },
+        {
+          "field": "peCode",
+          "type": "String?"
+        },
+        {
+          "field": "popCongressionalDistrict",
+          "type": "String?"
+        },
+        {
+          "field": "recipientState",
+          "type": "String?"
+        },
+        {
+          "field": "actionDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "baseAwardSignedDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "latestActionDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "sourceLastModifiedDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "popStartDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "popEndDate",
+          "type": "DateTime?"
+        },
+        {
+          "field": "lastSyncedAt",
+          "type": "DateTime"
+        }
+      ]
+    }
+  },
+  "sourceExecution": false,
+  "privateBodiesIncluded": false
+}
