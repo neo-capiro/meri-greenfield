@@ -1,0 +1,298 @@
+{
+  "status": "PASS",
+  "checks": 72,
+  "passed": 72,
+  "failed": [],
+  "scope": "Offline file/AST/data only; no discovery rerun, native binary, DB, namespace, container, cloud or provider execution",
+  "runtimeAdmission": "HOLD_NOT_EXECUTABLE",
+  "checksDetail": [
+    {
+      "name": "hash:docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "passed": true
+    },
+    {
+      "name": "hash:docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/proxy/qualification/state/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/proxy/qualification/test/test_postgres_state.py",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:apps/control/qualification-sdk-fixture/state/store.mjs",
+      "passed": true
+    },
+    {
+      "name": "canonical-source:docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "raw:dpkg-postgresql:stdout",
+      "passed": true
+    },
+    {
+      "name": "raw:dpkg-postgresql:stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-command-completed:dpkg-postgresql",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-version:stdout",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-version:stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-command-completed:docker-version",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-info:stdout",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-info:stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-command-completed:docker-info",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-images:stdout",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-images:stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-command-completed:docker-images",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-context:stdout",
+      "passed": true
+    },
+    {
+      "name": "raw:docker-context:stderr",
+      "passed": true
+    },
+    {
+      "name": "metadata-command-completed:docker-context",
+      "passed": true
+    },
+    {
+      "name": "known-server-binaries-absent",
+      "passed": true
+    },
+    {
+      "name": "required-psycopg-absent",
+      "passed": true
+    },
+    {
+      "name": "host-is-derived-not-producer-attestation",
+      "passed": true
+    },
+    {
+      "name": "docker-empty-cache",
+      "passed": true
+    },
+    {
+      "name": "docker-metadata-not-support-proof",
+      "passed": true
+    },
+    {
+      "name": "explicit-local-socket:docker-version",
+      "passed": true
+    },
+    {
+      "name": "explicit-local-socket:docker-info",
+      "passed": true
+    },
+    {
+      "name": "explicit-local-socket:docker-images",
+      "passed": true
+    },
+    {
+      "name": "explicit-local-socket:docker-context",
+      "passed": true
+    },
+    {
+      "name": "no-retained-docker-credential-files",
+      "passed": true
+    },
+    {
+      "name": "not-executable-no-launcher",
+      "passed": true
+    },
+    {
+      "name": "no-unsupported-pin",
+      "passed": true
+    },
+    {
+      "name": "three-separate-authorities",
+      "passed": true
+    },
+    {
+      "name": "no-new-cloud-provider-aurora",
+      "passed": true
+    },
+    {
+      "name": "postinstall-not-admitted",
+      "passed": true
+    },
+    {
+      "name": "no-cost-cap-invention",
+      "passed": true
+    },
+    {
+      "name": "apt-warning-preserved",
+      "passed": true
+    },
+    {
+      "name": "apt-raw:stdout",
+      "passed": true
+    },
+    {
+      "name": "apt-raw:stderr",
+      "passed": true
+    },
+    {
+      "name": "node-resolution-metadata-absent",
+      "passed": true
+    },
+    {
+      "name": "metadata-helper-parses",
+      "passed": true
+    },
+    {
+      "name": "no-localhost-trust-assumed",
+      "passed": true
+    }
+  ]
+}

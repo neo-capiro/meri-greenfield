@@ -1,0 +1,41 @@
+{
+  "recordedAt": "2026-10-12T06:35:52.847312+00:00",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "authorCommit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+  "authorTree": "775b14505d415ca7a178f10409f9c1def1b9b983",
+  "criteriaCommit": "8495d7e17c6f16984b11723b89b4d2da4acfc34f",
+  "disposition": "ACCEPT_SOURCE_EVIDENCE_ONLY",
+  "nativeAdmission": "HOLD_NOT_EXECUTABLE",
+  "commands": [
+    {
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "docs/qualification/candidates/g1-l1-host-20261012/review/audit-author-packet.py",
+        "/workspace/meri-l1-host-20261012",
+        "20f51409673a0bdae1a5a3de99e2cda41d5b549b"
+      ],
+      "cwd": "/workspace/meri-l1-host-review-20261012",
+      "exitCode": 0,
+      "checksPassed": 125,
+      "stdout": "author-audit.stdout.txt",
+      "stderr": "author-audit.stderr.txt"
+    },
+    {
+      "argv": [
+        "python",
+        "-I",
+        "-B",
+        "/workspace/meri-l1-host-20261012/docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py"
+      ],
+      "cwd": "/workspace/meri-l1-host-review-20261012",
+      "exitCode": 0,
+      "checksPassed": 72,
+      "stdout": "author-verifier-replay.stdout.json",
+      "stderr": "author-verifier-replay.stderr.txt"
+    }
+  ],
+  "limitations": "Ordinary offline file/source checks only. Review commands execute no discovery helper, DB, namespace, container, provider, cloud or target binary. Prior metadata reads are separately recorded, not treated as native qualification.",
+  "cleanup": "All tool invocations completed; three owned Docker metadata CLI children reaped as recorded. No target process, namespace, container, database or background job created; pre-existing daemon untouched. The retained empty config is an owned inert empty JSON object (three retained bytes including newline)."
+}

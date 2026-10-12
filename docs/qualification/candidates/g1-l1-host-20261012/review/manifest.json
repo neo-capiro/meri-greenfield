@@ -1,0 +1,125 @@
+{
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-REVIEW-20261012.md",
+      "bytes": 6927,
+      "sha256": "99b2781a6c64dc651f8e61270cd831a8938c546c5fb960fe8d6bb37f57e30f90"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/audit-author-packet.py",
+      "bytes": 8639,
+      "sha256": "6c9d371c406eb1bfcd5c4dda64295cd219e7185d17e9f6937b4463dcdea6933f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stdout.txt",
+      "bytes": 125,
+      "sha256": "bef05ae41a43223dce9188cdc5ef4c5bf012ff21af545a211e37dab2fee49094"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-packet-audit.json",
+      "bytes": 23129,
+      "sha256": "6188f237f2ce1f5fdd18d02f7f60241997c1c78eecaed628bf7136f83f9903cb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stdout.json",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/daemon-metadata-receipts.json",
+      "bytes": 3894,
+      "sha256": "95edc7130496be0e698fa187b0c2319d496b45e3ab14049ba5dc4a07db617a40"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/discover-static-host.py",
+      "bytes": 5962,
+      "sha256": "b672b1496ba6edf1917bcea693b75f864a8ca70a3dfcebc6f35b226043ef3502"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty/config.json",
+      "bytes": 3,
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stdout.bin",
+      "bytes": 197,
+      "sha256": "41c035a3f5dcdff0aac5e17c4e64fea9e58ca226e49eb60401d76de2b7c35516"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stdout.bin",
+      "bytes": 792,
+      "sha256": "efa58a91d6502cf4468bfa9a411ee5ffa0f4ac532a06812bad126369ffb4558b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/driver-and-command-source.json",
+      "bytes": 2513,
+      "sha256": "541d6ef6e6cce7ac3c3e65ce31fb4edf3236097428f960a16cef91256b800671"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/frozen-criteria.json",
+      "bytes": 3570,
+      "sha256": "cf237f3dc3a70aa0eae13109ffbd927f6dcd3d6529eeabcf7b860f2d50017b41"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stdout.json",
+      "bytes": 7246,
+      "sha256": "e8b06265c639760c6022f5a6728d74b90a17f1071a4ee7b49f1f9550909be503"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/read-daemon-metadata.py",
+      "bytes": 2590,
+      "sha256": "3f21b4712ec83342672d815b2e815fff0d05f1640744674179580425d8f0c296"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/review-checker-failure.json",
+      "bytes": 701,
+      "sha256": "2b465bd028d2068d7da97585560188bb1d2722094771dd6815a974eb5859d663"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/verification-receipt.json",
+      "bytes": 1847,
+      "sha256": "48ff3ba88905d6839e702e452c550fb79a368b794c380fb1780f69cd1adce13a"
+    }
+  ],
+  "excluded": [
+    "manifest.json self"
+  ],
+  "authorCommit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+  "base": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "nativeAdmission": "HOLD_NOT_EXECUTABLE"
+}

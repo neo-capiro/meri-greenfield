@@ -1,0 +1,287 @@
+{
+  "observedAt": "2026-10-12T06:22:54.612968+00:00",
+  "scope": "READ_ONLY_METADATA_NOT_NATIVE_ADMISSION",
+  "targetExecutions": 0,
+  "databaseConnections": 0,
+  "socketConnections": 0,
+  "mutations": 0,
+  "host": {
+    "os": "Linux",
+    "release": "6.18.44",
+    "machine": "x86_64",
+    "uid": 1000,
+    "gid": 1000,
+    "pythonVersion": "3.12.14",
+    "pythonExecutable": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "exists": true,
+      "mode": 41471,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 10,
+      "symlink": true,
+      "socket": false,
+      "resolvedPath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3.12",
+      "sha256": "fa67443527ed9647f760d807e2a38f26340757123e643c4639cf273ed15d5ea7",
+      "stableMetadataDuringRead": true
+    }
+  },
+  "osRelease": {
+    "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+    "VERSION_ID": "13",
+    "ID": "debian"
+  },
+  "commands": {
+    "postgres": {
+      "onPath": false
+    },
+    "initdb": {
+      "onPath": false
+    },
+    "pg_ctl": {
+      "onPath": false
+    },
+    "psql": {
+      "onPath": false
+    },
+    "pg_config": {
+      "onPath": false
+    },
+    "docker": {
+      "path": "/usr/local/bin/docker",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 43556144,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/local/bin/docker",
+      "hashStatus": "not hashed: exceeds bounded metadata-inspection cap"
+    },
+    "podman": {
+      "onPath": false
+    },
+    "containerd": {
+      "path": "/usr/local/bin/containerd",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 41451704,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/local/bin/containerd",
+      "hashStatus": "not hashed: exceeds bounded metadata-inspection cap"
+    },
+    "ctr": {
+      "path": "/usr/local/bin/ctr",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 21242040,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/local/bin/ctr",
+      "sha256": "ae5b0d0ea75e8b541b7e7b611936169cbd4cd7c4ba0f13886cb5318d9aa85a76",
+      "stableMetadataDuringRead": true
+    },
+    "nerdctl": {
+      "onPath": false
+    },
+    "bwrap": {
+      "path": "/usr/bin/bwrap",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 80248,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/bin/bwrap",
+      "sha256": "573236e5328ac2ebb08f59ae3a9805b4f8d12bdef14be8af4450d5463294985f",
+      "stableMetadataDuringRead": true
+    },
+    "unshare": {
+      "path": "/usr/bin/unshare",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 92792,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/bin/unshare",
+      "sha256": "e7d3961bd874d5a4fe531efe6feb61b358b8000bd8c5fe91c5f1bdd9af81a002",
+      "stableMetadataDuringRead": true
+    },
+    "nsenter": {
+      "path": "/usr/bin/nsenter",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 88728,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/bin/nsenter",
+      "sha256": "09ea3a612a16b59c04aa55d894a1e868deaddb8a6a9927c4f1993827a3554de1",
+      "stableMetadataDuringRead": true
+    },
+    "systemd-run": {
+      "path": "/usr/bin/systemd-run",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 84872,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/usr/bin/systemd-run",
+      "sha256": "fb8ee22411b3c0cdd56547df9915f387a5d5c7af3e05bbfe5332fda220d4732b",
+      "stableMetadataDuringRead": true
+    },
+    "firejail": {
+      "onPath": false
+    },
+    "node": {
+      "path": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "exists": true,
+      "mode": 33261,
+      "uid": 65534,
+      "gid": 65534,
+      "size": 125989464,
+      "symlink": false,
+      "socket": false,
+      "resolvedPath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "hashStatus": "not hashed: exceeds bounded metadata-inspection cap"
+    }
+  },
+  "knownServerLocations": [
+    {
+      "path": "/usr/lib/postgresql",
+      "exists": false
+    },
+    {
+      "path": "/usr/local/pgsql/bin",
+      "exists": false
+    },
+    {
+      "path": "/opt/postgresql",
+      "exists": false
+    },
+    {
+      "path": "/usr/local/bin/postgres",
+      "exists": false
+    },
+    {
+      "path": "/usr/bin/postgres",
+      "exists": false
+    }
+  ],
+  "daemonEndpoints": [
+    {
+      "path": "/var/run/docker.sock",
+      "exists": true,
+      "mode": 49584,
+      "uid": 65534,
+      "gid": 1000,
+      "size": 0,
+      "symlink": false,
+      "socket": true
+    },
+    {
+      "path": "/run/docker.sock",
+      "exists": true,
+      "mode": 49584,
+      "uid": 65534,
+      "gid": 1000,
+      "size": 0,
+      "symlink": false,
+      "socket": true
+    },
+    {
+      "path": "/run/podman/podman.sock",
+      "exists": false
+    },
+    {
+      "path": "/run/containerd/containerd.sock",
+      "exists": false
+    }
+  ],
+  "ambientEndpointVariablesPresent": {
+    "DOCKER_HOST": false,
+    "CONTAINER_HOST": false,
+    "PGHOST": false,
+    "PGPORT": false,
+    "PGDATABASE": false,
+    "PGUSER": false,
+    "PGPASSWORD": false,
+    "PGSERVICE": false,
+    "PGPASSFILE": false
+  },
+  "pythonDistributions": {
+    "psycopg": {
+      "installedMetadata": false
+    },
+    "psycopg-binary": {
+      "installedMetadata": false
+    },
+    "psycopg2": {
+      "installedMetadata": false
+    },
+    "psycopg2-binary": {
+      "installedMetadata": false
+    },
+    "httpx": {
+      "version": "0.28.1"
+    }
+  },
+  "relevantDpkgPackages": [
+    {
+      "Package": "bubblewrap",
+      "Version": "0.12.0-1~deb13u1",
+      "Architecture": "amd64",
+      "Status": "install ok installed"
+    },
+    {
+      "Package": "libpq5",
+      "Version": "17.11-0+deb13u1",
+      "Architecture": "amd64",
+      "Status": "install ok installed"
+    }
+  ],
+  "cachedRelevantDebs": [],
+  "matchingProcessNamesOnly": [
+    {
+      "pid": 201,
+      "comm": "dockerd"
+    },
+    {
+      "pid": 254,
+      "comm": "containerd"
+    }
+  ],
+  "selfSecurityMetadata": {
+    "CapEff": "0000000000000000",
+    "CapBnd": "0000000000000000",
+    "NoNewPrivs": "1",
+    "Seccomp": "2",
+    "Seccomp_filters": "1"
+  },
+  "namespaceMembershipMetadataOnly": {
+    "user": "user:[4026532661]",
+    "pid": "pid:[4026532200]",
+    "mnt": "mnt:[4026532658]",
+    "net": "net:[4026531833]"
+  },
+  "containerMarkerPresent": false,
+  "limitations": [
+    "PATH/standard-location/package metadata absence does not exhaust arbitrary host paths.",
+    "Package metadata/hash is not distributor trust or supported closure.",
+    "Namespace/capability/process metadata does not prove containment or absence of untrusted local peers.",
+    "No database connection, target version command, namespace creation, daemon API, image inspection or service mutation performed."
+  ],
+  "durationSeconds": 0.146172
+}

@@ -1,0 +1,1 @@
+{"serverVersion":"28.4.0","images":0,"containers":0,"containersRunning":0,"securityOptions":["name=seccomp,profile=builtin","name=cgroupns"],"cgroupVersion":"2","cpus":5,"memoryTotal":18882699264}
