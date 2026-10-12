@@ -1,0 +1,39 @@
+✔ search_cbo_cost_estimates: closed inputs, defaults and immutable snapshot (4.522499ms)
+✔ search_cbo_cost_estimates: hostile data stays inert (0.429326ms)
+✔ search_cbo_cost_estimates: exact envelope, projection and wire date (7.482178ms)
+✔ search_cbo_cost_estimates: row limit follows request without hidden source fields (0.548244ms)
+✔ search_gao_reports: closed inputs, defaults and immutable snapshot (1.531372ms)
+✔ search_gao_reports: hostile data stays inert (0.207602ms)
+✔ search_gao_reports: exact envelope, projection and wire date (5.824746ms)
+✔ search_gao_reports: row limit follows request without hidden source fields (0.388975ms)
+✔ search_crs_reports: closed inputs, defaults and immutable snapshot (1.246904ms)
+✔ search_crs_reports: hostile data stays inert (0.303346ms)
+✔ search_crs_reports: exact envelope, projection and wire date (5.458916ms)
+✔ search_crs_reports: row limit follows request without hidden source fields (0.879542ms)
+✔ CBO: empty record note is mandatory and exact (0.481704ms)
+✔ CBO: source note label precedes lowercase filtering and cap (0.514464ms)
+✔ CBO: Unicode lowercase expansion and code-unit truncation remain producer compatible (0.221022ms)
+✔ CBO: filter relationships and stored projection do not invent scores (0.823147ms)
+✔ search_gao_reports: concurrent totals and nullable storage fields (0.435324ms)
+✔ search_gao_reports: UTF-16 excerpt cap accepts exact literal boundary (0.540773ms)
+✔ search_gao_reports: excerpt normalization rejects impossible whitespace without trimming stored arrays (0.859222ms)
+✔ search_gao_reports: nullable date wire representation (0.418529ms)
+✔ search_crs_reports: concurrent totals and nullable storage fields (0.259259ms)
+✔ search_crs_reports: UTF-16 excerpt cap accepts exact literal boundary (0.316716ms)
+✔ search_crs_reports: excerpt normalization rejects impossible whitespace without trimming stored arrays (0.347152ms)
+✔ search_crs_reports: nullable date wire representation (0.375334ms)
+✔ GAO: reportType exact filter and declared nullable Int (0.708324ms)
+✔ CRS: active-only source selection is not an invented projected flag (0.301574ms)
+✔ CBO: stored signed Int and falsey zero filter preserve source rules (0.657128ms)
+✔ CBO: truncation can retain note-label whitespace dropped from actual bill filter (0.183175ms)
+✔ search_cbo_cost_estimates: unique rows, chronological order and truthful metadata scope (0.441133ms)
+✔ search_gao_reports: unique rows, chronological order and truthful metadata scope (0.261423ms)
+✔ search_crs_reports: unique rows, chronological order and truthful metadata scope (0.242074ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 174.121762
