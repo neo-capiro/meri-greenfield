@@ -1,0 +1,96 @@
+{
+  "status": "CANDIDATE_AWAITING_INDEPENDENT_REVIEW",
+  "sourceFreeze": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+  "memberCount": 17,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-RULE-STATUS-AUTHOR-20261012.md",
+      "bytes": 8971,
+      "sha256": "4c136df33476c814053c5a8b1c08fd77c30d3479e6b829529bacc547cd0907e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/cleanup.json",
+      "bytes": 194,
+      "sha256": "82f9be3a93ceb1d27ff871a048a4157b3d213d259a6ab2f953c5d06f4a78ae32"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/focused-first.json",
+      "bytes": 1313,
+      "sha256": "a3cf34f543882fce75e76b870fe58515141bec649fc3cabff8dbb7e7903c0b8a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/focused-first.stdout.bin",
+      "bytes": 3106,
+      "sha256": "bd6acf2e52e1ee01b3b9bd77aad9704025169c8c294d8715e6c0585fb0719898"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/integration-interface.json",
+      "bytes": 1281,
+      "sha256": "b51cf8e512a38ba5226cd5ef018d1700f31ea3674a92d4c77f4882301319286d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/outline.md",
+      "bytes": 3119,
+      "sha256": "3a7836c57aa8192d25faa264d0ddd98add3f64633241f8eb0582c28890d2fe08"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/reference-identities.json",
+      "bytes": 5893,
+      "sha256": "03b2f74ec6e1f685f151ad20ec64eaba2ea0080bff8d811d6780664c319abfa6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/source-audit.json",
+      "bytes": 1319,
+      "sha256": "c99720c18922c40735dd99bc4d23d01d62a0ef02284e8f5e2fd7a12f8045d1bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/source-audit.stdout.bin",
+      "bytes": 766,
+      "sha256": "3236d8bcfd60f6beba66ba7c15143528e2b2a6da018cd553e2b7d23d9f02ea00"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/verify-source.py",
+      "bytes": 3134,
+      "sha256": "60dd90bbb10fc46e99cc8fbe180cc1cd80e919c9c6a806b7d425c67a1b982e9c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-author/whitespace.json",
+      "bytes": 599,
+      "sha256": "cf3b0df344ffcbb930d2569fd20a948eddbc1ce2bedef85d02a4082ea44dfa43"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "bytes": 6189,
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "bytes": 12001,
+      "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-rule-status.test.mjs",
+      "bytes": 14236,
+      "sha256": "9baeaaa77427ece70fec111eb95f604ca52c5bbff0ab3ab9cb29babb0706273d"
+    }
+  ],
+  "excluded": {
+    "manifest.json": "self-referential hash",
+    "manifest-validation.json": "post-manifest verification receipt"
+  }
+}

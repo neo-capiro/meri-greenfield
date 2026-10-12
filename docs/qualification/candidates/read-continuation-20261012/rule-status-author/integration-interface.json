@@ -1,0 +1,41 @@
+{
+  "status": "CANDIDATE_AWAITING_INDEPENDENT_REVIEW",
+  "sourceFreeze": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+  "factory": "createRuleStatusValidators",
+  "operations": [
+    {
+      "id": "get_state_rule_status",
+      "request": "RuleStatusRequest",
+      "input": "RuleStatusInput",
+      "output": "RuleStatusOutput"
+    }
+  ],
+  "contextKeys": [
+    "stageAsOf",
+    "commentAsOf"
+  ],
+  "normalizer": "normalizeRuleStatusInput",
+  "outputAssertion": "assertRuleStatusOutput",
+  "metadata": {},
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "bytes": 12001,
+      "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "bytes": 6189,
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    }
+  ],
+  "clockSemantics": {
+    "stage": "end<stageAsOf; effective<=stageAsOf",
+    "comment": "validated accepting stage and end>commentAsOf and (start=null or start<=commentAsOf)",
+    "generatedAt": "canonical serialization only",
+    "orderingRequired": false,
+    "ambientClock": false,
+    "authenticityOrEligibilityProven": false
+  },
+  "runtimeAccepted": false
+}
