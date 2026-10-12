@@ -1,0 +1,60 @@
+[
+  {
+    "name": "repair-independent-adversarial",
+    "command": [
+      "node",
+      "--test",
+      "/workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial-repair.test.mjs"
+    ],
+    "cwd": "/workspace/meri-memory-repair-20261012",
+    "commit": "07c823e2220c8ca14f448eaba884979a2c3c13e2",
+    "exit": 0,
+    "seconds": 0.93,
+    "stdoutSha256": "f750c49ef9017c89fad40c4072d4a1edd7c8d2b03516096206bdc248f1f5e787",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "repair-focused",
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+    ],
+    "cwd": "/workspace/meri-memory-repair-20261012",
+    "commit": "07c823e2220c8ca14f448eaba884979a2c3c13e2",
+    "exit": 0,
+    "seconds": 0.95,
+    "stdoutSha256": "236aa2d870af16d2d7e045e248757080df1483a867309bad45111251db0dd2d4",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "repair-full-contracts",
+    "command": [
+      "npm",
+      "run",
+      "check:contracts"
+    ],
+    "cwd": "/workspace/meri-memory-repair-20261012",
+    "commit": "07c823e2220c8ca14f448eaba884979a2c3c13e2",
+    "exit": 0,
+    "seconds": 4.796,
+    "stdoutSha256": "397d3d8c6889e416a06f72cc439ec26ebbb2d3afb4e72fa6f5350d3fbf730bf4",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  {
+    "name": "repair-public-distribution",
+    "command": [
+      "npm",
+      "run",
+      "check",
+      "--prefix",
+      "packages/contracts"
+    ],
+    "cwd": "/workspace/meri-memory-repair-20261012",
+    "commit": "07c823e2220c8ca14f448eaba884979a2c3c13e2",
+    "exit": 0,
+    "seconds": 2.952,
+    "stdoutSha256": "f91883927bfdc49eb4aa3881d8eb043d74b607d45106f16ca6eccc1c2cbee028",
+    "stderrSha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+  }
+]

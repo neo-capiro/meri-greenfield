@@ -1,0 +1,12 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-review-20261012",
+  "head": "428a9271f907de8534cdd7664e7875118c9afb41",
+  "exit": 0,
+  "stdoutSha256": "23747f375912aa9b0224a2a7328e096bd9a7fbf72bd8ae85bd3c02ac166f4dc8",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
