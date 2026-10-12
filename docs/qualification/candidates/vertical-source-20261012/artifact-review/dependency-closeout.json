@@ -1,0 +1,40 @@
+{
+  "ownedLinks": [
+    {
+      "name": "ajv",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "ajv-formats",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "canonicalize",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "fast-deep-equal",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "fast-uri",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "json-schema-traverse",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    },
+    {
+      "name": "require-from-string",
+      "removedOwnedSymlink": true,
+      "borrowedTargetUntouched": true
+    }
+  ],
+  "noDependenciesInstalled": true
+}

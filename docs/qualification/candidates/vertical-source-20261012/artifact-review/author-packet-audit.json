@@ -1,0 +1,335 @@
+{
+  "packet": "b97fb68c336da35874923c3f5e83a73e870d6f95",
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "manifestSha256": "36d982f082873e401a91d6b111865a607a6b4aa6d9ef7d5bf86af6c5fb7d964d",
+  "manifestMembers": 46,
+  "checks": [
+    {
+      "name": "exact supplied manifest SHA",
+      "pass": true
+    },
+    {
+      "name": "46 unique manifest members",
+      "pass": true
+    },
+    {
+      "name": "final source binding",
+      "pass": true
+    },
+    {
+      "name": "all8678 originals unchanged",
+      "pass": true
+    },
+    {
+      "name": "all reviewed source entries unchanged",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/process.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/coverage.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-canonical.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-overflow-image-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/focused-second.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/installed-metadata.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/png-fixture-correction.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-after.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-after.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/artifact-author/workflow-coverage.json",
+      "pass": true
+    },
+    {
+      "name": "manifest packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "manifest packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "complete added-file coverage",
+      "pass": true
+    },
+    {
+      "name": "no hidden production additions",
+      "pass": true
+    },
+    {
+      "name": "focused-first stream hashes",
+      "pass": true
+    },
+    {
+      "name": "focused-first exact test totals",
+      "pass": true
+    },
+    {
+      "name": "focused-first exact source/no dirty implementation",
+      "pass": true
+    },
+    {
+      "name": "focused-first owned group closed",
+      "pass": true
+    },
+    {
+      "name": "focused-first group absent now",
+      "pass": true
+    },
+    {
+      "name": "focused-second stream hashes",
+      "pass": true
+    },
+    {
+      "name": "focused-second exact test totals",
+      "pass": true
+    },
+    {
+      "name": "focused-second exact source/no dirty implementation",
+      "pass": true
+    },
+    {
+      "name": "focused-second owned group closed",
+      "pass": true
+    },
+    {
+      "name": "focused-second group absent now",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired stream hashes",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired exact test totals",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired exact source/no dirty implementation",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired owned group closed",
+      "pass": true
+    },
+    {
+      "name": "focused-repaired group absent now",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired stream hashes",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired exact test totals",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired exact source/no dirty implementation",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired owned group closed",
+      "pass": true
+    },
+    {
+      "name": "focused-overflow-image-repaired group absent now",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical stream hashes",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical exact test totals",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical exact source/no dirty implementation",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical owned group closed",
+      "pass": true
+    },
+    {
+      "name": "focused-canonical group absent now",
+      "pass": true
+    },
+    {
+      "name": "four obligations retained",
+      "pass": true
+    },
+    {
+      "name": "native receipt explicitly unverified",
+      "pass": true
+    },
+    {
+      "name": "native general execution not claimed",
+      "pass": true
+    }
+  ],
+  "passed": 81,
+  "failed": 0,
+  "scope": "METADATA_ONLY_NO_PRODUCT_RERUN"
+}

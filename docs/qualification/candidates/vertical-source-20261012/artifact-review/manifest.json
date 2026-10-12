@@ -1,0 +1,359 @@
+{
+  "schema": "meri-artifact-independent-review-manifest/1",
+  "verdict": "ACCEPT_SOURCE",
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "sourceTree": "2bedef6f8857afd44f57e0925e0183908ce46742",
+  "functionalTestSource": "814ecf1baa1b5890545576a0815257199505103a",
+  "authorPacket": "b97fb68c336da35874923c3f5e83a73e870d6f95",
+  "members": [
+    {
+      "path": "apps/artifacts/test/artifact-adapters-independent.test.mjs",
+      "bytes": 7135,
+      "sha256": "eea3cf138afd4555dd2e1f511d96732dedc19bb6b32ce293eda2107c6481b111"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-process-independent-child.mjs",
+      "bytes": 547,
+      "sha256": "08e9e07f8a62b3c75b79726bce47f9473655dec325964d9eba2c9bf7a5fa8e98"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-process-independent.test.mjs",
+      "bytes": 2929,
+      "sha256": "aa17dc65fea71dd56c99a83180199458ad823d41cc13c816ec067167e4f9248b"
+    },
+    {
+      "path": "apps/artifacts/test/artifact-service-independent.test.mjs",
+      "bytes": 13973,
+      "sha256": "1fe70bb7f671033be73a59a18045341ca2e6f70f9675c91b4ca95055a9e2c78f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "bytes": 7499,
+      "sha256": "907a72323ee4d9c8073e6ad497ebf4d4778d28b19afbd3f875a74b852e91f927"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-ARTIFACT-EXECUTION-REVIEW-20261012.md",
+      "bytes": 5496,
+      "sha256": "e0afcf32dea0072fdc67247c2fb9276441ad41d61b1a5b917f5c2459b53b5e2f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapter-first-integer-result.json",
+      "bytes": 313,
+      "sha256": "13c5563a1ed3eb5e12cc4f44bf25b0803379cd8f633f683a90f123d434f521c4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.json",
+      "bytes": 1300,
+      "sha256": "df45ea199b1c61c26c5354d149e85a1b7baa99ac44b84af01efc47fa59fdff13"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/adapters-repaired.stdout.bin",
+      "bytes": 807,
+      "sha256": "b8972ab4a7c389004280e77254eabb7418bd40bb0eab0a05f2019398860e6a23"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/audit-author-packet.py",
+      "bytes": 3697,
+      "sha256": "ce1db8a18468ece78cd471457f72a32e85ba485133666092f8b37a94e5e22749"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/audit-source.py",
+      "bytes": 3970,
+      "sha256": "a9b2d47b7fceaac28ff5169673521205d0eee0f24909923ed25309003a9009e0"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/author-packet-audit.json",
+      "bytes": 9552,
+      "sha256": "4fa3f47d4569a1b370c9b58b6386a015b2e6765453e6602e69309f3d4a8be602"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/baseline-identities.json",
+      "bytes": 2605,
+      "sha256": "205d32c45449eecce4b251efd81cfa4467ce9584ec4e1466ebad8022f7289366"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/budget-expectation-correction.json",
+      "bytes": 521,
+      "sha256": "2fe1637cdbb070ead40ba5bea1c1c170d1f3073f57651dd9e54eef0caecc54d3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/dependency-closeout.json",
+      "bytes": 876,
+      "sha256": "fdc9b4159a4a1a3a02aae3126f6f83f95b1c4ce2ad54f72fdf4857d9af147281"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/draft-schema-check.json",
+      "bytes": 596,
+      "sha256": "d2bcc6c04d667ea4faf21ee5dc9207e73389c572e640cc2900c49248df27502f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-fixture-correction.json",
+      "bytes": 695,
+      "sha256": "2dd5447de9778ce021b83629b505f6320070516cae8cfc833e03da6d4fd5f77f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.json",
+      "bytes": 1628,
+      "sha256": "52aabfdb7673368ed51fc453af2c6c9dfe7a3c92b70ff24bb15e8b5d0bb7a008"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-focused.stdout.bin",
+      "bytes": 9773,
+      "sha256": "4a5aefd4d2fa8b0e2c85bfa77e5141015134873199940f2d2be5aa2c97e5a7c3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.json",
+      "bytes": 1601,
+      "sha256": "dba316a473d70b43a10a104b96037ecf0d1e4a2ec8b417e6667e58cb9eb72550"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-corrected.stdout.bin",
+      "bytes": 6411,
+      "sha256": "dc19a428ab7122855cd758da4cb9e59b5c58d0614a4d1d31f10f9df1da0902cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.json",
+      "bytes": 1594,
+      "sha256": "dc838be3e4ab9b7f43b610798c70545219ef21d00e89fc616501a61cbd1d95d5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/final-independent-first.stdout.bin",
+      "bytes": 43913,
+      "sha256": "67ed0028878c6811fe345c43b57bada5656bb1299741f564130bd87983a3e4e5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.json",
+      "bytes": 1295,
+      "sha256": "814526c7cb4063e3838b8d03e85a2d9d3be79efd3ec4bba39b4644f72d31c31d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-adapters.stdout.bin",
+      "bytes": 2186,
+      "sha256": "fe12b43d5cea7b6ca68e4e4a5c454c6d510a77ce80eca58e0a8f007fb7ca2fc1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.json",
+      "bytes": 1286,
+      "sha256": "5c71e3d7e425710f35e7125bef4c9716a155e37c4e3c8b90462ee04988791a94"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-connected.stdout.bin",
+      "bytes": 1684,
+      "sha256": "769b6e545dc36b91c2c86f503775be643b22a2463a7210ad004326bf37d68789"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.json",
+      "bytes": 1302,
+      "sha256": "7932095105ae28af05ddce37bb7c8d7fee54c5f6384dc5bdb0a3617a9784ad79"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-contracts.stdout.bin",
+      "bytes": 1457,
+      "sha256": "dfb6de286bc9879113c7a5ab58294a1157d0925414da2194462d7ec7f3d2b616"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-findings.json",
+      "bytes": 1382,
+      "sha256": "9ea001e7cb73807c8deb0f6cf8719199e41ea7e7c4d353fdbaf4efae3e19ca5d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service-independent.test.mjs.txt",
+      "bytes": 10757,
+      "sha256": "51bc59574916b926194fba3a67f8d7f128a02eaa63bcaacfbc994748bee0ca35"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.json",
+      "bytes": 1292,
+      "sha256": "7f58eaab3bc9f5c43b9478d7d403a3d049e4ba7f452f5bec6f41ee31449f63f4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/first-service.stdout.bin",
+      "bytes": 8602,
+      "sha256": "bce1836c1f3f4ed78dd1cb7ff048c34949c6270c4b9abad5ab43d1d4643e60db"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/general-extension-criteria.json",
+      "bytes": 739,
+      "sha256": "a02cc4991ed4943dab5beed745d0838eabbe8bab415f7133e498297f25f6a5de"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/independent-matrix.json",
+      "bytes": 5989,
+      "sha256": "3a400c0bb6d05cd300e18066bc383586fdb0965424453f20870449c29316337a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/installed-metadata.json",
+      "bytes": 3112,
+      "sha256": "181db233b7f105f24c60d472630e9f3450a75b8fe4b34d47b3051ab8f5e8ab9f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/pptx-installed-metadata.json",
+      "bytes": 566,
+      "sha256": "b43621e86f74198ec116113dbd01ad06b46ee2fced1928dbe2cf943e694601e9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/preparation.json",
+      "bytes": 1099,
+      "sha256": "4c6f59a69aa4efae740e7ef70837b39b09719f7a3f0b405fce19658485eed2f6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-before-budget-code-correction.mjs.txt",
+      "bytes": 10781,
+      "sha256": "6796b3cc3d342f7c4ff67cc0e243a71477771ebddadcd01ed22c02db3f095e4e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-before-inspection-fixture-correction.mjs.txt",
+      "bytes": 12392,
+      "sha256": "a41402916422b7f5e4037d1ab3d6bbc7adba73e50f4821cd9292d9eb7d6d8674"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.json",
+      "bytes": 1314,
+      "sha256": "7c183d2cf9d9391d2c326eb653715c4d3b1498bf94fdf21eb88f191d4d373fc8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-corrected-oracle.stdout.bin",
+      "bytes": 4946,
+      "sha256": "035f65d007e915adf2954b9d126f4ee1cde7c7f21847f03782d9537f10275787"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.json",
+      "bytes": 1306,
+      "sha256": "466cb3f5d30aeb3f3c8e10d2c41589c5e599e85931a4ba529d5fd942ec09fd73"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-first-repair.stdout.bin",
+      "bytes": 3531,
+      "sha256": "ae00d6d43edde8ec4082196098d24c0e574849181e4d3fb71b9976773db4b838"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.json",
+      "bytes": 1297,
+      "sha256": "a8bcfe38b414ff3cb1f01359cfbf4d320c77cf30136dab510e86ff0f4e5b1bde"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/service-repaired.stdout.bin",
+      "bytes": 2014,
+      "sha256": "3cf676f87278b3554844676407d6af159b4ceb585351fc8ceb624e47daaf469f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/source-audit-final.json",
+      "bytes": 16574,
+      "sha256": "fb45a3b01913887268a937e8091f56ece27371eeca0f5deff6baf0d5f2d6da03"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/source-audit.json",
+      "bytes": 16574,
+      "sha256": "5272639d3ce6d636f9e2424766b6eafefd36a6966d99334ec9c53b82378e8815"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/verify-packet.py",
+      "bytes": 2931,
+      "sha256": "760ba3b79fe3e7eedd2f0e40c27a532b0f797d9c01edd324efcf8fb235c32589"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-authored.stdout.bin",
+      "bytes": 54,
+      "sha256": "ce61ecb50d28ca54aa95d633cf146376bc06882471672056f9729a2f2beaff49"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-complete.stdout.bin",
+      "bytes": 3226,
+      "sha256": "d096db761592f7973bdfd96663f8a0ad30e444dcbdc02f1695e1fa5da2b29636"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace-successor.json",
+      "bytes": 1382,
+      "sha256": "e94931d3729039a6117df7371ddea01c203cf2ef284b79be4ddf1cbe30a36aa9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-review/whitespace.json",
+      "bytes": 1801,
+      "sha256": "74613c63fff47726f3b64a791b1dca932a6fbb22747e0ced34b8c9898b9bcc2d"
+    },
+    {
+      "path": "packages/contracts/test/artifact-execution-independent-general.test.mjs",
+      "bytes": 6902,
+      "sha256": "073046314fea344a540fed175c40606c45beafa0ec4c4280286214033cd7d3e2"
+    },
+    {
+      "path": "packages/contracts/test/artifact-execution-independent.test.mjs",
+      "bytes": 6300,
+      "sha256": "cb737929ba24ad43599629e7ec4f31ad91b4372ae437e02cfcb5dcd6d92aaa4d"
+    }
+  ],
+  "exclusions": [
+    "manifest.json: self-reference",
+    "verification.json: generated verification receipt"
+  ]
+}
