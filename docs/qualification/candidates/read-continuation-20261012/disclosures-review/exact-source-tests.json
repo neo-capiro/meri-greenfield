@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+    "packages/contracts/test/retrieval-disclosures.test.mjs"
+  ],
+  "cwd": "/workspace/meri-disclosures-review-20261012",
+  "sourceHead": "4963456bf179fe580eac8900b733874edbfc019a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:48:57.368627+00:00",
+  "durationSeconds": 0.316,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 160979,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stdout.bin",
+      "bytes": 5598,
+      "sha256": "8aa49250831db68a23bafad771c809ec14335da602b18b9b6830c8dd3df980b0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Exact repaired author freeze; original29 and added coercion control unchanged after failures.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

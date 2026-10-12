@@ -1,0 +1,141 @@
+{
+  "scope": "INDEPENDENT_SOURCE_REVIEW_ONLY",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+      "bytes": 13161,
+      "sha256": "fe57eef0871c79c113cda74c17e0e49966d7d5cd4e2a1db6a55d3f53ec34e135"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-DISCLOSURES-REVIEW-20261012.md",
+      "bytes": 10253,
+      "sha256": "2e00924600ed2de5e7d0b63642c1c312bbd063ba59910c50da1d91cc8c0c61d8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/audit.json",
+      "bytes": 8940,
+      "sha256": "7dfd6f1247849349003b4728cf117d50f10371da476dedc3c16468c9bc405f5f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/audit.py",
+      "bytes": 7877,
+      "sha256": "8898e0a0509e9f5ee9933ef65ec04e345e76f283f1c180500c53a0c2e9f3a724"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/criteria.md",
+      "bytes": 2310,
+      "sha256": "883364873efb2c895622a16d7aaf77852e2d3a18c08b6dcc2ca9a0f442decba9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.json",
+      "bytes": 1408,
+      "sha256": "2c1a1a4bffccf45c8b40972a02b2bcdf7685e046b04f443fa9da9242fed1db67"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stdout.bin",
+      "bytes": 5598,
+      "sha256": "8aa49250831db68a23bafad771c809ec14335da602b18b9b6830c8dd3df980b0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.json",
+      "bytes": 1354,
+      "sha256": "c3917f471fa98b9310ac94b2e3e7319557962fcf8b76365dec5c98df8dc23b79"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.stdout.bin",
+      "bytes": 111,
+      "sha256": "50d390c43de15c77f92061c3a054e4692977a8d28b7d74a32a1dbd3cd8b98fcf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/findings.md",
+      "bytes": 2199,
+      "sha256": "754cabe39193ff43188a1459102ce02f11e8bf8b467719718b3fc94690a49e26"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source/packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "bytes": 5610,
+      "sha256": "aba229e95d811a1462c5ef0254877c0c1ad5bf0f067337a732c25f6bf4608286"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source/packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "bytes": 15855,
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source.json",
+      "bytes": 406,
+      "sha256": "afd76ea1fa043d17a5163022ebc8defa981aef7f57129f5c96ae52ba8c3f9f94"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.json",
+      "bytes": 1378,
+      "sha256": "62079a40f1cdd2b44e54e4e4c80cee9eb71f102f047e02d538702416c87c085d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stdout.bin",
+      "bytes": 3846,
+      "sha256": "b840c6f4c241e71338660a335acdc42a3ba410b6af83c3ce3e90990eba980a90"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.json",
+      "bytes": 1323,
+      "sha256": "96977307adb2e4e8c9231fda4e8eb3be1b0aacf0da8c79ee0ea0708252c5bade"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stdout.bin",
+      "bytes": 3878,
+      "sha256": "cd45269bd1384100a47e2a9b0f3871bb57ce35f050b4957424c1f45da6fc0529"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-source-after.json",
+      "bytes": 665,
+      "sha256": "4b436d320bfce3f33b29151d6e24e5adb81ad2cdf475d6a5ebcd222305454fa7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-source-before.json",
+      "bytes": 437,
+      "sha256": "fb9c8921a143f4e28fe04911dcc4ee6b0e5e012e18597894700f265c1d67e708"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/reference-identities.json",
+      "bytes": 2646,
+      "sha256": "62bafb04a6222e9c1c2b55d6cbf33bce68abdc0cf2a1c44689ca57efa4b4b115"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/source-characterization.json",
+      "bytes": 1393,
+      "sha256": "7d1a47385feae882d3f551f3d9801ce0cc8ad9016bc88856e30e54524087f04a"
+    }
+  ]
+}
