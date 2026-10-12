@@ -42,7 +42,7 @@ export function createArtifactFileValidators({validateShape,validatePublicShape,
       const count=persistedKeys.filter(key=>Object.hasOwn(file,key)).length;
       if(count!==0&&count!==persistedKeys.length)fail('Partial persisted filing observation');
       if(file.fileName===null&&(file.status!=='failed'||count!==0))fail('Found attachment filename must remain a string');
-      if(file.status==='saved'&&count!==persistedKeys.length)fail('Stored filing observation required');
+      if(file.status!=='failed'&&count!==persistedKeys.length)fail('Stored filing observation required');
       if(file.status==='saved'){
         if(file.indexingStatus==='not_indexed'||Object.hasOwn(file,'reason'))fail('Saved filing observation contradicts source projection');
       } else {
