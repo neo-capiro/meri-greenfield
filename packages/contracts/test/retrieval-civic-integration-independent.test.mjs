@@ -115,7 +115,7 @@ test('contacts preserve explicit selector refusal, normalized domain and no impl
 
 test('entity effective Congress is trusted context, absent and candidate facts are not authority',()=>{
  const a=resolve(ENTITY).normalizeInput({query:'H.R. 7'},{defaultCongress:119}),b=resolve(ENTITY).normalizeInput({query:'H.R. 7'},{defaultCongress:118});
- assert.equal(a.metadata.billId,'hr7-119');assert.equal(b.metadata.billId,'hr7-118');
+ assert.equal(a.metadata.billId,'119-hr-7');assert.equal(b.metadata.billId,'118-hr-7');
  const page={tool:ENTITY,generatedAt:T,matchesFound:0,matches:[],note:'No canonical entity matched "H.R. 7". Say so explicitly — do NOT fabricate a member, committee, or bill identifier.'};check(ENTITY,page,{query:'H.R. 7'});
  assert.throws(()=>check(ENTITY,{...page,note:'Current authority established.'},{query:'H.R. 7'}));assert.throws(()=>resolve(ENTITY).normalizeInput({query:'H.R. 7',defaultCongress:118},{defaultCongress:119}));
 });
@@ -136,9 +136,9 @@ test('summary keeps opaque nonempty output and UTF16 selector truncation without
 });
 
 test('entity output callback receives effective Congress and cannot rebind a direct bill candidate',()=>{
- const row={entityType:'bill',canonicalIdType:'billId',canonicalId:'hr7-119',display:'Synthetic bill',matchedBy:'bill-id',congress:119,sponsorName:null,sponsorBioguideId:null,latestActionText:null,latestActionDate:null};
+ const row={entityType:'bill',canonicalIdType:'billId',canonicalId:'119-hr-7',display:'Synthetic bill',matchedBy:'bill-id',congress:119,sponsorName:null,sponsorBioguideId:null,latestActionText:null,latestActionDate:null};
  const page={tool:ENTITY,generatedAt:T,matchesFound:1,matches:[row]};
  check(ENTITY,page,{query:'H.R. 7'},{defaultCongress:119});assert.throws(()=>check(ENTITY,page,{query:'H.R. 7'},{defaultCongress:118}));
  // Effective context is a correlation input, not proof of current source authority.
- check(ENTITY,page,{query:'hr7-119'},{defaultCongress:118});
+ check(ENTITY,page,{query:'119-hr-7'},{defaultCongress:118});
 });
