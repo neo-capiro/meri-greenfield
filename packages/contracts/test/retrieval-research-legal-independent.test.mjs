@@ -280,3 +280,27 @@ test('legal independent: hostile request result context execute no hooks',()=>{
  const c={clientResolution:null};Object.defineProperty(c,'citationResolution',{enumerable:true,get(){effects++;return null;}});assert.throws(()=>ln(SEARCH,sr,c));
  assert.throws(()=>lp(new Proxy(wrap(searchResult()),{get(){effects++;}})));const cyclic=wrap(searchResult());cyclic.result.cycle=cyclic;assert.throws(()=>lp(cyclic));assert.equal(effects,0);
 });
+
+test('legal independent: related occurrences retain all DDL scalars and offset relation',()=>{
+ const row={id:'occ:a',document_id:'doc:a',bill_id:'bill:a',jurisdiction:'FL',session_key:'2026',document_revision:'rev',reference_id:'ref:a',locator:'opaque',start_offset:0,end_offset:1,quote:'different length is not a DB constraint',relation:'cites',basis:'opaque',parser_version:'v',observed_at:at,source_url:null,document_kind:null,is_current:false};
+ const r={...rr,referenceId:'ref:a'},p=wrap({...refs(),referenceId:'ref:a',related:[row]},REFERENCE);lp(p,r,lc,REFERENCE);
+ for(const key of Object.keys(row)){const bad=structuredClone(p);delete bad.result.related[0][key];assert.throws(()=>lp(bad,r,lc,REFERENCE),key);}
+ for(const patch of[{reference_id:'other'},{session_key:'other'},{start_offset:-1},{end_offset:0},{relation:'invented'}])assert.throws(()=>lp(wrap({...p.result,related:[{...row,...patch}]},REFERENCE),r,lc,REFERENCE));
+});
+test('legal independent: present lateral revision keeps JSON null without losing scalar fields',()=>{
+ const row={id:'ref:a',jurisdiction:'FL',code_kind:'statute',reference_kind:'section',chapter:null,section:null,subdivisions:null,identity:{guidance:'inert'},created_at:at,revision_id:'revision:a',edition:'2026',title:'',source_url:'',content_hash:'',extraction_hash:'',parser_version:'',sections:null,history_text:null,complete:false,coverage:null,observed_at:at};
+ lp(wrap({...refs([row]),edition:'2026'},REFERENCE),{...rr,edition:'2026'},lc,REFERENCE);
+ for(const key of['title','source_url','content_hash','extraction_hash','parser_version','complete','observed_at'])assert.throws(()=>lp(wrap({...refs([{...row,[key]:null}]),edition:'2026'},REFERENCE),{...rr,edition:'2026'},lc,REFERENCE));
+});
+test('legal independent: adopted history is selected-only and capped at ten',()=>{
+ const a={id:'history:a',title:'',source_url:'',content_hash:'',extraction_hash:'',sections:null,complete:false,coverage:[],observed_at:at};
+ const p=wrap({...rules(),adopted:[a]},REFERENCE),r={...rr,view:'rules',ruleNumber:'1'};lp(p,r,lc,REFERENCE);assert.throws(()=>lp(p,{...rr,view:'rules'},lc,REFERENCE));
+ assert.throws(()=>lp(wrap({...rules(),adopted:Array.from({length:11},(_,i)=>({...a,id:String(i)}))},REFERENCE),r,lc,REFERENCE));
+});
+test('legal independent: native record caps101 and201 are not silently page100/200',()=>{
+ const rows=Array.from({length:101},(_,i)=>({id:String(i).padStart(3,'0'),notice_id:'n',payload:null,source_url:'',content_hash:'',observed_at:at}));lp(wrap(rules(rows),REFERENCE),{...rr,view:'rules'},lc,REFERENCE);assert.throws(()=>lp(wrap(rules([...rows,{...rows[0],id:'z'}]),REFERENCE),{...rr,view:'rules'},lc,REFERENCE));
+});
+for(const count of[0,1])test(`legal independent: logical AST requires multiple children (${count} impossible)`,()=>{
+ const p=wrap({...searchResult(),interpretedQuery:{...compiled,ast:{kind:'and',children:Array.from({length:count},()=>({kind:'term',value:'needle',wildcard:'none'}))}}});
+ assert.throws(()=>lp(p,{...sr,query:'needle'}));
+});
