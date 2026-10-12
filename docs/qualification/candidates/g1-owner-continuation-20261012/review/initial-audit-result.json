@@ -1,0 +1,2458 @@
+{
+  "targetCommit": "159a7dd3b5fbd9ed2cc05dc96c450ed5c7b4585e",
+  "targetTree": "c4dfe17dab25529efe4198dc143accde8e1b9302",
+  "baseCommit": "263d0d174f9924a6030bb1c20100ff1115ffcda0",
+  "planSha256": "8bde7696c99883948a8eb9595cce4e43e721c390968a13b456956cfa0ca83822",
+  "checks": [
+    {
+      "name": "reviewed worktree plan equals exact target",
+      "passed": true
+    },
+    {
+      "name": "base is ancestor of target",
+      "passed": true
+    },
+    {
+      "name": "local link R2 deployment plan",
+      "passed": true
+    },
+    {
+      "name": "local link PR readback",
+      "passed": true
+    },
+    {
+      "name": "local link ancestry evidence",
+      "passed": true
+    },
+    {
+      "name": "local link PR11's integrated report",
+      "passed": true
+    },
+    {
+      "name": "local link Control owner",
+      "passed": true
+    },
+    {
+      "name": "local link Gateway budget",
+      "passed": true
+    },
+    {
+      "name": "local link Temporal recovery",
+      "passed": true
+    },
+    {
+      "name": "local link Worker probes",
+      "passed": true
+    },
+    {
+      "name": "local link PR16 integration report",
+      "passed": true
+    },
+    {
+      "name": "local link Sanitized intake",
+      "passed": true
+    },
+    {
+      "name": "local link independently accepted source repair",
+      "passed": true
+    },
+    {
+      "name": "local link reserved-writer source review",
+      "passed": true
+    },
+    {
+      "name": "local link image options",
+      "passed": true
+    },
+    {
+      "name": "local link 54-obligation matrix",
+      "passed": true
+    },
+    {
+      "name": "local link execution-options report",
+      "passed": true
+    },
+    {
+      "name": "local link execution plan",
+      "passed": true
+    },
+    {
+      "name": "local link independent selected-host review",
+      "passed": true
+    },
+    {
+      "name": "local link same-environment setup packet",
+      "passed": true
+    },
+    {
+      "name": "local link budget test source",
+      "passed": true
+    },
+    {
+      "name": "local link canonical budget outcome review",
+      "passed": true
+    },
+    {
+      "name": "budget-author named in plan",
+      "passed": true
+    },
+    {
+      "name": "budget-author retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes apps/gateway/budget/README.md",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes apps/gateway/budget/durable-tool-dispatch.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes apps/gateway/budget/postgres-tool-budget.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes apps/gateway/budget/tool-budget-outcome.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes apps/gateway/test/tool-budget-outcome.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/coordination/reports/MERI-G1-BUDGET-OUTCOME-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/coordination/tasks/MERI-G1-BUDGET-OUTCOME-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline-check.json",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze-check.json",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/setup.json",
+      "passed": true
+    },
+    {
+      "name": "budget-author bytes docs/qualification/candidates/g1-budget-outcome-20261012/author/source-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review named in plan",
+      "passed": true
+    },
+    {
+      "name": "budget-review retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/coordination/reports/MERI-G1-BUDGET-OUTCOME-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-harness.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.json",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-source.sha256",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/remove-original-facts-mutant.mjs",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/run-check.py",
+      "passed": true
+    },
+    {
+      "name": "budget-review bytes docs/qualification/candidates/g1-budget-outcome-20261012/review/verify-source.py",
+      "passed": true
+    },
+    {
+      "name": "native-author named in plan",
+      "passed": true
+    },
+    {
+      "name": "native-author retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/binding-review.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "passed": true
+    },
+    {
+      "name": "native-author bytes docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "passed": true
+    },
+    {
+      "name": "native-review named in plan",
+      "passed": true
+    },
+    {
+      "name": "native-review retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/coordination/reports/MERI-NATIVE-BINDINGS-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/acceptance-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/after-clock-writer-draft.py.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/candidate-difference-intake.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-author-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-author.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-author.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-clock-before-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-source-audit-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-writer-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-writer.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-writer.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/final-writer.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/first-writer-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/first-writer-draft.py.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/frozen-criteria.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/inert-storage.py",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/inert-writer-matrix.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-enter-before-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/packet-integrity.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-command.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-draft.py.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/provenance-intake.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/review-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/source-audit.py",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/source-review-intake.json",
+      "passed": true
+    },
+    {
+      "name": "native-review bytes docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+      "passed": true
+    },
+    {
+      "name": "host-author named in plan",
+      "passed": true
+    },
+    {
+      "name": "host-author retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/verification-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/verify.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "host-author bytes docs/qualification/candidates/g1-l1-host-20261012/author/verify.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "host-review named in plan",
+      "passed": true
+    },
+    {
+      "name": "host-review retained in ancestry",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/coordination/reports/MERI-G1-L1-HOST-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/audit-author-packet.py",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stdout.txt",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/author-packet-audit.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/daemon-metadata-receipts.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/discover-static-host.py",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty/config.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/driver-and-command-source.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/frozen-criteria.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stderr.txt",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stdout.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/read-daemon-metadata.py",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/review-checker-failure.json",
+      "passed": true
+    },
+    {
+      "name": "host-review bytes docs/qualification/candidates/g1-l1-host-20261012/review/verification-receipt.json",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet docs/qualification/candidates/g1-execution-options-20261012",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet docs/qualification/candidates/ubuntu-source-assessment-20261012",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet apps/worker/qualification",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet scripts/qualification",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet packages/contracts",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet package.json",
+      "passed": true
+    },
+    {
+      "name": "original frozen source/packet package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "image decision text unchanged",
+      "passed": true
+    },
+    {
+      "name": "139-capability and architecture scope paragraph unchanged",
+      "passed": true
+    },
+    {
+      "name": "recorded stack has PR7 and PR10 through17",
+      "passed": true
+    },
+    {
+      "name": "PR7 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR7 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR7 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR7 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR10 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR10 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR10 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR10 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR10 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR11 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR11 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR11 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR11 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR11 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR12 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR12 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR12 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR12 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR12 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR13 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR13 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR13 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR13 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR13 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR14 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR14 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR14 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR14 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR14 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR15 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR15 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR15 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR15 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR15 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR16 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR16 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR16 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR16 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR16 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "PR17 dated recorded OPEN/DRAFT/unmerged",
+      "passed": true
+    },
+    {
+      "name": "PR17 exact head and link in plan",
+      "passed": true
+    },
+    {
+      "name": "PR17 base ancestor",
+      "passed": true
+    },
+    {
+      "name": "PR17 adjacent base equals prior head",
+      "passed": true
+    },
+    {
+      "name": "PR17 tree observation exact",
+      "passed": true
+    },
+    {
+      "name": "stack aggregate counts",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary G1 OPEN",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary G2\u2013G7 unentered",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary All source connectivity stays disabled",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary NOT_EXECUTABLE and not authorized",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary No localhost authentication exception",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary all admission flags false",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary nativePublicationQualified",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary hardTotalProven",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary evidencePublicationVerified",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary trusted durable invocation producer",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary explicit reconciliation workflow",
+      "passed": true
+    },
+    {
+      "name": "explicit continuing boundary current authorized paid calls/spend remain zero",
+      "passed": true
+    },
+    {
+      "name": "actual durable facade exposes owner read",
+      "passed": true
+    },
+    {
+      "name": "historical read locks and validates exact facts",
+      "passed": true
+    },
+    {
+      "name": "historical read issues no INSERT UPDATE DELETE",
+      "passed": true
+    },
+    {
+      "name": "actual retained states and no source result",
+      "passed": true
+    },
+    {
+      "name": "actual wrapper composes writer",
+      "passed": true
+    },
+    {
+      "name": "missing exact preservation and Git pins remain None",
+      "passed": true
+    },
+    {
+      "name": "native success flags remain false",
+      "passed": true
+    },
+    {
+      "name": "Git hardening actual source matches plan",
+      "passed": true
+    },
+    {
+      "name": "native exact accepted source and counts",
+      "passed": true
+    },
+    {
+      "name": "private relay hashes and sizes accurately linked",
+      "passed": true
+    },
+    {
+      "name": "private intake retains unavailable predicates",
+      "passed": true
+    },
+    {
+      "name": "sanitized intake no body/path fields",
+      "passed": true
+    },
+    {
+      "name": "plan added text no private absolute paths or body fences",
+      "passed": false
+    }
+  ],
+  "passed": 283,
+  "failed": [
+    "plan added text no private absolute paths or body fences"
+  ],
+  "links": [
+    {
+      "label": "R2 deployment plan",
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "bytes": 86848
+    },
+    {
+      "label": "PR readback",
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/pr-stack-observation.json",
+      "sha256": "86c3ba6714d0f9fd18e54ac36a3519499997bced6df7e7051c8ca106cf7343fa",
+      "bytes": 4081
+    },
+    {
+      "label": "ancestry evidence",
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/pr-stack-ancestry.json",
+      "sha256": "a248a0a91999d22a9edb0f72f439c708b0e70293b31fde987ae4bd025f0fb6e7",
+      "bytes": 1557
+    },
+    {
+      "label": "PR11's integrated report",
+      "path": "docs/coordination/reports/MERI-MEMORY-SOURCE-INTEGRATION-20261012.md",
+      "sha256": "a4397eccbc2f606a2b5a2300694f5e8288376fc2a4e869960359843eb831c8c1",
+      "bytes": 10405
+    },
+    {
+      "label": "Control owner",
+      "path": "apps/control/qualification-sdk-fixture/service/control.mjs",
+      "sha256": "76f76b7f6231d91a25d09df787d1dc629d68d204c884a8c258d733fcbbadf74e",
+      "bytes": 3738
+    },
+    {
+      "label": "Gateway budget",
+      "path": "apps/gateway/budget/README.md",
+      "sha256": "662b0ce1975338bc73ded780af8b8d84335ad70779a8091467d45d6c2bce02fb",
+      "bytes": 11637
+    },
+    {
+      "label": "Temporal recovery",
+      "path": "apps/control/qualification-temporal/README.md",
+      "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54",
+      "bytes": 12556
+    },
+    {
+      "label": "Worker probes",
+      "path": "apps/worker/qualification/README.md",
+      "sha256": "7a55b8f45fd24e7630f77fbaf394f603d27754a4d505d97a607216ed49bc23fa",
+      "bytes": 16027
+    },
+    {
+      "label": "PR16 integration report",
+      "path": "docs/coordination/reports/MERI-G1-RECOVERY-SANDBOX-INTEGRATION-20261012.md",
+      "sha256": "d295755c0b85b24305c21193197721d0f912e5e3b3dbd1e12cb53e7def5c6a17",
+      "bytes": 12082
+    },
+    {
+      "label": "Sanitized intake",
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/integration/private-relay-intake.json",
+      "sha256": "b5f38f66b14844ca74e7f53054d6f015ee3991e2b6cf10096215a143530bdacb",
+      "bytes": 857
+    },
+    {
+      "label": "independently accepted source repair",
+      "path": "docs/coordination/reports/MERI-NATIVE-SUPERVISOR-REVIEW-20261012.md",
+      "sha256": "8d56ac69f9b8d62950d2ceb75e4e868f08b6c40d6803da067bdc6340e52cffc1",
+      "bytes": 8928
+    },
+    {
+      "label": "reserved-writer source review",
+      "path": "docs/coordination/reports/MERI-NATIVE-BINDINGS-REVIEW-20261012.md",
+      "sha256": "d95cc266a9123e3fc914a3bd8076a34f260c9e032929e9d2080fcec111c88069",
+      "bytes": 9764
+    },
+    {
+      "label": "image options",
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/image-options.json",
+      "sha256": "042445dbfe77d1b8c55491720ea77de960c9f404ed7ee1f1896855f327aca77c",
+      "bytes": 7375
+    },
+    {
+      "label": "54-obligation matrix",
+      "path": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+      "sha256": "b92134c9ee84095e451bbfcd5b11309de532542fe8ea6c2683da372d08b1d693",
+      "bytes": 112138
+    },
+    {
+      "label": "execution-options report",
+      "path": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "sha256": "7744a806437ac0ae3dfdb5417203327acd1530a943026c0cba3f5a123cece819",
+      "bytes": 14285
+    },
+    {
+      "label": "execution plan",
+      "path": "docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "sha256": "caefeacf2310a8fd11dbd3ac5976a824bb0ffe33e0183a0a01ddc776e14c1f1d",
+      "bytes": 36920
+    },
+    {
+      "label": "independent selected-host review",
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-REVIEW-20261012.md",
+      "sha256": "99b2781a6c64dc651f8e61270cd831a8938c546c5fb960fe8d6bb37f57e30f90",
+      "bytes": 6927
+    },
+    {
+      "label": "same-environment setup packet",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2",
+      "bytes": 9446
+    },
+    {
+      "label": "budget test source",
+      "path": "apps/gateway/test/postgres-budget.integration.mjs",
+      "sha256": "85c5b91c6424397c8d85f49770717ca459df2a247905690b539194ef88285693",
+      "bytes": 13079
+    },
+    {
+      "label": "canonical budget outcome review",
+      "path": "docs/coordination/reports/MERI-G1-BUDGET-OUTCOME-REVIEW-20261012.md",
+      "sha256": "6b748e5ea362ecaa24b3b7eb3c19e63d0f394521a2dac7b28521e56da9731adf",
+      "bytes": 13131
+    }
+  ],
+  "preservedFreezeFiles": [
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 11637,
+      "sha256": "662b0ce1975338bc73ded780af8b8d84335ad70779a8091467d45d6c2bce02fb"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "bytes": 2766,
+      "sha256": "17d791d9b4803dfbfd67e30befd3818a7d3bc82464b2e00a385a4619bf0fc9a6"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 10790,
+      "sha256": "6d2d76ace7edf38bd2c0559fc62b069b00d0f80b7e187db7347974998c48f6e0"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "apps/gateway/budget/tool-budget-outcome.mjs",
+      "bytes": 3638,
+      "sha256": "d5148557646a228160fc080efd40da6b110bebb6a2264b4180a9c6f5a018e3a7"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "apps/gateway/test/tool-budget-outcome.test.mjs",
+      "bytes": 14319,
+      "sha256": "fb85247c9b1e8ba97ca0fe318094eb10f0130d5977b923a70954f6b318585ae4"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/coordination/reports/MERI-G1-BUDGET-OUTCOME-20261012.md",
+      "bytes": 3929,
+      "sha256": "01b95c279c98b9fde41fa3a0bc25fff869d16207610e7ca9a96e1a1ac26ce917"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/coordination/tasks/MERI-G1-BUDGET-OUTCOME-20261012.md",
+      "bytes": 4396,
+      "sha256": "de7c208eb4d2f2f90d52d8b7715658eacfab43e824f4127ebcf789751e37359c"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline-check.json",
+      "bytes": 589,
+      "sha256": "a771ba2a4ff3fab2ef7852f8a9cc5039531b280c8fc77142616f2770c1026110"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/gateway-offline.stdout.txt",
+      "bytes": 17158,
+      "sha256": "4cbe37db9f5ec99c8873c00c02019d0b37d38711e5c76c16d4f67e2cb2b8bcfa"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze-check.json",
+      "bytes": 269,
+      "sha256": "56d0702f9dc61da92b6915b4a8508bb4e947a5accb3aeace9cc35687fea425a0"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/prefreeze.stdout.txt",
+      "bytes": 5633,
+      "sha256": "f168aa91ee050eb0b28b7e13f39257f10bd5ec353cba3b86ada2d1beefd941b8"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/setup.json",
+      "bytes": 279,
+      "sha256": "ca22db0ff1acb2be2496f959ce7c6f063a38655d11ac8a39ef7af67075ead49a"
+    },
+    {
+      "lane": "budget-author",
+      "commit": "028b1134e373734caea036ee5c38d35b20428d8b",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/author/source-manifest.json",
+      "bytes": 1074,
+      "sha256": "d35b387aec3a32d30af90c11aca24b1aa3a6c5d5a6290cffeca6a9696cec1353"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/coordination/reports/MERI-G1-BUDGET-OUTCOME-REVIEW-20261012.md",
+      "bytes": 13131,
+      "sha256": "6b748e5ea362ecaa24b3b7eb3c19e63d0f394521a2dac7b28521e56da9731adf"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.json",
+      "bytes": 806,
+      "sha256": "b303dc094e21270fbc6c8ebb4840a3bc43f1ae4a47e365c06ea9b4b0cef2d3a1"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/corrected-scripted-boundary.stdout.txt",
+      "bytes": 2268,
+      "sha256": "1e112d4a3b65f6a3d8f2a4ca08dfe8f0826ab881b52fc10828646bbe9f759f86"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.json",
+      "bytes": 977,
+      "sha256": "7b4a69d01e18b12eb0f829421d0d9d24c28ac1a50e9540320910bf2b54bbf2dd"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-author-original.stdout.txt",
+      "bytes": 5995,
+      "sha256": "f6504b6ac33907d52e52c2e0441c5af635f5d6a2a11f59d33cf8aef718382071"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.json",
+      "bytes": 869,
+      "sha256": "29cc1d77e684062eccb67fb68dc0ab8f0ebd0d0b75adaf809f86a85de1cc41c4"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-independent.stdout.txt",
+      "bytes": 2261,
+      "sha256": "392b36672588d8275db859a8e2bccb1d87c8191337514ee01e95428b0623eee8"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.json",
+      "bytes": 892,
+      "sha256": "bd57f9b6155456dc12fc714a7ccfd16fc4e3ce9cb5c3e993a18f781fb9a6a9e2"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/final-preservation.stdout.txt",
+      "bytes": 1318,
+      "sha256": "8fe513041bff094bf4d1de15725e3f6605a9a622491b05e33a3f35de1de191f9"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/manifest.json",
+      "bytes": 4863,
+      "sha256": "26fb62f4a640563f95a843adbfbf0e32aae7a13d7478500cc9fca2e90e2a9bf3"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.json",
+      "bytes": 1081,
+      "sha256": "d35d6e7f9665a1b7a042da433d62953389a8ea6c934c620b7dffc6c6aeef3f1f"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/original-facts-mutant.stdout.txt",
+      "bytes": 983,
+      "sha256": "df635250c9b32baa34ad97baae9dbce0e56441b79344d744d2ed989d8e432b51"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-harness.mjs",
+      "bytes": 8364,
+      "sha256": "a98dafb92cb9a61635341ebb7862bbc81203ad444570c9615065f25f8e2d0caa"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/outcome-independent.test.mjs",
+      "bytes": 10140,
+      "sha256": "b0aa5bb3ab355cadbb88e4053849cb7de48381139720e3d134169eb005081707"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.json",
+      "bytes": 794,
+      "sha256": "4ed5e0375d4ba836e256be8c41a3f17fc70ef6344046709e968fdc622f3908f1"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-independent.stdout.txt",
+      "bytes": 2899,
+      "sha256": "d7c5010a1e5250d5bd58068d2740b7c1f34fed7ae4ad7e09dd967a4f140f8cd2"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/prefreeze-source.sha256",
+      "bytes": 453,
+      "sha256": "b83acb05693f03e143ac8ae448e6156c0a9982fa1e72523c6c378c30d0c9316a"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/remove-original-facts-mutant.mjs",
+      "bytes": 747,
+      "sha256": "a3abd06993849a3cebecc009b191279de0bcb0ac6c18fe7ea66b3f52fdf36132"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/run-check.py",
+      "bytes": 2057,
+      "sha256": "c2377b1701cfef217050737e6e139e1228944eb25aeafe77f077c60038551b8f"
+    },
+    {
+      "lane": "budget-review",
+      "commit": "5657a16b8589f587fab5a979bcdac973a9e2f221",
+      "path": "docs/qualification/candidates/g1-budget-outcome-20261012/review/verify-source.py",
+      "bytes": 1813,
+      "sha256": "eb17adfb740e7d27c9d4e8f9f5aee08a73faf79d18f0d38fa7b1991945d43cd8"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/coordination/reports/MERI-NATIVE-BINDINGS-20261012.md",
+      "bytes": 7372,
+      "sha256": "c83471325405a048f66cd630131dfbb04b9d35abb38ef1a9bdac95fe51283cae"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/coordination/tasks/MERI-NATIVE-BINDINGS-20261012.md",
+      "bytes": 4361,
+      "sha256": "6c0c3abf38a8a5a80450ff8fb17a61ef545b64b90a6df6fe4c2bda7803b88af1"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/binding-review.json",
+      "bytes": 4124,
+      "sha256": "26fcfb52b996d61ef8aecc884923abce649eeed3935cf749feacc29bc5b2a0fc"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-final-clock-repair.stdout.json",
+      "bytes": 2067,
+      "sha256": "6f56178745df5613201a2b300d3a7b8f7c366589e7ab7a1ad937f4c51e904176"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-first.stdout.json",
+      "bytes": 2067,
+      "sha256": "3c99bc313838a36935811bf7b35d32e08178917ef29a11559000ea15eac9e2d9"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-freeze.stdout.json",
+      "bytes": 2122,
+      "sha256": "142e3cc482db8bdffbda246c0f23d0aacb38a1619b6b476f27fcc03f761a753d"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/checks-port-deadline-repair.stdout.json",
+      "bytes": 2067,
+      "sha256": "344baa25ab532dc2c827d0ae043ef33b3174995fcd87535b603ce172ace1eaf2"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/current-manifest.json",
+      "bytes": 4333,
+      "sha256": "2267f56d8cca1b67d5ba7c299901575c2d152d1c1bb0d2492b7758d318380285"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/evidence-writer.py",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/historical-location-check.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-bindings-20261012/author/source-checks.py",
+      "bytes": 9859,
+      "sha256": "d8f27ee4801d63b5b2de4c2bed26e30d924a23acd688614202af3cd9619e6e70"
+    },
+    {
+      "lane": "native-author",
+      "commit": "74f9692047be50beb8c59a0b0d7833f0cb682c76",
+      "path": "docs/qualification/candidates/native-supervisor-20261012/author/run-supervised.py",
+      "bytes": 16775,
+      "sha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/coordination/reports/MERI-NATIVE-BINDINGS-REVIEW-20261012.md",
+      "bytes": 9764,
+      "sha256": "d95cc266a9123e3fc914a3bd8076a34f260c9e032929e9d2080fcec111c88069"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/acceptance-receipt.json",
+      "bytes": 1370,
+      "sha256": "2c9bc479f4963e7c7948aaac4a56676f42450eddea3cdbcc41489ca5c982d5b8"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/after-clock-writer-draft.py.txt",
+      "bytes": 8584,
+      "sha256": "5029299f68598e027c887a8d1102d6469e7c3f2903511504b36813591b2476fe"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/candidate-difference-intake.json",
+      "bytes": 1000,
+      "sha256": "5257e0ace68484205c9051222ef8ec9a2a2806c9f7c9e35ab59ea7614bd8298e"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author-command.json",
+      "bytes": 559,
+      "sha256": "445f08dd39e74b7759a02c689afc4f1a000da0fb268ab0e0a5fef37981554a8b"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-author.stdout.txt",
+      "bytes": 2122,
+      "sha256": "142e3cc482db8bdffbda246c0f23d0aacb38a1619b6b476f27fcc03f761a753d"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before-command.json",
+      "bytes": 712,
+      "sha256": "f1191308f848434622614508d6b7e9b35a0741e8b39fd6f6a650ecd701da4073"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.json",
+      "bytes": 17351,
+      "sha256": "f99fd5e671a0466fb5fe690254fd3884080371658e70b3daf6b4bd8c353fa590"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-clock-before.stdout.txt",
+      "bytes": 13057,
+      "sha256": "b49519308884ad9e60084a9cbc7c7699e81c3611ca373eb3374fbc50c2ed30f3"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement-command.json",
+      "bytes": 563,
+      "sha256": "dc9f239b5c9384a79b82b20f6290d46a3b5b1423342fb0cad25ac023f6458468"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-historical-placement.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle-command.json",
+      "bytes": 833,
+      "sha256": "eecd084361da5fae5c35054704b0c5a9191f4ea079595d520b8b69075c221fe4"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.json",
+      "bytes": 9151,
+      "sha256": "4cdfda76db79a1d9162519c4aef9c8436c963002a8839a1dcbc918b11420cb0b"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-lifecycle.stdout.txt",
+      "bytes": 6677,
+      "sha256": "7653b7b3ecd63656e59fcfe777d09b35412afde51697c21a91b6276ead3ff33a"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit-command.json",
+      "bytes": 803,
+      "sha256": "a19d943ef14ed37378414e973a1e2236f9ac35cb54c5ec893dddf633eebe1c42"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.json",
+      "bytes": 9948,
+      "sha256": "06b2e50323509ca788ccdc63f39992bede5095f904de6690ce90b9b831263fd1"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-source-audit.stdout.txt",
+      "bytes": 7708,
+      "sha256": "8cbc4419d2a2674764d3410c5a2f46dc1c621708952e3933bd971280203c006b"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer-command.json",
+      "bytes": 833,
+      "sha256": "9f60105d1006abe5489818d18b76c5117c56bf5231874a25001835de88959146"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.json",
+      "bytes": 17903,
+      "sha256": "b36663acc7ea729c8fc473dab0e6c971e399c06d619516bafc103e561a0f358d"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/final-writer.stdout.txt",
+      "bytes": 13469,
+      "sha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-command.json",
+      "bytes": 715,
+      "sha256": "2cf69a8eab0bea37296512d056a68e17c456cda24f2392661abbcacbe10847df"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.json",
+      "bytes": 17155,
+      "sha256": "3e1d5d46ce43e16aaf8f3b06daffa7655a893da65ef1b44330577815aab2650b"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.stdout.txt",
+      "bytes": 12921,
+      "sha256": "91d2e6c118ae0fe25578ab24c95785f6035bbd663992370579965922c95fc94f"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/first-writer-draft.py.txt",
+      "bytes": 8608,
+      "sha256": "77ee4a3969a7b69a6b673ab5a746181762fe9d1676677d4a3bc5fce5c0cdf267"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/frozen-criteria.json",
+      "bytes": 5275,
+      "sha256": "ac48c352698ef35f9372cd7a449af3c68f149ef0af8b152075d7e6b218c68b24"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check-command.json",
+      "bytes": 600,
+      "sha256": "33062e2b695b4bf0407719d023780036b2235b69f3a80efd7dfe49bd93ee9201"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stderr.txt",
+      "bytes": 504,
+      "sha256": "69c7835d9b03230268ccd576110f8e5da1cab26b4be0a73fcf8b77a2f209016e"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/historical-placement-check.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/inert-storage.py",
+      "bytes": 6147,
+      "sha256": "5bae3b3da3f07dcd7fafaa2617d0e3ae499030b0b545cf98f9cef4c9ed36c454"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/inert-writer-matrix.json",
+      "bytes": 2921,
+      "sha256": "88cfabc1645ae0ab19f721af5e26703d3a29c1761bffa513ea0bb36cb7cbacff"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before-command.json",
+      "bytes": 715,
+      "sha256": "562e207838e51458dea48fd2aa02a17979e1aeada3793767345b51ae060575f6"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.json",
+      "bytes": 17905,
+      "sha256": "24dc650fe08e1bd013b23c2d25a745669a951481152fce1ccc527cccc5beeac4"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-enter-before.stdout.txt",
+      "bytes": 13471,
+      "sha256": "136d50b53c60b17baee19f90d712d56122ec15c3b65c4f3f55cdfce88f496bae"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before-command.json",
+      "bytes": 717,
+      "sha256": "23516e4722d81b1580deb45b9c3a97b03b1a9638e9e3bcf18befeea95c16b446"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.json",
+      "bytes": 17457,
+      "sha256": "33a5adce27dc9e57e59269c4447394e054a5713c75038d2849fe6ded5c0b1a7f"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/late-fstat-before.stdout.txt",
+      "bytes": 13135,
+      "sha256": "86ef0f5c6413971fa526061710be4d59e9631bda130d78550644f739406a7999"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/packet-integrity.json",
+      "bytes": 3887,
+      "sha256": "ca1c80bcc24b375df74e9c9025c48a85de73acf670545260cc4b2c1998249a58"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-command.json",
+      "bytes": 726,
+      "sha256": "5e9c22154e51fb1f33cd1211aeef4e56b9067b7ffa8e2858091de6d2b3801991"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired-draft.py.txt",
+      "bytes": 8831,
+      "sha256": "8715d7999e4c9d7ab1422f7360a6a9cff5053da57687dacda861ef69d5e42afc"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.json",
+      "bytes": 17903,
+      "sha256": "b36663acc7ea729c8fc473dab0e6c971e399c06d619516bafc103e561a0f358d"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/port-boundary-repaired.stdout.txt",
+      "bytes": 13469,
+      "sha256": "64c62f8f3ad1e9340ac54dfb41dee5a747b7acf84f4c6f7c417f0c601996db69"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/provenance-intake.json",
+      "bytes": 1757,
+      "sha256": "b531be32d98ac968eedfb164d4f6e9fe7997bb215262c885fae9a14d7017a0b6"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/review-manifest.json",
+      "bytes": 12507,
+      "sha256": "b2aec8728ac915b18075006350980e98ac1e67600307bb08534bf4429ca511c0"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/source-audit.py",
+      "bytes": 8026,
+      "sha256": "524377dcb3a8a91c12558b30daea2029578a254bf22d5bccefacb85a12715f82"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/source-review-intake.json",
+      "bytes": 1681,
+      "sha256": "c8d8e5170aab73499710bb87495bbe4c14a511193d0fdfcac87f453ec94c1884"
+    },
+    {
+      "lane": "native-review",
+      "commit": "f2d581323ec4a926f3ea2dabbca2fb77c15772f4",
+      "path": "docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+      "bytes": 6777,
+      "sha256": "f3a20d290ba3a226e4b1cbbce5a55381f934efccb83a511a107ebb497f60a0bb"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 7034,
+      "sha256": "604957145d0badde2d7c9083b0199a00dfd501eb69fb368e2ec32f64e6cb72e6"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/coordination/tasks/MERI-G1-L1-HOST-20261012.md",
+      "bytes": 1864,
+      "sha256": "75a4e296fd7961a6e6a8f4b5eac180b46efbff89506e39fa00013f9f0cf27ddd"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/cached-package-policy.json",
+      "bytes": 558,
+      "sha256": "e32a02b67f5a27db9a413263f3efc8bbc1c9194736345966494782d74b02b933"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/collection-notes.json",
+      "bytes": 1403,
+      "sha256": "909d10a6c1cf24cf5de2c874fd2a8da9b883e1a43bddd0490ba6900806050e2c"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/discover-host.py",
+      "bytes": 5533,
+      "sha256": "926a39ffcd608b78eac9b0e35a8d0e456fa680add90de30790ca599f8b3492a9"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/host-metadata.json",
+      "bytes": 6244,
+      "sha256": "6205761a4acf8f75b501cef7b8c2a17412dc73d5bac8214ec3a75688619df96e"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/isolation-and-caches.json",
+      "bytes": 2467,
+      "sha256": "89287c90675b39ae5800af6a5c9d37ce7f9fe55bae79c26c6ead3ab2c5d78384"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/manifest.json",
+      "bytes": 5608,
+      "sha256": "e01f4fa22d8bab57b1c173df7f3ad225983200f14c84895f06c9d6812c37357b"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/metadata-commands.json",
+      "bytes": 4949,
+      "sha256": "5b2efb85438ad98c68c1d089236ad04161edb57cef5f1b370b0f1ada89d335f3"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/node-driver-resolution-metadata.json",
+      "bytes": 1047,
+      "sha256": "2908869e534a9f9dc534a7f070dec8d672d3d7ddae58905eb958c6bb03e8cb73"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stderr.bin",
+      "bytes": 92,
+      "sha256": "1148b3dba8ac2fde54dee12293653b1672d9a3922e081bdf08e11601a687db61"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/apt-cached-policy.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-context.stdout.bin",
+      "bytes": 75,
+      "sha256": "16a17082f67634f8eb3fd4f4c34526371aaa6de287a66c4e141a4d91c9d368ef"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-images.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-info.stdout.bin",
+      "bytes": 398,
+      "sha256": "b4e12b19c7e43ef0a1c6d4c04ebfa9cee49835fd870cd39237bb09a56b1fdd1f"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/docker-version.stdout.bin",
+      "bytes": 1012,
+      "sha256": "72ed632ba67bedf12e3311e92fbf7054a961b5f2df27dd677dbdcd849caaa7f5"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/raw/dpkg-postgresql.stdout.bin",
+      "bytes": 179,
+      "sha256": "0de33abd4331841e3bf5a61564fde54491ed832517111d629216c916283de251"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/resource-metadata.json",
+      "bytes": 1129,
+      "sha256": "f41a1dae83f8f3bff71b2940ff94f00499bd0324f732c2d06593ca25d7cbb687"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "bytes": 9446,
+      "sha256": "745539e8d862dbcd62d8e8d10efbb8e0c48bd14166741515262f748017df8eb2"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/source-requirements.json",
+      "bytes": 2120,
+      "sha256": "367894bb34a8f151dcb29d569ba8b15688907129afb36d7c12ccdf76aed57f4d"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verification-receipt.json",
+      "bytes": 1802,
+      "sha256": "25bd65fa74d146dc1a3b5bebf82c36ed33be6b55062ea22c4e8a5cfe800705f1"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify-packet.py",
+      "bytes": 4831,
+      "sha256": "01aa682ccc7b11bc72c549c3975eddba129d72678f21b2e3d212f7e0fc19f5b8"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-author",
+      "commit": "20f51409673a0bdae1a5a3de99e2cda41d5b549b",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/author/verify.stdout.json",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/coordination/reports/MERI-G1-L1-HOST-REVIEW-20261012.md",
+      "bytes": 6927,
+      "sha256": "99b2781a6c64dc651f8e61270cd831a8938c546c5fb960fe8d6bb37f57e30f90"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/audit-author-packet.py",
+      "bytes": 8639,
+      "sha256": "6c9d371c406eb1bfcd5c4dda64295cd219e7185d17e9f6937b4463dcdea6933f"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-audit.stdout.txt",
+      "bytes": 125,
+      "sha256": "bef05ae41a43223dce9188cdc5ef4c5bf012ff21af545a211e37dab2fee49094"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-packet-audit.json",
+      "bytes": 23129,
+      "sha256": "6188f237f2ce1f5fdd18d02f7f60241997c1c78eecaed628bf7136f83f9903cb"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/author-verifier-replay.stdout.json",
+      "bytes": 7827,
+      "sha256": "a172c4bb91de0ae8bbe42e86bcc75d1052becea62e3ebd4f2976ff7c7543a397"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/daemon-metadata-receipts.json",
+      "bytes": 3894,
+      "sha256": "95edc7130496be0e698fa187b0c2319d496b45e3ab14049ba5dc4a07db617a40"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/discover-static-host.py",
+      "bytes": 5962,
+      "sha256": "b672b1496ba6edf1917bcea693b75f864a8ca70a3dfcebc6f35b226043ef3502"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-client-config-empty/config.json",
+      "bytes": 3,
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-images.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-info.stdout.bin",
+      "bytes": 197,
+      "sha256": "41c035a3f5dcdff0aac5e17c4e64fea9e58ca226e49eb60401d76de2b7c35516"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/docker-version.stdout.bin",
+      "bytes": 792,
+      "sha256": "efa58a91d6502cf4468bfa9a411ee5ffa0f4ac532a06812bad126369ffb4558b"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/driver-and-command-source.json",
+      "bytes": 2513,
+      "sha256": "541d6ef6e6cce7ac3c3e65ce31fb4edf3236097428f960a16cef91256b800671"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/frozen-criteria.json",
+      "bytes": 3570,
+      "sha256": "cf237f3dc3a70aa0eae13109ffbd927f6dcd3d6529eeabcf7b860f2d50017b41"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/independent-host.stdout.json",
+      "bytes": 7246,
+      "sha256": "e8b06265c639760c6022f5a6728d74b90a17f1071a4ee7b49f1f9550909be503"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/manifest.json",
+      "bytes": 5189,
+      "sha256": "585486566818b897316236b478f11d76d6f291501140895268d810b1bf0f83e3"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/read-daemon-metadata.py",
+      "bytes": 2590,
+      "sha256": "3f21b4712ec83342672d815b2e815fff0d05f1640744674179580425d8f0c296"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/review-checker-failure.json",
+      "bytes": 701,
+      "sha256": "2b465bd028d2068d7da97585560188bb1d2722094771dd6815a974eb5859d663"
+    },
+    {
+      "lane": "host-review",
+      "commit": "ea0efc5a37f8148cfb4db674d4a6dcc61bc7ab12",
+      "path": "docs/qualification/candidates/g1-l1-host-20261012/review/verification-receipt.json",
+      "bytes": 1847,
+      "sha256": "48ff3ba88905d6839e702e452c550fb79a368b794c380fb1780f69cd1adce13a"
+    }
+  ],
+  "remoteObservationScope": "Verifies retained dated connector observations and actual local Git ancestry; no fresh remote/API query.",
+  "nativeAndHostQueries": 0,
+  "verdict": "HOLD"
+}

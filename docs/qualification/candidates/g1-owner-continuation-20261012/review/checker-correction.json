@@ -1,0 +1,10 @@
+{
+  "originalExitCode": 1,
+  "originalPassed": 283,
+  "originalFailed": [
+    "plan added text no private absolute paths or body fences"
+  ],
+  "cause": "Reviewer Windows-drive regex matched final s:/ within https:// public PR links. No actual private path was identified.",
+  "correction": "Require a nonletter before the single-letter drive token; retain Unix private-path and body-fence checks. Manual added-diff read agrees. No plan or source change; initial script and raw result retained.",
+  "nativeOrHostRequery": false
+}
