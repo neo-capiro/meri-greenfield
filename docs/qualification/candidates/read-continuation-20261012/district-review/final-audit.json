@@ -1,0 +1,33 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/district-review/audit.py"
+  ],
+  "cwd": "/workspace/meri-district-nexus-review-20261012",
+  "sourceHead": "fcb468ca453d49d17a2b1ddf2ca71492c7b03b22",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:37:21.875283+00:00",
+  "durationSeconds": 0.216,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 154732,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/final-audit.stdout.bin",
+      "bytes": 111,
+      "sha256": "ded9303b16b0ab4f1f1852fe4a2b5103945a2c8356dfd8976b48d0bca716e035"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/district-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
