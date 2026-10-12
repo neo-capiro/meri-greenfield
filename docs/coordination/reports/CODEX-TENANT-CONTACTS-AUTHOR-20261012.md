@@ -110,3 +110,10 @@ files byte-identical and4/4 source references unchanged across both pins.
 Owned PID/PGID224138 absent, no timeout/kill. Explicit tested file hashes
 match committed source byte-for-byte; no redundant broad test run. Independent
 review remains pending. No author acceptance or runtime qualification claim.
+
+Independent-review wording clarification: date-time schema admission plus exact
+Date.toISOString equality accepts canonical four-digit-year UTC instants.
+Expanded-year Date.toISOString values are excluded by this typed schema; this
+is an explicit Meri admission restriction, not a claim that JavaScript or the
+source database cannot produce them. Validator/schema/test bytes are unchanged.
+The necessary nonnull-field guard does not prove full SQL OR membership.
