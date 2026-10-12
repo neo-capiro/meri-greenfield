@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-capability-action-review-20261012",
+  "sourceRoot": null,
+  "startUnixSeconds": 1791815561.765288,
+  "elapsedSeconds": 1.6832051277160645,
+  "exitCode": 0,
+  "ownedPidAndGroup": 123052,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "exact-freeze.stdout.txt",
+      "bytes": 2440,
+      "sha256": "942d7c302624274c1c1f43a36123037c8217bc89c530e3063f63070eb2646ed6"
+    },
+    "stderr": {
+      "path": "exact-freeze.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
