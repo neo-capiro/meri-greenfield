@@ -306,3 +306,16 @@ test('independent lifecycle: invalid description identity does not become a miss
   assert.equal(out.rows[0].inspectionState, 'unavailable'); assert.equal(out.coverage.complete, false);
   assert.equal(out.originalRuns.executions.length, 0);
 });
+
+test('independent lifecycle: contradictory SDK status label cannot relabel completed execution as running', async () => {
+  const h = harness({ workflowDescribe: () => ({ workflowId: 'workflow-a', runId: ids.run,
+    status: { name: 'RUNNING', code: 2 }, historyLength: 7,
+    startTime: new Date('2026-10-12T00:00:00.000Z'), closeTime: undefined }) });
+  await assert.rejects(h.list());
+});
+test('independent lifecycle: SDK future status fallback remains UNKNOWN rather than invented named status', async () => {
+  const h = harness({ workflowDescribe: () => ({ workflowId: 'workflow-a', runId: ids.run,
+    status: { name: 'UNKNOWN', code: 99 }, historyLength: 7,
+    startTime: new Date('2026-10-12T00:00:00.000Z'), closeTime: undefined }) });
+  const out = await h.list(); assert.deepEqual(out.originalRuns.executions[0].status, { name: 'UNKNOWN', code: 99 });
+});
