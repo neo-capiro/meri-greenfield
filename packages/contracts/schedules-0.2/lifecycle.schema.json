@@ -1,0 +1,772 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:schedules:lifecycle:0.2.0",
+  "$defs": {
+    "Calendar": {
+      "type": "object",
+      "properties": {
+        "second": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "minute": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 59
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "hour": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 23
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfMonth": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "month": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "year": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "dayOfWeek": {
+          "anyOf": [
+            {
+              "const": "*"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "end": {
+                    "enum": [
+                      "SUNDAY",
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY"
+                    ]
+                  },
+                  "step": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9999
+                  }
+                },
+                "required": [
+                  "start",
+                  "end",
+                  "step"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 100
+            }
+          ]
+        },
+        "comment": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "second",
+        "minute",
+        "hour",
+        "dayOfMonth",
+        "month",
+        "year",
+        "dayOfWeek",
+        "comment"
+      ],
+      "additionalProperties": false
+    },
+    "Spec": {
+      "type": "object",
+      "properties": {
+        "calendars": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Calendar"
+          },
+          "maxItems": 100
+        },
+        "intervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "every": {
+                "type": "integer",
+                "minimum": 1000,
+                "maximum": 9007199254740991
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "every",
+              "offset"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100
+        },
+        "cronExpressions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 100
+        },
+        "skip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Calendar"
+          },
+          "maxItems": 100
+        },
+        "startAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "jitterMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "calendars",
+        "intervals",
+        "cronExpressions",
+        "skip",
+        "startAt",
+        "endAt",
+        "jitterMs",
+        "timezone"
+      ],
+      "additionalProperties": false
+    },
+    "Configuration": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "$ref": "#/$defs/Spec"
+        },
+        "overlap": {
+          "enum": [
+            "SKIP",
+            "BUFFER_ONE",
+            "BUFFER_ALL",
+            "CANCEL_OTHER",
+            "TERMINATE_OTHER",
+            "ALLOW_ALL"
+          ]
+        },
+        "catchupWindowMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 9007199254740991
+        },
+        "pauseOnFailure": {
+          "type": "boolean"
+        },
+        "remainingActions": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "paused": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 512
+        },
+        "runNow": {
+          "type": "boolean"
+        },
+        "runNowOverlap": {
+          "const": "ALLOW_ALL"
+        },
+        "task": {
+          "type": "object",
+          "properties": {
+            "taskId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "manifestSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "taskId",
+            "manifestSha256",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "workflow": {
+          "type": "object",
+          "properties": {
+            "workflowType": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "workflowId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "taskQueue": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "workflowType",
+            "workflowId",
+            "taskQueue"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "spec",
+        "overlap",
+        "catchupWindowMs",
+        "pauseOnFailure",
+        "remainingActions",
+        "paused",
+        "note",
+        "runNow",
+        "runNowOverlap",
+        "task",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "Run": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "workflowId",
+        "runId"
+      ],
+      "additionalProperties": false
+    },
+    "Cancel": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "enum": [
+            "pause",
+            "delete"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "running": {
+          "enum": [
+            "leave",
+            "request_cancel"
+          ]
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Run"
+          },
+          "maxItems": 10
+        }
+      },
+      "required": [
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "Intent": {
+      "type": "object",
+      "properties": {
+        "intentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "previousProjectionSha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "configuration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Configuration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Cancel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "intentId",
+        "operation",
+        "expectedGeneration",
+        "generation",
+        "previousProjectionSha256",
+        "projection",
+        "configuration",
+        "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Execute": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "$ref": "#/$defs/Intent"
+        },
+        "approval": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ApprovalDecision"
+        },
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "intent",
+        "approval",
+        "callerIdentity",
+        "deadlineMs"
+      ],
+      "additionalProperties": false
+    },
+    "Selection": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "owner": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "afterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "historyLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "operation",
+        "owner",
+        "afterScheduleId",
+        "limit",
+        "historyLimit"
+      ],
+      "additionalProperties": false
+    },
+    "List": {
+      "type": "object",
+      "properties": {
+        "selection": {
+          "$ref": "#/$defs/Selection"
+        },
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "selection",
+        "callerIdentity",
+        "deadlineMs"
+      ],
+      "additionalProperties": false
+    },
+    "Authorization": {
+      "type": "object",
+      "properties": {
+        "authorized": {
+          "const": true
+        },
+        "bindingSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "authorized",
+        "bindingSha256",
+        "callerIdentity",
+        "expiresAtMs"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
