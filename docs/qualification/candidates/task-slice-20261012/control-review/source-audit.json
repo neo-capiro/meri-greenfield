@@ -1,6 +1,6 @@
 {
   "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
-  "source": "6eec40b28bd7f10fd163108ea13e75a0ced477b2",
+  "source": "6f14d780a40e878fa62bc928c4d520286313f56c",
   "originals": 9667,
   "changedOriginals": [],
   "sourceFiles": [
@@ -26,8 +26,8 @@
     },
     {
       "path": "apps/control/task-lookup/index.mjs",
-      "bytes": 291,
-      "sha256": "8a2d9db7f009a12a9f66fd6b2b9bfff6fa0371d379d63a87393d1440dbcdf275"
+      "bytes": 334,
+      "sha256": "114e25b9a2973823dc4b1d17009cb32b377bc08e93f1b32963404cfef5e28440"
     },
     {
       "path": "apps/control/task-lookup/migrations/0001_task_lookup.sql",
@@ -59,6 +59,13 @@
       "pgid": 412766
     },
     {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-final.json",
+      "head": "40d85f2eed36b8895f806b71e958881ced57fc24",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "pgid": 416918
+    },
+    {
       "path": "docs/qualification/candidates/task-slice-20261012/control-review/control-first.json",
       "head": "d02ea370752a134639a35259f610b9e4e946af3f",
       "exitCode": 1,
@@ -78,6 +85,13 @@
       "exitCode": 1,
       "sourceDiffBytes": 0,
       "pgid": 412978
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.json",
+      "head": "76df1284efec05796f17f2dbf2e4e66dba633af4",
+      "exitCode": 0,
+      "sourceDiffBytes": 0,
+      "pgid": 416759
     },
     {
       "path": "docs/qualification/candidates/task-slice-20261012/control-review/fixture-initial.json",
@@ -230,6 +244,18 @@
       "pass": true
     },
     {
+      "check": "control-final.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "control-final.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "control-final.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-final.stderr.bin",
+      "pass": true
+    },
+    {
       "check": "control-first.json group cleanup",
       "pass": true
     },
@@ -263,6 +289,18 @@
     },
     {
       "check": "control-scope-negative.json raw docs/qualification/candidates/task-slice-20261012/control-review/control-scope-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "final-source-audit.json group cleanup",
+      "pass": true
+    },
+    {
+      "check": "final-source-audit.json raw docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "final-source-audit.json raw docs/qualification/candidates/task-slice-20261012/control-review/final-source-audit.stderr.bin",
       "pass": true
     },
     {
@@ -314,7 +352,7 @@
       "pass": true
     }
   ],
-  "passed": 51,
+  "passed": 57,
   "failed": 0,
   "scope": "source/data only; no PostgreSQL or service operation"
 }
