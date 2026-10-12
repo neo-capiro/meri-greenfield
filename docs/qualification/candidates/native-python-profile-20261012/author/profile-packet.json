@@ -3,7 +3,7 @@
   "status": "INCOMPLETE_SOURCE_REVIEW_ONLY_HOLD_EXECUTION",
   "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
   "candidate": {
-    "role": "NEOMART_EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01",
+    "role": "EXISTING_ASTRAL_CPYTHON_3_11_15_X64_01",
     "privateExecutablePathPublished": false,
     "executableBytes": null,
     "executableSha256": null,
@@ -26,7 +26,9 @@
     "reportedCommandsExamined": 7,
     "reportedRegistrationRootsExamined": 3,
     "reportedInterpreterExecutions": 0,
-    "actualRuntimeIdentityVerified": false
+    "actualRuntimeIdentityVerified": false,
+    "hostIdentityPrivate": null,
+    "hostIdentityVerified": false
   },
   "receipt": {
     "source": "Parent report; private ZIP not materialized or independently decoded",
