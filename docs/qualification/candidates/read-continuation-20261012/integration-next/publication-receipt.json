@@ -1,0 +1,18 @@
+{
+  "scope": "SOURCE_ONLY_PUBLICATION_NOT_MERGE_OR_RUNTIME",
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/28",
+  "number": 28,
+  "state": "open",
+  "draft": true,
+  "merged": false,
+  "head": "task/meri-selected-reads-next-20261012",
+  "headSha": "780607f7775969340966912b1657473a16c91e9c",
+  "base": "task/meri-read-continuation-20261012",
+  "baseSha": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "createdAt": "2026-10-12T17:29:33Z",
+  "reviewedSource": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "independentReview": "3c24f2d2b14b75075cfe2aab5e057f9a8c1d9844",
+  "packetFreeze": "780607f7775969340966912b1657473a16c91e9c",
+  "memberCount": 394,
+  "manifestSha256": "be7b7b05910666664885e9c22dafcf9489a0fe20a1da7ee53cf6c10d6e11e819"
+}
