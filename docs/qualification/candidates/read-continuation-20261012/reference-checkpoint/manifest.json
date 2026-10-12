@@ -1,0 +1,58 @@
+{
+  "scope": "SOURCE_CONTINUATION_CHECKPOINT_NOT_RUNTIME_ACCEPTANCE",
+  "excludes": [
+    "manifest.json (self-reference)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-REFERENCE-CONTINUATION-CHECKPOINT-20261012.md",
+      "bytes": 11720,
+      "sha256": "8a052048404325d93cbfdfb391e842669b25c11fbd34144b0f04ddefb090a3e2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/candidate-freezes.initial-author-base.json",
+      "bytes": 10935,
+      "sha256": "31865623e95cea74bcd4339d78f2651b0316ec270ec642ff8a4cfb9db50f4d6c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/candidate-freezes.json",
+      "bytes": 8147,
+      "sha256": "e2ec2a0e701b6cf7fe004254fd39e1cbba887fa6126701267cda809c190e22a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/checkpoint-audit.json",
+      "bytes": 508,
+      "sha256": "ae11fdab19b0ecb1a17863cc7b7ca69446ec9a9db66285564ac4353e5b21227d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/executor-availability.json",
+      "bytes": 541,
+      "sha256": "02b7fafdc5f3080cd0d6480e161e87e5404a25d016560b0712bb9706d59123a0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/metadata-correction.json",
+      "bytes": 888,
+      "sha256": "3ed22666401a1a7325c41a126002ba4a59f74312412e43b471168c6d1423b153"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/published-pr-readback.json",
+      "bytes": 959,
+      "sha256": "f5205b76090eea05e10576bf98dd7474e4614dc30a0a3f8e35a4df278ae19d47"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/remote-preservation.json",
+      "bytes": 2202,
+      "sha256": "c24bf00ad309c6c34b5494be3bc6d927d93f9a6a4bd225695b3735dc8d209a28"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/remote-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-checkpoint/remote-preservation.stdout.bin",
+      "bytes": 1029,
+      "sha256": "0d1c5c58ce22b297e761eb23189773da04ea383e2dfe05d565012e53a9d2382e"
+    }
+  ]
+}

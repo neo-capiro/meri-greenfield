@@ -7,5 +7,7 @@
   "priorReadOnlyCheckAt": "2026-10-12T17:38:36Z",
   "capabilitySliceBlockedByDisconnect": false,
   "facilityFocusedGroupAbsent": true,
-  "runtimeAcceptance": false
+  "runtimeAcceptance": false,
+  "recheckedAt": "2026-10-12T17:49:50.182071+00:00",
+  "processGroupCheckMethod": "os.killpg(pgid,0): ProcessLookupError required"
 }
