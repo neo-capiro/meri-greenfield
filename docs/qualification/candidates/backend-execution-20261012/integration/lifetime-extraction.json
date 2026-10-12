@@ -1,0 +1,6 @@
+{
+  "beforeSha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+  "afterSha256": "6a22a65e363b1b9c4e9a0b4ea46073add051b97975fdfb411523bcdae1227532",
+  "sharedSha256": "cee9966de6b7317eded1ed8a588e41a17324ac1eb98cfed70a70cf434dc0a72e",
+  "scope": "Move existing lifetime core without algorithm changes; inject domain error factory; gateway wrapper preserves original public function and budget uncertainty helper. No service or physical-stop qualification."
+}

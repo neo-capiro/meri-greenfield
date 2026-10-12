@@ -36,3 +36,11 @@ Latest parent correction: frozen frontend d5 second build `18b3316a-9403-40f9-80
 ## Acceptance checks
 
 Meaningful adapter/handler behavior, current identity/expiry/revocation and late settlement controls; strict scalar/variant/paging/correlation checks for every accepted family; canonical source/hash/registry consistency; public distribution preservation; unchanged original tests or explicitly reviewed reversible expectation repairs; raw failure/preimage preservation; exact commit and process-exit receipts. Live policy, JWT broker attestation, native persistence, deployment, renderer/browser, recovery, budgets and full release gates remain separately unqualified.
+
+## Shared composition outline (21:15 UTC continuation)
+
+Root extracts the existing gateway lifetime core to `packages/runtime/operation-lifetime.mjs` with a domain error factory; the gateway export delegates without changing deadline/cancellation/pending-operation semantics. This lets the read-only Temporal inspection adapter reuse one lifecycle owner without importing gateway application code. Original gateway deadline/release checks and injected-domain checks precede acceptance. Schedule inspection owns no mutator and borrows rather than closes its SDK client.
+
+Root composes only reviewed private families, binds catalog input references to raw caller requests, and nests generic factory APIs. The complete `actions.query` successor preserves the old scoped-only `query_action_items` descriptor and validator with an explicit registered same-native replacement. The canonical registry must reject missing, unrelated, partial, altered or enabled successors. All original tests remain, with exact reversible expectation changes recorded.
+
+The dataset metadata author temporarily owns only the `list_global_datasets` registry row plus `operation-context.mjs` and `read-result-envelope.mjs` for a narrow private dispatch profile; root waits for that commit before modifying the registry. The handler lists the one immutable accepted metadata registry through canonical dispatch; response construction time is not upstream freshness.
