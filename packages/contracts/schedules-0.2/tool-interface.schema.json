@@ -1,0 +1,998 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:schedules:tool-interface:0.2.0",
+  "$defs": {
+    "Policy": {
+      "type": "object",
+      "properties": {
+        "spec": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/spec"
+        },
+        "overlap": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/overlap"
+        },
+        "catchupWindowMs": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/catchupWindowMs"
+        },
+        "pauseOnFailure": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/pauseOnFailure"
+        },
+        "remainingActions": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/remainingActions"
+        },
+        "paused": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/paused"
+        },
+        "note": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/note"
+        },
+        "runNow": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/runNow"
+        },
+        "runNowOverlap": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/runNowOverlap"
+        }
+      },
+      "required": [
+        "spec",
+        "overlap",
+        "catchupWindowMs",
+        "pauseOnFailure",
+        "remainingActions",
+        "paused",
+        "note",
+        "runNow",
+        "runNowOverlap"
+      ],
+      "additionalProperties": false
+    },
+    "Limits": {
+      "type": "object",
+      "properties": {
+        "maxCostMicrousd": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection/properties/maxCostMicrousd"
+        },
+        "maxRuntimeSeconds": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection/properties/maxRuntimeSeconds"
+        },
+        "retryLimit": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection/properties/retryLimit"
+        }
+      },
+      "required": [
+        "maxCostMicrousd",
+        "maxRuntimeSeconds",
+        "retryLimit"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleTaskRequest": {
+      "type": "object",
+      "properties": {
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Policy"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Limits"
+        }
+      },
+      "required": [
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "UpdateScheduledTaskRequest": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "taskInstruction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "policy": {
+          "$ref": "#/$defs/Policy"
+        },
+        "destinationReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "requestedLimits": {
+          "$ref": "#/$defs/Limits"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "taskInstruction",
+        "policy",
+        "destinationReference",
+        "requestedLimits"
+      ],
+      "additionalProperties": false
+    },
+    "CancelScheduledTaskRequest": {
+      "type": "object",
+      "properties": {
+        "scheduleId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "mode": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Cancel/properties/mode"
+        },
+        "note": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Cancel/properties/note"
+        },
+        "running": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Cancel/properties/running"
+        },
+        "runs": {
+          "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Cancel/properties/runs"
+        }
+      },
+      "required": [
+        "scheduleId",
+        "mode",
+        "note",
+        "running",
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "ListScheduledTasksRequest": {
+      "type": "object",
+      "properties": {
+        "afterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "historyLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ScheduleTaskInput": {
+      "$ref": "#/$defs/ScheduleTaskRequest"
+    },
+    "UpdateScheduledTaskInput": {
+      "$ref": "#/$defs/UpdateScheduledTaskRequest"
+    },
+    "CancelScheduledTaskInput": {
+      "$ref": "#/$defs/CancelScheduledTaskRequest"
+    },
+    "ListScheduledTasksInput": {
+      "type": "object",
+      "properties": {
+        "afterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "historyLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "afterScheduleId",
+        "limit",
+        "historyLimit"
+      ],
+      "additionalProperties": false
+    },
+    "Current": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "projectionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "projection",
+        "generation",
+        "projectionSha256"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleMutationContext": {
+      "type": "object",
+      "properties": {
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nowMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "intentId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "current": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Current"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "taskResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "instructionSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "task": {
+                  "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/task"
+                },
+                "workflow": {
+                  "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Configuration/properties/workflow"
+                }
+              },
+              "required": [
+                "instructionSha256",
+                "task",
+                "workflow"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destinationResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "destinationId": {
+                  "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection/properties/destinationId"
+                }
+              },
+              "required": [
+                "reference",
+                "destinationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limitResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "requestedSha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "effective": {
+                  "$ref": "#/$defs/Limits"
+                }
+              },
+              "required": [
+                "requestedSha256",
+                "effective"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ApprovalDecision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "callerIdentity",
+        "requestSha256",
+        "nowMs",
+        "deadlineMs",
+        "intentId",
+        "current",
+        "projection",
+        "taskResolution",
+        "destinationResolution",
+        "limitResolution",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleListContext": {
+      "type": "object",
+      "properties": {
+        "callerIdentity": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        },
+        "requestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nowMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "owner": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"
+        }
+      },
+      "required": [
+        "callerIdentity",
+        "requestSha256",
+        "nowMs",
+        "deadlineMs",
+        "owner"
+      ],
+      "additionalProperties": false
+    },
+    "PendingProposal": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "status": {
+          "const": "approval_required"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "intentSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "taskInstruction": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 20000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Policy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cancel": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:schedules:lifecycle:0.2.0#/$defs/Cancel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "proposalId",
+        "intentSha256",
+        "taskInstruction",
+        "projection",
+        "policy",
+        "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "Acknowledged": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "enum": [
+            "schedule_task",
+            "update_scheduled_task",
+            "cancel_scheduled_task"
+          ]
+        },
+        "status": {
+          "const": "acknowledged"
+        },
+        "receipt": {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "enum": [
+                "schedule_task",
+                "update_scheduled_task",
+                "cancel_scheduled_task"
+              ]
+            },
+            "intentId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "generation": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "projection": {
+              "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+            },
+            "outcome": {
+              "const": "ACKNOWLEDGED"
+            },
+            "physicalStopProven": {
+              "const": false
+            }
+          },
+          "required": [
+            "operation",
+            "intentId",
+            "generation",
+            "projection",
+            "outcome",
+            "physicalStopProven"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "receipt"
+      ],
+      "additionalProperties": false
+    },
+    "ScheduleMutationOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/PendingProposal"
+        },
+        {
+          "$ref": "#/$defs/Acknowledged"
+        }
+      ]
+    },
+    "ListRow": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/ScheduleProjection"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unresolved": {
+          "type": "boolean"
+        },
+        "inspection": {
+          "anyOf": [
+            {
+              "$ref": "urn:meri:schedules:inspection:0.2.0#/$defs/ScheduleInspectionOutput"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inspectionState": {
+          "enum": [
+            "unavailable",
+            "observed"
+          ]
+        }
+      },
+      "required": [
+        "projection",
+        "generation",
+        "unresolved",
+        "inspection",
+        "inspectionState"
+      ],
+      "additionalProperties": false
+    },
+    "Execution": {
+      "type": "object",
+      "properties": {
+        "workflowId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "code": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "name",
+            "code"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 0
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "UNSPECIFIED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 1
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "RUNNING"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 2
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "COMPLETED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 3
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "FAILED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 4
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "CANCELLED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 5
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "TERMINATED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 6
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "CONTINUED_AS_NEW"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 7
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "TIMED_OUT"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": 8
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "PAUSED"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "not": {
+                      "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "name": {
+                    "const": "UNKNOWN"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "historyLength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "closeTime": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "workflowId",
+        "runId",
+        "status",
+        "historyLength",
+        "startTime",
+        "closeTime"
+      ],
+      "additionalProperties": false
+    },
+    "OriginalRuns": {
+      "type": "object",
+      "properties": {
+        "executions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Execution"
+          },
+          "maxItems": 10
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "observedReferences": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "returned": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "omitted": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "historyComplete": {
+              "const": false
+            },
+            "currentRetryVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "observedReferences",
+            "returned",
+            "omitted",
+            "historyComplete",
+            "currentRetryVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "executions",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "ListPage": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ListRow"
+          },
+          "maxItems": 20
+        },
+        "hasMore": {
+          "type": "boolean"
+        },
+        "nextAfterScheduleId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "originalRuns": {
+          "$ref": "#/$defs/OriginalRuns"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "complete": {
+              "const": false
+            },
+            "currentRetryVerified": {
+              "const": false
+            }
+          },
+          "required": [
+            "complete",
+            "currentRetryVerified"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "operation",
+        "rows",
+        "hasMore",
+        "nextAfterScheduleId",
+        "originalRuns",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "ListScheduledTasksOutput": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "const": "list_scheduled_tasks"
+        },
+        "status": {
+          "const": "listed"
+        },
+        "page": {
+          "$ref": "#/$defs/ListPage"
+        }
+      },
+      "required": [
+        "operation",
+        "status",
+        "page"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
