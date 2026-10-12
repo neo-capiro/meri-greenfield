@@ -1,0 +1,35 @@
+{
+  "decision": "ACCEPT_SOURCE_PACKET",
+  "authorCommit": "8e50b8b7efeed2a9b251ad5658b58934246f16a4",
+  "authorTree": "5d5a2d95a998f5b3758cdc129f868dbf5f7bdb1a",
+  "frozenEvidenceBase": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "reviewer": "root integration owner, independent of readiness author",
+  "scope": "Documentation/source plan only, NOT_EXECUTABLE",
+  "offlineAuthorVerifierIndependentlyReplayed": 119,
+  "runtimeChecks": "UNRUN",
+  "runtimeAuthority": false,
+  "independentCorrections": [
+    "Rejected host -I argv would prevent actual sibling imports; retained original draft and corrected host to -B only, leaving container peer -I -B.",
+    "Account for two additional loopback TLS listeners plus a transient non-listening pricing socket.",
+    "Historical Python OLD_SITE is appended; its absence alone does not prove admitted venv child incompatibility.",
+    "Bind new PGDATA/system_identifier/server creation identity/database OIDs and empty schemas before mutations; endpoint/name matching alone is insufficient.",
+    "Test constructors omit passwords. Narrow dedicated-host loopback HBA trust is an explicit proposal, not an implemented or approved credential channel.",
+    "Separate actual JavaScript budget pg-pool, cross-process and PostgreSQL server-restart source-test gaps from existing Python client-crash cases."
+  ],
+  "preserved": {
+    "securityObligations": 54,
+    "requiredFunctions": 35,
+    "capabilities": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 14,
+    "unmapped": 82,
+    "namedSkillsUnqualified": 14
+  },
+  "integrationQualification": "This packet deliberately describes exact PR15. The new accepted Temporal activity/workflow adds source admission and checkpoint verification; it does not supply a native Worker/server/retirement provider or SDK restoration. Sandbox source changes likewise do not qualify native sandbox or containment. These newer source findings belong to the integration report, without retroactively modifying the frozen packet.",
+  "remaining": [
+    "No fully supported patched image composition is established for assessed releases; vendor/applicability, authenticated immutable package closure and bundled parser closure are evidence dependencies, not risk-waivable approvals.",
+    "L1 first action still needs exact admitted host/binaries/drivers, lifecycle supervisor, authentication/isolation bindings and specific execution authorization.",
+    "All other native/cloud/provider actions remain excluded; historical images unadmitted, rejected image never launch, existing Aurora selection unchanged, source connectivity false."
+  ]
+}

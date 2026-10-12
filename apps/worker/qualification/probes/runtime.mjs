@@ -10,13 +10,13 @@
 // scrubbed errors and evidence paths, and exits nonzero if ANY required check
 // fails. Unavailable evidence is reported as skipped/failed, never a pass.
 
-import { spawnSync } from 'node:child_process';
+import { runOwnedProbeChild, installProbeCancellation } from './owned-probe-child.mjs';
 import { mkdirSync, writeFileSync, readFileSync, rmSync, statSync, readFileSync as readFile } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { lookup } from 'node:dns/promises';
 import { connect } from 'node:net';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 
 import {
   QUALIFICATION,
@@ -26,7 +26,6 @@ import {
   InMemorySessionStore,
 } from '../sdk-options.mjs';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
 const PROBE_DEADLINE_MS = Number(process.env.MERI_PROBE_DEADLINE_MS || 180000);
 const NET_TIMEOUT_MS = Number(process.env.MERI_NET_TIMEOUT_MS || 3000);
 
@@ -311,31 +310,33 @@ export async function checkSdkStatic() {
   }
 }
 
-/** Run a sibling probe script as a child process with an explicit deadline. */
-export function runProbeScript(script, { name, required = true, deadlineMs = PROBE_DEADLINE_MS } = {}) {
-  let result;
-  try {
-    result = spawnSync(process.execPath, [join(HERE, script)], {
-      timeout: deadlineMs,
-      killSignal: 'SIGKILL',
-      encoding: 'utf8',
-      env: { ...process.env },
-      maxBuffer: 16 * 1024 * 1024,
-    });
-  } catch (error) {
-    return { name, required, status: 'fail', detail: `${script} could not be spawned`, error: String(error).slice(0, 300), evidencePaths: [] };
-  }
-  const timedOut = !!(result.error && (result.error.code === 'ETIMEDOUT' || result.signal));
-  const verdict = classifyChildResult({ status: result.status, signal: result.signal, timedOut, stdout: result.stdout, stderr: result.stderr });
-  return {
-    name,
-    required,
-    status: verdict.status,
-    detail: `${script}: ${verdict.detail}`,
-    error: verdict.error || undefined,
+/** Run only an allowlisted qualification child through the shared owner. */
+export async function runProbeScript(script, { name, required = true, deadlineMs = PROBE_DEADLINE_MS, ...ports } = {}) {
+  const result = await runOwnedProbeChild({ ...ports, script, deadlineMs });
+  const verdict = classifyChildResult(result);
+  const passed = !result.error && !result.signal && !result.timedOut && !result.aborted && !result.overflow && result.cleanupConfirmed === true;
+  return { name, required, status: passed ? verdict.status : 'fail',
+    detail: `${script}: ${passed ? verdict.detail : (result.error || (result.signal ? `child signalled ${result.signal}` : 'owned cleanup UNKNOWN'))}`,
+    error: result.error || verdict.error || undefined,
+    cleanupConfirmed: result.cleanupConfirmed === true,
+    cleanupScope: process.platform === 'linux' ? 'owned-process-group' : 'direct-child-only',
     childResult: verdict.parsed || undefined,
-    evidencePaths: verdict.parsed && Array.isArray(verdict.parsed.evidencePaths) ? verdict.parsed.evidencePaths : [],
-  };
+    evidencePaths: verdict.parsed && Array.isArray(verdict.parsed.evidencePaths) ? verdict.parsed.evidencePaths : [] };
+}
+
+/** Actual runtime sequence: independent semantic failures continue only after containment. */
+export async function runQualificationChildren(options = {}) {
+  const browser = await runProbeScript('browser.mjs', { ...options, name: 'browser-sandbox', required: true });
+  if (!browser.cleanupConfirmed || options.signal?.aborted) return [browser, { name: 'office-artifacts', required: true,
+    status: 'fail', detail: options.signal?.aborted ? 'NOT-RUN/HOLD: qualification cancelled' : 'NOT-RUN/HOLD: prior owned cleanup UNKNOWN', evidencePaths: [], notRun: true }];
+  return [browser, await runProbeScript('artifacts.mjs', { ...options, name: 'office-artifacts', required: true })];
+}
+
+/** CLI bridge begins only when child ownership begins, after native prechecks. */
+export async function runQualificationChildrenForCli({ processLike = process, ...options } = {}) {
+  const cancellation = installProbeCancellation(processLike);
+  try { return await runQualificationChildren({ ...options, signal: cancellation.signal }); }
+  finally { cancellation.dispose(); }
 }
 
 async function main() {
@@ -344,19 +345,18 @@ async function main() {
   results.push(checkReadOnlyRoot());
   results.push(await checkSdkStatic());
   results.push(await checkNetworkDenial());
-  results.push(runProbeScript('browser.mjs', { name: 'browser-sandbox', required: true }));
-  results.push(runProbeScript('artifacts.mjs', { name: 'office-artifacts', required: true }));
+  results.push(...await runQualificationChildrenForCli());
 
   const summary = summarize(results);
   const payload = { probe: 'runtime', generatedAt: new Date().toISOString(), ...summary };
   process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
-  process.exit(computeExitCode(summary));
+  return computeExitCode(summary);
 }
 
 const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (invokedDirectly) {
   main().catch((error) => {
     process.stdout.write(JSON.stringify({ probe: 'runtime', ok: false, error: String(error).slice(0, 300) }, null, 2) + '\n');
-    process.exit(1);
-  });
+    return 1;
+  }).then(code => process.exit(code));
 }

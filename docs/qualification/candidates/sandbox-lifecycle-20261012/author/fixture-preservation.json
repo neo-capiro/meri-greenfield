@@ -1,0 +1,9 @@
+{
+  "method": "exact inverse of enumerated fixture-only substitutions restores complete original source bytes; all original assertions and test names remain byte-identical",
+  "astParserUsed": false,
+  "baselineSha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde",
+  "restoredSha256": "da1087cd155c64a85a5d9dd818db275688f6e8610719d665007a8649e3423dde",
+  "candidateSha256": "c79b2f67a21ea2692f3c504a8cacf0f4ab910fe7ab93dfebcc5b4ae253e57877",
+  "originalAssertionCount": 153,
+  "originalTestNameCount": 55
+}

@@ -1,0 +1,30 @@
+✔ preabort denies startup without calling the supplied port (1.760091ms)
+✔ one monotonic deadline bounds every MCP asynchronous boundary (40.008901ms)
+✔ owned client and server both close even if one close parks (11.351108ms)
+✔ late server acquisition is closed while returned UNKNOWN stays immutable (4.99014ms)
+✔ late MCP startup completion triggers a fresh bounded close (4.245812ms)
+✔ abort interrupts a pending MCP tool and rejects subsequent work (0.702415ms)
+✔ stderr overflow fails the active operation and keeps retained bytes bounded (0.806871ms)
+✔ server close needs its callback, not the return value (5.672935ms)
+✔ server callback error retains cleanup uncertainty (0.441452ms)
+✔ successful MCP work and cleanup claim API observations only (0.284057ms)
+✔ actual browser step driver stops after deadline without a later tool call (4.93698ms)
+✔ expired deadline between operations remains a failed probe even with clean API close (10.699429ms)
+✔ fixed executable entries deny arbitrary scripts before spawn (1.16594ms)
+✔ preabort and non-owned Linux process group never spawn (0.25962ms)
+✔ successful close needs exact owned child absence and bounded preserved output (4.60367ms)
+✔ both stdout and stderr overflow fail despite later successful close (2.451429ms)
+✔ abort after spawn contains once and cannot be made successful by late output (15.562248ms)
+✔ stream error without close starts bounded containment immediately (15.641296ms)
+✔ exit without close and unknown group retain cleanup UNKNOWN (41.400019ms)
+✔ runtime signal and overflow remain failed even with successful JSON and cleanup (2.300784ms)
+✔ runtime continues after a contained semantic failure (2.320358ms)
+✔ runtime unknown cleanup prevents another probe spawn (15.079434ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 300.651115

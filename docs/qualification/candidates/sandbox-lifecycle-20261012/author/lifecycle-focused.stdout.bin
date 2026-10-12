@@ -1,0 +1,39 @@
+✔ preabort denies startup without calling the supplied port (1.648163ms)
+✔ one monotonic deadline bounds every MCP asynchronous boundary (35.71186ms)
+✔ owned client and server both close even if one close parks (10.326897ms)
+✔ late server acquisition is closed while returned UNKNOWN stays immutable (4.966663ms)
+✔ late MCP startup completion triggers a fresh bounded close (4.928787ms)
+✔ abort interrupts a pending MCP tool and rejects subsequent work (0.821152ms)
+✔ stderr overflow fails the active operation and keeps retained bytes bounded (0.89967ms)
+✔ server close needs its callback, not the return value (5.830049ms)
+✔ server callback error retains cleanup uncertainty (0.644658ms)
+✔ successful MCP work and cleanup claim API observations only (0.329003ms)
+✖ actual browser step driver stops after deadline without a later tool call (4.382727ms)
+✔ fixed executable entries deny arbitrary scripts before spawn (1.044187ms)
+✔ preabort and non-owned Linux process group never spawn (0.29272ms)
+✔ successful close needs exact owned child absence and bounded preserved output (3.567363ms)
+✔ both stdout and stderr overflow fail despite later successful close (1.709736ms)
+✔ abort after spawn contains once and cannot be made successful by late output (16.003365ms)
+✔ stream error without close starts bounded containment immediately (15.913971ms)
+✔ exit without close and unknown group retain cleanup UNKNOWN (41.970613ms)
+✔ runtime signal and overflow remain failed even with successful JSON and cleanup (1.458308ms)
+✔ runtime continues after a contained semantic failure (1.021123ms)
+✔ runtime unknown cleanup prevents another probe spawn (16.151076ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 269.80033
+
+✖ failing tests:
+
+test at apps/worker/qualification/probes/browser-lifetime.test.mjs:64:1
+✖ actual browser step driver stops after deadline without a later tool call (4.382727ms)
+  Error: browser deadline exceeded during tool
+      at fail (file:///workspace/meri-sandbox-lifecycle-20261012/apps/worker/qualification/probes/browser-lifetime.mjs:11:29)
+      at Timeout.<anonymous> (file:///workspace/meri-sandbox-lifecycle-20261012/apps/worker/qualification/probes/browser-lifetime.mjs:49:40)
+      at listOnTimeout (node:internal/timers:635:17)
+      at process.processTimers (node:internal/timers:571:7)

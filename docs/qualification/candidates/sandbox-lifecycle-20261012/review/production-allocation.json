@@ -1,0 +1,20 @@
+{
+  "authority": "Root explicit production allocation after criteria freeze",
+  "received_at_utc": "2026-10-12T05:00:04.649359+00:00",
+  "new": [
+    "apps/worker/qualification/probes/owned-probe-child.mjs",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs"
+  ],
+  "existing_narrow": [
+    "apps/worker/qualification/probes/runtime.mjs",
+    "apps/worker/qualification/probes/browser.mjs",
+    "apps/worker/qualification/probes/office-export.mjs",
+    "apps/worker/qualification/README.md"
+  ],
+  "central_packaging_allocation": "scripts/qualification/worker_context.py PACKAGE_FILES: exactly the four new filenames; no other guard changes",
+  "required_semantics": "Unknown child cleanup refuses next child with explicit NOT-RUN/HOLD. Confirmed-clean semantic failure permits the independent next probe. Original Office protocol/file verifier and assertions retained.",
+  "original_office_fixture_correction": "Proposed to root, not yet allocated when this receipt was written.",
+  "collector_context_pins": "Root derives after source acceptance and requests separate independent review; no build."
+}

@@ -1,0 +1,144 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "verdict": "ACCEPT_SOURCE",
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "parent": "296f80639342bf23ef0261edbb5bc787fd76196f",
+  "runtimeGate": "HOLD",
+  "files": [
+    {
+      "path": "REVIEW.md",
+      "bytes": 3892,
+      "sha256": "8860556774894fe6fb20ad6b2cddd1fcda1b190328ba6e8487446bca4f38fd34"
+    },
+    {
+      "path": "actual-git14-command.json",
+      "bytes": 731,
+      "sha256": "fa2e7b354ec2612812083044997016d05eece942d2fb1cd7a41bfa7a43f44e58"
+    },
+    {
+      "path": "actual-git14.json",
+      "bytes": 2042,
+      "sha256": "405badfdf87f6323f3ee07c6c3074fb70357138bee1dad40f5ec1b4c1fc0a69f"
+    },
+    {
+      "path": "actual-git14.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "actual-git14.stdout.txt",
+      "bytes": 28,
+      "sha256": "d803fe1e0117a925b539af3d02204c4c8ae237cb9855fc97f821c2cf8f46eed7"
+    },
+    {
+      "path": "baseline-adaptation.patch",
+      "bytes": 2361,
+      "sha256": "e15fd6a144128beca602cb5b59fcb8ef6f4c6e6ca7ec4f4fa2c5d66ce4f51c84"
+    },
+    {
+      "path": "collector-controls.py",
+      "bytes": 5552,
+      "sha256": "ef2e60351b07cd89e09fb7d2db5735ae622a5fb3a3da198ed7d73b70b48f042b"
+    },
+    {
+      "path": "collector-guards-command.json",
+      "bytes": 683,
+      "sha256": "2d4af7a0663b983d3cfa9096fe3e6316d97539f38ab6bb71ba56ac3a37e476c5"
+    },
+    {
+      "path": "collector-guards.json",
+      "bytes": 2139,
+      "sha256": "e80b15930b654d1fc1254942bcfb1cca54df458505587265e7a0dcb9923c3bd8"
+    },
+    {
+      "path": "collector-guards.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "collector-guards.stdout.txt",
+      "bytes": 28,
+      "sha256": "3a640752747d7c1d2ce842f93d24b53d294bf8296efc091bafc200f3afda02a2"
+    },
+    {
+      "path": "control-provenance.json",
+      "bytes": 499,
+      "sha256": "8805357d03beb15885043a187d4855eede24d8881687242679ff24d5d79c4935"
+    },
+    {
+      "path": "criteria.json",
+      "bytes": 1109,
+      "sha256": "072c575c804dd9627aae8bdb5c4c2036d5af32a2481ff4391da3af09272b33a2"
+    },
+    {
+      "path": "exact-patch-audit.json",
+      "bytes": 2014,
+      "sha256": "77f4dc68c050e38102d43a76f797a7816101416f167335a59144266489976bc0"
+    },
+    {
+      "path": "exact-pin.patch",
+      "bytes": 3042,
+      "sha256": "8b546a9449b7ae06f2f2fd32809aa99db3ca8ec49a1b4619efd0089c4037d40c"
+    },
+    {
+      "path": "original-builder36-command.json",
+      "bytes": 402,
+      "sha256": "57b3ab13e71b6126dfe2b77090bda07d886114730b487bd3f74107da680464db"
+    },
+    {
+      "path": "original-builder36.stderr.txt",
+      "bytes": 5865,
+      "sha256": "36f2ebf4c469002e035529e8929a0a5a7c3d31dda2e09047c1e4bc96a507757c"
+    },
+    {
+      "path": "original-builder36.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "patch-audit-command.json",
+      "bytes": 607,
+      "sha256": "a508011fed711b86ef14eaf0c83995366e8e155bff4212712f9a3de03b086e75"
+    },
+    {
+      "path": "patch-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "patch-audit.stdout.txt",
+      "bytes": 1818,
+      "sha256": "7c47c8ee5ea152d5adba128ba4887ca8661d4aff49eebc523c13c4232a3cbbbc"
+    },
+    {
+      "path": "prepin-provenance-verified.json",
+      "bytes": 249,
+      "sha256": "56283ae69c719ee11a463436e58c921d14d1b27a2d670a780a42526a23549a9c"
+    },
+    {
+      "path": "root-baseline-controls.py",
+      "bytes": 4387,
+      "sha256": "dc902bca7f0156e306ffdb67101c3b44f03301fec70d2ad8d9b6e415bd6114b5"
+    },
+    {
+      "path": "root-prepin-full-reference.json",
+      "bytes": 1419,
+      "sha256": "7a12d00a82bcfb364291b5dec60d3d2c89c8b9c20eadec3d0a593ceb8c92cdf7"
+    },
+    {
+      "path": "root-prepin-full-reference.stderr.bin",
+      "bytes": 680,
+      "sha256": "a7898b148484c14611e482b2fcdfaf4ed2907149824f848152df84c79ada94c6"
+    },
+    {
+      "path": "root-prepin-full-reference.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verify-patch.py",
+      "bytes": 4367,
+      "sha256": "1433d13c4eb801ebb06adbcc0b3646584dd55240e67e1f680d69c29802e997f8"
+    }
+  ]
+}

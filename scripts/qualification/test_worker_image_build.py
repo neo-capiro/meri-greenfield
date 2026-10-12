@@ -460,8 +460,8 @@ class FreshRunnerBinding(unittest.TestCase):
         self.assertEqual(value['target']['caller']['Arn'], binding.PRINCIPAL)
         self.assertEqual(build.WORKER_BUILDER_PRINCIPAL, 'arn:aws:iam::967807252336:user/hermes-cli')
         self.assertEqual(build.PYTHON_SHA, '10d845f50a2af64e3500bb2fcb348b5bc98a75d8ddada63e45ba1da6a1fc79d1')
-        self.assertEqual(collect.ASSEMBLER_SHA, '48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851')
-        self.assertEqual(collect.CONTEXT_SHA, '0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903')
+        self.assertEqual(collect.ASSEMBLER_SHA, 'e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765')
+        self.assertEqual(collect.CONTEXT_SHA, '640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229')
 
     def test_proposal_refuses_wrong_target_or_unpinned_closure(self):
         changes = [('profile', 'default'), ('region', 'us-west-2'), ('account', '000000000000')]

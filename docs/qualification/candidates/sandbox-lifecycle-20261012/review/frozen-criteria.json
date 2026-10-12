@@ -1,0 +1,56 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "frozen_at_utc": "2026-10-12T04:54:56.622966+00:00",
+  "authorized": "Local source read and bounded source-only test controls; no native/browser/renderer/DB/Docker/cloud/paid/provider execution",
+  "criteria": [
+    {
+      "id": "SL1",
+      "assertion": "Exact root allocation and author freeze; canonical integrated worker/browser/artifact owner entry must consume the implementation. A disconnected generic helper or synthetic demonstration cannot close the source call-path gap."
+    },
+    {
+      "id": "SL2",
+      "assertion": "Use canonical public full RunBinding with tenant/actor/conversation/run/attempt/worker/fence and immutable task/resource correlation. Task A cannot use, publish from or clean task B resources; stale replacement and cross-tenant substitution deny before effects."
+    },
+    {
+      "id": "SL3",
+      "assertion": "Trusted raw context is bounded, validated and immutably snapshotted before await. Model/user arguments cannot establish resource ownership, path, approval, authority, deadline or artifact publication scope. Accessors/proxies and post-await mutations do not broaden authority."
+    },
+    {
+      "id": "SL4",
+      "assertion": "Current authority and all known expiries/deadlines bind acquisition, browser/render operation, inspection and final publication. Earliest known ceiling applies before any downstream await; park each boundary, revoke/replace while parked and prove late completion starts no new effect or successful output."
+    },
+    {
+      "id": "SL5",
+      "assertion": "Explicit cancellation, expiry, error and normal completion run one bounded cleanup path. Late acquisition after cancellation must remain owned and receive scoped cleanup or explicitly retained uncertainty; rejected waiting is not physical cancellation."
+    },
+    {
+      "id": "SL6",
+      "assertion": "Clean only exact resources created/acquired for this task by this owner. Never close borrowed clients/pools/shared roots or broad process groups; preserve unrelated task B resources and original source/failure artifacts."
+    },
+    {
+      "id": "SL7",
+      "assertion": "Cleanup acknowledgement/request/timeout is never proof of physical teardown. Exact positive current resource/process absence readback is required to claim confirmed teardown; wrong identity, unknown, parked or failed observation remains UNKNOWN and cannot permit reuse or publication."
+    },
+    {
+      "id": "SL8",
+      "assertion": "Artifact bytes are inspected before publication against exact task/version identity, bounded size, digest, type/format and path containment. Revalidate immutable bytes or bind inspected bytes to published bytes; reject tamper, symlink/path escape, stale version, foreign task and failed/partial inspection."
+    },
+    {
+      "id": "SL9",
+      "assertion": "Publication consumes fresh task-bound authority and validated canonical ArtifactVersion/current immutable object metadata when relevant; no successful receipt on late, partial, failed or acknowledgement-unknown publication. Preserve uncertainty and do not retry publication automatically."
+    },
+    {
+      "id": "SL10",
+      "assertion": "Safe import/construction creates no listener, native browser/renderer, subprocess, filesystem output or external connection. Default source/native execution remains disabled; any newly introduced entry cannot bypass current G1/image/security approvals."
+    },
+    {
+      "id": "SL11",
+      "assertion": "Preserve original tests, negative controls, schemas, dependencies, catalog, immutable evidence and approved SDK/Temporal/Playwright/AI SDK responsibilities. Modular responsibilities and allocated new paths; no legacy Capiro implementation/host skill imports or new runtime framework."
+    },
+    {
+      "id": "SL12",
+      "assertion": "Independent source controls must traverse the actual new integrated entry, retain failures and meaningful mutants, bind exact SHA/tree/source hashes, and distinguish scripted port/source evidence from real browser/renderer sandbox, native descendant death, artifact rendering/visual quality and runtime gate acceptance."
+    }
+  ]
+}

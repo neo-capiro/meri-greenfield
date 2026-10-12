@@ -1,0 +1,42 @@
+
+> @meri/qualification-temporal@0.0.0 check
+> npm run typecheck && npm test
+
+
+> @meri/qualification-temporal@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @meri/qualification-temporal@0.0.0 test
+> node --test compatibility.test.mjs
+
+✔ package.json pins the five exact @temporalio 1.24.0 packages and the exact compiler/types (1.431462ms)
+✔ package-lock.json locks the same exact versions with sha512 integrity (0.319289ms)
+✔ component-pins.json records the exact server pins (exact equality, not regex) (0.118138ms)
+✔ component-pins.json agrees with package.json, lock and the postgres candidates (0.163916ms)
+✔ the fixture server block is byte-identical to the pinned component digests (0.188043ms)
+✔ installed WorkerDeploymentOptions requires defaultVersioningBehavior when versioning is on (0.425499ms)
+✔ installed TLSConfig / connection options expose the exact TLS + JWT fields (0.285759ms)
+✔ installed VersioningBehavior / WorkerDeploymentVersion have the exact members (0.181122ms)
+✔ installed workflow API exposes the deterministic constructs the fixture uses (0.318349ms)
+✔ client-options.ts uses real client/worker option types and a TS application-worker builder (0.409275ms)
+✔ workflow.ts has a finite three-stage loop, bounded continuation, and cancel observation (0.321974ms)
+✔ activities.ts uses the real activity context and stays inert (0.186951ms)
+✔ negative-types.ts carries the required negative fixtures and positive controls (0.175794ms)
+✔ the base five-role fixture is well-formed and validates cleanly (0.679301ms)
+✔ every prohibited boundary case is rejected with its expected rule (5.099342ms)
+✔ the fixture typechecks cleanly with the pinned compiler (all negative directives used) (1403.149107ms)
+✔ expected-diagnostic: a missing defaultVersioningBehavior fails, a correct one compiles (2736.111916ms)
+✔ offline stubbed workflow: planContinuation encodes the bounded continuation policy (62.198624ms)
+✔ actual workflow control flow with stubs: continuation 0 continues once, continuation 1 completes (24.054707ms)
+✔ actual workflow control flow with stubs: cancellation at sleep3 stops before continuation (8.414794ms)
+✔ actual workflow control flow with stubs: cancellation at checkpoint3 stops before continuation (8.129546ms)
+✔ actual workflow control flow with stubs: cancellation at publish stops before continuation (6.926489ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4525.225242

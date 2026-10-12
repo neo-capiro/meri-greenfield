@@ -1,0 +1,194 @@
+
+> @meri/qualification-temporal@0.0.0 check
+> npm run typecheck && npm test
+
+
+> @meri/qualification-temporal@0.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+
+> @meri/qualification-temporal@0.0.0 test
+> node --test compatibility.test.mjs
+
+✔ package.json pins the five exact @temporalio 1.24.0 packages and the exact compiler/types (1.323969ms)
+✔ package-lock.json locks the same exact versions with sha512 integrity (0.288284ms)
+✔ component-pins.json records the exact server pins (exact equality, not regex) (0.111478ms)
+✔ component-pins.json agrees with package.json, lock and the postgres candidates (0.234903ms)
+✔ the fixture server block is byte-identical to the pinned component digests (0.178138ms)
+✔ installed WorkerDeploymentOptions requires defaultVersioningBehavior when versioning is on (0.368914ms)
+✔ installed TLSConfig / connection options expose the exact TLS + JWT fields (0.270356ms)
+✔ installed VersioningBehavior / WorkerDeploymentVersion have the exact members (0.169985ms)
+✔ installed workflow API exposes the deterministic constructs the fixture uses (0.443025ms)
+✔ client-options.ts uses real client/worker option types and a TS application-worker builder (0.412109ms)
+✔ workflow.ts has a finite three-stage loop, bounded continuation, and cancel observation (0.343116ms)
+✔ activities.ts uses the real activity context and stays inert (0.212549ms)
+✔ negative-types.ts carries the required negative fixtures and positive controls (0.167862ms)
+✔ the base five-role fixture is well-formed and validates cleanly (0.649336ms)
+✔ every prohibited boundary case is rejected with its expected rule (5.113713ms)
+✔ the fixture typechecks cleanly with the pinned compiler (all negative directives used) (1388.828751ms)
+✔ expected-diagnostic: a missing defaultVersioningBehavior fails, a correct one compiles (2936.204209ms)
+✖ offline stubbed workflow: planContinuation encodes the bounded continuation policy (95.123621ms)
+✖ actual workflow control flow with stubs: continuation 0 continues once, continuation 1 completes (16.649474ms)
+✖ actual workflow control flow with stubs: cancellation at sleep3 stops before continuation (13.297851ms)
+✖ actual workflow control flow with stubs: cancellation at checkpoint3 stops before continuation (13.277115ms)
+✖ actual workflow control flow with stubs: cancellation at publish stops before continuation (14.437787ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 17
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4765.957819
+
+✖ failing tests:
+
+test at compatibility.test.mjs:483:1
+✖ offline stubbed workflow: planContinuation encodes the bounded continuation policy (95.123621ms)
+  node:assert:152
+    throw new AssertionError(obj);
+    ^
+  
+  AssertionError [ERR_ASSERTION]: unexpected workflow runtime import
+  + actual - expected
+  
+  + './recovery-workflow.js'
+  - '@temporalio/workflow'
+  
+      at require (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:461:14)
+      at workflow.offline-probe.cjs:163:30
+      at Script.runInContext (node:vm:149:12)
+      at Script.runInNewContext (node:vm:154:17)
+      at runInNewContext (node:vm:310:38)
+      at loadOfflineWorkflow (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:458:3)
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:484:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: './recovery-workflow.js',
+    expected: '@temporalio/workflow',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at compatibility.test.mjs:500:1
+✖ actual workflow control flow with stubs: continuation 0 continues once, continuation 1 completes (16.649474ms)
+  node:assert:152
+    throw new AssertionError(obj);
+    ^
+  
+  AssertionError [ERR_ASSERTION]: unexpected workflow runtime import
+  + actual - expected
+  
+  + './recovery-workflow.js'
+  - '@temporalio/workflow'
+  
+      at require (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:461:14)
+      at workflow.offline-probe.cjs:163:30
+      at Script.runInContext (node:vm:149:12)
+      at Script.runInNewContext (node:vm:154:17)
+      at runInNewContext (node:vm:310:38)
+      at loadOfflineWorkflow (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:458:3)
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:502:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: './recovery-workflow.js',
+    expected: '@temporalio/workflow',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at compatibility.test.mjs:517:3
+✖ actual workflow control flow with stubs: cancellation at sleep3 stops before continuation (13.297851ms)
+  node:assert:152
+    throw new AssertionError(obj);
+    ^
+  
+  AssertionError [ERR_ASSERTION]: unexpected workflow runtime import
+  + actual - expected
+  
+  + './recovery-workflow.js'
+  - '@temporalio/workflow'
+  
+      at require (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:461:14)
+      at workflow.offline-probe.cjs:163:30
+      at Script.runInContext (node:vm:149:12)
+      at Script.runInNewContext (node:vm:154:17)
+      at runInNewContext (node:vm:310:38)
+      at loadOfflineWorkflow (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:458:3)
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:519:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: './recovery-workflow.js',
+    expected: '@temporalio/workflow',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at compatibility.test.mjs:517:3
+✖ actual workflow control flow with stubs: cancellation at checkpoint3 stops before continuation (13.277115ms)
+  node:assert:152
+    throw new AssertionError(obj);
+    ^
+  
+  AssertionError [ERR_ASSERTION]: unexpected workflow runtime import
+  + actual - expected
+  
+  + './recovery-workflow.js'
+  - '@temporalio/workflow'
+  
+      at require (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:461:14)
+      at workflow.offline-probe.cjs:163:30
+      at Script.runInContext (node:vm:149:12)
+      at Script.runInNewContext (node:vm:154:17)
+      at runInNewContext (node:vm:310:38)
+      at loadOfflineWorkflow (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:458:3)
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:519:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: './recovery-workflow.js',
+    expected: '@temporalio/workflow',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at compatibility.test.mjs:517:3
+✖ actual workflow control flow with stubs: cancellation at publish stops before continuation (14.437787ms)
+  node:assert:152
+    throw new AssertionError(obj);
+    ^
+  
+  AssertionError [ERR_ASSERTION]: unexpected workflow runtime import
+  + actual - expected
+  
+  + './recovery-workflow.js'
+  - '@temporalio/workflow'
+  
+      at require (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:461:14)
+      at workflow.offline-probe.cjs:163:30
+      at Script.runInContext (node:vm:149:12)
+      at Script.runInNewContext (node:vm:154:17)
+      at runInNewContext (node:vm:310:38)
+      at loadOfflineWorkflow (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:458:3)
+      at TestContext.<anonymous> (file:///workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/compatibility.test.mjs:519:28)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: './recovery-workflow.js',
+    expected: '@temporalio/workflow',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

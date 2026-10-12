@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "1060f23f327bf131dc7d86781a6262554fc1eab1b22e88091c82b2364f3af58f",
+  "sourceDiffBytes": 55641,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:11:10.343037+00:00",
+  "durationSeconds": 3.535,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 63064,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 63115,
+      "status": 0
+    },
+    {
+      "pid": 63241,
+      "status": 0
+    },
+    {
+      "pid": 63260,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/public-distribution.stdout.bin",
+      "bytes": 2043,
+      "sha256": "21346074759b755a8964363d5131446cd7e3f5a1c827ab2fed6e4563cc5482e9"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

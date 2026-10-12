@@ -1,0 +1,17 @@
+{
+  "expected": "failure detects removal of both close-time absolute deadline checks",
+  "argv": [
+    "node",
+    "--test",
+    "--test-name-pattern=absolute browser deadline",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-lifetime-independent.test.mjs"
+  ],
+  "source_sha256": "54fc07bba715f695ffbd6341bc4ce628af4632623a1987fb5e8c5e03b96c965d",
+  "mutation": "      if (performance.now() >= end) fail('browser deadline exceeded');",
+  "removed_occurrences": 2,
+  "exit_code": 1,
+  "production_source_changed": false,
+  "native_or_browser_execution": false,
+  "reaped": true,
+  "temporary_mutant_removed": true
+}

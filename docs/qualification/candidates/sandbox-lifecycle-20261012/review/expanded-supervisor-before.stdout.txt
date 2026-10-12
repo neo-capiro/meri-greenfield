@@ -1,0 +1,89 @@
+✖ already aborted Office supervision never acquires a child (4.149884ms)
+✖ Linux non-detached group ownership is refused before spawning (1.416508ms)
+✖ stderr overflow is a terminal failed probe, not silent truncation success (0.970468ms)
+✖ abort after spawn requests scoped containment before later normal close (25.163226ms)
+✔ owned close plus definite absence permits a successful child result (1.052741ms)
+✔ normal close cannot turn unknown group observation into confirmed teardown (20.950832ms)
+✔ owned group alive after close gets one scoped containment and positive absence readback (0.916988ms)
+✔ child exit and kill acknowledgement without close retain cleanup uncertainty (20.93693ms)
+✔ late close and output cannot rewrite an already returned timeout result (21.461777ms)
+✔ malformed deadlines and cleanup bounds deny before any spawn (0.427773ms)
+✔ a throwing physical-observation port remains UNKNOWN rather than absent (21.173054ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 7
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 260.134988
+
+✖ failing tests:
+
+test at docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:16:1
+✖ already aborted Office supervision never acquires a child (4.149884ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:21:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:24:1
+✖ Linux non-detached group ownership is refused before spawning (1.416508ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:29:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:32:1
+✖ stderr overflow is a terminal failed probe, not silent truncation success (0.970468ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:36:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:39:1
+✖ abort after spawn requests scoped containment before later normal close (25.163226ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs:45:76)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

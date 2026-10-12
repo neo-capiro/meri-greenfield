@@ -36,9 +36,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, sep, resolve, relative, isAbsolute } from 'node:path';
 
 import { parseStructuredOutput } from './runtime.mjs';
+import { runOwnedProbeChild, installProbeCancellation } from './owned-probe-child.mjs';
+export { defaultGroupKill, defaultProbeGroup } from './owned-probe-child.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const ARTIFACTS = join(HERE, 'artifacts.mjs');
 
 export const MARKER = 'MERI_OFFICE_EXPORT_V1';
 export const PROTOCOL = 'meri-office-export/1';
@@ -87,8 +88,6 @@ export const EXPECT_PPTX_NOTES_PARTS = Object.freeze(['ppt/notesSlides/notesSlid
 const DEFAULT_DEADLINE_MS = 120000;
 const DEFAULT_EXPORT_DEADLINE_MS = 120000;
 const ABORT_DEADLINE_MS = 5000;
-const MAX_CHILD_STDOUT = 4 * 1024 * 1024;
-const MAX_CHILD_STDERR = 64 * 1024;
 const MAX_EVIDENCE_PATHS = 8;
 const MAX_EVIDENCE_PATH_LEN = 400;
 
@@ -618,122 +617,12 @@ export function readRegularFileVerified(full, lst) {
 // Child process: owned validated group + confirmed cleanup
 // ---------------------------------------------------------------------------
 
-/** Kill the OWNED process group (Linux, detached, pid>1) else the direct child. */
-export function defaultGroupKill(child, signal = 'SIGKILL') {
-  if (!child) return false;
-  const pid = child.pid;
-  if (process.platform === 'linux') {
-    if (!Number.isInteger(pid) || pid <= 1) return false;
-    try { process.kill(-pid, signal); return true; } catch { return false; }
-  }
-  try { return typeof child.kill === 'function' && child.kill(signal) === true; } catch { return false; }
-}
-
-/**
- * True ONLY when the owned group is DEFINITELY absent (kill(-pid,0) -> ESRCH).
- * Alive, permission/unknown errors, non-Linux and malformed children all return
- * a non-true value so absence can never be confirmed by uncertainty.
- */
-export function defaultProbeGroup(child) {
-  if (!child) return undefined;
-  const pid = child.pid;
-  if (process.platform === 'linux') {
-    if (!Number.isInteger(pid) || pid <= 1) return undefined;
-    try { process.kill(-pid, 0); return true; } catch (error) { return error && error.code === 'ESRCH' ? false : undefined; }
-  }
-  // Non-Linux: no owned detached group was created, so the direct child is gone.
-  return false;
-}
-
-/**
- * Spawn the unchanged artifacts probe once in its own (Linux) process group,
- * bounded streams and a hard deadline. Resolves only after 'close' AND a
- * confirmed absent owned group/descendants within a bounded grace. On a normal
- * close with a live group it kills the OWNED validated group, then bounded-
- * confirms absence. Kill-request/false/error is not confirmation of exit.
- */
-export function runArtifactsChild({
-  base, deadlineMs = DEFAULT_DEADLINE_MS, spawnFn = spawn, env = process.env, graceMs = 5000,
-  groupKill = defaultGroupKill, probeGroup = defaultProbeGroup, detached,
-} = {}) {
-  return new Promise((resolve) => {
-    const dl = normalizeDeadlineMs(deadlineMs, { fallback: DEFAULT_DEADLINE_MS });
-    if (!dl.ok) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: dl.reason, stdout: '', stderr: '' }); return; }
-    if (!Number.isFinite(graceMs) || graceMs <= 0 || graceMs > 5000) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: 'invalid cleanup grace', stdout: '', stderr: '' }); return; }
-    const useDetached = detached === undefined ? process.platform === 'linux' : !!detached;
-    const childEnv = { ...env, MERI_ARTIFACTS_OUTPUT_DIR: base, MERI_ARTIFACTS_RENDER: 'required' };
-    let child;
-    try {
-      child = spawnFn(process.execPath, [ARTIFACTS], { env: childEnv, stdio: ['ignore', 'pipe', 'pipe'], detached: useDetached });
-    } catch (error) {
-      resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: String(error && error.message ? error.message : error), stdout: '', stderr: '' });
-      return;
-    }
-    let stdout = '';
-    let stderr = '';
-    let stdoutBytes = 0;
-    let stderrBytes = 0;
-    let settled = false;
-    let exited = null;
-    let timedOut = false;
-    let overflow = false;
-    let spawnError = null;
-    let killRequested = false;
-    let groupKillOk = null;
-    let cleanupConfirmed = false;
-    let deadlineTimer = null;
-    let graceTimer = null;
-    let pollTimer = null;
-
-    const settle = (error) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(deadlineTimer); clearTimeout(graceTimer); clearTimeout(pollTimer);
-      resolve({
-        status: exited ? exited.code : null, signal: exited ? exited.signal : null,
-        timedOut, overflow, killRequested, groupKillOk, cleanupConfirmed, detached: useDetached,
-        error: spawnError || (overflow ? 'child stdout exceeded bound' : null) || (error || null),
-        stdout, stderr,
-      });
-    };
-    // Absence is confirmed ONLY by a definite non-live result (strict === false).
-    const groupGone = () => { try { return probeGroup(child) === false; } catch { return false; } };
-    const killOwnedGroup = () => { killRequested = true; try { groupKillOk = groupKill(child, 'SIGKILL') === true; } catch { groupKillOk = false; } };
-    const confirmAbsenceUntilGrace = () => {
-      const start = Date.now();
-      const poll = () => {
-        if (settled) return;
-        if (groupGone()) { cleanupConfirmed = true; settle(null); return; }
-        if (Date.now() - start >= graceMs) { cleanupConfirmed = false; settle('process group/descendants not confirmed clean'); return; }
-        pollTimer = setTimeout(poll, 10);
-      };
-      poll();
-    };
-
-    deadlineTimer = setTimeout(() => {
-      timedOut = true;
-      killOwnedGroup();
-      graceTimer = setTimeout(() => { cleanupConfirmed = false; settle('child did not close after group kill within grace'); }, graceMs);
-    }, dl.ms);
-
-    child.on('error', (err) => { spawnError = String(err && err.message ? err.message : err); });
-    child.stdout.on('data', (d) => {
-      stdoutBytes += d.length;
-      if (stdoutBytes > MAX_CHILD_STDOUT) { overflow = true; if (!killRequested) killOwnedGroup(); return; }
-      stdout += d.toString('utf8');
-    });
-    child.stderr.on('data', (d) => { stderrBytes += d.length; if (stderrBytes > MAX_CHILD_STDERR) return; stderr += d.toString('utf8'); });
-    child.on('exit', (code, signal) => { exited = { code, signal }; });
-    child.on('close', (code, signal) => {
-      exited = { code, signal };
-      if (settled) return;
-      clearTimeout(deadlineTimer); deadlineTimer = null;
-      if (groupGone()) { cleanupConfirmed = true; settle(null); return; }
-      // Group still alive after close: kill the OWNED validated group, then bounded-confirm.
-      if (!killRequested) killOwnedGroup();
-      confirmAbsenceUntilGrace();
-    });
-  });
+/** The original Office entry delegates to the shared qualification owner. */
+export function runArtifactsChild({ base, deadlineMs = DEFAULT_DEADLINE_MS, env = process.env, ...options } = {}) {
+  const dl = normalizeDeadlineMs(deadlineMs, { fallback: DEFAULT_DEADLINE_MS });
+  if (!dl.ok) return Promise.resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: dl.reason, stdout: '', stderr: '' });
+  return runOwnedProbeChild({ ...options, script: 'artifacts.mjs', deadlineMs: dl.ms,
+    env: { ...env, MERI_ARTIFACTS_OUTPUT_DIR: base, MERI_ARTIFACTS_RENDER: 'required' } });
 }
 
 /** Find the single fresh probe-<uuid> subtree created under the run base. */
@@ -753,19 +642,24 @@ export function discoverRunDir(base) {
 function errMsg(error) { return String(error && error.message ? error.message : error).slice(0, 120); }
 
 /** Await a single stream write, raced against `remainingMs` and stream errors. */
-export function writeBounded(stream, line, remainingMs) {
+export function writeBounded(stream, line, remainingMs, { signal } = {}) {
   return new Promise((resolve) => {
     let settled = false;
     let timer = null;
     const onError = (err) => finish(false, `stdout error: ${errMsg(err)}`);
+    const onAbort = () => finish(false, 'export aborted');
     function finish(ok, error) {
       if (settled) return;
       settled = true;
       if (timer) clearTimeout(timer);
       if (typeof stream.off === 'function') stream.off('error', onError);
+      signal?.removeEventListener('abort', onAbort);
       resolve({ ok, error: error || null });
     }
+    if (signal?.aborted) { finish(false, 'export aborted'); return; }
     timer = setTimeout(() => finish(false, 'write exceeded the export deadline'), Math.max(1, Math.floor(remainingMs)));
+    signal?.addEventListener('abort', onAbort, { once: true });
+    if (signal?.aborted) { onAbort(); return; }
     if (typeof stream.on === 'function') stream.on('error', onError);
     try { stream.write(line + '\n', (err) => (err ? finish(false, `write callback error: ${errMsg(err)}`) : finish(true, null))); } catch (error) { finish(false, `write threw: ${errMsg(error)}`); }
   });
@@ -775,7 +669,7 @@ export function writeBounded(stream, line, remainingMs) {
  * Stream records with an ABSOLUTE deadline. Pending writes and the final flush
  * are bounded; the deadline is re-checked absolutely after the last write.
  */
-export async function streamRecords(stream, records, { deadlineMs, deadlineAt, now = () => Date.now() } = {}) {
+export async function streamRecords(stream, records, { deadlineMs, deadlineAt, now = () => Date.now(), signal } = {}) {
   let deadline;
   if (deadlineAt !== undefined) {
     if (typeof deadlineAt !== 'number' || !Number.isFinite(deadlineAt)) return { ok: false, written: 0, error: 'invalid absolute deadline' };
@@ -791,13 +685,15 @@ export async function streamRecords(stream, records, { deadlineMs, deadlineAt, n
   let written = 0;
   try {
     for (const record of records) {
+      if (signal?.aborted) return { ok: false, written, error: 'export aborted' };
       if (streamError) return { ok: false, written, error: `stdout error: ${errMsg(streamError)}` };
       const remaining = deadline - now();
       if (remaining <= 0) return { ok: false, written, error: 'export deadline exceeded before writing a record' };
-      const res = await writeBounded(stream, encodeRecord(record), remaining);
+      const res = await writeBounded(stream, encodeRecord(record), remaining, { signal });
       if (!res.ok) return { ok: false, written, error: res.error };
       written++;
     }
+    if (signal?.aborted) return { ok: false, written, error: 'export aborted' };
     if (now() > deadline) return { ok: false, written, error: 'export deadline exceeded after the final write' };
     if (streamError) return { ok: false, written, error: `stdout error: ${errMsg(streamError)}` };
     return { ok: true, written, error: null };
@@ -821,7 +717,7 @@ export function defaultBaseRoot() {
 export async function main(opts = {}) {
   const {
     baseRoot = defaultBaseRoot(), spawnFn = spawn, writeStream = process.stdout,
-    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached,
+    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached, groupKill, probeGroup, signal,
   } = opts;
   const genDl = normalizeDeadlineMs(opts.deadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_GEN_DEADLINE_MS || DEFAULT_DEADLINE_MS), { fallback: DEFAULT_DEADLINE_MS });
   const expDl = normalizeDeadlineMs(opts.exportDeadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_DEADLINE_MS || DEFAULT_EXPORT_DEADLINE_MS), { fallback: DEFAULT_EXPORT_DEADLINE_MS });
@@ -832,6 +728,7 @@ export async function main(opts = {}) {
   };
   if (!genDl.ok) { await emitAbort([genDl.reason]); return 1; }
   if (!expDl.ok) { await emitAbort([expDl.reason]); return 1; }
+  if (signal?.aborted) { await emitAbort(['Office export aborted before acquisition']); return 1; }
   try {
     const base = join(baseRoot, `office-export-${capture}`);
     const preflight = assertPathChainIsRealDirectories(baseRoot, lstatSync, true);
@@ -843,10 +740,11 @@ export async function main(opts = {}) {
     const baseCheck = assertPathChainIsRealDirectories(base);
     if (!baseCheck.ok) { await emitAbort([baseCheck.reason]); return 1; }
     const genStart = now();
-    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached });
+    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached, groupKill, probeGroup, signal });
     const genElapsedMs = now() - genStart;
     const verdict = verifyArtifactsVerdict(child);
     if (!verdict.ok) { await emitAbort(verdict.reasons); return 1; }
+    if (signal?.aborted) { await emitAbort(['Office export aborted before inspection']); return 1; }
     const disco = discoverRunDir(base);
     if (!disco.ok) { await emitAbort(disco.reasons); return 1; }
     if (resolve(verdict.generation.recalc.newFile) !== resolve(join(disco.runDir, 'render/recalc-out/qualification-copy.xlsx'))) {
@@ -867,12 +765,12 @@ export async function main(opts = {}) {
     }
     const head = records.slice(0, -1);
     const endRecord = records.at(-1);
-    const streamed = await streamRecords(writeStream, head, { deadlineAt: exportDeadlineAt, now });
+    const streamed = await streamRecords(writeStream, head, { deadlineAt: exportDeadlineAt, now, signal });
     if (!streamed.ok) { await emitAbort([streamed.error]); return 1; }
     // Honest measured export timing bound to the actual export phase (through the
     // last chunk flush; excludes the end line's own flush, which it cannot measure).
     endRecord.elapsedMs = Math.max(0, now() - exportStart);
-    const tail = await streamRecords(writeStream, [endRecord], { deadlineAt: exportDeadlineAt, now });
+    const tail = await streamRecords(writeStream, [endRecord], { deadlineAt: exportDeadlineAt, now, signal });
     if (!tail.ok) { await emitAbort([tail.error]); return 1; }
     return 0;
   } catch (error) {
@@ -883,5 +781,6 @@ export async function main(opts = {}) {
 
 const invokedDirectly = process.argv[1] && resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1]);
 if (invokedDirectly) {
-  main().then((code) => process.exit(code)).catch(() => { process.exit(1); });
+  const cancellation = installProbeCancellation();
+  main({ signal: cancellation.signal }).catch(() => 1).finally(cancellation.dispose).then(code => process.exit(code));
 }

@@ -19,6 +19,8 @@ PACKAGE_FILES = (
     "checkpoint/resume-admission.mjs", "checkpoint/resume-admission.test.mjs",
     "checkpoint/fixture-sentinel.mjs", "checkpoint/fixture-sentinel.test.mjs",
     "probes/artifacts.mjs", "probes/artifacts.py", "probes/browser.mjs",
+    "probes/owned-probe-child.mjs", "probes/owned-probe-child.test.mjs",
+    "probes/browser-lifetime.mjs", "probes/browser-lifetime.test.mjs",
     "probes/image-inventory.py", "probes/image-inventory.test.mjs",
     "probes/office-export.mjs", "probes/office-export.test.mjs", "probes/office-reconstruct.mjs",
     "probes/runtime.mjs", "probes/sdk-capture.mjs", "probes/sdk-capture.test.mjs",

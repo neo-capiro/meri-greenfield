@@ -1,0 +1,16 @@
+{
+  "candidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "parent": "296f80639342bf23ef0261edbb5bc787fd76196f",
+  "acceptedReference": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "criteria": [
+    "Exactly3files: reference/comment, two collector source hashes and two corresponding test literals; inverse restores alloriginalbytes",
+    "48stable members match expressly accepted source;57finitecontextmembers/60totalbaselinefiles",
+    "Derived assembler/context hashes exact; source-only and commitAuthorityfalse",
+    "Actual Git oldbaseline,missing/changedstable,currentGit,assembler,collector andmanifestdrift reject",
+    "Actual collector oldcontext,extra/missing/duplicate/symlink,changed/rehash bytes refuse beforebuild",
+    "Historical source guards, Python/principal/current authority and fixedowner gates unchanged",
+    "Original36builder tests remain35pass+1unsupportedWindowsownerERROR; never silence gate",
+    "No native,build,provider,cloud or infrastructure actions"
+  ],
+  "scope": "Read-only source imports and bounded filesystem/Git fixtures; owned temporary fixtures removed"
+}

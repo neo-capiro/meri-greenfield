@@ -1,0 +1,6 @@
+{
+  "historicalCollectorControl": "docs/qualification/candidates/worker-source-guards-20261012/review/guard-controls.py",
+  "historicalSha256": "b249443368537cd5aed0039af18d179fd62ffbae3d8f82ed355221b1dcce5cb0",
+  "adaptations": "Only explicit accepted assembler/context values and count53\u219257, plus additional rejection of immediately prior0f9cc context; alloriginal controls retained",
+  "rootAdaptedBaselineControlSha256": "dc902bca7f0156e306ffdb67101c3b44f03301fec70d2ad8d9b6e415bd6114b5"
+}

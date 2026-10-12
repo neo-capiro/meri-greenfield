@@ -1,0 +1,7 @@
+{
+  "sourceAndCoordinationWhitespaceExit": 0,
+  "wholePacketWhitespaceExit": 2,
+  "reason": "Whole-packet diff check reports whitespace in original raw failed-test stdout. Raw evidence is intentionally retained byte-for-byte rather than sanitized.",
+  "rawCheckOutput": "raw-evidence-whitespace.stdout.bin",
+  "codeOrAssertChangesForFormatting": false
+}

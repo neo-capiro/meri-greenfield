@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-lifetime-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/precheck-signal-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/runtime-entry-independent.test.mjs",
+    "docs/qualification/candidates/sandbox-lifecycle-20261012/review/supervisor-entry-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-review-20261012",
+  "sourceCommit": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "exitCode": 0,
+  "processReaped": true,
+  "reason": "One positive fake-close scheduling repair; negative delayed-close control retained"
+}

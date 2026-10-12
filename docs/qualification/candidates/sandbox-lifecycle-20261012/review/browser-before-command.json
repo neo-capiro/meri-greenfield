@@ -1,0 +1,14 @@
+{
+  "state": "Unfrozen author draft",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/browser-lifetime-independent.test.mjs"
+  ],
+  "source_root": "/workspace/meri-sandbox-lifecycle-20261012",
+  "source_sha256": "75139e7f98effc5f978f8ee9da0f974219b659b6ba63a0f7274438b502d01c72",
+  "test_sha256": "7fd6ede0bae5663cb14ca60e6bc5d1cb081bf59d57303483a96beeee57ee7535",
+  "exit_code": 0,
+  "reaped": true,
+  "native_or_API_resource_acquired": false
+}

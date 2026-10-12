@@ -1,0 +1,6 @@
+{
+  "authority": "Root explicit narrow fixture repair approval",
+  "received_at_utc": "2026-10-12T05:00:57.061276+00:00",
+  "requirement": "Separate author commit. Original assertions and test names exact. Test helper supplies valid fake PID plus exact child WeakMap whose absence result becomes true only on close. Existing main forwards injected groupKill/probeGroup with production defaults unchanged.",
+  "review": "Retain146/148 baseline and compare assertion source/ASTs, minimal fixture inverse diff, physical cleanup negative controls. No reviewer source edits."
+}

@@ -1,0 +1,6 @@
+{
+  "attempt": "git worktree add -b task/meri-sandbox-lifecycle-20261012 /workspace/meri-sandbox-lifecycle-20261012 14be9fc614568a74133b89f2b229e50c9b030322",
+  "exit": 255,
+  "stderr": "fatal: a branch named task/meri-sandbox-lifecycle-20261012 already exists",
+  "resolution": "Verified precreated worktree clean at requested exact base; no reset/removal."
+}

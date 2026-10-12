@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/office-export.test.mjs",
+    "apps/worker/qualification/probes/static.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "41ded012694bbe0d90e18506ae57c50168f1a3fc",
+  "sourceDiffSha256": "30185b520049b12b81de3f736b8bb430bc406708e832a6861405cf044af3c756",
+  "sourceDiffBytes": 20099,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:03:03.938421+00:00",
+  "durationSeconds": 0.517,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 60320,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/supervisor-original.stdout.bin",
+      "bytes": 13912,
+      "sha256": "0871a96fe0672a52102bcbd008312973d20fe697d2a84b51f36bb5e019979b9c"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/supervisor-original.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

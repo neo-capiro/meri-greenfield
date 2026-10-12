@@ -1,0 +1,8 @@
+{
+  "sourceHead": "296f80639342bf23ef0261edbb5bc787fd76196f",
+  "expectedExit": 1,
+  "rawStreamsVerified": true,
+  "rootRecordedGroupAbsent": true,
+  "failure": "exact Git membership under prior PR7 reference",
+  "copiedWithoutModification": true
+}

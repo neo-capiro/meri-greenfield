@@ -1,0 +1,14 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/office-supervisor-independent.test.mjs"
+  ],
+  "source_root": "/workspace/meri-image-patch-author-20261012",
+  "source_equivalence_receipt": "baseline-offline-command.json",
+  "test_sha256": "aee2c998513c676b78cd43fad65579b0e557286adc27f33f9c3f6c554c5d7ade",
+  "exit_code": 1,
+  "reaped": true,
+  "native_process_or_OS_kill": false
+}

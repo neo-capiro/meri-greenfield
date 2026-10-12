@@ -1,0 +1,1143 @@
+diff --git a/apps/worker/qualification/README.md b/apps/worker/qualification/README.md
+index cb1ae8e..2b970f1 100644
+--- a/apps/worker/qualification/README.md
++++ b/apps/worker/qualification/README.md
+@@ -72,7 +72,7 @@ exclusive output creation, rejects links/hardlinks, preserves raw bytes, and
+ emits `context/` plus a sibling `manifest.json`. Existing or partial outputs
+ are never repaired, overwritten or deleted. `verify_context(output)` rechecks
+ exact files/directories and current source hashes; its manifest is packaging
+-DATA, not commit authority or admission. Bounds are 44 files, 2 MiB per file,
++DATA, not commit authority or admission. Bounds are 57 explicitly listed files, 2 MiB per file,
+ 8 MiB aggregate and a cooperative 30-second deadline. Use an external bound
+ and a trusted stable source/output filesystem for an actual build.
+ 
+@@ -216,3 +216,49 @@ until a separately reviewed source/runtime/build admission is prepared.
+ 
+ No new image digest, native recovery or SessionStore qualification follows from
+ these sources. Both partial-checkpoint completeness flags remain false.
++
++## Qualification child watchdog and cleanup
++
++The runtime browser and Office child launches now use the same owned-child
++supervisor as the Office export wrapper. Its fixed allowlist contains only
++`browser.mjs` and `artifacts.mjs`. On Linux it requires a detached owned process
++group; child `close` and an exact group-absence observation are both required.
++Timeout, cancellation, stream error or stdout/stderr overflow fail the probe;
++one scoped containment request starts a bounded cleanup grace. The runtime,
++browser and Office export CLI guards translate SIGINT/SIGTERM into their
++existing cancellation signal and wait for bounded cleanup before exiting.
++The runtime installs its bridge only after its native prechecks, immediately
++before child acquisition; earlier prechecks retain default OS signal handling.
++Their separate DNS/native bounds remain unqualified. Repeated signals retain
++the child cleanup wait; importing modules installs no listeners.
++Office cancellation also prevents initial directory acquisition, interrupts
++pending export writes and denies later records or a successful return. Bytes
++already written cannot be recalled; error/abort evidence does not claim delivery. A kill request
++or direct child exit alone is not confirmed cleanup. Unknown cleanup prevents
++the next qualification child from starting. A semantic failure whose cleanup
++is confirmed still permits the next independent required check.
++
++The browser lifetime bounds fixture-server startup, official MCP connect,
++listTools and every tool call by one monotonic deadline, including gaps between
++operations. It bounds both client close and the server close callback, attempts
++all owned cleanup concurrently, and contains late acquisitions/completions.
++Its cleanup result describes API observations only. Physical descendants, the
++Chromium sandbox, renderer isolation, target egress, forced host death and the
++external watchdog still need native evidence. Standalone browser/artifact
++commands are diagnostic entrypoints; only the supervising runtime/Office owner
++can observe the corresponding owned child group after the probe exits.
++
++Source controls (scripted ports; no browser or renderer launch):
++
++```
++node --test apps/worker/qualification/probes/owned-probe-child.test.mjs \
++  apps/worker/qualification/probes/browser-lifetime.test.mjs \
++  apps/worker/qualification/probes/office-export.test.mjs
++```
++
++The Office eleven-file allowlist, byte validation and export/reconstruction
++protocol remain unchanged. Four explicitly named supervisor/lifetime files
++are added to the finite context list. Derived context/collector identities must
++be refreshed and independently reviewed before packaging admission; no image
++was built, pushed or executed for these source changes. Product task identity,
++Temporal activity admission and artifact publication remain separate owners.
+diff --git a/apps/worker/qualification/package.json b/apps/worker/qualification/package.json
+index 83efb20..4444358 100644
+--- a/apps/worker/qualification/package.json
++++ b/apps/worker/qualification/package.json
+@@ -8,7 +8,7 @@
+     "node": ">=24 <25"
+   },
+   "scripts": {
+-    "test": "node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs",
++    "test": "node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs probes/office-export.test.mjs probes/owned-probe-child.test.mjs probes/browser-lifetime.test.mjs",
+     "check": "npm test",
+     "probe:runtime": "node probes/runtime.mjs",
+     "probe:browser": "node probes/browser.mjs",
+diff --git a/apps/worker/qualification/probes/browser-lifetime.mjs b/apps/worker/qualification/probes/browser-lifetime.mjs
+new file mode 100644
+index 0000000..3c663a9
+--- /dev/null
++++ b/apps/worker/qualification/probes/browser-lifetime.mjs
+@@ -0,0 +1,106 @@
++// Bounds official MCP/fixture-server waits. This is API cleanup observation,
++// never proof of physical descendant death or a replacement browser sandbox.
++const MAX_STDERR_BYTES = 64 * 1024;
++export function createBrowserLifetime({ deadlineMs = 120000, graceMs = 5000, signal } = {}) {
++  if (!Number.isFinite(deadlineMs) || deadlineMs <= 0 || deadlineMs > 180000) throw new Error('invalid browser deadline');
++  if (!Number.isFinite(graceMs) || graceMs <= 0 || graceMs > 5000) throw new Error('invalid browser cleanup grace');
++  const end = performance.now() + deadlineMs;
++  const resources = [], pending = new Set(), waiters = new Set();
++  let failure = null, closing = false, closePromise = null, stderr = '', stderrBytes = 0;
++  const fail = (reason) => {
++    if (!failure) failure = new Error(reason);
++    for (const reject of waiters) reject(failure);
++  };
++  const active = () => {
++    if (signal?.aborted) fail('browser aborted');
++    if (performance.now() >= end) fail('browser deadline exceeded');
++    if (failure) throw failure;
++    if (closing) throw new Error('browser lifetime closed');
++  };
++  const abort = () => fail('browser aborted');
++  signal?.addEventListener('abort', abort, { once: true });
++  if (signal?.aborted) abort();
++
++  // Late cleanup is bounded and observed. It cannot rewrite a frozen result.
++  const boundedClose = (label, fn) => new Promise((resolve) => {
++    let done = false;
++    const cleanupEnd = performance.now() + graceMs;
++    const finish = (ok, error) => {
++      if (done) return;
++      if (ok && performance.now() >= cleanupEnd) { ok = false; error = 'cleanup deadline exceeded'; }
++      done = true; clearTimeout(timer); resolve({ label, ok, error });
++    };
++    const timer = setTimeout(() => finish(false, 'cleanup deadline exceeded'), graceMs);
++    Promise.resolve().then(fn).then(() => finish(true, null), error => finish(false, String(error?.message || error)));
++  });
++  const own = (label, resource, close) => {
++    const record = { label, resource, close, closePromise: null };
++    resources.push(record);
++    if (closing || failure) record.closePromise = boundedClose(label, () => close(resource));
++    return resource;
++  };
++  const run = (label, fn, { lateCleanup } = {}) => {
++    try { active(); } catch (error) { return Promise.reject(error); }
++    return new Promise((resolve, reject) => {
++      let done = false;
++      const token = { label }; pending.add(token);
++      const finish = (error, value) => {
++        if (done) return;
++        done = true; clearTimeout(timer); waiters.delete(onFailure);
++        if (error) reject(error); else resolve(value);
++      };
++      const onFailure = (error) => finish(error);
++      waiters.add(onFailure);
++      const timer = setTimeout(() => { fail(`browser deadline exceeded during ${label}`); }, Math.max(1, end - performance.now()));
++      Promise.resolve().then(() => { active(); return fn(); }).then(value => {
++        pending.delete(token);
++        if (done || closing || failure || performance.now() >= end) {
++          if (lateCleanup) void boundedClose(`${label} late completion`, () => lateCleanup(value));
++          if (!done) { fail(`browser deadline exceeded during ${label}`); finish(failure); }
++          return;
++        }
++        finish(null, value);
++      }, error => { pending.delete(token); if (!done) { fail(`${label}: ${String(error?.message || error)}`); finish(failure); } });
++    });
++  };
++  const acquire = (label, fn, close) => run(label, async () => own(label, await fn(), close));
++  return Object.freeze({
++    run, acquire, own, assertActive: active,
++    captureStderr(chunk) {
++      if (closing) return;
++      const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
++      stderrBytes += bytes.length;
++      if (stderrBytes > MAX_STDERR_BYTES || Buffer.byteLength(stderr) + Buffer.byteLength(bytes.toString('utf8')) > MAX_STDERR_BYTES) { fail('MCP stderr exceeded bound'); return; }
++      stderr += bytes.toString('utf8');
++    },
++    get stderr() { return stderr; },
++    get failure() { return failure?.message || null; },
++    close() {
++      if (closePromise) return closePromise;
++      if (signal?.aborted) fail('browser aborted');
++      if (performance.now() >= end) fail('browser deadline exceeded');
++      closing = true;
++      for (const reject of waiters) reject(new Error('browser lifetime closed'));
++      signal?.removeEventListener('abort', abort);
++      const pendingAtClose = [...pending].map(p => p.label);
++      closePromise = Promise.all(resources.map(record => {
++        if (!record.closePromise) record.closePromise = boundedClose(record.label, () => record.close(record.resource));
++        return record.closePromise;
++      })).then(results => {
++        if (signal?.aborted) fail('browser aborted');
++        if (performance.now() >= end) fail('browser deadline exceeded');
++        return Object.freeze({ confirmed: pendingAtClose.length === 0 && results.every(r => r.ok),
++        scope: 'API-close-only; physical group absence requires outer supervisor',
++        pendingAtClose: Object.freeze(pendingAtClose), resources: Object.freeze(results.map(Object.freeze)) });
++      });
++      return closePromise;
++    },
++  });
++}
++
++/** Node's callback is the close observation; returning from close() is insufficient. */
++export function closeFixtureServer(server) {
++  return new Promise((resolve, reject) => {
++    try { server.close(error => error ? reject(error) : resolve()); } catch (error) { reject(error); }
++  });
++}
+diff --git a/apps/worker/qualification/probes/browser-lifetime.test.mjs b/apps/worker/qualification/probes/browser-lifetime.test.mjs
+new file mode 100644
+index 0000000..4bf87b5
+--- /dev/null
++++ b/apps/worker/qualification/probes/browser-lifetime.test.mjs
+@@ -0,0 +1,81 @@
++// Scripted official-client/server boundaries; no browser, socket or native binary.
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { createBrowserLifetime, closeFixtureServer } from './browser-lifetime.mjs';
++import { runBoundedSequence } from './browser.mjs';
++const parked = () => new Promise(() => {});
++const tick = () => new Promise(resolve => setImmediate(resolve));
++
++test('preabort denies startup without calling the supplied port', async () => {
++  const a = new AbortController(); a.abort(); let calls = 0;
++  const life = createBrowserLifetime({ signal: a.signal, deadlineMs: 50, graceMs: 10 });
++  await assert.rejects(life.run('connect', () => { calls++; }), /aborted/); assert.equal(calls, 0); await life.close();
++});
++test('one monotonic deadline bounds every MCP asynchronous boundary', async () => {
++  for (const name of ['connect', 'listTools', 'callTool', 'server startup']) {
++    const life = createBrowserLifetime({ deadlineMs: 10, graceMs: 5 });
++    await assert.rejects(life.run(name, parked), /deadline/);
++    const result = await life.close(); assert.equal(result.confirmed, false); assert.deepEqual(result.pendingAtClose, [name]);
++  }
++});
++test('owned client and server both close even if one close parks', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 10 }); let serverClosed = 0;
++  life.own('client', {}, parked); life.own('server', {}, () => { serverClosed++; });
++  const result = await life.close(); assert.equal(serverClosed, 1); assert.equal(result.confirmed, false);
++  assert.equal(result.resources[0].ok, false); assert.equal(result.resources[1].ok, true); assert.strictEqual(await life.close(), result);
++});
++test('late server acquisition is closed while returned UNKNOWN stays immutable', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 5, graceMs: 10 }); let resolveServer; let closes = 0; const server = {};
++  const acquisition = life.acquire('server', () => new Promise(resolve => { resolveServer = resolve; }), value => { assert.equal(value, server); closes++; });
++  await assert.rejects(acquisition, /deadline/); const result = await life.close(); const before = JSON.stringify(result);
++  resolveServer(server); await tick(); assert.equal(closes, 1); assert.equal(result.confirmed, false); assert.equal(JSON.stringify(result), before);
++});
++test('late MCP startup completion triggers a fresh bounded close', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 5, graceMs: 5 }); let resolveConnect; let closes = 0;
++  life.own('client', {}, () => { closes++; });
++  const connecting = life.run('connect', () => new Promise(resolve => { resolveConnect = resolve; }), { lateCleanup: () => { closes++; } });
++  await assert.rejects(connecting, /deadline/); assert.equal((await life.close()).confirmed, false);
++  resolveConnect(); await tick(); assert.equal(closes, 2);
++});
++test('abort interrupts a pending MCP tool and rejects subsequent work', async () => {
++  const a = new AbortController(); const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5, signal: a.signal });
++  const pending = life.run('callTool', parked); await tick(); a.abort();
++  await assert.rejects(pending, /aborted/); await assert.rejects(life.run('later', () => {}), /aborted/); assert.equal((await life.close()).confirmed, false);
++});
++test('stderr overflow fails the active operation and keeps retained bytes bounded', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5 }); const pending = life.run('connect', parked); await tick();
++  life.captureStderr(Buffer.alloc(65537)); await assert.rejects(pending, /stderr exceeded/); assert.ok(Buffer.byteLength(life.stderr) <= 65536); await life.close();
++});
++test('server close needs its callback, not the return value', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5 });
++  life.own('server', { close() { return true; } }, closeFixtureServer); assert.equal((await life.close()).confirmed, false);
++});
++test('server callback error retains cleanup uncertainty', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5 });
++  life.own('server', { close(cb) { cb(Error('close failed')); } }, closeFixtureServer);
++  const r = await life.close(); assert.equal(r.confirmed, false); assert.match(r.resources[0].error, /close failed/);
++});
++test('successful MCP work and cleanup claim API observations only', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5 });
++  life.own('client', {}, () => {}); life.own('server', { close(cb) { cb(); } }, closeFixtureServer);
++  assert.equal(await life.run('listTools', () => 7), 7); const r = await life.close(); assert.equal(r.confirmed, true); assert.match(r.scope, /API-close-only/);
++  await assert.rejects(life.run('late call', () => {}), /closed/);
++});
++test('actual browser step driver stops after deadline without a later tool call', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 5, graceMs: 5 }); let later = 0;
++  await assert.rejects(runBoundedSequence([{ name: 'park', run: () => life.run('tool', parked) }, { name: 'later', run: () => { later++; } }]), /deadline/);
++  assert.equal(later, 0); await life.close();
++});
++
++test('expired deadline between operations remains a failed probe even with clean API close', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 5, graceMs: 5 });
++  assert.equal(await life.run('quick work', () => 1), 1);
++  await new Promise(resolve => setTimeout(resolve, 10));
++  assert.equal((await life.close()).confirmed, true); assert.match(life.failure, /deadline/);
++});
++
++test('synchronous close cannot outrun its elapsed cleanup deadline by blocking timers', async () => {
++  const life = createBrowserLifetime({ deadlineMs: 100, graceMs: 5 });
++  life.own('blocked close', {}, () => { const end = performance.now() + 10; while (performance.now() < end) {} });
++  const result = await life.close(); assert.equal(result.confirmed, false); assert.match(result.resources[0].error, /deadline/);
++});
+diff --git a/apps/worker/qualification/probes/browser.mjs b/apps/worker/qualification/probes/browser.mjs
+index e30bc8b..8b1d630 100644
+--- a/apps/worker/qualification/probes/browser.mjs
++++ b/apps/worker/qualification/probes/browser.mjs
+@@ -22,6 +22,8 @@ import { createRequire } from 'node:module';
+ 
+ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
++import { createBrowserLifetime, closeFixtureServer } from './browser-lifetime.mjs';
++import { installProbeCancellation } from './owned-probe-child.mjs';
+ 
+ const HERE = dirname(fileURLToPath(import.meta.url));
+ const require = createRequire(import.meta.url);
+@@ -417,7 +419,7 @@ function startFixtureServer() {
+     res.writeHead(200, { 'Content-Type': 'text/html' });
+     res.end('<!doctype html><title>Meri fixture</title><h1 id="marker">meri-loopback-ok</h1><a id="dl" href="/download">download</a>');
+   });
+-  return new Promise((res) => server.listen(0, '127.0.0.1', () => res(server)));
++  return new Promise((res, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', () => res(server)); });
+ }
+ 
+ const SANDBOX_EXPR = '() => ({ text: document.body.innerText, rows: Array.from(document.querySelectorAll("#sandbox-status tr"), (r) => Array.from(r.cells, (c) => c.innerText.trim())), evaluation: document.querySelector("#evaluation")?.innerText })';
+@@ -517,24 +519,26 @@ export function buildBrowserSteps({ callTool, toolNames = [], evidence, reasons,
+   ];
+ }
+ 
+-async function main() {
++export async function main({ deadlineMs = DEADLINE_MS, graceMs = 5000, signal } = {}) {
+   const reasons = [];
+   const evidencePaths = [];
+   const evidence = { probe: 'browser', uid: null, serverVersion: null, browserVersion: null, versionData: null, sandbox: null, browserProcess: null, rendererProcess: null, processes: [], procEvidence: {}, download: null, rawResults: {}, prelaunch: null, stepSequence: null, reasons, evidencePaths };
+   let server = null;
+   let client = null;
+   let transport = null;
+-  let stderrText = '';
++  const lifetime = createBrowserLifetime({ deadlineMs, graceMs, signal });
+   let runDir = null;
+   let profileDir = null;
+ 
+   try {
++    lifetime.assertActive();
+     const uid = typeof process.getuid === 'function' ? process.getuid() : null;
+     evidence.uid = uid;
+     if (uid === null) throw new Error('process.getuid() unsupported: cannot prove non-root');
+     if (uid === 0) throw new Error('refusing to run browser probe as root (uid 0)');
+ 
+     evidence.prelaunch = collectPrelaunchDiagnostics();
++    lifetime.assertActive();
+ 
+     runDir = join(OUTPUT_ROOT, `probe-${randomUUID()}`);
+     profileDir = join(runDir, 'profile');
+@@ -543,7 +547,7 @@ async function main() {
+     mkdirSync(outputDir, { recursive: true });
+     evidencePaths.push(runDir);
+ 
+-    server = await startFixtureServer();
++    server = await lifetime.acquire('fixture server startup', startFixtureServer, closeFixtureServer);
+     const port = server.address().port;
+     const mcpPkg = require('@playwright/mcp/package.json');
+     const mcpDir = dirname(require.resolve('@playwright/mcp/package.json'));
+@@ -557,22 +561,23 @@ async function main() {
+       cwd: runDir,
+     });
+     if (transport.stderr && typeof transport.stderr.on === 'function') {
+-      transport.stderr.on('data', (c) => { stderrText += c.toString(); });
++      transport.stderr.on('data', (c) => lifetime.captureStderr(c));
+     }
+ 
+-    client = new Client({ name: 'meri-qualification', version: '0.0.0' });
+-    await client.connect(transport);
++    client = lifetime.own('MCP client', new Client({ name: 'meri-qualification', version: '0.0.0' }), value => value.close());
++    await lifetime.run('MCP connect', () => client.connect(transport), { lateCleanup: () => client.close() });
+     evidence.serverVersion = client.getServerVersion();
+-    const toolList = await client.listTools();
++    const toolList = await lifetime.run('MCP listTools', () => client.listTools());
+     const toolNames = (toolList.tools || []).map((t) => t.name);
+     evidence.tools = toolNames;
+ 
+     // Browser-dependent sequence: the SAME bounded driver used by the offline
+     // fake-client fixtures. After the FIRST fatal substep, no later MCP call runs.
+-    const callTool = (name, args) => client.callTool({ name, arguments: args });
++    const callTool = (name, args) => lifetime.run(`MCP ${name}`, () => client.callTool({ name, arguments: args }));
+     const steps = buildBrowserSteps({ callTool, toolNames, evidence, reasons, io: { port, outputDir } });
+     evidence.stepSequence = await runBoundedSequence(steps);
+ 
++    lifetime.assertActive();
+     const processes = readProcesses();
+     evidence.processes = processes.map((p) => ({ pid: p.pid, ppid: p.ppid, exe: p.exe, type: p.type, argv: p.argv }));
+     const identified = identifyAssociatedChromium(processes, { profileDir });
+@@ -587,27 +592,30 @@ async function main() {
+     const verdict = assessSandboxEvidence({ sandbox: evidence.sandbox, browser: identified.browser, renderer: identified.renderer });
+     reasons.push(...verdict.reasons);
+     if (evidence.disablingFlags.length) reasons.push(`disabling Chromium flags present: ${evidence.disablingFlags.map((d) => d.flag).join(', ')}`);
++    lifetime.assertActive();
+   } catch (error) {
+     reasons.push(String(error && error.message ? error.message : error).slice(0, 300));
+   } finally {
+-    try { if (client) await client.close(); } catch (error) { reasons.push(`client close uncertainty: ${String(error).slice(0, 160)}`); }
+-    try { if (server) server.close(); } catch {}
+-    if (stderrText) evidencePaths.push('mcp stderr preserved in stdout summary');
++    evidence.apiCleanup = await lifetime.close();
++    if (!evidence.apiCleanup.confirmed) reasons.push('browser API cleanup UNKNOWN; outer owned group cleanup required');
++    if (lifetime.failure && !reasons.includes(lifetime.failure)) reasons.push(lifetime.failure);
++    if (lifetime.stderr) evidencePaths.push('mcp stderr preserved in stdout summary');
+   }
+ 
+   const ok = reasons.length === 0;
+   evidence.ok = ok;
+   evidence.sandboxVerified = ok;
+-  evidence.stderr = stderrText.slice(0, 2000);
++  evidence.stderr = lifetime.stderr.slice(0, 2000);
+   if (runDir) { try { writeFileSync(join(runDir, 'evidence.json'), JSON.stringify(evidence, null, 2)); } catch {} }
+   process.stdout.write(JSON.stringify(evidence, null, 2) + '\n');
+-  process.exit(ok ? 0 : 1);
++  return ok ? 0 : 1;
+ }
+ 
+ const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+ if (invokedDirectly) {
+-  main().catch((error) => {
++  const cancellation = installProbeCancellation();
++  main({ signal: cancellation.signal }).catch((error) => {
+     process.stdout.write(JSON.stringify({ probe: 'browser', ok: false, reasons: [String(error).slice(0, 300)] }, null, 2) + '\n');
+-    process.exit(1);
+-  });
++    return 1;
++  }).finally(cancellation.dispose).then(code => process.exit(code));
+ }
+diff --git a/apps/worker/qualification/probes/office-export.mjs b/apps/worker/qualification/probes/office-export.mjs
+index 5fadcc2..774857e 100644
+--- a/apps/worker/qualification/probes/office-export.mjs
++++ b/apps/worker/qualification/probes/office-export.mjs
+@@ -36,9 +36,10 @@ import { fileURLToPath } from 'node:url';
+ import { dirname, join, sep, resolve, relative, isAbsolute } from 'node:path';
+ 
+ import { parseStructuredOutput } from './runtime.mjs';
++import { runOwnedProbeChild, installProbeCancellation } from './owned-probe-child.mjs';
++export { defaultGroupKill, defaultProbeGroup } from './owned-probe-child.mjs';
+ 
+ const HERE = dirname(fileURLToPath(import.meta.url));
+-const ARTIFACTS = join(HERE, 'artifacts.mjs');
+ 
+ export const MARKER = 'MERI_OFFICE_EXPORT_V1';
+ export const PROTOCOL = 'meri-office-export/1';
+@@ -87,8 +88,6 @@ export const EXPECT_PPTX_NOTES_PARTS = Object.freeze(['ppt/notesSlides/notesSlid
+ const DEFAULT_DEADLINE_MS = 120000;
+ const DEFAULT_EXPORT_DEADLINE_MS = 120000;
+ const ABORT_DEADLINE_MS = 5000;
+-const MAX_CHILD_STDOUT = 4 * 1024 * 1024;
+-const MAX_CHILD_STDERR = 64 * 1024;
+ const MAX_EVIDENCE_PATHS = 8;
+ const MAX_EVIDENCE_PATH_LEN = 400;
+ 
+@@ -618,122 +617,12 @@ export function readRegularFileVerified(full, lst) {
+ // Child process: owned validated group + confirmed cleanup
+ // ---------------------------------------------------------------------------
+ 
+-/** Kill the OWNED process group (Linux, detached, pid>1) else the direct child. */
+-export function defaultGroupKill(child, signal = 'SIGKILL') {
+-  if (!child) return false;
+-  const pid = child.pid;
+-  if (process.platform === 'linux') {
+-    if (!Number.isInteger(pid) || pid <= 1) return false;
+-    try { process.kill(-pid, signal); return true; } catch { return false; }
+-  }
+-  try { return typeof child.kill === 'function' && child.kill(signal) === true; } catch { return false; }
+-}
+-
+-/**
+- * True ONLY when the owned group is DEFINITELY absent (kill(-pid,0) -> ESRCH).
+- * Alive, permission/unknown errors, non-Linux and malformed children all return
+- * a non-true value so absence can never be confirmed by uncertainty.
+- */
+-export function defaultProbeGroup(child) {
+-  if (!child) return undefined;
+-  const pid = child.pid;
+-  if (process.platform === 'linux') {
+-    if (!Number.isInteger(pid) || pid <= 1) return undefined;
+-    try { process.kill(-pid, 0); return true; } catch (error) { return error && error.code === 'ESRCH' ? false : undefined; }
+-  }
+-  // Non-Linux: no owned detached group was created, so the direct child is gone.
+-  return false;
+-}
+-
+-/**
+- * Spawn the unchanged artifacts probe once in its own (Linux) process group,
+- * bounded streams and a hard deadline. Resolves only after 'close' AND a
+- * confirmed absent owned group/descendants within a bounded grace. On a normal
+- * close with a live group it kills the OWNED validated group, then bounded-
+- * confirms absence. Kill-request/false/error is not confirmation of exit.
+- */
+-export function runArtifactsChild({
+-  base, deadlineMs = DEFAULT_DEADLINE_MS, spawnFn = spawn, env = process.env, graceMs = 5000,
+-  groupKill = defaultGroupKill, probeGroup = defaultProbeGroup, detached,
+-} = {}) {
+-  return new Promise((resolve) => {
+-    const dl = normalizeDeadlineMs(deadlineMs, { fallback: DEFAULT_DEADLINE_MS });
+-    if (!dl.ok) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: dl.reason, stdout: '', stderr: '' }); return; }
+-    if (!Number.isFinite(graceMs) || graceMs <= 0 || graceMs > 5000) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: 'invalid cleanup grace', stdout: '', stderr: '' }); return; }
+-    const useDetached = detached === undefined ? process.platform === 'linux' : !!detached;
+-    const childEnv = { ...env, MERI_ARTIFACTS_OUTPUT_DIR: base, MERI_ARTIFACTS_RENDER: 'required' };
+-    let child;
+-    try {
+-      child = spawnFn(process.execPath, [ARTIFACTS], { env: childEnv, stdio: ['ignore', 'pipe', 'pipe'], detached: useDetached });
+-    } catch (error) {
+-      resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: String(error && error.message ? error.message : error), stdout: '', stderr: '' });
+-      return;
+-    }
+-    let stdout = '';
+-    let stderr = '';
+-    let stdoutBytes = 0;
+-    let stderrBytes = 0;
+-    let settled = false;
+-    let exited = null;
+-    let timedOut = false;
+-    let overflow = false;
+-    let spawnError = null;
+-    let killRequested = false;
+-    let groupKillOk = null;
+-    let cleanupConfirmed = false;
+-    let deadlineTimer = null;
+-    let graceTimer = null;
+-    let pollTimer = null;
+-
+-    const settle = (error) => {
+-      if (settled) return;
+-      settled = true;
+-      clearTimeout(deadlineTimer); clearTimeout(graceTimer); clearTimeout(pollTimer);
+-      resolve({
+-        status: exited ? exited.code : null, signal: exited ? exited.signal : null,
+-        timedOut, overflow, killRequested, groupKillOk, cleanupConfirmed, detached: useDetached,
+-        error: spawnError || (overflow ? 'child stdout exceeded bound' : null) || (error || null),
+-        stdout, stderr,
+-      });
+-    };
+-    // Absence is confirmed ONLY by a definite non-live result (strict === false).
+-    const groupGone = () => { try { return probeGroup(child) === false; } catch { return false; } };
+-    const killOwnedGroup = () => { killRequested = true; try { groupKillOk = groupKill(child, 'SIGKILL') === true; } catch { groupKillOk = false; } };
+-    const confirmAbsenceUntilGrace = () => {
+-      const start = Date.now();
+-      const poll = () => {
+-        if (settled) return;
+-        if (groupGone()) { cleanupConfirmed = true; settle(null); return; }
+-        if (Date.now() - start >= graceMs) { cleanupConfirmed = false; settle('process group/descendants not confirmed clean'); return; }
+-        pollTimer = setTimeout(poll, 10);
+-      };
+-      poll();
+-    };
+-
+-    deadlineTimer = setTimeout(() => {
+-      timedOut = true;
+-      killOwnedGroup();
+-      graceTimer = setTimeout(() => { cleanupConfirmed = false; settle('child did not close after group kill within grace'); }, graceMs);
+-    }, dl.ms);
+-
+-    child.on('error', (err) => { spawnError = String(err && err.message ? err.message : err); });
+-    child.stdout.on('data', (d) => {
+-      stdoutBytes += d.length;
+-      if (stdoutBytes > MAX_CHILD_STDOUT) { overflow = true; if (!killRequested) killOwnedGroup(); return; }
+-      stdout += d.toString('utf8');
+-    });
+-    child.stderr.on('data', (d) => { stderrBytes += d.length; if (stderrBytes > MAX_CHILD_STDERR) return; stderr += d.toString('utf8'); });
+-    child.on('exit', (code, signal) => { exited = { code, signal }; });
+-    child.on('close', (code, signal) => {
+-      exited = { code, signal };
+-      if (settled) return;
+-      clearTimeout(deadlineTimer); deadlineTimer = null;
+-      if (groupGone()) { cleanupConfirmed = true; settle(null); return; }
+-      // Group still alive after close: kill the OWNED validated group, then bounded-confirm.
+-      if (!killRequested) killOwnedGroup();
+-      confirmAbsenceUntilGrace();
+-    });
+-  });
++/** The original Office entry delegates to the shared qualification owner. */
++export function runArtifactsChild({ base, deadlineMs = DEFAULT_DEADLINE_MS, env = process.env, ...options } = {}) {
++  const dl = normalizeDeadlineMs(deadlineMs, { fallback: DEFAULT_DEADLINE_MS });
++  if (!dl.ok) return Promise.resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: dl.reason, stdout: '', stderr: '' });
++  return runOwnedProbeChild({ ...options, script: 'artifacts.mjs', deadlineMs: dl.ms,
++    env: { ...env, MERI_ARTIFACTS_OUTPUT_DIR: base, MERI_ARTIFACTS_RENDER: 'required' } });
+ }
+ 
+ /** Find the single fresh probe-<uuid> subtree created under the run base. */
+@@ -753,19 +642,24 @@ export function discoverRunDir(base) {
+ function errMsg(error) { return String(error && error.message ? error.message : error).slice(0, 120); }
+ 
+ /** Await a single stream write, raced against `remainingMs` and stream errors. */
+-export function writeBounded(stream, line, remainingMs) {
++export function writeBounded(stream, line, remainingMs, { signal } = {}) {
+   return new Promise((resolve) => {
+     let settled = false;
+     let timer = null;
+     const onError = (err) => finish(false, `stdout error: ${errMsg(err)}`);
++    const onAbort = () => finish(false, 'export aborted');
+     function finish(ok, error) {
+       if (settled) return;
+       settled = true;
+       if (timer) clearTimeout(timer);
+       if (typeof stream.off === 'function') stream.off('error', onError);
++      signal?.removeEventListener('abort', onAbort);
+       resolve({ ok, error: error || null });
+     }
++    if (signal?.aborted) { finish(false, 'export aborted'); return; }
+     timer = setTimeout(() => finish(false, 'write exceeded the export deadline'), Math.max(1, Math.floor(remainingMs)));
++    signal?.addEventListener('abort', onAbort, { once: true });
++    if (signal?.aborted) { onAbort(); return; }
+     if (typeof stream.on === 'function') stream.on('error', onError);
+     try { stream.write(line + '\n', (err) => (err ? finish(false, `write callback error: ${errMsg(err)}`) : finish(true, null))); } catch (error) { finish(false, `write threw: ${errMsg(error)}`); }
+   });
+@@ -775,7 +669,7 @@ export function writeBounded(stream, line, remainingMs) {
+  * Stream records with an ABSOLUTE deadline. Pending writes and the final flush
+  * are bounded; the deadline is re-checked absolutely after the last write.
+  */
+-export async function streamRecords(stream, records, { deadlineMs, deadlineAt, now = () => Date.now() } = {}) {
++export async function streamRecords(stream, records, { deadlineMs, deadlineAt, now = () => Date.now(), signal } = {}) {
+   let deadline;
+   if (deadlineAt !== undefined) {
+     if (typeof deadlineAt !== 'number' || !Number.isFinite(deadlineAt)) return { ok: false, written: 0, error: 'invalid absolute deadline' };
+@@ -791,13 +685,15 @@ export async function streamRecords(stream, records, { deadlineMs, deadlineAt, n
+   let written = 0;
+   try {
+     for (const record of records) {
++      if (signal?.aborted) return { ok: false, written, error: 'export aborted' };
+       if (streamError) return { ok: false, written, error: `stdout error: ${errMsg(streamError)}` };
+       const remaining = deadline - now();
+       if (remaining <= 0) return { ok: false, written, error: 'export deadline exceeded before writing a record' };
+-      const res = await writeBounded(stream, encodeRecord(record), remaining);
++      const res = await writeBounded(stream, encodeRecord(record), remaining, { signal });
+       if (!res.ok) return { ok: false, written, error: res.error };
+       written++;
+     }
++    if (signal?.aborted) return { ok: false, written, error: 'export aborted' };
+     if (now() > deadline) return { ok: false, written, error: 'export deadline exceeded after the final write' };
+     if (streamError) return { ok: false, written, error: `stdout error: ${errMsg(streamError)}` };
+     return { ok: true, written, error: null };
+@@ -821,7 +717,7 @@ export function defaultBaseRoot() {
+ export async function main(opts = {}) {
+   const {
+     baseRoot = defaultBaseRoot(), spawnFn = spawn, writeStream = process.stdout,
+-    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached,
++    now = () => Date.now(), readCgroup = readCgroupObservations, mkdir = mkdirSync, graceMs = 5000, detached, groupKill, probeGroup, signal,
+   } = opts;
+   const genDl = normalizeDeadlineMs(opts.deadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_GEN_DEADLINE_MS || DEFAULT_DEADLINE_MS), { fallback: DEFAULT_DEADLINE_MS });
+   const expDl = normalizeDeadlineMs(opts.exportDeadlineMs ?? Number(process.env.MERI_OFFICE_EXPORT_DEADLINE_MS || DEFAULT_EXPORT_DEADLINE_MS), { fallback: DEFAULT_EXPORT_DEADLINE_MS });
+@@ -832,6 +728,7 @@ export async function main(opts = {}) {
+   };
+   if (!genDl.ok) { await emitAbort([genDl.reason]); return 1; }
+   if (!expDl.ok) { await emitAbort([expDl.reason]); return 1; }
++  if (signal?.aborted) { await emitAbort(['Office export aborted before acquisition']); return 1; }
+   try {
+     const base = join(baseRoot, `office-export-${capture}`);
+     const preflight = assertPathChainIsRealDirectories(baseRoot, lstatSync, true);
+@@ -843,10 +740,11 @@ export async function main(opts = {}) {
+     const baseCheck = assertPathChainIsRealDirectories(base);
+     if (!baseCheck.ok) { await emitAbort([baseCheck.reason]); return 1; }
+     const genStart = now();
+-    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached });
++    const child = await runArtifactsChild({ base, deadlineMs: genDl.ms, spawnFn, graceMs, detached, groupKill, probeGroup, signal });
+     const genElapsedMs = now() - genStart;
+     const verdict = verifyArtifactsVerdict(child);
+     if (!verdict.ok) { await emitAbort(verdict.reasons); return 1; }
++    if (signal?.aborted) { await emitAbort(['Office export aborted before inspection']); return 1; }
+     const disco = discoverRunDir(base);
+     if (!disco.ok) { await emitAbort(disco.reasons); return 1; }
+     if (resolve(verdict.generation.recalc.newFile) !== resolve(join(disco.runDir, 'render/recalc-out/qualification-copy.xlsx'))) {
+@@ -867,12 +765,12 @@ export async function main(opts = {}) {
+     }
+     const head = records.slice(0, -1);
+     const endRecord = records.at(-1);
+-    const streamed = await streamRecords(writeStream, head, { deadlineAt: exportDeadlineAt, now });
++    const streamed = await streamRecords(writeStream, head, { deadlineAt: exportDeadlineAt, now, signal });
+     if (!streamed.ok) { await emitAbort([streamed.error]); return 1; }
+     // Honest measured export timing bound to the actual export phase (through the
+     // last chunk flush; excludes the end line's own flush, which it cannot measure).
+     endRecord.elapsedMs = Math.max(0, now() - exportStart);
+-    const tail = await streamRecords(writeStream, [endRecord], { deadlineAt: exportDeadlineAt, now });
++    const tail = await streamRecords(writeStream, [endRecord], { deadlineAt: exportDeadlineAt, now, signal });
+     if (!tail.ok) { await emitAbort([tail.error]); return 1; }
+     return 0;
+   } catch (error) {
+@@ -883,5 +781,6 @@ export async function main(opts = {}) {
+ 
+ const invokedDirectly = process.argv[1] && resolve(fileURLToPath(import.meta.url)) === resolve(process.argv[1]);
+ if (invokedDirectly) {
+-  main().then((code) => process.exit(code)).catch(() => { process.exit(1); });
++  const cancellation = installProbeCancellation();
++  main({ signal: cancellation.signal }).catch(() => 1).finally(cancellation.dispose).then(code => process.exit(code));
+ }
+diff --git a/apps/worker/qualification/probes/office-export.test.mjs b/apps/worker/qualification/probes/office-export.test.mjs
+index cada997..17b1efe 100644
+--- a/apps/worker/qualification/probes/office-export.test.mjs
++++ b/apps/worker/qualification/probes/office-export.test.mjs
+@@ -118,6 +118,11 @@ function materializeRun(base, sizes = SIZES) {
+   for (const spec of EXPECTED_FILES) { const full = join(runDir, spec.path); mkdirSync(dirname(full), { recursive: true }); writeFileSync(full, makeBytes(sizes[spec.path], spec.index)); }
+   return runDir;
+ }
++const fixtureChildren = new WeakMap();
++const fixtureGroupPorts = {
++  groupKill(child) { if (!fixtureChildren.has(child)) throw new Error('unknown fixture child'); return true; },
++  probeGroup(child) { if (!fixtureChildren.has(child)) throw new Error('unknown fixture child'); return !fixtureChildren.get(child).closed; },
++};
+ function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, signal = null, materialize = true, sizes = SIZES, assertEnv, onSpawn, bindPaths = true } = {}) {
+   return (cmd, args, opts) => {
+     if (assertEnv) assertEnv(opts.env);
+@@ -132,8 +137,9 @@ function generatingSpawn({ payload = realisticArtifactsPayload(), code = 0, sign
+           : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, rebind(v)])) : value;
+       emitted = rebind(payload);
+     }
+-    const child = new EventEmitter(); child.stdout = new EventEmitter(); child.stderr = new EventEmitter(); child.kill = () => true;
+-    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof emitted === 'string' ? emitted : JSON.stringify(emitted))); child.emit('exit', code, signal); child.emit('close', code, signal); });
++    const child = new EventEmitter(); child.pid = 424242; child.stdout = new EventEmitter(); child.stderr = new EventEmitter(); child.kill = () => true;
++    fixtureChildren.set(child, { closed: false });
++    setImmediate(() => { child.stdout.emit('data', Buffer.from(typeof emitted === 'string' ? emitted : JSON.stringify(emitted))); child.emit('exit', code, signal); fixtureChildren.get(child).closed = true; child.emit('close', code, signal); });
+     return child;
+   };
+ }
+@@ -539,7 +545,7 @@ test('CloudWatch-style JSON event envelope with embedded newlines is accepted',
+ 
+ test('main() streams a complete capture (with honest end.elapsedMs) and it reconstructs', async () => {
+   const baseRoot = tempDir(); const stream = collectingStream();
+-  const code = await main({ baseRoot, spawnFn: generatingSpawn({ assertEnv: (env) => { assert.equal(env.MERI_ARTIFACTS_RENDER, 'required'); assert.ok(env.MERI_ARTIFACTS_OUTPUT_DIR.startsWith(baseRoot)); } }), writeStream: stream, now: () => Date.now(), readCgroup: () => ({ scope: 'test', memoryCurrent: null, memoryPeak: null, memoryMax: null, pidsCurrent: null, cpuStatLines: 0 }) });
++  const code = await main({ ...fixtureGroupPorts, baseRoot, spawnFn: generatingSpawn({ assertEnv: (env) => { assert.equal(env.MERI_ARTIFACTS_RENDER, 'required'); assert.ok(env.MERI_ARTIFACTS_OUTPUT_DIR.startsWith(baseRoot)); } }), writeStream: stream, now: () => Date.now(), readCgroup: () => ({ scope: 'test', memoryCurrent: null, memoryPeak: null, memoryMax: null, pidsCurrent: null, cpuStatLines: 0 }) });
+   assert.equal(code, 0);
+   const kinds = stream.lines.map((l) => parseRecordLine(l).record.kind);
+   assert.equal(kinds[0], 'capture'); assert.equal(kinds.at(-1), 'end'); assert.ok(!kinds.includes('error'));
+@@ -559,7 +565,7 @@ test('main() emits only an error record after a failed/signalled/unclosed genera
+   ];
+   for (const c of cases) {
+     const baseRoot = tempDir(); const stream = collectingStream();
+-    const code = await main({ baseRoot, writeStream: stream, now: () => Date.now(), readCgroup: () => ({}), ...c });
++    const code = await main({ ...fixtureGroupPorts, baseRoot, writeStream: stream, now: () => Date.now(), readCgroup: () => ({}), ...c });
+     assert.equal(code, 1);
+     assert.deepEqual(stream.lines.map((l) => parseRecordLine(l).record.kind), ['error']);
+     assert.equal(validateCapture(stream.lines.join('\n')).ok, false);
+@@ -633,7 +639,7 @@ test('Codex owner correction: unsafe base ancestors are rejected before director
+ 
+ test('Codex owner correction: main rejects a valid-looking payload from another generated run', async () => {
+   const stream = collectingStream();
+-  const code = await main({ baseRoot: tempDir(), writeStream: stream, spawnFn: generatingSpawn({ bindPaths: false }) });
++  const code = await main({ ...fixtureGroupPorts, baseRoot: tempDir(), writeStream: stream, spawnFn: generatingSpawn({ bindPaths: false }) });
+   assert.equal(code, 1); assert.match(stream.lines.join('\n'), /newly generated run copy/);
+ });
+ 
+diff --git a/apps/worker/qualification/probes/owned-probe-child.mjs b/apps/worker/qualification/probes/owned-probe-child.mjs
+new file mode 100644
+index 0000000..2ca32b0
+--- /dev/null
++++ b/apps/worker/qualification/probes/owned-probe-child.mjs
+@@ -0,0 +1,129 @@
++// Qualification-only owned child supervision. Scripted ports test policy; only
++// target-native close plus positive group absence can supply physical evidence.
++import { spawn } from 'node:child_process';
++import { dirname, join } from 'node:path';
++import { fileURLToPath } from 'node:url';
++const HERE = dirname(fileURLToPath(import.meta.url));
++const SCRIPTS = new Set(['browser.mjs', 'artifacts.mjs']);
++export const MAX_CHILD_STDOUT = 4 * 1024 * 1024;
++export const MAX_CHILD_STDERR = 64 * 1024;
++
++export function defaultGroupKill(child, signal = 'SIGKILL') {
++  if (!child) return false;
++  if (process.platform === 'linux') {
++    if (!Number.isInteger(child.pid) || child.pid <= 1) return false;
++    try { process.kill(-child.pid, signal); return true; } catch { return false; }
++  }
++  try { return typeof child.kill === 'function' && child.kill(signal) === true; } catch { return false; }
++}
++export function defaultProbeGroup(child) {
++  if (!child) return undefined;
++  if (process.platform === 'linux') {
++    if (!Number.isInteger(child.pid) || child.pid <= 1) return undefined;
++    try { process.kill(-child.pid, 0); return true; } catch (error) { return error?.code === 'ESRCH' ? false : undefined; }
++  }
++  // Non-Linux qualification observes direct child close only, not a process tree.
++  return false;
++}
++
++export function runOwnedProbeChild({ script, deadlineMs = 120000, spawnFn = spawn,
++  env = process.env, graceMs = 5000, groupKill = defaultGroupKill,
++  probeGroup = defaultProbeGroup, detached, signal } = {}) {
++  const reject = (error) => Promise.resolve({ status: null, signal: null, timedOut: false,
++    cleanupConfirmed: false, error, stdout: '', stderr: '' });
++  if (!SCRIPTS.has(script)) return reject('probe script is not allowlisted');
++  if (!Number.isFinite(deadlineMs) || deadlineMs <= 0 || deadlineMs > 180000) return reject('invalid child deadline');
++  if (!Number.isFinite(graceMs) || graceMs <= 0 || graceMs > 5000) return reject('invalid cleanup grace');
++  const useDetached = detached === undefined ? process.platform === 'linux' : detached;
++  if (typeof useDetached !== 'boolean' || (process.platform === 'linux' && !useDetached)) return reject('Linux owned group requires detached child');
++  if (signal?.aborted) return reject('child aborted before spawn');
++  return new Promise((resolve) => {
++    const deadlineAt = performance.now() + deadlineMs;
++    let child;
++    try { child = spawnFn(process.execPath, [join(HERE, script)], { env: { ...env }, stdio: ['ignore', 'pipe', 'pipe'], detached: useDetached }); }
++    catch (error) { resolve({ status: null, signal: null, timedOut: false, cleanupConfirmed: false, error: String(error?.message || error), stdout: '', stderr: '' }); return; }
++    let stdout = '', stderr = '', stdoutBytes = 0, stderrBytes = 0;
++    let settled = false, closed = false, exited = null, timedOut = false, aborted = false;
++    let overflow = false, error = null, killRequested = false, groupKillOk = null;
++    let deadlineTimer, graceTimer, pollTimer;
++    const finish = (cleanupConfirmed, fallback) => {
++      if (settled) return;
++      settled = true;
++      clearTimeout(deadlineTimer); clearTimeout(graceTimer); clearTimeout(pollTimer);
++      signal?.removeEventListener('abort', onAbort);
++      resolve(Object.freeze({ status: exited?.code ?? null, signal: exited?.signal ?? null,
++        timedOut, aborted, overflow, killRequested, groupKillOk, cleanupConfirmed,
++        detached: useDetached, error: error || fallback || null, stdout, stderr }));
++    };
++    const gone = () => { try { return probeGroup(child) === false; } catch { return false; } };
++    const kill = () => {
++      if (killRequested || settled) return;
++      killRequested = true;
++      try { groupKillOk = groupKill(child, 'SIGKILL') === true; } catch { groupKillOk = false; }
++    };
++    const poll = () => {
++      if (settled) return;
++      if (closed && gone()) { finish(true); return; }
++      pollTimer = setTimeout(poll, 10);
++    };
++    const contain = (reason) => {
++      if (settled) return;
++      if (reason && !error) error = reason;
++      clearTimeout(deadlineTimer);
++      // Start the single grace before kill: injected/real close may be synchronous.
++      if (!graceTimer) graceTimer = setTimeout(() => finish(false, 'child close and process group/descendants not confirmed clean within grace'), graceMs);
++      kill();
++      if (!settled && !pollTimer) poll();
++    };
++    const onAbort = () => { if (!settled) { aborted = true; contain('child aborted'); } };
++    const data = (channel, chunk) => {
++      if (settled) return;
++      if (performance.now() >= deadlineAt) { timedOut = true; contain('child deadline exceeded'); return; }
++      const bytes = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
++      const text = bytes.toString('utf8');
++      if (channel === 'stdout') {
++        stdoutBytes += bytes.length;
++        if (stdoutBytes > MAX_CHILD_STDOUT || Buffer.byteLength(stdout) + Buffer.byteLength(text) > MAX_CHILD_STDOUT) { overflow = true; contain('child stdout exceeded bound'); return; }
++        stdout += text;
++      } else {
++        stderrBytes += bytes.length;
++        if (stderrBytes > MAX_CHILD_STDERR || Buffer.byteLength(stderr) + Buffer.byteLength(text) > MAX_CHILD_STDERR) { overflow = true; contain('child stderr exceeded bound'); return; }
++        stderr += text;
++      }
++    };
++    // Keep inert error listeners after settlement so late errors do not crash the
++    // caller. All callbacks stop changing facts or issuing effects once settled.
++    child.on('error', (err) => { if (!settled) contain(String(err?.message || err)); });
++    child.stdout.on('data', (chunk) => data('stdout', chunk));
++    child.stderr.on('data', (chunk) => data('stderr', chunk));
++    child.stdout.on('error', (err) => { if (!settled) contain(`stdout error: ${String(err)}`); });
++    child.stderr.on('error', (err) => { if (!settled) contain(`stderr error: ${String(err)}`); });
++    child.on('exit', (code, exitSignal) => { if (!settled) exited = { code, signal: exitSignal }; });
++    child.on('close', (code, exitSignal) => {
++      if (settled) return;
++      closed = true; exited = { code, signal: exitSignal };
++      if (performance.now() >= deadlineAt) { timedOut = true; error ||= 'child deadline exceeded'; }
++      clearTimeout(deadlineTimer);
++      if (gone()) finish(true); else contain(null);
++    });
++    deadlineTimer = setTimeout(() => { if (!settled) { timedOut = true; contain('child deadline exceeded'); } }, Math.max(1, deadlineAt - performance.now()));
++    signal?.addEventListener('abort', onAbort, { once: true });
++    if (signal?.aborted) onAbort();
++  });
++}
++
++/** CLI-only bridge. Importing this module installs no process listeners. */
++export function installProbeCancellation(processLike = process) {
++  const controller = new AbortController();
++  let disposed = false;
++  const onInterrupt = () => { if (!controller.signal.aborted) controller.abort(new Error('qualification interrupted (SIGINT)')); };
++  const onTerminate = () => { if (!controller.signal.aborted) controller.abort(new Error('qualification terminated (SIGTERM)')); };
++  processLike.on('SIGINT', onInterrupt);
++  processLike.on('SIGTERM', onTerminate);
++  return Object.freeze({ signal: controller.signal, dispose() {
++    if (disposed) return;
++    disposed = true;
++    processLike.removeListener('SIGINT', onInterrupt);
++    processLike.removeListener('SIGTERM', onTerminate);
++  } });
++}
+diff --git a/apps/worker/qualification/probes/owned-probe-child.test.mjs b/apps/worker/qualification/probes/owned-probe-child.test.mjs
+new file mode 100644
+index 0000000..4e6d860
+--- /dev/null
++++ b/apps/worker/qualification/probes/owned-probe-child.test.mjs
+@@ -0,0 +1,131 @@
++// Scripted event ports only. No process/browser/renderer/OS group is launched.
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { EventEmitter } from 'node:events';
++import { runOwnedProbeChild, MAX_CHILD_STDOUT, MAX_CHILD_STDERR } from './owned-probe-child.mjs';
++import { runProbeScript, runQualificationChildren } from './runtime.mjs';
++function child() { const c = new EventEmitter(); c.pid = 424242; c.stdout = new EventEmitter(); c.stderr = new EventEmitter(); return c; }
++const ports = { script: 'artifacts.mjs', deadlineMs: 100, graceMs: 15, groupKill: () => true, probeGroup: () => false };
++function closing({ code = 0, signal = null, payload = { ok: true }, effect } = {}) {
++  return () => { const c = child(); setImmediate(() => { if (effect) effect(c); c.stdout.emit('data', Buffer.from(JSON.stringify(payload))); c.emit('close', code, signal); }); return c; };
++}
++test('fixed executable entries deny arbitrary scripts before spawn', async () => {
++  for (const script of ['../browser.mjs', '/tmp/arbitrary.mjs', 'sdk-capture.mjs', null]) {
++    let spawns = 0; const r = await runOwnedProbeChild({ ...ports, script, spawnFn: () => { spawns++; } });
++    assert.equal(spawns, 0); assert.match(r.error, /allowlisted/);
++  }
++});
++test('preabort and non-owned Linux process group never spawn', async () => {
++  const a = new AbortController(); a.abort();
++  for (const options of [{ signal: a.signal }, ...(process.platform === 'linux' ? [{ detached: false }] : [])]) {
++    let spawns = 0; const r = await runOwnedProbeChild({ ...ports, ...options, spawnFn: () => { spawns++; } });
++    assert.equal(spawns, 0); assert.ok(r.error);
++  }
++});
++test('successful close needs exact owned child absence and bounded preserved output', async () => {
++  const c = child(); const r = await runOwnedProbeChild({ ...ports, spawnFn: () => { setImmediate(() => { c.stdout.emit('data', Buffer.from('{"ok":true}')); c.emit('close', 0, null); }); return c; }, probeGroup: actual => { assert.equal(actual, c); return false; } });
++  assert.equal(r.cleanupConfirmed, true); assert.equal(r.error, null); assert.equal(r.stdout, '{"ok":true}');
++});
++test('both stdout and stderr overflow fail despite later successful close', async () => {
++  for (const [channel, cap] of [['stdout', MAX_CHILD_STDOUT], ['stderr', MAX_CHILD_STDERR]]) {
++    let kills = 0; const r = await runOwnedProbeChild({ ...ports, spawnFn: closing({ effect: c => c[channel].emit('data', Buffer.alloc(cap + 1)) }), groupKill: () => { kills++; return true; } });
++    assert.equal(r.overflow, true); assert.ok(r.error); assert.equal(kills, 1); assert.ok(Buffer.byteLength(r[channel]) <= cap);
++  }
++});
++test('abort after spawn contains once and cannot be made successful by late output', async () => {
++  const a = new AbortController(); const c = child(); let kills = 0;
++  const pending = runOwnedProbeChild({ ...ports, signal: a.signal, spawnFn: () => c, groupKill: () => { kills++; return true; } });
++  a.abort(); const r = await pending; const facts = JSON.stringify(r);
++  c.stdout.emit('data', Buffer.from('{"ok":true}')); c.emit('close', 0, null); c.emit('error', Error('late'));
++  assert.equal(kills, 1); assert.equal(r.aborted, true); assert.equal(r.cleanupConfirmed, false); assert.equal(JSON.stringify(r), facts);
++});
++test('stream error without close starts bounded containment immediately', async () => {
++  const c = child(); let kills = 0; const pending = runOwnedProbeChild({ ...ports, spawnFn: () => c, groupKill: () => { kills++; return true; } });
++  c.stderr.emit('error', Error('broken stderr')); const r = await pending;
++  assert.equal(kills, 1); assert.equal(r.cleanupConfirmed, false); assert.match(r.error, /broken stderr/);
++});
++test('exit without close and unknown group retain cleanup UNKNOWN', async () => {
++  for (const observation of [true, undefined]) {
++    const c = child(); let kills = 0;
++    const r = await runOwnedProbeChild({ ...ports, deadlineMs: 5, spawnFn: () => { setImmediate(() => c.emit('exit', 0, null)); return c; }, probeGroup: () => observation, groupKill: () => { kills++; return true; } });
++    assert.equal(kills, 1); assert.equal(r.cleanupConfirmed, false); assert.equal(r.timedOut, true);
++  }
++});
++test('runtime signal and overflow remain failed even with successful JSON and cleanup', async () => {
++  for (const options of [{ signal: 'SIGTERM' }, { effect: c => c.stderr.emit('data', Buffer.alloc(MAX_CHILD_STDERR + 1)) }]) {
++    const r = await runProbeScript('browser.mjs', { ...ports, spawnFn: closing(options) });
++    assert.equal(r.cleanupConfirmed, true); assert.equal(r.status, 'fail');
++  }
++});
++test('runtime continues after a contained semantic failure', async () => {
++  const scripts = [];
++  const r = await runQualificationChildren({ ...ports, spawnFn: (cmd, args) => { scripts.push(args[0]); return closing({ payload: { ok: scripts.length > 1 }, code: scripts.length > 1 ? 0 : 1 })(); } });
++  assert.equal(scripts.length, 2); assert.match(scripts[0], /browser.mjs$/); assert.match(scripts[1], /artifacts.mjs$/);
++  assert.equal(r[0].status, 'fail'); assert.equal(r[1].status, 'pass');
++});
++test('runtime unknown cleanup prevents another probe spawn', async () => {
++  let spawns = 0; const r = await runQualificationChildren({ ...ports, spawnFn: () => { spawns++; return closing()(); }, probeGroup: () => undefined });
++  assert.equal(spawns, 1); assert.equal(r[1].notRun, true); assert.match(r[1].detail, /NOT-RUN\/HOLD/);
++});
++
++test('late close after event-loop delay cannot beat the elapsed absolute deadline', async () => {
++  const c = child(); const pending = runOwnedProbeChild({ ...ports, deadlineMs: 5, spawnFn: () => c });
++  const until = performance.now() + 10; while (performance.now() < until) { /* scripted synchronous port delay */ }
++  c.stdout.emit('data', Buffer.from('{"ok":true}')); c.emit('close', 0, null);
++  const r = await pending; assert.equal(r.timedOut, true); assert.ok(r.error);
++});
++
++test('CLI cancellation absorbs repeated signals until disposal and preserves borrowed listeners', async () => {
++  const { installProbeCancellation } = await import('./owned-probe-child.mjs');
++  const events = new EventEmitter(); let borrowed = 0, aborts = 0;
++  const borrowedHandler = () => { borrowed++; }; events.on('SIGINT', borrowedHandler);
++  const cancellation = installProbeCancellation(events); cancellation.signal.addEventListener('abort', () => { aborts++; });
++  events.emit('SIGTERM'); events.emit('SIGINT'); events.emit('SIGTERM');
++  assert.equal(aborts, 1); assert.equal(borrowed, 1); assert.equal(events.listenerCount('SIGTERM'), 1);
++  cancellation.dispose(); cancellation.dispose(); assert.equal(events.listenerCount('SIGTERM'), 0);
++  assert.deepEqual(events.listeners('SIGINT'), [borrowedHandler]);
++});
++test('CLI cancellation bridge actually waits for child close and owned absence', async () => {
++  const { installProbeCancellation } = await import('./owned-probe-child.mjs');
++  const events = new EventEmitter(); const cancellation = installProbeCancellation(events); const c = child(); let kills = 0;
++  const pending = runOwnedProbeChild({ ...ports, signal: cancellation.signal, spawnFn: () => c, groupKill: () => { kills++; return true; } });
++  events.emit('SIGTERM'); events.emit('SIGINT'); c.emit('close', 0, null); const result = await pending;
++  assert.equal(kills, 1); assert.equal(result.aborted, true); assert.equal(result.cleanupConfirmed, true); assert.ok(result.error);
++  cancellation.dispose(); assert.equal(events.eventNames().length, 0);
++});
++
++test('Office cancellation interrupts a parked write and cannot emit the later end record', async () => {
++  const { streamRecords } = await import('./office-export.mjs');
++  const a = new AbortController(); const writes = []; let lateCallback;
++  const stream = new EventEmitter(); stream.write = (line, cb) => { writes.push(line); lateCallback = cb; };
++  const resultPromise = streamRecords(stream, [{ kind: 'capture' }, { kind: 'end' }], { deadlineMs: 100, signal: a.signal });
++  a.abort(); const result = await resultPromise;
++  assert.equal(result.ok, false); assert.match(result.error, /aborted/); assert.equal(writes.length, 1);
++  lateCallback(); await new Promise(resolve => setImmediate(resolve)); assert.equal(writes.length, 1);
++});
++test('Office preabort emits no payload and cancellation in final callback refuses success', async () => {
++  const { streamRecords } = await import('./office-export.mjs');
++  const a = new AbortController(); a.abort(); let writes = 0;
++  const denied = await streamRecords({ write() { writes++; } }, [{ kind: 'end' }], { deadlineMs: 100, signal: a.signal });
++  assert.equal(denied.ok, false); assert.equal(writes, 0);
++  const b = new AbortController(); const stream = { write(line, callback) { b.abort(); callback(); } };
++  const uncertain = await streamRecords(stream, [{ kind: 'end' }], { deadlineMs: 100, signal: b.signal });
++  assert.equal(uncertain.ok, false); assert.match(uncertain.error, /aborted/);
++});
++
++test('already-cancelled actual Office main allocates no directory or child', async () => {
++  const { main } = await import('./office-export.mjs'); const a = new AbortController(); a.abort();
++  let mkdirs = 0, spawns = 0; const lines = [];
++  const code = await main({ signal: a.signal, mkdir() { mkdirs++; }, spawnFn() { spawns++; },
++    writeStream: { write(line, callback) { lines.push(line); callback(); } } });
++  assert.equal(code, 1); assert.equal(mkdirs, 0); assert.equal(spawns, 0); assert.equal(lines.length, 1); assert.match(lines[0], /aborted/);
++});
++
++test('actual runtime CLI child phase owns cancellation only for its bounded action', async () => {
++  const { runQualificationChildrenForCli } = await import('./runtime.mjs'); const events = new EventEmitter(); const c = child(); let spawns = 0;
++  assert.equal(events.eventNames().length, 0);
++  const operation = runQualificationChildrenForCli({ ...ports, processLike: events, spawnFn: () => { spawns++; return c; } });
++  assert.equal(events.listenerCount('SIGTERM'), 1); events.emit('SIGTERM'); c.emit('close', 0, null);
++  const result = await operation; assert.equal(spawns, 1); assert.equal(result[0].status, 'fail'); assert.equal(result[1].notRun, true);
++  assert.equal(events.eventNames().length, 0);
++});
+diff --git a/apps/worker/qualification/probes/runtime.mjs b/apps/worker/qualification/probes/runtime.mjs
+index 0d03204..0742328 100644
+--- a/apps/worker/qualification/probes/runtime.mjs
++++ b/apps/worker/qualification/probes/runtime.mjs
+@@ -10,13 +10,13 @@
+ // scrubbed errors and evidence paths, and exits nonzero if ANY required check
+ // fails. Unavailable evidence is reported as skipped/failed, never a pass.
+ 
+-import { spawnSync } from 'node:child_process';
++import { runOwnedProbeChild, installProbeCancellation } from './owned-probe-child.mjs';
+ import { mkdirSync, writeFileSync, readFileSync, rmSync, statSync, readFileSync as readFile } from 'node:fs';
+ import { randomUUID } from 'node:crypto';
+ import { lookup } from 'node:dns/promises';
+ import { connect } from 'node:net';
+ import { fileURLToPath } from 'node:url';
+-import { dirname, join } from 'node:path';
++import { join } from 'node:path';
+ 
+ import {
+   QUALIFICATION,
+@@ -26,7 +26,6 @@ import {
+   InMemorySessionStore,
+ } from '../sdk-options.mjs';
+ 
+-const HERE = dirname(fileURLToPath(import.meta.url));
+ const PROBE_DEADLINE_MS = Number(process.env.MERI_PROBE_DEADLINE_MS || 180000);
+ const NET_TIMEOUT_MS = Number(process.env.MERI_NET_TIMEOUT_MS || 3000);
+ 
+@@ -311,31 +310,33 @@ export async function checkSdkStatic() {
+   }
+ }
+ 
+-/** Run a sibling probe script as a child process with an explicit deadline. */
+-export function runProbeScript(script, { name, required = true, deadlineMs = PROBE_DEADLINE_MS } = {}) {
+-  let result;
+-  try {
+-    result = spawnSync(process.execPath, [join(HERE, script)], {
+-      timeout: deadlineMs,
+-      killSignal: 'SIGKILL',
+-      encoding: 'utf8',
+-      env: { ...process.env },
+-      maxBuffer: 16 * 1024 * 1024,
+-    });
+-  } catch (error) {
+-    return { name, required, status: 'fail', detail: `${script} could not be spawned`, error: String(error).slice(0, 300), evidencePaths: [] };
+-  }
+-  const timedOut = !!(result.error && (result.error.code === 'ETIMEDOUT' || result.signal));
+-  const verdict = classifyChildResult({ status: result.status, signal: result.signal, timedOut, stdout: result.stdout, stderr: result.stderr });
+-  return {
+-    name,
+-    required,
+-    status: verdict.status,
+-    detail: `${script}: ${verdict.detail}`,
+-    error: verdict.error || undefined,
++/** Run only an allowlisted qualification child through the shared owner. */
++export async function runProbeScript(script, { name, required = true, deadlineMs = PROBE_DEADLINE_MS, ...ports } = {}) {
++  const result = await runOwnedProbeChild({ ...ports, script, deadlineMs });
++  const verdict = classifyChildResult(result);
++  const passed = !result.error && !result.signal && !result.timedOut && !result.aborted && !result.overflow && result.cleanupConfirmed === true;
++  return { name, required, status: passed ? verdict.status : 'fail',
++    detail: `${script}: ${passed ? verdict.detail : (result.error || (result.signal ? `child signalled ${result.signal}` : 'owned cleanup UNKNOWN'))}`,
++    error: result.error || verdict.error || undefined,
++    cleanupConfirmed: result.cleanupConfirmed === true,
++    cleanupScope: process.platform === 'linux' ? 'owned-process-group' : 'direct-child-only',
+     childResult: verdict.parsed || undefined,
+-    evidencePaths: verdict.parsed && Array.isArray(verdict.parsed.evidencePaths) ? verdict.parsed.evidencePaths : [],
+-  };
++    evidencePaths: verdict.parsed && Array.isArray(verdict.parsed.evidencePaths) ? verdict.parsed.evidencePaths : [] };
++}
++
++/** Actual runtime sequence: independent semantic failures continue only after containment. */
++export async function runQualificationChildren(options = {}) {
++  const browser = await runProbeScript('browser.mjs', { ...options, name: 'browser-sandbox', required: true });
++  if (!browser.cleanupConfirmed || options.signal?.aborted) return [browser, { name: 'office-artifacts', required: true,
++    status: 'fail', detail: options.signal?.aborted ? 'NOT-RUN/HOLD: qualification cancelled' : 'NOT-RUN/HOLD: prior owned cleanup UNKNOWN', evidencePaths: [], notRun: true }];
++  return [browser, await runProbeScript('artifacts.mjs', { ...options, name: 'office-artifacts', required: true })];
++}
++
++/** CLI bridge begins only when child ownership begins, after native prechecks. */
++export async function runQualificationChildrenForCli({ processLike = process, ...options } = {}) {
++  const cancellation = installProbeCancellation(processLike);
++  try { return await runQualificationChildren({ ...options, signal: cancellation.signal }); }
++  finally { cancellation.dispose(); }
+ }
+ 
+ async function main() {
+@@ -344,19 +345,18 @@ async function main() {
+   results.push(checkReadOnlyRoot());
+   results.push(await checkSdkStatic());
+   results.push(await checkNetworkDenial());
+-  results.push(runProbeScript('browser.mjs', { name: 'browser-sandbox', required: true }));
+-  results.push(runProbeScript('artifacts.mjs', { name: 'office-artifacts', required: true }));
++  results.push(...await runQualificationChildrenForCli());
+ 
+   const summary = summarize(results);
+   const payload = { probe: 'runtime', generatedAt: new Date().toISOString(), ...summary };
+   process.stdout.write(JSON.stringify(payload, null, 2) + '\n');
+-  process.exit(computeExitCode(summary));
++  return computeExitCode(summary);
+ }
+ 
+ const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+ if (invokedDirectly) {
+   main().catch((error) => {
+     process.stdout.write(JSON.stringify({ probe: 'runtime', ok: false, error: String(error).slice(0, 300) }, null, 2) + '\n');
+-    process.exit(1);
+-  });
++    return 1;
++  }).then(code => process.exit(code));
+ }
+diff --git a/scripts/qualification/worker_context.py b/scripts/qualification/worker_context.py
+index f4413a9..8c74e99 100644
+--- a/scripts/qualification/worker_context.py
++++ b/scripts/qualification/worker_context.py
+@@ -19,6 +19,8 @@ PACKAGE_FILES = (
+     "checkpoint/resume-admission.mjs", "checkpoint/resume-admission.test.mjs",
+     "checkpoint/fixture-sentinel.mjs", "checkpoint/fixture-sentinel.test.mjs",
+     "probes/artifacts.mjs", "probes/artifacts.py", "probes/browser.mjs",
++    "probes/owned-probe-child.mjs", "probes/owned-probe-child.test.mjs",
++    "probes/browser-lifetime.mjs", "probes/browser-lifetime.test.mjs",
+     "probes/image-inventory.py", "probes/image-inventory.test.mjs",
+     "probes/office-export.mjs", "probes/office-export.test.mjs", "probes/office-reconstruct.mjs",
+     "probes/runtime.mjs", "probes/sdk-capture.mjs", "probes/sdk-capture.test.mjs",
+diff --git a/scripts/qualification/worker_context_test.py b/scripts/qualification/worker_context_test.py
+index 04c559a..af724b3 100644
+--- a/scripts/qualification/worker_context_test.py
++++ b/scripts/qualification/worker_context_test.py
+@@ -39,7 +39,7 @@ class WorkerContextTests(unittest.TestCase):
+         path.parent.mkdir()
+         path.write_text("synthetic excluded")
+         result = m.assemble_context(self.out)
+-        self.assertEqual(len(result["members"]), 53)
++        self.assertEqual(len(result["members"]), 57)
+         sources = {row["sourcePath"] for row in result["members"]}
+         self.assertNotIn("scripts/qualification/sdk-stale-worker-challenge.mjs", sources)
+         self.assertIn(m.QUALIFICATION + "checkpoint/resume-admission.mjs", sources)
+@@ -159,7 +159,7 @@ class WorkerContextTests(unittest.TestCase):
+         with self.assertRaisesRegex(ValueError, "byte drift"):
+             m.verify_context(self.out)
+         member.write_bytes(raw)
+-        self.assertEqual(len(m.verify_context(self.out)["members"]), 53)
++        self.assertEqual(len(m.verify_context(self.out)["members"]), 57)
+ 
+     def test_extra_directory_and_output_file_refused(self):
+         m.assemble_context(self.out)
+@@ -237,7 +237,7 @@ class WorkerContextTests(unittest.TestCase):
+                     self.assertIn(relocated, image_members, f"{source} -> {specifier}")
+         with patch.object(m, "ROOT", PROJECT_ROOT):
+             actual = m.assemble_context(self.out)
+-            self.assertEqual(len(actual["members"]), 53)
++            self.assertEqual(len(actual["members"]), 57)
+             self.assertEqual(actual, m.verify_context(self.out))
+ 
+ 

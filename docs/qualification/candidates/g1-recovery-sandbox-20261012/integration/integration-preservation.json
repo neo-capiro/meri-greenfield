@@ -1,0 +1,40 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "integrationSourceCommit": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "integrationTree": "750fa31f9c6ed76199fd85b2624d73a96a193b5f",
+  "originalFiles": 3590,
+  "originalFilesUnchanged": 3576,
+  "changedOriginalPaths": [
+    "apps/control/qualification-temporal/README.md",
+    "apps/control/qualification-temporal/package.json",
+    "apps/control/qualification-temporal/tsconfig.json",
+    "apps/worker/qualification/README.md",
+    "apps/worker/qualification/package.json",
+    "apps/worker/qualification/probes/browser.mjs",
+    "apps/worker/qualification/probes/office-export.mjs",
+    "apps/worker/qualification/probes/office-export.test.mjs",
+    "apps/worker/qualification/probes/runtime.mjs",
+    "scripts/qualification/test_worker_image_build.py",
+    "scripts/qualification/worker_context.py",
+    "scripts/qualification/worker_context_test.py",
+    "scripts/qualification/worker_image_build.py",
+    "scripts/qualification/worker_image_collect.py"
+  ],
+  "addedSourcePaths": [
+    "apps/control/qualification-temporal/recovery-activities.mjs",
+    "apps/control/qualification-temporal/recovery-types.ts",
+    "apps/control/qualification-temporal/recovery-workflow.ts",
+    "apps/control/qualification-temporal/recovery.test.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.mjs",
+    "apps/worker/qualification/probes/browser-lifetime.test.mjs",
+    "apps/worker/qualification/probes/owned-probe-child.mjs",
+    "apps/worker/qualification/probes/owned-probe-child.test.mjs"
+  ],
+  "exactAcceptedAuthorSourceFiles": 19,
+  "temporalAuthor": "9a9d52ee2686346e3549e53a707aaccc5e8fbed6",
+  "sandboxAuthorSource": "bb44e802de14b5483c51ea1a58448ca23a5f11a0",
+  "rootPinPatchRequiresSeparateIndependentReview": true,
+  "originalRealPostgresTestFileByteIdentical": true,
+  "nativeRuntimeChecks": "UNRUN",
+  "sourceConnectivityEnabled": false
+}

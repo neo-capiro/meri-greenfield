@@ -1,0 +1,33 @@
+✔ actual canonical pipeline retires A then atomically admits B and verifies the original checkpoint (92.389535ms)
+✔ foreign Temporal namespace denies before retirement or replacement (22.013449ms)
+✔ foreign Temporal workflowId denies before retirement or replacement (16.996825ms)
+✔ foreign Temporal workflowRunId denies before retirement or replacement (13.828027ms)
+✔ foreign Temporal taskQueue denies before retirement or replacement (13.601737ms)
+✔ foreign Temporal workflowType denies before retirement or replacement (13.53704ms)
+✔ foreign Temporal activityId denies before retirement or replacement (17.944659ms)
+✔ foreign Temporal activityType denies before retirement or replacement (13.406694ms)
+✔ foreign Temporal retry-attempt denies before retirement or replacement (13.409088ms)
+✔ foreign Temporal local-activity denies before retirement or replacement (13.386944ms)
+✔ worker-selected run UUID and extra authority fields refuse before any trusted call (28.504318ms)
+✔ effectful workflow input is rejected without invoking a getter or proxy trap (12.303046ms)
+✔ retirement foreign-task cannot mutate registry (13.649339ms)
+✔ retirement foreign-binding cannot mutate registry (14.747968ms)
+✔ retirement future-observation cannot mutate registry (13.428146ms)
+✔ retirement stale-observation cannot mutate registry (13.458953ms)
+✔ retirement future-stop cannot mutate registry (12.612482ms)
+✔ missing retirement capability fails construction before replacement (16.137625ms)
+✔ no committed checkpoint refuses canonical replacement and never loads data (1.410959ms)
+✔ wrong committed receipt refuses and cannot substitute another checkpoint (10.966039ms)
+✔ duplicate delivery cannot dispatch a second replacement or load (32.244454ms)
+✔ aborted retirement completion cannot dispatch replacement (9.66838ms)
+✔ expired retirement completion cannot dispatch replacement or reset deadline (8.599745ms)
+✔ uncertain replacement acknowledgement holds without retry, transport or guessed cancellation (9.40881ms)
+✔ cancel known replaced B consumes actual stopRun and durably revokes B only (28.396104ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1202.095052

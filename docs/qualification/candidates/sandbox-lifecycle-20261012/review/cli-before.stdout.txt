@@ -1,0 +1,33 @@
+✔ import installs no real process signal handlers (0.665179ms)
+✔ first signal aborts once; repeated signal retains listeners until owned disposal (0.855516ms)
+✔ CLI signal reaches actual runtime containment and repeated signals never acquire another child (4.287782ms)
+✔ already-aborted Office stream emits no successful capture records (0.558028ms)
+✔ cancellation during export suppresses later chunks and successful end after write callback (0.448504ms)
+✖ already-aborted Office entry acquires no directory or native child (1.379813ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.488869
+
+✖ failing tests:
+
+test at docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs:47:1
+✖ already-aborted Office entry acquires no directory or native child (1.379813ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-sandbox-lifecycle-review-20261012/docs/qualification/candidates/sandbox-lifecycle-20261012/review/cli-cancellation-independent.test.mjs:50:32)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -23,8 +23,8 @@ import worker_image_collect as collector
 import worker_image_manifest as manifest_owner
 
 ROOT = Path(__file__).resolve().parents[2]
-# Accepted PR7 includes reviewed recovery/native-evidence source; runtime remains unqualified.
-REFERENCE = '5ee46446b5f60034916f00b2a665b3e2bef9cf60'
+# Independently accepted watchdog source freeze; all native/runtime gates remain unqualified.
+REFERENCE = 'bb44e802de14b5483c51ea1a58448ca23a5f11a0'
 ACCOUNT, REGION, PROJECT = authority.ACCOUNT, authority.REGION, authority.PROJECT
 BUCKET, KMS, ROLE = authority.BUCKET, authority.KMS, authority.BUILDER_ROLE
 SCHEMA = 'meri-worker-image-build/1'

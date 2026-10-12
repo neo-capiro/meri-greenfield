@@ -1,0 +1,19 @@
+
+> @meri/qualification-temporal@0.0.0 test:recovery
+> node --test recovery.test.mjs
+
+✔ new actual workflow preserves source-only result and fixes all activities to one attempt (49.053118ms)
+✔ failed admission invokes explicit cleanup in a noncancellable scope and retains original error (7.353213ms)
+✔ unknown replacement does not dispatch guessed cleanup or retry (5.17981ms)
+✔ cleanup refusal remains visible instead of reporting a clean cancelled result (4.315771ms)
+✔ construction has no trusted effects and requires a retirement provider (7.374375ms)
+✔ effectful configuration and role-bearing workflow argument are refused before capabilities (0.190987ms)
+✔ activity module imports supported JS APIs and no Worker/native driver (0.622204ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 675.789159

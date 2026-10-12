@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/worker_image_build.py", line 103, in baseline
+    old = git_files(REFERENCE, stable, capture, 'reference')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/worker_image_build.py", line 89, in git_files
+    need(set(entries) == set(names), 'exact Git membership')
+  File "/workspace/meri-g1-recovery-sandbox-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: exact Git membership

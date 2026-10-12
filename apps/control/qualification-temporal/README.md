@@ -136,3 +136,57 @@ implied by anything in this package.
 ## Owner thin-fix disclosure after rejected repair0f38128
 
 Independent review found0f38128 still accepted the actual publicClient object despite checking a synthetic flag, and allowed late custom cancellation to reach publication/continuation. After its writer closed, Codex owner corrected the actual-object/configDigest boundaries, renamed the worker-only authorizer fact, checked cancellation after awaits/before publication/continuation, and added actual fixture control-flow regressions with deterministic SDK/activity stubs. Final owner typecheck plus22tests/43prohibited cases pass. These thin fixes and disclosure are Codex changes, not Hermes0f38128 implementation output. A cancel signal during an already-dispatched activity cannot undo that effect; the fixture observes it before further steps. Real Temporal cancellation/replay/durability/current-authority behavior remains unrun. Separate actual Hermes review and integration-owner acceptance are still required; no G1 or deployment promotion.
+
+## Canonical SDK fixture recovery admission source
+
+`recovery-workflow.ts` is a separate deterministic workflow entry. The trusted
+worker owner registers the functions returned by
+`createFixtureRecoveryActivities` from `recovery-activities.mjs` under the exact
+`prepareFixtureRecovery` and `cancelFixtureRecovery` names. This repository does
+not create a Worker or connect that owner to a Temporal service. The existing
+illustrative workflow and its fixed approval activity are not authorization for
+this path.
+
+The activity owner prebinds immutable canonical A/B contexts, peer identities,
+checkpoint reference, and one trusted Temporal namespace/workflow ID/workflow
+run ID/task queue. The workflow argument carries only the matching run UUID.
+Actual Activity context must also match the workflow type, fixed activity ID,
+activity type, remote delivery and attempt 1. A Temporal attempt never becomes a
+Meri fence. No authority, credentials or checkpoint bodies enter history.
+
+A required external retirement verifier receives frozen A context/full binding,
+original clocks/pins, a bounded deadline and cancellation signal. Its result
+must match the exact task and binding digest, and contain safe stop/observation
+times no more than five seconds stale. **Matching metadata is not evidence of
+physical task exit.** There is no default/native verifier in this repository;
+that missing qualified provider keeps real replacement admission on HOLD.
+Synthetic tests clearly label their scripted verifier.
+
+After verifying the exact canonical committed reference and retirement result,
+the activity calls the existing registry `replaceRun`. That transaction revokes
+A while admitting B; `stopRun(A)` must not precede normal replacement. Fresh
+registry authorization must explicitly deny stale A and name exact current B.
+The borrowed B-authenticated transport then uses the existing canonical fixed
+load/verify protocol to reread and verify the original checkpoint. Final current
+B authorization precedes a digest/reference summary. Both
+`completeRecoveryCheckpoint` and `sessionStoreQualified` remain false. No native
+restore, task launch or SDK loop is introduced.
+
+Each port wait is bounded and checks cancellation/current time before another
+port or release. An issued replacement whose acknowledgement is lost, cancelled
+or timed out remains nonretryable `FixtureRecoveryUncertain`; late replies do
+not start new ports. The workflow does not guess cleanup for that liability.
+For definite failures/cancellation, noncancellable cleanup uses the existing
+exact B `control.stopRun` only after locally acknowledged replacement; cleanup
+refusal is visible. Owner state is process-local. Restart reconciliation,
+physical task teardown, broker delivery, Temporal history replay/durability and
+live cancellation remain unimplemented/unqualified; a fresh owner does not
+silently convert an ambiguous outcome into a retry. Existing canonical registry
+state still prevents B-to-B replacement. All activity retry policies are one
+attempt and content-free failures are nonretryable.
+
+`npm run test:recovery` runs the new deterministic/source checks. Original
+`npm run check` preserves all prior compatibility assertions. Neither check
+starts Temporal/native core, a database, cloud resources, a task or a model.
+The existing Aurora selection remains current; the historical deployment
+fixture above does not authorize a new RDS instance.

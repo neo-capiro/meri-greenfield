@@ -1,0 +1,16 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "exitCode": 254,
+  "failure": "ENOENT creating default /home/agent/.npm/_cacache; log directory also unavailable",
+  "rawToolOutputTruncated": true,
+  "rawCompleteLogAvailable": false,
+  "packageLockChanged": false,
+  "retryReason": "Use explicit owned /tmp cache within writable roots; no source or lock modification",
+  "nativeCoreRun": false
+}

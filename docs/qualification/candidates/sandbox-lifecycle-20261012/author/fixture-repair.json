@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/office-export.test.mjs"
+  ],
+  "cwd": "/workspace/meri-sandbox-lifecycle-20261012",
+  "sourceHead": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "sourceDiffSha256": "961569fb977afa96c0f14e8cc35603e25411ea4441f0f6ba9c44162d368e9009",
+  "sourceDiffBytes": 6471,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:00:32.652029+00:00",
+  "durationSeconds": 0.515,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 59644,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/fixture-repair.stdout.bin",
+      "bytes": 5186,
+      "sha256": "e4a253315ff345a4012513925fc9784f18077ed2599a71a3acbfb685f66a045c"
+    },
+    {
+      "path": "docs/qualification/candidates/sandbox-lifecycle-20261012/author/fixture-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

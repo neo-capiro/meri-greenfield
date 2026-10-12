@@ -30,8 +30,8 @@ ASSEMBLER = manifest_owner.ASSEMBLER
 COLLECTOR = manifest_owner.COLLECTOR
 PUBLISHER = manifest_owner.PUBLISHER
 CLEANER = manifest_owner.CLEANER
-CONTEXT_SHA = '0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903'
-ASSEMBLER_SHA = '48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851'
+CONTEXT_SHA = '640c5f3dd73272af3a120bf7ec71afa096e30506f6c0b99b242e22dd96c0b229'
+ASSEMBLER_SHA = 'e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765'
 ARTIFACTS = {
     'image-inventory.json': 32*1024*1024, 'os-installed-packages.txt': 4*1024*1024,
     'runtime-versions.txt': 65536, 'libreoffice-version.err': 65536,

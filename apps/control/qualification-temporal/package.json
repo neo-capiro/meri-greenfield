@@ -9,8 +9,9 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "node --test compatibility.test.mjs",
-    "check": "npm run typecheck && npm test"
+    "test": "node --test compatibility.test.mjs recovery.test.mjs",
+    "check": "npm run typecheck && npm test",
+    "test:recovery": "node --test recovery.test.mjs"
   },
   "dependencies": {
     "@temporalio/activity": "1.24.0",

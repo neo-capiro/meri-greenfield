@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-c",
+    "import hashlib,json,sys;from pathlib import Path;sys.path.insert(0,'scripts/qualification');import worker_image_build as b;b.source.GIT='/usr/bin/git';files={p:Path(p).read_bytes() for p in b.ORIGINAL+(b.collector.COLLECTOR,b.manifest_owner.MANIFEST_OWNER)};print(json.dumps({'oldReference':b.REFERENCE,'oldAssemblerSha256':b.collector.ASSEMBLER_SHA,'actualAssemblerSha256':b.sha(files[b.collector.ASSEMBLER]),'oldContextSha256':b.collector.CONTEXT_SHA,'actualContextSha256':b.context_manifest_sha(files),'contextMembers':len(b.worker_context.MEMBERS),'stableMembers':len([p for p in b.ORIGINAL if p not in b.PACKAGING_CHANGES]),'candidateFiles':len(files)}),flush=True);b.baseline('296f806')"
+  ],
+  "cwd": "/workspace/meri-g1-recovery-sandbox-20261012",
+  "sourceHead": "296f80639342bf23ef0261edbb5bc787fd76196f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T05:21:41.361186+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 66128,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-baseline.stdout.bin",
+      "bytes": 488,
+      "sha256": "7c10ff4dd35e7604dc7d68597de1acaa67e7344463f8fc1518337db41325f25f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-recovery-sandbox-20261012/integration/prepin-baseline.stderr.bin",
+      "bytes": 680,
+      "sha256": "a7898b148484c14611e482b2fcdfaf4ed2907149824f848152df84c79ada94c6"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

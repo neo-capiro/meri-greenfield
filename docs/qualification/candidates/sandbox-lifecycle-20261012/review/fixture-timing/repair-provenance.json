@@ -1,0 +1,8 @@
+{
+  "authority": "root explicit fixture-only repair request",
+  "rootCandidate": "d5a1b0aa2f77d9c215f1a092d7c329b93492cb55",
+  "observed": "Integrated44 controls:43pass1fail; positive fake close callback delayed beyond20ms grace so cleanup correctly remainedUNKNOWN",
+  "change": "One setImmediate -> queueMicrotask for promised pre-grace fake child close; no assertions, production grace or negative controls change",
+  "originalSha256": "44f4c4a2086464192544a861c555cbba776d3b48d7802927c0e58464ad37249e",
+  "repairedSha256": "288683c40bdce7941e8668484910509464d4da9751b7a17e6ead4c2b3b10ccf2"
+}
