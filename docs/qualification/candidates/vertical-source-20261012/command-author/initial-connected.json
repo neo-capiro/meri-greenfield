@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-execution.test.mjs",
+    "apps/control/test/commands-artifact-compatibility.test.mjs",
+    "packages/contracts/test/commands-task-update.test.mjs",
+    "packages/contracts/test/command-artifact-file.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-execution-20261012",
+  "sourceHead": "09a54a088590a89b8d1cd37551710664f12dbc94",
+  "sourceDiffSha256": "a3c1c403bb0dbd9497f0cb7cc7049171ff404cc75eafe19bccca018dee1eeb47",
+  "sourceDiffBytes": 11465,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:15:17.124997+00:00",
+  "durationSeconds": 3.085,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 361220,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stdout.bin",
+      "bytes": 5893,
+      "sha256": "be9881106a05bc97dab956522e7f8e8c52ba520659510d791e4e50c85c94213c"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-author/initial-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial connected command executor/source/actual journal and task-update focused checks; no real SQL/HTTP source.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,14 +1,18 @@
 /** Concrete borrowed-Pool command journal. No source-effect retries or migration. */
-import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
+import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {CommandCommitUncertain,data,deny,own} from './protocol.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 function key(value){
  const payload=data(value);own(payload,['proposal','context']);const c=payload.proposal.command;
- return {payload,tenant:c.binding.tenantId,actor:c.binding.actorId,idem:c.idempotencyKey,id:c.commandId,
+ return {payload,tenant:c.binding.tenantId,actor:c.binding.actorId,idem:c.idempotencyKey,id:c.commandId.toLowerCase(),
   commandHash:canonicalSha256(c),proposalHash:canonicalSha256(payload.proposal),payloadHash:canonicalSha256(payload)};
 }
 function rowValue(value,k){
- const r=data(value);
+ const selected=own(value,['tenant_id','actor_id','idempotency_key','command_id','command_sha256','proposal_sha256','payload_sha256','payload','executor','state','outcome'],['created_at','updated_at']);
+ const {created_at:ignoredCreated,updated_at:ignoredUpdated,...json}=selected;const r=data(json);
+ validateShape('CommandExecutionRequest',r.executor);
+ if(r.executor.commandSha256!==k.commandHash||r.executor.proposalId!==k.payload.proposal.proposalId||r.executor.idempotencyKey!==k.idem)deny('COMMAND_IDEMPOTENCY_CONFLICT');
+ for(const key of ['tenantId','actorId','conversationId','runId'])if(r.executor.executorBinding[key]!==k.payload.proposal.command.binding[key])deny('COMMAND_IDEMPOTENCY_CONFLICT');
  if(r.tenant_id!==k.tenant||r.actor_id!==k.actor||r.idempotency_key!==k.idem||r.command_id!==k.id||
   r.command_sha256!==k.commandHash||r.proposal_sha256!==k.proposalHash||r.payload_sha256!==k.payloadHash||
   !same(r.payload,k.payload)||!['CLAIMED','UNKNOWN','OUTCOME'].includes(r.state)||
@@ -18,7 +22,7 @@ function rowValue(value,k){
 export function createPostgresCommandJournal(options){
  const {pool}=own(options,['pool']);if(!pool||typeof pool.connect!=='function')deny('COMMAND_CONFIGURATION');
  async function transact(body,check=()=>{}){
-  let client,begun=false,committing=false;
+  let client,begun=false,committing=false,primary,evict;
   try{
    check();client=await pool.connect();check();
    await client.query('BEGIN');begun=true;check();
@@ -26,8 +30,12 @@ export function createPostgresCommandJournal(options){
    await client.query("SET LOCAL lock_timeout = '1000ms'");check();
    const q=async(text,values)=>{check();const r=await client.query(text,values);check();return r;};
    const result=await body(q);check();committing=true;await client.query('COMMIT');check();return result;
-  }catch(error){if(committing)throw new CommandCommitUncertain();if(begun){try{await client.query('ROLLBACK');}catch{}}throw error;}
-  finally{client?.release();}
+  }catch(error){
+   primary=committing?new CommandCommitUncertain():error;
+   if(committing||!begun)evict=error;
+   if(begun&&!committing){try{await client.query('ROLLBACK');}catch(rollback){evict=rollback;}}
+   throw primary;
+  }finally{try{client?.release(evict);}catch{if(!primary)deny('COMMAND_CONNECTION_CLEANUP');}}
  }
  const select='SELECT * FROM meri_command_journal WHERE tenant_id=$1 AND actor_id=$2 AND (idempotency_key=$3 OR command_id=$4) FOR UPDATE';
  async function locked(q,k){const r=await q(select,[k.tenant,k.actor,k.idem,k.id]);if(r.rows.length!==1)deny('COMMAND_IDEMPOTENCY_CONFLICT');return rowValue(r.rows[0],k);}

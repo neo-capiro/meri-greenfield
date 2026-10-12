@@ -16,14 +16,18 @@ export function createCommandExecutor(options){
  async function operate(value,credential,signal,reading){
   if(!sourceEnabled)deny('UNAVAILABLE');const call=admitted(value),command=call.proposal.command;
   const payload=data({proposal:call.proposal,context:call.context});nativeSignal(signal);
-  const lifetime=createOperationLifetime({deadlineMs:now()+bound.limits.maxRequestMs,now,signal,errorFactory:c=>new CommandError(c)});
+  let deadlineMs=now()+bound.limits.maxRequestMs;
+  const lifetime=createOperationLifetime({deadlineMs,now,signal,errorFactory:c=>new CommandError(c)});
+  const limitDeadline=next=>{lifetime.limitDeadline(next);deadlineMs=Math.min(deadlineMs,next);};
   const active=()=>{lifetime.check();if(lifetime.signal.aborted)deny('CANCELLED');};
-  let claimed=false,claimStarted=false;
+  let claimed=false,claimStarted=false,selection;
   const authorize=async()=>{
-   const a=data(await lifetime.run(s=>authority.check({credential,descriptor:bound.descriptor,input:command,signal:s,limitDeadline:lifetime.limitDeadline})));
+   const a=data(await lifetime.run(s=>authority.check({credential,descriptor:bound.descriptor,input:command,signal:s,limitDeadline})));
    validateShape('CapabilityClaims',a.claims);validateShape('AuthorizationDecision',a.decision);
    if(!same(a.binding,call.execution.executorBinding)||a.claims.capabilityId!==call.execution.capabilityId||!a.claims.actions.includes('command.execute')||!same(a.decision.scopes,command.scopes))deny('COMMAND_AUTHORITY_REFUSED');
-   lifetime.limitDeadline(a.deadlineMs);active();return a;
+   const {authorizationDecisionId:ignored,...current}=a.subject;
+   if(selection&&!same(selection,current))deny('COMMAND_AUTHORITY_REFUSED');selection??=current;
+   limitDeadline(a.deadlineMs);active();return a;
   };
   try{
    const first=await authorize();
@@ -35,8 +39,8 @@ export function createCommandExecutor(options){
     return data({status:'observed',outcome:contracts.outcome(row.outcome,command,call.context)});
    }
    await approvals.check(call.proposal,first,lifetime);
-   const prepared=await lifetime.run(s=>source.prepare({command,context:call.context,authority:first,deadlineMs:Math.min(first.deadlineMs,now()+bound.limits.maxRequestMs),signal:s}));
-   lifetime.limitDeadline(prepared.deadlineMs);
+   const prepared=await lifetime.run(s=>source.prepare({command,context:call.context,authority:first,deadlineMs:Math.min(first.deadlineMs,deadlineMs),signal:s}));
+   limitDeadline(prepared.deadlineMs);
    const before=await authorize();await approvals.check(call.proposal,before,lifetime);
    if(first.policyRevision!==before.policyRevision)deny('COMMAND_AUTHORITY_REFUSED');
    claimStarted=true;const claim=await lifetime.run(()=>journal.claim(payload,call.execution,active));
@@ -62,7 +66,8 @@ export function createCommandExecutor(options){
     const cleanup=createOperationLifetime({deadlineMs:now()+bound.limits.maxCleanupMs,now,errorFactory:c=>new CommandError(c)});
     try{await cleanup.run(()=>journal.markUnknown(payload));}catch{}finally{cleanup.close();}
    }
-   if(claimStarted&&(error instanceof CommandCommitUncertain||lifetime.signal.aborted))throw new CommandCommitUncertain();
+   if(error instanceof CommandCommitUncertain)throw error;
+   if(claimed||claimStarted&&lifetime.signal.aborted)deny('COMMAND_OUTCOME_UNKNOWN');
    throw safe(error);
   }finally{lifetime.close();}
  }
