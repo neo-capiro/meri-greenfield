@@ -1,5 +1,5 @@
 {
-  "passed": 95,
+  "passed": 129,
   "failed": 0,
   "checks": [
     {
@@ -64,6 +64,30 @@
     },
     {
       "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stdout.txt",
       "pass": true
     },
     {
@@ -147,6 +171,54 @@
       "pass": true
     },
     {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/independent-repair-links.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/independent-repair-links.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-manifest.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-report.md",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-report.md",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify.py",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify.py",
+      "pass": true
+    },
+    {
       "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/manifest-before.json",
       "pass": true
     },
@@ -216,6 +288,30 @@
     },
     {
       "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stdout.txt",
       "pass": true
     },
     {
@@ -364,6 +460,46 @@
     },
     {
       "name": "final source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "cancellation-repair raw streams",
+      "pass": true
+    },
+    {
+      "name": "cancellation-repair exact counts",
+      "pass": true
+    },
+    {
+      "name": "cancellation-repair source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "cancellation-repair source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "cancellation-repair source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "version-ack-repair raw streams",
+      "pass": true
+    },
+    {
+      "name": "version-ack-repair exact counts",
+      "pass": true
+    },
+    {
+      "name": "version-ack-repair source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "version-ack-repair source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "version-ack-repair source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
       "pass": true
     },
     {

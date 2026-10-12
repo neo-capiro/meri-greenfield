@@ -1,0 +1,386 @@
+{
+  "passed": 95,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "bytes:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "sha256:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "bytes:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "sha256:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/coordination/reports/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/coordination/reports/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/final.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/manifest-before.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/manifest-before.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/references.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/references.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/run-focused.py",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before-receipt.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.py",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.py",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
+      "pass": true
+    },
+    {
+      "name": "originals unchanged",
+      "pass": true
+    },
+    {
+      "name": "original count",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/gateway/index.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/gateway/budget/postgres-tool-budget.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/gateway/budget/tool-budget-execution.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/gateway/budget/tool-invocation-owner.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/gateway/budget/tool-invocation-record.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:apps/control/commands/durable-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:packages/runtime/operation-lifetime.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference:packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "reference:packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:docs/qualification/candidates/durable-invocation-20261012/review/invocation-harness.mjs",
+      "pass": true
+    },
+    {
+      "name": "reference:docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "name": "reference:AGENTS.md",
+      "pass": true
+    },
+    {
+      "name": "reference:docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "name": "first raw streams",
+      "pass": true
+    },
+    {
+      "name": "first exact counts",
+      "pass": true
+    },
+    {
+      "name": "first source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "first source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "first source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "corrected raw streams",
+      "pass": true
+    },
+    {
+      "name": "corrected exact counts",
+      "pass": true
+    },
+    {
+      "name": "corrected source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "corrected source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "corrected source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "boundary-before raw streams",
+      "pass": true
+    },
+    {
+      "name": "boundary-before exact counts",
+      "pass": true
+    },
+    {
+      "name": "boundary-before source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "boundary-before source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "boundary-before source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "final raw streams",
+      "pass": true
+    },
+    {
+      "name": "final exact counts",
+      "pass": true
+    },
+    {
+      "name": "final source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "final source file:apps/artifacts/postgres-service.mjs",
+      "pass": true
+    },
+    {
+      "name": "final source file:apps/artifacts/test/artifact-postgres-service.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "public budget import",
+      "pass": true
+    },
+    {
+      "name": "no new timer or pg import",
+      "pass": true
+    },
+    {
+      "name": "default unavailable",
+      "pass": true
+    },
+    {
+      "name": "no automatic failed settlement",
+      "pass": true
+    }
+  ]
+}

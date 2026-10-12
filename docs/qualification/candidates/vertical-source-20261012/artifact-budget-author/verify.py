@@ -20,7 +20,7 @@ check('original count',len(base)==preservation['baseEntries']==8768)
 for ref in json.loads((packet/'references.json').read_text()):
  data=git('show',ref['ref']+':'+ref['path'])
  check('reference:'+ref['path'],len(data)==ref['bytes'] and hashlib.sha256(data).hexdigest()==ref['sha256'] and data==git('show',preservation['source']+':'+ref['path']))
-for tag,passed,failed in [('first',22,2),('corrected',24,0),('boundary-before',24,2),('final',26,0)]:
+for tag,passed,failed in [('first',22,2),('corrected',24,0),('boundary-before',24,2),('final',26,0),('cancellation-repair',31,0),('version-ack-repair',33,0)]:
  receipt=json.loads((packet/(tag+'.json')).read_text());stdout=(packet/(tag+'.stdout.txt')).read_bytes();stderr=(packet/(tag+'.stderr.txt')).read_bytes()
  check(tag+' raw streams',hashlib.sha256(stdout).hexdigest()==receipt['stdoutSha256'] and hashlib.sha256(stderr).hexdigest()==receipt['stderrSha256'])
  check(tag+' exact counts',f'pass {passed}\n'.encode() in stdout and f'fail {failed}\n'.encode() in stdout and b'skipped 0\n' in stdout)

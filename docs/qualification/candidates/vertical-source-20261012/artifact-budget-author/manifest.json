@@ -1,20 +1,20 @@
 {
-  "source": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+  "source": "a73b65dc05b7554c0592bec22d940ef781344dd6",
   "members": [
     {
       "path": "apps/artifacts/postgres-service.mjs",
-      "bytes": 9911,
-      "sha256": "711115a758fedeb1d9e09c73d66f62957d59126b66c520bae8d9c076c6680fb2"
+      "bytes": 12329,
+      "sha256": "67fe1bbdb1642cf19261229bd84eefd3fef1eba5f4974109b5280c48b354714e"
     },
     {
       "path": "apps/artifacts/test/artifact-postgres-service.test.mjs",
-      "bytes": 14980,
-      "sha256": "f8e075dac7299c00b298702e39a9b6f4b45c560261d5555fc83ce674be838789"
+      "bytes": 17117,
+      "sha256": "b0c6bbacfa94c0fc7319f205644335c71fd686b51461a422fac01390762ecd89"
     },
     {
       "path": "docs/coordination/reports/CODEX-ARTIFACT-BUDGET-20261012.md",
-      "bytes": 6255,
-      "sha256": "a92b41069f17df73b42f7d19423439b74a6e7a9e7fa83472cd1786d38031f220"
+      "bytes": 8207,
+      "sha256": "29b37c4efb135af34ee616259a2df759d9d51e43f4243981dbef380e8bf82c55"
     },
     {
       "path": "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
@@ -40,6 +40,21 @@
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
       "bytes": 4693,
       "sha256": "6cd15c20604fc898aaca9a4ab64954537e3cd6dd812f9946adc2b7300b2437a8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.json",
+      "bytes": 490,
+      "sha256": "1dc76b6b1945920484f33d5f6a511fea3292f6ef6d4ef6e3db8fffb4db3afa97"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/cancellation-repair.stdout.txt",
+      "bytes": 3195,
+      "sha256": "d4c94d4bc5cc74e29012d6cfa8f8f6a3813e8a9739c92591cf9d71832181ed2f"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
@@ -92,6 +107,36 @@
       "sha256": "2f0ce70221908e6cbad083c6ae6e746aa74238b0dbbd2acff6c33599ee74d280"
     },
     {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/independent-repair-links.json",
+      "bytes": 542,
+      "sha256": "743e7e988fa65e1a0fcddc587de0b5d2c70c4cb1e55a14a08fe59bd18b7de02f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-manifest.json",
+      "bytes": 6227,
+      "sha256": "df897d82ab877171a158f5d0605d5f4fcefa0f0bd72b03e37d0ebe37aa18914d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-report.md",
+      "bytes": 6255,
+      "sha256": "a92b41069f17df73b42f7d19423439b74a6e7a9e7fa83472cd1786d38031f220"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-source-preservation.json",
+      "bytes": 1530,
+      "sha256": "bfda315ec7308bd3f02f5ef2158040e114af178aa57aa6f4b470909f62aacb56"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify-result.json",
+      "bytes": 11690,
+      "sha256": "ac565c9430f39fd4a4fe9d08dd672435db20c0c115cb33f2e5fa984419d94dc9"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/initial-verify.py",
+      "bytes": 2823,
+      "sha256": "40b66a4fcbca667c6e6b2073c09a4470ca2071ab9293235d8af02c161da0a428"
+    },
+    {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/manifest-before.json",
       "bytes": 5049,
       "sha256": "15c33b78dfb6a9f9d8527637a48cab477d8a39ac9ce1bfc79c01104e5f6255ba"
@@ -108,8 +153,8 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/source-preservation.json",
-      "bytes": 1530,
-      "sha256": "bfda315ec7308bd3f02f5ef2158040e114af178aa57aa6f4b470909f62aacb56"
+      "bytes": 1597,
+      "sha256": "f1fa7f1fd1da8f25ad77a20f4b30622f3dc30165aa83f19d5b1c06fff03a21dc"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verifier-before-receipt.json",
@@ -133,12 +178,28 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/verify.py",
-      "bytes": 2823,
-      "sha256": "40b66a4fcbca667c6e6b2073c09a4470ca2071ab9293235d8af02c161da0a428"
+      "bytes": 2880,
+      "sha256": "925a50512e49802609a45b47239143b38899d553638685072f4197c7dd90b97f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.json",
+      "bytes": 490,
+      "sha256": "d1e783b8974f8bdd6b3637d360f73c0feef9627f03fe30bc89d7fd73f8def2fe"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/version-ack-repair.stdout.txt",
+      "bytes": 3381,
+      "sha256": "38862b9e21f2b13457ebfa37e9dd3719a324dc0ecac743aba9e130b31101a821"
     }
   ],
   "exclusions": [
     "manifest.json: self-reference",
     "verify-result.json: verifier output"
-  ]
+  ],
+  "historicalPacket": "2e65dfedfe043ea0e2693f506d104c8de05c24ca"
 }

@@ -1,6 +1,6 @@
 # Artifact canonical budget composition
 
-Source candidate `5647415bb4d8e7548741fb9af7fb92a0df2d6cf6` connects the accepted artifact service to the actual shared PostgreSQL budget owner through the public `createPostgresBudgetExecution` export. Only `apps/artifacts/postgres-service.mjs` and its named test are new product files. Independent review is pending; runtime remains HOLD.
+Repaired source `a73b65dc05b7554c0592bec22d940ef781344dd6` connects the accepted artifact service to the actual shared PostgreSQL budget owner through the public `createPostgresBudgetExecution` export. Only `apps/artifacts/postgres-service.mjs` and its named test are new product files. Independent focused review passes 70/70 (37 independent + 33 author); final metadata review is pending. Runtime remains HOLD.
 
 The base is artifact packet `b97fb68c336da35874923c3f5e83a73e870d6f95`. Prerequisite merge `23f2ba78879972538fd1b7b7a56b2f8e2626a6c3` imports exact accepted command/shared-budget source `ca506ba1591b35eae5d389e551787017328eea73`. That merge is dependency evidence, not artifact authorship of gateway or command changes. Every entry of the prerequisite tree and all accepted artifact/kernel files remain unchanged. The old artifact worktree/branch is preserved.
 
@@ -18,7 +18,7 @@ Existing artifact inspect/download remain separately authorized APIs; they are n
 
 ## Verification and preserved failures
 
-Final focused **26/26 PASS**, zero skips, exact source diff zero, process group **381872 absent**. Tests connect the real artifact service, shared producer and PostgreSQL store code through the inherited inert scripted pool. They execute no SQL engine, driver connection, server, native runtime or provider. Synthetic executor/storage/authority facts remain explicit; this is concrete source wiring evidence, not actual PostgreSQL or artifact qualification.
+Final author focused **33/33 PASS**, zero skips, exact source diff zero, process group **389614 absent**. Tests connect the real artifact service, shared producer and PostgreSQL store code through the inherited inert scripted pool. They execute no SQL engine, driver connection, server, native runtime or provider. Synthetic executor/storage/authority facts remain explicit; this is concrete source wiring evidence, not actual PostgreSQL or artifact qualification.
 
 Coverage includes all four typed operations, immutable revision, exact completion hashes, one fixed charge, replay refusal, request/context conflicts, output ceilings, current authority and credential rejection, failed generation UNKNOWN, lost prepare/reserve/marker/settle ACKs, cancellation during connection/transaction setup, shorter release deadline while marker ACK is parked, post-settlement revocation, borrowed receiver preservation and response overflow after publication.
 
@@ -31,3 +31,11 @@ The offline packet verifier initially selected `/workspace` rather than the repo
 ## Remaining qualification
 
 Actual engine concurrency/restart/commit uncertainty, production current-authority ports, object/version persistence, native Office opening/render/recalculation and general-program sandbox execution remain unqualified. Root owns canonical registration and overall execution composition. The four selected artifact obligations and fourteen original workflow intents remain intact; this adapter is not their complete runtime acceptance. G0 remains historically accepted, G1 OPEN, G2–G7 unentered. No customer data, credentials, database, network/provider/model, cloud or security operations occurred in this lane.
+
+## Independent cancellation repairs
+
+Independent review found outer canonical cancellation could win the race against the inner artifact service and return a bare CANCELLED despite started object/version writes or reservation. Reviewer freezes `aea805c7`/`b69340f6` retain exact controls and failure streams. Repair `19ca2562` creates a per-execution observation closure around the same canonical owner, recording allocation and port-start/ACK facts before awaits. This is transient error disclosure, not a second ledger or timer. It preserves the original cause and identifies artifact or budget uncertainty when the outer waiter cancels; no refund, reconciliation or retry runs automatically.
+
+A second independent pair showed `versionCommitted:false` after a valid correlated version ACK when cancellation occurred during marker/settlement. Source `a73b65dc` records the accepted service's exact closed ACK predicate immediately, while started or malformed ACKs remain unconfirmed. `versionCommitted` means an acknowledged commit, never that an unacknowledged started write did not happen. `versionCommitStarted` and budget reservation/settlement ACK fields disclose that distinction. The reviewer preserves the 34 PASS / 2 FAIL source at `18c07952`; unchanged controls now pass. The shared kernel, original artifact service and all prerequisite bytes remain unchanged.
+
+All six author groups are absent: original four plus 388403 and 389614. Independent group 390702 is reported absent in its separate receipt. Current source passes 33 author controls and 37 independent controls (70 total). The original author packet `2e65dfed`, its report, manifest, verifier/result and preservation preimages remain explicit historical evidence. The new general-analysis composition has a separate branch/packet/review and is not imported or accepted by this typed-service packet.
