@@ -1,0 +1,1419 @@
+{
+  "authorCommit": "05b297923791e434c52aa63eca6d3752d21af54e",
+  "authorTree": "37d59c0eced3ec760bf65f1aac8e7f4c1c2a3bd4",
+  "baseCommit": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "checks": [
+    {
+      "name": "exact clean author HEAD",
+      "passed": true
+    },
+    {
+      "name": "only allocated new author paths",
+      "passed": true
+    },
+    {
+      "name": "no preexisting file modified",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/authored-diff-check.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-2",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-3",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/common-README.md",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-control",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stderr",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest members unique",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-InRelease",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-signing-key.asc",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded postgres-debian.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-faq.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded postgres17-install.html",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-install.rst",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-pyproject.toml",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded debian17-rules",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes debian17-control",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only debian17-control",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded debian17-control",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin postgres17-path.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin postgres17-exec.c",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-pq-init.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded pgdg-packaging-api.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin pg8231-metadata.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin common-postgresql.mk",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded common-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin typing415-pypi.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-pq-misc.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-libpq-ctypes.py",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin postgres17-COPYRIGHT",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin psycopg333-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes common-README.md",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only common-README.md",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin common-README.md",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin common-pg-wrapper",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "failure explicitly recorded common-server-maint-functions",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-cloudflare-1.4.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-connection-string-2.14.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-int8-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-pool-3.14.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-protocol-1.16.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pg-types-2.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-pgpass-1.0.5.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-postgres-array-2.0.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-postgres-bytea-1.0.1.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-postgres-date-1.0.7.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-postgres-interval-1.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-split2-4.2.0.json",
+      "passed": true
+    },
+    {
+      "name": "retrieval bytes npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "metadata/source only npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "HTTPS exact origin npm-xtend-4.0.2.json",
+      "passed": true
+    },
+    {
+      "name": "psycopg exact metadata version",
+      "passed": true
+    },
+    {
+      "name": "Python3.12 typing-extension requirement retained",
+      "passed": true
+    },
+    {
+      "name": "wheel metadata identity not acquired",
+      "passed": true
+    },
+    {
+      "name": "pinned pure Python libpq condition",
+      "passed": true
+    },
+    {
+      "name": "upstream conditional relocation fallback retained",
+      "passed": true
+    },
+    {
+      "name": "exact research base and no setup recipe",
+      "passed": true
+    },
+    {
+      "name": "no target action or approval inferred",
+      "passed": true
+    },
+    {
+      "name": "PGDG listing leads not authenticated pins",
+      "passed": true
+    },
+    {
+      "name": "listed subtotal arithmetically correct",
+      "passed": true
+    },
+    {
+      "name": "exact signature trust not claimed",
+      "passed": true
+    },
+    {
+      "name": "prefix support unresolved not impossibility",
+      "passed": true
+    },
+    {
+      "name": "driver native and payload boundaries",
+      "passed": true
+    },
+    {
+      "name": "complete exact canonical Node lock metadata scope",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-cloudflare",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-connection-string",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-int8",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-pool",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-protocol",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pg-types",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock pgpass",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock postgres-array",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock postgres-bytea",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock postgres-date",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock postgres-interval",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock split2",
+      "passed": true
+    },
+    {
+      "name": "Node registry versus existing lock xtend",
+      "passed": true
+    },
+    {
+      "name": "Python wheel metadata psycopg",
+      "passed": true
+    },
+    {
+      "name": "Python wheel metadata typing-extensions",
+      "passed": true
+    },
+    {
+      "name": "host metadata stdout",
+      "passed": true
+    },
+    {
+      "name": "host metadata stderr",
+      "passed": true
+    },
+    {
+      "name": "host query negative retained",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/coordination/reports/MERI-G1-L1-HOST-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/qualification/candidates/g1-l1-host-20261012/author/setup-packet.json",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding docs/qualification/candidates/g1-execution-options-20261012/author/execution-plan.json",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding apps/proxy/qualification/state/postgres_store.py",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding apps/proxy/qualification/state/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding apps/control/qualification-sdk-fixture/state/package.json",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding apps/control/qualification-sdk-fixture/state/package-lock.json",
+      "passed": true
+    },
+    {
+      "name": "canonical source binding apps/control/qualification-sdk-fixture/state/store.mjs",
+      "passed": true
+    },
+    {
+      "name": "independent exact PGDG retrieval failures retained",
+      "passed": true
+    },
+    {
+      "name": "report explicitly holds setup",
+      "passed": true
+    }
+  ],
+  "passed": 238,
+  "failed": [],
+  "authorFiles": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "bytes": 9384,
+      "sha256": "7b7bc7d20f8cf2ee3c3e7699087c93b3fa8db03d02bc220a73e1072ac11cbb14",
+      "gitBlob": "de80ed0539d651cabc75d4748a5c062283be34bd"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PREFIX-20261012.md",
+      "bytes": 2229,
+      "sha256": "68f2d8874c2dea9288eb52f27a3b2313298ee27d7da60308fd80e6c832325832",
+      "gitBlob": "5e129f012afb356d6975efae4cfa038bc93d6263"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "bytes": 26605,
+      "sha256": "353f595cdb19fb5cffcdd5fdd54d6248d36715f9c904f84b5d27e5be8f5c1f34",
+      "gitBlob": "317090efb4faa61472ddea99845ab27f144f0623"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/authored-diff-check.json",
+      "bytes": 844,
+      "sha256": "5aaf206bed9938186213445f4f908c99b0b80b3be8d89494546705e610b53dc1",
+      "gitBlob": "9da7748ac7ac6e22afb9ed20af42390a220c91b9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/collection-notes.json",
+      "bytes": 2465,
+      "sha256": "bf29dab6a55e302c1ac6fba30fb6b418dadf5bf9183acaa3e601e25fd0046802",
+      "gitBlob": "7fd6190f8ec5d69d0e973d5026796cc7a2dcb155"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/diff-check-raw-failure.json",
+      "bytes": 81562,
+      "sha256": "1fb3ba32ac024c6b74ff3794423ceac88f9420c73d4fc7d15bd4ce881e1d28ad",
+      "gitBlob": "504861470cae06732549ebc148baa9a4a214ab37"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/host-dependency-query.json",
+      "bytes": 1210,
+      "sha256": "29348c282713d44cf6803c14a4ba6e2ae3a9775f7f5bb7d6255bb8be2c2f867a",
+      "gitBlob": "ceef54c4e2eb9a38ee80c93073f81fcb0c29a9f8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/manifest.json",
+      "bytes": 14334,
+      "sha256": "eb897c2abfa084bdfd386ffed02d3c03044cdbd070f98266c68497ffc3eaddaa",
+      "gitBlob": "73e834759000b07780c09709f07f7c9b5fff4fff"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-2",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "gitBlob": "9efa6fbc962836e243e20f7f23db062e2c077d28"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/GPL-3",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "gitBlob": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-README.md",
+      "bytes": 5410,
+      "sha256": "a04b941e9d58986fa29a5bda11a707466b5a7ecf692863999fc7c1c974479810",
+      "gitBlob": "5e48b28ce2cccdf279d43e3d3c145b1fedcb4147"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-maint-functions",
+      "bytes": 14,
+      "sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed",
+      "gitBlob": "1becba2bb0a80e7b9b0a7715f15e56512a7e5f7e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-pg-wrapper",
+      "bytes": 10481,
+      "sha256": "fc00112585bd75eb9eb6fcd11ca4cf7222acf10259a1f21eea4889536dee640a",
+      "gitBlob": "5b741c586a5fe733c4ac67216777519fdc41cc17"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-postgresql.mk",
+      "bytes": 10931,
+      "sha256": "5a7006867d14535660021a2e72b36586106713fa06e360a0b42f0236cf3c8e75",
+      "gitBlob": "3aa52653572fb906cafe4d1e8d70ce471dcb7814"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/common-server-maint-functions",
+      "bytes": 14,
+      "sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed",
+      "gitBlob": "1becba2bb0a80e7b9b0a7715f15e56512a7e5f7e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-control",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/debian17-rules",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stderr",
+      "bytes": 169,
+      "sha256": "196580329f61355f8736c2ee2bbf80e2559a18e14c6b919901dff9f7c09c4369",
+      "gitBlob": "6e29be54e01de89157fdf1c9db49d6724fd43c24"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/host-dependency-query.stdout",
+      "bytes": 2274,
+      "sha256": "cb8f02ab05e6f0e02385aba2339841f9a56bbfefe81f5b24ae7b69d1c3af00a8",
+      "gitBlob": "3fc278a5756f74466546cc2982adf8c20fff7860"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-cloudflare-1.4.1.json",
+      "bytes": 1895,
+      "sha256": "e77c9f9bd4eaef167a479e301d678913015fddbad00b7481ed85fe37ca55ed55",
+      "gitBlob": "1742ac8f3b610ea1eb9fc1f2201426ca128c139b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-connection-string-2.14.1.json",
+      "bytes": 2337,
+      "sha256": "fc8c05c3fb664f515464d6cbe5d07031391bba1e81395da97da3d42b82e05ac1",
+      "gitBlob": "19a713eeb6ed99cce22adb9ff51f84236f9e30f9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-int8-1.0.1.json",
+      "bytes": 1280,
+      "sha256": "01eeb961980196fd42d798d92f222dd592445f5e0558d1d1be4bd42487dd29b6",
+      "gitBlob": "a170ee393dd4bdd29eeb217e170ffde50cf8ca32"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-pool-3.14.0.json",
+      "bytes": 1691,
+      "sha256": "2306b78d03e80e7d89d63647ca46109cd8f1f9980a432de906e279205538106d",
+      "gitBlob": "824801b2d2ff74b5c5d43f67e17bb2d53d9ad976"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-protocol-1.16.1.json",
+      "bytes": 1998,
+      "sha256": "8075041445d133cfa2d49d4026305e1992f78861a1d826231233238d72737fe1",
+      "gitBlob": "03a2b31089874a5bcc73b2e2436480a0db6a9eb2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pg-types-2.2.0.json",
+      "bytes": 2635,
+      "sha256": "a9d61026999df90498f658bf0bc1e02d68818ba1aea319dcc6b17320b09a3c09",
+      "gitBlob": "885920f5863bd63d175a3129aaf92bc115485611"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-pgpass-1.0.5.json",
+      "bytes": 2778,
+      "sha256": "753a7666f79449faed8e9c9676c6398dd43bca237c92e8fbfff27a66e116961d",
+      "gitBlob": "4f08b123d534ef9838a07e6fac5944c9d120dae2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-array-2.0.0.json",
+      "bytes": 2448,
+      "sha256": "7ebff4bec6658593cb9924024e9601eb7bb6f741ec12ebaac6d4079cfda114ff",
+      "gitBlob": "bf57385464b34effba470133e4beec6f2b9bbaef"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-bytea-1.0.1.json",
+      "bytes": 1566,
+      "sha256": "1d9c84dd3200ad932b21fe810f78199e29d0150e00961a3208ec5098f0d60f28",
+      "gitBlob": "3aa475a2e7fa2b82f2b8dfc8b9134d23876f1eda"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-date-1.0.7.json",
+      "bytes": 2423,
+      "sha256": "ba2aee6c4888aabf22a2aa2d090e2c65b7df7aa9ee58e1eb6a910844b4296977",
+      "gitBlob": "2d0b315f8be06ea3816684bc36c18ce8d789de90"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-postgres-interval-1.2.0.json",
+      "bytes": 2477,
+      "sha256": "8d0f3b5bc1d528f5e2811d1236dc5c887912211f512a7b3aa24f7ccc5cb1bfe4",
+      "gitBlob": "229f4fea14498a188efceb8220ada01493233d04"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-split2-4.2.0.json",
+      "bytes": 2865,
+      "sha256": "113447596ab7b00cc2fb5dde52ffb6c1832da1bd069f2f1077c8d2eaa5e5eda6",
+      "gitBlob": "9cc345c6cef042f5e33e0aa69631da401ad7da03"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/npm-xtend-4.0.2.json",
+      "bytes": 2587,
+      "sha256": "ec96a0b917e481c739fd073a20188890389ba7ec835b8e6b8e0c1f90159f9cd1",
+      "gitBlob": "50c6641a335c243ada4fa202894c2c6c3c801dda"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pg8231-metadata.json",
+      "bytes": 2393,
+      "sha256": "928cc53cd24d6e2ea6caa11d74422c9291d117d88c8cc4c1974b074f638b9d35",
+      "gitBlob": "57f0cf9dde878692aaa01e949f80031c3eb715e7"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-17-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-Sources.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-faq.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-main-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-packaging-api.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/pgdg-signing-key.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres-debian.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-COPYRIGHT",
+      "bytes": 1198,
+      "sha256": "3d6af92ff8a4c2cdf69afb1cf44edea727922f5cd0cf8b5f72b11cdecac8fdfd",
+      "gitBlob": "0a397648dcd3c2177acc58bd7daecd11ad64be62"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-exec.c",
+      "bytes": 18773,
+      "sha256": "530d597a30f2ac12ebe917dba36cb2bc7add5825aa8262a76808a4114a413a4c",
+      "gitBlob": "0bee19c1e539fea1186fe9847568caf6c96bbfba"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-install.html",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/postgres17-path.c",
+      "bytes": 27329,
+      "sha256": "99d4938b452daaaafefdb76d0ba843e32e74fcee3656e5ebf979472c386f343e",
+      "gitBlob": "0cd9eccb2fb2f6efd3fb1751a1b7f5622a7b733b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-LICENSE",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "gitBlob": "0a041280bd00a9d068f503b8ee7ce35214bd24a1"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-install.rst",
+      "bytes": 8930,
+      "sha256": "f5f0a373afc44099feecde389f7d7593f0e4b13ef1782d2f5f697a48e602e0c8",
+      "gitBlob": "7b2fe6c5b7f218256e37787435823bb7f062e9a9"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-libpq-ctypes.py",
+      "bytes": 22497,
+      "sha256": "4d69fb3e81431671a930e8193522b32c22fd8ea597da83961e577dbb7701f12f",
+      "gitBlob": "eab01f57fbc49834c480162981095c381055e5cd"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-init.py",
+      "bytes": 3976,
+      "sha256": "6d3f05b1b5a02896fb0a4fb690c8ae810928f459c355d70426ec1be7448f50e5",
+      "gitBlob": "bf0b55f2c400345e3db5f9252a8289b448f799a8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pq-misc.py",
+      "bytes": 6727,
+      "sha256": "429e8247e5b9400b203373b926052b6580cd82fa596c5ca582e94d4a58a365e9",
+      "gitBlob": "85d8f10823bc338b040980bf8d4e9ffdd1d53977"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pypi.json",
+      "bytes": 5929,
+      "sha256": "ae7c70d4d7798ab678cf0154bb8ad772f89045934efc0c92a79c46fae19255b5",
+      "gitBlob": "fb6bbd2a7eff3960d50df0c56257c5746c9b00a0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/psycopg333-pyproject.toml",
+      "bytes": 3115,
+      "sha256": "12404eb461971f00958a80ebe4b822740b1b76624c64e2f68ef755b7111b9600",
+      "gitBlob": "71204a65404036a1847f93cf516cbe7e38bbddbc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/typing415-pypi.json",
+      "bytes": 5590,
+      "sha256": "e97e0b1087254aa1c7e8b2074c3796124dfd7d26e0f54ffcdc3a975b53047938",
+      "gitBlob": "e990326f5e6d186cdfb746fe758e26764a7333bc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-10.txt",
+      "bytes": 20722,
+      "sha256": "a4c871d19ae0efb99071349f8e7b081944174e9388aaa96b0299bead3798c8c1",
+      "gitBlob": "06d2b10bdf02874fa2836fdcb012cdbca0c7db20"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-11.txt",
+      "bytes": 17939,
+      "sha256": "926d38e5f69cede6dc0b8648bb644f37e34e2836f2a5541e603b3b0eff2f01cd",
+      "gitBlob": "e32e4f32836c308e2734d2bb833911fe4b1641d3"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-3.txt",
+      "bytes": 5129,
+      "sha256": "7c5705175158a503a9035915708655763a90507a0f741bad6adfd090ead004e7",
+      "gitBlob": "415bac4e514a8d4aed81e94a9e4684fb439c4cb4"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-4.txt",
+      "bytes": 29860,
+      "sha256": "a84fdc92209609e99728c0a3c850b9ba34dd75e3f626b9270bc23d39cd32010e",
+      "gitBlob": "38811de1ead9b66aaeaa8b422fa7abaff37a4e4a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-5.txt",
+      "bytes": 24381,
+      "sha256": "a2c192070a846275c8a1f25234a1729029ca57c43ea54c769f88b9a906c8cba9",
+      "gitBlob": "c90a08960708796f05d6c0e2cfb35b7f54e3e3a0"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-6.txt",
+      "bytes": 20898,
+      "sha256": "1ac6f2ea9915c740f181450519874145e61ca6a89372a2953d83c56e735a2eef",
+      "gitBlob": "dcfa287454afd4e04f366162fd04267f615f6eca"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-7.txt",
+      "bytes": 3789,
+      "sha256": "2058204a61eb7c304d9d6e607987a9beb718cd14d3ed8914ff4791faec7fa281",
+      "gitBlob": "35a493656dff282b82f9dc77a72f62148a192bf2"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-8.txt",
+      "bytes": 25827,
+      "sha256": "403a847ae32bdc10aac47c7b9b6700c2eeefd9ffbccd017a65293073bb1e2ab3",
+      "gitBlob": "05483d2db5c3cdeedc86a5c80e7b7b0e9c9d3989"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-9.txt",
+      "bytes": 23913,
+      "sha256": "d27fc53cafd4275ed0a7ce286f348ae53cdaeba2b1209a03a3f627050ca41057",
+      "gitBlob": "fe7669a67a97e2fc35f8516f61b21a07198742d8"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-package-attempts.txt",
+      "bytes": 32826,
+      "sha256": "db0af097c3139fc529abca3b10a63a27a04d68ec0dc7aae0ae24fd706a0f844c",
+      "gitBlob": "4e72bdc5016bc63eec499aad2002aebeec21d50d"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/raw/web-pool-listing.txt",
+      "bytes": 20245,
+      "sha256": "40d7bfac06c873e683e2f09aeb0f9723a377c37528bc35c0158f54c552f98362",
+      "gitBlob": "0f542d7e22b718d4e13b312b9eac2fd178a29458"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/retrievals.json",
+      "bytes": 21652,
+      "sha256": "df7cb2aca3fb3f453a09c50270e8b8072dca4e74bb0a6c7d5fad8b42914f7348",
+      "gitBlob": "627e57fa58705cc7fb49f19ac63fccb8878c619a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/verification.json",
+      "bytes": 32478,
+      "sha256": "74b30eecb9c12c0619e137386b7bc6d7d893a54a1a07c8df66e1222db2a68109",
+      "gitBlob": "9c3bdb845581f35a47dde557b4761bbe83f95f12"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/verification.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/native-prefix-20261012/author/verify.py",
+      "bytes": 5695,
+      "sha256": "13931018bb3b85fe3e9ae29709299ac13d45ee4b51c8b7f6de40af2339001053",
+      "gitBlob": "42861a5b349a7df45ee1f815f883be3041889110"
+    }
+  ],
+  "successfulMetadataReads": [
+    "psycopg333-pypi.json",
+    "psycopg333-install.rst",
+    "psycopg333-pyproject.toml",
+    "postgres17-path.c",
+    "postgres17-exec.c",
+    "psycopg333-pq-init.py",
+    "pg8231-metadata.json",
+    "common-postgresql.mk",
+    "typing415-pypi.json",
+    "psycopg333-pq-misc.py",
+    "psycopg333-libpq-ctypes.py",
+    "postgres17-COPYRIGHT",
+    "psycopg333-LICENSE",
+    "common-README.md",
+    "common-pg-wrapper",
+    "npm-pg-cloudflare-1.4.1.json",
+    "npm-pg-connection-string-2.14.1.json",
+    "npm-pg-int8-1.0.1.json",
+    "npm-pg-pool-3.14.0.json",
+    "npm-pg-protocol-1.16.1.json",
+    "npm-pg-types-2.2.0.json",
+    "npm-pgpass-1.0.5.json",
+    "npm-postgres-array-2.0.0.json",
+    "npm-postgres-bytea-1.0.1.json",
+    "npm-postgres-date-1.0.7.json",
+    "npm-postgres-interval-1.2.0.json",
+    "npm-split2-4.2.0.json",
+    "npm-xtend-4.0.2.json"
+  ],
+  "failedMetadataReads": [
+    "pgdg-InRelease",
+    "pgdg-main-Packages.bz2",
+    "pgdg-17-Packages.bz2",
+    "pgdg-Sources.bz2",
+    "pgdg-signing-key.asc",
+    "postgres-debian.html",
+    "pgdg-faq.html",
+    "postgres17-install.html",
+    "debian17-rules",
+    "debian17-control",
+    "pgdg-packaging-api.json",
+    "common-maint-functions",
+    "common-server-maint-functions"
+  ],
+  "targetPayloadActions": 0,
+  "signatureVerification": "UNRUN: exact key/Release/index bytes unavailable",
+  "scope": "Evidence integrity and metadata consistency only; source and setup disposition require accompanying review report."
+}
