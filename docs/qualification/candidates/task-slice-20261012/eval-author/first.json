@@ -1,0 +1,19 @@
+{
+  "source": "b65062f833537766f43ce670d2137fbb5a160812",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/score.test.mjs"
+  ],
+  "exitCode": 1,
+  "timeout": false,
+  "durationSeconds": 7.92,
+  "group": 412057,
+  "groupAbsent": true,
+  "stdoutSha256": "2d454b4e08ad4d9f5ccff7b3bd498a856c6d278c7528ad56e60892b5a662b5b5",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiff": ""
+}
