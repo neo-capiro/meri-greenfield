@@ -73,6 +73,14 @@ for name in manifest_paths:
         assert identity(target) == {key: entry[key] for key in ("bytes", "sha256")}, str(target.relative_to(ROOT))
     manifest_results.append({"path": str(path.relative_to(ROOT)), "membersMatched": len(entries), **identity(path)})
 
+plan_review = ROOT / CANDIDATES / "g1-owner-continuation-20261012/review"
+plan_receipt = json.loads((plan_review / "acceptance-receipt.json").read_text())
+assert plan_receipt["verdict"] == "ACCEPT_SOURCE" and plan_receipt["checks"]["passed"] == 284
+assert identity(ROOT / "docs/plans/MERI-G1-SOURCE-TO-NATIVE.md")["sha256"] == plan_receipt["planSha256"]
+plan_manifest = json.loads((plan_review / "manifest.json").read_text())
+for entry in plan_manifest["files"]:
+    assert identity(ROOT / entry["path"]) == {key: entry[key] for key in ("bytes", "sha256")}
+
 receipt_results = []
 for receipt_path in sorted(OUT.glob("*.json")):
     receipt = json.loads(receipt_path.read_text())
@@ -119,6 +127,8 @@ result = {
     "changedOriginalPaths": sorted(changed), "allOriginalTestsContractsLocksMigrationsPreserved": True,
     "frozenL1AndImagePacketsPreserved": True, "exactAcceptedSource": source_results,
     "currentManifests": manifest_results, "rootSourceCheckReceipts": receipt_results,
+    "independentPlanReview": {"verdict": plan_receipt["verdict"], "checksPassed": 284,
+                              "planHashMatched": True, "reviewManifestMembersMatched": len(plan_manifest["files"])},
     "boundedPrivacyScreen": {"files": len(paths), "knownPrivateNeedles": len(needles), "matches": 0,
                              "excluded": "Drive-root-only strings identify no personal location; original overly broad failure retained.",
                              "limitation": "Known supplied private values/bodies and named credential markers only; not a universal secret guarantee."},

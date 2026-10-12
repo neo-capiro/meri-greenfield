@@ -1,0 +1,66 @@
+{
+  "sourceHeadBeforeMetadataCommit": "26b7d52e2418491593d74a1d18147cfad902eac5",
+  "sourceDocWhitespaceExitCode": 0,
+  "fullWhitespaceExitCode": 2,
+  "rawWhitespacePathsPreserved": [
+    "docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff",
+    "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stdout.txt"
+  ],
+  "fullDiagnosticSha256": "b889f95879e782f2f8b0e08307b4db6a701d8ec28f563300a372268d543f167a",
+  "sourceCheckReceipts": [
+    {
+      "name": "budget-independent.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "exact-root-dependencies.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "final-integrity-audit.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "gateway-offline.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "historical-supervisor-author.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "host-packet-offline.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "integrated-source-audit-corrected.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "integrated-source-audit.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "native-writer-author.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "name": "native-writer-independent.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "allTenOwnedGroupsAbsent": true,
+  "failuresPreserved": "One root checker false positive corrected without modifying candidates; negative controls and all lane raw failures retained.",
+  "nativeRuntimeAccepted": false,
+  "gate": "G1_OPEN"
+}
