@@ -1,0 +1,222 @@
+{
+  "source": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "base": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+  "selfExcluded": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/manifest.json",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-OUTREACH-QUERY-AUTHOR-20261012.md",
+      "bytes": 9385,
+      "sha256": "7a544c7278ac768d1ad92819f1dfa56697d9bf351ba15ba89dec461dd0e162f0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/first-source-identities.json",
+      "bytes": 558,
+      "sha256": "85ae76868455f9a1ef8c04c9ba64f428978961186d0cae67f6667f787489c437"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/fixture-corrections.json",
+      "bytes": 573,
+      "sha256": "612ea68debfb2a7a778cdc99bf17662971418b0b8e1858345447781497d72185"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.json",
+      "bytes": 1305,
+      "sha256": "87b25d5dd80124964034ec9f2b805eba931992812f1d437753455eb3de61f4db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stdout.bin",
+      "bytes": 3308,
+      "sha256": "90c60cefc91afd5521b82612779dedc9fb0d6f6addc9e6f07a8e5b6a73fc37c0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.json",
+      "bytes": 1297,
+      "sha256": "beb39312f4cf4ff748dc1b679f8fce2ff206da009614cb7f74d4ea3bdb6e20ee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stdout.bin",
+      "bytes": 5210,
+      "sha256": "89a52296c358f6a488f34d75add2476f5a147dabfbfba5c9b6e459468b4edde7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.json",
+      "bytes": 1299,
+      "sha256": "1b1cbded74448834a3dcb22b59fe60cd6778834cf5c86af7dc386cda23c726fb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stdout.bin",
+      "bytes": 3303,
+      "sha256": "21a2f131ca3ca459af8d270b3f5ce7de82d450dddf3999397ee391a16f5bf10a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query-validation.mjs",
+      "bytes": 7887,
+      "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query.schema.json",
+      "bytes": 20403,
+      "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/retrieval-outreach-query.test.mjs",
+      "bytes": 15505,
+      "sha256": "ff203e54e006041fb8c5aac88778135c7a983507986d9f748d7f44211ab7d5ad"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/inspection-corrections.json",
+      "bytes": 637,
+      "sha256": "d0cc22750ea61d2fa60e4747ad75cb2bf376fca43edc804d6dbd047676b4d49c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/metadata-corrections.json",
+      "bytes": 922,
+      "sha256": "37f4f887cfb7fafc587de89ec84a218ee107085635b48489a2502dce8578638f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/outline.json",
+      "bytes": 1002,
+      "sha256": "eca73f9c9eb945ab20c2c5e8c4cb3f7e360550869e347c9e3a9aa3a9f929aec8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/private-content-scan.json",
+      "bytes": 259,
+      "sha256": "2ad84ef1de0d226ec31f2b329cf8a77f5073a1e46bc15aa4fd0b09f00dbf2c96"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/projection-fields.json",
+      "bytes": 10629,
+      "sha256": "69aaac49d79480b9d34310dbbdeff2a667a910dd4f1d8ed2cdf28675613a62a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/reference-identities.json",
+      "bytes": 7340,
+      "sha256": "db8ac2565ab186b3c319b018d8760c01d30062a211dedcfd8a6020efb1c6a47f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-data.json",
+      "bytes": 1075187,
+      "sha256": "a1cd641628050f61719c0a8c8b589003a1a4e0668f6bcb9788ea02493d60243f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.json",
+      "bytes": 1332,
+      "sha256": "cfbb4b5a4e2a6ad13bdc17b1bdd07c210e27b4845fc7be690762b99732f98be6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stdout.bin",
+      "bytes": 879,
+      "sha256": "81afffdcfeeeffb4eec58134a4b05bd6f436873840f18fbcb7b79eb40b321341"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-initial.py.txt",
+      "bytes": 4673,
+      "sha256": "0cc70fa5dd860dab267635627351581ce807aed641928b2ed7979660a121fa7b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.json",
+      "bytes": 1320,
+      "sha256": "bd7bb50536fac10833370652e2c66c7f58d699772ae2a6b8b449b071aaa4aa5b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.py",
+      "bytes": 4678,
+      "sha256": "88c069e7d2f397dd383ff0da3021c54baa833f00b4a828692be1b3713ba143ec"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stdout.bin",
+      "bytes": 879,
+      "sha256": "81afffdcfeeeffb4eec58134a4b05bd6f436873840f18fbcb7b79eb40b321341"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-facts.json",
+      "bytes": 3840,
+      "sha256": "2da4fad05f17f17de1ed413bcd77e19c5d981ddfd9774055409e1f7d546635e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints-initial-extraction.json",
+      "bytes": 3873,
+      "sha256": "35515c00bf16d25011b830b104a796ea622232119d0474c82ea34bd64a011930"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints.json",
+      "bytes": 4575,
+      "sha256": "f7fef00123641a91a29c44a006665bd7d4096bb1cb31f55bc04922c5b0cdf377"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/verify-packet.py",
+      "bytes": 1936,
+      "sha256": "bed6cb81c4a8347c557f8ac22d29e6a1cd4fefe31075ee3914608672edb73fb4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stdout.bin",
+      "bytes": 266,
+      "sha256": "18a9d3237ece23fa440fdd8ef93bb010e9bb252219c0be3fe620b5c4168d1d97"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace.json",
+      "bytes": 221,
+      "sha256": "90b866a868ecebd7f6d23ef295f74da6e2f59879d0b9483926d96b4cb2530661"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "bytes": 7887,
+      "sha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "bytes": 20403,
+      "sha256": "b82eb8024c2e68461f68e29c15b0e518ae5b93c0e1bc13fffd6ea58319801708"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "bytes": 15705,
+      "sha256": "9cae563d262d6a0a056c3c89ab2b0d27222267cabb36308bbf5b931196cb5156"
+    }
+  ]
+}

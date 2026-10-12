@@ -1,0 +1,108 @@
+{
+  "operation": "query_outreach",
+  "source": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "locations": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "symbols": {
+        "queryOutreach": [
+          8923,
+          8965
+        ],
+        "ensureClientVisible": [
+          9789,
+          9829
+        ],
+        "optionalString": [
+          9948,
+          9954
+        ],
+        "clampInt": [
+          10044,
+          10049
+        ],
+        "summarizeText": [
+          10285,
+          10289
+        ]
+      },
+      "observations": [
+        "Exact nonblank outreachId is checked before client resolution and list filters.",
+        "List assigns ensureClientVisible return, then calls listCampaigns.",
+        "Campaign count is fetched-array length before slice, not a separate count read.",
+        "Campaign projection is11 fields, superseding historical outline12."
+      ]
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "symbols": {
+        "getOutreachRecord": [
+          2655,
+          2669
+        ],
+        "listCampaigns": [
+          10357,
+          10375
+        ],
+        "outreachInclude": [
+          10789,
+          10821
+        ],
+        "clientSummarySelect": [
+          10823,
+          10834
+        ],
+        "debriefMetadataSelect": [
+          10858,
+          10875
+        ]
+      },
+      "observations": [
+        "Exact record where tenantId/id/deletedAt:null plus ownOutreachRecordWhere; absent record throws, no successful missing envelope.",
+        "List where tenant plus optional resolved client/status; no creator filter.",
+        "List is ordered by unprojected updatedAt; returned createdAt order cannot be verified as equivalent.",
+        "Meeting attendees have no family cap; preps/debriefs take1 ordered by createdAt. Complete prep scalars, selected metadata-only debrief."
+      ]
+    },
+    {
+      "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+      "symbols": {
+        "ownOutreachRecordWhere": [
+          96,
+          101
+        ]
+      },
+      "observations": [
+        "Exact owner predicate requires creator user ID and excludes internal outreach_v3. This is not a contract-issued grant."
+      ]
+    },
+    {
+      "path": "apps/api/src/prisma/prisma.service.ts",
+      "symbols": {
+        "withTenant": [
+          145,
+          170
+        ]
+      },
+      "observations": [
+        "Transaction and tenant set_config are source dependencies; no database execution performed. No withTenantUser requirement invented."
+      ]
+    }
+  ],
+  "wireLimits": [
+    "Required trusted clientResolution null for no selector or suppressed exact branch; non-null only exact trimmed/capped effective reference and resolved UUID for list.",
+    "Private UUID lowercase canonicalization retains case identity and prevents UUID reference rebinding.",
+    "Strict request scalar admission rejects booleans/objects that historical optionalString/clamp helpers may silently ignore.",
+    "Stored date wires admit only finite canonical UTC millisecond ISO with four-digit years; broader JS Date year/wire compatibility is not claimed.",
+    "Body uses normalized UTF16<=2000; no source raw body or prefix proof; exact-length2000 does not imply truncation.",
+    "Opaque JSON is bounded inert data under canonical snapshot admission; no invented nested business DTO or content authority."
+  ],
+  "sourceEffects": [
+    "Existing tenant transaction-local configuration and stored reads must be qualified separately.",
+    "No send, prep-generation, debrief-decryption, model/provider call, audit command or live source is implemented by these validators."
+  ],
+  "runtimeAccepted": false,
+  "sourceConnected": false,
+  "currentAuthorityProved": false,
+  "databaseConstraintsAppliedProved": false
+}

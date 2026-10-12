@@ -1,0 +1,6 @@
+{
+  "fullExitCode": 2,
+  "authoredExcludingRawCapturedStdoutExitCode": 0,
+  "rawFailureWasModified": false,
+  "reason": "Two original Node assertion pretty-print blank lines contain spaces; raw failure bytes retained."
+}

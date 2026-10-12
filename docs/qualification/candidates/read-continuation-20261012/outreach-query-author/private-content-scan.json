@@ -1,0 +1,8 @@
+{
+  "scannedFiles": 36,
+  "privateReferenceFiles": 11,
+  "privateLongCodeLineMinimum": 160,
+  "matchingFiles": [],
+  "privateBodiesPublished": false,
+  "scope": "Exact long-line overlap scan plus manual metadata-only review; not a universal privacy proof."
+}
