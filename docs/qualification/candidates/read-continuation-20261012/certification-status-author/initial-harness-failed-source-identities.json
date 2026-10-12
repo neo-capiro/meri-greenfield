@@ -1,0 +1,17 @@
+[
+  {
+    "path": "packages/contracts/retrieval-0.2/certification-status.schema.json",
+    "bytes": 6517,
+    "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+    "bytes": 2809,
+    "sha256": "5f6c2056c44202f86a850dc0af7f4ccf33144ecea2e5affb7ab05ef793e2768c"
+  },
+  {
+    "path": "packages/contracts/test/retrieval-certification-status.test.mjs",
+    "bytes": 11235,
+    "sha256": "5e1bb2c8cb19d55f621639895924894cdd273ef074b787ddfd9d371f14c0b932"
+  }
+]

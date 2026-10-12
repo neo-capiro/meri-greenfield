@@ -1,0 +1,40 @@
+✔ independent complete stored bill report contractor and missing-table variants admit (7.466058ms)
+✔ closed required selector uses exact trim and UTF16 cap without case or authority inference (3.002632ms)
+✔ empty trusted context refuses model authority and omitted non-JSON context (0.412019ms)
+✔ operation and own-data admission reject coercion getters and proxies without effects (0.200261ms)
+✔ report echo is exact while original bill contractor envelopes cannot prove requested PE (2.277422ms)
+✔ bill nullable fields are required and unselected fields cannot leak (1.076628ms)
+✔ bill stored columns and signed values are not manufactured from canonical identity (0.400221ms)
+✔ bill nullable links and packages retain nonrejected stored semantics (0.420352ms)
+✔ bill specificity then date order is checked without global freshness claim (0.615635ms)
+✔ bill identity duplication and source100 window refuse without count proof (3.634742ms)
+✔ bill SQL date-only projection and canonical generatedAt reject invalid time shapes (0.564759ms)
+✔ report empty coverage requires exact loaded-source caveat not a global absence proof (0.413381ms)
+✔ program-only and mixed report language keep per-item and aggregate attribution caveats (1.252652ms)
+✔ report basis establishes scope without turning candidate into accepted (0.73886ms)
+✔ report status precedes basis FY and confidence but source winner is not reconstructed (0.45887ms)
+✔ report confidence ties and out-of-range stored Float remain projection facts (0.342485ms)
+✔ report unique identity and50cap do not certify completeness (1.592583ms)
+✔ report nullable fields are complete fields not optional proof markers (0.682165ms)
+✔ missing award table fallback cannot carry normal evidence or fabricate rows (0.935516ms)
+✔ normal contractor projection keeps fixed24month award provenance apart from exhibit FY (1.326603ms)
+✔ contractor direct and candidate buckets correlate only returned grouped awards (0.582545ms)
+✔ named exhibit money never inflates federal accepted-direct obligations (0.348784ms)
+✔ unmatched zero bucket and caveat do not become invented inventory (0.935225ms)
+✔ negative award adjustments and negative exhibit values remain distinct finite numbers (0.303316ms)
+✔ contractor source and attribution text cannot promote a candidate or named prime (0.694073ms)
+✔ grouped contractor names unique while repeated exhibit names remain valid separate rows (0.43891ms)
+✔ source descending contractor ordering and null exhibit sentinel are preserved (0.420131ms)
+✔ contractor missing nullable fields extra money authority and malformed dates refuse (1.116397ms)
+✔ nested output getters symbols and cycles refuse without observable effects (2.86813ms)
+✔ bill link itself may be null but both retained evidence sources require String evidence (0.739872ms)
+✔ aggregate award count may exceed one stored Int32 row without becoming an unsafe number (0.589776ms)
+✔ contractor source windows stop at ten groups and twentyfive exhibit rows (0.91795ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 267.525792

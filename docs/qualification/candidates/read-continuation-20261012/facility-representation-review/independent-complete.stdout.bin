@@ -1,0 +1,35 @@
+✔ independent facility: normalized client and state retain declared slicing and casing (4.706693ms)
+✔ independent facility: source needs one matching client subject, never another identity kind (1.560555ms)
+✔ independent facility: exact context shape and strict scalar inputs refuse model authority (1.54384ms)
+✔ independent facility: missing selector returns exact legacy refusal without defaulting subject ID (7.375983ms)
+✔ independent facility: missing and empty outputs still require exact current wrapper lineage (7.381823ms)
+✔ independent facility: canonical subject lineage is not a new grant authorization engine (0.812581ms)
+✔ independent facility: output state filtering uses exact persisted value (1.288747ms)
+✔ independent facility: empty filter note and nonempty null note are correlated (1.235877ms)
+✔ independent facility: facility projected storage identity and nullable values remain exact (1.980506ms)
+✔ independent facility: VarChar2 storage counts Unicode codepoints, not UTF16 units (0.780032ms)
+✔ independent facility: unresolved shape is closed and reason correlates with state truthiness (1.38384ms)
+✔ independent facility: resolved empty is allowed but no-state or unresolved:false cannot be invented (1.520685ms)
+✔ independent facility: uncapped facilities and senators do not assert completeness (5.820617ms)
+✔ independent facility: House and Senate retain slot chambers while federal geographic joins remain unqualified (2.736943ms)
+✔ independent facility: federal summary admission does not certify geographic correspondence (0.798039ms)
+✔ independent facility: Senate nullable and signed Int district is preserved without list-members coercion (2.004442ms)
+✔ independent facility: at-large House null and zero district are valid reported values (0.634113ms)
+✔ independent facility: state slots bind raw facility state and chamber without rewriting districts (2.989673ms)
+✔ independent facility: free persisted summary fields are preserved without ID/URL/party enums (0.528714ms)
+✔ independent facility: repeated representatives across different facilities remain valid (0.865902ms)
+✔ independent facility: generatedAt is canonical wire metadata, not current freshness (1.60381ms)
+✔ independent facility: strict envelope and summaries reject extra content/provenance claims (1.681417ms)
+✔ independent facility: request/context/result accessors and proxies never execute (0.792091ms)
+✔ independent facility: cycles, hidden properties and class instances fail inert admission (0.178598ms)
+✔ independent facility: normalization detaches selectors and neither API mutates caller data (0.911289ms)
+✔ independent facility: checking wire metadata uses no ambient clock (0.6526ms)
+✔ independent facility: equivalent UUID spellings cannot duplicate facility identity (0.917148ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1597.485416

@@ -1,0 +1,17 @@
+{
+  "verdict": "ACCEPT_REPORT",
+  "commit": "b18344072c3a8c1805bea2badcec073da6e02d21",
+  "path": "docs/coordination/reports/CODEX-REFERENCE-INTEGRATION-20261012.md",
+  "bytes": 8060,
+  "sha256": "d620f0f2d08bdfa231c2873f9e2126396e7fc1e5deae6d5ff10fe68a9fe24aa9",
+  "sourceCandidate": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+  "receiptPacket": "c91f1716a476243abf9df2b9080041841d967f13",
+  "onlyChangeSincePacket": "This report; all production/test/evidence bytes unchanged.",
+  "review": [
+    "Correct original139/96/43 and56 typed55mapped41pending; partial action item remains unmapped.",
+    "Distinguishes schema namespace failure, stale cardinality expectations and dependency-realpath failures.",
+    "Exact59 independent/2158 broad/7public results, identity-only repair and15 inverse-preserved tests accurately scoped.",
+    "Separate rule clocks, certification locale, facility claimed lineage, PE dedup/order and unqualified source/provider/runtime limits accurately described.",
+    "No source/runtime activation or gate advance."
+  ]
+}

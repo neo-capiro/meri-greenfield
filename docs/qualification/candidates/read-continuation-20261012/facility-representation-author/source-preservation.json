@@ -1,0 +1,30 @@
+{
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "source": "530416e490763155c5531140f4b70e95a9493b7b",
+  "sourceTree": "b0b9210fabbb06422a912562dde257b8e54fa01b",
+  "originalFilesVerified": 6001,
+  "changedSourcePaths": [
+    "packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+    "packages/contracts/retrieval-0.2/facility-representation.schema.json",
+    "packages/contracts/test/retrieval-facility-representation.test.mjs"
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "sha256": "cb0112fb85d1d4942360184087cbd9a95fc0f3f7898c873df0df99dd9adccb9e",
+      "bytes": 4060
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7",
+      "bytes": 8329
+    },
+    {
+      "path": "packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "sha256": "32442594d4f32a00f5784a498573a16d1ff45c4e01841207a6a5655aafe48b44",
+      "bytes": 9800
+    }
+  ],
+  "referencesVerified": 9,
+  "runtimeAccepted": false
+}

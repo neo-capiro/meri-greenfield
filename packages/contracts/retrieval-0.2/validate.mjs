@@ -1,3 +1,10 @@
+import { createLegislativeDirectoryValidators } from './legislative-directory-validation.mjs';
+import { createPeReferenceValidators } from './pe-references-validation.mjs';
+import { createRuleStatusValidators } from './rule-status-validation.mjs';
+import { createCertificationStatusValidators } from './certification-status-validation.mjs';
+import { createStoredIntelligenceValidators } from './stored-intelligence-validation.mjs';
+import { createDatasetMetadataValidators } from './dataset-metadata-validation.mjs';
+import { createFacilityRepresentationValidators } from './facility-representation-validation.mjs';
 import { createBillTextValidators } from './bill-text-validation.mjs';
 import { createFederalLegislationValidators } from './federal-legislation-validation.mjs';
 import { createAcquisitionPersonnelValidators } from './acquisition-personnel-validation.mjs';
@@ -26,7 +33,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -218,6 +225,14 @@ const federalLegislationValidators = createFederalLegislationValidators({validat
 
 const billTextValidators = createBillTextValidators({validateShape, schema: schemas[groups.indexOf('bill-text')]});
 
+const legislativeDirectoryValidators = createLegislativeDirectoryValidators({validateShape, schema: schemas[groups.indexOf('legislative-directory')]});
+const peReferenceValidators = createPeReferenceValidators({validateShape, schema: schemas[groups.indexOf('pe-references')]});
+const ruleStatusValidators = createRuleStatusValidators({validateShape, schema: schemas[groups.indexOf('rule-status')]});
+const certificationStatusValidators = createCertificationStatusValidators({validateShape, schema: schemas[groups.indexOf('certification-status')]});
+const storedIntelligenceValidators = createStoredIntelligenceValidators({validateShape, schema: schemas[groups.indexOf('stored-intelligence')]});
+const datasetMetadataValidators = createDatasetMetadataValidators({validateShape, schema: schemas[groups.indexOf('dataset-metadata')]});
+const facilityRepresentationValidators = createFacilityRepresentationValidators({validateShape, assertSubject, canonicalSha256});
+
 export function assertSkillManifest(manifest, catalog) {
   validateShape('SkillManifest', manifest); assertCatalog(catalog);
   unique(manifest.requiredSources.map(source => `${source.sourceId}:${source.purpose}`), 'required skill source');
@@ -259,4 +274,5 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
     ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators,
     ...researchPortfolioValidators, ...businessDevelopmentValidators,
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,
-    ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators})});
+    ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
+    ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators})});

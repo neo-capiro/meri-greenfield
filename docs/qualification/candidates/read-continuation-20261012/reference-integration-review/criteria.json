@@ -1,0 +1,24 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "reviewer": "memory_reviewer",
+  "scope": "Ten reference read source integration; runtime HOLD",
+  "criteria": [
+    "Exact independently accepted family source and tests preserved; final reviewer verdicts required for all ten operations.",
+    "Prior 46 catalog descriptors and bindings preserved, one canonical registry/loader/snapshot owner, public0.1 package and dependencies unchanged.",
+    "Original139 capabilities:96 selected and43 deferred; only accepted ten increment45 mapped to55 and reduce51 pending to41;56 total typed operations remain unavailable. Selected commands remain in ledger.",
+    "All handlers null and sourceEnabled false. Actual source-disabled gateway denies without authority, budget, context, provider or handler calls.",
+    "Canonical resolver invokes real registered validators for all ten and rejects cross-operation shapes, unsupported refs and hostile JSON without invoking getters/proxies.",
+    "Contexts exactly empty for directory/PE/stored intelligence/dataset; stageAsOf/commentAsOf for rule; comparisonLocale for certification; binding/subject for facility. Trusted fields cannot be injected by model input.",
+    "Preserve independent clock semantics, comparison-locale qualification and current facility subject/binding truth limits; supported compatibility bounds stated accurately.",
+    "Stored projections and nullable/free-text values retained; counts and refusal envelopes do not become freshness/completeness/current authority claims.",
+    "Root broad-suite receipts verified against exact source freeze; independent meaningful connected controls run separately. No duplicate native33/nine-budget work.",
+    "Raw failures and fixture corrections preserved; owned processes reaped; source acceptance separate from unrun real producers/audit/SQL/provider/native/runtime qualification."
+  ],
+  "prohibited": [
+    "Production repairs",
+    "Private producer bodies/import/execution",
+    "New registry or JSON walker",
+    "Runtime/provider/SQL/cloud/native actions"
+  ],
+  "candidateReadBeforeFreeze": false
+}

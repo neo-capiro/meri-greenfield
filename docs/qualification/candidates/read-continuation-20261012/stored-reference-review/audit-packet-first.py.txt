@@ -1,0 +1,82 @@
+"""Offline exact Git, source and raw evidence audit. No target or private import."""
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[5]
+HERE = Path(__file__).resolve().parent
+BASE = '4566cef6417428d46274a14f7937ca11df66ae9d'
+SOURCE = '450d48fc158dbcdd24f224ec32d6f5b2f92aca80'
+PACKET = '7761e705a5947940814139e39517474ad851eced'
+PREFIX = 'docs/qualification/candidates/read-continuation-20261012/stored-reference-author/'
+CHECKS = []
+def check(name, passed): CHECKS.append({'name': name, 'pass': bool(passed)})
+def sha(data): return hashlib.sha256(data).hexdigest()
+def git(*args): return subprocess.check_output(['git', *args], cwd=ROOT)
+def blob(commit, name): return git('show', commit + ':' + name)
+def data(name): return json.loads(blob(PACKET, PREFIX + name))
+def tree(commit):
+    return {r.split('\t', 1)[1]: r.split()[2] for r in git('ls-tree', '-r', commit).decode().splitlines()}
+
+before, source, packet = tree(BASE), tree(SOURCE), tree(PACKET)
+expected = sorted('packages/contracts/' + p for p in [
+    'retrieval-0.2/stored-intelligence.schema.json', 'retrieval-0.2/stored-intelligence-validation.mjs',
+    'retrieval-0.2/dataset-metadata.schema.json', 'retrieval-0.2/dataset-metadata-validation.mjs',
+    'test/retrieval-stored-intelligence.test.mjs', 'test/retrieval-dataset-metadata.test.mjs'])
+check('exact source tree', git('rev-parse', SOURCE + '^{tree}').decode().strip() == 'b05312f1586ea5b055a9ea9bbd7c9b1b52eeb687')
+check('all6001 original blobs unchanged', len(before) == 6001 and all(source.get(p) == b for p, b in before.items()))
+check('exact six new allocated source paths', sorted(set(source) - set(before)) == expected)
+check('review branch retains all source blobs', all(tree('HEAD').get(p) == b for p, b in source.items()))
+check('packet retains all source blobs', all(packet.get(p) == b for p, b in source.items()))
+check('packet adds only allocated author report and evidence', all(p.startswith(PREFIX) or p == 'docs/coordination/reports/CODEX-STORED-REFERENCE-AUTHOR-20261012.md' for p in set(packet) - set(source)))
+identities = []
+for p in expected:
+    b = blob(SOURCE, p)
+    check('working reviewed source exact: ' + p, (ROOT / p).read_bytes() == b)
+    identities.append({'path': p, 'blob': source[p], 'bytes': len(b), 'sha256': sha(b)})
+for stem in ['stored-intelligence', 'dataset-metadata']:
+    p = 'packages/contracts/retrieval-0.2/' + stem + '-validation.mjs'
+    text = blob(SOURCE, p).decode()
+    imports = [line for line in text.splitlines() if line.startswith('import ')]
+    check('sole shared JSON import: ' + stem, imports == ["import {snapshotOperationData} from './operation-contracts.mjs';"])
+    check('no source client or module loading: ' + stem, not any(token in text for token in ['fetch(', 'require(', 'import(', 'process.', 'child_process', 'readFile', 'writeFile']))
+manifest_bytes = blob(PACKET, PREFIX + 'manifest.json')
+manifest = json.loads(manifest_bytes)
+check('author manifest hash', sha(manifest_bytes) == '1202b8796791bdbb6673fef084ca1e7c8f10478cc7985a1e34f98963d3f9c92d')
+check('author manifest17 unique safe members', len(manifest['files']) == 17 and len({x['path'] for x in manifest['files']}) == 17 and all(not Path(x['path']).is_absolute() and '..' not in Path(x['path']).parts for x in manifest['files']))
+for m in manifest['files']:
+    b = blob(PACKET, m['path'])
+    check('author member: ' + m['path'], len(b) == m['bytes'] and sha(b) == m['sha256'])
+actual = {p for p in packet if p.startswith(PREFIX) and p not in {PREFIX + 'manifest.json', PREFIX + 'verification.json'}} | {manifest['report']}
+check('author packet exact membership', actual == {x['path'] for x in manifest['files']})
+patch = blob(PACKET, PREFIX + 'focused-initial-source.patch')
+check('focused original patch equals exact source diff', patch == git('diff', '--binary', BASE, SOURCE))
+receipts = []
+for label, count, command in [('focused-initial', 31, ['node', '--test', 'packages/contracts/test/retrieval-stored-intelligence.test.mjs', 'packages/contracts/test/retrieval-dataset-metadata.test.mjs']), ('root-source-check', 1321, ['npm', 'run', 'check']), ('public-distribution', 7, ['npm', 'run', 'check:contracts:distribution'])]:
+    receipt = data(label + '.json')
+    check('author command: ' + label, receipt['command'] == command)
+    check('author source receipt: ' + label, receipt['sourceHead'] == (BASE if label == 'focused-initial' else SOURCE) and receipt['sourceDiffSha256'] == sha(patch if label == 'focused-initial' else b'') and receipt['sourceDiffBytes'] == (len(patch) if label == 'focused-initial' else 0))
+    check('author bounded success and owned exit: ' + label, receipt['exitCode'] == 0 and not receipt['timedOut'] and receipt['ownedProcessGroupAbsent'] and not receipt['ownedGroupKillRequired'] and receipt['durationSeconds'] < 120)
+    check('same subreaper helper: ' + label, receipt['captureSha256'] == sha(blob(PACKET, PREFIX + 'capture-reaped.py')) == sha((HERE / 'capture-reaped.py').read_bytes()))
+    for m in receipt['streams']:
+        b = blob(PACKET, m['path'])
+        check('author raw stream: ' + m['path'], len(b) == m['bytes'] and sha(b) == m['sha256'])
+    stdout = blob(PACKET, receipt['streams'][0]['path']).decode()
+    check('author actual test count: ' + label, f'ℹ tests {count}\n' in stdout and f'ℹ pass {count}\n' in stdout and 'ℹ fail 0\n' in stdout)
+    receipts.append({'label': label, 'tests': count, 'sourceHead': receipt['sourceHead'], 'ownedGroupAbsent': receipt['ownedProcessGroupAbsent'], 'reapedDescendants': len(receipt['reapedDescendants'])})
+receipt = json.loads((HERE / 'independent-first.json').read_text())
+check('independent source receipt exact', receipt['sourceHead'] == '44ddd1bb55ac510435dcc355b4f010380698bb05' and receipt['sourceDiffBytes'] == 0 and receipt['sourceDiffSha256'] == sha(b'') and all(tree(receipt['sourceHead']).get(p) == b for p, b in source.items()))
+check('independent owned group physical exit', receipt['exitCode'] == 0 and not receipt['timedOut'] and receipt['ownedProcessGroupAbsent'] and not receipt['ownedGroupKillRequired'])
+for m in receipt['streams']:
+    b = (ROOT / m['path']).read_bytes()
+    check('independent raw stream: ' + Path(m['path']).name, len(b) == m['bytes'] and sha(b) == m['sha256'])
+stdout = (ROOT / receipt['streams'][0]['path']).read_text()
+check('independent actual60/60', 'ℹ tests 60\n' in stdout and 'ℹ pass 60\n' in stdout and 'ℹ fail 0\n' in stdout)
+references = json.loads((HERE / 'reference-audit-final.json').read_text())
+check('independent reference audit33/33', references['checks'] == references['passed'] == 33 and references['failed'] == 0 and len(references['references']) == 6)
+first = json.loads((HERE / 'reference-audit-first.json').read_text())
+check('initial metadata checker failure retained28/5', first['passed'] == 28 and first['failed'] == 5 and (HERE / 'inspect-references-first.cjs.txt').is_file())
+result = {'base': BASE, 'source': SOURCE, 'packet': PACKET, 'sourceIdentities': identities, 'authorReceipts': receipts, 'originalBlobsPreserved': len(before), 'checks': len(CHECKS), 'passed': sum(c['pass'] for c in CHECKS), 'failed': sum(not c['pass'] for c in CHECKS), 'results': CHECKS, 'scope': 'SOURCE_AND_EVIDENCE_ONLY_NOT_RUNTIME_ACCEPTANCE'}
+print(json.dumps(result, indent=2))
+raise SystemExit(1 if result['failed'] else 0)

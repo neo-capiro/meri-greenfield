@@ -1,0 +1,67 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "checks": [
+    {
+      "name": "exact PR28 catalog",
+      "result": "PASS"
+    },
+    {
+      "name": "exact prior46 callback and descriptor metadata",
+      "result": "PASS"
+    },
+    {
+      "name": "catalog validation",
+      "result": "PASS"
+    },
+    {
+      "name": "original139 selected96 deferred43",
+      "result": "PASS"
+    },
+    {
+      "name": "prior46 typed45 mapped51 pending",
+      "result": "PASS"
+    },
+    {
+      "name": "get_committee_roster remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "list_members remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_pe_contractors remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_pe_bills remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_pe_report_language remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_state_rule_status remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_certification_status remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "search_intel_articles remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "list_global_datasets remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    },
+    {
+      "name": "get_representation remains unmapped and unresolvable at baseline",
+      "result": "PASS"
+    }
+  ],
+  "passed": 15,
+  "scope": "BASELINE_CHARACTERIZATION_ONLY; COMBINED_INTEGRATION_UNBUILT"
+}

@@ -1,0 +1,9 @@
+{
+  "scope": "OFFLINE_AUTHOR_PACKET_INTEGRITY",
+  "passed": 17,
+  "total": 17,
+  "manifestSha256": "b53f4721edbe1b98866e7584a81417f9b2818fdaf5ac2ad6b469aeb7affd014e",
+  "allCapturedStreamsVerified": true,
+  "allOwnedGroupsAbsent": true,
+  "independentAcceptance": false
+}

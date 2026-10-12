@@ -1,0 +1,213 @@
+{
+  "frozen": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observed": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "blob": "806b994acd7b368bc5f686d786a39f1f7e0cd556",
+      "bytes": 18687,
+      "sha256": "7cec9500bda0a620493262ab5e73a826572e69b5d1dcb7e1e685f73dae009174",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "bytes": 44992,
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tool-request-control.ts",
+      "blob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+      "bytes": 2198,
+      "sha256": "e0808b351f92eb2a5d1b609fcfeafd08f2ed4388e2c26e9cdcf4b991af0a4287",
+      "observedUnchanged": true
+    }
+  ],
+  "locators": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "symbol": "searchIntelArticles",
+      "line": 6349,
+      "endLine": 6392
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "symbol": "summarizeText",
+      "line": 10285,
+      "endLine": 10289
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "symbol": "listGlobalDatasets",
+      "line": 4770,
+      "endLine": 4776
+    },
+    {
+      "path": "apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "symbol": "listDatasetSummaries",
+      "line": 331,
+      "endLine": 345
+    }
+  ],
+  "privateBodiesPublished": false,
+  "privateSourcesExecuted": false,
+  "checks": 33,
+  "passed": 28,
+  "failed": 5,
+  "results": [
+    {
+      "name": "frozen identity: apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen identity: apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "frozen identity: apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen identity: apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen identity: apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "frozen identity: apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "observed unchanged: apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "name": "article query/source exact selectors",
+      "pass": false
+    },
+    {
+      "name": "article legacy clamp is distinct from typed admission",
+      "pass": false
+    },
+    {
+      "name": "article has two separate withSystem calls",
+      "pass": true
+    },
+    {
+      "name": "article findMany and count in Promise.all",
+      "pass": true
+    },
+    {
+      "name": "article projected result keys",
+      "pass": true
+    },
+    {
+      "name": "article exact row projection",
+      "pass": true
+    },
+    {
+      "name": "article excerpts use declared caps",
+      "pass": false
+    },
+    {
+      "name": "article no provider or writes in invoked method",
+      "pass": true
+    },
+    {
+      "name": "summary whitespace normalization and trim",
+      "pass": true
+    },
+    {
+      "name": "summary UTF16 slice and three literal dots",
+      "pass": false
+    },
+    {
+      "name": "dataset wrapper is zero-argument metadata projection",
+      "pass": true
+    },
+    {
+      "name": "dataset wrapper exact result keys",
+      "pass": true
+    },
+    {
+      "name": "dataset exact six field types",
+      "pass": true
+    },
+    {
+      "name": "dataset summary exact projection keys",
+      "pass": true
+    },
+    {
+      "name": "dataset field exact projection keys",
+      "pass": true
+    },
+    {
+      "name": "dataset projected defaults",
+      "pass": true
+    },
+    {
+      "name": "dataset only number aggregatable",
+      "pass": true
+    },
+    {
+      "name": "article exact storage scalar/null types",
+      "pass": true
+    },
+    {
+      "name": "unprojected storage columns remain excluded",
+      "pass": true
+    },
+    {
+      "name": "shared trusted route boundary remains separate",
+      "pass": true
+    },
+    {
+      "name": "active request check remains before scoped dispatch",
+      "pass": false
+    }
+  ]
+}

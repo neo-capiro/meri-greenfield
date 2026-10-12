@@ -1,0 +1,115 @@
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (9.180165ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (11.974504ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (1044.657741ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (12.866174ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (23.016688ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (223.487657ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.593782ms)
+✔ family default materialization and argument digest happen before dispatch (4.588385ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (4.223326ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (14.665088ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (1.34457ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (8.694325ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.488384ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (12.521897ms)
+✖ independent exact baseline: only the six prior and16 reviewed continuation mappings change; all prior descriptors survive (7.617216ms)
+✖ all 46 canonical descriptors resolve exact raw schema definitions without collisions (0.274022ms)
+✔ independent canonical success and immutable selection: lookup_client_registry (3.27418ms)
+✔ independent canonical rejects foreign projection and forged selectors: lookup_client_registry (2.107987ms)
+✔ independent canonical inert admission for every boundary: lookup_client_registry (0.741654ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: lookup_client_registry (39.644324ms)
+✔ independent canonical success and immutable selection: get_business_development_context (2.464243ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_context (1.607806ms)
+✔ independent canonical inert admission for every boundary: get_business_development_context (0.752581ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_context (28.802632ms)
+✔ independent canonical success and immutable selection: get_business_development_evidence (3.769319ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_evidence (2.273646ms)
+✔ independent canonical inert admission for every boundary: get_business_development_evidence (0.722225ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_evidence (37.849847ms)
+✔ independent canonical success and immutable selection: get_business_development_recent_changes (3.064535ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_recent_changes (2.035248ms)
+✔ independent canonical inert admission for every boundary: get_business_development_recent_changes (0.887984ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_recent_changes (51.987121ms)
+✔ independent canonical success and immutable selection: get_research_portfolio (6.933008ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_research_portfolio (3.433429ms)
+✔ independent canonical inert admission for every boundary: get_research_portfolio (0.936026ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_research_portfolio (40.464296ms)
+✔ independent canonical success and immutable selection: get_research_portfolio_changes (3.392418ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_research_portfolio_changes (3.005947ms)
+✔ independent canonical inert admission for every boundary: get_research_portfolio_changes (0.98503ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_research_portfolio_changes (40.838328ms)
+✔ portfolio canonical callbacks carry every binding and subject field, not generic actor/clock context (10.484105ms)
+✔ portfolio canonical continuation and identity preserve the domain repair (2.699767ms)
+✔ portfolio canonical event requires the declared event kind and non-null actor (1.679684ms)
+✔ business callbacks preserve request limit, citation aliases, partial coverage and inference (1.769469ms)
+✔ registry UTF16 repair and guidance remain enforced through canonical dispatch (0.810337ms)
+✔ shared private snapshot is detached inert JSON with unchanged bounded semantics (0.537218ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 43
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3278.451724
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:16:1
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (9.180165ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  56 !== 46
+  
+      at TestContext.<anonymous> (file:///workspace/meri-reference-reads-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 56,
+    expected: 46,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-next-integration-independent.test.mjs:65:1
+✖ independent exact baseline: only the six prior and16 reviewed continuation mappings change; all prior descriptors survive (7.617216ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  55 !== 45
+  
+      at TestContext.<anonymous> (file:///workspace/meri-reference-reads-20261012/packages/contracts/test/retrieval-next-integration-independent.test.mjs:70:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 55,
+    expected: 45,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-next-integration-independent.test.mjs:83:1
+✖ all 46 canonical descriptors resolve exact raw schema definitions without collisions (0.274022ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  56 !== 46
+  
+      at TestContext.<anonymous> (file:///workspace/meri-reference-reads-20261012/packages/contracts/test/retrieval-next-integration-independent.test.mjs:84:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 56,
+    expected: 46,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

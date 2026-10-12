@@ -1,0 +1,84 @@
+✔ independent complete stored bill report contractor and missing-table variants admit (11.740143ms)
+✔ closed required selector uses exact trim and UTF16 cap without case or authority inference (4.189215ms)
+✔ empty trusted context refuses model authority and omitted non-JSON context (0.534091ms)
+✔ operation and own-data admission reject coercion getters and proxies without effects (0.287571ms)
+✔ report echo is exact while original bill contractor envelopes cannot prove requested PE (2.883776ms)
+✔ bill nullable fields are required and unselected fields cannot leak (1.415563ms)
+✔ bill stored columns and signed values are not manufactured from canonical identity (0.544016ms)
+✔ bill nullable links and packages retain nonrejected stored semantics (0.602003ms)
+✔ bill specificity then date order is checked without global freshness claim (0.701813ms)
+✔ bill identity duplication and source100 window refuse without count proof (5.770817ms)
+✔ bill SQL date-only projection and canonical generatedAt reject invalid time shapes (0.696915ms)
+✔ report empty coverage requires exact loaded-source caveat not a global absence proof (0.454482ms)
+✔ program-only and mixed report language keep per-item and aggregate attribution caveats (0.995203ms)
+✔ report basis establishes scope without turning candidate into accepted (1.798569ms)
+✔ report status precedes basis FY and confidence but source winner is not reconstructed (0.57334ms)
+✔ report confidence ties and out-of-range stored Float remain projection facts (0.420941ms)
+✔ report unique identity and50cap do not certify completeness (2.3465ms)
+✔ report nullable fields are complete fields not optional proof markers (1.025689ms)
+✔ missing award table fallback cannot carry normal evidence or fabricate rows (1.192999ms)
+✔ normal contractor projection keeps fixed24month award provenance apart from exhibit FY (2.029394ms)
+✔ contractor direct and candidate buckets correlate only returned grouped awards (0.883576ms)
+✔ named exhibit money never inflates federal accepted-direct obligations (0.520761ms)
+✔ unmatched zero bucket and caveat do not become invented inventory (1.570366ms)
+✔ negative award adjustments and negative exhibit values remain distinct finite numbers (0.477817ms)
+✔ contractor source and attribution text cannot promote a candidate or named prime (0.978688ms)
+✔ grouped contractor names unique while repeated exhibit names remain valid separate rows (0.530956ms)
+✔ source descending contractor ordering and null exhibit sentinel are preserved (0.784567ms)
+✔ contractor missing nullable fields extra money authority and malformed dates refuse (1.496825ms)
+✔ nested output getters symbols and cycles refuse without observable effects (0.35305ms)
+✖ bill link itself may be null but both retained evidence sources require String evidence (0.504277ms)
+✖ aggregate award count may exceed one stored Int32 row without becoming an unsafe number (1.100261ms)
+✔ contractor source windows stop at ten groups and twentyfive exhibit rows (1.199269ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 30
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 301.332811
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-pe-references-independent.test.mjs:109:1
+✖ bill link itself may be null but both retained evidence sources require String evidence (0.504277ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at reject (file:///workspace/meri-pe-references-review-20261012/packages/contracts/test/retrieval-pe-references-independent.test.mjs:27:46)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-references-review-20261012/packages/contracts/test/retrieval-pe-references-independent.test.mjs:109:195)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-references-independent.test.mjs:110:1
+✖ aggregate award count may exceed one stored Int32 row without becoming an unsafe number (1.100261ms)
+  AssertionError [ERR_ASSERTION]: Invalid PeContractorsOutput
+  
+  false !== true
+  
+      at validateShape (file:///workspace/meri-pe-references-review-20261012/packages/contracts/test/retrieval-pe-references-independent.test.mjs:12:132)
+      at assertPeReferenceOutput (file:///tmp/meri-pe-review-ywtkh5lf/packages/contracts/retrieval-0.2/pe-references-validation.mjs:47:5)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-references-review-20261012/packages/contracts/test/retrieval-pe-references-independent.test.mjs:110:390)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

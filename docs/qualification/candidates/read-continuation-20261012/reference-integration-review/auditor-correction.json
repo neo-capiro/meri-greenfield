@@ -1,0 +1,7 @@
+{
+  "initial": "source-audit-initial.json",
+  "result": "35PASS/2FAIL; reviewer audit defect, no source failure",
+  "cause": "Baseline capture ran after criteria commit and included reviewer criteria in its ls-files. It is not an original PR28 file.",
+  "correction": "Use exact baseline base Git tree as original membership; verify all6110 recorded original fingerprints and assert only extra captured reviewer criteria path. Historical baseline remains unchanged.",
+  "sourceOrBehaviorChanges": false
+}

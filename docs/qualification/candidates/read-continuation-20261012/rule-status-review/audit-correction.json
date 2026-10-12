@@ -1,0 +1,8 @@
+{
+  "firstAudit": "policy-audit",
+  "firstPassed": 6,
+  "firstFailed": 1,
+  "classification": "reviewer audit representation assumption, not production defect",
+  "reason": "Original audit expected an explicit NOTICE map key. Producer NOTICE and default share notice; schema lists only proposed/final groups and validator's tested fallback implements notice.",
+  "correction": "Compare all exact explicit non-default groups against inspected source cases; preserve NOTICE/default behavioral controls and exact source-case enumeration. No production/test edits."
+}

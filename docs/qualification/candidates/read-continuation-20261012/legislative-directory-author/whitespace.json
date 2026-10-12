@@ -1,0 +1,19 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "4280eba",
+    "--",
+    "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+    "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+    "packages/contracts/test/retrieval-legislative-directory.test.mjs",
+    "docs/coordination/reports/CODEX-LEGISLATIVE-DIRECTORY-AUTHOR-20261012.md",
+    "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/outline.md",
+    "docs/qualification/candidates/read-continuation-20261012/legislative-directory-author/verify-source.py"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "rawFailureStreamsRetained": true
+}

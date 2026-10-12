@@ -1,0 +1,14 @@
+{
+  "reason": "Make room for further isolated source worktrees after ENOSPC. These disposable installed packages are not used by the source-contract checks.",
+  "removedOnlyRootOwnedDisposableInstalledCaches": [
+    "/workspace/meri-selected-reads-next-20261012/node_modules/aws-cdk",
+    "/workspace/meri-selected-reads-next-20261012/node_modules/aws-cdk-lib",
+    "/workspace/meri-selected-reads-next-20261012/node_modules/constructs",
+    "/workspace/meri-facility-representation-20261012/node_modules/aws-cdk",
+    "/workspace/meri-facility-representation-20261012/node_modules/aws-cdk-lib",
+    "/workspace/meri-facility-representation-20261012/node_modules/constructs"
+  ],
+  "fullInstalledDonorPreserved": "/workspace/meri-read-continuation-20261012/node_modules",
+  "sourceLockEvidenceOrOtherOwnerFilesChanged": false,
+  "cloudExecution": false
+}

@@ -1,0 +1,48 @@
+file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:49
+  if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
+                           ^
+
+Error: Catalog: data/operations/46/inputSchema/id must match pattern "^urn:meri:", data/operations/46/outputSchema/id must match pattern "^urn:meri:", data/operations/47/inputSchema/id must match pattern "^urn:meri:", data/operations/47/outputSchema/id must match pattern "^urn:meri:", data/operations/51/inputSchema/id must match pattern "^urn:meri:", data/operations/51/outputSchema/id must match pattern "^urn:meri:"
+    at validateShape (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:49:28)
+    at assertCatalog (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:241:3)
+    at createOperationContracts (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:71:39)
+    at file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:271:43
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-catalog-bindings.test.mjs (1904.5756ms)
+file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:49
+  if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
+                           ^
+
+Error: Catalog: data/operations/46/inputSchema/id must match pattern "^urn:meri:", data/operations/46/outputSchema/id must match pattern "^urn:meri:", data/operations/47/inputSchema/id must match pattern "^urn:meri:", data/operations/47/outputSchema/id must match pattern "^urn:meri:", data/operations/51/inputSchema/id must match pattern "^urn:meri:", data/operations/51/outputSchema/id must match pattern "^urn:meri:"
+    at validateShape (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:49:28)
+    at assertCatalog (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:241:3)
+    at createOperationContracts (file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:71:39)
+    at file:///workspace/meri-reference-reads-20261012/packages/contracts/retrieval-0.2/validate.mjs:271:43
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-next-integration-independent.test.mjs (1909.029203ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1926.747478
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:1:1
+✖ packages/contracts/test/retrieval-catalog-bindings.test.mjs (1904.5756ms)
+  'test failed'
+
+test at packages/contracts/test/retrieval-next-integration-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-next-integration-independent.test.mjs (1909.029203ms)
+  'test failed'

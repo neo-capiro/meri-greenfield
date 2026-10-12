@@ -1,0 +1,59 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD_UNRUN",
+  "source": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+  "sourceTree": "df92519c23ce446d1398ce5176187f651c05f875",
+  "rootReceipts": "c91f1716a476243abf9df2b9080041841d967f13",
+  "rootReport": "b18344072c3a8c1805bea2badcec073da6e02d21",
+  "independentBehavior": {
+    "passed": 59,
+    "failed": 0,
+    "receipt": "independent-first.json",
+    "finalBinding": "final-behavior-binding.json"
+  },
+  "independentSourceAudit": {
+    "passed": 105,
+    "failed": 0
+  },
+  "originalTestInverse": {
+    "passed": 15,
+    "failed": 0
+  },
+  "rootReceiptsAudited": {
+    "broad": 2158,
+    "public": 7,
+    "generatedAndTypes": "PASS",
+    "rootAudit": 6464
+  },
+  "originals": {
+    "tracked": 6110,
+    "unchanged": 6092,
+    "intentionalChanges": 18
+  },
+  "scope": {
+    "originalCapabilities": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 55,
+    "selectedPending": 41,
+    "typedUnavailable": 56
+  },
+  "reviewOnlyCommitsBeforeFinal": [
+    "4491a1e10656638af98eddc42d8b28964cd4dbcd",
+    "335baefde97037b0d6f29e6b39adbf781506f89a",
+    "17c47f6457dde494e9d48f3e3bb97e4ba94b9eed",
+    "8c48e75a76e990ddf3c20f31ca32366546107b5c",
+    "954cc4db60feca4ef8a28710b676cea3d8297f9b",
+    "fa5a1459c6ceb00fb09581595a909cec4268866b",
+    "c67326a9dea418171ebf72a344640f9bf162fa9c",
+    "041e3a012c9b03356f9c15cfa5eafb9441aa3e40",
+    "7c59e286ddf36a3a648c5d1f1add5b113f1e4e77",
+    "916e9a09f90ad48af641cce9703e98928ae9a045",
+    "ec69b45944350d5976ca300f08a2a1a953ee8f4d",
+    "55e80ff039122d4efcddab0dcd4d96f8aed85cfe"
+  ],
+  "finalCommitNote": "Append the commit containing this final-review.json; exclude two author/root merge commits.",
+  "cleanupGroups": 7,
+  "allOwnedGroupsAbsent": true,
+  "noRuntimeActions": true
+}

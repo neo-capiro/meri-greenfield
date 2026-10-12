@@ -1,0 +1,24 @@
+{
+  "reason": "Borrowed dependency symlink realpaths changed generated bundle provenance and escaped the original no-side-effects fixture read allowlist. Restore local exact bytes; do not change golden generated files or permission assertions.",
+  "failedReceipts": [
+    "combined-first.json",
+    "public-distribution.json"
+  ],
+  "donor": "/workspace/meri-read-continuation-20261012",
+  "copiedRootPackages": [
+    "ajv",
+    "ajv-formats",
+    "canonicalize",
+    "fast-uri",
+    "fast-deep-equal",
+    "json-schema-traverse",
+    "require-from-string"
+  ],
+  "copiedContractsDependencyTree": true,
+  "verifiedFileCount": 3386,
+  "verifiedFilesDigest": "86de1d424a6cbd6162e5696a8b883a3668b7e95afe03001cd2c7cb5cea8a2c75",
+  "installExecuted": false,
+  "lockChanges": false,
+  "sourceChanges": false,
+  "discarded": "Only task-owned dependency symlink directory entries; borrowed targets untouched."
+}

@@ -1,5 +1,5 @@
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
-const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text"];
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -16,8 +16,8 @@ const context={actorId,nowMs:0};
 test('partial action binding does not declare full native parity or activate a handler',()=>{
  const c=catalog(),binding=CATALOG_OPERATION_BINDINGS.find(row=>row.id===reference.id),resolved=contract();
  assertCatalog(c);assert.equal(binding.nativeCoverage,'partial');assert.equal(resolved.binding,binding);
- assert.equal(c.operations.length,46);assert.equal(c.originals.filter(row=>row.state==='mapped').length,45);
- assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,51);
+ assert.equal(c.operations.length,56);assert.equal(c.originals.filter(row=>row.state==='mapped').length,55);
+ assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,41);
  const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'pending');assert.equal(original.replacement,null);
  assert.deepEqual(resolved.descriptor.aliases,[]);assert.equal(resolved.descriptor.handler,null);
  assert.equal(resolved.descriptor.availability,'unimplemented');assert.equal(resolved.descriptor.qualification,'pending');

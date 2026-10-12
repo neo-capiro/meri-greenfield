@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:facility-representation:0.2.0",
+  "title": "Private source-only facility representation projection",
+  "$defs": {
+    "FacilityRepresentationInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "FacilityRepresentationSelection": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientId",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityRepresentationContext": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        }
+      },
+      "required": [
+        "binding",
+        "subject"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityFederalMember": {
+      "type": "object",
+      "properties": {
+        "bioguideId": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "party": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "district": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -2147483648,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "chamber": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "bioguideId",
+        "fullName",
+        "party",
+        "state",
+        "district",
+        "chamber"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityStateMember": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "chamber": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "district": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "party": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "state",
+        "chamber",
+        "district",
+        "party",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityUnresolvedRepresentation": {
+      "type": "object",
+      "properties": {
+        "unresolved": {
+          "const": true
+        },
+        "reason": {
+          "enum": [
+            "no_state",
+            "no_geocode"
+          ]
+        }
+      },
+      "required": [
+        "unresolved",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityResolvedRepresentation": {
+      "type": "object",
+      "properties": {
+        "federal": {
+          "type": "object",
+          "properties": {
+            "house": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/FacilityFederalMember"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "senate": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/FacilityFederalMember"
+              }
+            }
+          },
+          "required": [
+            "house",
+            "senate"
+          ],
+          "additionalProperties": false
+        },
+        "state": {
+          "type": "object",
+          "properties": {
+            "lower": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/FacilityStateMember"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/FacilityStateMember"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "lower",
+            "upper"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "federal",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityRepresentationRow": {
+      "type": "object",
+      "properties": {
+        "facilityId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "facilityName": {
+          "type": "string"
+        },
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "representation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/FacilityUnresolvedRepresentation"
+            },
+            {
+              "$ref": "#/$defs/FacilityResolvedRepresentation"
+            }
+          ]
+        }
+      },
+      "required": [
+        "facilityId",
+        "facilityName",
+        "city",
+        "state",
+        "representation"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityRepresentationData": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_representation"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "facilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FacilityRepresentationRow"
+          }
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "facilities",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "FacilityRepresentationResult": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "data": {
+          "$ref": "#/$defs/FacilityRepresentationData"
+        }
+      },
+      "required": [
+        "binding",
+        "subject",
+        "data"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

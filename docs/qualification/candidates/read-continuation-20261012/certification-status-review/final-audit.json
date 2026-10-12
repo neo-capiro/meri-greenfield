@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/certification-status-review/audit.py",
+    "fa59df3739a2c43310b86de416d2f455a8715dce",
+    "1142bbd7dabd927653ec5c810b86f8ecba89f0ba"
+  ],
+  "cwd": "/workspace/meri-certification-status-review-20261012",
+  "sourceHead": "5ab375ed92797f19b1c7ec82f4006a3d1bdd3316",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:34:28.025716+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 194049,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/final-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "102ea52c9335dc87e1335a8c7466023bf26a210ad26c1251a179eeed7219e974"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

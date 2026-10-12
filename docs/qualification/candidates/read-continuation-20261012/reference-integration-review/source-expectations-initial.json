@@ -1,0 +1,38 @@
+{
+  "candidate": "82906d4ce48eae2029e50fb44009d43bbfedc92a",
+  "changedOriginalPaths": [
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs"
+  ],
+  "reviewedExistingPatches": [
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "patchSha256": "d77dd61b2f2c17b6e5869962e6e295215172c2ab910a78cfa021167e1a3c3c8d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "patchSha256": "3884d1099be0d05a867084608d96f9a7d3b0ea2a21621a63476b530d61c57916"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "patchSha256": "d0682ef0a09dcae6a714780cfafd315873760fb0f29e8bbb241214a39fa775d0"
+    }
+  ],
+  "familyIdentityChanges": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "oldId": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json",
+      "newId": "urn:meri:retrieval:legislative-directory:0.2.0",
+      "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "oldId": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json",
+      "newId": "urn:meri:retrieval:rule-status:0.2.0",
+      "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
+    }
+  ],
+  "rootReceipts": [],
+  "scope": "Initial exact production source only; final broad/test/report audit follows."
+}

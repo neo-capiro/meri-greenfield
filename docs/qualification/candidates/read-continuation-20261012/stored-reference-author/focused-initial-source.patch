@@ -1,0 +1,589 @@
+diff --git a/packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs b/packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs
+new file mode 100644
+index 0000000..a4287fd
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs
+@@ -0,0 +1,56 @@
++// Projected registry descriptions only: no query compiler, row access or SQL.
++import {snapshotOperationData} from './operation-contracts.mjs';
++const fail = message => { throw new Error(message); };
++export const DATASET_METADATA_OPERATION_IDS = Object.freeze(['list_global_datasets']);
++export function createDatasetMetadataValidators({validateShape, schema}) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Dataset metadata configuration');
++  const definitions = new Set(Object.keys(schema.$defs));
++  function datasetMetadataInputDefinition(id) {
++    if (!DATASET_METADATA_OPERATION_IDS.includes(id)) fail('Unknown dataset metadata operation');
++    return 'DatasetMetadataListInput';
++  }
++  function datasetMetadataOutputDefinition(id) {
++    datasetMetadataInputDefinition(id);
++    return 'DatasetMetadataListOutput';
++  }
++  function validateDatasetMetadataShape(definition, value) {
++    if (!definitions.has(definition)) fail('Unknown dataset metadata definition');
++    const data = snapshotOperationData(value);
++    validateShape(definition, data);
++    if (definition !== 'DatasetMetadataListOutput') return value;
++    const at = Date.parse(data.generatedAt);
++    if (!Number.isFinite(at) || new Date(at).toISOString() !== data.generatedAt)
++      fail('Dataset metadata requires a canonical comparable JSON date');
++    const keys = new Set();
++    for (const dataset of data.datasets) {
++      if (keys.has(dataset.key)) fail('Duplicate dataset metadata key');
++      keys.add(dataset.key);
++      const names = new Set();
++      for (const field of dataset.fields) {
++        if (names.has(field.name)) fail('Duplicate dataset metadata field');
++        names.add(field.name);
++        if (field.aggregatable !== (field.type === 'number')) fail('Dataset metadata aggregate flag mismatch');
++      }
++    }
++    return value;
++  }
++  function normalizeDatasetMetadataInput(id, request) {
++    const input = snapshotOperationData(request);
++    validateDatasetMetadataShape(datasetMetadataInputDefinition(id), input);
++    return Object.freeze({input: Object.freeze(input), metadata: Object.freeze({
++      authoritative: false, sourceConnected: false, producerQualified: false, absenceEvidence: false,
++      sourceScope: 'dataset-registry-metadata', queryAuthorized: false, rowAccessAuthorized: false,
++      registrySnapshotQualified: false,
++    })});
++  }
++  function assertDatasetMetadataOutput(id, value, request) {
++    normalizeDatasetMetadataInput(id, request);
++    validateDatasetMetadataShape(datasetMetadataOutputDefinition(id), value);
++    // Descriptions/flags are data, never query authority. Exact registry-version
++    // identity and completeness require an independently qualified source adapter.
++    return value;
++  }
++  return Object.freeze({datasetMetadataSchemaId: schema.$id, DATASET_METADATA_OPERATION_IDS,
++    datasetMetadataInputDefinition, datasetMetadataOutputDefinition,
++    normalizeDatasetMetadataInput, validateDatasetMetadataShape, assertDatasetMetadataOutput});
++}
+diff --git a/packages/contracts/retrieval-0.2/dataset-metadata.schema.json b/packages/contracts/retrieval-0.2/dataset-metadata.schema.json
+new file mode 100644
+index 0000000..4f56d08
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/dataset-metadata.schema.json
+@@ -0,0 +1,103 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:dataset-metadata:0.2.0",
++  "$defs": {
++    "DatasetMetadataListInput": {
++      "type": "object",
++      "properties": {},
++      "required": [],
++      "additionalProperties": false
++    },
++    "DatasetMetadataField": {
++      "type": "object",
++      "properties": {
++        "name": {
++          "type": "string"
++        },
++        "type": {
++          "enum": [
++            "string",
++            "number",
++            "boolean",
++            "date",
++            "timestamp",
++            "string[]"
++          ]
++        },
++        "description": {
++          "type": "string"
++        },
++        "filterable": {
++          "type": "boolean"
++        },
++        "groupable": {
++          "type": "boolean"
++        },
++        "aggregatable": {
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "name",
++        "type",
++        "description",
++        "filterable",
++        "groupable",
++        "aggregatable"
++      ],
++      "additionalProperties": false
++    },
++    "DatasetMetadataSummary": {
++      "type": "object",
++      "properties": {
++        "key": {
++          "type": "string"
++        },
++        "description": {
++          "type": "string"
++        },
++        "supportsAsOf": {
++          "type": "boolean"
++        },
++        "fields": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/DatasetMetadataField"
++          }
++        }
++      },
++      "required": [
++        "key",
++        "description",
++        "supportsAsOf",
++        "fields"
++      ],
++      "additionalProperties": false
++    },
++    "DatasetMetadataListOutput": {
++      "type": "object",
++      "properties": {
++        "tool": {
++          "const": "list_global_datasets"
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time",
++          "pattern": "^\\d{4}-"
++        },
++        "datasets": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/DatasetMetadataSummary"
++          }
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "datasets"
++      ],
++      "additionalProperties": false
++    }
++  }
++}
+diff --git a/packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs b/packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs
+new file mode 100644
+index 0000000..d986ba8
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs
+@@ -0,0 +1,75 @@
++// Stored article excerpts and a separate observed count; no feed or source client.
++import {snapshotOperationData} from './operation-contracts.mjs';
++const fail = message => { throw new Error(message); };
++export const STORED_INTELLIGENCE_OPERATION_IDS = Object.freeze(['search_intel_articles']);
++function instant(value) {
++  const at = typeof value === 'string' ? Date.parse(value) : NaN;
++  if (!Number.isFinite(at) || new Date(at).toISOString() !== value)
++    fail('Stored intelligence requires canonical comparable JSON dates');
++  return at;
++}
++function excerpt(value, cap) {
++  if (value.length > cap || value !== value.replace(/\s+/g, ' ').trim())
++    fail('Stored intelligence excerpt is not a normalized UTF-16 projection');
++}
++export function createStoredIntelligenceValidators({validateShape, schema}) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Stored intelligence configuration');
++  const definitions = new Set(Object.keys(schema.$defs));
++  function storedIntelligenceInputDefinition(id) {
++    if (!STORED_INTELLIGENCE_OPERATION_IDS.includes(id)) fail('Unknown stored intelligence operation');
++    return 'StoredIntelligenceSearchInput';
++  }
++  function storedIntelligenceOutputDefinition(id) {
++    storedIntelligenceInputDefinition(id);
++    return 'StoredIntelligenceSearchOutput';
++  }
++  function validateStoredIntelligenceShape(definition, value) {
++    if (!definitions.has(definition)) fail('Unknown stored intelligence definition');
++    const data = snapshotOperationData(value);
++    validateShape(definition, data);
++    if (definition !== 'StoredIntelligenceSearchOutput') return value;
++    instant(data.generatedAt);
++    const ids = new Set();
++    let latest = Infinity;
++    for (const row of data.data) {
++      if (ids.has(row.id)) fail('Duplicate stored article identity');
++      ids.add(row.id);
++      const at = instant(row.publishedAt);
++      if (at > latest) fail('Stored articles must be newest first');
++      latest = at;
++      excerpt(row.title, 240);
++      excerpt(row.summary, 400);
++    }
++    // Count and rows come from separate reads, so no total/length equality or
++    // ordering constraint proves complete coverage or a terminal absence.
++    return value;
++  }
++  function normalizeStoredIntelligenceInput(id, request) {
++    const input = snapshotOperationData(request);
++    validateStoredIntelligenceShape(storedIntelligenceInputDefinition(id), input);
++    for (const [key, cap] of [['query', 240], ['source', 60]]) {
++      const selected = typeof input[key] === 'string' ? input[key].trim().slice(0, cap) : null;
++      delete input[key];
++      if (selected) input[key] = selected;
++    }
++    input.limit ??= 20;
++    return Object.freeze({input: Object.freeze(input), metadata: Object.freeze({
++      authoritative: false, sourceConnected: false, producerQualified: false, absenceEvidence: false,
++      sourceScope: 'stored-intelligence', countScope: 'separate-local-count',
++    })});
++  }
++  function assertStoredIntelligenceOutput(id, value, request) {
++    const {input} = normalizeStoredIntelligenceInput(id, request);
++    const data = snapshotOperationData(value);
++    validateStoredIntelligenceShape(storedIntelligenceOutputDefinition(id), data);
++    if (data.data.length > input.limit) fail('Stored article request limit substitution');
++    if (input.source !== undefined && data.data.some(row => row.source !== input.source))
++      fail('Stored article exact source substitution');
++    // Full title/summary matching may lie outside the returned excerpts;
++    // category/topic matching, collation and source authority remain adapter work.
++    return value;
++  }
++  return Object.freeze({storedIntelligenceSchemaId: schema.$id, STORED_INTELLIGENCE_OPERATION_IDS,
++    storedIntelligenceInputDefinition, storedIntelligenceOutputDefinition,
++    normalizeStoredIntelligenceInput, validateStoredIntelligenceShape, assertStoredIntelligenceOutput});
++}
+diff --git a/packages/contracts/retrieval-0.2/stored-intelligence.schema.json b/packages/contracts/retrieval-0.2/stored-intelligence.schema.json
+new file mode 100644
+index 0000000..4a1ba03
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/stored-intelligence.schema.json
+@@ -0,0 +1,120 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:stored-intelligence:0.2.0",
++  "$defs": {
++    "StoredIntelligenceSearchInput": {
++      "type": "object",
++      "properties": {
++        "query": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "source": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 50,
++          "default": 20
++        }
++      },
++      "required": [],
++      "additionalProperties": false
++    },
++    "StoredIntelligenceArticle": {
++      "type": "object",
++      "properties": {
++        "id": {
++          "type": "string"
++        },
++        "source": {
++          "type": "string"
++        },
++        "title": {
++          "type": "string",
++          "maxLength": 240
++        },
++        "url": {
++          "type": "string"
++        },
++        "author": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "publishedAt": {
++          "type": "string",
++          "format": "date-time",
++          "pattern": "^\\d{4}-"
++        },
++        "summary": {
++          "type": "string",
++          "maxLength": 400
++        },
++        "categories": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "topics": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      },
++      "required": [
++        "id",
++        "source",
++        "title",
++        "url",
++        "author",
++        "publishedAt",
++        "summary",
++        "categories",
++        "topics"
++      ],
++      "additionalProperties": false
++    },
++    "StoredIntelligenceSearchOutput": {
++      "type": "object",
++      "properties": {
++        "tool": {
++          "const": "search_intel_articles"
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time",
++          "pattern": "^\\d{4}-"
++        },
++        "total": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "data": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/StoredIntelligenceArticle"
++          },
++          "maxItems": 50
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "total",
++        "data"
++      ],
++      "additionalProperties": false
++    }
++  }
++}
+diff --git a/packages/contracts/test/retrieval-dataset-metadata.test.mjs b/packages/contracts/test/retrieval-dataset-metadata.test.mjs
+new file mode 100644
+index 0000000..1164232
+--- /dev/null
++++ b/packages/contracts/test/retrieval-dataset-metadata.test.mjs
+@@ -0,0 +1,93 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import {createDatasetMetadataValidators, DATASET_METADATA_OPERATION_IDS} from '../retrieval-0.2/dataset-metadata-validation.mjs';
++import {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';
++import {canonicalSha256} from '../validate.mjs';
++const schema = JSON.parse(readFileSync(new URL('../retrieval-0.2/dataset-metadata.schema.json', import.meta.url)));
++const ajv = new Ajv({strict: true, allErrors: true}); addFormats(ajv); ajv.addSchema(schema);
++const checks = new Map(Object.keys(schema.$defs).map(name => [name, ajv.compile({$ref: `${schema.$id}#/$defs/${name}`})]));
++const v = createDatasetMetadataValidators({schema, validateShape(name, value) {
++  const check = checks.get(name); if (!check?.(value)) throw new Error(ajv.errorsText(check?.errors));
++}});
++const id = 'list_global_datasets', stamp = '2026-10-12T14:01:02.123Z';
++const field = (type = 'string') => ({name: 'synthetic_field', type, description: 'Synthetic field description', filterable: true, groupable: true, aggregatable: type === 'number'});
++const summary = () => ({key: 'synthetic_dataset', description: 'Synthetic metadata only', supportsAsOf: false, fields: [field()]});
++const page = () => ({tool: id, generatedAt: stamp, datasets: [summary()]});
++
++test('dataset metadata is one distinct closed operation, not global-data execution', () => {
++  assert.deepEqual(DATASET_METADATA_OPERATION_IDS, [id]);
++  assert.equal(v.datasetMetadataSchemaId, 'urn:meri:retrieval:dataset-metadata:0.2.0');
++  assert.equal(v.datasetMetadataInputDefinition(id), 'DatasetMetadataListInput');
++  assert.equal(v.datasetMetadataOutputDefinition(id), 'DatasetMetadataListOutput');
++  for (const other of ['query_global_data', 'search_intel_articles', 'constructor', '__proto__']) assert.throws(() => v.normalizeDatasetMetadataInput(other, {}));
++  assert.throws(() => v.validateDatasetMetadataShape('unknown', {}));
++});
++test('empty request remains immutable and metadata denies query/row authority', () => {
++  const request = {}, normalized = v.normalizeDatasetMetadataInput(id, request), p = page(), original = structuredClone(p);
++  assert.deepEqual(normalized.input, {}); assert.notEqual(normalized.input, request);
++  assert.ok(Object.isFrozen(normalized.input)); assert.ok(Object.isFrozen(normalized.metadata));
++  for (const key of ['authoritative', 'sourceConnected', 'producerQualified', 'absenceEvidence', 'queryAuthorized', 'rowAccessAuthorized', 'registrySnapshotQualified']) assert.equal(normalized.metadata[key], false);
++  assert.equal(v.assertDatasetMetadataOutput(id, p, request), p); assert.deepEqual(p, original);
++});
++test('no caller selector, SQL, actor or time argument is admitted', () => {
++  for (const key of ['dataset', 'key', 'fields', 'query', 'sql', 'table', 'asOfDate', 'asOf', 'limit', 'actorId', 'tenantId', 'role', 'rowAccessAuthorized']) assert.throws(() => v.normalizeDatasetMetadataInput(id, {[key]: 'synthetic'}));
++  for (const input of [null, [], 'registry', 1, false]) assert.throws(() => v.normalizeDatasetMetadataInput(id, input));
++});
++for (const type of ['string', 'number', 'boolean', 'date', 'timestamp', 'string[]']) {
++  test(`projected ${type} supports independent filter/group flags and exact aggregate relation`, () => {
++    for (const filterable of [false, true]) for (const groupable of [false, true]) {
++      const p = page(); p.datasets[0].fields = [{...field(type), filterable, groupable}]; v.assertDatasetMetadataOutput(id, p, {});
++      p.datasets[0].fields[0].aggregatable = type !== 'number'; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {}), /aggregate flag/);
++    }
++  });
++}
++test('supportsAsOf remains explicit metadata with no inferred time or row permission', () => {
++  for (const supportsAsOf of [false, true]) { const p = page(); p.datasets[0].supportsAsOf = supportsAsOf; v.assertDatasetMetadataOutput(id, p, {}); }
++  for (const value of [null, 0, 'false']) { const p = page(); p.datasets[0].supportsAsOf = value; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++  const p = page(); delete p.datasets[0].supportsAsOf; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {}));
++});
++test('source defaults must already be projected, never silently invented by validation', () => {
++  for (const key of ['filterable', 'groupable', 'aggregatable', 'name', 'type', 'description']) { const p = page(); delete p.datasets[0].fields[0][key]; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++  for (const type of ['integer', 'json', 'object', 'uuid', 'number[]', null]) { const p = page(); p.datasets[0].fields[0].type = type; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++});
++test('only projected fields cross the boundary; storage/query machinery and completeness refuse', () => {
++  for (const key of ['table', 'defaultLimit', 'maxLimit', 'tenantId', 'sql']) { const p = page(); p.datasets[0][key] = 'synthetic'; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++  for (const key of ['column', 'expression', 'query', 'nullable', 'permission']) { const p = page(); p.datasets[0].fields[0][key] = 'synthetic'; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++  for (const key of ['rows', 'total', 'complete', 'coverage', 'queryAuthorized']) { const p = page(); p[key] = true; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {})); }
++  const p = page(); p.tool = 'query_global_data'; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {}));
++});
++test('dataset and per-dataset field identity must be unique; cross-dataset field names may repeat', () => {
++  const p = page(); p.datasets.push({...summary(), key: 'another_dataset'}); v.assertDatasetMetadataOutput(id, p, {});
++  p.datasets[1].key = p.datasets[0].key; assert.throws(() => v.assertDatasetMetadataOutput(id, p, {}), /Duplicate dataset metadata key/);
++  const duplicate = page(); duplicate.datasets[0].fields.push(field()); assert.throws(() => v.assertDatasetMetadataOutput(id, duplicate, {}), /Duplicate dataset metadata field/);
++});
++test('declared metadata does not duplicate private registry values or claim a live snapshot', () => {
++  const p = page(); p.datasets[0].description = 'Descriptive text, never an instruction to query'; p.datasets[0].fields[0].description = ''; v.assertDatasetMetadataOutput(id, p, {});
++  const empty = {...page(), datasets: []}; v.assertDatasetMetadataOutput(id, empty, {});
++  p.datasets[0].fields = []; v.assertDatasetMetadataOutput(id, p, {});
++  assert.equal(v.normalizeDatasetMetadataInput(id, {}).metadata.registrySnapshotQualified, false);
++});
++test('generatedAt is a finite canonical JSON instant without guessed freshness', () => {
++  for (const generatedAt of ['0001-01-01T03:00:00.000Z', stamp, '9999-12-31T23:59:59.999Z']) v.assertDatasetMetadataOutput(id, {...page(), generatedAt}, {});
++  for (const generatedAt of ['2026-06-30T23:59:60Z', '2026-10-12T14:01:02Z', '2026-10-12T16:01:02.123+02:00', '+010000-01-01T00:00:00.000Z', null]) assert.throws(() => v.assertDatasetMetadataOutput(id, {...page(), generatedAt}, {}));
++});
++test('inert JSON rejects active values before hooks and preserves resource limits', () => {
++  let hooks = 0; const getter = {}; Object.defineProperty(getter, 'sql', {enumerable: true, get() { hooks++; return 'x'; }});
++  const hidden = {}; Object.defineProperty(hidden, 'query', {value: 'x'}); const cycle = {}; cycle.self = cycle;
++  const proxy = new Proxy({}, {ownKeys() { hooks++; return []; }});
++  for (const request of [getter, hidden, cycle, proxy, new Date()]) assert.throws(() => v.normalizeDatasetMetadataInput(id, request));
++  const p = page(); Object.defineProperty(p.datasets[0].fields[0], 'description', {enumerable: true, get() { hooks++; return ''; }}); assert.throws(() => v.assertDatasetMetadataOutput(id, p, {}));
++  const sparse = page(); sparse.datasets = Array(1); assert.throws(() => v.assertDatasetMetadataOutput(id, sparse, {})); assert.equal(hooks, 0);
++});
++test('canonical resolver supplies immutable request/digest with no context or live binding', () => {
++  const binding = {id, version: '0.2.0', contextKeys: [], normalize: (_, request) => v.normalizeDatasetMetadataInput(id, request), outputAssert: (_, value, request) => v.assertDatasetMetadataOutput(id, value, request)};
++  const resolver = createOperationContracts({catalog: {operations: [{operation: {id, version: '0.2.0'}, handler: null, status: 'unavailable'}]}, bindings: [binding], validators: v, assertCatalog() {}, canonicalSha256});
++  const contract = resolver.resolveOperationContract({id, version: '0.2.0'}), normalized = contract.normalizeInput({});
++  assert.deepEqual(normalized.request, {}); assert.ok(Object.isFrozen(normalized.request)); assert.equal(normalized.argumentsSha256, canonicalSha256({})); assert.equal(contract.descriptor.handler, null);
++  contract.assertOutput(page(), {request: normalized.request});
++  for (const context of [{actorId: 'synthetic'}, {asOf: stamp}, {previousPage: {}}, {nowMs: 1}]) assert.throws(() => contract.normalizeInput({}, context));
++  assert.throws(() => contract.assertOutput(page(), {})); assert.throws(() => contract.assertOutput(page(), {request: {}, asOf: stamp}));
++});
+diff --git a/packages/contracts/test/retrieval-stored-intelligence.test.mjs b/packages/contracts/test/retrieval-stored-intelligence.test.mjs
+new file mode 100644
+index 0000000..e26ee3d
+--- /dev/null
++++ b/packages/contracts/test/retrieval-stored-intelligence.test.mjs
+@@ -0,0 +1,106 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import {createStoredIntelligenceValidators, STORED_INTELLIGENCE_OPERATION_IDS} from '../retrieval-0.2/stored-intelligence-validation.mjs';
++import {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';
++import {canonicalSha256} from '../validate.mjs';
++const schema = JSON.parse(readFileSync(new URL('../retrieval-0.2/stored-intelligence.schema.json', import.meta.url)));
++const ajv = new Ajv({strict: true, allErrors: true}); addFormats(ajv); ajv.addSchema(schema);
++const checks = new Map(Object.keys(schema.$defs).map(name => [name, ajv.compile({$ref: `${schema.$id}#/$defs/${name}`})]));
++const v = createStoredIntelligenceValidators({schema, validateShape(name, value) {
++  const check = checks.get(name); if (!check?.(value)) throw new Error(ajv.errorsText(check?.errors));
++}});
++const id = 'search_intel_articles', stamp = '2026-10-12T14:01:02.123Z';
++const row = () => ({id: 'stored-synthetic', source: 'synthetic-source', title: 'Stored article', url: 'not a validated URL', author: null, publishedAt: stamp, summary: '', categories: [], topics: []});
++const page = (count = 1) => ({tool: id, generatedAt: stamp, total: count, data: Array.from({length: count}, (_, i) => ({...row(), id: `opaque-${i}`}))});
++
++test('stored intelligence exposes one distinct operation and closed definitions', () => {
++  assert.deepEqual(STORED_INTELLIGENCE_OPERATION_IDS, [id]);
++  assert.equal(v.storedIntelligenceSchemaId, 'urn:meri:retrieval:stored-intelligence:0.2.0');
++  assert.equal(v.storedIntelligenceInputDefinition(id), 'StoredIntelligenceSearchInput');
++  assert.equal(v.storedIntelligenceOutputDefinition(id), 'StoredIntelligenceSearchOutput');
++  for (const bad of ['list_global_datasets', 'constructor', '__proto__', `${id}@0.2.0`]) assert.throws(() => v.normalizeStoredIntelligenceInput(bad, {}));
++  assert.throws(() => v.validateStoredIntelligenceShape('unknown', {}));
++});
++test('selectors preserve optional null/blank, exact case and UTF-16 clipping', () => {
++  for (const query of [null, '', ' \n\t ']) assert.deepEqual(v.normalizeStoredIntelligenceInput(id, {query, source: query}).input, {limit: 20});
++  const normalized = v.normalizeStoredIntelligenceInput(id, {query: '  '+ 'x'.repeat(239) + '😀extra  ', source: '  '+ 'S'.repeat(59) + '😀extra  '});
++  assert.equal(normalized.input.query, 'x'.repeat(239) + '\ud83d');
++  assert.equal(normalized.input.source, 'S'.repeat(59) + '\ud83d');
++  assert.equal(v.normalizeStoredIntelligenceInput(id, {source: '  Mixed_Case  '}).input.source, 'Mixed_Case');
++  for (const query of [2, true, {}, [], undefined]) assert.throws(() => v.normalizeStoredIntelligenceInput(id, {query}));
++});
++test('strict limit defaults and all admitted boundary values bind returned rows', () => {
++  assert.equal(v.normalizeStoredIntelligenceInput(id, {}).input.limit, 20);
++  for (const limit of [1, 20, 50]) v.assertStoredIntelligenceOutput(id, page(limit), {limit});
++  for (const limit of [0, -1, 51, 1.5, '20', null, true, undefined, NaN, Infinity]) assert.throws(() => v.normalizeStoredIntelligenceInput(id, {limit}));
++  assert.throws(() => v.assertStoredIntelligenceOutput(id, page(2), {limit: 1}), /limit substitution/);
++});
++test('normalization and assertions preserve caller data and deny authority claims', () => {
++  const request = {query: ' term ', source: ' synthetic-source '}, saved = structuredClone(request), output = page(), original = structuredClone(output);
++  const normalized = v.normalizeStoredIntelligenceInput(id, request);
++  assert.deepEqual(request, saved); assert.notEqual(request, normalized.input);
++  assert.ok(Object.isFrozen(normalized.input)); assert.ok(Object.isFrozen(normalized.metadata));
++  for (const key of ['authoritative', 'sourceConnected', 'producerQualified', 'absenceEvidence']) assert.equal(normalized.metadata[key], false);
++  assert.equal(normalized.metadata.countScope, 'separate-local-count');
++  assert.equal(v.assertStoredIntelligenceOutput(id, output, request), output); assert.deepEqual(output, original);
++});
++test('count can race below returned rows and does not imply full corpus', () => {
++  for (const total of [0, 1, 3, 1000, Number.MAX_SAFE_INTEGER]) { const p = page(3); p.total = total; v.assertStoredIntelligenceOutput(id, p, {}); }
++  for (const total of [-1, 0.5, Number.MAX_SAFE_INTEGER + 1, null, '3']) { const p = page(); p.total = total; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); }
++  const empty = page(0); empty.total = 5; v.assertStoredIntelligenceOutput(id, empty, {});
++});
++test('exact stored source filter is bound without pretending excerpts prove query matching', () => {
++  const p = page(); v.assertStoredIntelligenceOutput(id, p, {source: ' synthetic-source ', query: 'matching words outside excerpt'});
++  assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {source: 'Synthetic-Source'}), /source substitution/);
++  v.assertStoredIntelligenceOutput(id, p, {source: null});
++});
++test('projected strings preserve nullable author, opaque IDs/URLs and repeated array entries', () => {
++  const p = page(); Object.assign(p.data[0], {id: '', url: '', author: '', categories: ['', 'topic', 'topic'], topics: ['x', 'x']});
++  v.assertStoredIntelligenceOutput(id, p, {});
++  p.data[0].author = null; v.assertStoredIntelligenceOutput(id, p, {});
++  for (const key of ['title', 'summary', 'url', 'source', 'publishedAt', 'categories', 'topics']) { const bad = page(); bad.data[0][key] = null; assert.throws(() => v.assertStoredIntelligenceOutput(id, bad, {})); }
++});
++for (const [key, cap] of [['title', 240], ['summary', 400]]) {
++  test(`${key} preserves normalized UTF-16 excerpts and does not invent ellipsis/truncation`, () => {
++    for (const value of ['', 'x'.repeat(cap), 'x'.repeat(cap - 3) + '...', 'x'.repeat(cap - 4) + '\ud83d...', 'x'.repeat(cap - 1) + '\ud83d']) { const p = page(); p.data[0][key] = value; v.assertStoredIntelligenceOutput(id, p, {}); }
++    for (const value of ['x'.repeat(cap + 1), '😀'.repeat(cap / 2 + 1), ' leading', 'trailing ', 'two  spaces', 'line\nbreak', null]) { const p = page(); p.data[0][key] = value; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); }
++  });
++}
++test('dates are comparable JSON instants, without a midnight or ambient-now constraint', () => {
++  for (const value of ['0001-01-01T03:00:00.000Z', stamp, '9999-12-31T23:59:59.999Z']) { const p = page(); p.generatedAt = value; p.data[0].publishedAt = value; v.assertStoredIntelligenceOutput(id, p, {}); }
++  for (const value of ['2026-06-30T23:59:60Z', '2026-10-12T14:01:02Z', '2026-10-12T16:01:02.123+02:00', '2026-02-30T00:00:00.000Z', '+010000-01-01T00:00:00.000Z', null]) {
++    for (const key of ['generatedAt', 'publishedAt']) { const p = page(); (key === 'generatedAt' ? p : p.data[0])[key] = value; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); }
++  }
++});
++test('stored ordering and unique identities preserve ties and refuse substitutions', () => {
++  const p = page(3); p.data[1].publishedAt = '2026-10-11T17:00:00.000Z'; p.data[2].publishedAt = p.data[1].publishedAt; v.assertStoredIntelligenceOutput(id, p, {});
++  p.data[2].publishedAt = stamp; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {}), /newest first/);
++  const duplicate = page(2); duplicate.data[1].id = duplicate.data[0].id; assert.throws(() => v.assertStoredIntelligenceOutput(id, duplicate, {}), /Duplicate/);
++});
++test('unknown arguments, unprojected source fields and forged coverage refuse', () => {
++  for (const key of ['q', 'actorId', 'tenantId', 'asOf', 'cursor', 'offset', 'page', 'fullText', 'sql']) assert.throws(() => v.normalizeStoredIntelligenceInput(id, {[key]: 'synthetic'}));
++  for (const key of ['complete', 'nextCursor', 'absenceEvidence', 'coverage']) { const p = page(); p[key] = true; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); }
++  for (const key of ['feedUrl', 'agencies', 'syncedAt', 'rawContent', 'fullText', 'truncated']) { const p = page(); p.data[0][key] = ''; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); }
++  const p = page(); p.tool = 'list_global_datasets'; assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {}));
++});
++test('canonical inert admission refuses hooks, cycles, proxies and hidden fields before access', () => {
++  let hooks = 0; const getter = {}; Object.defineProperty(getter, 'query', {enumerable: true, get() { hooks++; return 'x'; }});
++  const cycle = {}; cycle.query = cycle; const hidden = {}; Object.defineProperty(hidden, 'query', {value: 'x'});
++  const proxy = new Proxy({}, {ownKeys() { hooks++; return []; }});
++  for (const request of [getter, cycle, hidden, proxy, new Date(), {query: 1n}, Object.assign(Object.create({}), {query: 'x'})]) assert.throws(() => v.normalizeStoredIntelligenceInput(id, request));
++  const p = page(); Object.defineProperty(p.data[0], 'title', {enumerable: true, get() { hooks++; return ''; }}); assert.throws(() => v.assertStoredIntelligenceOutput(id, p, {})); assert.equal(hooks, 0);
++});
++test('actual canonical resolver binds original request/digest and rejects undeclared context', () => {
++  const binding = {id, version: '0.2.0', contextKeys: [], normalize: (_, request) => v.normalizeStoredIntelligenceInput(id, request), outputAssert: (_, value, request) => v.assertStoredIntelligenceOutput(id, value, request)};
++  const resolver = createOperationContracts({catalog: {operations: [{operation: {id, version: '0.2.0'}, handler: null, status: 'unavailable'}]}, bindings: [binding], validators: v, assertCatalog() {}, canonicalSha256});
++  const contract = resolver.resolveOperationContract({id, version: '0.2.0'}), request = {source: ' synthetic-source ', query: null}, normalized = contract.normalizeInput(request);
++  assert.deepEqual(normalized.request, request); assert.ok(Object.isFrozen(normalized.request));
++  assert.equal(normalized.argumentsSha256, canonicalSha256({source: 'synthetic-source', limit: 20}));
++  assert.equal(normalized.argumentsSha256, contract.normalizeInput({source: 'synthetic-source'}).argumentsSha256);
++  contract.assertOutput(page(), {request: normalized.request});
++  for (const context of [{actorId: 'x'}, {asOf: stamp}, {nowMs: 1}, {previousPage: {}}]) assert.throws(() => contract.normalizeInput(request, context));
++  assert.throws(() => contract.assertOutput(page(), {}));
++});

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-certification-status-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-certification-status-review-20261012",
+  "sourceHead": "75182874f32651106fe38e6ee771e063be8dc3ec",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:31:13.609200+00:00",
+  "durationSeconds": 0.115,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 192209,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stdout.bin",
+      "bytes": 1183,
+      "sha256": "f6d8152c9e39b23cba1a0f010635fcf187d85aee92f009c45e9d1fdfcd3ae979"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,116 @@
+{
+  "source": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "sourceTree": "b05312f1586ea5b055a9ea9bbd7c9b1b52eeb687",
+  "authorPacket": "7761e705a5947940814139e39517474ad851eced",
+  "outsideEvidence": [
+    "docs/coordination/reports/CODEX-STORED-REFERENCE-REVIEW-20261012.md",
+    "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+    "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs"
+  ],
+  "exclusions": [
+    "manifest.json self reference",
+    "verification.json derived result"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-STORED-REFERENCE-REVIEW-20261012.md",
+      "bytes": 5026,
+      "sha256": "585f08df912a3cf35538ba248882dad945b225e098b73b841bac53a00075b0aa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/audit-packet-first.py.txt",
+      "bytes": 7408,
+      "sha256": "d66a4e751b95901df459a760694d95c4b36ebb8a293f5dc668db5e53ded57a3e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/audit-packet.py",
+      "bytes": 7465,
+      "sha256": "d3db70b7913ab08c667189309fea01cb34a9a4918b4a9ff5614c7b2b6971358c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/criteria.md",
+      "bytes": 2311,
+      "sha256": "f207870c2d861953ddcca66057d5b683ec29f588bfedfa4d3c6b9b3ac09885e4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.json",
+      "bytes": 1414,
+      "sha256": "66e137a254a3f78d289fabbbff4e991aad29dc9034335d0130fbc5952883d558"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/independent-first.stdout.bin",
+      "bytes": 5339,
+      "sha256": "9bdf4a2287020f67d22322b54628ef15fefda7f988cb81a1103dd9fe4a7250b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/inspect-references-first.cjs.txt",
+      "bytes": 8674,
+      "sha256": "55e386c144330c590f3fa675cbd7ba8a133d55112cc00048848c5d741801e3ce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/inspect-references.cjs",
+      "bytes": 8683,
+      "sha256": "90cb377bec975d224d2d68e20f9a8a832e3a36ab8b8d64ea3384c39110dca1d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.json",
+      "bytes": 1349,
+      "sha256": "9245f23bc45985457c819cac6382f8cc365c54992a41a81e7ca978424b98d45e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-final.stdout.bin",
+      "bytes": 10507,
+      "sha256": "51c6ba0fc3b40504de86f4b5978b7a535a5cc74b3255988d645e6a4c756027e0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-interrupted.json",
+      "bytes": 703,
+      "sha256": "adcc1c475c6338f81b622c3a407ecd0939d608fbb7ea9135efbd24e99baa9152"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/packet-audit-interrupted.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/reference-audit-final.json",
+      "bytes": 5665,
+      "sha256": "b3aadb21b067806fb49ff3bcc4c3e58bb5d5e0ec6401cb27625fa5fb460a2479"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/reference-audit-first.json",
+      "bytes": 5670,
+      "sha256": "cbdf06564988589d381ac206ed05a54209869f107e22babf94d5d38e87eeb134"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-review/verify-review.py",
+      "bytes": 1298,
+      "sha256": "b958d590f03917d5e6f78139260d8dddc3734e389e529a7380bc36b6675397af"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-dataset-metadata-independent.test.mjs",
+      "bytes": 6234,
+      "sha256": "1f2b0d938e9b069660ec5d2da9a2a0446694f701f1bf56dd177a0aa08e93eed0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-stored-intelligence-independent.test.mjs",
+      "bytes": 8382,
+      "sha256": "42ba617330fb7b52ca57dbbbcb81b5f58a6344d3fed3b56bc3afa9ed280d60d0"
+    }
+  ]
+}

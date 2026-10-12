@@ -1,0 +1,401 @@
+{
+  "scope": "INDEPENDENT_SOURCE_ONLY_NOT_RUNTIME",
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourceCandidate": "530416e490763155c5531140f4b70e95a9493b7b",
+  "checks": [
+    {
+      "check": "exact candidate tree",
+      "pass": true
+    },
+    {
+      "check": "base ancestor",
+      "pass": true
+    },
+    {
+      "check": "candidate ancestor of review",
+      "pass": true
+    },
+    {
+      "check": "exact five additive candidate paths",
+      "pass": true
+    },
+    {
+      "check": "zero changed or deleted baseline files",
+      "pass": true
+    },
+    {
+      "check": "working source equals frozen packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "pass": true
+    },
+    {
+      "check": "working source equals frozen packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "working source equals frozen packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "thirteen independent reference paths",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri-tools.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri-tools.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/representation-resolver.service.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/representation-resolver.service.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/clients/representation-resolver.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/representation-resolver.service.spec.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/representation-resolver.service.spec.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/clients/representation-resolver.service.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/district-code.util.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/district-code.util.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/clients/district-code.util.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/common/district-code.util.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/common/district-code.util.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/common/district-code.util.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/district-code.util.spec.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/clients/district-code.util.spec.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/clients/district-code.util.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/common/us-states.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/common/us-states.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/common/us-states.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes packages/shared/src/us-states.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes packages/shared/src/us-states.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift packages/shared/src/us-states.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/prisma/schema.prisma fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/prisma/schema.prisma 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri.controller.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/meri.controller.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/tool-service-secret.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/meri/tool-service-secret.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/auth/roles.guard.ts fd8765ec01d292013758606204f2c9d886cd31c1",
+      "pass": true
+    },
+    {
+      "check": "reference bytes apps/api/src/auth/roles.guard.ts 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+      "pass": true
+    },
+    {
+      "check": "no observed source drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "one canonical imported snapshot owner",
+      "pass": true
+    },
+    {
+      "check": "no copied state resolver or duplicate vocabulary",
+      "pass": true
+    },
+    {
+      "check": "explicit unqualified federal geography comment",
+      "pass": true
+    },
+    {
+      "check": "exact cohesive definitions",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationInput",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationInput",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationSelection",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationSelection",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationContext",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationContext",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityFederalMember",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityFederalMember",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityStateMember",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityStateMember",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityUnresolvedRepresentation",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityUnresolvedRepresentation",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityResolvedRepresentation",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityResolvedRepresentation",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationRow",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationRow",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationData",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationData",
+      "pass": true
+    },
+    {
+      "check": "closed exact properties FacilityRepresentationResult",
+      "pass": true
+    },
+    {
+      "check": "exact required keys FacilityRepresentationResult",
+      "pass": true
+    },
+    {
+      "check": "private schema identifier",
+      "pass": true
+    },
+    {
+      "check": "generatedAt wire format",
+      "pass": true
+    },
+    {
+      "check": "facility storage codepoint limit",
+      "pass": true
+    },
+    {
+      "check": "uncapped facility array",
+      "pass": true
+    },
+    {
+      "check": "pass no skips/timeout/source diff independent-first",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound independent-first",
+      "pass": true
+    },
+    {
+      "check": "pass no skips/timeout/source diff independent-complete",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound independent-complete",
+      "pass": true
+    },
+    {
+      "check": "pass no skips/timeout/source diff full-root",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound full-root",
+      "pass": true
+    },
+    {
+      "check": "pass no skips/timeout/source diff public-distribution",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "exact captured stream docs/qualification/candidates/read-continuation-20261012/facility-representation-review/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture helper bound public-distribution",
+      "pass": true
+    },
+    {
+      "check": "candidate whitespace",
+      "pass": true
+    }
+  ],
+  "passed": 93,
+  "failed": 0,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "bytes": 8329,
+      "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7",
+      "blob": "20cdbf5a2c93821bee4eda9b5fb7ffb7aa0660a9"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "bytes": 4060,
+      "sha256": "cb0112fb85d1d4942360184087cbd9a95fc0f3f7898c873df0df99dd9adccb9e",
+      "blob": "463bec1ef57257ccf49f0a32992a2edc24ac63b9"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "bytes": 9800,
+      "sha256": "32442594d4f32a00f5784a498573a16d1ff45c4e01841207a6a5655aafe48b44",
+      "blob": "39d585cd0ddbeffaa98adc34afeb21466caa3df9"
+    }
+  ]
+}

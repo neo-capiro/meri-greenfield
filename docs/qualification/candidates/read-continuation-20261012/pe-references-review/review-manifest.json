@@ -1,0 +1,159 @@
+{
+  "source": "c9770ef235ae220159500b12bd1ab885f9ba9b45",
+  "metadata": "3348a42ff4275c6e60b195f8af03a7c017ced3a4",
+  "decision": "ACCEPT_SOURCE",
+  "native": "HOLD_UNRUN",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-PE-REFERENCES-REVIEW-20261012.md",
+      "bytes": 10190,
+      "sha256": "de24ca72ae77b131cc11566f48b4f01f5fa719dc4ff332713e6ce24e20c54649"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/audit.json",
+      "bytes": 10551,
+      "sha256": "507a68df31d1b9b5b73d951c396d4dd2e87562fd3d04e7e27f0d640622196e37"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/audit.py",
+      "bytes": 8832,
+      "sha256": "2e1f40c16ac3f7cb981357de1ef83e69e008753ba20f333b9f44b82cdf811914"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/criteria.md",
+      "bytes": 2491,
+      "sha256": "4aff0535dd5120ca7e024d17cb9c66320b024dd10b0f1b0419827f03e5291de3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/exact-source-tests.json",
+      "bytes": 1386,
+      "sha256": "b780a2ad87aa25252d403255ee82b57ddefbd03171351378944f0f4c40b76c3a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/exact-source-tests.stdout.bin",
+      "bytes": 5997,
+      "sha256": "5fbde6015af525dc9b9510657fbf703ebe9a8f417dde92d5614baf7454dcfba4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/final-audit.json",
+      "bytes": 1409,
+      "sha256": "6555057929443080fdafe32ce14d9f7eb2f69b018c9cecf7e4d532e56399a578"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/final-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "37eeed35c39fb4e2d75cc9b637a0e270c4381fa610a627cad67d0d96bc76823f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.json",
+      "bytes": 1348,
+      "sha256": "20b58282f1e2eb4200c4fca60b776a061edbdeff01510175032e62a6eb627f2d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-negative-replay.stdout.bin",
+      "bytes": 5596,
+      "sha256": "bed4054bcea27651f671475bfdfaf3c33afa5b2f39d31ee2e81f0754f306a819"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-source/packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "bytes": 1704,
+      "sha256": "277d41406bbe28153230d7c066d5f2bc5e899dbb1457f370367c952a13f35e25"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-source/packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "bytes": 3704,
+      "sha256": "31148c6057be537fe89c2e0d28d30901c8b104a94f992d6879e3260f4ee49215"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/initial-source/packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "bytes": 20972,
+      "sha256": "5e34cb0cd5959633949a324840655b6efc8b7f77f59c847e10915922018ed11d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-independent.json",
+      "bytes": 1328,
+      "sha256": "b79a63d84221c7bee427ae03d5c10433d590643ff7fb16c3b30e72c9b65fd7d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-independent.stdout.bin",
+      "bytes": 2889,
+      "sha256": "f22aa473c55211043852197064d86a4f5fe547fafbaafcd814e90ecf3895891e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-source-after.json",
+      "bytes": 560,
+      "sha256": "bfbb8c25e17a5c7c0393df13b7a0ac5485b23e41943cd820397c830ce6ee74ff"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/prefreeze-source-before.json",
+      "bytes": 560,
+      "sha256": "2471243e613d705fe4a266e335b6f4e4c16dd4cc954da23107334c3805d24b45"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/reference-identities.json",
+      "bytes": 3470,
+      "sha256": "5bec90d34132c86e2346d3be372443376ea572b54bf3d48c552983b2e9ce2334"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/repaired-prefreeze-independent.json",
+      "bytes": 1346,
+      "sha256": "ad4e398d87d49988e168c1838694d00268595c46435160c283e62e38aee99672"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/repaired-prefreeze-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/repaired-prefreeze-independent.stdout.bin",
+      "bytes": 3187,
+      "sha256": "6170b0b8eacb9ef72c1baa984db5b4663170ec6943052a021b64de896f386575"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/replay-initial.py",
+      "bytes": 837,
+      "sha256": "aa3a660bd0a452b46f9438bf02c098c074f3686910f14e27b3c2ce5d7b35cbc4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/source-trace.json",
+      "bytes": 1840,
+      "sha256": "fb635bfc39b1da214222bd62c78a9d0b654fddd5b71b406b3dc16f7bceb02eaa"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-pe-references-independent.test.mjs",
+      "bytes": 15672,
+      "sha256": "eb048b265543c45936451c8a8e04c5d7a3e3b709c6f17bbaa580ad8630dd42e3"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read.service.ts",
+      "blob": "d507cb15aaf58744b32488f77cb4a0334ed99738",
+      "bytes": 125497,
+      "sha256": "b4f4b51a5817ef600c94c1ce7de9feffd539dcddd90e5c7e9b185504c6bb75d0",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "blob": "ea718e05cef88f99a9f65b4dc8bf8983e11653e7",
+      "bytes": 8205,
+      "sha256": "debfa5525c2cc48a280e907646cbd802e3a83c54b3d1ad9997e1e448ee5a4b0c",
+      "observedUnchanged": true
+    },
+    {
+      "path": "packages/shared/src/funding-claim.ts",
+      "blob": "834cfdc097ac170d4f96b79edc88fa669bb56039",
+      "bytes": 25949,
+      "sha256": "2f820f5891ff140038224b4a8114c4ec83f3353c4083ec362e0730f2a14a77ab",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "bytes": 44992,
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tool-request-control.ts",
+      "blob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+      "bytes": 2198,
+      "sha256": "e0808b351f92eb2a5d1b609fcfeafd08f2ed4388e2c26e9cdcf4b991af0a4287",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read-provisions.spec.ts",
+      "blob": "e337972997cf8e0cf8cd70b469e217e65edd568b",
+      "bytes": 5170,
+      "sha256": "671a575a755229a7aaaf6b2ff7789ebc242dd7fabae0fb387bacdd560c2a0bf4",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/program-element/program-element-read.service.spec.ts",
+      "blob": "5a3185c7b75acfd8decc72eee60c7576aa2e7952",
+      "bytes": 54456,
+      "sha256": "4b83f1868f226c38fe1fafab1eb03b891c8a159561e468f80601a4896ea4b913",
+      "observedUnchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-defense-budget-tool.helpers.spec.ts",
+      "blob": "f0a4062a9e2333f4827d340ccd6a62c2d3a5210a",
+      "bytes": 6545,
+      "sha256": "77e8dec72baca3bf43ef315c5ae65bfbb765f04e4e36d67e106e2d45ca779c72",
+      "observedUnchanged": true
+    },
+    {
+      "path": "packages/shared/src/pe-source-coverage.ts",
+      "blob": "53dfa8b790afbeef53a6b40f833d373cd50c8133",
+      "bytes": 7723,
+      "sha256": "c4d60bc72ab8ae42e6f69998651eb997cbb38b16039d1799b647cde605e2c42d",
+      "observedUnchanged": true
+    }
+  ],
+  "privateBodiesPublished": false
+}

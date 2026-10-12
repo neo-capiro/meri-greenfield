@@ -1,5 +1,5 @@
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
-const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text"];
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -67,9 +67,9 @@ test('independent exact baseline: only the six prior and16 reviewed continuation
   assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,45);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,51);
-  assert.equal(catalog.operations.length,46);
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,55);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,41);
+  assert.equal(catalog.operations.length,56);
   assert.deepEqual(catalog.operations.filter(x=>!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)),baseline.descriptors);
   for(const old of baseline.originals){
     const current=catalog.originals.find(x=>x.id===old.id);assert.ok(current);
@@ -80,8 +80,8 @@ test('independent exact baseline: only the six prior and16 reviewed continuation
     assert.throws(()=>resolve(id));
 });
 
-test('all 46 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,46);
+test('all 56 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
+  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,56);
   for(const binding of CATALOG_OPERATION_BINDINGS){
     const {descriptor}=resolve(binding.id);
     const raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));

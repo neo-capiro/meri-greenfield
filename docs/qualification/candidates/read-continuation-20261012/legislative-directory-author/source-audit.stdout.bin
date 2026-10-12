@@ -1,0 +1,23 @@
+{
+  "scope": "SOURCE_AND_REFERENCE_METADATA_ONLY",
+  "base": "4280ebaba4cab554baf7e6b23175c34d21027097",
+  "candidate": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "passed": 6027,
+  "total": 6027,
+  "referenceFiles": 10,
+  "privateDefinitions": 328,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "bytes": 15111,
+      "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "bytes": 8511,
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    }
+  ],
+  "failed": [],
+  "checksSha256": "e1c7b3300e56b88342ca63dadc63e93c2a5a630647b476599e117bdd6635396b"
+}
