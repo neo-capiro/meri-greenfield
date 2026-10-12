@@ -108,10 +108,10 @@ for(const phase of ['connect','BEGIN',"SET LOCAL statement_timeout = '5s'"])test
   const t=fixture();await t.ready();const gate=t.b.parkSetup(phase),controller=new AbortController(),pending=t.run(t.call,controller.signal);await gate.ready;controller.abort();gate.resume();await assert.rejects(pending);await new Promise(r=>setImmediate(r));assert.equal(t.state.generations,0);assert.equal(t.b.state().produced.size,0);
 });
 test('short artifact release deadline survives parked completion ACK and needs historical reconciliation',async()=>{
-  const t=fixture();await t.ready();t.state.authorizeHook=()=>{if(t.state.authorizations===5)t.state.authExpiry=NOW+500;};
+  const t=fixture();await t.ready();t.state.authorizeHook=()=>{if(t.state.authorizations===4)t.state.authExpiry=NOW+500;};
   const gate=t.b.parkCommit('marker'),pending=t.run();await gate.ready;t.b.setClock(NOW+501);gate.resume();await assert.rejects(pending);assert.equal(t.b.state().budget.consumed_micro_usd,'0');assert.equal(t.state.commits,1);
   assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal(t.state.generations,1);
 });
 test('post-settlement revocation prevents result release without refund or regeneration',async()=>{
-  const t=fixture();await t.ready();t.state.authorizeHook=()=>{if(t.state.authorizations===5)t.state.deny=true;};await assert.rejects(t.run(),/ARTIFACT_EFFECT_UNKNOWN/);assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal(t.state.commits,1);assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');
+  const t=fixture();await t.ready();t.state.authorizeHook=()=>{if(t.state.authorizations===5)throw Error('SYNTHETIC_REVOKED');};await assert.rejects(t.run(),/ARTIFACT_EFFECT_UNKNOWN/);assert.equal(t.b.state().budget.consumed_micro_usd,'10');assert.equal(t.state.commits,1);assert.equal((await t.create().reconcileInvocation(t.call)).stage,'SETTLED');
 });
