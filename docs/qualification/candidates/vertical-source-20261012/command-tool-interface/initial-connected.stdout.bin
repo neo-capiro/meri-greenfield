@@ -1,0 +1,26 @@
+✔ task.create: raw normalization creates exact pending proposal with no source/journal effect (51.721402ms)
+✔ task.update: raw normalization creates exact pending proposal with no source/journal effect (19.064839ms)
+✔ memory.propose: raw normalization creates exact pending proposal with no source/journal effect (19.717231ms)
+✔ artifact.file: raw normalization creates exact pending proposal with no source/journal effect (18.735235ms)
+✔ raw request cannot supply any server-owned metadata or unknown action (1.72281ms)
+✔ metadata operation/action/binding/raw/input digest mismatch refuses before proposal/executor (5.224153ms)
+✔ unsafe/future/stale receipt clocks and expired/future proposal metadata refuse (4.060304ms)
+✔ non-inert metadata and caller options are rejected without executing getters (1.011952ms)
+✔ preaborted preparation starts no metadata or source port (0.69189ms)
+✔ late preparation ACK is not returned and does not pretend persisted metadata rolled back (5.605486ms)
+✔ late read ACK after cancellation cannot start the existing executor (2.136201ms)
+✔ read must reconstruct exact immutable original command/proposal, not caller substitutions (10.949741ms)
+✔ current metadata policy refusal prevents delegation; current approval remains actual executor responsibility (3.218398ms)
+✔ personal proposal preparation never claims committed memory and actual execution retains pending-producer HOLD (3.216856ms)
+✔ same-actor reviewer is not silently forbidden; current approval policy still external (1.280365ms)
+✔ old producer binding stays immutable while a fresh executor must satisfy actual current authority (2.760761ms)
+✔ final clock-triggered abort cannot release a pending proposal (0.955176ms)
+✔ unknown metadata-owner output fields and oversized receipts refuse (0.941315ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3645.175153

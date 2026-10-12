@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/test/commands-tool-interface.test.mjs"
+  ],
+  "cwd": "/workspace/meri-command-tool-interface-20261012",
+  "sourceHead": "83d2e2afeff4b121cc64880cf5374cfc420ac3fd",
+  "sourceDiffSha256": "048b3f5debf673342be2f3d0cc9ab781dd7bff958c3bd8db12a2c464f4b72ae7",
+  "sourceDiffBytes": 3011,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T22:45:01.883434+00:00",
+  "durationSeconds": 2.78,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 380502,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.stdout.bin",
+      "bytes": 2365,
+      "sha256": "b9088d42262b187a0725554a7699a2efd9d59ebaf640df1c179d67bb2f7bc0db"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent late release cancellation failure preserved; original signal checked before delegation and after executor/output checks without extending metadata lifetime.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
