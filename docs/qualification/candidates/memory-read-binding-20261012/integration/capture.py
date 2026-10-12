@@ -12,6 +12,11 @@ import time
 
 root = Path(__file__).resolve().parents[5]
 evidence = Path(__file__).resolve().parent
+if sys.argv[1:] == ['--help']:
+    print('Usage: capture.py LABEL COMMAND [ARG ...]\nCapture one bounded local source check and owned process-group cleanup.\nExit 0: command succeeded and group absent. Exit 1: command, validation or cleanup failure.')
+    raise SystemExit(0)
+if len(sys.argv) < 3:
+    raise SystemExit('Usage: capture.py LABEL COMMAND [ARG ...]; use --help')
 label, *command = sys.argv[1:]
 if not command or not label.replace('-', '').isalnum():
     raise SystemExit('label and command required')

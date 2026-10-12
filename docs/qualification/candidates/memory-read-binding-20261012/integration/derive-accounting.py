@@ -1,4 +1,5 @@
 """Offline evidence derived from the canonical catalog; never a runtime registry."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -9,6 +10,9 @@ BASE = '7ba0e9d10ebf684e162dcc7c143915afdbf00f32'
 CATALOG = 'packages/contracts/retrieval-0.2/catalog.json'
 LEDGER = 'docs/coordination/r2/capabilities.json'
 OPERATION = {'id': 'memory.list_own_proposals', 'version': '0.2.0'}
+
+parser = argparse.ArgumentParser(description=__doc__, epilog='Exit 0: verified and wrote derived receipt. Exit 1: preservation failure. Exit 2: invalid arguments.')
+parser.parse_args()
 
 
 def git(*args):
