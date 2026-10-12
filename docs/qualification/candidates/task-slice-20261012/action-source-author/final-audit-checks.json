@@ -1,0 +1,266 @@
+{
+  "source": "926c3cfe250f6e2cb3a171e194f087e1444b9f44",
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "originalEntries": 9667,
+  "unchangedOriginalEntries": 9664,
+  "checks": [
+    {
+      "name": "all original files preserved except exact root profile allocation",
+      "pass": true
+    },
+    {
+      "name": "root dependency exact apps/gateway/dispatch/operation-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "root dependency exact apps/gateway/dispatch/read-result-envelope.mjs",
+      "pass": true
+    },
+    {
+      "name": "root dependency exact packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "root dependency exact apps/gateway/dispatch/action-read-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/meri-action-item-read.proof.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/meri-action-item-read.proof.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/meri-action-item-read.proof.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/intelligence/actions/action-recommendation-read.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/intelligence/actions/action-recommendation-read.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/intelligence/actions/action-recommendation-read.service.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/intelligence/actions/action-recommendation.types.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/intelligence/action-recommendation.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/intelligence/action-recommendation.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/intelligence/action-recommendation.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/prisma/migrations/20260607200000_add_action_recommendation/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/prisma/migrations/20280924040000_district_actions/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/prisma/migrations/20280924040000_district_actions/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/prisma/migrations/20280924040000_district_actions/migration.sql",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/meri/tool-service-secret.guard.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/meri/tool-service-secret.guard.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/meri/tool-service-secret.guard.spec.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/tenant/current-tenant.decorator.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/tenant/current-tenant.decorator.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/tenant/current-tenant.decorator.ts",
+      "pass": true
+    },
+    {
+      "name": "pinned identity apps/api/src/tenant/tenant-context.middleware.ts",
+      "pass": true
+    },
+    {
+      "name": "observed identity apps/api/src/tenant/tenant-context.middleware.ts",
+      "pass": true
+    },
+    {
+      "name": "no drift apps/api/src/tenant/tenant-context.middleware.ts",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze projection.mjs",
+      "pass": true
+    },
+    {
+      "name": "no legacy source imports projection.mjs",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze http-adapter.mjs",
+      "pass": true
+    },
+    {
+      "name": "no legacy source imports http-adapter.mjs",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze handler.mjs",
+      "pass": true
+    },
+    {
+      "name": "no legacy source imports handler.mjs",
+      "pass": true
+    },
+    {
+      "name": "working source matches freeze request-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "no legacy source imports request-context.mjs",
+      "pass": true
+    },
+    {
+      "name": "initial failure retained",
+      "pass": true
+    },
+    {
+      "name": "exact focused pass sourcebound",
+      "pass": true
+    },
+    {
+      "name": "22 exact assertions no skipped tests",
+      "pass": true
+    }
+  ],
+  "passed": 64,
+  "scope": "SOURCE_ONLY_NO_NATIVE_OR_SOURCE_SERVICE_EXECUTION"
+}

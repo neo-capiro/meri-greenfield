@@ -1,0 +1,65 @@
+[
+  {
+    "commit": "e6d3db2957119b2893610c1aca4162de010feaa7",
+    "files": [
+      {
+        "path": "apps/gateway/sources/action-items/handler.mjs",
+        "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/http-adapter.mjs",
+        "sha256": "f7119fddf850f829e094ab076d4597d23dc4a84a63c9bfa65b159508f90a9186"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/projection.mjs",
+        "sha256": "bca0dc7285ab089a606c7f29c6026522b6f75f397b21a2e8940c78cc7fa72f8e"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/request-context.mjs",
+        "sha256": "742326e8c5fa224d67ee2e4c4f3d072007eac64609fe8d1d417901ab92f43dfb"
+      }
+    ]
+  },
+  {
+    "commit": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+    "files": [
+      {
+        "path": "apps/gateway/sources/action-items/handler.mjs",
+        "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/http-adapter.mjs",
+        "sha256": "937f24e55f9c2a981f54eea7124899d091cc4ac24e38839333eed6621a3a1db6"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/projection.mjs",
+        "sha256": "aace23939d1fae09ae69979642157f09a8bd0823ad8dba1ee8f87d5ae27d0382"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/request-context.mjs",
+        "sha256": "a8c5ed754bcd9115fac8413f14a5606a01b9df5d7438b0be8d11e3e87929b2c2"
+      }
+    ]
+  },
+  {
+    "commit": "926c3cfe250f6e2cb3a171e194f087e1444b9f44",
+    "files": [
+      {
+        "path": "apps/gateway/sources/action-items/handler.mjs",
+        "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/http-adapter.mjs",
+        "sha256": "937f24e55f9c2a981f54eea7124899d091cc4ac24e38839333eed6621a3a1db6"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/projection.mjs",
+        "sha256": "aace23939d1fae09ae69979642157f09a8bd0823ad8dba1ee8f87d5ae27d0382"
+      },
+      {
+        "path": "apps/gateway/sources/action-items/request-context.mjs",
+        "sha256": "a8c5ed754bcd9115fac8413f14a5606a01b9df5d7438b0be8d11e3e87929b2c2"
+      }
+    ]
+  }
+]
