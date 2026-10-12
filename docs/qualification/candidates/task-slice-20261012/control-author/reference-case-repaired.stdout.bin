@@ -1,0 +1,41 @@
+✔ one actual gateway port call persists exact result and public events (35.565795ms)
+✔ repeat lookup cannot redispatch (6.354711ms)
+✔ reject binding substitution before ports (0.480863ms)
+✔ reject client substitution before ports (0.334633ms)
+✔ reject slots substitution before ports (0.280401ms)
+✔ reject request substitution before ports (0.268684ms)
+✔ unknown claim acknowledgement prevents success and no automatic repeat (1.331231ms)
+✔ unknown markDispatching acknowledgement prevents success and no automatic repeat (1.582849ms)
+✔ unknown complete acknowledgement prevents success and no automatic repeat (3.763186ms)
+✔ revocation at before_claim suppresses release (1.218691ms)
+✔ revocation at before_dispatch suppresses release (1.104019ms)
+✔ revocation at before_store suppresses release (2.843003ms)
+✔ revocation at before_release suppresses release (4.392382ms)
+✔ parked claim deadline remains bounded (20.856928ms)
+✔ parked markDispatching deadline remains bounded (20.857068ms)
+✔ parked complete deadline remains bounded (21.606885ms)
+✔ fresh authority publishes shortened deadline before parked store (15.733478ms)
+✔ error event is sanitized observation only (2.326617ms)
+✔ revoked reconnect cannot load or expose stored result (4.087604ms)
+✔ tampered retained result rejected before release (4.788286ms)
+✔ hostile request/options do not invoke getters or proxy traps (0.320672ms)
+✔ preabort allocates no ports (0.668315ms)
+✔ UUID-equivalent result reference reads preserve original recorded spelling (9.024824ms)
+✔ claim commits both reserved event slots before returning (23.259109ms)
+✔ uncertain BEGIN evicts borrowed client (4.745633ms)
+✔ failed rollback evicts borrowed client (1.970542ms)
+✔ lost COMMIT retains primary unknown even when release throws (2.185796ms)
+✔ duplicate claim refuses without inserting another event reservation (1.657211ms)
+✔ changed retained binding refuses transition (1.625493ms)
+✔ terminal result cannot be replaced by error (1.813295ms)
+✔ complete retains exact observation and hash atomically (9.841582ms)
+✔ direct store rejects forged started event before any connection (1.389979ms)
+✔ direct store rejects forged error event before any connection (1.425573ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3273.040257

@@ -1,0 +1,48 @@
+✔ claim commits both reserved event slots before returning (14.059215ms)
+✔ uncertain BEGIN evicts borrowed client (1.364901ms)
+✔ failed rollback evicts borrowed client (1.173603ms)
+✔ lost COMMIT retains primary unknown even when release throws (1.427094ms)
+✔ duplicate claim refuses without inserting another event reservation (1.186964ms)
+✔ changed retained binding refuses transition (1.34433ms)
+✔ terminal result cannot be replaced by error (1.606113ms)
+✔ complete retains exact observation and hash atomically (10.890915ms)
+✖ direct store rejects forged started event before any connection (1.509578ms)
+✖ direct store rejects forged error event before any connection (1.381866ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 8
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2881.532977
+
+✖ failing tests:
+
+test at apps/control/task-lookup/postgres-results.test.mjs:15:1
+✖ direct store rejects forged started event before any connection (1.509578ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/postgres-results.test.mjs:15:100)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/control/task-lookup/postgres-results.test.mjs:16:1
+✖ direct store rejects forged error event before any connection (1.381866ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-task-lookup-control-20261012/apps/control/task-lookup/postgres-results.test.mjs:16:98)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

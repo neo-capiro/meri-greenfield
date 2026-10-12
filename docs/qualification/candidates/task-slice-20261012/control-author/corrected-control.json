@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/control/task-lookup/delivery.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-control-20261012",
+  "sourceHead": "eced09f4bacc049a5e4a7bafa54b51e51bf52e02",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "845f3924ad4b66ef71ab09872bedc2cd012334b0ae16c2a7e7f1d798b614855a",
+  "startedAt": "2026-10-12T23:42:02.458033+00:00",
+  "durationSeconds": 2.73,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 409670,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-author/corrected-control.stdout.bin",
+      "bytes": 1598,
+      "sha256": "b79cd15fdda88d3daa92ad629a07e554ba860c45e37101eb8fe685f53e0d1116"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/control-author/corrected-control.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Unique label identifies initial or repaired backend integration test verification; prior receipts are preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

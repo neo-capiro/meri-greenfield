@@ -1,0 +1,44 @@
+✔ one actual gateway port call persists exact result and public events (30.488075ms)
+✔ repeat lookup cannot redispatch (5.194415ms)
+✔ reject binding substitution before ports (0.442776ms)
+✔ reject client substitution before ports (0.259841ms)
+✔ reject slots substitution before ports (0.250176ms)
+✔ reject request substitution before ports (0.247773ms)
+✔ unknown claim acknowledgement prevents success and no automatic repeat (1.1633ms)
+✔ unknown markDispatching acknowledgement prevents success and no automatic repeat (1.739697ms)
+✔ unknown complete acknowledgement prevents success and no automatic repeat (3.874098ms)
+✔ revocation at before_claim suppresses release (0.963589ms)
+✔ revocation at before_dispatch suppresses release (1.076159ms)
+✔ revocation at before_store suppresses release (2.721565ms)
+✔ revocation at before_release suppresses release (2.891059ms)
+✔ parked claim deadline remains bounded (20.842224ms)
+✔ parked markDispatching deadline remains bounded (21.446614ms)
+✔ parked complete deadline remains bounded (21.144749ms)
+✔ fresh authority publishes shortened deadline before parked store (16.648555ms)
+✔ error event is sanitized observation only (2.347261ms)
+✔ revoked reconnect cannot load or expose stored result (3.315307ms)
+✔ tampered retained result rejected before release (4.604286ms)
+✔ hostile request/options do not invoke getters or proxy traps (0.475204ms)
+✔ preabort allocates no ports (0.69782ms)
+✔ UUID-equivalent result reference reads preserve original recorded spelling (5.176858ms)
+✔ actual delivery composes the concrete PostgreSQL store on inert fixed-SQL ports (14.088024ms)
+✔ source subject scopes cannot contradict retained event provenance (2.298368ms)
+✔ coherent foreign subject policy cannot replace original event scopes (2.355363ms)
+✔ claim commits both reserved event slots before returning (18.278082ms)
+✔ uncertain BEGIN evicts borrowed client (2.796537ms)
+✔ failed rollback evicts borrowed client (2.283705ms)
+✔ lost COMMIT retains primary unknown even when release throws (2.623958ms)
+✔ duplicate claim refuses without inserting another event reservation (2.295203ms)
+✔ changed retained binding refuses transition (2.035722ms)
+✔ terminal result cannot be replaced by error (2.357617ms)
+✔ complete retains exact observation and hash atomically (11.961514ms)
+✔ direct store rejects forged started event before any connection (3.78236ms)
+✔ direct store rejects forged error event before any connection (1.938326ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2716.158472

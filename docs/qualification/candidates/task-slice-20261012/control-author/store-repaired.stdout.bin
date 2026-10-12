@@ -1,0 +1,40 @@
+✔ one actual gateway port call persists exact result and public events (30.118223ms)
+✔ repeat lookup cannot redispatch (5.888921ms)
+✔ reject binding substitution before ports (0.473793ms)
+✔ reject client substitution before ports (0.283025ms)
+✔ reject slots substitution before ports (0.276796ms)
+✔ reject request substitution before ports (0.262084ms)
+✔ unknown claim acknowledgement prevents success and no automatic repeat (1.18416ms)
+✔ unknown markDispatching acknowledgement prevents success and no automatic repeat (1.593555ms)
+✔ unknown complete acknowledgement prevents success and no automatic repeat (3.636645ms)
+✔ revocation at before_claim suppresses release (1.076627ms)
+✔ revocation at before_dispatch suppresses release (1.098431ms)
+✔ revocation at before_store suppresses release (2.919808ms)
+✔ revocation at before_release suppresses release (3.108281ms)
+✔ parked claim deadline remains bounded (20.026977ms)
+✔ parked markDispatching deadline remains bounded (21.218931ms)
+✔ parked complete deadline remains bounded (21.090888ms)
+✔ fresh authority publishes shortened deadline before parked store (17.081501ms)
+✔ error event is sanitized observation only (2.201289ms)
+✔ revoked reconnect cannot load or expose stored result (3.537516ms)
+✔ tampered retained result rejected before release (5.246785ms)
+✔ hostile request/options do not invoke getters or proxy traps (0.332079ms)
+✔ preabort allocates no ports (0.605711ms)
+✔ claim commits both reserved event slots before returning (16.54788ms)
+✔ uncertain BEGIN evicts borrowed client (2.404735ms)
+✔ failed rollback evicts borrowed client (1.933486ms)
+✔ lost COMMIT retains primary unknown even when release throws (1.931343ms)
+✔ duplicate claim refuses without inserting another event reservation (1.842379ms)
+✔ changed retained binding refuses transition (1.665914ms)
+✔ terminal result cannot be replaced by error (2.095159ms)
+✔ complete retains exact observation and hash atomically (10.723085ms)
+✔ direct store rejects forged started event before any connection (1.627556ms)
+✔ direct store rejects forged error event before any connection (1.344691ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2925.814988
