@@ -1,0 +1,38 @@
+{
+  "url": "https://github.com/neo-capiro/meri-greenfield/pull/38",
+  "number": 38,
+  "observedPublishedHead": "d4a0530cfff718f049382862ed5e64ccbc663418",
+  "baseBranch": "task/meri-backend-execution-20261012",
+  "baseSha": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "draft": true,
+  "state": "open",
+  "merged": false,
+  "canonicalProductionFreeze": "c80260046e33d742811fca6f553af4033eb393bc",
+  "combinedSourceTestFreeze": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "independentReview": "6b24d79d9531a956404688e06695fa73f1912008",
+  "packetSnapshot": "7502b5dee8ecb30e1b1050d506b4284e54fcc796",
+  "packetMembers": 1023,
+  "manifestSha256": "e3484dc3359157e4046ea4fb1903885484fe6dfb3ece6a0ffc7fd09f4b43397c",
+  "combinedTests": {
+    "passed": 5174,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "publicChecks": {
+    "tests": 7,
+    "generation": "PASS",
+    "types": "PASS"
+  },
+  "remoteMainObserved": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+  "scope": "This receipt is excluded from the already verified source/evidence seal to avoid self-reference. Subsequent receipt-only tip preserves all sealed members and source/test bytes.",
+  "sourceEnabled": false,
+  "runtimeAccepted": false,
+  "gates": {
+    "G0": "ACCEPTED",
+    "G1": "OPEN",
+    "G2-G7": "UNENTERED"
+  },
+  "nativeOverlay": "Version1 supported Library transfer failed; exact bytes not joined. All17 backend production probe modules retain PR37 bytes.",
+  "privateHostPolicy": "Supported repository read returned404; host/Hermes operations remain blocked only where that policy is required."
+}
