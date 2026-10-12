@@ -14,8 +14,8 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
-      "bytes": 6285,
-      "sha256": "dd64a3743f48f354ec6dfd0ed36ee06d558abe29f3f5385f60ddeabb55771a24"
+      "bytes": 6598,
+      "sha256": "b6ca1334f967a1dcb494b3ae18852cc1a33473e93592af6192a38d53a6bb813a"
     },
     {
       "path": "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
@@ -118,6 +118,16 @@
       "sha256": "6fb0890893a963440a38f1f7ab44942f938eff29bdae197f84fe637c070b8e0d"
     },
     {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/raw-whitespace.stdout.bin",
+      "bytes": 294,
+      "sha256": "dc13450b5625e31ffe544388ec9f7fca9db2d66c89544b7c970ccb206ebb705b"
+    },
+    {
       "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/sdk-metadata.json",
       "bytes": 2837,
       "sha256": "800ecc20024892e3a8d20cafd66e70f61ea19222776d6a8657b768e4aae02cc4"
@@ -141,6 +151,11 @@
       "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/verify-source.py",
       "bytes": 2553,
       "sha256": "eba9f7f4b8b5c20099d15df921f069638b162659cb761ec8748bc365f771c654"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/whitespace.json",
+      "bytes": 929,
+      "sha256": "01f6e9de182a878b472b4b2dceb417eee6264133fe20868e1c943ea927cd126b"
     },
     {
       "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",

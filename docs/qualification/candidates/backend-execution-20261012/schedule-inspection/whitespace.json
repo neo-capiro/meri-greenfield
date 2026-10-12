@@ -1,0 +1,28 @@
+{
+  "rawCommand": [
+    "git",
+    "diff",
+    "HEAD^",
+    "HEAD",
+    "--check"
+  ],
+  "rawExitCode": 2,
+  "rawOutputSha256": "dc13450b5625e31ffe544388ec9f7fca9db2d66c89544b7c970ccb206ebb705b",
+  "authoredCommand": [
+    "git",
+    "diff",
+    "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "HEAD",
+    "--check",
+    "--",
+    "apps/control/schedules/temporal-inspection.mjs",
+    "apps/control/test/temporal-inspection.test.mjs",
+    "packages/contracts/schedules-0.2",
+    "packages/runtime/operation-lifetime.mjs",
+    "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+    "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md"
+  ],
+  "authoredExitCode": 2,
+  "authoredOutput": "packages/runtime/operation-lifetime.mjs:54: new blank line at EOF.\n",
+  "disposition": "Preserve exact raw test failure output; do not normalize evidence. Two whitespace-only blank lines in before-failure stdout."
+}
