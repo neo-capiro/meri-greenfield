@@ -19,7 +19,7 @@ export const qualification=()=>({state:'UNQUALIFIED',runtimeQualified:false});
 // Comparison-only projection. Callers still validate the exact raw observation.
 // Source versions, content proofs, asOf/freshness/coverage are never stripped.
 export function semanticResult(value){
- const envelope=snapshot(value);exact(envelope,['binding','subject','operation','argumentsSha256','result']);
+ const envelope=snapshotOperationData(value);exact(envelope,['binding','subject','operation','argumentsSha256','result']);
  const stable=b=>({tenantId:b.tenantId,actorId:b.actorId,conversationId:b.conversationId});
  envelope.binding=stable(envelope.binding);delete envelope.subject.authorizationDecisionId;
  const page=envelope.result;page.binding=stable(page.binding);delete page.subject.authorizationDecisionId;
