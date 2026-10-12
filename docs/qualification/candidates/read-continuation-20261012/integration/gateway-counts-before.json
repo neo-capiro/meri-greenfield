@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-read-continuation-20261012",
+  "sourceHead": "01c75641b62bb586d130feda3468c0ddb4286e8f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:57:39.731570+00:00",
+  "durationSeconds": 2.295,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 168296,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/gateway-counts-before.stdout.bin",
+      "bytes": 8009,
+      "sha256": "f3b3345ad60f1e13afd40cd60ba3b830ae028fc2859132286efa18564e06bb76"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/gateway-counts-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
