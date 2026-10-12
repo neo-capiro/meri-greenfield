@@ -10,6 +10,10 @@ export function assertFundingRequirements(data, envelope, input) {
   if (page.offset !== input.offset || page.limit !== input.limit || count > page.limit ||
       page.nextOffset !== (page.hasMore ? page.offset + count : null) || page.hasMore && count === 0)
     fail('Requirement page substitution or non-progressing continuation');
+  // A short returned page proves the extra-fetched-row branch did not fire.
+  // Only a later count showing more rows can justify its continuation.
+  if (count < page.limit && page.hasMore !== (count > 0 && page.total !== null && page.offset + count < page.total))
+    fail('Short requirement page has no source basis for continuation');
   if (page.total !== null && count > 0 && page.offset + count < page.total && !page.hasMore)
     fail('Requirement page hides known continuation');
   if ((count > 0 || (page.total !== null && page.total > 0)) !== (data.coverage === 'available'))

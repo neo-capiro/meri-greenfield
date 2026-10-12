@@ -3,6 +3,10 @@
   "$id": "urn:meri:retrieval:funding-opportunities:0.2.0",
   "title": "Private unavailable funding read projections",
   "$defs": {
+    "FundingSamRecordId": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
     "FundingSource": {
       "enum": [
         "grants_gov",
