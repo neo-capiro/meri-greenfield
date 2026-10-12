@@ -1,0 +1,37 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCandidate": "c67558c211ede5a41e903f09e73666b43867301b",
+  "sourceTree": "c6f4a99cae98151d51a725f57635302222c0a3d7",
+  "base": "bf41cf69ebe892705cdd6f041dd2f1fb323048f5",
+  "inventorySha256": "093786b7a527ee56d598a5c6d7b273c69e7578b5656241cf4784e8f8327abb34",
+  "privateHelperReview": "COMPLETE; actual predicate confirms retained rejection",
+  "independentAssertions": {
+    "passed": 83,
+    "failed": 0
+  },
+  "authorManifestChecks": {
+    "passed": 22,
+    "failed": 0
+  },
+  "maintainedTests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "authorCounterexampleControls": {
+    "passed": 32,
+    "failed": 0
+  },
+  "retainedBaselineIndependent": {
+    "passed": 2,
+    "failed": 7
+  },
+  "retainedBaselineAuthor": {
+    "passed": 21,
+    "failed": 11
+  },
+  "nativeExecution": false,
+  "nativeAcceptance": "HOLD",
+  "accessTimeWaiver": false,
+  "pgAlternativeRouteAttempted": false,
+  "noOwnedJobsRemain": true
+}

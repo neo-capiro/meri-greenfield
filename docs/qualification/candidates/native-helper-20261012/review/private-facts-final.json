@@ -1,0 +1,253 @@
+{
+  "inputs": [
+    {
+      "member": "NativeMetadata.cs",
+      "bytes": 6163,
+      "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c"
+    },
+    {
+      "member": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "member": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "comparisonFields": [
+    "VolumeSerialHex",
+    "FileId128Hex",
+    "CreationTime",
+    "LastAccessTime",
+    "LastWriteTime",
+    "ChangeTime",
+    "Size",
+    "AllocationSize",
+    "LinkCount",
+    "Attributes",
+    "ReparseTag",
+    "Directory",
+    "DeletePending"
+  ],
+  "failedPairs": [
+    {
+      "role": "executable",
+      "entryIndex": 0,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "executable",
+      "entryIndex": 1,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "executable",
+      "entryIndex": 2,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 0,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 1,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 2,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 0,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 1,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 2,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 0,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 1,
+      "fields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 2,
+      "fields": [
+        "LastAccessTime"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "exact-pin:NativeMetadata.cs",
+      "passed": true
+    },
+    {
+      "name": "exact-pin:candidate-hash-and-paths.json",
+      "passed": true
+    },
+    {
+      "name": "exact-pin:collect.ps1",
+      "passed": true
+    },
+    {
+      "name": "only-thirteen-equality-conjunction",
+      "passed": true
+    },
+    {
+      "name": "exact-comparator-field-set",
+      "passed": true
+    },
+    {
+      "name": "complete-paired-role:executable",
+      "passed": true
+    },
+    {
+      "name": "complete-paired-role:root",
+      "passed": true
+    },
+    {
+      "name": "complete-paired-role:Lib",
+      "passed": true
+    },
+    {
+      "name": "complete-paired-role:DLLs",
+      "passed": true
+    },
+    {
+      "name": "thirty-five-pairs-twelve-fail",
+      "passed": true
+    },
+    {
+      "name": "exact-ancestor-failures",
+      "passed": true
+    },
+    {
+      "name": "all-failures-access-time-only",
+      "passed": true
+    },
+    {
+      "name": "inline-identity-fields-remain-equal",
+      "passed": true
+    },
+    {
+      "name": "all-four-named-opened-relationships-equal",
+      "passed": true
+    },
+    {
+      "name": "byte-count-matches-recorded-size",
+      "passed": true
+    },
+    {
+      "name": "recorded-executable-content-hash",
+      "passed": true
+    },
+    {
+      "name": "recomputed-collector-rejection",
+      "passed": true
+    },
+    {
+      "name": "committed-helper-analysis-agrees",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:VolumeSerialHex",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:FileId128Hex",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:CreationTime",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:LastAccessTime",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:LastWriteTime",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:ChangeTime",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:Size",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:AllocationSize",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:LinkCount",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:Attributes",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:ReparseTag",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:Directory",
+      "passed": true
+    },
+    {
+      "name": "derived-comparison-negative:DeletePending",
+      "passed": true
+    }
+  ],
+  "passed": 31,
+  "failed": 0,
+  "privateSourceExecuted": false,
+  "privateSourceCompiled": false,
+  "nativeObservationsRecreated": false,
+  "runtimeAccepted": false,
+  "accessTimeWaiver": false
+}

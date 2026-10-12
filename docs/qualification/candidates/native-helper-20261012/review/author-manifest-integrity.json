@@ -1,0 +1,96 @@
+{
+  "candidate": "c67558c211ede5a41e903f09e73666b43867301b",
+  "manifestSha256": "06cad327c6d65435690d888c76c3b0d41ed783e3f3ec905bd88ef7a746275e62",
+  "checks": [
+    {
+      "path": "scripts/qualification/worker_runner_inventory.py",
+      "passed": true
+    },
+    {
+      "path": "scripts/qualification/test_worker_runner_hash_deadline.py",
+      "passed": true
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-HELPER-SOURCE-20261012.md",
+      "passed": true
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-HELPER-SOURCE-20261012.md",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-before.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-before.stdout.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-deadline-controls.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-final.stdout.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-repaired.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/hash-repaired.stdout.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/helper-observation.py",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/helper-observation.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/helper-observation.stdout.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/helper-source-map.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/inventory-before.py.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/maintained-checks.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/maintained-checks.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/maintained-final.stderr.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/maintained-final.stdout.txt",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/outline.json",
+      "passed": true
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-20261012/author/verification-receipt.json",
+      "passed": true
+    }
+  ],
+  "passed": 22,
+  "failed": 0
+}
