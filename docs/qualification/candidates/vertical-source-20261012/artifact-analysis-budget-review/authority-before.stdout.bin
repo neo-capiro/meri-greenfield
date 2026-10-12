@@ -1,0 +1,111 @@
+✔ real policy/boundary/owner settles exact pending output snapshot and byte sum (100.599359ms)
+✔ canonical actor mismatch denies before accounting (7.833391ms)
+✔ canonical grant mismatch denies before accounting (9.01076ms)
+✔ canonical subject decision mismatch denies before accounting (7.358137ms)
+✔ source authorization false denies before admission or native effects (7.447562ms)
+✔ admission receiptSha256 substitution leaves UNKNOWN without native dispatch (8.092009ms)
+✔ admission manifestSha256 substitution leaves UNKNOWN without native dispatch (7.029093ms)
+✔ admission imageDigest substitution leaves UNKNOWN without native dispatch (7.070775ms)
+✔ admission intentSha256 substitution leaves UNKNOWN without native dispatch (7.469103ms)
+✔ extra output output cannot produce a completion marker (7.815664ms)
+✔ different scope output cannot produce a completion marker (7.201102ms)
+✔ wrong immutable image output cannot produce a completion marker (7.533381ms)
+✔ oversized total output cannot produce a completion marker (11.444407ms)
+✔ fabricated publication output cannot produce a completion marker (6.805136ms)
+✔ borrowed native result mutation during later policy await cannot alter accounted outputs (10.577194ms)
+✔ raw request and configured admission detached before parked admission resumes (10.047799ms)
+✔ changed same-delivery program or admission never regenerates (13.434257ms)
+✔ lost prepare ACK uses explicit historical reconciliation only (6.026236ms)
+✔ lost reserve ACK uses explicit historical reconciliation only (11.411387ms)
+✔ lost marker ACK uses explicit historical reconciliation only (13.808109ms)
+✔ lost settle ACK uses explicit historical reconciliation only (17.212325ms)
+✔ outer cancellation during reserve retains observation and original cause (31.017199ms)
+✔ outer cancellation during marker retains observation and original cause (9.771243ms)
+✔ outer cancellation during settle retains observation and original cause (10.143482ms)
+✔ native port cancellation leaves output unknown and makes no completion claim (7.991558ms)
+✔ post-settlement authority rejection preserves confirmed settlement without result release (13.101457ms)
+✔ admission expiry survives parked marker without silently changing native intent (10.148129ms)
+✔ current output ceiling refuses immutable input rather than rewriting it (6.383432ms)
+✔ current shorter run deadline refuses original intent before reserve (5.647156ms)
+✔ no constructor effects, no exposed bypass or raw program code authority (3.901683ms)
+✔ late returned native receipt remains unknown without marker or success (7.138497ms)
+✔ oversized response metadata preserves validated tuples without false settlement (7.648403ms)
+✖ revocation while reserve is parked prevents subsequent native dispatch (7.602985ms)
+✖ revocation while admission is parked prevents subsequent native dispatch (7.059398ms)
+✖ changed current deadline during admission refuses immutable intent before dispatch (13.795511ms)
+✖ changed current bytes during admission refuses immutable intent before dispatch (8.256237ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 32
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2877.215003
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:75:44
+✖ revocation while reserve is parked prevents subsequent native dispatch (7.602985ms)
+  AssertionError [ERR_ASSERTION]: fresh current policy must refuse before a newly started external effect
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:78:103)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:75:44
+✖ revocation while admission is parked prevents subsequent native dispatch (7.059398ms)
+  AssertionError [ERR_ASSERTION]: fresh current policy must refuse before a newly started external effect
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:78:103)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:80:41
+✖ changed current deadline during admission refuses immutable intent before dispatch (13.795511ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:82:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-analysis-independent.test.mjs:80:41
+✖ changed current bytes during admission refuses immutable intent before dispatch (8.256237ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-review-20261012/apps/artifacts/test/postgres-analysis-independent.test.mjs:82:39)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
