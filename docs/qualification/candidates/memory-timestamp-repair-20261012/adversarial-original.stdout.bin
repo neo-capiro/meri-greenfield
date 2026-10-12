@@ -1,0 +1,72 @@
+✔ retained equal-time descending UUID boundary succeeds and replayed identity refuses (4.009715ms)
+✖ a proposal timestamp must denote a finite instant before coverage is admitted (0.791469ms)
+✖ nonfinite timestamp must not defeat within-page descending order (0.307992ms)
+✖ nonfinite timestamp must not admit a newer continuation result (0.452249ms)
+✔ disabled continuation remains unavailable and does not fabricate completion (1.200454ms)
+✔ cross-client metadata can appear in personal proposer queue only as unapproved data (0.494593ms)
+✔ inert guards refuse hostile retained context without getters or proxy traps (0.307092ms)
+✔ boundaries remain literal: maximum previews accepted and supplementary cursor refused (0.802206ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 5
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 917.36009
+
+✖ failing tests:
+
+test at docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:23:1
+✖ a proposal timestamp must denote a finite instant before coverage is admitted (0.791469ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:27:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:29:1
+✖ nonfinite timestamp must not defeat within-page descending order (0.307992ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:30:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:32:1
+✖ nonfinite timestamp must not admit a newer continuation result (0.452249ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-review-20261012/docs/qualification/candidates/memory-independent-resume-20261012/adversarial.test.mjs:34:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

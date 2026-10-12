@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--cache",
+    "/tmp/meri-memory-timestamp-npm-cache-20261012"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 5.02
+}

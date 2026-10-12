@@ -1,0 +1,83 @@
+✔ normalizes defaults/nulls and binds the server-selected client (4.268624ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (1.484181ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.47869ms)
+✔ complete/empty producer queue metadata never becomes approved evidence or absence (2.12248ms)
+✔ selected client permits own firm/private rows and the selected client, rejects another client (1.389298ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (1.055537ms)
+✔ restricted proposals redact text/title and remain partial (0.796818ms)
+✔ truncated/null-text pages cannot claim complete producer coverage (0.600392ms)
+✔ disabled review is unavailable, including continued-request firstPage semantics (0.595966ms)
+✔ continuation requires retained scope, exact cursor and unchanged page limit (1.194084ms)
+✔ final continued page remains partial and must advance beyond prior key (0.714604ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (1.036317ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.285799ms)
+✔ operation remains unmapped/unavailable and public exports stay separate (4.940865ms)
+✔ family factory import has no process/network/timer effect (44.295827ms)
+✖ nonfinite proposal timestamps cannot claim complete or restricted coverage (0.910779ms)
+✖ nonfinite timestamps refuse in either position before within-page ordering (0.275143ms)
+✖ nonfinite retained or current timestamps cannot advance a continuation (0.287803ms)
+✔ finite timestamps preserve offset-aware ordering and equal-instant identity ties (0.975897ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 16
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1121.22577
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:137:1
+✖ nonfinite proposal timestamps cannot claim complete or restricted coverage (0.910779ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-repair-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:140:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /finite instant/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:143:1
+✖ nonfinite timestamps refuse in either position before within-page ordering (0.275143ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-repair-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:147:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /finite instant/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:149:1
+✖ nonfinite retained or current timestamps cannot advance a continuation (0.287803ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-memory-repair-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:152:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /finite instant/,
+    operator: 'throws',
+    diff: 'simple'
+  }

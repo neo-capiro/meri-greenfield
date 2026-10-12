@@ -133,3 +133,38 @@ test('family factory import has no process/network/timer effect', () => {
   const result=spawnSync(process.execPath,['--input-type=module','-e',probe],{timeout:5000,encoding:'utf8'});
   assert.equal(result.status,0,result.stderr);
 });
+
+test('nonfinite proposal timestamps cannot claim complete or restricted coverage', () => {
+  const createdAt='2026-06-30T23:59:60Z';
+  assert.equal(Number.isFinite(Date.parse(createdAt)),false);
+  assert.throws(()=>check(page({candidates:[candidate({createdAt})]}),{},options()),/finite instant/);
+  assert.throws(()=>check(partial({candidates:[candidate({createdAt,restricted:true,title:null,proposedText:null})]}),{},options()),/finite instant/);
+});
+test('nonfinite timestamps refuse in either position before within-page ordering', () => {
+  const invalid=candidate({createdAt:'2026-06-30T23:59:60Z'});
+  const valid=candidate({id:OLDER,createdAt:'2027-01-01T00:00:00.000Z'});
+  for(const candidates of [[invalid,valid],[valid,invalid]])
+    assert.throws(()=>check(page({candidates}),{},options()),/finite instant/);
+});
+test('nonfinite retained or current timestamps cannot advance a continuation', () => {
+  const invalid=candidate({createdAt:'2026-06-30T23:59:60Z'});
+  const invalidPrior={...options(),previous:{request:{},page:partial({nextCursor:'next',candidates:[invalid]})}};
+  assert.throws(()=>normalize({cursor:'next'},invalidPrior),/finite instant/);
+  const continued=partial({candidates:[candidate({id:OLDER,createdAt:'2027-01-01T00:00:00.000Z'})],
+    coverage:{firstPage:false,complete:false,reason:'unread_pages_restricted_or_truncated_content'}});
+  assert.throws(()=>check(continued,{cursor:'next'},invalidPrior),/finite instant/);
+  const validPrior={...options(),previous:{request:{},page:partial({nextCursor:'next'})}};
+  assert.throws(()=>check({...continued,candidates:[invalid]},{cursor:'next'},validPrior),/finite instant/);
+});
+test('finite timestamps preserve offset-aware ordering and equal-instant identity ties', () => {
+  const laterId=candidate({id:OLDER,createdAt:'2026-01-02T01:00:00.000+01:00'});
+  const earlierId=candidate();
+  assert.equal(check(page({candidates:[laterId,earlierId]}),{},options()).kind,'complete');
+  assert.throws(()=>check(page({candidates:[earlierId,laterId]}),{},options()),/descending createdAt\/id order/);
+  assert.equal(check(page({candidates:[earlierId,candidate({id:OLDER,createdAt:'2026-01-02T00:59:59.999+01:00'})]}),{},options()).kind,'complete');
+  const context={...options(),previous:{request:{},page:partial({nextCursor:'next',candidates:[laterId]})}};
+  const continued=partial({candidates:[earlierId],
+    coverage:{firstPage:false,complete:false,reason:'unread_pages_restricted_or_truncated_content'}});
+  assert.equal(check(continued,{cursor:'next'},context).kind,'partial');
+  assert.throws(()=>check({...continued,candidates:[laterId]},{cursor:'next'},context),/continuation order failed/);
+});

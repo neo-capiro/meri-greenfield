@@ -1,0 +1,42 @@
+[
+  {
+    "label": "author-focused",
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.941
+  },
+  {
+    "label": "reviewer-probes-author-replay",
+    "command": [
+      "node",
+      "--test",
+      "docs/qualification/candidates/memory-timestamp-repair-20261012/adversarial.test.mjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.874
+  },
+  {
+    "label": "full-contracts",
+    "command": [
+      "npm",
+      "run",
+      "check:contracts"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 5.811
+  },
+  {
+    "label": "public-distribution",
+    "command": [
+      "npm",
+      "run",
+      "check:contracts:distribution"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 3.17
+  }
+]
