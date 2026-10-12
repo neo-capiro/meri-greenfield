@@ -1,0 +1,56 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeVerdict": "HOLD",
+  "source": "441613b0432bf8c84c8acb33e237e6595b6170c7",
+  "sourceTree": "b14f441a572f7fa69c758db60ef52a632be2769a",
+  "packet": "4ca2df209f768a7d76a840ccc629c808b01ff9f5",
+  "behaviorDiffBytes": 0,
+  "behaviorDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "canonicalProduction": "c80260046e33d742811fca6f553af4033eb393bc",
+  "canonicalIndependentControls": 40,
+  "sourcePreservationChecks": 167,
+  "acceptedPacketChecks": 308,
+  "rootReceiptChecks": 29,
+  "rootCombined": {
+    "tests": 5174,
+    "passed": 5174,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "public": {
+    "tests": 7,
+    "passed": 7,
+    "generated": true,
+    "typecheck": true,
+    "sourceReceipt": "7c92f09870496855e968784c30869f185f39250f",
+    "protectedBytesUnchanged": true
+  },
+  "originalGitEntries": 8678,
+  "exactOriginalGitEntries": 8641,
+  "changedOriginalEntries": 37,
+  "changedOriginalProduction": 12,
+  "changedOriginalTests": 25,
+  "catalog": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "typed": 97,
+    "mapped": 96,
+    "pendingMappings": 0,
+    "availableHandlers": 0
+  },
+  "wholeRequirements": {
+    "original": 53,
+    "completedSourceDiscovery": 2,
+    "pending": 51,
+    "runtimeQualified": 0
+  },
+  "retainedFailures": [
+    "root initial360/365 focused metadata expectations",
+    "root initial4881/4904 full suite;23 failures including missing explicit durable-harness environment",
+    "review initial new-source audit incorrectly included README",
+    "review root receipt parser initially expected TAP instead of captured spec reporter"
+  ],
+  "runtimeAccepted": false
+}
