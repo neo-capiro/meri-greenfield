@@ -68,11 +68,15 @@ Author checks and retained failures:
 - Public generated-file check, TypeScript check and public package **7/7 PASS**.
 - Source/report `git diff --check c57b7d2 b33c1c3 -- apps/gateway
   docs/coordination/reports/MERI-GATEWAY-DEADLINE-REPAIR-20261012.md`: **PASS**.
-  Whole committed-range whitespace check: **FAIL**, solely 28 trailing-space
+  Initial whole committed-range whitespace check: **FAIL**, solely 28 trailing-space
   lines in preserved raw baseline Node assertion output. These failure bytes are
   intentionally retained. The earlier pre-stage tracked-only check passed; it did
   not include new raw evidence. Exact diagnostic bytes are preserved as base64 in
-  `committed-whitespace.json`. No new architecture/lint command exists for this
+  `committed-whitespace.json`. At the integration owner's request, scoped
+  `.gitattributes` in this new evidence directory now apply `-text -diff` only to
+  these raw stdout/stderr files, preserving their exact bytes; the resulting
+  whole staged-range check passes. Source/report whitespace checks remain active.
+  No new architecture/lint command exists for this
   gateway surface. Canonical contract checks are the existing repository checks.
 
 Raw stdout/stderr and a checks/preservation manifest are in

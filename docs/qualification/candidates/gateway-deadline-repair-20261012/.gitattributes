@@ -1,0 +1,3 @@
+# Preserve raw process output bytes, including assertion-renderer whitespace.
+*.stdout.txt -text -diff
+*.stderr.txt -text -diff
