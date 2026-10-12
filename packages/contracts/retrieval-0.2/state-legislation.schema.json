@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:state-legislation:0.2.0",
+  "title": "Private stored state bill and legislator projections",
+  "$defs": {
+    "StateBillSearchRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "session": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "StateBillSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "limit"
+      ]
+    },
+    "StateLegislatorRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "number",
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "StateLegislatorInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      },
+      "required": [
+        "limit"
+      ]
+    },
+    "StateBillStatusLabels": {
+      "const": {
+        "superseded": "Laid on table — companion substituted",
+        "introduced": "Introduced",
+        "committee": "In committee",
+        "reported": "Reported out of committee",
+        "floor": "On the floor",
+        "passed_chamber": "Passed a chamber",
+        "resolving": "Resolving differences",
+        "to_governor": "Sent to the governor",
+        "enacted": "Enacted",
+        "vetoed": "Vetoed",
+        "veto_overridden": "Veto overridden",
+        "failed": "Failed",
+        "dead_by_deadline": "Dead — session adjourned sine die"
+      }
+    },
+    "StateBillEmptyNote": {
+      "const": "No state bill on record matches that. Say so explicitly — do not describe a bill from memory."
+    },
+    "StateLegislatorMissingNote": {
+      "const": "Provide a legislator name or an OpenStates/LegiScan id."
+    },
+    "StateBillRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statusLabel": {
+          "type": "string"
+        },
+        "sponsorName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sponsorParty": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sponsorCount": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "latestActionDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "latestActionText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stateUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "state",
+        "session",
+        "identifier",
+        "title",
+        "chamber",
+        "subjects",
+        "status",
+        "statusLabel",
+        "sponsorName",
+        "sponsorParty",
+        "sponsorCount",
+        "latestActionDate",
+        "latestActionText",
+        "stateUrl",
+        "url"
+      ]
+    },
+    "StateBillSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_state_bills"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateBillRow"
+          },
+          "maxItems": 50
+        },
+        "note": {
+          "$ref": "#/$defs/StateBillEmptyNote"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "total",
+        "data"
+      ]
+    },
+    "StateLegislatorAmbiguous": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "district": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "state",
+        "chamber",
+        "district",
+        "party"
+      ]
+    },
+    "StateLegislatorMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "district": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "party": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "committees": {},
+        "active": {
+          "type": "boolean"
+        },
+        "matchedBy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "state",
+        "chamber",
+        "district",
+        "party",
+        "committees",
+        "active",
+        "matchedBy"
+      ]
+    },
+    "StateLegislatorOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_legislator"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "matchesFound": {
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "matches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateLegislatorMatch"
+          },
+          "maxItems": 1
+        },
+        "ambiguousLegislator": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateLegislatorAmbiguous"
+          },
+          "minItems": 2,
+          "maxItems": 8
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "matchesFound",
+        "matches"
+      ]
+    }
+  }
+}
