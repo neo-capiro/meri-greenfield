@@ -1,0 +1,314 @@
+✔ actual resolver and authority deliver normalized client filters then validate proof-bound recommendation (32.098458ms)
+✔ existing opaque cursor mode crosses actual normalization with honest partial coverage (4.958117ms)
+✔ unsupported model request refuses before reservation or handler: {} (1.282877ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":null} (0.763016ms)
+✔ unsupported model request refuses before reservation or handler: {"actionItemId":"88888888-8888-4888-8888-888888888888"} (0.813642ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":"synthetic-client","limit":51} (0.927243ms)
+✔ unsupported model request refuses before reservation or handler: {"clientId":"synthetic-client","actorId":"other"} (0.338338ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (1.637489ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (1.405892ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (1.329316ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.537978ms)
+✔ current policy/source/grant/revocation/fence refusal precedes source handler (0.542986ms)
+✔ foreign requested client is a request, not an authorization grant (0.945831ms)
+✔ actual action result validation rejects actor substitution (2.108407ms)
+✔ actual action result validation rejects tenant substitution (1.666643ms)
+✔ actual action result validation rejects fence substitution (2.07123ms)
+✔ actual action result validation rejects client substitution (1.763809ms)
+✔ actual action result validation rejects subject substitution (2.667006ms)
+✔ actual action result validation rejects content substitution (2.783801ms)
+✔ actual action result validation rejects proof substitution (2.680155ms)
+✔ actual action result validation rejects acceptedTask substitution (3.010301ms)
+✔ actual action result validation rejects completed substitution (2.79637ms)
+✔ actual action result validation rejects delivery substitution (12.302386ms)
+✔ actual action result validation rejects evidence substitution (2.221927ms)
+✔ actual action result validation rejects absence substitution (1.347834ms)
+✔ actual action result validation rejects enumeration substitution (1.612411ms)
+✔ actual action result validation rejects fresh substitution (1.55793ms)
+✔ post-handler revocation prevents settlement/result release and retains uncertain budget (1.839643ms)
+✔ cancellation after source work prevents result release (1.170678ms)
+✔ unknown settlement never releases a validated action result (2.231331ms)
+✔ production catalog and gateway remain unavailable despite the new private contract (10.773511ms)
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (3.506387ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (22.756096ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (7.42427ms)
+✔ independent: all invalid model shape/context inputs fail before trusted ports (3.803322ms)
+✔ independent: client selector cannot override server subject before effects (1.283979ms)
+✔ independent: decision IDs rotate while stable authority remains required (4.425206ms)
+✔ independent: stable subject drift at authority stage 2 never releases (2.385533ms)
+✔ independent: stable subject drift at authority stage 3 never releases (1.460053ms)
+✔ independent: stable subject drift at authority stage 4 never releases (3.165944ms)
+✔ independent: stable subject drift at authority stage 5 never releases (5.398718ms)
+✔ independent: absent retained context or context ports cannot invent continuation (1.454264ms)
+✔ independent: retained context rejects tenant (3.032885ms)
+✔ independent: retained context rejects actor (3.420598ms)
+✔ independent: retained context rejects conversation (2.805023ms)
+✔ independent: retained context rejects run (2.468928ms)
+✔ independent: retained context rejects attempt (2.700055ms)
+✔ independent: retained context rejects worker (2.322969ms)
+✔ independent: retained context rejects fence (4.411966ms)
+✔ independent: retained context rejects policy (2.806124ms)
+✔ independent: retained context rejects operation (3.020887ms)
+✔ independent: retained context rejects version (3.716962ms)
+✔ independent: retained context rejects subject (2.366404ms)
+✔ independent: retained context rejects cursor (2.799874ms)
+✔ independent: retained context rejects digest (4.184264ms)
+✔ independent: retained context rejects staleRead (2.391222ms)
+✔ independent: retained context rejects futureRead (2.267766ms)
+✔ independent: retained context rejects futureRecord (2.318562ms)
+✔ independent: retained context rejects expired (2.619174ms)
+✔ independent: retained context rejects beyondAuthority (2.328757ms)
+✔ independent: retained context rejects extra (2.436429ms)
+✔ independent: retained context rejects limit (3.159545ms)
+✔ independent: retained context rejects poisonedCursor (2.602569ms)
+✔ independent: retained context rejects invalidPage (2.618112ms)
+✔ independent: envelope and raw DTO reject operation (1.230988ms)
+✔ independent: envelope and raw DTO reject arguments (1.153923ms)
+✔ independent: envelope and raw DTO reject binding (2.57633ms)
+✔ independent: envelope and raw DTO reject subject (1.60446ms)
+✔ independent: envelope and raw DTO reject extra (1.159521ms)
+✔ independent: envelope and raw DTO reject missing (1.545371ms)
+✔ independent: envelope and raw DTO reject approved (1.449768ms)
+✔ independent: envelope and raw DTO reject actor (1.399291ms)
+✔ independent: envelope and raw DTO reject restricted (1.243127ms)
+✔ independent: envelope and raw DTO reject coverage (1.275136ms)
+✔ independent: retain receipt rejects decision (1.85104ms)
+✔ independent: retain receipt rejects keySha256 (1.719462ms)
+✔ independent: retain receipt rejects previousSha256 (1.77108ms)
+✔ independent: retain receipt rejects checkedAtMs (2.289568ms)
+✔ independent: load rejects hostile non-JSON receipt without property effects (2.512894ms)
+✔ independent: retain rejects hostile non-JSON receipt without property effects (2.009749ms)
+✔ independent: retained ports receive immutable context detached from model objects (4.498827ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (3.294728ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (103.398656ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (102.726796ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (100.433827ms)
+✔ partial action binding does not declare full native parity or activate a handler (6.455064ms)
+✔ partial binding refuses original mapping, aliases and executable/retry promotion (33.724399ms)
+✔ scoped canonical defaults and digest preserve a frozen original request plus opaque cursor (4.056863ms)
+✔ binding refuses unscoped mode while unchanged family keeps it explicitly pending (0.960443ms)
+✔ trusted actor is mandatory and model authority cannot replace it (1.385822ms)
+✔ family mode bounds and closed JSON admission retain strict behavior (1.479442ms)
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (6.969838ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (4.426808ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (171.759905ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (9.3886ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (25.445776ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (43.957298ms)
+✖ resolver refuses unknown versions and unsafe references without invoking getters (0.487031ms)
+✔ family default materialization and argument digest happen before dispatch (4.382401ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (2.443199ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (12.281024ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (0.936616ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (7.434897ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.619501ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (15.832262ms)
+✔ materializes verified legacy defaults without mutating strict input (2.347496ms)
+✔ rejects coercion, null numeric values, injected authority and unsupported subjects (0.649956ms)
+✔ preserves exact numeric bounds and requires message identity for body continuation (0.440962ms)
+✔ mail external DTO accessors and cycles refuse before executing getters (1.352441ms)
+✔ stored disconnected reads remain transport-only with unknown immutable identities (17.951961ms)
+✔ UTF-16 offsets count a surrogate pair as two units and permit its legacy split (1.369477ms)
+✔ late decisive body section remains an unresolved read despite ending the stored body (0.723346ms)
+✔ offset beyond stored body is disclosed empty transport, not absent material (0.781473ms)
+✔ all upstream completeness states stay incomplete and missing differs from empty (1.467023ms)
+✔ unknown body size and snapshot cannot imply completion (0.791209ms)
+✔ selection and exact normalized argument digest must agree with original request (0.945951ms)
+✔ personal/client request and resolved subject agree without broadening authority (0.914373ms)
+✔ denied source cannot contribute; mixed source accounting keeps eligible stored read (0.827753ms)
+✔ message count and continuation use the filtered message collection (0.688795ms)
+✔ unknown message totals cannot invent next positions or aggregate totals (1.362346ms)
+✔ body continuation inventory, page bounds and truncation agree (1.635336ms)
+✔ duplicate messages cannot inflate count using another citation or version (0.352219ms)
+✔ transport refuses absence, evidence-ready, complete enumeration and cursor guarantees (10.486349ms)
+✔ empty stored thread page never certifies absence (0.372349ms)
+✖ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings (5.791698ms)
+✔ mail descriptor raw-byte schema pins and exact definition IDs cannot drift (12.434966ms)
+✔ no skill can expose the pending mail operation (4.07552ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (1.302135ms)
+✔ mailbox identity and authoritative body lineage cannot be substituted (1.284259ms)
+✔ list/search defaults are strict inert normalized DATA with no clock invention (1.597349ms)
+✔ search literal terms remain distinct AND filters and keyword-free scoped search is valid (0.276175ms)
+✔ list/search getters hidden fields null and nonfinite values are refused without effects (0.330497ms)
+✔ candidate query inclusive anchor is separate from exclusive requester window (34.317901ms)
+✔ message totals and page-only groups differ; exhausted preview never proves absence (5.581132ms)
+✔ continuation binds retained anchor filters actor window and message offset (6.820124ms)
+✔ dedup is mailbox-specific; order nulls-last and immutable versions are conservative (1.394895ms)
+✔ authorization source and mailbox scopes are independent of connection state (3.543693ms)
+✔ preview has no body offsets size guarantee or recipient completeness upgrade (1.906564ms)
+✔ search page operation groups counts filters and all pending descriptor pins are closed (53.894943ms)
+✔ cross-mailbox identical internet IDs stay distinct stored candidates (4.303058ms)
+✔ offset ceiling keeps hasMore true with null nextOffset and no completeness (4.344605ms)
+✔ empty search and unknown stored totals cannot become complete or absent (1.505592ms)
+✔ canonical memory binding resolves only its private version and remains unavailable (1.980865ms)
+✔ memory normalization returns frozen original request and effective selection digest (2.871682ms)
+✔ memory requires trusted subject and refuses legacy or model authority keys (2.021717ms)
+✔ memory binding preserves selected-client and result actor tenant scope checks (3.658114ms)
+✔ complete empty and disabled queue results never become evidence facts or absence (2.222027ms)
+✔ restricted truncated and missing proposal text retain partial coverage and redaction (1.776638ms)
+✔ binding continuation retains exact original request page cursor limit and advancing keys (3.827319ms)
+✔ finite timestamp admission survives the canonical binding and retained page path (1.462206ms)
+✔ binding inert admission refuses getters proxies cycles and serialization hooks without effects (0.698649ms)
+✔ strict family limits and output original request survive binding normalization (2.243639ms)
+✔ all thirteen earlier bindings retain legacy context grammar and refuse memory-only keys (12.038089ms)
+✖ catalog preserves the original thirteen descriptors and complete selected/deferred ledger (2.576189ms)
+✔ task read materializes verified defaults without mutating strict input (2.428057ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (1.119802ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (24.049559ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (1.495596ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (2.023919ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (1.325661ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (14.126836ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (2.159814ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (0.570647ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (1.697299ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (2.058441ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (14.657544ms)
+✔ operational source observations retain their pending timestamp boundary (0.626661ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (0.813892ms)
+✖ private task registration keeps action items unmapped and exposes no live handler or skill (8.087006ms)
+ℹ tests 169
+ℹ suites 0
+ℹ pass 163
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4191.098023
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-context-independent.test.mjs:97:1
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (3.506387ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'mail.list_messages',
+  +     'mail-candidates/1'
+  +   ],
+  +   [
+  +     'mail.search_messages',
+  +     'mail-candidates/1'
+  +   ],
+  +   [
+        'memory.list_own_proposals',
+        'memory-proposals/1'
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/apps/gateway/test/memory-context-independent.test.mjs:99:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'mail.list_messages', 'mail-candidates/1' ], [ 'mail.search_messages', 'mail-candidates/1' ], [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    expected: [ [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:16:1
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (6.969838ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  15 !== 14
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:21:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 15,
+    expected: 14,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:86:1
+✖ resolver refuses unknown versions and unsafe references without invoking getters (0.487031ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:88:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-mail.test.mjs:131:1
+✖ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings (5.791698ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  15 !== 14
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/packages/contracts/test/retrieval-mail.test.mjs:136:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 15,
+    expected: 14,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-memory-binding.test.mjs:174:1
+✖ catalog preserves the original thirteen descriptors and complete selected/deferred ledger (2.576189ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '539bf084ddba76435e1fef2953203177e3dcad5c2f8a150023f0f93c56374641'
+  - 'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/packages/contracts/test/retrieval-memory-binding.test.mjs:177:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '539bf084ddba76435e1fef2953203177e3dcad5c2f8a150023f0f93c56374641',
+    expected: 'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-operational-reads.test.mjs:402:1
+✖ private task registration keeps action items unmapped and exposes no live handler or skill (8.087006ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(!catalog.operations.some(operation => operation.operation.id === id || operation.aliases.includes(id)))
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/packages/contracts/test/retrieval-operational-reads.test.mjs:412:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

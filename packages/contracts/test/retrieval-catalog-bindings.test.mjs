@@ -18,7 +18,7 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
   const ledger = JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json', import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary}) => ({id,disposition,boundary})),
     ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:row.acceptedScope.boundary})));
-  assert.equal(c.operations.length,14); assert.equal(c.originals.filter(row => row.state==='mapped').length,14);
+  assert.equal(c.operations.length,15); assert.equal(c.originals.filter(row => row.state==='mapped').length,14);
   assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,82);
   assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43);
   for (const native of added) {
@@ -84,7 +84,7 @@ test('everycurrent descriptor stays pending/null; fabricated executable metadata
 });
 
 test('resolver refuses unknown versions and unsafe references without invoking getters', () => {
-  for(const ref of [{id:'query_action_items',version:'0.2.0'},{id:'query_tasks',version:'1.0.0'},{id:'query_tasks',version:'0.2.0',extra:true}])
+  for(const ref of [{id:'unregistered.operation',version:'0.2.0'},{id:'query_action_items',version:'0.1.0'},{id:'query_tasks',version:'1.0.0'},{id:'query_tasks',version:'0.2.0',extra:true}])
     assert.throws(()=>resolveOperationContract(ref));
   let calls=0; const ref={version:'0.2.0'};
   Object.defineProperty(ref,'id',{enumerable:true,get(){calls++;return 'query_tasks';}});

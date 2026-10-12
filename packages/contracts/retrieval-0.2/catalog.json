@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.2",
+  "catalogVersion": "0.2.3",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -2046,6 +2046,75 @@
       ],
       "fixtureIds": [
         "catalog.binding.memory.list_own_proposals"
+      ]
+    },
+    {
+      "operation": {
+        "id": "query_action_items",
+        "version": "0.2.0"
+      },
+      "displayName": "Read client action recommendations",
+      "whenToUse": "Prepare an exact or paginated action-recommendation read for an explicitly selected, currently authorized client.",
+      "limitations": [
+        "Partial native coverage only: the original query_action_items capability remains pending with no replacement mapping.",
+        "Client-less legacy listing has no qualified authorization or result contract and is refused.",
+        "Pending source contract only; null handler and no enabled source, discovery or executable skill.",
+        "Client visibility, tenant isolation and memory walls require current server authorization; a clientId argument grants no access.",
+        "Opaque cursor disclosure is not cursor authentication, immutable ordering, snapshot-safe pagination, freshness or complete history.",
+        "Recommendations and outcome text do not establish an accepted task, task completion or delivered work; evidence and negative absence claims remain unavailable."
+      ],
+      "positiveExamples": [
+        "Read action recommendations for an authorized client, optionally filtering one exact actionItemId."
+      ],
+      "negativeExamples": [
+        "List tenant-wide recommendations without clientId, create a task, or infer delivery from recommendation status."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "action_recommendation",
+          "authority": "authoritative",
+          "purpose": "enumeration"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionItemReadInput",
+        "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:operational-reads:0.2.0#/$defs/ActionItemClientScopedPage",
+        "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-02",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.query_action_items.client_scoped"
       ]
     }
   ]
