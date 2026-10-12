@@ -21,6 +21,8 @@ Initial independent replay was 57/60: the two actual failures plus one reviewer 
 
 Raw failures, corrected fixture history, repaired receipts and source-bound subreaper outputs remain in [the reviewer packet](../../qualification/candidates/vertical-source-20261012/schedule-tool-review/). Author outcome-loss (0/2), inspection correlation (1/4), and instruction approval (0/2) failures remain in the immutable author packet. The final report-directory setup failure and raw-only whitespace failure are also preserved. The reviewer additionally records unsuccessful metadata filename lookups as local inspection mistakes; they did not change source or a test oracle.
 
+All seven reviewer-owned captured groups were independently observed absent at closeout. Only seven owned physical dependency copies (1,374,227 bytes) were removed; donor trees were untouched. Full reviewer whitespace checking returns exit2 solely for two preserved raw failure-stream spacing lines (271-byte diagnostic); reviewer-authored text passes. The packet manifest excludes only itself.
+
 ## Interface and qualification boundary
 
 `createScheduleToolValidators({validateShape,schema})` owns `urn:meri:schedules:tool-interface:0.2.0`. Canonical callers must advertise the Request definitions, not normalized Input definitions. The sole trusted wrapper is `{scheduleContext: ...}`. `createScheduleToolInterface({lifecycle,validators,authorize,clock}).execute({operation,request,context,signal})` is the concrete entry point.

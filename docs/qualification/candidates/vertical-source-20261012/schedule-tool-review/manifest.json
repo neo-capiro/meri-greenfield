@@ -1,0 +1,204 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceFreeze": "d9296aa2db1290091a355c47fb1db3d87ac98665",
+  "authorPacket": "e45bca0f83851362923a74ad0dc7e164cda0f4ea",
+  "runtimeAccepted": false,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-SCHEDULE-TOOL-INTERFACE-REVIEW-20261012.md",
+      "bytes": 7235,
+      "sha256": "91af5950389dc7fe8f97b7b2705085ac9138edfafba49f2b58498de3cf5c2ea6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/audit-packet.py",
+      "bytes": 4939,
+      "sha256": "45ac6a63f61efa4531f4af9758a7947d79ae02ed09d73d03b281c80e1a468ada"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/audit-source.py",
+      "bytes": 7206,
+      "sha256": "48b58a66aee66e41ab2e12bf78d1a2a9f90a9295bbdf4352cd5c45df0163ed39"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit-result.json",
+      "bytes": 27392,
+      "sha256": "cf21ba94febc0704975cbde2f7419da9d715875117bd5e07f1bf461e5c9914d7"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.json",
+      "bytes": 1341,
+      "sha256": "21b1229c899c9c7b6316fb5c8b2cb6a56a34bc91ddf58a0e0b760d372748714d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/author-packet-audit.stdout.bin",
+      "bytes": 198,
+      "sha256": "3b5de9fde3c3c7e14dfcb7a2f2bf1bc0c4c4598d845133c698afc574e3599953"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/cleanup.json",
+      "bytes": 3249,
+      "sha256": "96dc457963d6da4d6ab97a794d38ce48c3a496322f7f349c778cbd64c6ba7224"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/criteria.json",
+      "bytes": 1879,
+      "sha256": "7b96ead08ca852a475ae9c52b7d61577a4706781c85221726d34ab20ae658adc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/dependency-setup.json",
+      "bytes": 781,
+      "sha256": "9e3dba8617879649080eb871afe110c54a3fbe562c3fb85d61fabd813792f035"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/fixture-correction.json",
+      "bytes": 457,
+      "sha256": "ae341f42f2b8080fe28e1091d7f6ad965aeed71a893fd35bdabcbe26d8eafdca"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.json",
+      "bytes": 1322,
+      "sha256": "78efd98d702412690ef48a7d57197d4f5eebc4d9b19eb5a17dd320c2721eac3e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-expanded.stdout.bin",
+      "bytes": 6532,
+      "sha256": "b8161dfaa90df044d879306290d2193c83bca7edcad5e6f8fd4e2ad869161240"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-initial.json",
+      "bytes": 1320,
+      "sha256": "7a462064e02c4074c2d1207e7cb9166a7934da315ee7efc45d37eaeccffd11e4"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/independent-initial.stdout.bin",
+      "bytes": 8601,
+      "sha256": "5312fd759a65ba82ecc059a7efa6955dd3b29385ceb67a496532be76eede4672"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-before.json",
+      "bytes": 1317,
+      "sha256": "1247b9e08780bd5a9535eb73ef528f14dbf068a184c894feb77e21d6cc02e790"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-before.stdout.bin",
+      "bytes": 7194,
+      "sha256": "d12eb580d9db41783ef0efb0d3996770a323f70d54aaead5d0a16146d01ff248"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-repaired.json",
+      "bytes": 1322,
+      "sha256": "a4765d8bcb289351ec218fbc83d693ddfbd73823c8da190a03d1e3f162f33788"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/instruction-repaired.stdout.bin",
+      "bytes": 5083,
+      "sha256": "28d7507cf1e03306a86d81dcdd029480e7a7c967036dcb1a677f69f9e28a6aac"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/metadata-lookup-failures.json",
+      "bytes": 603,
+      "sha256": "4f75c97ab59100476d14f4633d15dd56bd12bf9b9188e455897c1cd615a53d02"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.json",
+      "bytes": 1562,
+      "sha256": "2c5d42a172076efaf26882ca5a67afc87755007f5bd8d8a1f694343d4b441f67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/original-and-author-final.stdout.bin",
+      "bytes": 7403,
+      "sha256": "6c01eea45d81dfb54d672ba41e0f5839c382c9bffd0b41b96a5b9ab013ce9ac8"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-first.json",
+      "bytes": 1339,
+      "sha256": "8112e2c7e1ce4208befe7a8056f038128ca56bd35cf221733b33015ef01978f5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-first.stdout.bin",
+      "bytes": 142,
+      "sha256": "524ffa6f300ee016419e43d0706c9fd0cca0816bd9565c8956ccbd5f6aa25242"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/source-audit-result.json",
+      "bytes": 35958,
+      "sha256": "4a1d6288a18a8d6c701d1f4823373bd4562dc8ce4c23547bba801d6ef4669b67"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/verdict.json",
+      "bytes": 594,
+      "sha256": "1a4518a5df6e828138f6b544303317820c9a074f8806ec62925a218d1a9ad9b3"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/verify-manifest.py",
+      "bytes": 1039,
+      "sha256": "7cc30af2adcecaf03dee7dce15b55072fce5b1666765bf6d2d55d7c836d7b732"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/whitespace-authored.json",
+      "bytes": 2205,
+      "sha256": "a58ba6f925f96439fb4d4990a0451ad45c529db7c378eb7a01ef4518c5a15d92"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/whitespace-full.json",
+      "bytes": 752,
+      "sha256": "23b985b3c523f6f626b0d8ab497520d4b190b4dc1707c1c7454adf3fb516687b"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/schedule-tool-review/whitespace-full.stdout.bin",
+      "bytes": 271,
+      "sha256": "41f5db53e6d85b6b933b55ddec428e9f15bf021716cce1102c602046502f9489"
+    },
+    {
+      "path": "packages/contracts/test/schedule-tool-independent.test.mjs",
+      "bytes": 23011,
+      "sha256": "6eae93ac5837ab4c4acb6907eb1beac9987bafae2c999062c27d5f3f1127945b"
+    }
+  ]
+}
