@@ -1,0 +1,50 @@
+✔ all four typed requests compile under strict private/public schemas (48.034288ms)
+✔ reject code, external inputs, malformed Unicode, unsafe functions and shape drift (1.09742ms)
+✔ context rejects foreign provenance and assets (10.266338ms)
+✔ exact UTF8 TXT download plus current-attempt authorization and owned cleanup (88.730047ms)
+✔ actual Word package contains rich runs, tables and embedded chart (1499.60338ms)
+✔ actual XLSX distinguishes literal formulas and preserves declared formulas with unverified cache (197.507462ms)
+✔ actual editable PptxGenJS deck includes notes, chart, table and multiple slides (109.724113ms)
+✔ actual pandas join, typed delta and chart produce inspectable result bundle (1702.051522ms)
+✔ immutable revision preserves original exact bytes and rejects stale parent (187.83912ms)
+✔ denied authority stops before generation (2.086705ms)
+✔ changed authorization intent is rejected (1.53742ms)
+✔ changed budget binding is rejected (1.882638ms)
+✔ unqualified inspection cannot claim rendered, native-opened or recalculated (5.046582ms)
+✔ revocation after generation prevents any object commit (1.632402ms)
+✔ executor deadlines remain cancellation, not successful artifact publication (32.472941ms)
+✔ post-commit budget failure is explicit unknown effect (8.362744ms)
+✔ read integrity detects corrupted object bytes (86.224918ms)
+✔ fixed Office conversion source arguments have no user option/path channel (0.553482ms)
+✔ general analysis is unavailable without admitted native port (5.206763ms)
+✔ actual openpyxl cell revision keeps original XLSX and explicit literals/formulas (428.701695ms)
+✖ trusted immutable PNG asset produces Word and PPT image parts without URL fetch (65.729724ms)
+✔ actual fixed child deadline rejects and removes owned output workspace (5.388016ms)
+✔ fixed child output failure remains a failure with owned workspace cleanup (46.194137ms)
+✔ pure source PDF composition remains unavailable without explicit transformer (5.561937ms)
+✔ all asset/provenance tuples participate in immutable intent (9.165582ms)
+✔ stable version allocation cannot overwrite an immutable committed version (16.030271ms)
+✔ sandbox input/receipt verifier gates general code before any port call (0.801023ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4727.353874
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-execution.test.mjs:101:1
+✖ trusted immutable PNG asset produces Word and PPT image parts without URL fetch (65.729724ms)
+  Error: ARTIFACT_PROCESS_FAILED
+      at error (file:///workspace/meri-artifact-execution-20261012/apps/artifacts/process.mjs:5:33)
+      at runArtifactProcess (file:///workspace/meri-artifact-execution-20261012/apps/artifacts/process.mjs:25:66)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Object.execute (file:///workspace/meri-artifact-execution-20261012/apps/artifacts/local-executor.mjs:20:17) {
+    code: 'ARTIFACT_PROCESS_FAILED',
+    receipt: { pid: 362743, exitCode: 2, signal: null, stdoutBytes: 0, stderrBytes: 63, stdoutSha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', stderrSha256: '17c237aa2ff5a58e95a8225e0bac690de2e3fc20b1f4614f6ca0402a5f6ec7a7', leaderClosed: true, groupKillAttempted: true, sandboxQualified: false },
+    lifetime: { unsettledOperations: 0, physicalStopProven: false },
+    budgetSettlementUnknown: false
+  }

@@ -1,0 +1,139 @@
+{
+  "schema": "meri-artifact-source-coverage/1",
+  "source": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+  "fullSelectedObligations": 4,
+  "scopeReduction": false,
+  "status": "ACCEPT_SOURCE behavioral814ecf1b/review60f3b2e7; final whitespace47aef9f9 and metadata await exact independent packet audit; runtime HOLD",
+  "obligations": [
+    {
+      "operation": "create_word",
+      "implemented": [
+        "arbitrary admitted paragraph/runs/styles and table blocks",
+        "bounded PNG and chart embedding",
+        "DOCX creation and full-spec immutable revision",
+        "TXT exact UTF-8 whitespace/final newline",
+        "byte and archive integrity, current authority and download",
+        "fixed LibreOffice DOCX-to-PDF source adapter"
+      ],
+      "localProof": [
+        "actual DOCX rich content/chart/PNG",
+        "exact TXT bytes",
+        "old/new immutable revision bytes"
+      ],
+      "unrun": [
+        "LibreOffice PDF conversion",
+        "native open/per-page visual inspection",
+        "sandbox and deployed object/state storage"
+      ],
+      "unsupported": [
+        "arbitrary imported Office features",
+        "WYSIWYG editor",
+        "freeform file paths/URLs/macros"
+      ],
+      "owner": "artifact source + native Office owner; frontend preview owner separately"
+    },
+    {
+      "operation": "create_excel",
+      "implemented": [
+        "typed literal/numeric/boolean/blank cells",
+        "explicit bounded allowlisted formulas",
+        "charts and PNG images",
+        "XlsxWriter creation",
+        "openpyxl plain own-workbook cell revision",
+        "rich own-workbook full-spec regeneration into new version",
+        "fixed LibreOffice recalc source adapter"
+      ],
+      "localProof": [
+        "XLSX archive/cell/formula inspection",
+        "text beginning equals remains literal",
+        "openpyxl edit preserves original and formula intent"
+      ],
+      "unrun": [
+        "actual recalculation/reference-total qualification",
+        "native Excel feature-equivalence",
+        "visual/render review"
+      ],
+      "unsupported": [
+        "arbitrary imported XLSX/macros/external links",
+        "unsupported formula functions",
+        "automatic numeric-looking string coercion"
+      ],
+      "owner": "artifact source + native Office owner"
+    },
+    {
+      "operation": "create_powerpoint",
+      "implemented": [
+        "editable native text/bullets/tables/charts/images/speaker notes",
+        "multiple slides",
+        "PptxGenJS4.0.1 original fixed layout",
+        "full-spec immutable revisions",
+        "PNG full decoder preflight"
+      ],
+      "localProof": [
+        "real editable multi-slide OOXML with chart/table/notes",
+        "valid PNG media and invalid CRC refusal"
+      ],
+      "unrun": [
+        "native PowerPoint open",
+        "per-slide rendering/quality and clip checks",
+        "qualified font/layout profile"
+      ],
+      "unsupported": [
+        "arbitrary-layout script execution",
+        "external asset URLs",
+        "imported deck editing"
+      ],
+      "owner": "artifact source + native Office/frontend owners"
+    },
+    {
+      "operation": "run_analysis",
+      "implemented": [
+        "pandas typed select/filter/join/derive/aggregate/sort",
+        "typed charts and JSON/CSV/PNG bundle",
+        "numeric overflow refusal and explicit float64 range",
+        "general immutable-program/input/output contract",
+        "current trusted admission/intent/image/manifest/scope result checks",
+        "general output inspection/publication pending states"
+      ],
+      "localProof": [
+        "real join/derived values/chart bundle",
+        "null-join and integer-overflow refusal",
+        "inert general port controls only"
+      ],
+      "unrun": [
+        "general program execution in qualified native sandbox",
+        "general output inspection and immutable version publication",
+        "native security/egress/resource admission"
+      ],
+      "unsupported": [
+        "eval/exec/model code in local adapter",
+        "exact arbitrary-precision accounting in typed float mode",
+        "raw SQL/provider/network access"
+      ],
+      "owner": "artifact source; general code native owner + root shared execution/budget owner"
+    }
+  ],
+  "sharedPending": [
+    "deployed S3/PostgreSQL adapter and durable budget composition",
+    "current authority implementation from trusted root owner",
+    "retention/deletion and revocation benchmark qualification",
+    "original14 quick-action manifests and end-to-end workflows",
+    "G1 and all native Office/render/browser gates"
+  ],
+  "nativePortableEvidence": {
+    "provenance": "parent-reported only, no bytes available in this lane",
+    "libraryId": "libfile_0aa0b219f96c81918392471e3d52972f",
+    "version": 0,
+    "filename": "meri-native-safe-gate-summaries-20261012-v2.zip",
+    "bytes": 8253,
+    "sha256": "8ff6cdc10e0ba2aa31cd65a0b1b116f94acad432e6ad7b1e3eed301db4e51884",
+    "verifiedHere": false,
+    "effect": "none; no native result joined"
+  },
+  "shipping": {
+    "provenance": "parent-reported",
+    "buildId": "18b3316a-9403-40f9-807b-3ddf24c40d7b",
+    "result": "FAILED20:06:43UTC Docker exit1; no image/scan"
+  },
+  "behavioralSource": "814ecf1baa1b5890545576a0815257199505103a"
+}

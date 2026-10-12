@@ -1,0 +1,89 @@
+{
+  "status": "intent preserved; no full workflow acceptance by artifact source lane",
+  "workflows": [
+    {
+      "row": 8,
+      "id": "quick_skill.research_company",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 9,
+      "id": "quick_skill.relationship_brief",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 10,
+      "id": "quick_skill.client_changes",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 11,
+      "id": "quick_skill.portfolio_changes",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 12,
+      "id": "quick_skill.portfolio_overlap",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 13,
+      "id": "quick_skill.mail_history",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 14,
+      "id": "quick_skill.meeting_prep",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 15,
+      "id": "quick_skill.commitments_audit",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 16,
+      "id": "quick_skill.funding_opportunity_match",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 17,
+      "id": "quick_skill.pe_deep_dive",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 18,
+      "id": "quick_skill.bill_watch",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 19,
+      "id": "quick_skill.hearing_watch",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 20,
+      "id": "quick_skill.representation_lookup",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    },
+    {
+      "row": 21,
+      "id": "quick_skill.regulatory_docket_brief",
+      "artifactLane": "Authorized cited content may feed artifact services; SDK workflow/source completeness remains separate",
+      "sourceManifest": null
+    }
+  ]
+}

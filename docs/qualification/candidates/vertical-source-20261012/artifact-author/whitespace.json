@@ -1,0 +1,45 @@
+{
+  "checks": [
+    {
+      "tag": "before",
+      "ref": "814ecf1baa1b5890545576a0815257199505103a",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "e5fb3963de787bbd7b7663316c368f15814897da",
+        "814ecf1baa1b5890545576a0815257199505103a",
+        "--",
+        "apps/artifacts",
+        "packages/contracts/artifacts-0.2"
+      ],
+      "exitCode": 2,
+      "stdoutBytes": 54,
+      "stdoutSha256": "ce61ecb50d28ca54aa95d633cf146376bc06882471672056f9729a2f2beaff49",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "tag": "after",
+      "ref": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "e5fb3963de787bbd7b7663316c368f15814897da",
+        "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae",
+        "--",
+        "apps/artifacts",
+        "packages/contracts/artifacts-0.2"
+      ],
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "oneByteRemovalOnly": true,
+  "originalSource": "814ecf1baa1b5890545576a0815257199505103a",
+  "finalSource": "47aef9f9a58d14a932ddc0b8cfdaf1475a5cb1ae"
+}
