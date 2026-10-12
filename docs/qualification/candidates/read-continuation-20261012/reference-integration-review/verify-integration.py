@@ -29,7 +29,10 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 candidate=git('rev-parse',candidate).decode().strip()
-old={row['path']:row['blob'] for row in baseline['files']}
+recorded={row['path']:row['blob'] for row in baseline['files']}
+old=tree(baseline['base'])
+check('recorded baseline contains exact original PR28 blobs',all(recorded.get(path)==oid for path,oid in old.items()))
+check('only preexisting reviewer criteria added to baseline snapshot',set(recorded)-set(old)=={'docs/qualification/candidates/read-continuation-20261012/reference-integration-review/criteria.json'})
 current=tree(candidate)
 changed=sorted(path for path,old_blob in old.items() if current.get(path)!=old_blob)
 check('exact reviewed existing-path changes only',changed==sorted(expectations['changedOriginalPaths']))
