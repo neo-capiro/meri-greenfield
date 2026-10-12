@@ -39,7 +39,7 @@ export function assertScheduleIntent(intent,tenant) {
   if(i.generation!==i.expectedGeneration+1)denySchedule('SCHEDULE_GENERATION');
   if(i.operation==='schedule_task' ? i.expectedGeneration!==0||i.previousProjectionSha256!==null : i.expectedGeneration<1||i.previousProjectionSha256===null)denySchedule('SCHEDULE_GENERATION');
   if(i.operation==='cancel_scheduled_task') {
-    if(i.configuration!==null||!i.cancel||p.state!==(i.cancel.mode==='delete'?'cancelled':'paused')||(i.cancel.running==='leave'&&i.cancel.runs.length))denySchedule('SCHEDULE_CANCEL');
+    if(Object.hasOwn(i,'taskInstructionSha256')||i.configuration!==null||!i.cancel||p.state!==(i.cancel.mode==='delete'?'cancelled':'paused')||(i.cancel.running==='leave'&&i.cancel.runs.length))denySchedule('SCHEDULE_CANCEL');
     if(new Set(i.cancel.runs.map(r=>canonicalSha256(r))).size!==i.cancel.runs.length)denySchedule('SCHEDULE_RUN');
   } else {
     const c=i.configuration;
