@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-civic-reads-20261012",
+  "sourceHead": "8be4b07781315625766a4df306d76ff4617bed73",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T18:41:51.794250+00:00",
+  "durationSeconds": 3.538,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 254873,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 254951,
+      "status": 0
+    },
+    {
+      "pid": 255191,
+      "status": 0
+    },
+    {
+      "pid": 255210,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stdout.bin",
+      "bytes": 2044,
+      "sha256": "494d8cdb9d2693e1e7150fb7d580e20a1a9f8ceb1376ca14221d35c7a160dcd4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/civic-integration/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
