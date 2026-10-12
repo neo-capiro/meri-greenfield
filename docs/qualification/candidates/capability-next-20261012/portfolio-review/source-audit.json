@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/capability-next-20261012/portfolio-review/audit-source.py",
+    "/workspace/capirov2"
+  ],
+  "cwd": "/workspace/meri-portfolio-next-review-20261012",
+  "sourceHead": "c6ba4c932b5719d284773d80d49e7e3a8677bf95",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:39:01.114814+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 138683,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stdout.bin",
+      "bytes": 12039,
+      "sha256": "736523ca057c5dd490d92ee8d70e46de4cc3b80427220f79e3a7d40c14b41026"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
