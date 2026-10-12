@@ -1,0 +1,17 @@
+{
+  "command": [
+    "env",
+    "MERI_BUDGET_REPO=/workspace/meri-g1-durable-budget-20261012",
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit": 0,
+  "seconds": 0.10121631622314453,
+  "timedOut": false,
+  "pid": 51015,
+  "reaped": true,
+  "stdoutSha256": "c7d070692fc6189c66ab9f9270ba26db311b06b14c9ecde365af35425da20b09",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

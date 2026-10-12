@@ -1,0 +1,57 @@
+✔ success uses one transaction and releases one healthy connection (1.846875ms)
+✔ connect failure starts no transaction and creates no retry (4.082143ms)
+✔ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.2927ms)
+✖ acknowledged rollback preserves domain refusal and can release healthy (1.502447ms)
+✔ failed rollback evicts rather than returning dirty transaction to pool (0.259891ms)
+✔ lost COMMIT acknowledgement remains uncertain and never retries (0.350867ms)
+✔ release failure cannot overwrite lost COMMIT classification (0.197557ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (0.274152ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (6.801449ms)
+✔ missing budget and invalid database clock fail closed (0.421914ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74.565388
+
+✖ failing tests:
+
+test at ../meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:42:1
+✖ acknowledged rollback preserves domain refusal and can release healthy (1.502447ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   BudgetStateDenied [Error]: FROZEN_DOMAIN_REFUSAL
+  +       at file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:44:61
+  +       at PostgresBudgetStore.transact (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/budget/postgres-budget-store.mjs:18:22)
+  +       at async waitForActual (node:assert:646:5)
+  +       at async strict.rejects (node:assert:769:25)
+  +       at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:44:3)
+  +       at async Test.run (node:internal/test_runner/test:1389:7)
+  +       at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  -   undefined
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:45:53)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [
+      Error: FROZEN_DOMAIN_REFUSAL
+          at file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:44:61
+          at PostgresBudgetStore.transact (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/budget/postgres-budget-store.mjs:18:22)
+          at async waitForActual (node:assert:646:5)
+          at async strict.rejects (node:assert:769:25)
+          at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:44:3)
+          at async Test.run (node:internal/test_runner/test:1389:7)
+          at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+    ],
+    expected: [ undefined ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

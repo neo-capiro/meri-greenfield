@@ -1,0 +1,17 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "apps.proxy.qualification.test.test_tool_budget_source",
+    "-v"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit": 0,
+  "seconds": 0.11473250389099121,
+  "timedOut": false,
+  "pid": 51823,
+  "reaped": true,
+  "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderrSha256": "106569e8be49f7c8cc69781c725ec2812de277c077e5f08f77b34d0f4589a426"
+}

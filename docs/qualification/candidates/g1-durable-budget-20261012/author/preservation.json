@@ -1,0 +1,71 @@
+[
+  {
+    "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+    "unchanged": true,
+    "sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb"
+  },
+  {
+    "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+    "unchanged": true,
+    "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248"
+  },
+  {
+    "path": "apps/proxy/qualification/state/migrations/0001_qualification_state.sql",
+    "unchanged": true,
+    "sha256": "fa33f51c492361c280c4847ea08629f0c777cb6b0e9652f1e67f95543bda0dfc"
+  },
+  {
+    "path": "packages/contracts/meri.schema.json",
+    "unchanged": true,
+    "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/common.schema.json",
+    "unchanged": true,
+    "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b"
+  },
+  {
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "unchanged": true,
+    "sha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce"
+  },
+  {
+    "path": "package-lock.json",
+    "unchanged": true,
+    "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d"
+  },
+  {
+    "path": "packages/contracts/package-lock.json",
+    "unchanged": true,
+    "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6"
+  },
+  {
+    "path": "apps/gateway/test/gateway.test.mjs",
+    "unchanged": true,
+    "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4"
+  },
+  {
+    "path": "apps/gateway/test/authority-deadline.test.mjs",
+    "unchanged": true,
+    "sha256": "4e8a9eac66b1481cbce30cec68274a25681026890688644ccdf28a78d0c81d28"
+  },
+  {
+    "path": "apps/gateway/test/memory-context.test.mjs",
+    "unchanged": true,
+    "sha256": "675653ef2aac9de901f3bc2ab0280c38058b435835c5a4c808e564a7563a571d"
+  },
+  {
+    "path": "apps/gateway/test/memory-context-independent.test.mjs",
+    "unchanged": true,
+    "sha256": "e478ec0ea725feb54003bfdd11a99d0b44303c920c16838a175b68be6fcf657a"
+  },
+  {
+    "path": "apps/gateway/index.mjs",
+    "originalCompletePrefixUnchanged": true,
+    "prefixBytes": 1319
+  },
+  {
+    "path": "apps/proxy/qualification/test/test_postgres_state.py",
+    "originalTestBodiesUnchanged": 23
+  }
+]

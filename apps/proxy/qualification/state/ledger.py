@@ -65,12 +65,17 @@ class PostgresLedger:
             if (not grant or grant["state"]!="ACTIVE" or not same_binding(grant,self.binding)
                 or grant["capability_sha256"]!=self.capability_sha256 or grant["expires_at"]<=budget["now"]):
                 raise StateDenied("GRANT_ADMISSION_DENIED")
-            cursor.execute("SELECT 1 FROM meri_qualification.requests WHERE request_id=%s OR (grant_id=%s AND state='UNKNOWN')",(request_id,self.grant_id))
+            cursor.execute("SELECT 1 FROM meri_qualification.budget_liabilities WHERE (kind='model' AND slot=%s) OR (grant_id=%s AND state='UNKNOWN')",(request_id,self.grant_id))
             if cursor.fetchone():
                 raise StateDenied("REQUEST_SLOT_ALREADY_USED")
-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.requests WHERE state='UNKNOWN'")
+            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN'")
             held=cursor.fetchone()["held"]
-            if budget["consumed_micro_usd"]+held+hold>budget["cap_micro_usd"]:
+            cursor.execute("SELECT max_cost_micro_usd FROM meri_qualification.tool_run_allocations WHERE run_id=%s",(self.binding.run_id,))
+            allocation=cursor.fetchone()
+            cursor.execute("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM meri_qualification.budget_liabilities WHERE run_id=%s",(self.binding.run_id,))
+            run_total=cursor.fetchone()["total"]
+            if (budget["consumed_micro_usd"]+held+hold>budget["cap_micro_usd"]
+                or (allocation and run_total+hold>allocation["max_cost_micro_usd"])):
                 raise StateDenied("AGGREGATE_BUDGET_EXHAUSTED")
             cursor.execute("INSERT INTO meri_qualification.requests(request_id,grant_id,run_id,attempt,worker_arn,fence,policy_revision,native_body_sha256,raw_request_sha256,model_id,profile_id,pricing_revision,pricing_valid_until,input_tokens,max_output_tokens,hold_micro_usd,state) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'UNKNOWN')",(request_id,self.grant_id,*self.binding.values(),body.sha256,self.raw_request_sha256,COUNT_MODEL_ID,PROFILE_ID,self.pricing.revision,self.pricing.valid_until,count.input_tokens,body.max_output_tokens,hold))
             return HoldReceipt(request_id,body.sha256,"UNKNOWN")
@@ -100,9 +105,14 @@ class PostgresLedger:
             budget=self.store.budget(cursor)
             row=self._original(cursor,request_id,evidence.native_body_sha256,evidence.raw_request_sha256,evidence.pricing_revision)
             inconsistent=(evidence.input_tokens!=row["input_tokens"] or evidence.output_tokens>row["max_output_tokens"])
-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.requests WHERE state='UNKNOWN' AND request_id<>%s",(request_id,))
+            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN' AND NOT (kind='model' AND slot=%s)",(request_id,))
             remaining=cursor.fetchone()["held"]
-            quarantine=(inconsistent or actual>row["hold_micro_usd"] or budget["consumed_micro_usd"]+remaining+actual>budget["cap_micro_usd"])
+            cursor.execute("SELECT max_cost_micro_usd FROM meri_qualification.tool_run_allocations WHERE run_id=%s",(self.binding.run_id,))
+            allocation=cursor.fetchone()
+            cursor.execute("SELECT COALESCE(sum(CASE WHEN state='UNKNOWN' THEN hold_micro_usd ELSE consumed_micro_usd END),0) AS total FROM meri_qualification.budget_liabilities WHERE run_id=%s AND NOT (kind='model' AND slot=%s)",(self.binding.run_id,request_id))
+            run_remaining=cursor.fetchone()["total"]
+            quarantine=(inconsistent or actual>row["hold_micro_usd"] or budget["consumed_micro_usd"]+remaining+actual>budget["cap_micro_usd"]
+                        or bool(allocation and run_remaining+actual>allocation["max_cost_micro_usd"]))
             cursor.execute("UPDATE meri_qualification.budget SET consumed_micro_usd=consumed_micro_usd+%s,quarantined=quarantined OR %s WHERE id=1",(actual,quarantine))
             cursor.execute("UPDATE meri_qualification.requests SET state='SETTLED',actual_micro_usd=%s,evidence_sha256=%s,settled_at=clock_timestamp() WHERE request_id=%s",(actual,evidence.evidence_sha256,request_id))
             return {"actual_micro_usd":actual,"quarantined":bool(budget["quarantined"] or quarantine)}
@@ -121,6 +131,6 @@ class PostgresLedger:
         """Trusted operator/test read; unresolved rows never expire here."""
         def operation(cursor):
             budget=self.store.budget(cursor)
-            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held,count(*) AS unresolved FROM meri_qualification.requests WHERE state='UNKNOWN'")
+            cursor.execute("SELECT COALESCE(sum(hold_micro_usd),0) AS held,count(*) AS unresolved FROM meri_qualification.budget_liabilities WHERE state='UNKNOWN'")
             return {**budget,**cursor.fetchone()}
         return self.store.transact(operation)

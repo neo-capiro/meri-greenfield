@@ -1,0 +1,20 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/durable-tool-budget.test.mjs",
+    "apps/gateway/test/postgres-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit": 0,
+  "seconds": 2.4439547061920166,
+  "timedOut": false,
+  "pid": 54367,
+  "reaped": true,
+  "stdoutSha256": "2fb22ebfcb2219a777d6118b60d53a93859c73b4d08978e5372ffabbb4789b91",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
