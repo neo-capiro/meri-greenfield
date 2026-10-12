@@ -1,0 +1,83 @@
+{
+  "source": "2955ec6cfd1b38908cc62d9a1f5a8800bf7f5bdc",
+  "method": "Individual whole-diff inspection plus independent mutation and byte-exact inverse tests; assertion counts are supplemental.",
+  "historicalTestNames": "Retained unchanged by author; explanatory comment supersedes stale saved-reason title. Names/counts in old titles are historical, not current gate claims.",
+  "originalScope": "139=96selected+43deferred unchanged;97typed includes partial retained action descriptor, all unavailable;96mapped/0selectedpending is catalog coverage, not runtime closure.",
+  "files": [
+    {
+      "path": "packages/contracts/test/backend-execution-connected.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Only fixed97/96/0 counts and binding count; all supersession, unavailable handler, retry, actual production refusal and behavior checks unchanged."
+    },
+    {
+      "path": "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Exact private namespace gains five task.update functions and canonical factory object; asserts factory export identity, no public export changes."
+    },
+    {
+      "path": "packages/contracts/test/command-payloads-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "The accepted saved-with-reason source projection becomes an exact reason-preservation positive; not_indexed and every adjacent object/receipt refusal remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed97/96/0 counts plus strict finite inverse before existing unchanged hashes; partial binding, original14 descriptor hashes and alias/handler restrictions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed97/96/0 counts plus strict finite inverse before existing unchanged hashes; partial binding, original14 descriptor hashes and alias/handler restrictions retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Exact root Portfolio boundary transform and fixed97/96 counts; original139/96/43, mail IDs and schema/handler mutation checks unchanged."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Finite13 descriptor exclusion, exact Portfolio boundary inverse, new97/96/0 counts and positive exact Portfolio mapping; old hash constants retained."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed catalog version/counts; finite13 only descriptor/callback exclusion; exact root namespaced schema path owner; any new resolve positive limited to explicit approved IDs with unrelated refusals retained. Full schema bytes/output/context/unavailable assertions and original behavior fixtures remain."
+    },
+    {
+      "path": "packages/contracts/test/vertical-execution-integration-independent.test.mjs",
+      "review": "ACCEPT_TEST_EXPECTATION_CHANGE",
+      "semanticScope": "Fixed97/96/0 counts; unchanged85 prior descriptor hashes and original boundaries; only remaining eight command/schedule originals gain exact mapped/reference fields because Portfolio/artifact rows were already mapped."
+    }
+  ]
+}

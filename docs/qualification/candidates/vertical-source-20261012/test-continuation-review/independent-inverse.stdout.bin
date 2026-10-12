@@ -1,0 +1,23 @@
+✔ get_research_evidence inverse is exact and refuses changed state or replacement (7.430629ms)
+✔ create_word inverse is exact and refuses changed state or replacement (0.723828ms)
+✔ create_excel inverse is exact and refuses changed state or replacement (0.486431ms)
+✔ create_powerpoint inverse is exact and refuses changed state or replacement (1.080043ms)
+✔ run_analysis inverse is exact and refuses changed state or replacement (1.237871ms)
+✔ create_task inverse is exact and refuses changed state or replacement (0.592841ms)
+✔ update_task inverse is exact and refuses changed state or replacement (0.61252ms)
+✔ save_memory inverse is exact and refuses changed state or replacement (0.601594ms)
+✔ save_chat_attachments inverse is exact and refuses changed state or replacement (0.535915ms)
+✔ schedule_task inverse is exact and refuses changed state or replacement (0.448704ms)
+✔ list_scheduled_tasks inverse is exact and refuses changed state or replacement (0.32586ms)
+✔ cancel_scheduled_task inverse is exact and refuses changed state or replacement (0.353401ms)
+✔ update_scheduled_task inverse is exact and refuses changed state or replacement (0.387192ms)
+✔ Portfolio inverse requires the exact accepted boundary and leaves others untouched (0.48605ms)
+✔ unallocated originals retain all fields and are not hidden by generic selection (0.687163ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.529455
