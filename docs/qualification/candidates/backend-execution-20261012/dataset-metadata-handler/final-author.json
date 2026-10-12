@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/dataset-metadata-handler.test.mjs"
+  ],
+  "cwd": "/workspace/meri-dataset-metadata-handler-20261012",
+  "sourceHead": "f78eb75c2a9aee919712ee1c497c8c2b5c27e99e",
+  "sourceDiffSha256": "619092453b66b5072ece4006a05d1fed21eb7dc4a597bad8da6ba8d1682a089f",
+  "sourceDiffBytes": 5973,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:16:10.816208+00:00",
+  "durationSeconds": 2.022,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 326056,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stdout.bin",
+      "bytes": 2306,
+      "sha256": "cd047a950ae40620ff83a0664f7cbc7dc061d21f7d8a8052532eafee8a44a661"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/final-author.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct two author assumptions: completed dispatch signals are closed and original preaborted lifetime emits DEADLINE; preserve source behavior and add positive fresh-signal direct handler control.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
