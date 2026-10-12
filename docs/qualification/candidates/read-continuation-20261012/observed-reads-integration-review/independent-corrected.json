@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-observed-reads-review-20261012",
+  "sourceHead": "e3dd61c3c64884157e098b6919042f7a9dfdf42e",
+  "sourceDiffSha256": "109dfbc5d97b70a4299aed36de00376996ae29379ff5921fcbf2738b0c83ea67",
+  "sourceDiffBytes": 1904,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:15:47.683991+00:00",
+  "durationSeconds": 2.149,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 269501,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-corrected.stdout.bin",
+      "bytes": 2845,
+      "sha256": "319edf4aa3ce6a24cdeb63e4a0fe3c6b20a08f7782067d300cfe0d488634cf48"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

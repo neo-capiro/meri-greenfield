@@ -41,7 +41,7 @@ for(const id of ids){
   const p=output(id),accepted=check(id,p);assert.deepEqual(accepted,p);assert.notEqual(accepted,p);p.injected=true;assert.equal(accepted.injected,undefined);if(id===FLORIDA){p.result.scope.jurisdiction='OTHER';assert.equal(accepted.result.scope.jurisdiction,'FL');}
  });
  test(`${id}: allowlisted contexts and original request survive callback stripping`,()=>{
-  const keys=id===SAM?['asOf','sourceStatusAsOf','sourceHealthAsOf','evidenceAccuracyMode']:id===FLORIDA?['asOf','effectiveScope','clientResolution']:[];assert.deepEqual(resolve(id).binding.contextKeys,keys);check(id);assert.throws(()=>resolve(id).assertOutput(output(id),context(id)));
+  const keys=id===SAM?['asOf','sourceStatusAsOf','sourceHealthAsOf','evidenceAccuracyMode']:id===FLORIDA?['asOf','effectiveScope','clientResolution']:[];assert.deepEqual([...resolve(id).binding.contextKeys].sort(),[...keys].sort());check(id);assert.throws(()=>resolve(id).assertOutput(output(id),context(id)));
   for(const key of ['actorId','sourceEnabled','currentAccess','nowMs','previousPage']){assert.throws(()=>resolve(id).normalizeInput(request(id),{...context(id),[key]:true}));assert.throws(()=>check(id,output(id),request(id),{...context(id),[key]:true}));}
   for(const key of keys){const c=context(id);delete c[key];assert.throws(()=>resolve(id).normalizeInput(request(id),c));assert.throws(()=>check(id,output(id),request(id),c));assert.throws(()=>resolve(id).normalizeInput({...request(id),[key]:context(id)[key]},context(id)));}
  });

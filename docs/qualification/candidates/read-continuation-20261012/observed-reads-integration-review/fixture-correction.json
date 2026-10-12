@@ -1,0 +1,8 @@
+{
+  "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "initialPassed": 26,
+  "initialFailed": 1,
+  "sourceDefect": false,
+  "reason": "Context admission keys are a set; reviewer asserted a noncontractual order for SAM. Preserve exact required fields, omissions, injection and callback controls; compare sorted copies only.",
+  "initialTestSha256": "8ac228b9433f0daf0a4e93d9db3b30977dcb964ac115d693299242495d4f5d49"
+}
