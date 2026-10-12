@@ -1,0 +1,140 @@
+{
+  "sourceCommit": "c463f7f7e7580e26d07b31c5f4020eaa469d4f67",
+  "verdict": "ACCEPT_SOURCE",
+  "members": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/audit.py",
+      "bytes": 6479,
+      "sha256": "7a1da7bf0f13406f370c77b1ee9dc4f08e9784bec9fdff991b3e0dce2f5e7a08"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/baseline.json",
+      "bytes": 84022,
+      "sha256": "82f4d1b5f077e6c656f281a316c24ea4976b1641671a588321c86912fa7c4742"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/combined-reviewed.json",
+      "bytes": 3928,
+      "sha256": "b04c981c60e4314a41cda46918d584c3de22ec8d4596aca6462d0e949a9c23e1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/combined-reviewed.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/combined-reviewed.stdout.bin",
+      "bytes": 79128,
+      "sha256": "4079d96c22fe4786fc54ce7c4e6330a51b774ad42f1b48d24f7c1e10085b5e2c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/criteria.md",
+      "bytes": 4534,
+      "sha256": "6359abe6c66f93a69c7b46f3180a43e062ed93c28ae548d7221d511ba67128a5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/final-result.json",
+      "bytes": 2501,
+      "sha256": "8dbf5def137d9ebf16ed483a491a48a08ee899b841a4f559fc3bc5ec6c7c0361"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/final-whitespace.json",
+      "bytes": 1317,
+      "sha256": "e496903a1c5ba8fc58c40e26c27deaed643e44d0485b25d3bf8cef7f21b5807a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-corrected.json",
+      "bytes": 1559,
+      "sha256": "3c5ec15cafd4592fd0ac9a06284e7746b0aee05656cd1ad9ee8809fb22436b58"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-corrected.stdout.bin",
+      "bytes": 3741,
+      "sha256": "3881a4fa0f07df5b852e4e57e4717610332f856ade48c470a66f3fc11927aadb"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-first.json",
+      "bytes": 1419,
+      "sha256": "60cefb90c1421d2128eb6664fcb3d631e578e4a71123abe7c3e7c360bb51f090"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-first.stdout.bin",
+      "bytes": 8469,
+      "sha256": "e5c644e13bd8518d438254e4316241e1e65222ff82c70584180da4140c3c0c71"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/public-distribution.json",
+      "bytes": 1447,
+      "sha256": "4f509894451493b8013f79269aee1063d757551239554277bdeb6f35538b1f93"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/public-distribution.stdout.bin",
+      "bytes": 2042,
+      "sha256": "c62ac74a57a9b5c500e817ce6eceea9b9755846de55b35148be3eca69867ca07"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/source-audit.json",
+      "bytes": 1350,
+      "sha256": "96f7fbe34e2b7b9c06a72c8a33a3a659c1cdec60248f934bce8d8d59374107cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/source-audit.stdout.bin",
+      "bytes": 74547,
+      "sha256": "1348c2e964323ce4e51e5bb18968054f07f219ea1d52e2cdbb9eaedf876a0027"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 7218,
+      "sha256": "4a39bdb247de6d85a874d7b6e39d70adad24a1c396f9c14f33b927341109e999"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "bytes": 14898,
+      "sha256": "1be4c85710f1462066917d82c48cbe461474a65af631fad2438960e9305e6a7e"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "bytes": 940,
+      "sha256": "0cbb0fdee4b053a3a520f71a4f4ec48db3e84f81f88f3c49f236998061fec1d8"
+    }
+  ],
+  "exclusions": [
+    "docs/qualification/candidates/capability-next-20261012/integration-review/manifest.json"
+  ],
+  "scope": "Review-owned source evidence only; no private source bodies or runtime acceptance."
+}
