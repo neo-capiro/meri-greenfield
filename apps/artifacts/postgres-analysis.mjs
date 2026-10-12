@@ -46,13 +46,16 @@ export function createPostgresAnalysisExecutor(options){
         validateShape('CapabilityClaims',current.claims);validateShape('AuthorizationDecision',current.decision);
         if(!same(current.binding,ctx.binding)||!same(current.claims.binding,ctx.binding)||current.policyRevision!==current.claims.policyRevision||current.decision.policyRevision!==current.policyRevision||current.decision.decision!=='allowed'||current.decision.operation!=='run_analysis@0.2.0'||!same(current.decision.scopes,ctx.scopes)||ctx.scopes.some(s=>s.policyRevision!==current.policyRevision||!current.claims.scopes.some(c=>same(c,s))))fail('ANALYSIS_BUDGET_AUTHORITY');
         const subject=v.snapshot(current.subject);delete subject.authorizationDecisionId;if(selection&&!same(selection,subject))fail('ANALYSIS_BUDGET_AUTHORITY');selection??=subject;
+        // Current authority bounds the original intent independently of the
+        // shorter admission lifetime; never rewrite a previously admitted intent.
+        if(ctx.deadlineMs>Math.min(current.deadlineMs,Date.parse(current.claims.expiresAt)))fail('ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY');
         narrow(current.deadlineMs);narrow(Date.parse(current.claims.expiresAt));
         if(ctx.maxBytes>Math.min(allocation.budgets.maxOutputBytes,current.claims.budgets.maxOutputBytes))fail('ANALYSIS_BUDGET_CEILING');
         active();return current;
       }
       const boundary=createSandboxAnalysisBoundary({validatePublicShape:validateShape,canonicalSha256,now,
         verifyAdmission:async value=>{active(value.signal);const proof=v.snapshot(await verifyAdmission(value));active(value.signal);narrow(proof.expiresAtMs);return proof;},
-        port:{async execute(value){active(value.signal);observation.dispatchStarted=true;const receipt=v.snapshot(await port.execute(value));active(value.signal);observation.outputReceiptSha256=canonicalSha256(receipt);return receipt;}}});
+        port:{async execute(value){active(value.signal);await authorize();active(value.signal);observation.dispatchStarted=true;const receipt=v.snapshot(await port.execute(value));active(value.signal);observation.outputReceiptSha256=canonicalSha256(receipt);return receipt;}}});
       try{
         await authorize();if(ctx.deadlineMs>deadlineMs)fail('ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY');
         reservationId=newReservationId();observation.reservationId=reservationId;observation.reservationStarted=true;
