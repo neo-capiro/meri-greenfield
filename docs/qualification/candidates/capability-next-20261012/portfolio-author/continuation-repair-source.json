@@ -1,0 +1,26 @@
+{
+  "supersedesSourceCommit": "deec763c57ba57cc4d7e7915d55b0f8719e13021",
+  "parentCommit": "c8a23acc80bfdc199f198ac11b0c90f08fe519b1",
+  "reason": "Independent review 21/22: non-null cursor must accompany exactly the requested page size",
+  "capture": "portfolio-continuation-repair.json",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "bytes": 6091,
+      "sha256": "55c006eda93cca6f51f913d70fee93b73f125c2339638eabb6574da0d867f0d2",
+      "blob": "f9758357a332da980f57e31faa676b48bcc6f217"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "bytes": 14860,
+      "sha256": "14a77aa10c032d659c9191747ed7e58bae51c8b2b5cac80c38af6e7c2cc7860b",
+      "blob": "6009e7279273599587c2bbaedfeb7ad80dc9a656"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "bytes": 17893,
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc",
+      "blob": "bb85ef7a841ae274082f79fa12a83d249af642c5"
+    }
+  ]
+}
