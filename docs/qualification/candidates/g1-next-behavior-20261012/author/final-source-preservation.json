@@ -1,0 +1,41 @@
+{
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "revocation_commit": "7831e5c0780ffaf233b81867b0e250bdbf02fbbd",
+  "base_files": 2884,
+  "unchanged_base_files": 2880,
+  "changed_base_files": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+    "apps/control/qualification-sdk-fixture/state/README.md",
+    "apps/control/qualification-sdk-fixture/state/registry.mjs"
+  ],
+  "source_only": true,
+  "database_execution": false,
+  "native_execution": false,
+  "files": {
+    "apps/control/qualification-sdk-fixture/state/registry.mjs": {
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720"
+    },
+    "apps/control/qualification-sdk-fixture/state/revocation.mjs": {
+      "bytes": 2623,
+      "sha256": "cd020d2874f14db039dc84cd299762246697ad153c5da6d45d47ce6acd145154"
+    },
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs": {
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs": {
+      "bytes": 6796,
+      "sha256": "5cd415d4ae8f71d1b1922ea4f62b3b1e40ae755fba685918d261fb90479f06ad"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs": {
+      "bytes": 4306,
+      "sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b"
+    },
+    "apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs": {
+      "bytes": 5802,
+      "sha256": "b67d238abe2e6cad5b350412ed82d326b1ef01e46cd2eb8c52f690aa3f03922a"
+    }
+  }
+}
