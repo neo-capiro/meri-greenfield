@@ -101,8 +101,18 @@ instants and normalized since require a finite timestamp.
   blobs unchanged. No private body persisted.
 - A test title was clarified after the first run: DTO shape does not prove
   baseline exclusion. Its original assertions were preserved unchanged.
-- Exact committed-source capture, original-file preservation and independent
-  source review are recorded in the final receipt/report continuation below.
+- Exact source freeze: `c651a0ab75f416a06c91eff07a463d697adb0fa4`, tree
+  `f1f1196c069c57a602520921651ae994a364de3f`. Frozen focused capture:
+  **24/24 PASS** with empty tracked source diff, exit 0, process group **153761
+  absent**, no timeout/kill required. `frozen-focused.*` retains raw streams and
+  receipt; `source-freeze.json` binds source bytes and original-file preservation.
+- **5268/5268 original tracked files unchanged** against the allocated base.
+  No original tests or failing assertions were changed. Independent reviewer
+  owns its original prefreeze failure, identified as an incorrect assumption
+  about canonical scope resource-ID validation; this author does not claim it
+  as a source defect or a passing independent acceptance result.
+- Independent exact-source acceptance remains the reviewer's decision. Source
+  freeze and report/evidence commits are separate; evidence adds no source change.
 
 No runtime, source read, dual-flag service, current wall/grant adapter, database,
 provider, native process or source connectivity qualification was run. Root must
