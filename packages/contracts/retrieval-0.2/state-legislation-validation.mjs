@@ -83,7 +83,7 @@ export function createStateLegislationValidators({validateShape, schema}) {
     return page;
   }
   function validateStateLegislationShape(name, value) {
-    if (!Object.hasOwn(schema.$defs, name)) fail('Unknown state legislation shape');
+    if (typeof name !== 'string' || !Object.hasOwn(schema.$defs, name)) fail('Unknown state legislation shape');
     const data = snapshotOperationData(value); validateShape(name, data); return data;
   }
   return Object.freeze({normalizeStateLegislationInput, assertStateLegislationOutput, validateStateLegislationShape,
