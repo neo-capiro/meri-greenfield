@@ -25,11 +25,11 @@ export function createClientKnowledgeAttachmentValidators({validateShape,schema}
     validateShape('AttachmentCursorPayload',payload);
     return payload;
   }
-  function bindCursor(cursor,input,scope) {
+  function bindCursor(cursor,input,scope,emitted=false) {
     for (const key of ['tenantId','userId','conversationId','clientId','conversationVersion'])
       if (cursor[key] !== scope[key]) fail('Attachment cursor scope changed');
     if (cursor.query !== input.query || cursor.conversationId !== input.conversationId ||
-        (cursor.mode === 'read' ? cursor.attachmentId !== input.attachmentId : input.attachmentId !== null))
+        (cursor.mode === 'read' ? (emitted ? cursor.attachmentId.toLowerCase() !== input.attachmentId?.toLowerCase() : cursor.attachmentId !== input.attachmentId) : input.attachmentId !== null))
       fail('Attachment cursor selector substitution');
   }
   function contextData(context) {
@@ -64,13 +64,13 @@ export function createClientKnowledgeAttachmentValidators({validateShape,schema}
     validateShape(outputDefinition(id),page);instant(page.generatedAt);
     if(page.generatedAt!==ctx.asOf||page.conversationId!==input.conversationId||page.clientId!==ctx.scope.clientId)fail('Attachment wrapper scope/observation substitution');
     const c=page.coverage,next=c.nextCursor===null?null:decode(c.nextCursor);
-    if(next)bindCursor(next,input,ctx.scope);
+    if(next)bindCursor(next,input,ctx.scope,true);
     if(c.query!==(input.query||null)||c.paginationComplete!==(next===null))fail('Attachment coverage selector/continuation mismatch');
     if(!input.attachmentId){
       if(c.mode!=='manifest'||c.returned!==page.records.length||c.returned+c.unavailableInPage>input.limit||c.complete!==(next===null))fail('Attachment manifest count/branch mismatch');
       for(const row of page.records){instant(row.uploadedAt);if(row.originalBytesAvailable!==(row.originalBytesHash!==null))fail('Attachment byte availability mismatch');}
     }else{
-      if(c.mode!=='section'||page.source.attachmentId!==input.attachmentId||!same(c.locator,input.locator))fail('Attachment section selector mismatch');
+      if(c.mode!=='section'||page.source.attachmentId.toLowerCase()!==input.attachmentId.toLowerCase()||!same(c.locator,input.locator))fail('Attachment section selector mismatch');
       const source=page.source;
       if(input.cursor&&(input.cursor.messageId!==source.sourceMessageId||input.cursor.originalBytesHash!==source.originalBytesHash))fail('Attachment source changed since cursor');
       if(next&&(next.mode!=='read'||next.messageId!==source.sourceMessageId||next.originalBytesHash!==source.originalBytesHash))fail('Attachment continuation source mismatch');
