@@ -67,6 +67,7 @@ export function createBillTextValidators({validateShape,schema}){
    unique(data.data,'id');
    if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
    else if(data.page!==input.page)fail('Congress metadata page substitution');
+   if(!data.resolvedBy&&input.activeSince!==undefined)validateBillTextShape('BillTextActionDateSelector',input.activeSince);
    const activeAfter=!data.resolvedBy&&input.activeSince!==undefined?Date.parse(input.activeSince):null;
    if(activeAfter!==null&&!Number.isFinite(activeAfter))fail('Congress metadata action-date selector invalid');
    let prior=Infinity;
