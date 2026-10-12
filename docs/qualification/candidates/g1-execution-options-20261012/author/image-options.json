@@ -1,0 +1,97 @@
+{
+  "schema": "meri-g1-image-options/1",
+  "baseCommit": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "executionAdmission": "NOT_EXECUTABLE",
+  "fullySupportedPatchedSetEstablished": false,
+  "recipeChanged": false,
+  "oldImageNeverLaunch": "sha256:8d1ec09aa78f47a11019089dacde93289fc66a39f55bd4357e59eeb25d9b52ac",
+  "allHistoricalImages": "UNADMITTED: includes README bf55/f669/7327 tuples, proxy and Postgres fixture pins, Temporal server/admin-tools pins and all prior support images. A digest or source acceptance is not current runtime admission.",
+  "canonicalObligations": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/obligations-54.json",
+  "requiredFunctions": "docs/qualification/candidates/ubuntu-source-assessment-20261012/author/package-function-assessment.json",
+  "scopePreserved": {
+    "obligations": 54,
+    "directFunctions": 35,
+    "originalCapabilities": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 14,
+    "selectedUnmapped": 82,
+    "namedSkillsPending": 14
+  },
+  "options": [
+    {
+      "id": "I1_RETAIN_TRIXIE",
+      "decision": "Preserve current recipe while waiting for vendor-released fixes and exact copy-specific adjudications.",
+      "benefit": "Smallest component delta; maintains current Node24.21.0, Python3.13, SDK/MCP/Office integration assumptions and all35 direct functions.",
+      "actionableNext": [
+        "Obtain Debian/upstream released packages or explicit source/copy applicability for every held obligation; no arbitrary newer-version claim.",
+        "Obtain signed same-suite snapshot with complete package closure and independently bound base/Node/CLI/browser/Office/lxml copies.",
+        "Resolve current statically bundled lxml parser separately; OS parser updates alone do not fix it.",
+        "Prepare a new immutable recipe/source packet only after authenticated pins are demonstrable; review licenses and then seek separately priced build/scan authority."
+      ],
+      "ownerChoice": "No new distribution choice required to continue source evidence. Any lxml packaging/version change and eventual build/run need their own approval.",
+      "currentBlocker": "No complete vendor-supported patched set established; Debian vendor holds and bundled-copy closure remain."
+    },
+    {
+      "id": "I2_UBUNTU26",
+      "decision": "Choose Ubuntu26 as the preferred alternate research composition, conditional on vendor security and authenticated source closure.",
+      "benefit": "Exact existing Playwright alpha explicitly supports Ubuntu26; all35 functions and all7 Python versions have metadata availability; 22 scoped positive VEX statements match observed package versions.",
+      "actionableNext": [
+        "Canonical source-specific evidence for20 unresolved and12 under_investigation rows, explicitly known-vulnerable/deferred zlib85091; critical GnuTLS/TIFF; gcc16 provider-specific95619.",
+        "Authenticate archive key and InRelease signatures, obtain one supported dated snapshot and complete dependency/base-inventory solution.",
+        "Approve Python3.14 interpreter and optional headless LibreOffice26.2 module composition, preserving UNO/Draw/common, all font families and artifact parity.",
+        "Choose lxml route I3; keep SDK0.3.295, CLI2.1.295, Node24.21.0 and MCP0.0.83 unless separately proposed.",
+        "Prepare exact immutable recipe only after closure; all images still require later reviewed build, scan, provenance, ABI/license evidence and native runtime admission."
+      ],
+      "ownerChoice": "Distribution/Python/Office composition change requires explicit owner approval under AGENTS. Current approval may authorize source preparation only, never security waiver or runtime.",
+      "immutableBaseObservation": {
+        "index": "sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7",
+        "amd64": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+        "tag": "resolute-20260927"
+      },
+      "currentBlocker": "Published base digest and six hash-bound live indices exist; signature/snapshot/solved installed+bundled closure does not."
+    },
+    {
+      "id": "I3_LXML_PACKAGING",
+      "decision": "Choose supported parser packaging; do not silently replace the current wheel.",
+      "choices": [
+        {
+          "id": "SAME_VERSION_SHARED_LIBRARIES",
+          "description": "Retain lxml6.1.3; prepare an upstream-supported source-build recipe against qualified vendor libxml2/libxslt.",
+          "prerequisites": "Small exact source archive/provenance/license read proposal if necessary; supported build settings, build-dependency closure, actual shared-link evidence, all transitive copies and API/runtime qualification. No source compilation now."
+        },
+        {
+          "id": "DISTRO_LXML",
+          "description": "Use Ubuntu26 python3-lxml6.0.2-1ubuntu0.1 with distro shared parsers.",
+          "prerequisites": "Owner accepts version/package/venv boundary change; explicit Python3.14 import/API/artifact parity and dependency/license review."
+        }
+      ],
+      "rejectedShortcut": "cp314 lxml6.1.3 wheel metadata alone is not parser security closure; no homemade CVE patch, suite mixing or finding suppression."
+    },
+    {
+      "id": "I4_SUPPORTED_VENDOR_BACKPORT",
+      "decision": "Accept a future maintained vendor backport only when released through a supported authenticated channel.",
+      "actionableNext": [
+        "Require vendor advisory/package release, exact source provenance, signature, suite/ABI compatibility, complete dependency and bundled-copy closure.",
+        "No current complete backport set is established. An upstream commit or reporter proof-of-concept alone is not a released supported package."
+      ],
+      "ownerChoice": "Any vendor/support-channel or component departure requires concrete owner review; no paid subscription assumed."
+    }
+  ],
+  "notSelected": [
+    {
+      "option": "Ubuntu24",
+      "reason": "Compatible existing-alpha platform, but frozen evidence does not close the same known zlib/security and bundled-copy obstacles; changing to Python3.12 adds qualification without an established complete patched set."
+    },
+    {
+      "option": "Alpine or another unsupported browser distribution",
+      "reason": "No current supported whole-stack composition established; musl/Playwright and ABI/component changes need a separate concrete proposal. Not a shortcut."
+    }
+  ],
+  "nextPermissionPacket": "After selecting I1 or source-only I2 and a supported lxml direction, submit exact pins/source/license closure. Runtime actions remain separately gated by execution-plan.json; this packet requests no spend or execution.",
+  "nonWaivableEvidencePrerequisites": [
+    "Owner permission cannot manufacture a missing released vendor fix, authenticated snapshot, installed/bundled-copy applicability or actual supported runtime closure. No supported fully patched set is established for the currently assessed releases.",
+    "Component choices permit source preparation only after exact supported provenance is demonstrated; no executable candidate is supplied.",
+    "Retain all54 obligations, original severities and all35 direct required functions; a positive VEX statement for one distro source copy does not close a wheel/browser/Node/Office bundled copy."
+  ]
+}
