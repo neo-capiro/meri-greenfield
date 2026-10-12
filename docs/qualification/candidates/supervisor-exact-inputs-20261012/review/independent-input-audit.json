@@ -1,0 +1,261 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "sourceSha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595",
+  "actionInputs": [
+    {
+      "actionKey": "selectedExecutable",
+      "consumer": "checked_file before/after fixed diagnostic",
+      "recordSelector": "provenance-and-bindings.json $.candidateMetadataReused.executable (path); complete candidate-hash-and-paths.json still locally unavailable",
+      "knownBytes": 91648,
+      "knownSha256": "f1d8d2aa2a8ad7c74b6c6300b29cfdbcb484fc7ffad99b7fbfe1e31c048343b9",
+      "gap": "Full candidate raw comparison record and actual comparison predicate; hash knowledge is not admission"
+    },
+    {
+      "actionKey": "script",
+      "consumer": "bind and checked_file",
+      "member": "inspect-ancestor-metadata.py",
+      "knownBytes": 6297,
+      "knownSha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd",
+      "gap": "Private live path/action binding, no new source request required"
+    },
+    {
+      "actionKey": "cwd",
+      "consumer": "bind",
+      "rule": "Absolute local directory equal to script parent",
+      "gap": "Exact future private action, not a missing packet member"
+    },
+    {
+      "actionKey": "repository",
+      "consumer": "bind and verify_original_source",
+      "recordSelector": "original collector receipt $.cwd; $.sourceCommit / $.sourceTree must match fixed constants",
+      "gap": "Original receipt bytes and exact source-verification record"
+    },
+    {
+      "actionKey": "originalOutput",
+      "consumer": "bind",
+      "recordSelector": "original collector receipt $.argv index following sole --output",
+      "gap": "Original receipt bytes; do not substitute supervisor argv"
+    },
+    {
+      "actionKey": "destination",
+      "consumer": "bind and exclusive mkdir",
+      "rule": "Fresh absolute local slot outside preserved repository/output/script trees; exact ownership bound at allocation",
+      "gap": "Future action/destination authority, not a missing packet member"
+    },
+    {
+      "actionKey": "originalReceipt",
+      "consumer": "read_json and bind",
+      "relativeLocator": "originals/collector-command/receipt.json",
+      "knownBytes": 1407,
+      "knownSha256": "9b0b0633ce4f1bec0c59fa4acc8e1637f7236a1e1b87a4a5e2aae3fcbc302842",
+      "jsonSelectors": [
+        "$.retryAllowed",
+        "$.exitCode",
+        "$.sourceCommit",
+        "$.sourceTree",
+        "$.argv",
+        "$.cwd"
+      ],
+      "gap": "Referenced only; actual original bytes locally unavailable and not listed in new ZIP"
+    },
+    {
+      "actionKey": "sourceVerification",
+      "consumer": "read_json and verify_original_source",
+      "relativeLocator": "originals/source-verification.json",
+      "jsonSelectors": [
+        "$.files[*].path",
+        "$.files[*].bytes",
+        "$.files[*].sha256"
+      ],
+      "pathSemantics": "Relative to original repository",
+      "knownBytes": null,
+      "knownSha256": null,
+      "gap": "Exact original record bytes/identity/schema/membership; do not substitute audit summary or truncate to ceiling256"
+    },
+    {
+      "actionKey": "priorManifest",
+      "consumer": "read_json and verify_prior",
+      "relativeLocator": null,
+      "jsonSelectors": [
+        "$.files[*].path",
+        "$.files[*].bytes",
+        "$.files[*].sha256"
+      ],
+      "pathSemantics": "Absolute private evidence paths; casefold unique",
+      "knownBytes": null,
+      "knownSha256": null,
+      "gap": "Exact complete preservation inventory identity/schema; packet names and priorEvidenceFilesUnchanged are not directly this input"
+    }
+  ],
+  "sourceCommitPin": "c225c4f6247c22c8906a23758477e431e3d88c15",
+  "sourceTreePin": "196ae19a744e40ba1a2b528daddeb42abe47ea94",
+  "bounds": {
+    "jsonRecordMaxBytes": 1048576,
+    "sourceRows": 256,
+    "priorRows": 256,
+    "perReferencedFileBytes": 1048576,
+    "referencedAggregateBytes": 16777216
+  },
+  "immediateRestageOnly": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "facts": [
+    {
+      "case": "verified-local:existing-run_supervised.py",
+      "passed": true,
+      "detail": {
+        "bytes": 11124,
+        "sha256": "e37894e22b3bb290c8b8b8fb7aaf35f2d7b2868cc2d469214913953d1b4fc9df"
+      }
+    },
+    {
+      "case": "verified-local:supervisor-source-review.json",
+      "passed": true,
+      "detail": {
+        "bytes": 6659,
+        "sha256": "71bb9b1ae8648c51ffeccc79d78dd6134445df55aea023089ddd1f93f6aac613"
+      }
+    },
+    {
+      "case": "verified-local:provenance-and-bindings.json",
+      "passed": true,
+      "detail": {
+        "bytes": 15241,
+        "sha256": "983c22b7aaf0578b148579ca009c6d23603f4ab760b85936013b7e8991963c06"
+      }
+    },
+    {
+      "case": "locally-missing-complete:candidate-hash-and-paths.json",
+      "passed": true,
+      "detail": {
+        "name": "candidate-hash-and-paths.json",
+        "bytes": 60160,
+        "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+      }
+    },
+    {
+      "case": "locally-missing-complete:collect.ps1",
+      "passed": true,
+      "detail": {
+        "name": "collect.ps1",
+        "bytes": 23776,
+        "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+      }
+    },
+    {
+      "case": "candidate-only-partial-derivative",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "historical-wrapper-not-pinned",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "original-and-ancestor-receipts-distinct",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "collector-original-not-packet-member",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "required-source-verification-not-packet-member",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "prior-audit-is-different-reference",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "reported-source-audit-not-repeated",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "git-path-known-but-size-hash-absent",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "all-missing-immutable-pins-remain-unset",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "selected-executable-size-hash-already-known",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "packet-manifest-name-schema",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "negative-candidate-flags-retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "exact-nine-action-keys",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "canonical-mutation-timestamps-unchanged",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "proposal-selected-executable-reference-is-string",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "proposal-diagnostic-selector-and-argv-match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "proposal-repository-original-output-selectors-match",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "proposal-original-receipt-reference-matches",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "git-known-path-is-same-in-both-observations",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "case": "selected-python-proposal-and-provenance-same-path",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 25,
+  "failed": 0,
+  "nativeCalls": 0,
+  "sourceChanges": false,
+  "privateBodiesOrPathsPublished": false,
+  "proposalRelayRole": "Semantic selectors only; 4154-byte local derivative does not establish expected4182-byte original identity."
+}
