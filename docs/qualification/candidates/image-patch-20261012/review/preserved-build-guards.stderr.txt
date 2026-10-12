@@ -1,0 +1,29 @@
+.......F..............E.............
+======================================================================
+ERROR: test_real_owner_execution_closure_pins (__main__.Controls.test_real_owner_execution_closure_pins)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-image-patch-review-20261012/scripts/qualification/test_worker_image_build.py", line 151, in test_real_owner_execution_closure_pins
+    rows = build.pins(); values = {r['path']: r for r in rows}
+           ^^^^^^^^^^^^
+  File "/workspace/meri-image-patch-review-20261012/scripts/qualification/worker_image_build.py", line 59, in pins
+    need(Path(sys.executable) == PYTHON and sys.version_info[:3] == (3, 12, 14)
+  File "/workspace/meri-image-patch-review-20261012/scripts/qualification/worker_image_collect.py", line 53, in need
+    raise ValueError(message)
+ValueError: fixed owner Python runtime
+
+======================================================================
+FAIL: test_context_manifest_pin_tracks_candidate_bytes (__main__.Controls.test_context_manifest_pin_tracks_candidate_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/meri-image-patch-review-20261012/scripts/qualification/test_worker_image_build.py", line 159, in test_context_manifest_pin_tracks_candidate_bytes
+    self.assertEqual(build.context_manifest_sha(files), collect.CONTEXT_SHA)
+AssertionError: '94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f' != '18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda'
+- 94216667decf5e4feed05914b3f295148d9437ee1c00b224ca4e92625b5b876f
++ 18836912a03fc035d69c0cfc57d1f407e5c46af1bdd37c21a761f5d42dc84dda
+
+
+----------------------------------------------------------------------
+Ran 36 tests in 0.035s
+
+FAILED (failures=1, errors=1)

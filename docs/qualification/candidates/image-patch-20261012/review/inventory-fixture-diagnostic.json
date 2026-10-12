@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/image-patch-20261012/review/inventory_fixture_diagnostic.py"
+  ],
+  "cwd": "/workspace/meri-image-patch-review-20261012",
+  "startUnixSeconds": 1791775028.927273,
+  "elapsedSeconds": 0.06411480903625488,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "inventory-fixture-diagnostic.stdout.txt",
+      "bytes": 502,
+      "sha256": "f88d0536c90a6c750abab669a037d7f507c6977dd234b7787a40ac6cbf0bbbac"
+    },
+    "stderr": {
+      "path": "inventory-fixture-diagnostic.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
