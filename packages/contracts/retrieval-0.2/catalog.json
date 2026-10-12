@@ -7144,7 +7144,8 @@
         "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
         "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
         "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
-        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope."
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
       ],
       "positiveExamples": [
         "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
@@ -7152,7 +7153,13 @@
       "negativeExamples": [
         "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
       ],
-      "sourceRequirements": [],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/WordRequest",
         "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
@@ -7205,7 +7212,8 @@
         "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
         "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
         "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
-        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope."
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
       ],
       "positiveExamples": [
         "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
@@ -7213,7 +7221,13 @@
       "negativeExamples": [
         "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
       ],
-      "sourceRequirements": [],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/ExcelRequest",
         "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
@@ -7266,7 +7280,8 @@
         "Creation/revision uses trusted current artifact authority and immutable versions. This descriptor supplies no approval, grant or user confirmation. Filing remains a separate immutable approved command.",
         "Actual local library generation, structural inspection and process cleanup are source evidence. Native rendering/recalculation, quality, isolation and production persistence/budget adapters remain unqualified.",
         "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
-        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope."
+        "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
       ],
       "positiveExamples": [
         "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
@@ -7274,7 +7289,13 @@
       "negativeExamples": [
         "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
       ],
-      "sourceRequirements": [],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/PowerpointRequest",
         "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
@@ -7329,7 +7350,8 @@
         "Raw arguments cannot carry trusted task identity, authority or image admission. Assets and provenance are exact immutable references checked against current scopes.",
         "Natural-language revisions require a new typed replacement request and immutable version; full Office WYSIWYG editing remains separate scope.",
         "Typed pandas is one supported mode. General analysis carries an immutable program and exact inputs/outputs through a separately admitted sandbox boundary; this local host never executes that general program.",
-        "General results remain pending independent inspection/publication and do not fabricate an ArtifactVersion. No model-supplied image or sandbox approval."
+        "General results remain pending independent inspection/publication and do not fabricate an ArtifactVersion. No model-supplied image or sandbox approval.",
+        "The artifact_versions requirement denotes the immutable version/provenance store and current exact-version access, not an assertion that generated text is authoritative source evidence."
       ],
       "positiveExamples": [
         "Prepare a typed request for a new version with source provenance and inspect its exact returned artifact references."
@@ -7337,7 +7359,13 @@
       "negativeExamples": [
         "Run arbitrary code on an unqualified host, infer rendered quality from ZIP structure, or file a generated artifact without separate approved intent."
       ],
-      "sourceRequirements": [],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
       "inputSchema": {
         "id": "urn:meri:artifacts:0.2.0#/$defs/AnalysisRequest",
         "sha256": "d90585d5e8ce60fb803fffc345ee9dd8c1e685c03b0319724afce8603094d486"
