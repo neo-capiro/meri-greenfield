@@ -1,0 +1,30 @@
+{
+  "preservedFromToolResults": [
+    {
+      "stage": "redundant-worktree-add",
+      "exit": 255,
+      "message": "branch already exists; parent had created exact worktree"
+    },
+    {
+      "stage": "initial-evidence-setup",
+      "exit": 1,
+      "exception": "FileNotFoundError",
+      "reason": "nested cwd duplicated apps/control/qualification-temporal; shell redirect also failed before npm started"
+    },
+    {
+      "stage": "first-typecheck-invocation",
+      "exit": 1,
+      "message": "Missing script: typecheck",
+      "reason": "npm invoked at root rather than --prefix nested package"
+    },
+    {
+      "stage": "owned-cache-move",
+      "exit": 1,
+      "exception": "OSError",
+      "errno": 18,
+      "message": "Invalid cross-device link",
+      "resolution": "shutil.move completed to owned /tmp cache"
+    }
+  ],
+  "sourceDefect": false
+}

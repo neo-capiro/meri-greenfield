@@ -1,0 +1,44 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "source": {
+    "apps/control/qualification-temporal/recovery-activities.mjs": {
+      "sha256": "539b6216a4d34e647e0ec9037fef5814d86d10ffd0a1207c128b54711982adc3",
+      "bytes": 12344
+    },
+    "apps/control/qualification-temporal/recovery-workflow.ts": {
+      "sha256": "f720e4eaf3d064fd34f82638b2663946667b0b83527628241622d2f5f1457057",
+      "bytes": 1403
+    },
+    "apps/control/qualification-temporal/recovery-types.ts": {
+      "sha256": "ba01b4c5e90b3a61f24de3233a43c3c6ce5d6611b168c003fda084dd96fc01ec",
+      "bytes": 643
+    },
+    "apps/control/qualification-temporal/recovery.test.mjs": {
+      "sha256": "f63f4ea806b1fa26a81c884f42aac21d233e879d3c9810011ce10b2d88e5171e",
+      "bytes": 8516
+    },
+    "apps/control/qualification-temporal/README.md": {
+      "sha256": "72835dd067b5ea3b2d5d48a6089d73fb0b94e7a271a4d60b2e23114da1c4cb54",
+      "bytes": 12556
+    },
+    "apps/control/qualification-temporal/package.json": {
+      "sha256": "57b942228191034a5e79640b48c494cb0ac0f315f3f8195b4f32df1013d00b34",
+      "bytes": 932
+    },
+    "apps/control/qualification-temporal/tsconfig.json": {
+      "sha256": "98a7c2dfe980be5d11810fea92fab794190a809854bee3e8e4eb4386d0902ba0",
+      "bytes": 508
+    }
+  },
+  "originalBytePreservation": {
+    "apps/control/qualification-temporal/workflow.ts": true,
+    "apps/control/qualification-temporal/activities.ts": true,
+    "apps/control/qualification-temporal/compatibility.test.mjs": true,
+    "apps/control/qualification-temporal/package-lock.json": true,
+    "apps/control/qualification-temporal/component-pins.json": true
+  },
+  "ownedProcessesStillRunning": [],
+  "nativeRuntimeAdmission": false,
+  "completeRecoveryCheckpoint": false,
+  "sessionStoreQualified": false
+}

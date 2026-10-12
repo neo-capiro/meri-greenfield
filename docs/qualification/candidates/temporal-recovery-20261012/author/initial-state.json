@@ -1,0 +1,12 @@
+{
+  "base": "14be9fc614568a74133b89f2b229e50c9b030322",
+  "branch": "task/meri-temporal-recovery-20261012",
+  "temporalLockSha256": "2f51fc50d101aa3650b295a3d4e72bef36e4047b2bc784b6ee1136578ab13673",
+  "setupObservations": [
+    "Parent already created exact branch/worktree; redundant worktree-add refused existing branch, no checkout modified.",
+    "Initial evidence setup used nested working directory incorrectly; FileNotFoundError and shell redirect failure prevented npm install. Empty accidental directories removed; corrected absolute evidence path used."
+  ],
+  "nativeExecution": false,
+  "databaseExecution": false,
+  "temporalExecution": false
+}

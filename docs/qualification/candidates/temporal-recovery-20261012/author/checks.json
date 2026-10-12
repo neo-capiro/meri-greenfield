@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "name": "final-check",
+      "argv": [
+        "npm",
+        "--prefix",
+        "apps/control/qualification-temporal",
+        "run",
+        "check"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 6.767
+    }
+  ],
+  "nativeExecution": false,
+  "databaseExecution": false,
+  "temporalServerOrCoreExecution": false
+}
