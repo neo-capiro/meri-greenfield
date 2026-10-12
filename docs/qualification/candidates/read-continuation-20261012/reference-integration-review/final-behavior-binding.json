@@ -1,0 +1,32 @@
+{
+  "independentReceipt": "independent-first.json",
+  "behavioralReplayHead": "57b7f164a278e32da2a46fe14d7950a1bcf6b8c0",
+  "candidate": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+  "packet": "c91f1716a476243abf9df2b9080041841d967f13",
+  "productionFilesCompared": 85,
+  "checks": [
+    {
+      "name": "exact three reviewed PE limitation strings are only catalog differences",
+      "result": "PASS"
+    },
+    {
+      "name": "all other private contract and gateway production bytes equal behavioral replay",
+      "result": "PASS"
+    },
+    {
+      "name": "59-group independent test unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "final receipt packet has no source or test change since accepted candidate",
+      "result": "PASS"
+    },
+    {
+      "name": "old15 test files remain exact reviewed inverse patch",
+      "result": "PASS"
+    }
+  ],
+  "passed": 5,
+  "failed": 0,
+  "conclusion": "59/59 behavioral result applies to final identical behavior bytes; only exact three human-readable PE limitation strings changed. Root full2158 source checks also bind final candidate. No redundant behavioral/native/broad rerun."
+}
