@@ -1,0 +1,120 @@
+{
+  "bodyPublication": false,
+  "privateSourceExecuted": false,
+  "files": [
+    {
+      "path": "apps/api/src/meri/meri-memory-proposal-read.ts",
+      "reviewedSpans": "1-106",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "148f458b8f17194e72aa01b1a35405df6052e71f",
+          "bytes": 3701,
+          "sha256": "c0791012a1025e690169d249c2a08b632e19e17ef57c51db300c6293f1782f69"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "148f458b8f17194e72aa01b1a35405df6052e71f",
+          "bytes": 3701,
+          "sha256": "c0791012a1025e690169d249c2a08b632e19e17ef57c51db300c6293f1782f69"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/governed-memory-candidate.service.ts",
+      "reviewedSpans": "213-351,527-595",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "913979ddb246b11c88b8d3c2e39da4ccfca96123",
+          "bytes": 21792,
+          "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "913979ddb246b11c88b8d3c2e39da4ccfca96123",
+          "bytes": 21792,
+          "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-wall.helpers.ts",
+      "reviewedSpans": "1-150",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+          "bytes": 7833,
+          "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+          "bytes": 7833,
+          "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "reviewedSpans": "310-312,506-566",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "reviewedSpans": "1-72",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "reviewedSpans": "1115-1119,2649-2650",
+      "identities": [
+        {
+          "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "ref": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}
