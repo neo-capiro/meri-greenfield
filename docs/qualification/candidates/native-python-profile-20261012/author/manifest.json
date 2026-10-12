@@ -1,0 +1,57 @@
+{
+  "baseCommit": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "allBaseTrackedFilesUnchanged": true,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/check-packet.mjs",
+      "bytes": 4050,
+      "sha256": "7007f4bc245892003da02ae87da58fc2562c7c709341972183ddbc1fc2ae9641"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-final.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks-final.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/checks.stdout.json",
+      "bytes": 902,
+      "sha256": "153d7ea2aa6842d7d85b7b847f3b261153037353c7e3df622b236ec6bed23317"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/parent-reported-candidate.json",
+      "bytes": 1187,
+      "sha256": "b02a4989ac43473e486f3411d218a7a39b89764e81d2c4ef7975423639220e19"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/profile-packet.json",
+      "bytes": 4633,
+      "sha256": "08484351896e0519eda9ba0bc616bc3b48a040d37d7503c58f5115b389b63edc"
+    },
+    {
+      "path": "docs/qualification/candidates/native-python-profile-20261012/author/source-identities.json",
+      "bytes": 1332,
+      "sha256": "7c5e75de8e3eab3a528e7ff183a473c7e27a574c379b0e4a192d3f5afab6dfce"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PYTHON-PROFILE-20261012.md",
+      "bytes": 7104,
+      "sha256": "9fecb949f062bd1f9d7b07e7abd68425a56b169fefe735d3db53fe29a40c1d52"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PYTHON-PROFILE-20261012.md",
+      "bytes": 2012,
+      "sha256": "2c6733554aa518440bf6c34724dbf68668523ec1cd79acf56d8c2e6b3be46c6d"
+    }
+  ]
+}
