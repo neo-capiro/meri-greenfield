@@ -1,0 +1,353 @@
+{
+  "scope": "DISCOVERY_RECOMMENDATIONS_ONLY; not implemented, registered, accepted or runtime-enabled",
+  "recommendationCount": 12,
+  "firstFamilies": [
+    "state-legislative-status-votes",
+    "regulatory-docket-read",
+    "tenant-contact-discovery"
+  ],
+  "families": [
+    {
+      "operations": [
+        "get_state_bill_status",
+        "search_state_floor_votes"
+      ],
+      "family": "state-legislative-status-votes",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "Status billId60 ?? query60, state2; votes billId60/state2/query200/chamber10 lowercase upper|lower; limit1..25/default10. Shared canonical-key/designation resolution; newest stored session candidate, live fallback only on missing designation.",
+      "resultProjection": "Status unresolved found:false (no billId), resolved-but-absent found:false+billId, found:true bill identity/state/session/identifier/title/status/label/statusAt/latestAction/sponsor, at most15 actions and15 votes, companions and nullable URL, conditional honesty note. Votes returned-window votesFound==length, vote rows id/billKey?/chamber?/motion?/date?/signed stored tallies/passed?/sourceUrl?, conditional empty note. A supplied unresolved bill never broadens to state-wide votes.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:3727-3774,5553-5755,10490-10498",
+        "apps/api/prisma/schema.prisma:6651-6720,6769-6784,6811-6833,6870-6882",
+        "packages/shared/src/index.ts:canonical IDs, state designation and status labels",
+        "apps/api/src/meri/meri-state-bill-live.ts:38-51,111-160"
+      ],
+      "knownEffectsAndAuthority": "Stored reads plus explicit LegiScan fallback network, shared quota reservation and normalized upsert. Four reserved provider-query units are not currency/spend authority. Current identity/role/request-active guards remain required.",
+      "truthLimits": "Stored state/status cannot prove current legal outcome; no vote does not mean passed/failed. Nullable dates and raw signed Int tallies follow schema. Runtime quota/provider/upsert remains UNRUN; no copy of resolver DB or ingestion implementation.",
+      "acceptanceTests": [
+        "all three status outcomes",
+        "failed designation cannot return unrelated state votes",
+        "bill/state/chamber correlation",
+        "date/null/order/count and15/25 caps",
+        "status labels/deadline and no-vote note",
+        "live unavailable/not-found distinctions"
+      ],
+      "proposedNewModules": [
+        "state-legislation.schema.json",
+        "state-legislation-validation.mjs",
+        "optional cohesive state-bill-identity.mjs after root allocation",
+        "retrieval-state-legislation.test.mjs"
+      ],
+      "priority": 1,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "query_regulatory_dockets"
+      ],
+      "family": "regulatory-docket-read",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "upcomingOnly via optionalBoolean; limit1..50/default20; upcoming days1..365/default30; ordinary agencyId40/documentType80. No model page selector consumed.",
+      "resultProjection": "Ordinary tool/generatedAt/total/results of all RegulatoryDocket scalar columns; total/list are separate observations. Upcoming additionally windowDays; total is service returned window length (cap50), results are sliced to requested limit; withdrawn false and ascending nonnull commentEndDate.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:8493-8522",
+        "apps/api/src/regulatory-docket/regulatory-docket.service.ts:4-15,28-47,58-68",
+        "apps/api/prisma/schema.prisma:6135-6155"
+      ],
+      "knownEffectsAndAuthority": "Stored global reads only. Upcoming service clock precedes wrapper generatedAt; no trusted clock binding exists in current result. Current gateway authority and eventual source clock qualification needed.",
+      "truthLimits": "Do not claim total is all upcoming records or compare separate query clock to generatedAt as identical; metadata shape cannot prove deadline currently open.",
+      "acceptanceTests": [
+        "ordinary versus upcoming envelopes",
+        "independent total below ordinary row count",
+        "upcoming total<=50 and returned<=limit",
+        "nullable raw stored columns and exact filter binding",
+        "no inferred current-window authority"
+      ],
+      "proposedNewModules": [
+        "regulatory-dockets.schema.json",
+        "regulatory-dockets-validation.mjs",
+        "retrieval-regulatory-dockets.test.mjs"
+      ],
+      "priority": 2,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "find_contacts"
+      ],
+      "family": "tenant-contact-discovery",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "clientId reference200 optional, domain200 lowercase/trim, query200 trim, limit1..100/default25. Empty selectors return refusal note/empty contacts without context fields.",
+      "resultProjection": "Normal tool/generatedAt/clientId?/clientName?/matchedOn{domain?,query?,linkedClient}/contacts/note. Each contact name?/email?/phone?/title?/organization?/lastContact?/messageCount/source/onProfile. No contact id projected. Last contact is max latest mail and selected meeting date; response sorted by lastContact descending; profile flag derives exact email/name sets.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:9487-9616",
+        "apps/api/prisma/schema.prisma:1192-1217;Client and mail/meeting scalar models",
+        "apps/api/src/engagement/engagement-access.helpers.ts:existing ownership distinctions"
+      ],
+      "knownEffectsAndAuthority": "Tenant-scoped contact/mail/calendar reads; optional client resolved by ensureClientVisible. Selector predicates are OR, including linked client, email domain and query: source is not a client-only contact filter. Synced correspondence facts only, no contact mutation/send.",
+      "truthLimits": "Nullable names/email and guessed organization fallback must remain; no email/URL formatting invention. onProfile/note cannot authorize deferred profile mutation. Tenant scope is not current source permission proof.",
+      "acceptanceTests": [
+        "selectorless envelope",
+        "nullable contact projections",
+        "OR scope versus client-only false claim",
+        "lastContact ordering/count and cap",
+        "onProfile/note correlation",
+        "no send/update authority"
+      ],
+      "proposedNewModules": [
+        "contact-discovery.schema.json",
+        "contact-discovery-validation.mjs",
+        "retrieval-contact-discovery.test.mjs"
+      ],
+      "priority": 3,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [
+        "Finish scalar/null typing for joined client/mail/meeting metadata from the already pinned Prisma file; retained row projection and OR-scope policy are inspected."
+      ],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "resolve_entity"
+      ],
+      "family": "canonical-entity-candidates",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "query200 with second trim, type20 lowercase, limit1..10/default5; missing query has distinct note. Five returned entity types member/committee/bill/state_bill/state_legislator; unsupported type cannot invent a match.",
+      "resultProjection": "tool/generatedAt/matchesFound==returned/matches and conditional note. Five projected discriminated row variants. Direct IDs then external-id crosswalk then names; matchedBy can carry dynamic stored crosswalk idType. Currentness field only on declared directory variants.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:4446-4734",
+        "packages/shared/src/index.ts:normalize/isValid canonical IDs and designation grammar",
+        "apps/api/prisma/schema.prisma:4136-4328,6651-6746"
+      ],
+      "knownEffectsAndAuthority": "Global stored entity/crosswalk reads. Federal designation currently derives Congress from wall clock; new contract must consume existing trusted defaultCongress/congressional-identity owner, not duplicate or read ambient clock. State designation picks latest stored synchronized session and does not call live fallback in this operation.",
+      "truthLimits": "Match is a candidate identity, not permission or current status. Preserve different variant nulls and unknown crosswalk names; no speculative ranking recomputation.",
+      "acceptanceTests": [
+        "five variants",
+        "missing/unknown type outcomes",
+        "canonical direct/defaultCongress correlation",
+        "count/limit",
+        "crosswalk matchedBy vocabulary without fake enum",
+        "no ownership grant"
+      ],
+      "proposedNewModules": [
+        "entity-candidates.schema.json",
+        "entity-candidates-validation.mjs",
+        "retrieval-entity-candidates.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "query_intelligence"
+      ],
+      "family": "intelligence-summary-read",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "Optional clientName200; no client identity authority granted by a name.",
+      "resultProjection": "Exactly tool/generatedAt/data string. Composes stored lobbying trends, recent bills, optional federal spending summary and positive source counts. Individual source failures are caught/omitted; count errors become zero and are omitted. Empty fallback is descriptive string, not corpus absence.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:3573-3703",
+        "apps/api/src/lobby-intel/lobby-intel.service.ts:getAiContext",
+        "apps/api/src/federal-spending/federal-spending.service.ts:getAiContext",
+        "apps/api/src/lda-intel/lda-intel.service.ts:getCongressBills"
+      ],
+      "knownEffectsAndAuthority": "Wrapper composes downstream summaries and catches failures. Exact downstream getAiContext/getCongressBills owners have been identified but not fully inspected in this checkpoint; no claim that their effects are read-only or that AI method names prove model calls. Nothing executed.",
+      "truthLimits": "Opaque source prose is not verified numeric authority or structured complete count. Catch-to-empty must not be rewritten as unavailable/no-data proof; no new synthesis/agent implementation.",
+      "acceptanceTests": [
+        "empty/partial summary as string",
+        "clientName trim/default",
+        "no structured count/absence inference",
+        "unknown properties and hostile JSON"
+      ],
+      "proposedNewModules": [
+        "intelligence-summary.schema.json",
+        "intelligence-summary-validation.mjs",
+        "retrieval-intelligence-summary.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [
+        "Inspect and pin the three identified downstream service methods; only the wrapper projection and catch-to-omission semantics are reviewed here. Those service paths are locator leads, not part of the 34-file verified identity set."
+      ],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "search_tracked_bills"
+      ],
+      "family": "client-tracked-bills",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "Required clientId80 resolved by current client visibility; no page/limit consumed.",
+      "resultProjection": "tool/generatedAt/clientId/total==bills.length; rows{id,billId,note?,createdAt,bill?}; nested bill identifier/title/latestActionDate?/latestActionText?/status?/actionTexts?/sponsorName?/sponsorParty?/subjectNames. Outer tracking order createdAt desc; nested bill may be null. No arbitrary50-row cap.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:8480-8490",
+        "apps/api/src/intelligence/intelligence.service.ts:4407-4471",
+        "apps/api/prisma/schema.prisma:5880-5906;CongressBill/Action"
+      ],
+      "knownEffectsAndAuthority": "Current client visibility then tenant tracking rows and global bill enrichment; no tracking mutation. Source identity must remain bound through new gateway release.",
+      "truthLimits": "Tracked set is not all legislative relevance; missing enrichment is null, not absent bill. Full array may require canonical resource-budget refusal, not silent truncation.",
+      "acceptanceTests": [
+        "client identity binding",
+        "full count and nullable enrichment",
+        "outer ordering",
+        "no invented page/cap",
+        "nested identifier correlation"
+      ],
+      "proposedNewModules": [
+        "tracked-bills.schema.json",
+        "tracked-bills-validation.mjs",
+        "retrieval-tracked-bills.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "query_outreach"
+      ],
+      "family": "outreach-record-read",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "outreachId80 chooses exact-record branch and ignores list selectors; otherwise clientId80/status40 optional, limit1..50/default20.",
+      "resultProjection": "Exact branch tool/generatedAt/record with full OutreachRecord scalars and outreachInclude relations, body normalized/capped2000. List branch total==all campaigns before slice; campaigns id/name/type/status/subject?/clientId?/clientName?/recipientCount/createdBy?/sentAt?/createdAt. Include exact client summary, selected meeting metadata/attendees, latest prep/debrief metadata and creator projections; do not silently reduce exact record to campaign list.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:8923-8964",
+        "apps/api/src/engagement/engagement.service.ts:2655-2668,10357-10374,10789-10833",
+        "apps/api/src/engagement/engagement-access.helpers.ts:96-100",
+        "apps/api/prisma/schema.prisma:1825-1860,3680-3703;Meeting/Prep/debrief/User scalar owners"
+      ],
+      "knownEffectsAndAuthority": "Exact record is tenant+creator owned, excludes internal outreach_v3 and deleted records. Campaign list is tenant scope with optional visible client/status, not same creator-only predicate. Reads only; no message send or draft change authorized.",
+      "truthLimits": "Exact relation closure is established via Prisma/includes but author must inventory every included prep/debrief scalar. Opaque JSON remains inert. Ownership is an execution prerequisite, not satisfied by DTO.",
+      "acceptanceTests": [
+        "distinct exact/list branches",
+        "owner/internal/deleted evidence obligations",
+        "body UTF16 cap",
+        "total before slice",
+        "nested include/null projections",
+        "no send/write authority"
+      ],
+      "proposedNewModules": [
+        "outreach-reads.schema.json",
+        "outreach-reads-validation.mjs",
+        "retrieval-outreach-reads.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [
+        "Enumerate all selected meeting/prep/debrief scalar/null fields from the referenced include and Prisma models; the exact-record branch must not be reduced to the simpler campaign branch."
+      ],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "get_research_evidence"
+      ],
+      "family": "research-snapshot-evidence",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "sessionId general UUID; optional clientId UUID, attachmentIds1..10 UUID dedup+sort; limit1..10/default5; cursor<=2048 session+selection+afterId bound.",
+      "resultProjection": "Unavailable handoff and available immutable snapshot envelopes; available session/conversation/client/capturedAt, coverage total/returned/pagination/content completeness/nextCursor, records domain research_attachments payload+provenance. Image textContent null; image bytes supplied elsewhere. Snapshot metadata cannot prove live byte admission by itself.",
+      "references": [
+        "apps/api/src/meri/meri-research-evidence.helpers.ts:10-65,71-303",
+        "apps/api/src/meri/meri-research-handoff.ts:19-42",
+        "apps/api/src/memory/memory-wall.helpers.ts:clientMemoryAllowed"
+      ],
+      "knownEffectsAndAuthority": "Tenant+user session/conversation ownership, current client wall, selected live attachment/hash/message correlation, then session/conversation/client recheck before return. Read path no new extraction/model/provider calls.",
+      "truthLimits": "Unavailable != empty. Retain partial statuses and original attachment identity. Full content can exceed generic resource budget; no fabricated completion or unsigned cursor authority.",
+      "acceptanceTests": [
+        "missing handoff versus empty available",
+        "cursor session/selection binding",
+        "sorted IDs/pagination",
+        "image text-null/hash fields",
+        "current identity/release prerequisites explicit",
+        "partial content coverage"
+      ],
+      "proposedNewModules": [
+        "research-evidence.schema.json",
+        "research-evidence-validation.mjs",
+        "retrieval-research-evidence.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "search_research_sources"
+      ],
+      "family": "tenant-research-candidates",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "Required query240, optional visible clientId80, limit1..25/default8; each of six branches fetches limit then combined results sort and slice limit*3.",
+      "resultProjection": "tool/query/generatedAt/results; six discriminated types client/meeting/mail_thread/mail_message/clio_note/directory_contact_note with id/clientId?/title/snippet360/occurredAt? plus only declared metadata threadId or directoryContactId. No total or cursor projected.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:6776-6971",
+        "apps/api/src/engagement/engagement-access.helpers.ts:36-42,67-78",
+        "apps/api/prisma/schema.prisma:Client/Meeting/MailThread/MailMessage/ClioNote/DirectoryContactNote"
+      ],
+      "knownEffectsAndAuthority": "Tenant read; meetings and mail use own/active predicates, Meri notes user-owned, directory notes tenant-wide and not filtered by requested client. Preserve exact existing policy distinction; current source authorization still required.",
+      "truthLimits": "At most3*limit results, not exhaustive inventory; snippets hide matched text and absence proves nothing. Do not fabricate client-only scope for tenant directory notes.",
+      "acceptanceTests": [
+        "six candidate variants",
+        "query echo/UTF16 snippet caps",
+        "3*limit cap",
+        "nullable dates and descending combined order",
+        "exact per-type metadata",
+        "no count/completeness inventions"
+      ],
+      "proposedNewModules": [
+        "research-candidates.schema.json",
+        "research-candidates-validation.mjs",
+        "retrieval-research-candidates.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [
+        "Finish six-variant scalar/null table against the already pinned Prisma models. Do not substitute a generic any result or drop directory-note policy differences."
+      ],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    },
+    {
+      "operations": [
+        "search_public_web",
+        "scrape_web_page"
+      ],
+      "family": "public-web-evidence",
+      "readiness": "READY_FOR_CONTRACT_AUTHOR_AND_INDEPENDENT_REVIEW",
+      "input": "Search query240 required, limit1..12/default6. Read URL2000 required, mode20/defaultsummary, maxChars500..20000/default4000 or12000 extract.",
+      "resultProjection": "Search contentStatus discovered/provider/total==returned/results: Tavily/Serper normalized title/url/snippet?/source/publishedAt?; DuckDuckGo branch omits publishedAt. Read HTML vs PDF closed variants, external_untrusted public_url ownership, raw-byte contentHash, truncated/totalChars/coverage locator; HTML links<=8, PDF links[]/pages/title:null/kind:pdf.",
+      "references": [
+        "apps/api/src/meri/meri-tools.service.ts:6614-6773,10407-10440",
+        "apps/api/src/common/web-search.helpers.ts:12-20,69-96",
+        "apps/api/src/meri/meri-tools.service.ts:guarded web-response and PDF imports159-174"
+      ],
+      "knownEffectsAndAuthority": "Provider HTTP with fallback for discovery; guarded network and PDF parser for read. New adapter must use approved supported tools/qualified Playwright and sandbox/egress/watchdog, not copy legacy HTML parser, fetch or PDF implementation. No request executed.",
+      "truthLimits": "Search snippets are not full evidence; publishedAt is provider text not necessarily ISO. DDG URL field differs from normalized provider validation. HTML truncated totalChars null; PDF full reported raw text count can differ from normalized displayed text. Hash proves only when independently bound to actual bytes.",
+      "acceptanceTests": [
+        "provider-specific search variants",
+        "returned count/caps",
+        "HTML/PDF branches",
+        "UTF16 versus raw totalChars",
+        "no inferred publication date grammar",
+        "external untrusted/hash/coverage",
+        "redirect/SSRF/teardown execution remains UNRUN"
+      ],
+      "proposedNewModules": [
+        "public-web.schema.json",
+        "public-web-validation.mjs",
+        "retrieval-public-web.test.mjs"
+      ],
+      "priority": null,
+      "runtimeAccepted": false,
+      "unfinishedBeforeAuthorFreeze": [],
+      "scope": "Metadata/projection recommendation only. Root allocation and independent contract review required before any registration."
+    }
+  ],
+  "checkpoint": "Parent requested immediate resumable freeze before remaining downstream inspections. Readiness means eligible for bounded contract authorship, not independent source acceptance or fully qualified adapter."
+}

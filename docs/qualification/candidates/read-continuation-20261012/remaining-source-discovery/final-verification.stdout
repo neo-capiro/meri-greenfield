@@ -1,0 +1,575 @@
+{
+  "scope": "OFFLINE_METADATA_AND_PRESERVATION_ONLY",
+  "passed": 142,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "original139",
+      "passed": true
+    },
+    {
+      "check": "selected96",
+      "passed": true
+    },
+    {
+      "check": "deferred43",
+      "passed": true
+    },
+    {
+      "check": "pending51",
+      "passed": true
+    },
+    {
+      "check": "exclusion_counts",
+      "passed": true
+    },
+    {
+      "check": "disjoint_partition",
+      "passed": true
+    },
+    {
+      "check": "original_rows_exact",
+      "passed": true
+    },
+    {
+      "check": "catalog_identical_to_base",
+      "passed": true
+    },
+    {
+      "check": "slate12_unique",
+      "passed": true
+    },
+    {
+      "check": "slate_is_remaining_subset",
+      "passed": true
+    },
+    {
+      "check": "ten_cohesive_families",
+      "passed": true
+    },
+    {
+      "check": "first_three_exist",
+      "passed": true
+    },
+    {
+      "check": "all30_retained",
+      "passed": true
+    },
+    {
+      "check": "12_recommended18_others",
+      "passed": true
+    },
+    {
+      "check": "all_pending_unqualified",
+      "passed": true
+    },
+    {
+      "check": "named_temporal_replacement_owner",
+      "passed": true
+    },
+    {
+      "check": "34_reference_pairs",
+      "passed": true
+    },
+    {
+      "check": "source_pins_exact",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/prisma/schema.prisma",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:packages/shared/src/index.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-state-bill-live.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/regulatory-docket/regulatory-docket.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/engagement/engagement.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/engagement/engagement-access.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/engagement/engagement-access.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/engagement/engagement-access.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/intelligence/intelligence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/intelligence/intelligence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/intelligence/intelligence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-research-evidence.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-research-handoff.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-research-handoff.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-research-handoff.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-chat-attachment-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-client-context.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-client-context.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-client-context.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-context-plane.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-context-plane.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-context-plane.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/retrieval/retrieval-v2.types.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/retrieval/retrieval-v2.types.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/retrieval/retrieval-v2.types.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-data-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-data-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-data-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-memory-content.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-memory-content.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-memory-content.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/memory/memory-wall.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/memory/memory-wall.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/memory/memory-wall.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/memory/memory-graph.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/memory/memory-graph.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/memory/memory-graph.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/embeddings/client-kb.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/embeddings/client-kb.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/embeddings/client-kb.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/program-element/program-element-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/program-element/program-element-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/program-element/program-element-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-defense-budget-tool.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:packages/shared/src/funding-claim.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:packages/shared/src/funding-claim.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:packages/shared/src/funding-claim.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/analytics/query-spec-compiler.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-action-item-read.helpers.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/intelligence/actions/action-recommendation-read.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/intel-api/src/tracker/research/research.service.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:frozen:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "check": "identity:observed:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "check": "drift:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "check": "only_owned_new_tracked_paths",
+      "passed": true
+    },
+    {
+      "check": "only_owned_untracked_paths",
+      "passed": true
+    },
+    {
+      "check": "no_private_bodies_claim",
+      "passed": true
+    },
+    {
+      "check": "explicit_unfinished_work",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/inventory.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/contract-ready.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/disposition.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/checkpoint.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.json",
+      "passed": true
+    },
+    {
+      "check": "report_link:../../qualification/candidates/read-continuation-20261012/remaining-source-discovery/manifest.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/coordination/reports/CODEX-REMAINING-SOURCE-DISCOVERY-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/checkpoint.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/contract-ready.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/disposition.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/inventory.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/outline.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.json",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.stderr",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.stdout",
+      "passed": true
+    },
+    {
+      "check": "packet:docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verify.py",
+      "passed": true
+    }
+  ]
+}

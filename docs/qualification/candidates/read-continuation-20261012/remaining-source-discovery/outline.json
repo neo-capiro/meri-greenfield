@@ -1,0 +1,20 @@
+{
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "scope": "Read-only immutable source/projection/policy discovery; no source implementation, registration or acceptance",
+  "pins": {
+    "inventory": "fd8765ec01d292013758606204f2c9d886cd31c1",
+    "observed": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace"
+  },
+  "ownedPaths": [
+    "CODEX-REMAINING-SOURCE-DISCOVERY-20261012.md",
+    "remaining-source-discovery/**"
+  ],
+  "plan": [
+    "Reconcile exact51 pending minus10allocated and11commands =30reads",
+    "Inspect frozen wrapper projections/imported DTO/schema/policy boundaries; compare observed blob drift",
+    "Recommend8-12 closed read contracts and2-3 cohesive families; retain every other selected row with exact dependency",
+    "Record metadata-only pins and offline ledger/packet/preservation verification"
+  ],
+  "execution": "Local git/stdlib reads only; no private source imports/execution, HTTP/SQL/providers/models/cloud/native actions or recursive agents",
+  "deadlineMinutes": 45
+}

@@ -1,0 +1,20 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verify.py"
+  ],
+  "cwd": "/workspace/meri-remaining-source-discovery-20261012",
+  "exitCode": 0,
+  "durationSeconds": 0.307,
+  "passed": 131,
+  "failed": 0,
+  "stdoutSha256": "1fda53532703abe3e3292a9b2f69c43261a7fd8e56e184da5e3a09125c7bfb9f",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "phase": "Initial offline ledger/reference/preservation check; manifest intentionally empty during this pass. Final packet replay follows.",
+  "processCompleted": true,
+  "timedOut": false,
+  "backgroundProcessesLaunched": false
+}

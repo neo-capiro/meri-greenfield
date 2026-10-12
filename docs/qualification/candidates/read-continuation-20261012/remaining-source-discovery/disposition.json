@@ -1,0 +1,287 @@
+{
+  "scope": "CHECKPOINT_DISCOVERY_ONLY",
+  "remainingCount": 30,
+  "recommendedCount": 12,
+  "otherCount": 18,
+  "rows": [
+    {
+      "operation": "get_research_evidence",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "research-snapshot-evidence",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "read_chat_attachments",
+      "status": "ATTACHMENT_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-chat-attachment-read.service.ts:41-66,204-260,277-310,544-565,653-695; meri-chat-attachment-read-scope.ts",
+      "resumeWork": "Closed manifest and content variants exist, including signed cursor identity, bytes hash, extraction/locator/coverage. Finish final content response and manifest-row scalar inventory; reuse original attachment/current conversation/client wall and release checks.",
+      "executionGate": "Extractor and signed-secret ownership remain runtime prerequisites; no PDF/Office implementation port or execution.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "read_monday_client_boards",
+      "status": "CONTEXT_PLANE_PAYLOAD_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:470-503; meri-context-plane.service.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Wrapper projection is closed over records/coverage; inspect exact managed Monday record payload/cursor contracts and complete versus explicit-page behavior.",
+      "executionGate": "Current client wall before and after external MCP access, current source identity/budgets and owned cleanup are unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_client_context",
+      "status": "SIX_SECTION_DTO_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:3031-3200; meri-client-context.helpers.ts",
+      "resumeWork": "Compose context and all six capabilities/people/facilities/submission-history/advocacy-matters/advocacy-records full and summary sections. Finish each existing imported DTO and paging/coverage shape; do not reduce to fixtures.",
+      "executionGate": "Current client visibility, denied-client wall and source inclusion remain adapter obligations.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_research_sources",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "tenant-research-candidates",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [
+        "Finish six-variant scalar/null table against the already pinned Prisma models. Do not substitute a generic any result or drop directory-note policy differences."
+      ],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_client_knowledge",
+      "status": "EMBEDDING_SEARCH_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2273-2319; embeddings/client-kb.service.ts:654-700",
+      "resumeWork": "Declared kind/id/title/snippet/score rows exist; finish kind vocabulary and wrapper refusal/failure distinction. No-client empty note and caught unavailable response must not mean absence.",
+      "executionGate": "Known embedText call precedes later tenant/document checks; model/provider budgets and current document visibility are not authorized or executed.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_intelligence",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "intelligence-summary-read",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [
+        "Inspect and pin the three identified downstream service methods; only the wrapper projection and catch-to-omission semantics are reviewed here. Those service paths are locator leads, not part of the 34-file verified identity set."
+      ],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_knowledge_graph",
+      "status": "GRAPH_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:3232-3397; memory-graph.helpers.ts",
+      "resumeWork": "Inspect exact seed/client refusal, empty nodes+edges and normal nodes+connections variants, label enums and graph cache scope. Returned connections cap120 does not equal full summary edge count.",
+      "executionGate": "Current tenant/client/owner cache policy and evidence versus mention semantics require adapter qualification; no graph traversal implementation copied.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_memory",
+      "status": "EXISTING_RETRIEVAL_ENVELOPE_COMPOSITION",
+      "sourceLocators": "meri-tools.service.ts:3460-3570; meri-memory-content.helpers.ts; meri-data-search.helpers.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Compose exact and semantic recall envelopes, governance coverage, content status, evidence cursors and 6000/7200 JSON-character budgets. Exact page1 fallback and partial metadata semantics must survive.",
+      "executionGate": "Current approved/active/eligible memory and client wall required; proposal approval decision is not reopened. Retrieval/provider/current authority unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "resolve_entity",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "canonical-entity-candidates",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_global_data",
+      "status": "TYPED_QUERY_RESULT_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:4778-4831; analytics/query-spec-compiler.ts; analytics/global-dataset-registry.ts",
+      "resumeWork": "Typed QuerySpec/registry owners identified and pinned. Full wrapper result/effect and dynamic scalar-column projection inspection remains incomplete; resume here.",
+      "executionGate": "Dataset metadata does not grant row/query access. No free-text SQL, copied SQL expressions or compiler execution; actual audit/authorization obligations need inspection.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_state_bill_status",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "state-legislative-status-votes",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_state_floor_votes",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "state-legislative-status-votes",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_committee_hearings",
+      "status": "HEARING_RECORD_VARIANT_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:6394-6441; meri-context-plane.service.ts; retrieval/retrieval-v2.types.ts",
+      "resumeWork": "Known recordsView published/briefs/reconciliation with bound asOf and one returned complete chunk; inspect each actual record payload and continuation/current revision owner.",
+      "executionGate": "Current client visibility, source grants and publication state remain runtime prerequisites; unsupported browser-session material remains unsupported.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_legiwatch_news",
+      "status": "INTEL_API_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2504-2565; apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts:61-67; apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "resumeWork": "Actual in-repository downstream owner found: source view invokes run/exact, personnel view invokes personnel, monitors invokes monitors, default news. Finish all selected Phase8EvidenceService return variants.",
+      "executionGate": "WorkflowSourceGuard and tenant/actor handoff with role:null are explicit; no internal HTTP call, live provider or workflow execution.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_florida_budget_project",
+      "status": "INTEL_API_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2504-2565; apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts; apps/intel-api/src/tracker/editorial/evidence.service.ts",
+      "resumeWork": "Actual Phase8EvidenceService.budget owner exists and is pinned; inspect precise budget return/refusal/coverage projection. Not an absent external DTO.",
+      "executionGate": "Current workflow-source guard and actor/client boundary require qualification; no apply/write inference.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_legislative_research",
+      "status": "INTEL_API_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2504-2565; apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts; apps/intel-api/src/tracker/research/research.service.ts",
+      "resumeWork": "Actual ResearchService.search owner exists and is pinned; finish returned variants, limits, source and coverage semantics.",
+      "executionGate": "Internal service identity, client visibility and read-versus-apply separation remain unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_legal_reference",
+      "status": "INTEL_API_PROJECTION_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:2504-2565; apps/intel-api/src/tracker/keywords/keyword-meri.controller.ts; apps/intel-api/src/tracker/research/research.service.ts",
+      "resumeWork": "Actual rules/versions/references selected methods exist and are pinned. Finish all three response projections and historic/current distinction.",
+      "executionGate": "No inference of legal-currentness or workflow mutation authority; internal source guard execution UNRUN.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_public_web",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "public-web-evidence",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "scrape_web_page",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "public-web-evidence",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_program_elements",
+      "status": "DEFENSE_BUDGET_FAMILY_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:5027-5233; program-element/program-element-read.service.ts; meri-defense-budget-tool.helpers.ts; packages/shared/src/funding-claim.ts",
+      "resumeWork": "Finder DTO exists; wrapper replaces raw funding values with currentFundingClaim/funding metadata. Finish full scalar/null table and mode-specific lineage/claim projection.",
+      "executionGate": "Trusted tenant accuracy mode, source vehicle/FY/stage and current funding policy must survive; no invented monetary interpretation.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_program_element",
+      "status": "DEFENSE_BUDGET_FAMILY_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:5027-5233; program-element/program-element-read.service.ts; meri-defense-budget-tool.helpers.ts; packages/shared/src/funding-claim.ts",
+      "resumeWork": "Detail DTO spread plus replaced years, current cycle FY, funding claims and optional enforce lineage; finish all included full-detail/year schemas.",
+      "executionGate": "No copy of legacy retrieval logic; trusted accuracy mode and current funding provenance unqualified.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "get_pe_budget_timeline",
+      "status": "DEFENSE_BUDGET_FAMILY_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:5027-5233; program-element/program-element-read.service.ts; meri-defense-budget-tool.helpers.ts; packages/shared/src/funding-claim.ts",
+      "resumeWork": "Timeline DTO and bill identity/funding/lineage owners established; finish exact year/stage/window projection as the same cohesive PE family.",
+      "executionGate": "Runtime current-cycle and appropriation versus request truth limits remain open.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "list_scheduled_tasks",
+      "status": "REPLACEMENT_OWNER_CONTRACT_REQUIRED",
+      "sourceLocators": "meri-tools.service.ts:8298-8316; canonical selected boundary",
+      "resumeWork": "Legacy owner returns latest50 tenant+owner ClioScheduledTask rows, but selected replacement is application Temporal schedule/run-history inspection. Root must allocate canonical control/Temporal read owner DTO/current identity/history semantics.",
+      "executionGate": "Do not treat legacy scheduling store or its fields as selected durability contract; no schedule execution, store copying or mutation.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_action_items",
+      "status": "EXISTING_AND_FULL_SCOPE_COMPOSITION",
+      "sourceLocators": "meri-tools.service.ts:8443-8477; meri-action-item-read.helpers.ts; intelligence/actions/action-recommendation-read.service.ts",
+      "resumeWork": "Client-scoped exact read is already separately implemented; original full selected operation additionally has no-client list. Inspect and compose actual no-client list DTO/current user visibility without duplicate counting or dropping that branch.",
+      "executionGate": "Current tenant/user/client authority and recommendation policy remain execution prerequisites; no command transition.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_tracked_bills",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "client-tracked-bills",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_regulatory_dockets",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "regulatory-docket-read",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "search_sam_opportunities",
+      "status": "FUNDING_POLICY_REUSE_ASSEMBLY",
+      "sourceLocators": "meri-tools.service.ts:8525-8604; program-element/program-element-read.service.ts:2850-2896; existing funding freshness/deadline owners",
+      "resumeWork": "Stored15-field SAM projection exists; wrapper clips description300, adds freshness/status reasons and mode-dependent normalized deadlines. Finish exact trusted accuracy/clock binding and reuse canonical funding policy rather than inventing a new one.",
+      "executionGate": "Local stored search is not live SAM absence/currentness. No provider fetch; separate total/list observations and source freshness remain explicit.",
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "query_outreach",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "outreach-record-read",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [
+        "Enumerate all selected meeting/prep/debrief scalar/null fields from the referenced include and Prisma models; the exact-record branch must not be reduced to the simpler campaign branch."
+      ],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    },
+    {
+      "operation": "find_contacts",
+      "status": "RECOMMENDED_FOR_CONTRACT_AUTHORSHIP",
+      "family": "tenant-contact-discovery",
+      "detail": "contract-ready.json",
+      "unfinishedBeforeAuthorFreeze": [
+        "Finish scalar/null typing for joined client/mail/meeting metadata from the already pinned Prisma file; retained row projection and OR-scope policy are inspected."
+      ],
+      "catalogState": "pending",
+      "runtimeAccepted": false
+    }
+  ],
+  "note": "Authoring readiness is not source acceptance. Identified immutable producer projections close ordinary contract work even without a standalone DTO. Only the Temporal replacement owner is a named new application contract prerequisite; other rows are bounded inspection/composition work, not asserted missing producers."
+}

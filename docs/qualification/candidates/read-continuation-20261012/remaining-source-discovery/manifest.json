@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "scope": "Derived metadata only; no private source bodies. Final replay receipts are excluded to avoid recursive receipt hashes.",
+  "excluded": [
+    "manifest.json",
+    "final-verification.json",
+    "final-verification.stdout",
+    "final-verification.stderr"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-REMAINING-SOURCE-DISCOVERY-20261012.md",
+      "bytes": 10108,
+      "sha256": "5d9ef0fe8ec922a02a04a7b7e20d995e2199373630629400ae75181ef774b51e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/checkpoint.json",
+      "bytes": 1589,
+      "sha256": "3c9b5e701506895b463f9be2011ba692ba7b4e560797702c02fe11322e612eab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/contract-ready.json",
+      "bytes": 23457,
+      "sha256": "f2d20729b8831c53caeb7ce63665a50022ff938a306e8f2b98b0c3ad7213ec68"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/disposition.json",
+      "bytes": 17114,
+      "sha256": "3e75c1f45e50c4d95397ae6678ab6b8995ce1e089714b21e92ae797a1f808a31"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/inventory.json",
+      "bytes": 10483,
+      "sha256": "3f0c57db688c2c9f6156b5e14ae59fe866f5fbba8c0ae6186592759f718f4c14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/outline.json",
+      "bytes": 1010,
+      "sha256": "3c94a01aaaa113cbce811f5317311790d33f918d5b797d5b0e855893db468adf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/reference-identities.json",
+      "bytes": 17218,
+      "sha256": "bdc523264b297f51b6ba9e4ddc783aa49131f2590b6b9bded87db324c8f185e7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.json",
+      "bytes": 712,
+      "sha256": "24b7e663ce7ec61e7d1feab78561bae75d9ce00f6ce6c5f3226ca17e95ccd043"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verification.stdout",
+      "bytes": 14442,
+      "sha256": "1fda53532703abe3e3292a9b2f69c43261a7fd8e56e184da5e3a09125c7bfb9f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verify.py",
+      "bytes": 5076,
+      "sha256": "4988c456114278b369891bcb43a8966a982da603292489af2a5a45887621d848"
+    }
+  ]
+}

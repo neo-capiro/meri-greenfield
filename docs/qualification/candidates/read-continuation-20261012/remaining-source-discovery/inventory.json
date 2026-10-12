@@ -1,0 +1,245 @@
+{
+  "catalogBase": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "original": 139,
+  "selected": 96,
+  "deferred": 43,
+  "pending": 51,
+  "excludedAllocated": [
+    "get_certification_status",
+    "list_global_datasets",
+    "get_committee_roster",
+    "get_representation",
+    "list_members",
+    "get_state_rule_status",
+    "search_intel_articles",
+    "get_pe_contractors",
+    "get_pe_bills",
+    "get_pe_report_language"
+  ],
+  "excludedCommands": [
+    "save_memory",
+    "save_chat_attachments",
+    "schedule_task",
+    "cancel_scheduled_task",
+    "update_scheduled_task",
+    "create_task",
+    "update_task",
+    "create_word",
+    "create_excel",
+    "create_powerpoint",
+    "run_analysis"
+  ],
+  "remaining": [
+    {
+      "id": "get_research_evidence",
+      "disposition": "selected",
+      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "read_chat_attachments",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "read_monday_client_boards",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_client_context",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_research_sources",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_client_knowledge",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_intelligence",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_knowledge_graph",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_memory",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "resolve_entity",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_global_data",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_state_bill_status",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_committee_hearings",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_legiwatch_news",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_legislative_research",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_legal_reference",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_public_web",
+      "disposition": "selected",
+      "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "scrape_web_page",
+      "disposition": "selected",
+      "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_program_elements",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_program_element",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "list_scheduled_tasks",
+      "disposition": "selected",
+      "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_action_items",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_tracked_bills",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_regulatory_dockets",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "query_outreach",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    },
+    {
+      "id": "find_contacts",
+      "disposition": "selected",
+      "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
+      "replacement": null,
+      "state": "pending"
+    }
+  ],
+  "catalogChanged": false
+}

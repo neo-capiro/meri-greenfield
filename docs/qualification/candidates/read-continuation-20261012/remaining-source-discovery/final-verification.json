@@ -1,0 +1,22 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/read-continuation-20261012/remaining-source-discovery/verify.py"
+  ],
+  "cwd": "/workspace/meri-remaining-source-discovery-20261012",
+  "exitCode": 0,
+  "durationSeconds": 0.296,
+  "passed": 142,
+  "failed": 0,
+  "stdoutSha256": "9474980fb7f45f9cade31aa469b177b3f8bae4b60e4aebfb3ea0392763e0fefa",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "manifestSha256": "72175b23c377cd447a6532793b1fd8cc66b8ac3f850ea10606856443c254aa1a",
+  "manifestMembers": 11,
+  "verifierSha256": "4988c456114278b369891bcb43a8966a982da603292489af2a5a45887621d848",
+  "processCompleted": true,
+  "timedOut": false,
+  "backgroundProcessesLaunched": false
+}
