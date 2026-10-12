@@ -38,7 +38,7 @@ test('KB requires query but no invented short query cap',()=>{
  for(const query of ['', ' \n ',null,1,{},true])assert.throws(()=>kn({query}));
  assert.equal(kn({query:'x'.repeat(900)}).input.query.length,900);
 });
-test('KB finite numeric clamp preserves fractions while nonnumeric strings use default',()=>{
+test('KB finite numeric clamp preserves fractions while ignored string uses default',()=>{
  for(const [limit,want] of [[-8,1],[30,20],[1.5,1.5],['2',8],[null,8]])assert.equal(kn({query:'query',limit}).input.limit,want);
 });
 test('KB filters only the four exact source kind names',()=>{
@@ -115,8 +115,8 @@ test('graph empty uses edges and populated uses connections, with no invented to
  assert.deepEqual(gc(graph()),graph());
  assert.throws(()=>gc({...empty,connections:[]}));assert.throws(()=>gc({...graph(),edges:[]}));assert.throws(()=>gc({...graph(),tool:KG}));
 });
-test('graph default scoped seed is reflected without fresh authority claims',()=>{
- const value=graph();value.summary=summary(2,1,`client:${C}`,2);gc(value,{clientId:C});
+test('graph original absent seed remains absent from summary without fresh authority claims',()=>{
+ const value=graph();gc(value,{clientId:C});
  const other=structuredClone(value);other.nodes[0].id=`client:${OTHER}`;assert.throws(()=>gc(other,{clientId:C}));
 });
 test('graph node projection preserves opaque type and label strings without narrow vocabulary',()=>{
@@ -145,4 +145,12 @@ test('result admission detaches both families without executing payload accessor
  const p=page([row()]),out=kc(p);p.results[0].title='changed';assert.equal(out.results[0].title,'Synthetic text');
  const g=graph(),copy=gc(g);g.nodes[0].label='changed';assert.equal(copy.nodes[0].label,'Client');
  let touched=0;Object.defineProperty(g.nodes[0],'label',{enumerable:true,get(){touched++;return 'x';}});assert.throws(()=>gc(g));assert.equal(touched,0);
+});
+
+test('scoped graph client identity preserves exact source case comparison',()=>{
+ const value=graph();assert.throws(()=>gc(value,{clientId:C.toUpperCase()}));
+ const matched=graph();matched.nodes[0].id=`client:${C.toUpperCase()}`;gc(matched,{clientId:C.toUpperCase()});
+});
+test('scoped graph does not invent ownership for remaining non-client nodes',()=>{
+ const value=graph();value.nodes[1]={id:`person:${OTHER}`,type:'person',label:'Opaque person'};gc(value,{clientId:C});
 });

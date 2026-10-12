@@ -1,0 +1,148 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import Ajv from 'ajv/dist/2020.js';
+import addFormats from 'ajv-formats';
+import {createClientKnowledgeSearchValidators, CLIENT_KNOWLEDGE_SEARCH_OPERATION_IDS} from '../retrieval-0.2/client-knowledge-search-validation.mjs';
+const schema=JSON.parse(readFileSync(new URL('../retrieval-0.2/client-knowledge-search.schema.json',import.meta.url)));
+const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(schema);
+const compiled=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));
+const v=createClientKnowledgeSearchValidators({schema,validateShape(name,value){const f=compiled.get(name);if(!f?.(value))throw Error(ajv.errorsText(f?.errors));}});
+const KB='search_client_knowledge',KG='query_knowledge_graph',asOf='2026-10-12T19:00:00.000Z';
+const C='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',OTHER='bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+const missing='No client is linked to this conversation. Ask the user which client, or pass clientId.';
+const unavailable='Knowledge-base search is temporarily unavailable; fall back to get_client_context.';
+const emptyGraph='The knowledge graph is empty or has nothing connected to that seed. Run "Populate graph" on the Knowledge Graph page to build it from clients, memories, meetings, and email.';
+const badClient='clientId must be a client UUID — pass the exact id, or omit it.';
+const wrongSeed="This conversation is scoped to one client, so the knowledge graph cannot be walked from another client's node here. Omit the seed to explore this client's graph, or switch the session's client.";
+const kn=(raw,ctx={asOf})=>v.normalizeInput(KB,raw,ctx);
+const gn=(raw={},ctx={})=>v.normalizeInput(KG,raw,ctx);
+const row=()=>({kind:'client_profile',id:'opaque:id-with:colons',title:'Synthetic text',snippet:'Synthetic text',score:0.75});
+const page=(results=[])=>({tool:KB,generatedAt:asOf,clientId:C,clientName:'Synthetic client',query:'query',results});
+const kc=(value,raw={query:'query',clientId:C},ctx={asOf})=>v.assertResult(KB,value,raw,ctx);
+const summary=(nodes,edges,seed=null,depth=2)=>`${nodes} nodes, ${edges} connections${seed?` within ${depth} hop(s) of ${seed}`:''}. Edges tagged [fact]=from firm data, [mention]=from analyst notes.`;
+const graph=()=>({summary:summary(2,1),nodes:[{id:`client:${C}`,type:'client',label:'Client'},{id:'person:one',type:'person',label:'Person'}],connections:['Client (client) --knows[fact]--> Person (person)']});
+const gc=(value,raw={},ctx={})=>v.assertResult(KG,value,raw,ctx);
+
+test('independent pair inventory and canonical namespace',()=>{
+ assert.deepEqual(CLIENT_KNOWLEDGE_SEARCH_OPERATION_IDS,[KB,KG]);assert.equal(v.schemaId,'urn:meri:retrieval:client-knowledge-search:0.2.0');
+ assert.equal(v.inputDefinition(KB),'ClientKnowledgeSearchInput');assert.equal(v.outputDefinition(KG),'KnowledgeGraphOutput');
+ assert.throws(()=>v.normalizeInput('search_memory',{},{}));assert.throws(()=>v.outputDefinition('constructor'));
+});
+test('KB trims query only and keeps raw truthy client selector',()=>{
+ assert.deepEqual(kn({query:' query ',clientId:' '+C+' '}).input,{query:'query',clientId:' '+C+' ',kind:null,limit:8});
+ for(const clientId of [undefined,null,'']){const raw={query:'query'};if(clientId!==undefined)raw.clientId=clientId;assert.equal(kn(raw).input.clientId,null);}
+ assert.equal(kn({query:'query',clientId:' '}).input.clientId,' ');
+});
+test('KB requires query but no invented short query cap',()=>{
+ for(const query of ['', ' \n ',null,1,{},true])assert.throws(()=>kn({query}));
+ assert.equal(kn({query:'x'.repeat(900)}).input.query.length,900);
+});
+test('KB finite numeric clamp preserves fractions while nonnumeric strings use default',()=>{
+ for(const [limit,want] of [[-8,1],[30,20],[1.5,1.5],['2',8],[null,8]])assert.equal(kn({query:'query',limit}).input.limit,want);
+});
+test('KB filters only the four exact source kind names',()=>{
+ for(const kind of ['client_profile','client_person','client_facility','client_doc_chunk'])assert.equal(kn({query:'query',kind}).input.kind,kind);
+ for(const kind of ['CLIENT_PROFILE','other',' client_profile ',null])assert.equal(kn({query:'query',kind}).input.kind,null);
+});
+test('observation clock is mandatory but is not current authority',()=>{
+ for(const context of [{},null,{asOf:'2026-02-30T00:00:00.000Z'},{asOf,actorRole:'admin'}])assert.throws(()=>kn({query:'query'},context));
+ assert.throws(()=>kc(page(),undefined,{asOf:'2026-10-12T19:00:00.001Z'}));
+ for(const time of ['0000-01-01T00:00:00.000Z','9999-12-31T23:59:59.999Z'])assert.equal(kc({...page(),generatedAt:time},undefined,{asOf:time}).generatedAt,time);
+});
+test('KB missing-client envelope has no query or fabricated client fields',()=>{
+ const value={tool:KB,generatedAt:asOf,results:[],note:missing};assert.deepEqual(kc(value,{query:'query'}),value);
+ assert.throws(()=>kc({...value,query:'query'},{query:'query'}));assert.throws(()=>kc(value));
+});
+test('KB caught-failure envelope retains selected query and client but no rows',()=>{
+ const value={...page(),note:unavailable};assert.deepEqual(kc(value),value);
+ assert.throws(()=>kc({...value,results:[row()]}));assert.throws(()=>kc({...value,note:missing}));
+});
+test('KB healthy empty and source failure remain distinct without absence claims',()=>{
+ assert.deepEqual(kc(page()),page());assert.throws(()=>kc({...page(),absenceEvidence:true}));
+ assert.throws(()=>kc({...page(),note:'No records exist anywhere.'}));
+});
+test('KB exact request echoes prevent substitution',()=>{
+ for(const change of [{query:'other'},{clientId:OTHER},{tool:KG}])assert.throws(()=>kc({...page(),...change}));
+});
+test('KB IDs are opaque source IDs and score has explicit lower threshold only',()=>{
+ for(const score of [0.200000001,1.0000001])assert.equal(kc(page([{...row(),score}])).results[0].score,score);
+ for(const score of [0.2,-1,0,NaN,Infinity])assert.throws(()=>kc(page([{...row(),score}])));
+});
+test('KB title and snippet preserve same-text prefix and UTF16 bounds',()=>{
+ const snippet='x'.repeat(279)+'\ud83d',title='x'.repeat(110);kc(page([{...row(),title,snippet}]));
+ assert.throws(()=>kc(page([{...row(),title:'unrelated'}])));
+ assert.throws(()=>kc(page([{...row(),title:'😀'.repeat(56),snippet:'😀'.repeat(56)}])));
+ assert.throws(()=>kc(page([{...row(),title:'x',snippet:'x'.repeat(281)}])));
+});
+test('KB source normalization permits post-cap trailing space but no internal newline',()=>{
+ kc(page([{...row(),title:'x'.repeat(109)+' ',snippet:'x'.repeat(109)+' next'}]));
+ assert.throws(()=>kc(page([{...row(),title:'a\nb',snippet:'a\nb'}])));
+});
+test('KB selected kind must match projected rows',()=>{
+ kc(page([row()]),{query:'query',clientId:C,kind:'client_profile'});
+ assert.throws(()=>kc(page([row()]),{query:'query',clientId:C,kind:'client_person'}));
+});
+test('KB result count is bounded without forcing post-filter fullness',()=>{
+ kc(page([]),{query:'query',clientId:C,limit:1});
+ assert.throws(()=>kc(page([row(),{...row(),id:'second'}]),{query:'query',clientId:C,limit:1}));
+});
+test('KB projection closes row fields and preserves nullable-free declared strings',()=>{
+ for(const extra of [{content:'hidden'},{sourceQualified:true}])assert.throws(()=>kc(page([{...row(),...extra}])));
+ assert.throws(()=>kc({...page(),clientName:null}));assert.throws(()=>kc(page([{...row(),id:null}])));
+});
+test('graph typed normalization retains exact numeric vs string parse behavior',()=>{
+ assert.deepEqual(gn().input,{seed:null,clientId:null,depth:2});
+ for(const [depth,want] of [[2.7,2.7],['2.7',2],['3junk',3],['no',2],[null,2],[-1,1],[99,4]])assert.equal(gn({depth}).input.depth,want);
+});
+test('graph capped UTF16 selectors retain post-cap whitespace',()=>{
+ assert.equal(gn({seed:'x'.repeat(119)+'😀z'}).input.seed,'x'.repeat(119)+'\ud83d');
+ assert.equal(gn({seed:'x'.repeat(119)+' y'}).input.seed,'x'.repeat(119)+' ');
+});
+test('graph context is empty and cannot accept model-owned role or clock',()=>{
+ assert.throws(()=>gn({}, {asOf}));assert.throws(()=>gn({tenantId:C}));assert.throws(()=>gn({depth:Infinity}));
+});
+test('invalid graph client projects only the established error branch',()=>{
+ assert.deepEqual(gc({error:badClient},{clientId:'not-a-uuid'}),{error:badClient});
+ assert.throws(()=>gc(graph(),{clientId:'not-a-uuid'}));assert.throws(()=>gc({error:badClient}));
+});
+test('graph conflicting client seed cannot be accepted as another branch',()=>{
+ const raw={clientId:C,seed:`client:${OTHER}`};assert.deepEqual(gc({error:wrongSeed},raw),{error:wrongSeed});
+ assert.throws(()=>gc(graph(),raw));assert.throws(()=>gc({error:wrongSeed}));
+});
+test('graph empty uses edges and populated uses connections, with no invented tool fields',()=>{
+ const empty={summary:emptyGraph,nodes:[],edges:[]};assert.deepEqual(gc(empty),empty);
+ assert.deepEqual(gc(graph()),graph());
+ assert.throws(()=>gc({...empty,connections:[]}));assert.throws(()=>gc({...graph(),edges:[]}));assert.throws(()=>gc({...graph(),tool:KG}));
+});
+test('graph default scoped seed is reflected without fresh authority claims',()=>{
+ const value=graph();value.summary=summary(2,1,`client:${C}`,2);gc(value,{clientId:C});
+ const other=structuredClone(value);other.nodes[0].id=`client:${OTHER}`;assert.throws(()=>gc(other,{clientId:C}));
+});
+test('graph node projection preserves opaque type and label strings without narrow vocabulary',()=>{
+ const value=graph();value.nodes[1]={id:'custom-type:opaque:slug',type:'custom-type',label:'Label [fact] -- not authority'};gc(value);
+});
+test('graph IDs and types must agree and node identity cannot duplicate',()=>{
+ const value=graph();value.nodes[1].type='different';assert.throws(()=>gc(value));
+ const dup=graph();dup.nodes[1]={...dup.nodes[0]};assert.throws(()=>gc(dup));
+});
+test('graph advertised counts bind returned rows but retain pre-cap connection count',()=>{
+ const value=graph();value.summary=summary(2,121);value.connections=Array.from({length:120},(_,i)=>`opaque ${i}`);gc(value);
+ value.connections.pop();assert.throws(()=>gc(value));
+ const bad=graph();bad.summary=summary(3,1);assert.throws(()=>gc(bad));
+});
+test('graph connections are opaque prose and locale sorting is not invented',()=>{
+ const value=graph();value.nodes.reverse();value.connections=['arbitrary stored labels may contain --[fact]--> delimiters'];gc(value);
+});
+test('source flags and coverage are not admitted into either projection',()=>{
+ assert.throws(()=>gc({...graph(),currentAuthority:true}));assert.throws(()=>kc({...page(),sourceConnected:true}));
+});
+test('independent request/context getter and proxy controls are inert',()=>{
+ let touched=0;const raw={query:'query'};Object.defineProperty(raw,'clientId',{enumerable:true,get(){touched++;return C;}});assert.throws(()=>kn(raw));assert.equal(touched,0);
+ const proxy=new Proxy({}, {ownKeys(){touched++;return [];}});assert.throws(()=>gn(proxy));assert.equal(touched,0);
+});
+test('result admission detaches both families without executing payload accessors',()=>{
+ const p=page([row()]),out=kc(p);p.results[0].title='changed';assert.equal(out.results[0].title,'Synthetic text');
+ const g=graph(),copy=gc(g);g.nodes[0].label='changed';assert.equal(copy.nodes[0].label,'Client');
+ let touched=0;Object.defineProperty(g.nodes[0],'label',{enumerable:true,get(){touched++;return 'x';}});assert.throws(()=>gc(g));assert.equal(touched,0);
+});
