@@ -7,9 +7,9 @@ import { fixture as originalFixture, NOW, limits, uuid } from './fixtures.mjs';
 import { connected, clientId, actorId, page, operation, row } from '../../../docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs';
 const tick = () => new Promise(resolve=>setImmediate(resolve));
 
-test('all56 production operations remain unavailable and zero-effect',async()=>{
+test('all63 production operations remain unavailable and zero-effect',async()=>{
   const f=originalFixture();const gateway=createSourceDisabledGateway({authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('7')});
-  assert.equal(catalog.operations.length,56);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
+  assert.equal(catalog.operations.length,63);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
   for(const descriptor of catalog.operations)await assert.rejects(gateway.execute(JSON.stringify({operation:descriptor.operation,arguments:{clientId}}),'synthetic-opaque'),/UNAVAILABLE/);
   assert.deepEqual(f.calls,[]);
 });
