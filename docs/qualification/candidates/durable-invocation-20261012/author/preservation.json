@@ -1,0 +1,20 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "baseTrackedFiles": 4430,
+  "unchangedTrackedFiles": 4424,
+  "changedOriginalPaths": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-budget-store.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/dispatch/tool-dispatch.mjs",
+    "apps/proxy/qualification/state/postgres_store.py"
+  ],
+  "changesWithinAllocation": true,
+  "oldTestsUnchanged": true,
+  "publicPrivateContractsUnchanged": true,
+  "catalogAndRegistryUnchanged": true,
+  "locksUnchanged": true,
+  "originalMigrationsUnchanged": true,
+  "nativeSQLExecuted": false
+}

@@ -2,13 +2,16 @@
 import { canonicalSha256 } from '../../../packages/contracts/validate.mjs';
 import { PostgresBudgetStore, refuse } from './postgres-budget-store.mjs';
 import { allocation, invocation, grantFacts, same, digest, integer } from './tool-budget-binding.mjs';
+import { composeToolBudgetDispatch } from './tool-budget-dispatch.mjs';
+import { createToolInvocationOwner } from './tool-invocation-owner.mjs';
+import { ownedId } from './tool-invocation-record.mjs';
 import { outcomeExpectation, assertHistoricalGrant, outcomeSnapshot } from './tool-budget-outcome.mjs';
 
 const n = value => { try { if (!((typeof value === 'string' && /^(0|[1-9][0-9]*)$/.test(value)) || (Number.isSafeInteger(value) && value >= 0))) throw Error(); return BigInt(value); } catch { refuse('INVALID_STORED_MONEY'); } };
 const receipt = (reservationId, decision) => JSON.stringify({ reservationId, decision });
 const reservationIdCheck = value => { if (typeof value !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)) refuse('INVALID_RESERVATION_ID'); };
 
-export function createPostgresToolBudget({ pool, allocationJson }) {
+function assembleBudget({ pool, allocationJson, now = Date.now }) {
   const a = allocation(allocationJson); const allocationSha256 = canonicalSha256(a);
   const store = new PostgresBudgetStore(pool);
   async function admit(client, i, budget, publishDeadline) {
@@ -53,7 +56,14 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
       return outcomeSnapshot({ allocation: a, invocation: i, expected, row, now: budget.now });
     });
   }
-  function forInvocation(invocationJson) {
+  async function settleRow(client, row, outputBytes, check = () => {}) {
+    check();
+    await client.query('UPDATE meri_qualification.budget SET consumed_micro_usd=consumed_micro_usd+$1 WHERE id=1', [row.hold_micro_usd]);
+    check();
+    await client.query("UPDATE meri_qualification.tool_reservations SET state='SETTLED',charged_micro_usd=hold_micro_usd,output_bytes=$2,settled_at=clock_timestamp() WHERE invocation_id=$1", [row.invocation_id, outputBytes]);
+    check();
+  }
+  function makeInvocation(invocationJson, claim, claimClient, transactionCheck) {
     const i = invocation(invocationJson, a); let admittedDeadlineMs; // Snapshot before any await.
     const shorten = (deadline, publish) => {
       if (!Number.isSafeInteger(deadline)) refuse('BUDGET_DEADLINE');
@@ -77,6 +87,7 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
         shorten(Math.min(call.deadlineMs, Date.parse(a.schedule.expiresAt), Date.parse(call.claims.expiresAt), Date.parse(call.claims.issuedAt)+call.budgets.maxRuntimeSeconds*1000), call.limitDeadline);
         const facts = i; const operation = JSON.parse(JSON.stringify(call.operation)); const argumentsSha256 = call.argumentsSha256;
         return store.transact(async client => {
+          if (claimClient) client = claimClient(client, call);
           const budget = await store.lock(client); await admit(client, i, budget, deadline => shorten(deadline, call.limitDeadline)); const installed = await storedAllocation(client, i);
           if (!(installed.started_at instanceof Date) || !Number.isFinite(installed.started_at.getTime())) refuse('BUDGET_DEADLINE');
           shorten(installed.started_at.getTime()+a.budgets.maxRuntimeSeconds*1000, call.limitDeadline);
@@ -90,8 +101,9 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
           if (n(count.calls) >= n(a.budgets.maxToolCalls) || n(budget.consumed_micro_usd)+n(totals.held)+n(charge) > n(budget.cap_micro_usd) ||
               n(totals.run_total)+n(charge) > n(Math.min(a.budgets.maxCostMicroUSD, call.budgets.maxCostMicrousd))) refuse('BUDGET_EXHAUSTED');
           await client.query("INSERT INTO meri_qualification.tool_reservations(invocation_id,reservation_id,grant_id,run_id,facts,operation,arguments_sha256,hold_micro_usd,max_output_bytes,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'UNKNOWN')", [i.invocationId, call.reservationId, i.grantId, i.binding.runId, facts, operation, argumentsSha256, charge, Math.min(a.budgets.maxOutputBytes,call.budgets.maxOutputBytes)]);
+          if (claim) await claim(client, call, budget);
           return receipt(call.reservationId, 'reserved');
-        });
+        }, transactionCheck ? () => transactionCheck(call) : undefined);
       },
       async settle({ reservationId, outcome, outputBytes }) {
         reservationIdCheck(reservationId);
@@ -101,8 +113,7 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
           if (n(outputBytes) > n(row.max_output_bytes)) refuse('OUTPUT_BUDGET_EXCEEDED');
           if (row.state !== 'UNKNOWN') refuse('SETTLEMENT_ALREADY_RECORDED');
           // Fixed conservative accounting charge: no assertion about provider actual usage.
-          await client.query('UPDATE meri_qualification.budget SET consumed_micro_usd=consumed_micro_usd+$1 WHERE id=1', [row.hold_micro_usd]);
-          await client.query("UPDATE meri_qualification.tool_reservations SET state='SETTLED',charged_micro_usd=hold_micro_usd,output_bytes=$2,settled_at=clock_timestamp() WHERE invocation_id=$1", [i.invocationId, outputBytes]);
+          await settleRow(client, row, outputBytes);
           return receipt(reservationId, 'settled');
         });
       },
@@ -115,5 +126,18 @@ export function createPostgresToolBudget({ pool, allocationJson }) {
       },
     });
   }
-  return Object.freeze({ bindTrustedGrant, forInvocation, readInvocationOutcome });
+  const producer = createToolInvocationOwner({ a, store, admit, storedAllocation, makeInvocation, settleRow, now });
+  function forInvocation(raw) {
+    if (ownedId(invocation(raw,a).invocationId)) refuse('OWNED_INVOCATION_REQUIRED');
+    return makeInvocation(raw);
+  }
+  const owner = Object.freeze({ bindTrustedGrant, forInvocation, readInvocationOutcome,
+    prepareInvocation: producer.prepare, reconcileInvocation: (deliveryJson, requestJson) => producer.reconcile(deliveryJson, requestJson) });
+  return { owner, producer };
+}
+export function createPostgresToolBudget(options) { return assembleBudget(options).owner; }
+export function createPostgresToolDispatch({ pool, allocationJson, ...options }) {
+  if (Object.hasOwn(options, 'owner') || Object.hasOwn(options, 'producer')) refuse('GATEWAY_CONFIGURATION');
+  const { owner, producer } = assembleBudget({ pool, allocationJson, now: options.now });
+  return composeToolBudgetDispatch({ owner, producer, allocationJson, ...options });
 }

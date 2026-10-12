@@ -112,3 +112,86 @@ all work and final pool/client teardown; JavaScript timers do not prove physical
 cleanup. Pool ownership stays with the test owner, which ends it in teardown;
 the borrowed production adapter never ends it. All integration cases, cross-process
 behavior, actual SQL/pg-client release and database durability remain UNRUN.
+
+
+## Durable control delivery and explicit completion reconciliation
+
+`apps/control/tool-invocations.mjs` supplies
+`createToolInvocationControl({gatewayOptions, contextJson, producerJson})`, which
+constructs the actual canonical source-disabled gateway. Its methods are
+`bindTrustedGrant()`, `execute(requestJson, credential, deliveryId, signal)` and
+`reconcile(requestJson, deliveryId)`. The trusted control owner prebinds exact
+grant/run/task/attempt/fence/policy/capability/allocation context and producer
+`{namespace, executionId}` once. Delivery identity is separate from model tool
+arguments. It is correlation, not authentication or proof of a genuine SDK event.
+The live SDK issuer/Temporal delivery mapping is still unqualified; no new model
+loop, worker credential, HTTP route or source-enablement option is introduced.
+The internal `bindToolInvocationControl` composes the same methods with a borrowed
+actual gateway capability for restricted source integration tests.
+
+The gateway's `prepareInvocation(deliveryJson, requestJson, signal)` persists a
+stable `owned_<UUID>` identity under the original aggregate budget lock, unique
+by run and trusted producer/delivery digest. `deliveryJson` is exactly
+`{context, producer, deliveryId}`; context is the existing grant facts without a
+caller-chosen invocation ID. Fresh issue requires the already-bound current
+ACTIVE grant and original allocation/runtime budget. Exact identity replay
+recovers its original metadata/deadline even when that exact original grant is
+now expired/revoked; it grants no effect. Foreign original context and changed
+request refuse. `executeOwned` prepares through this owner and enters the same
+canonical dispatcher. Legacy execute/forInvocation cannot use the owned_ namespace.
+No public owner/control/gateway method returns the private completion-writing
+budget ports. The existing nonproduced interfaces retain their behavior.
+
+Raw request identity is the canonical SHA256 of the original request JSON, not
+normalized arguments. The actual dispatcher alone computes canonical normalized
+arguments after trusted context and authorization. Its original UNKNOWN reservation
+and the invocation's reservation/normalized-digest claim are recorded in one
+transaction. This remains the sole physical dispatch claim. Simultaneous owners,
+retries, restarts and lost claim acknowledgement cannot create a second handler
+effect. A prepare-only record is not authorization; the dispatcher still checks
+current authority and the original deadline. No original deadline is reset.
+
+After validated output and completed current release-authority checks, only the
+canonical dispatcher's captured settlement closure can record immutable completion
+metadata. This binds original invocation/reservation/grant/allocation/raw request,
+operation/normalized digest, canonical result digest and byte count; no result body
+is stored. Marker acknowledgement is a separate recoverable transaction boundary.
+Cancellation/expiry after it prevents the next live accounting transaction. The
+marker is trusted application provenance, not a provider signature or a claim that
+output reached a user. General callers cannot submit completion facts.
+
+`reconcileInvocation(deliveryJson, requestJson)` and control `reconcile` recover
+the recorded normalized expectation without callers inventing it. They return
+`{stage, invocationId, reservationId, accounting, resultDelivered:false}`. Stages
+are ABSENT, PREPARED, UNKNOWN or SETTLED. ABSENT/PREPARED never infer no-dispatch
+or permission to retry. UNKNOWN without a marker stays held. With the exact trusted
+marker, explicit reconciliation can charge the full original fixed hold once and
+make SETTLED terminal; repeated calls do not charge again. This preserves total
+liability and explicitly clears the per-grant UNKNOWN block only after confirmed
+completion provenance. It never recovers/releases tool results, refunds liability,
+redispatches the original invocation or grants new authority. Expiry, revocation,
+replacement and quarantine do not suppress exact historical accounting recovery.
+Unknown reconciliation COMMIT acknowledgement remains unknown until another exact
+read; there is no automatic transaction retry.
+
+The explicit qualification schema sequence is0001→0002→0003. Source method
+`PostgresStore.migrate_tool_invocations()` applies only the new0003 file when a
+separately authorized operator explicitly invokes it; it is never automatic.
+Original migrations and existing native commands remain unchanged. The frozen L1
+packet does not expand to include this upgrade or new producer/reconciliation
+cases. No migration or SQL has run. Scripted transaction/acknowledgement controls
+are source evidence only; pg isolation, driver behavior, cross-process durability,
+physical cancellation, genuine SDK/Temporal delivery and runtime acceptance remain
+UNRUN. All14 production source descriptors remain unavailable.
+
+Live producer transactions check the immutable minimum of the retained preparation
+cutoff, current request cutoff, fresh authority deadlines and canonical allocation/
+grant bounds. The minimum only shortens; it does not depend solely on a timer firing.
+Preparation also narrows its own cutoff as trusted grant/allocation facts arrive.
+The optional store check runs before/after connection acquisition, after each setup
+await, and before/after COMMIT; checked SQL ports and accounting writes use the same
+live bound. Cancellation after BEGIN allows rollback/release cleanup. Cancellation
+or expiry during a COMMIT acknowledgement remains typed uncertainty even after a
+late successful ACK. Historical reconciliation and original legacy calls retain
+their previous transaction behavior. None of these cooperative checks establishes
+physical query interruption or native cleanup.
