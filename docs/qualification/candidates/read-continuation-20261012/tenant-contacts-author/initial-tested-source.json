@@ -1,0 +1,21 @@
+{
+  "capture": "initial-focused.json",
+  "note": "New untracked files were not included in capture sourceDiff; explicit identities bind the unchanged files exercised by the initial26passing tests.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts.schema.json",
+      "bytes": 5501,
+      "sha256": "401cf35dcb570393cd239e548feaac6b143c4adcfe6e52cd913588fee9e8a934"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/tenant-contacts-validation.mjs",
+      "bytes": 4247,
+      "sha256": "f37700031b97356093da2d2d95d79d62246618f2707fd0afdb9d238db5ec6818"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-tenant-contacts.test.mjs",
+      "bytes": 11515,
+      "sha256": "da9c5abbfeffc839167dab80bffac080e2b11428205457b3c9091c6d0daf851f"
+    }
+  ]
+}
