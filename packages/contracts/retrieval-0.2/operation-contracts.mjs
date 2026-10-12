@@ -52,6 +52,10 @@ function copyData(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+// Private domain validators may share this exact admission boundary when called
+// outside the resolver. Keep one owner for inert JSON checks and resource limits.
+export {copyData as snapshotOperationData};
+
 function freezeData(value) {
   const pending = [value];
   while (pending.length) {
