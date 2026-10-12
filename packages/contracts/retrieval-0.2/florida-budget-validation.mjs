@@ -28,7 +28,9 @@ export function createFloridaBudgetValidators({ validateShape, schema }) {
     fail('Florida budget validator configuration');
   const operationIds = Object.freeze([ID]);
   const operation = id => { if (id !== ID) fail('Unknown Florida budget operation'); };
-  const inputDefinition = id => { operation(id); return 'FloridaBudgetRequest'; };
+  // Canonical catalog binds the normalized selection. Retained raw requests still
+  // enter selection(), which admits FloridaBudgetRequest before applying defaults.
+  const inputDefinition = id => { operation(id); return 'FloridaBudgetInput'; };
   const outputDefinition = id => { operation(id); return 'FloridaBudgetOutput'; };
 
   function selection(id, request, context) {

@@ -26,7 +26,7 @@ const check=(value,request={},ctx=context())=>v.assertResult(id,value,request,ct
 
 test('single private operation and schema definitions are exact',()=>{
  assert.equal(v.schemaId,'urn:meri:retrieval:florida-budget:0.2.0');assert.deepEqual(v.operationIds,[id]);
- assert.equal(v.inputDefinition(id),'FloridaBudgetRequest');assert.equal(v.outputDefinition(id),'FloridaBudgetOutput');
+ assert.equal(v.inputDefinition(id),'FloridaBudgetInput');assert.equal(v.outputDefinition(id),'FloridaBudgetOutput');
  for(const bad of ['search_legiwatch_news','__proto__','constructor',null])assert.throws(()=>v.normalizeInput(bad,{},context()));
 });
 test('defaults retain frozen fiscal year and untrimmed fiscal/query selection',()=>{
@@ -175,4 +175,12 @@ test('validated Florida output is detached from subsequent caller mutation',()=>
  const accepted=check(original);assert.notStrictEqual(accepted,original);
  original.result.projects[0].title='Mutated after admission';original.result.scope.sessionKey='foreign';
  assert.equal(accepted.result.projects[0].title,'Synthetic publisher item');assert.equal(accepted.result.scope.sessionKey,'');
+});
+
+
+test('normalized catalog definition does not impose effective fields on raw requests',()=>{
+ assert.equal(v.inputDefinition(id),'FloridaBudgetInput');assert(checks.get('FloridaBudgetRequest')({}));
+ assert.equal(checks.get('FloridaBudgetInput')({}),false);
+ const normalized=v.normalizeInput(id,{},context());assert(checks.get('FloridaBudgetInput')(normalized.input));
+ assert.equal(normalized.input.fiscalYear,'2026-27');
 });
