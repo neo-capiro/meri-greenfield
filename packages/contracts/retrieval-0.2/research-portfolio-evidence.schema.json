@@ -1,0 +1,988 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0",
+  "$comment": "New private projected evidence interface. Source metadata, not copied implementation. No source-byte, current policy, atomic coverage or historical corpus completeness claim. Admission bounds refuse without truncation.",
+  "$defs": {
+    "ResearchPortfolioEvidenceInput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "review"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "recordId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin",
+            "recordId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "snapshot"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "recordId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin",
+            "recordId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "current_continuity"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ResearchPortfolioEvidenceSelection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "review"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "recordId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin",
+            "conversationId",
+            "portfolioId",
+            "recordId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "snapshot"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "recordId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin",
+            "conversationId",
+            "portfolioId",
+            "recordId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "const": "current_continuity"
+            },
+            "conversationId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "portfolioId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "origin",
+            "conversationId",
+            "portfolioId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ResearchPortfolioEvidenceCoverage": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "enum": [
+            "exact_review",
+            "retained_snapshot",
+            "current_continuity"
+          ]
+        },
+        "sourceView": {
+          "enum": [
+            "four_lane_non_atomic",
+            "retained_snapshot",
+            "current_derived_projection"
+          ]
+        },
+        "corpusComplete": {
+          "const": false
+        },
+        "sourceBytesVerified": {
+          "const": false
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "scope",
+        "sourceView",
+        "corpusComplete",
+        "sourceBytesVerified",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioReviewEvidence": {
+      "type": "object",
+      "properties": {
+        "sourceRevisionId": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "locator": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stance": {
+          "enum": [
+            "for",
+            "against"
+          ]
+        }
+      },
+      "required": [
+        "sourceRevisionId",
+        "locator",
+        "quote",
+        "stance"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceReview": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "const": "review"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "targetKind": {
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award",
+            "rule",
+            "portfolio"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceFor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioReviewEvidence"
+          },
+          "maxItems": 10000
+        },
+        "evidenceAgainst": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioReviewEvidence"
+          },
+          "maxItems": 10000
+        },
+        "coverage": {
+          "$ref": "#/$defs/ResearchPortfolioEvidenceCoverage"
+        }
+      },
+      "required": [
+        "origin",
+        "id",
+        "portfolioId",
+        "targetKind",
+        "targetId",
+        "revision",
+        "updatedAt",
+        "evidenceFor",
+        "evidenceAgainst",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceBasis": {
+      "type": "object",
+      "properties": {
+        "requestEdition": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fundingFiscalYear": {
+          "type": "integer"
+        },
+        "stage": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "metric": {
+          "enum": [
+            "funding",
+            "quantity",
+            "unit_cost"
+          ]
+        },
+        "unit": {
+          "enum": [
+            "usd_millions",
+            "units",
+            "usd_millions_per_unit"
+          ]
+        },
+        "currency": {
+          "const": "USD"
+        },
+        "priceBasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "knownAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "requestEdition",
+        "fundingFiscalYear",
+        "stage",
+        "metric",
+        "unit",
+        "currency",
+        "priceBasis",
+        "knownAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceContribution": {
+      "type": "object",
+      "properties": {
+        "contributionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "memberId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "targetKind": {
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchPortfolioEvidenceBasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "included",
+            "excluded",
+            "overlap",
+            "incompatible",
+            "missing",
+            "unavailable",
+            "withheld"
+          ]
+        },
+        "sourceDisposition": {
+          "anyOf": [
+            {
+              "enum": [
+                "observed",
+                "missing",
+                "partial",
+                "unavailable",
+                "withheld"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "sourceObservationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceRevisionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "dedupKey": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "overlapsContributionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "contributionId",
+        "memberId",
+        "targetKind",
+        "targetId",
+        "label",
+        "basis",
+        "value",
+        "disposition",
+        "reason",
+        "sourceObservationId",
+        "sourceRevisionIds",
+        "evidence",
+        "dedupKey",
+        "overlapsContributionId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceVersions": {
+      "type": "object",
+      "properties": {
+        "structure": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "templates": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "taxonomy": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "structure",
+        "rules",
+        "decisions",
+        "templates",
+        "taxonomy",
+        "labels",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceSnapshot": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "const": "snapshot"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "calculationVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "readAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "contributions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioEvidenceContribution"
+          },
+          "maxItems": 10000
+        },
+        "versions": {
+          "$ref": "#/$defs/ResearchPortfolioEvidenceVersions"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000
+        },
+        "clientAccessRequirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000
+        },
+        "coverage": {
+          "$ref": "#/$defs/ResearchPortfolioEvidenceCoverage"
+        }
+      },
+      "required": [
+        "origin",
+        "id",
+        "portfolioId",
+        "portfolioRevision",
+        "contentHash",
+        "calculationVersion",
+        "capturedAt",
+        "observedAt",
+        "readAt",
+        "contributions",
+        "versions",
+        "limitations",
+        "clientAccessRequirements",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceContinuityItem": {
+      "type": "object",
+      "properties": {
+        "persisted": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "priorDecisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentDecisionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "continuityKey": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "priorDependencyFingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependencyFingerprint": {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        "status": {
+          "enum": [
+            "unchanged",
+            "changed",
+            "expired",
+            "renamed",
+            "renumbered",
+            "split",
+            "merged",
+            "unresolved",
+            "new"
+          ]
+        },
+        "identityMapping": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "changedDependencies": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "originalEvidence": {
+          "$ref": "urn:meri:retrieval:research-portfolio:0.2.0#/$defs/ResearchPortfolioJsonObject"
+        },
+        "sourceEdition": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relevantPeriodStart": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "relevantPeriodEnd": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expiryDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reopeningReason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reopeningReviewId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "portfolioId",
+        "priorDecisionId",
+        "currentDecisionId",
+        "continuityKey",
+        "priorDependencyFingerprint",
+        "dependencyFingerprint",
+        "status",
+        "identityMapping",
+        "changedDependencies",
+        "originalEvidence",
+        "sourceEdition",
+        "relevantPeriodStart",
+        "relevantPeriodEnd",
+        "expiryDate",
+        "reopeningReason",
+        "reopeningReviewId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceContinuity": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "const": "current_continuity"
+        },
+        "portfolioId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioEvidenceContinuityItem"
+          },
+          "maxItems": 10000
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "unchanged": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "changed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "expired": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "renamed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "renumbered": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "split": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "merged": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unresolved": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "new": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "unchanged",
+            "changed",
+            "expired",
+            "renamed",
+            "renumbered",
+            "split",
+            "merged",
+            "unresolved",
+            "new"
+          ],
+          "additionalProperties": false
+        },
+        "knownAtSupport": {
+          "const": "current_projection_with_temporal_identity"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576
+          },
+          "maxItems": 10000
+        },
+        "coverage": {
+          "$ref": "#/$defs/ResearchPortfolioEvidenceCoverage"
+        }
+      },
+      "required": [
+        "origin",
+        "portfolioId",
+        "items",
+        "counts",
+        "coverage"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvidenceResult": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "data": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ResearchPortfolioEvidenceReview"
+            },
+            {
+              "$ref": "#/$defs/ResearchPortfolioEvidenceSnapshot"
+            },
+            {
+              "$ref": "#/$defs/ResearchPortfolioEvidenceContinuity"
+            }
+          ]
+        }
+      },
+      "required": [
+        "binding",
+        "subject",
+        "data"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

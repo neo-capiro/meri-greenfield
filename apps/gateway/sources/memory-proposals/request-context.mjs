@@ -2,23 +2,11 @@
 import { types } from 'node:util';
 import { canonicalSha256, validateShape as publicShape } from '../../../../packages/contracts/validate.mjs';
 import { assertSubject, validateShape } from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import { snapshotOperationData } from '../../../../packages/contracts/retrieval-0.2/operation-contracts.mjs';
+import { ownFields, frozenData } from '../source-admission.mjs';
+export { ownFields, frozenData } from '../source-admission.mjs';
 import { deny } from '../../dispatch/operation-result.mjs';
 
 export const operation = Object.freeze({id:'memory.list_own_proposals',version:'0.2.0'});
-export function ownFields(value, required, optional=[]) {
-  if (!value || typeof value!=='object' || types.isProxy(value) || Array.isArray(value) ||
-      ![Object.prototype,null].includes(Object.getPrototypeOf(value))) deny('INVALID_ARGUMENTS');
-  const descriptors=Object.getOwnPropertyDescriptors(value), names=Reflect.ownKeys(descriptors);
-  if (names.some(key=>typeof key!=='string'||!required.concat(optional).includes(key)||
-      !descriptors[key].enumerable||!Object.hasOwn(descriptors[key],'value'))||required.some(key=>!Object.hasOwn(descriptors,key))) deny('INVALID_ARGUMENTS');
-  return Object.fromEntries(names.map(key=>[key,descriptors[key].value]));
-}
-export function frozenData(value) {
-  const copied=snapshotOperationData(value), pending=[copied];
-  while(pending.length){const item=pending.pop();if(item&&typeof item==='object'){pending.push(...Object.values(item));Object.freeze(item);}}
-  return copied;
-}
 export function readContext(call, now) {
   const fields=ownFields(call,['input','authority'],['signal']);
   const input=frozenData(fields.input), authority=frozenData(fields.authority);

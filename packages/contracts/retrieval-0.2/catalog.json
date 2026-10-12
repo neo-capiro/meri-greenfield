@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.11",
+  "catalogVersion": "0.2.12",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -146,9 +146,12 @@
     {
       "id": "get_research_evidence",
       "disposition": "selected",
-      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
-      "replacement": null,
-      "state": "pending"
+      "boundary": "D011/R2 selected projected evidence: exact authorized review and retained snapshot plus current annual continuity. Raw member and unrestricted older-history exposure unavailable; no Portfolio management workflow parity.",
+      "replacement": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "read_chat_attachments",
@@ -7045,6 +7048,76 @@
       ],
       "fixtureIds": [
         "catalog.binding.search_committee_hearings"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_research_evidence",
+        "version": "0.2.0"
+      },
+      "displayName": "Read projected research Portfolio evidence",
+      "whenToUse": "Read an exact authorized review or retained snapshot, or the current annual continuity projection, for the Portfolio selected by trusted conversation context.",
+      "limitations": [
+        "Source-only contract and executable adapter candidate; null production handler, source disabled, runtime qualification pending.",
+        "Only already exposed projected evidence is included. Raw member evidence and unrestricted older decision/history access remain unavailable.",
+        "Exact review lookup reads all four lanes separately. It refuses conflicting versions and reports unavailable if no match was observed; it never proves absence or atomic coverage.",
+        "Snapshots retain complete contributions/version references/access requirements within admission limits. Their hashes and references are source claims, not byte-integrity or current-analytics proof.",
+        "Current annual continuity can derive readonly facts and carries original persisted metadata; it is not unrestricted historical selection.",
+        "Current conversation scope, identity, Portfolio viewer grants, source availability and client disclosure policy require qualified trusted adapters. Source approval is not runtime acceptance."
+      ],
+      "positiveExamples": [
+        "Read evidence on a named review or snapshot in the currently authorized Portfolio.",
+        "Inspect the current continuity evidence and its retained limitations."
+      ],
+      "negativeExamples": [
+        "Fetch raw member evidence, arbitrary older decisions, external source bytes, or mutate Portfolio workflows.",
+        "Treat a missing exact review as proof of nonexistence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "research_portfolios",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceInput",
+        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:research-portfolio-evidence:0.2.0#/$defs/ResearchPortfolioEvidenceResult",
+        "sha256": "87549b042b5dc84160020ae08c93db834a5d9f28aa13ffc45d652c186ae3767b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_research_evidence"
       ]
     }
   ]

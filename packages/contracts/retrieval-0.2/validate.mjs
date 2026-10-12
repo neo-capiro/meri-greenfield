@@ -1,3 +1,4 @@
+import { createResearchPortfolioEvidenceValidators } from './research-portfolio-evidence-validation.mjs';
 import { createClientKnowledgeSearchValidators } from './client-knowledge-search-validation.mjs';
 import { createClientKnowledgeMondayValidators } from './client-knowledge-monday-validation.mjs';
 import { createClientKnowledgeAttachmentValidators } from './client-knowledge-attachments-validation.mjs';
@@ -57,7 +58,7 @@ import addFormats from 'ajv-formats';
 import { canonicalSha256 } from '../validate.mjs';
 
 export const contractVersion = '0.2.0';
-const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records'];
+const groups = ['common', 'catalog', 'retrieval', 'skill', 'mail', 'meeting-source', 'operational-reads', 'federal-market', 'data-search', 'memory-proposals', 'client-registry', 'research-portfolio', 'research-portfolio-evidence', 'business-development', 'funding-opportunities', 'client-documents', 'public-data', 'district-nexus', 'state-legislation', 'public-reports', 'disclosures', 'acquisition-personnel', 'federal-legislation', 'bill-text', 'legislative-directory', 'pe-references', 'rule-status', 'certification-status', 'stored-intelligence', 'dataset-metadata', 'facility-representation', 'state-status-votes', 'regulatory-dockets', 'tenant-contacts', 'entity-candidates', 'tracked-bills', 'intelligence-summary', 'public-web', 'sam-opportunities', 'florida-budget', 'outreach-query', 'program-elements', 'client-knowledge-search', 'client-knowledge-monday', 'client-knowledge-attachments', 'client-knowledge-memory', 'client-knowledge-profile', 'research-legal-candidates', 'public-domain-query', 'research-legal-legislation', 'action-items-complete', 'research-legal-news', 'public-domain-hearings', 'public-domain-hearing-records'];
 const schemaBytes = groups.map(group => readFileSync(new URL(`./${group}.schema.json`, import.meta.url)));
 const schemas = schemaBytes.map(raw => JSON.parse(raw));
 const ajv = new Ajv({ strict: true, allErrors: true });
@@ -224,6 +225,8 @@ export const {normalizeMemoryProposalInput, assertMemoryProposalReadResult} = me
 const clientRegistryValidators = createClientRegistryValidators({validateShape});
 export const {normalizeClientRegistryInput, assertClientRegistryResult} = clientRegistryValidators;
 
+const researchPortfolioEvidenceValidators = createResearchPortfolioEvidenceValidators({validateShape, assertSubject, canonicalSha256});
+export const {normalizeResearchPortfolioEvidenceInput, assertResearchPortfolioEvidenceOutput} = researchPortfolioEvidenceValidators;
 const researchPortfolioValidators = createResearchPortfolioValidators({validateShape, assertSubject, canonicalSha256});
 export const {normalizeResearchPortfolioInput, assertResearchPortfolioReadResult} = researchPortfolioValidators;
 
@@ -323,7 +326,7 @@ export const {resolveOperationContract} = createOperationContracts({catalog: sou
   bindings: CATALOG_OPERATION_BINDINGS, assertCatalog, canonicalSha256,
   validators: Object.freeze({...mailValidators, ...meetingValidators, ...operationalReadValidators,
     ...federalMarketValidators, ...dataSearchValidators, ...memoryProposalValidators, ...clientRegistryValidators,
-    ...researchPortfolioValidators, ...businessDevelopmentValidators,
+    ...researchPortfolioEvidenceValidators, ...researchPortfolioValidators, ...businessDevelopmentValidators,
     ...fundingOpportunitiesValidators, ...clientDocumentsValidators, ...publicDataValidators, ...districtNexusValidators, ...stateLegislationValidators, ...publicReportsValidators,
     ...disclosuresValidators, ...acquisitionPersonnelValidators, ...federalLegislationValidators, ...billTextValidators,
     ...legislativeDirectoryValidators, ...peReferenceValidators, ...ruleStatusValidators, ...certificationStatusValidators, ...storedIntelligenceValidators, ...datasetMetadataValidators, ...facilityRepresentationValidators,
