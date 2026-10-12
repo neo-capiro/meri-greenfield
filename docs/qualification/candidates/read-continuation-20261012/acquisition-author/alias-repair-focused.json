@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-acquisition-personnel.test.mjs"
+  ],
+  "cwd": "/workspace/meri-acquisition-personnel-20261012",
+  "sourceHead": "2a35e072d13fe93e3b57a9d47544df472cdcd8d4",
+  "sourceDiffSha256": "4665f59353bb73942159b964cea370f19749ba82f2489f49c89b8069dd2dcbc1",
+  "sourceDiffBytes": 5689,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:54:01.052692+00:00",
+  "durationSeconds": 0.518,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 165488,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stdout.bin",
+      "bytes": 2850,
+      "sha256": "e02b915cdec7126ede9308046eeaffdfe5c478fa3d645c73bf564682e5626e67"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-author/alias-repair-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent q-alias failure at2a35e072; preserve exact fallback and add regression before independent replay.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

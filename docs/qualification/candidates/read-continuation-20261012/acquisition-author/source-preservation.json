@@ -1,0 +1,30 @@
+{
+  "base": "ec960fa92ad01836a5df8f6220e67a88a657eab1",
+  "sourceFreeze": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+  "sourceTree": "a0d9132e46baf413f36441b2fe8d0c6c1797e43d",
+  "originalFiles": 5544,
+  "originalChangedOrDeleted": [],
+  "added": [
+    {
+      "path": "packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs",
+      "gitBlob": "7f5a69c1f9cbfcef4dd354070782e7f0bedc555c",
+      "bytes": 7167,
+      "sha256": "1076e18f7e0c53e8a95957a5555e555abb1212f45d3ecf3144f857d40e1ac41f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/acquisition-personnel.schema.json",
+      "gitBlob": "5b67328daeaa0962b90dfbb17f2555ac5df984d0",
+      "bytes": 11702,
+      "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-acquisition-personnel.test.mjs",
+      "gitBlob": "71e94b80c28ecb9d9aa9ad22858ad2c996093c78",
+      "bytes": 17124,
+      "sha256": "77f6584b7fd6719b58f98d337f6034d3b767aa4f99b60a03918acb75450294b7"
+    }
+  ],
+  "sourceOnly": true,
+  "dependencies": "Root-supplied physical exact copies; no installs/lifecycle scripts/lock edits; left untouched",
+  "initialSourceFreeze": "2a35e072d13fe93e3b57a9d47544df472cdcd8d4"
+}
