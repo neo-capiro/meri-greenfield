@@ -1,0 +1,35 @@
+✔ connected review uses fixed projected GET and canonical release (27.777164ms)
+✔ connected snapshot uses fixed projected GET and canonical release (9.230201ms)
+✔ connected current_continuity uses fixed projected GET and canonical release (6.56485ms)
+✔ actual bounded HTTP loopback preserves four routes and cancels owned server (39.531704ms)
+✔ all four lanes are required, duplicate identical observation allowed, missing never means absence (14.729097ms)
+✖ UUID selectors normalize accepted uppercase spelling before exact source selection (3.456703ms)
+✔ foreign tenant, Portfolio, conflicting stance and incomplete snapshots refuse (18.114151ms)
+✔ authority hints, unsupported raw/history selectors and URLs refuse before any current ports (1.320798ms)
+✔ revocation and source disabling prevent effect; revocation after body prevents release (6.230337ms)
+✔ credential correlation, expiry and malformed tokens fail closed (12.900615ms)
+✔ strict media, byte count, UTF8, response errors and projected output budget remain bounded (17.572196ms)
+✔ parked credentials times out; late completion cannot start another lane (21.933049ms)
+✔ parked fetch times out; late completion cannot start another lane (23.448158ms)
+✔ parked body times out; late completion cannot start another lane (23.814763ms)
+✔ source factory import/configuration has no effects and production remains disabled (7.629092ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 14
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2724.369414
+
+✖ failing tests:
+
+test at apps/gateway/test/research-evidence-source.test.mjs:43:1
+✖ UUID selectors normalize accepted uppercase spelling before exact source selection (3.456703ms)
+  GatewayDenied: INVALID_RESULT
+      at safeFailure (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/operation-result.mjs:55:10)
+      at Object.execute (file:///workspace/meri-vertical-source-20261012/apps/gateway/dispatch/tool-dispatch.mjs:100:13)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///workspace/meri-vertical-source-20261012/apps/gateway/test/research-evidence-source.test.mjs:44:38)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

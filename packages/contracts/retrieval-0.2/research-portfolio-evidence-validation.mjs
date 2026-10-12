@@ -18,8 +18,8 @@ export function createResearchPortfolioEvidenceValidators(dependencies) {
     validateShape('ResearchPortfolioEvidenceInput', request);
     const selected = normalizeResearchPortfolioInput('get_research_portfolio',
       request.conversationId === undefined ? {} : {conversationId:request.conversationId}, context);
-    const input = {...selected, origin:request.origin,
-      ...(request.recordId === undefined ? {} : {recordId:request.recordId})};
+    const input = {...selected, portfolioId:selected.portfolioId.toLowerCase(), origin:request.origin,
+      ...(request.recordId === undefined ? {} : {recordId:request.recordId.toLowerCase()})};
     validateShape('ResearchPortfolioEvidenceSelection', input);
     return {input, metadata:null};
   }

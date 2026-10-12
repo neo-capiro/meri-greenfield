@@ -2418,7 +2418,7 @@
         "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
         "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
@@ -2488,7 +2488,7 @@
         "Portfolio identity comes from trusted current subject context; model selectors cannot grant portfolio or client access.",
         "Historical event revisions need not equal the current portfolio revision. Captured scope-receipt revision remains external trusted owner state.",
         "Bounded detail events, exhausted changes pages and opaque payloads prove neither full history nor authoritative absence or freshness.",
-        "get_research_evidence is a separate pending Clio/portfolio scope issue and is not covered by this binding."
+        "Projected Portfolio evidence has its own get_research_evidence binding; this detail/changes operation does not return it."
       ],
       "positiveExamples": [
         "Inspect a currently selected authorized research portfolio and its reported visible changes."
