@@ -1,0 +1,259 @@
+{
+  "schema": "meri-gateway-author-checks/1",
+  "runtime": "Node v24.19.0",
+  "checks": [
+    {
+      "name": "dependency-install",
+      "command": "npm ci --prefix packages/contracts --ignore-scripts --cache /tmp/meri-gateway-author-npm-cache",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/dependency-install.stdout.txt",
+        "bytes": 25,
+        "sha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/dependency-install.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "baseline-gateway",
+      "command": "node --test apps/gateway/test/*.test.mjs",
+      "exitCode": 1,
+      "passed": 19,
+      "failed": 14,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/baseline-gateway.stdout.txt",
+        "bytes": 18637,
+        "sha256": "489275378e19982f379e4ee20ef7be6643fe966777fa643e0e325f8a958ccbc5"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/baseline-gateway.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "repaired-gateway",
+      "command": "node --test apps/gateway/test/*.test.mjs",
+      "exitCode": 0,
+      "passed": 33,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/repaired-gateway.stdout.txt",
+        "bytes": 3329,
+        "sha256": "62439b2a2d6cd4cff3513411dd18370ad55bd79dbfd7945e323f8ef16a0e9ee4"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/repaired-gateway.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "contracts-hermes",
+      "command": "npm run check",
+      "exitCode": 1,
+      "passed": 206,
+      "failed": 2,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/contracts-hermes.stdout.txt",
+        "bytes": 21582,
+        "sha256": "f3a7d3a3966f1d31c60038fe0d0adef2e96bfed84f9feeccf8a4f8de42d92fa8"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/contracts-hermes.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "public-distribution",
+      "command": "npm run check:contracts:distribution",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/public-distribution.stdout.txt",
+        "bytes": 2046,
+        "sha256": "2bf155f44277cacb69a49da08c16a15de458780a0d983fe3b5b00eb2c4e024cd"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/public-distribution.stderr.txt",
+        "bytes": 1040,
+        "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+      }
+    },
+    {
+      "name": "original-control",
+      "command": "node docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/original-control.stdout.txt",
+        "bytes": 281,
+        "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/original-control.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "root-dependency-install",
+      "command": "npm ci --ignore-scripts --cache /tmp/meri-gateway-author-npm-cache",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/root-dependency-install.stdout.txt",
+        "bytes": 25,
+        "sha256": "87ce98749cbda0c632c25e9c4963c21076562a49f92ed1e744dbc6bafbc85f82"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/root-dependency-install.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "contracts-hermes-repaired-layout",
+      "command": "npm run check",
+      "exitCode": 0,
+      "passed": 216,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/contracts-hermes-repaired-layout.stdout.txt",
+        "bytes": 20162,
+        "sha256": "48b29e29a27bc752f285d93d5d439049eb5ac6db8967710fe976e129409bb1f6"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/contracts-hermes-repaired-layout.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "issued-at-baseline",
+      "command": "node --test --test-name-pattern='issuance timestamp' apps/gateway/test/authority-deadline.test.mjs",
+      "exitCode": 0,
+      "passed": 1,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/issued-at-baseline.stdout.txt",
+        "bytes": 213,
+        "sha256": "54362b57c167157889373d4b2ed96ee691c7b5a1a97e851363bf62801fcae422"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/issued-at-baseline.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "issued-at-valid-leap-baseline",
+      "command": "node --test --test-name-pattern='issuance timestamp' apps/gateway/test/authority-deadline.test.mjs",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 1,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/issued-at-valid-leap-baseline.stdout.txt",
+        "bytes": 904,
+        "sha256": "8c729dc8ced14a774b672fd0cf1fbc13369f34c7b9101f9911fa40fca0e584dc"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/issued-at-valid-leap-baseline.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "final-gateway",
+      "command": "node --test apps/gateway/test/*.test.mjs",
+      "exitCode": 0,
+      "passed": 34,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-gateway.stdout.txt",
+        "bytes": 3430,
+        "sha256": "b50b52c7039f01a7483d7b2de02e846381a8286f03ca8c83d1e963092e265624"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-gateway.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "final-contracts-hermes",
+      "command": "npm run check",
+      "exitCode": 0,
+      "passed": 216,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-contracts-hermes.stdout.txt",
+        "bytes": 20169,
+        "sha256": "f1e2504eb75757084b74d8f43c020eac83bd1994e29e179deabba44f14844d7e"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-contracts-hermes.stderr.txt",
+        "bytes": 208,
+        "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+      }
+    },
+    {
+      "name": "final-public-distribution",
+      "command": "npm run check:contracts:distribution",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-public-distribution.stdout.txt",
+        "bytes": 2045,
+        "sha256": "1532b97216c583f3f05682d2fe1f4064cc7b7289124db02cff1e061fe288d030"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-public-distribution.stderr.txt",
+        "bytes": 1040,
+        "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+      }
+    },
+    {
+      "name": "final-original-control",
+      "command": "node docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-original-control.stdout.txt",
+        "bytes": 281,
+        "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-original-control.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "final-whitespace",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "stdout": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-whitespace.stdout.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "docs/qualification/candidates/gateway-deadline-repair-20261012/final-whitespace.stderr.txt",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "notes": [
+    "Baseline 33 cases comprised untouched18 + new15; final34 adds valid-leap issuance check.",
+    "First issuance probe used schema-invalid 00:59:60 and passed refusal; corrected valid23:59:60 plus schema assertion reproduced acceptance defect.",
+    "All final checks ran after timestamp guard; source-binding.json binds final source bytes.",
+    "Final public command includes generated-file and TypeScript checks in addition to7 tests.",
+    "Original control preserved function-display console output bytes.",
+    "No live/runtime/G1 acceptance claimed."
+  ]
+}
