@@ -1,0 +1,195 @@
+{
+  "scope": "LOCAL_SOURCE_ONLY",
+  "source": "2084f947ede709dfea0705bf2b67e62c3e929438",
+  "sourceTree": "083cc342f964172210f5131a4e43a7915a51e3a7",
+  "reviewHead": "ee5c6bb3277563f45a7132e2600f1455aa35d5f8",
+  "originalEntries": 7677,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose-validation.mjs",
+      "bytes": 3523,
+      "sha256": "9bfc1ef293f5c073286a0519ee3a480dde3fb607c0b3c42c7781c3711b0dd52e",
+      "blob": "bf927072e8e02bd5a6e41118331075e0979bfce9"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/memory-propose.schema.json",
+      "bytes": 3500,
+      "sha256": "64bbf814a3ab3ffca858c752a9e73eee84bdc437dae01d39b624012b72d79dac",
+      "blob": "16430859f465289f4737c65b370d240ed490b97b"
+    },
+    {
+      "path": "packages/contracts/test/commands-memory-propose.test.mjs",
+      "bytes": 13038,
+      "sha256": "ee5e930cf813c96b4e3e05a36905d6275068166ae83fb84fc8348b27dabd9488",
+      "blob": "37f61f7e0e117a6aeaaea45f5adc87a9413e8423"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all original entries preserved in exact author source",
+      "passed": true
+    },
+    {
+      "name": "all original entries preserved in reviewer tree",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose-validation.mjs exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose.schema.json exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/commands-memory-propose.test.mjs exact review bytes",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose-validation.mjs unchanged from initial candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/memory-propose.schema.json unchanged from initial candidate",
+      "passed": true
+    },
+    {
+      "name": "author source changes only allocated paths",
+      "passed": true
+    },
+    {
+      "name": "criteria before candidate inspection",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-memory.helpers.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate-rules.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate-rules.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-candidate.service.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-review-admin-policy.ts fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/memory/memory-review-admin-policy.ts 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260712020000_memory_candidate/migration.sql fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260712020000_memory_candidate/migration.sql 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260815010000_memory_candidate_withdrawal/migration.sql fd8765e",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/migrations/20260815010000_memory_candidate_withdrawal/migration.sql 4be13b0",
+      "passed": true
+    },
+    {
+      "name": "baseline-absent owned group absent without timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "baseline-absent stream stdout",
+      "passed": true
+    },
+    {
+      "name": "baseline-absent stream stderr",
+      "passed": true
+    },
+    {
+      "name": "initial31 owned group absent without timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "initial31 stream stdout",
+      "passed": true
+    },
+    {
+      "name": "initial31 stream stderr",
+      "passed": true
+    },
+    {
+      "name": "exact31 owned group absent without timeout/kill",
+      "passed": true
+    },
+    {
+      "name": "exact31 stream stdout",
+      "passed": true
+    },
+    {
+      "name": "exact31 stream stderr",
+      "passed": true
+    },
+    {
+      "name": "expected absent-module baseline retained",
+      "passed": true
+    },
+    {
+      "name": "initial3131 passed",
+      "passed": true
+    },
+    {
+      "name": "exact3131 passed",
+      "passed": true
+    },
+    {
+      "name": "only canonical inert snapshot imported",
+      "passed": true
+    },
+    {
+      "name": "no clock/provider/source execution tokens",
+      "passed": true
+    },
+    {
+      "name": "whole command digest correlation",
+      "passed": true
+    },
+    {
+      "name": "pending-only result schema",
+      "passed": true
+    },
+    {
+      "name": "packet retains exact production and final author tests",
+      "passed": true
+    },
+    {
+      "name": "packet retains all original entries",
+      "passed": true
+    }
+  ],
+  "passed": 41,
+  "failed": 0
+}
