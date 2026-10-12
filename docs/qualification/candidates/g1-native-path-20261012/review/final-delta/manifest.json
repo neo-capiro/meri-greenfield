@@ -1,0 +1,49 @@
+{
+  "decision": "ACCEPT_SOURCE_PACKET",
+  "reviewedCommit": "c60bc58092c9ed34f2c5d718afe4d678f6cf79d4",
+  "files": [
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/REVIEW.md",
+      "bytes": 4495,
+      "sha256": "ae6e3cdf92401bfde3af30fb1d66c7be9c38db224328db31066d71547e24b876"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check-delta.py",
+      "bytes": 8463,
+      "sha256": "e1f7b027a21bf439bc13b421fe82999a61f0d502dad0fde6839ebbbff4703356"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/check.stdout.json",
+      "bytes": 10444,
+      "sha256": "cb6cccbf7faa4318b34ad29422e6adf75987a372552e4aec3c91c3e9b8f2b134"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check-delta.py",
+      "bytes": 8464,
+      "sha256": "cc3bf671a5f12ca3c0daab2b8300cd40e32217d3c3f8fdd405f12150486a5b07"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check.stderr.txt",
+      "bytes": 686,
+      "sha256": "6379ba0794fc367682b851efe566942d651cb6ba245de0adb4ad675a15759ee2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/initial-check.stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-native-path-20261012/review/final-delta/receipt.json",
+      "bytes": 889,
+      "sha256": "e572ae18ebe9c826fbb9fc45fbfd6b3cca3b16f263892525b7bb45405b70fdea"
+    }
+  ],
+  "excludes": [
+    "manifest.json self"
+  ]
+}
