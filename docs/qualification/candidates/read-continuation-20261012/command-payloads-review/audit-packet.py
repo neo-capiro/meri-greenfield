@@ -27,6 +27,6 @@ for p in sorted(seen):
 check('final_author_test_count','pass 50' in raw(folder+'final-source.stdout.bin').decode() and 'fail 0' in raw(folder+'final-source.stdout.bin').decode())
 check('wrong_source_classification_failure_preserved','43' in raw(folder+'source-audit.stdout.bin').decode())
 report=raw('docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md').decode()
-for phrase in ['actual source misunderstanding','missing bytes/media type is failed','pending comes from persisted quarantine','No earlier pass certifies','canonical private loader/integration','source truth or delivery']:
+for phrase in ['actual source misunderstanding','lacking bytes/media type is failed','pending comes from persisted quarantine','No earlier pass certifies','canonical private loader/integration','source truth or delivery']:
  check('report_disclosure:'+phrase,phrase in report)
 print(json.dumps({'packet':head,'source':source,'manifestSha256':hashlib.sha256(manifest_raw).hexdigest(),'entries':len(m['entries']),'checks':checks,'passed':sum(c['pass'] for c in checks),'failed':sum(not c['pass'] for c in checks),'runtimeAccepted':False},indent=2));raise SystemExit(any(not c['pass'] for c in checks))

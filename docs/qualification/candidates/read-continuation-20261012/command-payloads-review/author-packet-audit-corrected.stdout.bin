@@ -1,0 +1,843 @@
+{
+  "packet": "844b9b00639d3fa712e15ed5e0872702ee1a974d",
+  "source": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "manifestSha256": "5f1697ae617dec3262752824a3e8fcefcf1a66ba0120e0927c2b79c5dbc2f0cd",
+  "entries": 78,
+  "checks": [
+    {
+      "name": "source_freeze",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "final_source_exact:packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/coordination/reports/CODEX-COMMAND-PAYLOADS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/cleanup-final.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-diff-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/artifact-file.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/commands-0.2/task-create.schema.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-artifact-file.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage/packages/contracts/test/command-task-create.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction-preimage.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/metadata-correction.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/report-before-metadata-correction.md",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/report-before-metadata-correction.md",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/setup-diagnostic.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.initial.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-checks.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.initial.py",
+      "pass": true
+    },
+    {
+      "name": "unique:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "name": "integrity:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/verify-source.py",
+      "pass": true
+    },
+    {
+      "name": "complete_manifest_self_excluded",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/compatibility-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/direct-context-countercontrol.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/final-source.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-freeze.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/focused-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/pending-metadata-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author_cleanup:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.json",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author_raw_capture:docs/qualification/candidates/read-continuation-20261012/command-payloads-author/source-countercontrols.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "final_author_test_count",
+      "pass": true
+    },
+    {
+      "name": "wrong_source_classification_failure_preserved",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:actual source misunderstanding",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:lacking bytes/media type is failed",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:pending comes from persisted quarantine",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:No earlier pass certifies",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:canonical private loader/integration",
+      "pass": true
+    },
+    {
+      "name": "report_disclosure:source truth or delivery",
+      "pass": true
+    }
+  ],
+  "passed": 208,
+  "failed": 0,
+  "runtimeAccepted": false
+}
