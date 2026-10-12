@@ -1,0 +1,16 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "e5fb3963de787bbd7b7663316c368f15814897da",
+    "HEAD",
+    "--",
+    "apps/control",
+    "packages/contracts",
+    "docs/coordination"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

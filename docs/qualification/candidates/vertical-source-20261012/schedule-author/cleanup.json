@@ -1,0 +1,44 @@
+{
+  "sourceFreeze": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "removedOwnedCopies": [
+    {
+      "ownedPath": "node_modules/ajv",
+      "bytes": 1033496,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv"
+    },
+    {
+      "ownedPath": "node_modules/ajv-formats",
+      "bytes": 56763,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/ajv-formats"
+    },
+    {
+      "ownedPath": "node_modules/canonicalize",
+      "bytes": 24474,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/canonicalize"
+    },
+    {
+      "ownedPath": "node_modules/fast-uri",
+      "bytes": 220886,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-uri"
+    },
+    {
+      "ownedPath": "node_modules/fast-deep-equal",
+      "bytes": 12966,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/fast-deep-equal"
+    },
+    {
+      "ownedPath": "node_modules/json-schema-traverse",
+      "bytes": 22220,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/json-schema-traverse"
+    },
+    {
+      "ownedPath": "node_modules/require-from-string",
+      "bytes": 3422,
+      "donor": "/workspace/meri-read-continuation-20261012/node_modules/require-from-string"
+    }
+  ],
+  "totalRemovedBytes": 1374227,
+  "donorsUntouched": true,
+  "capturedOwnedGroupsAllReportedAbsent": true,
+  "servicesStarted": false
+}
