@@ -1,0 +1,3 @@
+# Preserve exact raw failure bytes; source/docs whitespace checking stays active.
+alias-regression-before-repair.stdout.bin -text -diff
+whitespace-before.stdout.bin -text -diff

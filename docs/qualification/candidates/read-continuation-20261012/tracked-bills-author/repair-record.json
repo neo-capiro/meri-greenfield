@@ -1,0 +1,7 @@
+{
+  "defect": "Returned caller-owned original after validating detached snapshot; later mutation changed accepted client/result.",
+  "sourceRepair": "Return the validated page snapshot; validation and field semantics unchanged.",
+  "testChange": "Original return-identity assertion intentionally changes to detached+deep-equal to match repaired API; all other original26 assertions retained. Added observable post-validation caller mutation regression.",
+  "retainedFailure": "alias-regression-before-repair stdout:26pass1fail; reviewer independently23pass2fail among25.",
+  "failureTestSha256": "9b359d0170ac62bc2ff2c08515304c7ae4ecdc5f03ae7a2752e7e53b47ce6152"
+}
