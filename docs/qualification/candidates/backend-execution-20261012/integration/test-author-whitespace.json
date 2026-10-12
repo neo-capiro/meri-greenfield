@@ -1,0 +1,18 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "scope": "All staged test-author evidence including raw preimages; output retained without normalization.",
+  "rawFlaggedPaths": [
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-inverse-failed-partial.patch",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-before.stdout.bin",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-first.patch",
+    "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-updated.stdout.bin"
+  ],
+  "authoredAndOtherEvidenceExitCode": 0,
+  "excludedOnlyExactRawFailurePaths": true
+}

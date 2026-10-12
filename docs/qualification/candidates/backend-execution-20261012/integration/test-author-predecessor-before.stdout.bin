@@ -1,0 +1,879 @@
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs' imported from /workspace/meri-backend-execution-tests-20261012/apps/gateway/test/action-item-context-independent.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs'
+}
+
+Node.js v24.19.0
+✖ apps/gateway/test/action-item-context-independent.test.mjs (78.563845ms)
+✖ independent combined catalog remains invisible and refuses all71 operations before every effect (8.678604ms)
+✔ mail independent: canonical list three-page continuation (29.66406ms)
+✔ mail independent: canonical search three-page continuation (14.782045ms)
+✔ mail independent: stable key retains exact full page and immutable snapshots (6.454767ms)
+✔ mail independent: first-page current decision IDs may rotate (2.586434ms)
+✔ mail independent: full previous/current page decision mismatch still refuses (5.930278ms)
+✔ mail independent: terminal or unknown total 0 never retains invented continuation (1.942835ms)
+✔ mail independent: terminal or unknown total 1 never retains invented continuation (2.029515ms)
+✔ mail independent: terminal or unknown total null never retains invented continuation (1.874411ms)
+✔ mail independent: malformed shapes refuse before ports and semantic input before business effects (1.994804ms)
+✔ mail independent: missing context ports refuse without reservation or handler (0.854617ms)
+✔ mail independent: retained missing refuses before budget/effect (3.019056ms)
+✔ mail independent: retained digest refuses before budget/effect (3.089011ms)
+✔ mail independent: retained keyBinding refuses before budget/effect (3.578838ms)
+✔ mail independent: retained keyOperation refuses before budget/effect (3.404806ms)
+✔ mail independent: retained keyPolicy refuses before budget/effect (3.038985ms)
+✔ mail independent: retained keySubject refuses before budget/effect (2.874778ms)
+✔ mail independent: retained keySelection refuses before budget/effect (3.153989ms)
+✔ mail independent: retained staleReceipt refuses before budget/effect (3.544927ms)
+✔ mail independent: retained futureReceipt refuses before budget/effect (2.893196ms)
+✔ mail independent: retained expired refuses before budget/effect (2.986476ms)
+✔ mail independent: retained futureRecorded refuses before budget/effect (2.926456ms)
+✔ mail independent: retained extended refuses before budget/effect (3.456975ms)
+✔ mail independent: retained extra refuses before budget/effect (2.870251ms)
+✔ mail independent: rehashed retained anchor cannot bypass canonical continuation (2.96919ms)
+✔ mail independent: rehashed retained pageDecision cannot bypass canonical continuation (4.241205ms)
+✔ mail independent: rehashed retained nextOffset cannot bypass canonical continuation (3.872209ms)
+✔ mail independent: rehashed retained selection cannot bypass canonical continuation (3.141129ms)
+✔ mail independent: rehashed retained window cannot bypass canonical continuation (2.802489ms)
+✔ mail independent: raw context field accessors are rejected without invocation (4.651813ms)
+✔ mail independent: retained acknowledgment receiptDigest suppresses settlement (2.762749ms)
+✔ mail independent: retained acknowledgment receiptKey suppresses settlement (1.74701ms)
+✔ mail independent: retained acknowledgment stale suppresses settlement (1.988494ms)
+✔ mail independent: retained acknowledgment extra suppresses settlement (1.82664ms)
+✔ mail independent: retained acknowledgment oversized suppresses settlement (1.967692ms)
+✔ mail independent: revoked authority after load never releases (3.052646ms)
+✔ mail independent: revoked authority after retain never releases (2.040612ms)
+✔ mail independent: revoked authority after settle never releases (1.851026ms)
+✔ mail independent: fresh release deadline bounds parked load (43.727823ms)
+✔ mail independent: cancellation bounds parked load (4.347365ms)
+✔ mail independent: fresh release deadline bounds parked retain (42.679144ms)
+✔ mail independent: cancellation bounds parked retain (3.28776ms)
+✔ mail independent: fresh release deadline bounds parked settle (42.924343ms)
+✔ mail independent: cancellation bounds parked settle (3.151185ms)
+✔ mail independent: budget-shortened lifetime bounds retained expiry (3.300819ms)
+✖ mail independent: source-disabled canonical catalog never reaches supplied ports (9.092198ms)
+✔ mail independent: context port proxy/accessor admission is inert (1.654571ms)
+✔ mail independent: shortened retained expiry bounds the next parked authority port (44.429908ms)
+✔ mail independent: candidate output cannot promote previews or omit decisive reads (9.58462ms)
+✖ independent: canonical mail and memory profiles are selected; actual15 stay unavailable (2.870081ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (12.297053ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (6.699056ms)
+✔ independent: all invalid model shape/context inputs fail before trusted ports (2.701997ms)
+✔ independent: client selector cannot override server subject before effects (1.334429ms)
+✔ independent: decision IDs rotate while stable authority remains required (2.69644ms)
+✔ independent: stable subject drift at authority stage 2 never releases (1.384804ms)
+✔ independent: stable subject drift at authority stage 3 never releases (1.616113ms)
+✔ independent: stable subject drift at authority stage 4 never releases (1.978599ms)
+✔ independent: stable subject drift at authority stage 5 never releases (2.409016ms)
+✔ independent: absent retained context or context ports cannot invent continuation (1.043191ms)
+✔ independent: retained context rejects tenant (2.686625ms)
+✔ independent: retained context rejects actor (2.204259ms)
+✔ independent: retained context rejects conversation (2.691813ms)
+✔ independent: retained context rejects run (2.203047ms)
+✔ independent: retained context rejects attempt (2.124859ms)
+✔ independent: retained context rejects worker (3.620957ms)
+✔ independent: retained context rejects fence (3.209822ms)
+✔ independent: retained context rejects policy (2.534235ms)
+✔ independent: retained context rejects operation (2.692033ms)
+✔ independent: retained context rejects version (2.761958ms)
+✔ independent: retained context rejects subject (2.636559ms)
+✔ independent: retained context rejects cursor (2.227614ms)
+✔ independent: retained context rejects digest (2.748909ms)
+✔ independent: retained context rejects staleRead (2.07257ms)
+✔ independent: retained context rejects futureRead (2.522889ms)
+✔ independent: retained context rejects futureRecord (2.67727ms)
+✔ independent: retained context rejects expired (3.439859ms)
+✔ independent: retained context rejects beyondAuthority (3.07576ms)
+✔ independent: retained context rejects extra (2.573003ms)
+✔ independent: retained context rejects limit (3.192436ms)
+✔ independent: retained context rejects poisonedCursor (3.588903ms)
+✔ independent: retained context rejects invalidPage (3.059876ms)
+✔ independent: envelope and raw DTO reject operation (1.314969ms)
+✔ independent: envelope and raw DTO reject arguments (5.690968ms)
+✔ independent: envelope and raw DTO reject binding (1.315751ms)
+✔ independent: envelope and raw DTO reject subject (1.249301ms)
+✔ independent: envelope and raw DTO reject extra (1.132375ms)
+✔ independent: envelope and raw DTO reject missing (1.612127ms)
+✔ independent: envelope and raw DTO reject approved (1.17552ms)
+✔ independent: envelope and raw DTO reject actor (1.231764ms)
+✔ independent: envelope and raw DTO reject restricted (1.386468ms)
+✔ independent: envelope and raw DTO reject coverage (1.711366ms)
+✔ independent: retain receipt rejects decision (2.167163ms)
+✔ independent: retain receipt rejects keySha256 (1.588241ms)
+✔ independent: retain receipt rejects previousSha256 (1.633789ms)
+✔ independent: retain receipt rejects checkedAtMs (1.392616ms)
+✔ independent: load rejects hostile non-JSON receipt without property effects (2.794026ms)
+✔ independent: retain rejects hostile non-JSON receipt without property effects (1.916295ms)
+✔ independent: retained ports receive immutable context detached from model objects (3.846351ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (3.060397ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (103.328323ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (100.252878ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (100.544841ms)
+✖ partial action binding does not declare full native parity or activate a handler (7.674405ms)
+✔ partial binding refuses original mapping, aliases and executable/retry promotion (38.396474ms)
+✔ scoped canonical defaults and digest preserve a frozen original request plus opaque cursor (2.176885ms)
+✔ binding refuses unscoped mode while unchanged family keeps it explicitly pending (0.567965ms)
+✔ trusted actor is mandatory and model authority cannot replace it (1.158032ms)
+✔ family mode bounds and closed JSON admission retain strict behavior (0.623007ms)
+✖ all fourteen original descriptors and all139 native rows remain exact (2.996277ms)
+node:internal/modules/esm/resolve:271
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs' imported from /workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-action-item-independent.test.mjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33)
+    at ModuleJob.link (node:internal/modules/esm/module_job:253:17) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs'
+}
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-action-item-independent.test.mjs (69.560501ms)
+✖ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (6.901118ms)
+✔ all71 exact schema byte pins preserve pending closed handlers (16.441791ms)
+✔ query_outreach: actual callbacks preserve detached original request and canonical digest (2.716479ms)
+✔ query_outreach: trusted context is mandatory, closed, and stripped before family output callback (0.960856ms)
+✔ query_outreach: inert hostile request/context/result never invokes caller accessors (1.591696ms)
+✔ query_outreach: canonical integrity refuses handler/schema/retry/mapping injection (65.45221ms)
+✔ search_program_elements: actual callbacks preserve detached original request and canonical digest (2.156637ms)
+✔ search_program_elements: trusted context is mandatory, closed, and stripped before family output callback (0.519422ms)
+✔ search_program_elements: inert hostile request/context/result never invokes caller accessors (1.360979ms)
+✔ search_program_elements: canonical integrity refuses handler/schema/retry/mapping injection (50.130154ms)
+✔ get_program_element: actual callbacks preserve detached original request and canonical digest (3.450334ms)
+✔ get_program_element: trusted context is mandatory, closed, and stripped before family output callback (0.756138ms)
+✔ get_program_element: inert hostile request/context/result never invokes caller accessors (1.133947ms)
+✔ get_program_element: canonical integrity refuses handler/schema/retry/mapping injection (53.875002ms)
+✔ get_pe_budget_timeline: actual callbacks preserve detached original request and canonical digest (1.637756ms)
+✔ get_pe_budget_timeline: trusted context is mandatory, closed, and stripped before family output callback (0.566784ms)
+✔ get_pe_budget_timeline: inert hostile request/context/result never invokes caller accessors (0.970911ms)
+✔ get_pe_budget_timeline: canonical integrity refuses handler/schema/retry/mapping injection (52.509026ms)
+✔ production gateway remains closed before any authority/budget port for all71 reads (11.202714ms)
+✔ outreach callback resolves names only via exact trusted assertion and keeps UUID identity (0.988948ms)
+✔ outreach selected limit/status/client reach output correlation and full fetched count (1.621881ms)
+✔ exact outreach precedence suppresses client resolution and cannot accept list result (0.5512ms)
+✔ program search callback preserves scalar fallback and bounded paging (0.794185ms)
+✔ program detail and timeline selectors retain distinct case semantics (1.066746ms)
+✔ program evidence mode controls actual lineage output without becoming authorization (2.379312ms)
+✔ program Decimal string prerequisite and stored-year identity/order survive composition (3.816585ms)
+✔ PE direct factory now returns detached nested result, canonical behavior preserved (1.014568ms)
+✔ private command loader composes normalized task payload without retrieval mapping (33.510786ms)
+✔ private artifact loader preserves immutable tuple and refuses destination substitution (2.330268ms)
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (6.906527ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (16.97257ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (1805.442058ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (14.875506ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (29.407815ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (386.90151ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.474632ms)
+✔ family default materialization and argument digest happen before dispatch (3.149927ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.8717ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (8.997133ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (1.644258ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (6.192634ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.447752ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (11.610765ms)
+✖ all original139 rows,56 descriptors and callback implementations survive seven exact additions (7.063804ms)
+✔ every schema pin resolves exact bytes while every descriptor remains unavailable (16.498675ms)
+✔ get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest (3.674361ms)
+✔ get_state_bill_status: context allowlist, original request and output callback stripping are enforced (1.51456ms)
+✔ get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects (2.430999ms)
+✔ get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed (55.982601ms)
+✔ search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest (1.942023ms)
+✔ search_state_floor_votes: context allowlist, original request and output callback stripping are enforced (1.25535ms)
+✔ search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects (2.300593ms)
+✔ search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed (45.182364ms)
+✔ query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest (1.701972ms)
+✔ query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced (0.408354ms)
+✔ query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects (1.690455ms)
+✔ query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed (48.038572ms)
+✔ find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest (1.903044ms)
+✔ find_contacts: context allowlist, original request and output callback stripping are enforced (0.35216ms)
+✔ find_contacts: foreign family, model authority fields and hostile input remain refused without effects (2.813145ms)
+✔ find_contacts: catalog fingerprint, mapping and promotion mutations fail closed (44.563441ms)
+✔ resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest (1.872399ms)
+✔ resolve_entity: context allowlist, original request and output callback stripping are enforced (1.386027ms)
+✔ resolve_entity: foreign family, model authority fields and hostile input remain refused without effects (1.697785ms)
+✔ resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed (48.920691ms)
+✔ search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest (3.539047ms)
+✔ search_tracked_bills: context allowlist, original request and output callback stripping are enforced (2.602367ms)
+✔ search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects (2.615127ms)
+✔ search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed (41.549374ms)
+✔ query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest (1.237954ms)
+✔ query_intelligence: context allowlist, original request and output callback stripping are enforced (0.346792ms)
+✔ query_intelligence: foreign family, model authority fields and hostile input remain refused without effects (1.807832ms)
+✔ query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed (45.932703ms)
+✔ production gateway rejects all71 before any authority/budget port and has no activation option (12.437943ms)
+✔ state unresolved selection refuses state-wide result broadening and preserves source reasons (1.449962ms)
+✔ regulatory count race and selected upcoming window remain different projections (0.638481ms)
+✔ contacts preserve explicit selector refusal, normalized domain and no implied profile writes (1.419798ms)
+✔ entity effective Congress is trusted context, absent and candidate facts are not authority (1.025214ms)
+✔ tracked callbacks bind full task/actor/client context and preserve exact resolver assertion (3.973951ms)
+✔ summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims (0.566914ms)
+✔ entity output callback receives effective Congress and cannot rebind a direct bill candidate (1.616364ms)
+✔ materializes verified legacy defaults without mutating strict input (2.44411ms)
+✔ rejects coercion, null numeric values, injected authority and unsupported subjects (0.869459ms)
+✔ preserves exact numeric bounds and requires message identity for body continuation (0.290187ms)
+✔ mail external DTO accessors and cycles refuse before executing getters (0.805743ms)
+✔ stored disconnected reads remain transport-only with unknown immutable identities (8.98792ms)
+✔ UTF-16 offsets count a surrogate pair as two units and permit its legacy split (1.517064ms)
+✔ late decisive body section remains an unresolved read despite ending the stored body (0.841677ms)
+✔ offset beyond stored body is disclosed empty transport, not absent material (0.594725ms)
+✔ all upstream completeness states stay incomplete and missing differs from empty (1.206196ms)
+✔ unknown body size and snapshot cannot imply completion (1.101888ms)
+✔ selection and exact normalized argument digest must agree with original request (1.051843ms)
+✔ personal/client request and resolved subject agree without broadening authority (1.099835ms)
+✔ denied source cannot contribute; mixed source accounting keeps eligible stored read (0.951833ms)
+✔ message count and continuation use the filtered message collection (0.95029ms)
+✔ unknown message totals cannot invent next positions or aggregate totals (1.157432ms)
+✔ body continuation inventory, page bounds and truncation agree (1.589743ms)
+✔ duplicate messages cannot inflate count using another citation or version (0.348635ms)
+✔ transport refuses absence, evidence-ready, complete enumeration and cursor guarantees (6.244479ms)
+✔ empty stored thread page never certifies absence (0.305259ms)
+✖ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation (6.982391ms)
+✔ mail descriptor raw-byte schema pins and exact definition IDs cannot drift (27.466286ms)
+✔ no skill can expose the pending mail operation (8.03865ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (0.886394ms)
+✔ mailbox identity and authoritative body lineage cannot be substituted (1.449251ms)
+✔ list/search defaults are strict inert normalized DATA with no clock invention (1.743675ms)
+✔ search literal terms remain distinct AND filters and keyword-free scoped search is valid (0.283917ms)
+✔ list/search getters hidden fields null and nonfinite values are refused without effects (0.246281ms)
+✔ candidate query inclusive anchor is separate from exclusive requester window (22.565448ms)
+✔ message totals and page-only groups differ; exhausted preview never proves absence (3.497534ms)
+✔ continuation binds retained anchor filters actor window and message offset (4.138089ms)
+✔ dedup is mailbox-specific; order nulls-last and immutable versions are conservative (1.651526ms)
+✔ authorization source and mailbox scopes are independent of connection state (2.548336ms)
+✔ preview has no body offsets size guarantee or recipient completeness upgrade (1.758928ms)
+✔ search page operation groups counts filters and all pending descriptor pins are closed (446.907674ms)
+✔ cross-mailbox identical internet IDs stay distinct stored candidates (1.280087ms)
+✔ offset ceiling keeps hasMore true with null nextOffset and no completeness (2.369176ms)
+✔ empty search and unknown stored totals cannot become complete or absent (0.957802ms)
+✔ canonical memory binding resolves only its private version and remains unavailable (1.80249ms)
+✔ memory normalization returns frozen original request and effective selection digest (2.37397ms)
+✔ memory requires trusted subject and refuses legacy or model authority keys (1.484642ms)
+✔ memory binding preserves selected-client and result actor tenant scope checks (3.621556ms)
+✔ complete empty and disabled queue results never become evidence facts or absence (2.021269ms)
+✔ restricted truncated and missing proposal text retain partial coverage and redaction (1.645915ms)
+✔ binding continuation retains exact original request page cursor limit and advancing keys (3.037878ms)
+✔ finite timestamp admission survives the canonical binding and retained page path (1.229439ms)
+✔ binding inert admission refuses getters proxies cycles and serialization hooks without effects (0.791169ms)
+✔ strict family limits and output original request survive binding normalization (1.958335ms)
+✔ all thirteen earlier bindings retain legacy context grammar and refuse memory-only keys (10.961833ms)
+✖ catalog preserves the original thirteen descriptors and complete selected/deferred ledger (3.173722ms)
+✖ selected read additions preserve every prior descriptor and original accepted boundary (2.241841ms)
+✔ canonical registry binding hashes the normalized name and preserves original arguments (8.2531ms)
+✔ canonical registry output path requires a valid original request and closed result (1.553235ms)
+✔ registry mapping leaves creation deferred and cannot advertise an executable operation (0.20604ms)
+✔ business bindings select their own contract and materialize only the changes limit (4.068488ms)
+✔ portfolio bindings require canonical trusted context and bind the normalized selection digest (6.646765ms)
+✔ independent exact baseline: only the six prior and16 reviewed continuation mappings change; all prior descriptors survive (8.325821ms)
+✔ all 84 canonical descriptors resolve exact raw schema definitions without collisions (17.44208ms)
+✔ independent canonical success and immutable selection: lookup_client_registry (1.899428ms)
+✔ independent canonical rejects foreign projection and forged selectors: lookup_client_registry (1.756434ms)
+✔ independent canonical inert admission for every boundary: lookup_client_registry (0.780635ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: lookup_client_registry (76.840755ms)
+✔ independent canonical success and immutable selection: get_business_development_context (2.283587ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_context (1.990736ms)
+✔ independent canonical inert admission for every boundary: get_business_development_context (0.567724ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_context (59.012574ms)
+✔ independent canonical success and immutable selection: get_business_development_evidence (2.682748ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_evidence (1.4022ms)
+✔ independent canonical inert admission for every boundary: get_business_development_evidence (0.563938ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_evidence (49.293987ms)
+✔ independent canonical success and immutable selection: get_business_development_recent_changes (1.833169ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_business_development_recent_changes (1.416612ms)
+✔ independent canonical inert admission for every boundary: get_business_development_recent_changes (0.535586ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_business_development_recent_changes (54.85727ms)
+✔ independent canonical success and immutable selection: get_research_portfolio (5.211753ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_research_portfolio (3.406417ms)
+✔ independent canonical inert admission for every boundary: get_research_portfolio (0.761916ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_research_portfolio (52.591389ms)
+✔ independent canonical success and immutable selection: get_research_portfolio_changes (2.952994ms)
+✔ independent canonical rejects foreign projection and forged selectors: get_research_portfolio_changes (2.351008ms)
+✔ independent canonical inert admission for every boundary: get_research_portfolio_changes (0.778392ms)
+✔ independent catalog pin, alias, mapping and execution promotion controls: get_research_portfolio_changes (47.034187ms)
+✔ portfolio canonical callbacks carry every binding and subject field, not generic actor/clock context (14.031978ms)
+✔ portfolio canonical continuation and identity preserve the domain repair (1.858767ms)
+✔ portfolio canonical event requires the declared event kind and non-null actor (1.165634ms)
+✔ business callbacks preserve request limit, citation aliases, partial coverage and inference (1.495701ms)
+✔ registry UTF16 repair and guidance remain enforced through canonical dispatch (0.604901ms)
+✔ shared private snapshot is detached inert JSON with unchanged bounded semantics (0.407233ms)
+✖ original139 rows and63 descriptors/callbacks survive exactly four full mappings (6.593964ms)
+✔ all71 descriptors have exact schema byte pins and no implementation admission (15.852464ms)
+✔ search_public_web: actual canonical normalizer/output callbacks preserve detached request and digest (3.138448ms)
+✔ search_public_web: allowlisted contexts and original request survive callback stripping (0.842807ms)
+✔ search_public_web: family substitution and hostile JSON refuse before effects (1.79607ms)
+✔ search_public_web: mapping, handler, retry, and schema mutation are rejected (52.412372ms)
+✔ scrape_web_page: actual canonical normalizer/output callbacks preserve detached request and digest (2.647631ms)
+✔ scrape_web_page: allowlisted contexts and original request survive callback stripping (0.560113ms)
+✔ scrape_web_page: family substitution and hostile JSON refuse before effects (1.618544ms)
+✔ scrape_web_page: mapping, handler, retry, and schema mutation are rejected (42.359918ms)
+✔ search_sam_opportunities: actual canonical normalizer/output callbacks preserve detached request and digest (2.257884ms)
+✔ search_sam_opportunities: allowlisted contexts and original request survive callback stripping (2.134378ms)
+✔ search_sam_opportunities: family substitution and hostile JSON refuse before effects (1.34321ms)
+✔ search_sam_opportunities: mapping, handler, retry, and schema mutation are rejected (47.454799ms)
+✔ get_florida_budget_project: actual canonical normalizer/output callbacks preserve detached request and digest (3.025068ms)
+✔ get_florida_budget_project: allowlisted contexts and original request survive callback stripping (2.48108ms)
+✔ get_florida_budget_project: family substitution and hostile JSON refuse before effects (1.278782ms)
+✔ get_florida_budget_project: mapping, handler, retry, and schema mutation are rejected (41.581087ms)
+✔ production gateway denies every descriptor before authority/budget and rejects activation (9.773805ms)
+✔ web search callback retains limit/UTF16 and discovered evidence only (1.089448ms)
+✔ web page callback preserves redirects and coverage but no network/hash proof (0.859792ms)
+✔ web truncation callback is connected to original requested window (0.73159ms)
+✔ SAM independent status and health clocks are consumed by real callbacks (1.810281ms)
+✔ SAM count races, active selector and trusted mode are distinct from completeness (2.211575ms)
+✖ Florida normalized Input pin retains raw defaults and named client resolution (0.428034ms)
+✔ Florida nested output callback binds all scope facts and request continuation (1.379024ms)
+✔ Florida folder derived client cannot override explicit selector (0.636747ms)
+✔ reviewed continuation preserves139 originals and the exact prior21 descriptors (8.669785ms)
+✔ canonical continuation routes normalized selection and exact context: search_funding_opportunities (4.047987ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_funding_opportunities (31.956487ms)
+✔ canonical continuation routes normalized selection and exact context: get_funding_opportunity_requirements (2.412948ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_funding_opportunity_requirements (22.541481ms)
+✔ canonical continuation routes normalized selection and exact context: get_funding_opportunity (5.108881ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_funding_opportunity (21.252303ms)
+✔ canonical continuation routes normalized selection and exact context: get_opportunity_client_context (2.08144ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_opportunity_client_context (24.180085ms)
+✔ canonical continuation routes normalized selection and exact context: get_opportunity_government_landscape (1.803141ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_opportunity_government_landscape (20.609196ms)
+✔ canonical continuation routes normalized selection and exact context: read_client_documents (6.575236ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: read_client_documents (20.660473ms)
+✔ canonical continuation routes normalized selection and exact context: query_economic_data (2.574872ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: query_economic_data (20.573973ms)
+✔ canonical continuation routes normalized selection and exact context: search_federal_grants (13.211143ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_federal_grants (24.325784ms)
+✔ canonical continuation routes normalized selection and exact context: search_federal_awards (1.553896ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_federal_awards (20.615305ms)
+✔ canonical continuation routes normalized selection and exact context: get_district_nexus_context (4.126514ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_district_nexus_context (20.264668ms)
+✔ canonical continuation routes normalized selection and exact context: get_district_nexus_changes (2.529713ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_district_nexus_changes (24.028286ms)
+✔ canonical continuation routes normalized selection and exact context: search_state_bills (1.711573ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_state_bills (19.796254ms)
+✔ canonical continuation routes normalized selection and exact context: get_state_legislator (1.710041ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: get_state_legislator (20.143034ms)
+✔ canonical continuation routes normalized selection and exact context: search_cbo_cost_estimates (1.327216ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_cbo_cost_estimates (20.523296ms)
+✔ canonical continuation routes normalized selection and exact context: search_gao_reports (1.141076ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_gao_reports (24.686686ms)
+✔ canonical continuation routes normalized selection and exact context: search_crs_reports (1.180074ms)
+✔ canonical continuation pins unavailable schemas and rejects promotion: search_crs_reports (21.187195ms)
+✔ funding callback strips resolver request and enforces trusted observation clock (1.73572ms)
+✔ policy context is mandatory for grants/awards and excluded from model arguments (0.741375ms)
+✔ document/district callbacks require complete current lineage including output binding (1.405003ms)
+✔ all new callbacks preserve canonical inert admission without getter effects (0.920163ms)
+✖ independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings (18.625193ms)
+✔ independent registry exact raw schema pins, explicit context sets and unavailable state (17.512289ms)
+✔ independent canonical immutable input, digest and result path: search_funding_opportunities (4.611234ms)
+✔ independent exact operation, scope and current-context refusal: search_funding_opportunities (3.562857ms)
+✔ independent callback hostile input, context and result admission: search_funding_opportunities (0.79832ms)
+✔ independent canonical immutable input, digest and result path: get_funding_opportunity_requirements (4.710537ms)
+✔ independent exact operation, scope and current-context refusal: get_funding_opportunity_requirements (5.761287ms)
+✔ independent callback hostile input, context and result admission: get_funding_opportunity_requirements (0.541905ms)
+✔ independent canonical immutable input, digest and result path: get_funding_opportunity (7.373496ms)
+✔ independent exact operation, scope and current-context refusal: get_funding_opportunity (3.046841ms)
+✔ independent callback hostile input, context and result admission: get_funding_opportunity (0.624248ms)
+✔ independent canonical immutable input, digest and result path: get_opportunity_client_context (2.12853ms)
+✔ independent exact operation, scope and current-context refusal: get_opportunity_client_context (2.218435ms)
+✔ independent callback hostile input, context and result admission: get_opportunity_client_context (0.504017ms)
+✔ independent canonical immutable input, digest and result path: get_opportunity_government_landscape (1.330841ms)
+✔ independent exact operation, scope and current-context refusal: get_opportunity_government_landscape (2.018776ms)
+✔ independent callback hostile input, context and result admission: get_opportunity_government_landscape (0.499511ms)
+✔ independent canonical immutable input, digest and result path: read_client_documents (6.694424ms)
+✔ independent exact operation, scope and current-context refusal: read_client_documents (3.807705ms)
+✔ independent callback hostile input, context and result admission: read_client_documents (0.665991ms)
+✔ independent canonical immutable input, digest and result path: query_economic_data (2.637426ms)
+✔ independent exact operation, scope and current-context refusal: query_economic_data (2.308841ms)
+✔ independent callback hostile input, context and result admission: query_economic_data (0.397347ms)
+✔ independent canonical immutable input, digest and result path: search_federal_grants (13.824575ms)
+✔ independent exact operation, scope and current-context refusal: search_federal_grants (6.017507ms)
+✔ independent callback hostile input, context and result admission: search_federal_grants (0.507904ms)
+✔ independent canonical immutable input, digest and result path: search_federal_awards (14.054451ms)
+✔ independent exact operation, scope and current-context refusal: search_federal_awards (2.204334ms)
+✔ independent callback hostile input, context and result admission: search_federal_awards (0.603317ms)
+✔ independent canonical immutable input, digest and result path: get_district_nexus_context (4.099624ms)
+✔ independent exact operation, scope and current-context refusal: get_district_nexus_context (5.982365ms)
+✔ independent callback hostile input, context and result admission: get_district_nexus_context (0.768085ms)
+✔ independent canonical immutable input, digest and result path: get_district_nexus_changes (2.661962ms)
+✔ independent exact operation, scope and current-context refusal: get_district_nexus_changes (4.466104ms)
+✔ independent callback hostile input, context and result admission: get_district_nexus_changes (0.700894ms)
+✔ independent canonical immutable input, digest and result path: search_state_bills (2.914101ms)
+✔ independent exact operation, scope and current-context refusal: search_state_bills (3.341674ms)
+✔ independent callback hostile input, context and result admission: search_state_bills (2.220017ms)
+✔ independent canonical immutable input, digest and result path: get_state_legislator (1.500847ms)
+✔ independent exact operation, scope and current-context refusal: get_state_legislator (2.265356ms)
+✔ independent callback hostile input, context and result admission: get_state_legislator (0.57206ms)
+✔ independent canonical immutable input, digest and result path: search_cbo_cost_estimates (1.52989ms)
+✔ independent exact operation, scope and current-context refusal: search_cbo_cost_estimates (3.842978ms)
+✔ independent callback hostile input, context and result admission: search_cbo_cost_estimates (0.561394ms)
+✔ independent canonical immutable input, digest and result path: search_gao_reports (1.624362ms)
+✔ independent exact operation, scope and current-context refusal: search_gao_reports (2.213548ms)
+✔ independent callback hostile input, context and result admission: search_gao_reports (0.36623ms)
+✔ independent canonical immutable input, digest and result path: search_crs_reports (1.14371ms)
+✔ independent exact operation, scope and current-context refusal: search_crs_reports (5.578017ms)
+✔ independent callback hostile input, context and result admission: search_crs_reports (0.411739ms)
+✔ independent catalog refuses every new schema, alias, native mapping and handler substitution (868.596408ms)
+✔ funding canonical clock filters resolver request and binds refusal variants without authority (4.02741ms)
+✔ funding canonical available requirements retain stale count, query and exact offset lineage (1.390572ms)
+✔ trusted evidence mode reaches both public-data output assertions (1.991847ms)
+✔ all current binding and subject fields survive document/district output callback filtering (9.912285ms)
+✔ document canonical content, UTF16 and cursor hashes remain bound after composition (6.302302ms)
+✔ state and reports preserve domain repairs via canonical output, without caller context (1.283632ms)
+✔ independent hostile operation selector refusal before coercion: public-data (0.634836ms)
+✔ independent hostile shape selector refusal before coercion: public-data (0.247883ms)
+✔ independent hostile operation selector refusal before coercion: state-legislation (0.523187ms)
+✔ independent hostile shape selector refusal before coercion: state-legislation (0.115604ms)
+✔ independent real source-disabled gateway refuses all84 before any authority, budget or source effect (11.787595ms)
+✖ exact PR28 descriptors and callback source survive in single registry with full original inventory (8.272917ms)
+✔ all catalog schema fingerprints resolve exact private bytes and keep unavailable admission (14.725375ms)
+✔ get_committee_roster: canonical normalization and output use accepted family with immutable detached selection (4.087841ms)
+✔ get_committee_roster: exact context keys and original request are required at both canonical boundaries (1.438574ms)
+✔ get_committee_roster: foreign shapes and extra authority claims refuse (2.384218ms)
+✔ get_committee_roster: hostile inputs, context, projections and operation references remain inert (0.756328ms)
+✔ get_committee_roster: schema pin, mapping and source promotion negatives remain enforced (46.767073ms)
+✔ list_members: canonical normalization and output use accepted family with immutable detached selection (2.00032ms)
+✔ list_members: exact context keys and original request are required at both canonical boundaries (1.039664ms)
+✔ list_members: foreign shapes and extra authority claims refuse (2.129003ms)
+✔ list_members: hostile inputs, context, projections and operation references remain inert (0.523067ms)
+✔ list_members: schema pin, mapping and source promotion negatives remain enforced (38.040024ms)
+✔ get_pe_contractors: canonical normalization and output use accepted family with immutable detached selection (2.303686ms)
+✔ get_pe_contractors: exact context keys and original request are required at both canonical boundaries (0.277628ms)
+✔ get_pe_contractors: foreign shapes and extra authority claims refuse (2.18674ms)
+✔ get_pe_contractors: hostile inputs, context, projections and operation references remain inert (0.55168ms)
+✔ get_pe_contractors: schema pin, mapping and source promotion negatives remain enforced (42.803591ms)
+✔ get_pe_bills: canonical normalization and output use accepted family with immutable detached selection (1.133535ms)
+✔ get_pe_bills: exact context keys and original request are required at both canonical boundaries (0.29948ms)
+✔ get_pe_bills: foreign shapes and extra authority claims refuse (1.590533ms)
+✔ get_pe_bills: hostile inputs, context, projections and operation references remain inert (0.548736ms)
+✔ get_pe_bills: schema pin, mapping and source promotion negatives remain enforced (37.858851ms)
+✔ get_pe_report_language: canonical normalization and output use accepted family with immutable detached selection (1.765917ms)
+✔ get_pe_report_language: exact context keys and original request are required at both canonical boundaries (1.246666ms)
+✔ get_pe_report_language: foreign shapes and extra authority claims refuse (1.6149ms)
+✔ get_pe_report_language: hostile inputs, context, projections and operation references remain inert (0.61185ms)
+✔ get_pe_report_language: schema pin, mapping and source promotion negatives remain enforced (34.070751ms)
+✔ get_state_rule_status: canonical normalization and output use accepted family with immutable detached selection (3.187305ms)
+✔ get_state_rule_status: exact context keys and original request are required at both canonical boundaries (5.8689ms)
+✔ get_state_rule_status: foreign shapes and extra authority claims refuse (2.587303ms)
+✔ get_state_rule_status: hostile inputs, context, projections and operation references remain inert (0.723889ms)
+✔ get_state_rule_status: schema pin, mapping and source promotion negatives remain enforced (39.05505ms)
+✔ get_certification_status: canonical normalization and output use accepted family with immutable detached selection (8.069762ms)
+✔ get_certification_status: exact context keys and original request are required at both canonical boundaries (1.240447ms)
+✔ get_certification_status: foreign shapes and extra authority claims refuse (2.455816ms)
+✔ get_certification_status: hostile inputs, context, projections and operation references remain inert (0.625531ms)
+✔ get_certification_status: schema pin, mapping and source promotion negatives remain enforced (34.456371ms)
+✔ search_intel_articles: canonical normalization and output use accepted family with immutable detached selection (2.10027ms)
+✔ search_intel_articles: exact context keys and original request are required at both canonical boundaries (0.353272ms)
+✔ search_intel_articles: foreign shapes and extra authority claims refuse (2.125699ms)
+✔ search_intel_articles: hostile inputs, context, projections and operation references remain inert (0.526672ms)
+✔ search_intel_articles: schema pin, mapping and source promotion negatives remain enforced (40.631262ms)
+✔ list_global_datasets: canonical normalization and output use accepted family with immutable detached selection (1.001076ms)
+✔ list_global_datasets: exact context keys and original request are required at both canonical boundaries (0.381664ms)
+✔ list_global_datasets: foreign shapes and extra authority claims refuse (1.82769ms)
+✔ list_global_datasets: hostile inputs, context, projections and operation references remain inert (0.586453ms)
+✔ list_global_datasets: schema pin, mapping and source promotion negatives remain enforced (35.084597ms)
+✔ get_representation: canonical normalization and output use accepted family with immutable detached selection (3.812817ms)
+✔ get_representation: exact context keys and original request are required at both canonical boundaries (1.371343ms)
+✔ get_representation: foreign shapes and extra authority claims refuse (3.195348ms)
+✔ get_representation: hostile inputs, context, projections and operation references remain inert (0.767215ms)
+✔ get_representation: schema pin, mapping and source promotion negatives remain enforced (39.691158ms)
+✔ actual production gateway keeps all71 unavailable without any authority or budget effects (10.576112ms)
+✔ directory and PE normalization retain independent selectors and explicit refusals (2.254392ms)
+✔ rule callbacks separately carry both clocks across stage and comment exact boundaries (1.067856ms)
+✔ certification callback uses explicit locale without interpreting source absence as authority (1.338383ms)
+✔ stored count races, UTF16 bounds and metadata-only query limits survive real callbacks (1.486747ms)
+✔ facility canonical callback checks every binding and exact full subject including decision ID (7.897142ms)
+✔ directory and rule namespace repair preserves canonical URN-only SchemaRef admission (0.765222ms)
+✔ nine selected contracts preserve exact prior37 descriptors and139 original boundaries (8.483954ms)
+✔ next canonical normalized request, closed context and result: search_sec_filings (2.726152ms)
+✔ next canonical raw schema pins and null-handler refusal: search_sec_filings (33.330978ms)
+✔ next canonical normalized request, closed context and result: search_fara_registrations (1.545445ms)
+✔ next canonical raw schema pins and null-handler refusal: search_fara_registrations (22.507574ms)
+✔ next canonical normalized request, closed context and result: search_lda_filings (2.085408ms)
+✔ next canonical raw schema pins and null-handler refusal: search_lda_filings (21.227318ms)
+✔ next canonical normalized request, closed context and result: search_acquisition_personnel (2.177166ms)
+✔ next canonical raw schema pins and null-handler refusal: search_acquisition_personnel (21.42154ms)
+✔ next canonical normalized request, closed context and result: get_acquisition_person (2.470797ms)
+✔ next canonical raw schema pins and null-handler refusal: get_acquisition_person (24.893314ms)
+✔ next canonical normalized request, closed context and result: get_bill_status (3.28341ms)
+✔ next canonical raw schema pins and null-handler refusal: get_bill_status (21.084744ms)
+✔ next canonical normalized request, closed context and result: search_floor_votes (2.29264ms)
+✔ next canonical raw schema pins and null-handler refusal: search_floor_votes (20.425051ms)
+✔ next canonical normalized request, closed context and result: search_congress_bills (2.283796ms)
+✔ next canonical raw schema pins and null-handler refusal: search_congress_bills (24.210086ms)
+✔ next canonical normalized request, closed context and result: read_bill_text (3.390932ms)
+✔ next canonical raw schema pins and null-handler refusal: read_bill_text (20.134934ms)
+✔ current role is mandatory and rechecked before personnel contact release (1.210651ms)
+✔ default Congress is trusted explicit context for both cohesive congressional families (0.859233ms)
+✔ all next canonical callbacks reject hostile getters without effects (0.534704ms)
+node:fs:622
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open '/workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/read-continuation-20261012/integration-next-review/base-catalog.json'
+    at Object.openSync (node:fs:622:18)
+    at readFileSync (node:fs:488:35)
+    at file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-selected-next-independent.test.mjs:14:23
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/read-continuation-20261012/integration-next-review/base-catalog.json'
+}
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-selected-next-independent.test.mjs (2136.337768ms)
+ℹ tests 488
+ℹ suites 0
+ℹ pass 470
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 45884.129568
+
+✖ failing tests:
+
+test at apps/gateway/test/action-item-context-independent.test.mjs:1:1
+✖ apps/gateway/test/action-item-context-independent.test.mjs (78.563845ms)
+  'test failed'
+
+test at apps/gateway/test/capability-next-independent.test.mjs:7:1
+✖ independent combined catalog remains invisible and refuses all71 operations before every effect (8.678604ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  84 !== 71
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/apps/gateway/test/capability-next-independent.test.mjs:9:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 84,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/mail-context-independent.test.mjs:180:1
+✖ mail independent: source-disabled canonical catalog never reaches supplied ports (9.092198ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  83 !== 70
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/apps/gateway/test/mail-context-independent.test.mjs:183:133)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 83,
+    expected: 70,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/memory-context-independent.test.mjs:97:1
+✖ independent: canonical mail and memory profiles are selected; actual15 stay unavailable (2.870081ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'list_global_datasets',
+  +     'dataset-metadata/1'
+  +   ],
+  +   [
+        'mail.list_messages',
+        'mail-candidates/1'
+      ],
+      [
+        'mail.search_messages',
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/apps/gateway/test/memory-context-independent.test.mjs:99:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'list_global_datasets', 'dataset-metadata/1' ], [ 'mail.list_messages', 'mail-candidates/1' ], [ 'mail.search_messages', 'mail-candidates/1' ], [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    expected: [ [ 'mail.list_messages', 'mail-candidates/1' ], [ 'mail.search_messages', 'mail-candidates/1' ], [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-binding.test.mjs:16:1
+✖ partial action binding does not declare full native parity or activate a handler (7.674405ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  84 !== 71
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-action-item-binding.test.mjs:19:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 84,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-binding.test.mjs:79:1
+✖ all fourteen original descriptors and all139 native rows remain exact (2.996277ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'bb98de7299112fa96eb10575ce1e36fa5ddcdbb8a45311aa35956f5cd8b52f79'
+  - '74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-action-item-binding.test.mjs:89:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'bb98de7299112fa96eb10575ce1e36fa5ddcdbb8a45311aa35956f5cd8b52f79',
+    expected: '74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-action-item-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-action-item-independent.test.mjs (69.560501ms)
+  'test failed'
+
+test at packages/contracts/test/retrieval-backend-next-independent.test.mjs:31:1
+✖ all139 originals and67 prior descriptors/callbacks survive exactly four new mappings (6.901118ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '0.2.11' !== '0.2.10'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-backend-next-independent.test.mjs:32:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.2.11',
+    expected: '0.2.10',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-catalog-bindings.test.mjs:16:1
+✖ preserves the ten typed additions plus memory read within all139/96/43 boundaries (6.906527ms)
+  Error: ENOENT: no such file or directory, open '/workspace/meri-backend-execution-tests-20261012/docs/coordination/r2/capabilities.json'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-catalog-bindings.test.mjs:18:29)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/workspace/meri-backend-execution-tests-20261012/docs/coordination/r2/capabilities.json'
+  }
+
+test at packages/contracts/test/retrieval-civic-integration-independent.test.mjs:36:1
+✖ all original139 rows,56 descriptors and callback implementations survive seven exact additions (7.063804ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  84 !== 71
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-civic-integration-independent.test.mjs:37:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 84,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-mail.test.mjs:131:1
+✖ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation (6.982391ms)
+  Error: ENOENT: no such file or directory, open '/workspace/meri-backend-execution-tests-20261012/docs/coordination/r2/capabilities.json'
+      at Object.openSync (node:fs:622:18)
+      at readFileSync (node:fs:488:35)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-mail.test.mjs:133:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/workspace/meri-backend-execution-tests-20261012/docs/coordination/r2/capabilities.json'
+  }
+
+test at packages/contracts/test/retrieval-memory-binding.test.mjs:176:1
+✖ catalog preserves the original thirteen descriptors and complete selected/deferred ledger (3.173722ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '3274e11265d66509446c87503450c7201f75b74ffb9532053f3784a690b12bd9'
+  - 'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-memory-binding.test.mjs:179:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '3274e11265d66509446c87503450c7201f75b74ffb9532053f3784a690b12bd9',
+    expected: 'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-next-bindings.test.mjs:15:1
+✖ selected read additions preserve every prior descriptor and original accepted boundary (2.241841ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '69f0efe900eb43e6fe55d312dc67d6719016fb0e9bcde59abd0ce2eb69f07f15'
+  - '7302157d3d1059774b198b48f47591db55b85fa63a1bf025d2741ec4b1187b2b'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-next-bindings.test.mjs:18:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '69f0efe900eb43e6fe55d312dc67d6719016fb0e9bcde59abd0ce2eb69f07f15',
+    expected: '7302157d3d1059774b198b48f47591db55b85fa63a1bf025d2741ec4b1187b2b',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-observed-integration-independent.test.mjs:29:1
+✖ original139 rows and63 descriptors/callbacks survive exactly four full mappings (6.593964ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  84 !== 71
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-observed-integration-independent.test.mjs:30:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 84,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-observed-integration-independent.test.mjs:77:1
+✖ Florida normalized Input pin retains raw defaults and named client resolution (0.428034ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'FloridaBudgetRequest'
+  - 'FloridaBudgetInput'
+                  ^
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-observed-integration-independent.test.mjs:78:41)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'FloridaBudgetRequest',
+    expected: 'FloridaBudgetInput',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-read-continuation-independent.test.mjs:75:1
+✖ independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings (18.625193ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'mapped'
+  - 'pending'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-read-continuation-independent.test.mjs:88:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'mapped',
+    expected: 'pending',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-reference-integration-independent.test.mjs:43:1
+✖ exact PR28 descriptors and callback source survive in single registry with full original inventory (8.272917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  84 !== 71
+  
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/retrieval-reference-integration-independent.test.mjs:44:32)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 84,
+    expected: 71,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-selected-next-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-selected-next-independent.test.mjs (2136.337768ms)
+  'test failed'

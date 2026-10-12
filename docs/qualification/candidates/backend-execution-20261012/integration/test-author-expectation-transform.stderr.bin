@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/meri-backend-execution-tests-20261012/docs/qualification/candidates/backend-execution-20261012/integration/update-test-expectations.py", line 148, in <module>
+    assert inverse.count(item['new']) == item['count'], (name, item['new'][:90])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('packages/contracts/test/retrieval-memory-binding.test.mjs', '.length,13)')

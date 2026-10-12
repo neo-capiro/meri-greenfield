@@ -1,0 +1,41 @@
+✔ exact13 accepted mappings preserve139 original identities and84 unavailable descriptors (7.112012ms)
+✔ read_chat_attachments: caller Request, exact context and normalized hash connect through canonical resolver (4.679054ms)
+✔ read_chat_attachments: actual output callback receives original request, strips only declared context, detaches result (5.423383ms)
+✔ read_monday_client_boards: caller Request, exact context and normalized hash connect through canonical resolver (0.872992ms)
+✔ read_monday_client_boards: actual output callback receives original request, strips only declared context, detaches result (1.997583ms)
+✔ get_client_context: caller Request, exact context and normalized hash connect through canonical resolver (1.128176ms)
+✔ get_client_context: actual output callback receives original request, strips only declared context, detaches result (10.918686ms)
+✔ search_client_knowledge: caller Request, exact context and normalized hash connect through canonical resolver (1.014755ms)
+✔ search_client_knowledge: actual output callback receives original request, strips only declared context, detaches result (1.50969ms)
+✔ query_knowledge_graph: caller Request, exact context and normalized hash connect through canonical resolver (0.938471ms)
+✔ query_knowledge_graph: actual output callback receives original request, strips only declared context, detaches result (1.0777ms)
+✔ search_memory: caller Request, exact context and normalized hash connect through canonical resolver (1.364572ms)
+✔ search_memory: actual output callback receives original request, strips only declared context, detaches result (2.621481ms)
+✔ search_research_sources: caller Request, exact context and normalized hash connect through canonical resolver (0.922377ms)
+✔ search_research_sources: actual output callback receives original request, strips only declared context, detaches result (0.759763ms)
+✔ search_legislative_research: caller Request, exact context and normalized hash connect through canonical resolver (1.890132ms)
+✔ search_legislative_research: actual output callback receives original request, strips only declared context, detaches result (3.061482ms)
+✔ get_legal_reference: caller Request, exact context and normalized hash connect through canonical resolver (0.946934ms)
+✔ get_legal_reference: actual output callback receives original request, strips only declared context, detaches result (4.053595ms)
+✔ query_global_data: caller Request, exact context and normalized hash connect through canonical resolver (1.934999ms)
+✔ query_global_data: actual output callback receives original request, strips only declared context, detaches result (1.424441ms)
+✔ search_committee_hearings: caller Request, exact context and normalized hash connect through canonical resolver (1.388056ms)
+✔ search_committee_hearings: actual output callback receives original request, strips only declared context, detaches result (3.806253ms)
+✔ search_legiwatch_news: caller Request, exact context and normalized hash connect through canonical resolver (2.501481ms)
+✔ search_legiwatch_news: actual output callback receives original request, strips only declared context, detaches result (6.136566ms)
+✔ actions.query: caller Request, exact context and normalized hash connect through canonical resolver (2.892669ms)
+✔ actions.query: actual output callback receives original request, strips only declared context, detaches result (0.941055ms)
+✔ all31 corrected advertised caller definitions retain exact normalized outcomes and module pins (28.766869ms)
+✔ 13 new and31 repaired bindings pin exact unchanged family schema bytes and output definitions (8.011796ms)
+✔ selected context and output substitutions fail after canonical connection (3.516196ms)
+✔ raw defaults do not require internal selections and full action does not change old partial mode (0.866393ms)
+✔ action successor graph rejects wrong target, partial target, self-cycle, aliases and enabled handlers (88.382847ms)
+✔ dataset profile is an explicit metadata-only composition and all84 source operations remain unavailable (11.803095ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2642.616693

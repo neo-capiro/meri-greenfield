@@ -1,0 +1,57 @@
+✔ exact13 accepted mappings preserve139 original identities and84 unavailable descriptors (7.277627ms)
+✔ read_chat_attachments: caller Request, exact context and normalized hash connect through canonical resolver (4.083847ms)
+✔ read_chat_attachments: actual output callback receives original request, strips only declared context, detaches result (5.179353ms)
+✔ read_monday_client_boards: caller Request, exact context and normalized hash connect through canonical resolver (0.887564ms)
+✔ read_monday_client_boards: actual output callback receives original request, strips only declared context, detaches result (1.642718ms)
+✔ get_client_context: caller Request, exact context and normalized hash connect through canonical resolver (1.114555ms)
+✖ get_client_context: actual output callback receives original request, strips only declared context, detaches result (1.014885ms)
+✔ search_client_knowledge: caller Request, exact context and normalized hash connect through canonical resolver (0.919512ms)
+✔ search_client_knowledge: actual output callback receives original request, strips only declared context, detaches result (1.214976ms)
+✔ query_knowledge_graph: caller Request, exact context and normalized hash connect through canonical resolver (0.957899ms)
+✔ query_knowledge_graph: actual output callback receives original request, strips only declared context, detaches result (0.914575ms)
+✔ search_memory: caller Request, exact context and normalized hash connect through canonical resolver (0.942516ms)
+✔ search_memory: actual output callback receives original request, strips only declared context, detaches result (3.319969ms)
+✔ search_research_sources: caller Request, exact context and normalized hash connect through canonical resolver (0.948525ms)
+✔ search_research_sources: actual output callback receives original request, strips only declared context, detaches result (0.686151ms)
+✔ search_legislative_research: caller Request, exact context and normalized hash connect through canonical resolver (1.858362ms)
+✔ search_legislative_research: actual output callback receives original request, strips only declared context, detaches result (2.954199ms)
+✔ get_legal_reference: caller Request, exact context and normalized hash connect through canonical resolver (0.972702ms)
+✔ get_legal_reference: actual output callback receives original request, strips only declared context, detaches result (3.825098ms)
+✔ query_global_data: caller Request, exact context and normalized hash connect through canonical resolver (2.08957ms)
+✔ query_global_data: actual output callback receives original request, strips only declared context, detaches result (1.285742ms)
+✔ search_committee_hearings: caller Request, exact context and normalized hash connect through canonical resolver (1.212812ms)
+✔ search_committee_hearings: actual output callback receives original request, strips only declared context, detaches result (4.466643ms)
+✔ search_legiwatch_news: caller Request, exact context and normalized hash connect through canonical resolver (2.157622ms)
+✔ search_legiwatch_news: actual output callback receives original request, strips only declared context, detaches result (5.719645ms)
+✔ actions.query: caller Request, exact context and normalized hash connect through canonical resolver (2.629902ms)
+✔ actions.query: actual output callback receives original request, strips only declared context, detaches result (1.004159ms)
+✔ all31 corrected advertised caller definitions retain exact normalized outcomes and module pins (27.07628ms)
+✔ 13 new and31 repaired bindings pin exact unchanged family schema bytes and output definitions (7.115804ms)
+✔ selected context and output substitutions fail after canonical connection (4.146484ms)
+✔ raw defaults do not require internal selections and full action does not change old partial mode (0.829467ms)
+✔ action successor graph rejects wrong target, partial target, self-cycle, aliases and enabled handlers (89.662428ms)
+✔ dataset profile is an explicit metadata-only composition and all84 source operations remain unavailable (16.38031ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2477.937062
+
+✖ failing tests:
+
+test at packages/contracts/test/backend-execution-connected.test.mjs:79:2
+✖ get_client_context: actual output callback receives original request, strips only declared context, detaches result (1.014885ms)
+  Error: Operation contract requires inert JSON data
+      at fail (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:4:33)
+      at copyData (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:31:7)
+      at Object.assertOutput (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:98:22)
+      at TestContext.<anonymous> (file:///workspace/meri-backend-execution-tests-20261012/packages/contracts/test/backend-execution-connected.test.mjs:80:94)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

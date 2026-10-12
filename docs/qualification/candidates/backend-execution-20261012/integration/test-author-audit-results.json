@@ -1,0 +1,675 @@
+{
+  "dependency": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "source": "60ef3f099107886565d2f20723ce0a01fcb9ca82",
+  "checks": [
+    {
+      "check": "exact19 predecessor paths",
+      "passed": true
+    },
+    {
+      "check": "exact13 newly bound operations",
+      "passed": true
+    },
+    {
+      "check": "exact31 raw request schema repairs",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-integration-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-mail.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-next-bindings.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-action-item-binding.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-catalog-bindings.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-selected-next-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-memory-binding.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/mail-context-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/capability-next-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/action-item-context-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "apps/gateway/test/memory-context-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: final digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: immutable predecessor digest",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: exact inverse",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: original test declaration count",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: assertion calls retained or added",
+      "passed": true
+    },
+    {
+      "check": "packages/contracts/test/retrieval-backend-next-independent.test.mjs: no skip/only added",
+      "passed": true
+    },
+    {
+      "check": "source delta contains only21 allocated test/helper paths",
+      "passed": true
+    },
+    {
+      "check": "reviewed test source freeze remains exact",
+      "passed": true
+    },
+    {
+      "check": "historical fixture evidence unchanged",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-final.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-final.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-final.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-final.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-initial.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-initial.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-initial.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-connected-initial.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-final.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-final.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-final.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-final.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-fixed.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-fixed.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-fixed.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform-fixed.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-expectation-transform.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-before.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-before.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-before.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-before.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-final.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-final.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-final.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-final.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-updated.json: child exited and was reaped",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-updated.json: owned group remains absent",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-updated.json: stdout",
+      "passed": true
+    },
+    {
+      "check": "test-author-predecessor-updated.json: stderr",
+      "passed": true
+    },
+    {
+      "check": "predecessor final source receipt pins exact immutable candidate",
+      "passed": true
+    },
+    {
+      "check": "connected final source receipt pins repaired immutable candidate",
+      "passed": true
+    }
+  ],
+  "passed": 154,
+  "total": 154,
+  "captures": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-connected-final.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 337073,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-connected-initial.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 336533,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform-final.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 336433,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform-fixed.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 335085,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-expectation-transform.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 334186,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-before.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 333888,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-final.json",
+      "exitCode": 0,
+      "ownedPidAndPgid": 336575,
+      "groupAbsent": true
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-predecessor-updated.json",
+      "exitCode": 1,
+      "ownedPidAndPgid": 335191,
+      "groupAbsent": true
+    }
+  ],
+  "limits": "Lexical declaration/assertion counts are supplementary, not an AST semantic proof. Exact inverse and passing behavioral checks remain separate evidence. No native/runtime claim."
+}
