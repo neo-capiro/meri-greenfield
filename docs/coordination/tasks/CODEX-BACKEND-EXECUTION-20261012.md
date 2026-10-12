@@ -37,7 +37,7 @@ Latest parent correction: frozen frontend d5 second build `18b3316a-9403-40f9-80
 
 Meaningful adapter/handler behavior, current identity/expiry/revocation and late settlement controls; strict scalar/variant/paging/correlation checks for every accepted family; canonical source/hash/registry consistency; public distribution preservation; unchanged original tests or explicitly reviewed reversible expectation repairs; raw failure/preimage preservation; exact commit and process-exit receipts. Live policy, JWT broker attestation, native persistence, deployment, renderer/browser, recovery, budgets and full release gates remain separately unqualified.
 
-## Shared composition outline (21:15 UTC continuation)
+## Shared composition outline (21:09 UTC continuation)
 
 Root extracts the existing gateway lifetime core to `packages/runtime/operation-lifetime.mjs` with a domain error factory; the gateway export delegates without changing deadline/cancellation/pending-operation semantics. This lets the read-only Temporal inspection adapter reuse one lifecycle owner without importing gateway application code. Original gateway deadline/release checks and injected-domain checks precede acceptance. Schedule inspection owns no mutator and borrows rather than closes its SDK client.
 

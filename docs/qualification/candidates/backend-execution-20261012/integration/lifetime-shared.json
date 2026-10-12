@@ -1,0 +1,39 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs",
+    "apps/gateway/test/memory-context.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "apps/gateway/test/memory-proposal-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-backend-execution-20261012",
+  "sourceHead": "37f84fcb3bf2d34ae59673b1644fac64f1ef798c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T21:09:29.687244+00:00",
+  "durationSeconds": 4.958,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 322863,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/lifetime-shared.stdout.bin",
+      "bytes": 13269,
+      "sha256": "cbe78af57503b7213cc6818889b06420bba45693dff44aa427e4dd49c95ac356"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration/lifetime-shared.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
