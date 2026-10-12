@@ -1,0 +1,17 @@
+{
+  "name": "pptxgenjs",
+  "version": "4.0.1",
+  "license": "MIT",
+  "main": "dist/pptxgen.cjs.js",
+  "packageJsonBytes": 2265,
+  "packageJsonSha256": "a4fc694898ef6f7da4c5840b799b593a0a74e9e05b7490b2ac5ee144762db477",
+  "entryBytes": 516944,
+  "entrySha256": "873d182a8e2e1c0b5e522ef146117936b96b9b2024667bd4c1de59e2b031d27a",
+  "dependencies": {
+    "@types/node": "^22.8.1",
+    "https": "^1.0.0",
+    "image-size": "^1.2.1",
+    "jszip": "^3.10.1"
+  },
+  "scope": "Read-only installed package metadata/entry-byte identity; entrypoint not imported or executed"
+}

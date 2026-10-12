@@ -9,5 +9,17 @@
     "incorrect": "apps/gateway/lib/invocation-lifetime.mjs",
     "correct": "apps/gateway/dispatch/dispatch-lifetime.mjs; packages/runtime/operation-lifetime.mjs",
     "effect": "None; Git path absent, corrected by tree search"
+  },
+  "dependencyAccess": {
+    "ownedSymlinks": 7,
+    "borrowedTarget": "existing read-continuation minimal packages",
+    "copiedOrInstalled": false,
+    "cleanup": "Remove only reviewer-created symlinks at closeout; never target directories"
+  },
+  "sparsePreparationFailure": {
+    "command": "git sparse-checkout add --no-cone <four existing dependency paths>",
+    "result": "unknown option no-cone; this subcommand inherits mode",
+    "correction": "same four paths added without unsupported option",
+    "sourceChanged": false
   }
 }
