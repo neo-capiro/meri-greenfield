@@ -1,0 +1,73 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/external/fedramp/fedramp.client.ts",
+      "blob": "9e4fa28f86eead98d14c8b4f4458d8ac94a55098",
+      "bytes": 4878,
+      "sha256": "35f6d088d643e304b7a02f4072ee2f065a22430e97c78e3154771a49277e181d",
+      "observedBlob": "9e4fa28f86eead98d14c8b4f4458d8ac94a55098",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/external/fedramp/fedramp.client.spec.ts",
+      "blob": "8da723f21fc59e8262912b13fb053621d80bf688",
+      "bytes": 2450,
+      "sha256": "1e573108a644e5a2484817633ebfa3523beb963b33cd1faaee4ed361769f2972",
+      "observedBlob": "8da723f21fc59e8262912b13fb053621d80bf688",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-certification-status-tool.spec.ts",
+      "blob": "f125d2f3c61f64637291b267dfb184c70c07b34b",
+      "bytes": 2421,
+      "sha256": "9a26e9ed040fb2d73453e4e34163856caa1d8c4515db7023da7a67b601fa37c7",
+      "observedBlob": "f125d2f3c61f64637291b267dfb184c70c07b34b",
+      "unchanged": true
+    },
+    {
+      "path": "packages/meriv2-core/src/grounding/status-provenance.ts",
+      "blob": "2ba4385f88b894c2fc529ca27e1048c5a0c92ab5",
+      "bytes": 8602,
+      "sha256": "a3caeeb4026024b3bbc5dcfd73c4fa19ac4b4e9f50955cf35bf4beca9c232aad",
+      "observedBlob": "2ba4385f88b894c2fc529ca27e1048c5a0c92ab5",
+      "unchanged": true
+    },
+    {
+      "path": "packages/meriv2-core/src/grounding/status-provenance.spec.ts",
+      "blob": "7979205e1e5e1513f73d95ae4b5e07dda87e6dd8",
+      "bytes": 5287,
+      "sha256": "32d1d0c85d8c59f6267b75f17e9dc30b07871fdd9670a09c516e0173b6fa5a4c",
+      "observedBlob": "7979205e1e5e1513f73d95ae4b5e07dda87e6dd8",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "bytes": 44992,
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedBlob": "598e9146e5568349f213cbd548de0213113dc924",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedBlob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "unchanged": true
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "marketplaceFetched": false
+}
