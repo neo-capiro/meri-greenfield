@@ -1,0 +1,328 @@
+{
+  "scope": "EXACT_GIT_PACKET_METADATA_ONLY",
+  "sourceCommit": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+  "authorPacket": "b73c2994080cb9c03647f4ddf07f8057e37b71d3",
+  "manifestSha256": "a4d4e4d6239c0e608f5fd8fe157752f5622d09b694dfca920405ff282c1f8862",
+  "manifestMembers": 43,
+  "captures": [
+    {
+      "label": "focused-first",
+      "exitCode": 1,
+      "sourceHead": "2351e2a48cefad9ecc40155fcd2f49b96960a12a",
+      "sourceDiffBytes": 0,
+      "ownedGroup": 284417
+    },
+    {
+      "label": "focused-corrected",
+      "exitCode": 0,
+      "sourceHead": "2351e2a48cefad9ecc40155fcd2f49b96960a12a",
+      "sourceDiffBytes": 0,
+      "ownedGroup": 284982
+    },
+    {
+      "label": "focused-freeze",
+      "exitCode": 0,
+      "sourceHead": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+      "sourceDiffBytes": 0,
+      "ownedGroup": 286645
+    },
+    {
+      "label": "source-audit",
+      "exitCode": 0,
+      "sourceHead": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+      "sourceDiffBytes": 0,
+      "ownedGroup": 287000
+    },
+    {
+      "label": "source-audit-final",
+      "exitCode": 0,
+      "sourceHead": "51a296e7d4a1f3ecc2f2f844e3baeeb11f70962f",
+      "sourceDiffBytes": 0,
+      "ownedGroup": 287135
+    }
+  ],
+  "passed": 70,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "manifest source binding",
+      "passed": true
+    },
+    {
+      "name": "unique safe author manifest members",
+      "passed": true
+    },
+    {
+      "name": "complete author packet membership",
+      "passed": true
+    },
+    {
+      "name": "docs/coordination/reports/CODEX-OUTREACH-QUERY-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/first-source-identities.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/fixture-corrections.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/outreach-query.schema.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/initial-source/retrieval-outreach-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/inspection-corrections.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/metadata-corrections.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/outline.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/private-content-scan.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/projection-fields.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-data.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-initial.py.txt",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-facts.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints-initial-extraction.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/storage-constraints.json",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-authored.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace-full.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/outreach-query-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/outreach-query.schema.json",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-outreach-query.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "outreach-query.schema.json unchanged final packet source",
+      "passed": true
+    },
+    {
+      "name": "outreach-query.schema.json unchanged through author fixture correction",
+      "passed": true
+    },
+    {
+      "name": "outreach-query-validation.mjs unchanged final packet source",
+      "passed": true
+    },
+    {
+      "name": "outreach-query-validation.mjs unchanged through author fixture correction",
+      "passed": true
+    },
+    {
+      "name": "author test unchanged final packet",
+      "passed": true
+    },
+    {
+      "name": "focused-first bounded owned process cleanup",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-first.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "focused-corrected bounded owned process cleanup",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-corrected.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "focused-freeze bounded owned process cleanup",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/focused-freeze.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "source-audit bounded owned process cleanup",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "source-audit-final bounded owned process cleanup",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stdout.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "docs/qualification/candidates/read-continuation-20261012/outreach-query-author/source-audit-final.stderr.bin receipt binding",
+      "passed": true
+    },
+    {
+      "name": "first author35pass2fail retained",
+      "passed": true
+    },
+    {
+      "name": "exact author37pass retained",
+      "passed": true
+    },
+    {
+      "name": "first failure exit retained",
+      "passed": true
+    },
+    {
+      "name": "successful final captures",
+      "passed": true
+    }
+  ]
+}
