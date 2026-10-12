@@ -145,8 +145,15 @@ after their captures, with no timeouts or group kill required. Tracked diff hash
 in these precommit receipts do not cover then-untracked files; preserved exact
 snapshots and the final source commit provide that binding.
 
-Final source-commit replay, preservation manifest and independent verdict follow
-as metadata-only closeout. No private source, service, SQL, native process,
+Exact source commit `b6d446a488e81f838f41095028f714b215d070de`, tree
+`6ff3e81a9a843343e70f2475745342659a5e565a`, passed 34/34 on the source-commit
+replay; PGID172552 was absent, without timeout or group kill. All 5,620 original
+Git file identities are unchanged. The four-file source SHA256 manifest matches
+the committed tree; all six private reference pins match their observed blobs.
+`git diff --cached --check` passed before source commit. Independent source
+acceptance remains reviewer-owned and is not asserted by this author report.
+
+No private source, service, SQL, native process,
 provider, runtime, ingestion or deployment was executed. Parameterized querying,
 calendar derivation, current authorization, member resolution and source truth
 remain unqualified. These source tests do not pass any G1 runtime gate. No
