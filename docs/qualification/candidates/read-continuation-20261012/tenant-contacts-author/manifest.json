@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "docs/coordination/reports/CODEX-TENANT-CONTACTS-AUTHOR-20261012.md",
-      "bytes": 7114,
-      "sha256": "5ff27309646af32920be196fd39846c56eb61eb959912cc15149f2aa50d2fd0f"
+      "bytes": 7578,
+      "sha256": "e687208370aebf9fbc196ea573987ea70d9a33e2184e89300a71a9bb2c1a0986"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/tenant-contacts-author/capture-reaped.py",
@@ -72,5 +72,6 @@
       "bytes": 2874,
       "sha256": "9fd4470c8bc94f622c33b864acd72b021f72726df1f82ab03afbfd81adbbc196"
     }
-  ]
+  ],
+  "preservedInitialPacket": "15969416f8ba0b6f4cc9b6bb44237946a3a38ab7"
 }
