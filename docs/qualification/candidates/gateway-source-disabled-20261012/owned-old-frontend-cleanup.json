@@ -1,0 +1,32 @@
+{
+  "owner": "frontend independent review e210f3198ef615af1ffbc32c81197bfb579e7d13",
+  "authority": "root explicit owner-coordinated cleanup; old review deps/output no longer borrowed",
+  "scope": [
+    {
+      "path": "/workspace/scratch/853fba62b1f1/capiro-frontend-consolidation-independent-20261011/node_modules",
+      "status": "REMOVED_TASK_OWNED_UNTRACKED_PHYSICAL_DIRECTORY",
+      "elapsedSeconds": 0.6541650079998362,
+      "borrowedTargetsFollowed": false
+    },
+    {
+      "path": "/workspace/scratch/853fba62b1f1/capiro-frontend-consolidation-independent-20261011/apps/web/.next",
+      "status": "REMOVED_TASK_OWNED_UNTRACKED_PHYSICAL_DIRECTORY",
+      "elapsedSeconds": 0.005782469001132995,
+      "borrowedTargetsFollowed": false
+    }
+  ],
+  "recordedServerAndBrowserExitVerified": true,
+  "trackedPathsUnderRemovedDirectories": 0,
+  "before": {
+    "total": 33770192896,
+    "used": 32535851008,
+    "free": 0
+  },
+  "after": {
+    "total": 33770192896,
+    "used": 31619330048,
+    "free": 416100352
+  },
+  "otherOwnersTouched": false,
+  "trackedEvidenceSourceAssetsGitPreserved": true
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "meri-handover-publication-readback/1",
+  "verifiedAt": "2026-10-12T01:29:01.439Z",
+  "pr": "https://github.com/neo-capiro/meri-greenfield/pull/9",
+  "payloadCommit": "65ccb6f85e140b9dede4a02f937838495f02a12c",
+  "payloadTree": "a3f0a3ea441f7e1d7bab7f34088b21041c2a3580",
+  "localSourceEquivalent": "5b7e9deb45a2255daba2d158b814b2b6c67f5ddd",
+  "parent": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "readback": {
+    "branchHead": "PASS",
+    "immutableCommitAndParent": "PASS",
+    "treeExactMatch": "PASS",
+    "recursiveTreeTruncated": false,
+    "allTrackedBlobPathModeIdentities": "PASS",
+    "trackedBlobCount": 1735,
+    "changedFiles": 110,
+    "largeUploadedBlobIdentities": 8
+  },
+  "frontend": {
+    "head": "3cc30ff3182e8050d563516607866cf07efe2aef",
+    "tree": "d67a73f5a3d68ed3d927d3611b5f8377f826f9b1",
+    "pr": 4
+  },
+  "acceptedBackend": {
+    "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+    "pr": 7
+  },
+  "scope": "PRESERVATION_ONLY_UNREVIEWED_CANDIDATES_NOT_G1_OR_RELEASE",
+  "publicationDiagnostic": {
+    "newBranchInitialUpdateRef": "422 Reference does not exist; no ref mutation occurred",
+    "recovery": "Supported create_branch at exact existing payload commit succeeded; no force/deletion"
+  },
+  "receiptScope": "Verifies complete payload parent; this receipt is appended in a metadata-only descendant, whose final head/tree are in PR9 and the session final response",
+  "admission": {
+    "mainMerge": false,
+    "awsWrites": false,
+    "paidProviderCalls": false,
+    "toolsEnabled": false,
+    "G1": false,
+    "production": false
+  }
+}

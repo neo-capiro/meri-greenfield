@@ -1,0 +1,301 @@
+{
+  "baseCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "unchangedContractFiles": [
+    {
+      "path": "packages/contracts/README.md",
+      "bytes": 6566,
+      "sha256": "8ce45c8fe273b5d929f455a3d74803c4267a0113a530cd7e584c0886c999edd6",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/THIRD-PARTY-NOTICES.md",
+      "bytes": 3841,
+      "sha256": "5c7b0def28c37c7a1855ecc25c6cf3ea61e79dad7c5a1601ad69fc9d7dd361dd",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.d.ts",
+      "bytes": 166,
+      "sha256": "638d76071540b340cc8bd7efd728e3847cb22456dc8ec45d8733497792a0ba30",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/browser.mjs",
+      "bytes": 466002,
+      "sha256": "3682cd96d10c1cc53f4e4a91845c6da514eda9d524ce8342b89e09ffcc19ae83",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/contracts.d.ts",
+      "bytes": 4090,
+      "sha256": "e0366e2f5a668e9e14f09e90c175dce53cbec176125aa98a58c878b44fd74fbd",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/index.d.ts",
+      "bytes": 85,
+      "sha256": "b1d45e99574c3834d70354fd973298b5a9b4e76befc11d6e2996c51c70266642",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.d.ts",
+      "bytes": 485,
+      "sha256": "63e058d979f30b9807ed9a7c5df2760c06a180bd903ff13daa9c96bfcba78087",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/dist/metadata.mjs",
+      "bytes": 533,
+      "sha256": "63a4733b40a9671dbca69419d12cae894adca42a9f2ced83cd729ce239e1ef94",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/generate.mjs",
+      "bytes": 4538,
+      "sha256": "80c645d6c1ef206e7e67d2d553c4277d33c2f4980c9cddcd2862c4bb1b54e06e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/package-lock.json",
+      "bytes": 24995,
+      "sha256": "dae8c670bb76b9c570f174d8749a8c59179cf865d5d6ec83b64a67bb5b2b06a6",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/fixture.schema.json",
+      "bytes": 26397,
+      "sha256": "fbf0655ab6960ac5c486c08ba70b2a31310086ca282f0e9a1f41c08430ebfa13",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.mjs",
+      "bytes": 3849,
+      "sha256": "0f587aefd26e189fd9099b1639910da6ec37725b5729c4ba5d98a4695ec5fcde",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/native-evidence.schema.json",
+      "bytes": 11751,
+      "sha256": "5f9ac8980940bf4928b2d655fa5e299208f3d6dbf8f1adceceb9727cb69f62f5",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/validate.mjs",
+      "bytes": 14049,
+      "sha256": "2d0bd74171e390c370ad8d9e599f7c46ce4751e5efd6ba2c18923090b749b86c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/qualification-sdk/wire.mjs",
+      "bytes": 1925,
+      "sha256": "f8f506ceeca820f3957b67f8bcbfc36c80f009356baba83b32ac99afe401ad9a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 11365,
+      "sha256": "8fbf9c152c7a08678150f122bdfa0dec33253dc877509f72ef0e1b17ac9b8307",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 76401,
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5255,
+      "sha256": "e76240850b6436b49ee8dba87b75579c3e59bc6187b35c7ea6353286f1ec943a",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/boundaries.test.mjs",
+      "bytes": 5199,
+      "sha256": "521f72c4fed9333db9eeca4e3b7a34e01ff94cb69b61f876e023f58c5f7afa7e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/native-evidence-fixture.mjs",
+      "bytes": 3746,
+      "sha256": "f8560005230f043284c4a879a4ab72a8bd115c202d9f407614226e57f5a8e35c",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/public-package.test.mjs",
+      "bytes": 6135,
+      "sha256": "707a08a5b4b63338c1e1cd4c0f6e9166fd4d3fdcd78d15a094b3a4618c400e4d",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/public-types.ts",
+      "bytes": 760,
+      "sha256": "ac20e2d9ab7312f3d008a1b7f8b64770435668420b56da3eda7ba6c631a1f1ba",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13570,
+      "sha256": "e5f9eb9b368e3bcd92453c3738246bc252407026eb5c0e5683ecae459deac047",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-data-search.test.mjs",
+      "bytes": 33403,
+      "sha256": "8c54528ece9781bce90d05754da499ceaac0b3d121328f1112e43b6b47449fc1",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-federal-market.test.mjs",
+      "bytes": 34970,
+      "sha256": "f42aff67c1b8c9832c774feab4dc5fba50097720793fef5efca99e9e076b0016",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 29989,
+      "sha256": "9ffa83f7c443c1fb917664ebc0a04ccd5994e7bd2c0f639f8c264b86feaee747",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-meeting-source.test.mjs",
+      "bytes": 33626,
+      "sha256": "cb2972660effd42f4eed8bdf20d1ea8580a9db6e38700cdd56e80eb44615f479",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "bytes": 31046,
+      "sha256": "fb31ba2aca26600e2404ef6137c9a568e0fd27ed00299f4bc5b3a3ff1d3bdfb0",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/retrieval-r2.test.mjs",
+      "bytes": 21021,
+      "sha256": "474228f11a79bc865233509bc1aba02533d4975a5c0b0371e47529aff9d48a23",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-contract.test.mjs",
+      "bytes": 18023,
+      "sha256": "98f2e73b0ebda0f8e896d07ed02b6f3b0351892dc5241cac98df584da1a3cc93",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-fixture-wire.test.mjs",
+      "bytes": 11632,
+      "sha256": "0a292a418855ab4f3f07f096a618772928e06533fa05b41db4d4d6a56506abcc",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/test/sdk-native-evidence.test.mjs",
+      "bytes": 6919,
+      "sha256": "46aa59d850f26786dd5c8a24eea4c8a3fd573c0b2ce082b85ea45a6e3387a64e",
+      "unchangedFromBase": true
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10",
+      "unchangedFromBase": true
+    }
+  ],
+  "existingAssertionsByteExact": true,
+  "compositionOnlyChange": "one import, append schema group, compose/export family factory; all preexisting validator bytes restored exactly"
+}

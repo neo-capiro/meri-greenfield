@@ -1,0 +1,42 @@
+{
+  "schema": "meri-gateway-handover-state/1",
+  "sourceCommit": "7a040bd85c980da7d1a46b51a6298e44a8b736a7",
+  "originalCandidate": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "disposition": "UNREVIEWED_FIX; original1f independent HOLD",
+  "tests": {
+    "new18Gateway": "PASS",
+    "original17Retained": "byte-exact prefix",
+    "old182Contracts": "PASS; no relevant contract changes in narrow fix",
+    "475ConsumerTrial": "17PASS applies41cc/1f; narrowfix not yet replayed against475"
+  },
+  "ownedWorktrees": [
+    "/workspace/scratch/853fba62b1f1/meri-gateway-source-disabled-20261012",
+    "/workspace/scratch/853fba62b1f1/meri-gateway-catalog-candidate-20261012"
+  ],
+  "dependencyState": {
+    "gateway": "owned immutable copies root/node_modules and packages/contracts/node_modules preserved for review",
+    "trial": "owned symlinks borrowing gateway copies read-only; producer tracked files unchanged",
+    "oldFrontend": "only owner-approved node_modules and apps/web/.next removed; all tracked source/assets/evidence/Git preserved"
+  },
+  "ownedProcesses": {
+    "active": 0,
+    "testProcessesExited": true,
+    "noListenersWorkersOrSchedulersStarted": true
+  },
+  "cloudActions": 0,
+  "missing": [
+    "Real capability verifier/Clerk and current membership/client/memory/mailbox grants",
+    "Authentic ECS run/task admission and durable fence store",
+    "Durable resource ledger with uncertainty bookkeeping",
+    "Qualified business-source lineage envelope and adapters; actual raw federal/data outputs unreleasable",
+    "Qualified current discovery-grant contract",
+    "HTTP/mTLS/runtime SDK gateway transport and trusted event producer",
+    "Numeric revocation/deadline measurements and independent integration/runtime acceptance"
+  ],
+  "nextReview": [
+    "Replay parked-settlement proof from independent ce44daa against7a040 source",
+    "Apply accepted475 canonical resolver and replay18-source checks in composed candidate",
+    "Inspect shortened deadline observation during each inner authorize.check identity/business/source await; narrow fix only applies returned release/final deadlines, not a new inner deadline callback",
+    "All production source activation remains disabled; no G2/G3/AWS shipping admission"
+  ]
+}

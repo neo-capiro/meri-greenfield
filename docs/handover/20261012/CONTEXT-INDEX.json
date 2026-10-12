@@ -1,0 +1,207 @@
+{
+  "schema": "meri-handover-context-index/1",
+  "sourceSnapshots": [
+    {
+      "name": "backend-accepted",
+      "repository": "neo-capiro/meri-greenfield",
+      "localRef": "ddb92c6e08bcedf4063897e37ca05d14614f72ea",
+      "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+      "publicRef": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1626,
+      "totalBytes": 16793786,
+      "inventory": "docs/handover/20261012/snapshots/backend-accepted.json",
+      "inventoryBytes": 474945,
+      "inventorySha256": "998e0fabdc08a20eaa7a1974dbfc0464de4848b699720ac04cfec34797ab25b5"
+    },
+    {
+      "name": "backend-candidate-freeze",
+      "repository": "neo-capiro/meri-greenfield",
+      "localRef": "7903c3c181447cc97b4ad788fb7a76278cda9b7e",
+      "tree": "6b3b16cb911aeff04548995205ca2411175a12f7",
+      "publicRef": null,
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1716,
+      "totalBytes": 17350718,
+      "inventory": "docs/handover/20261012/snapshots/backend-candidate-freeze.json",
+      "inventoryBytes": 502303,
+      "inventorySha256": "bfa7250d53e4f9985deaacc166cbb8d246d3718134e2db3ec5f845d645b2b67e"
+    },
+    {
+      "name": "frontend",
+      "repository": "neo-capiro/capiro-frontend",
+      "localRef": "d792cb5791a998dc886c74d24da086703879878f",
+      "tree": "d67a73f5a3d68ed3d927d3611b5f8377f826f9b1",
+      "publicRef": "3cc30ff3182e8050d563516607866cf07efe2aef",
+      "usage": "COMPLETE_TRACKED_SNAPSHOT_NOT_READ_AUDIT",
+      "fileCount": 1092,
+      "totalBytes": 13563501,
+      "inventory": "docs/handover/20261012/snapshots/frontend.json",
+      "inventoryBytes": 305423,
+      "inventorySha256": "46569924d2201efc202d37fafb41625a64a99f4ec49b0a8f8db987c440441817"
+    },
+    {
+      "name": "aws-shipper-materialized",
+      "repository": "neo-capiro/meri-greenfield",
+      "publicRef": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "localRef": null,
+      "usage": "MATERIALIZED_SCRUBBED_EVIDENCE_NOT_GIT_CHECKOUT",
+      "fileCount": 296,
+      "totalBytes": 6851210,
+      "inventory": "docs/handover/20261012/snapshots/aws-shipper-materialized.json",
+      "inventoryBytes": 84974,
+      "inventorySha256": "9d1782d51b73f3df82c04354797e01252aa6a9c9e07a7bf5015b187cdaf2cbd8"
+    }
+  ],
+  "groups": [
+    {
+      "name": "backend-policy-plan",
+      "paths": [
+        "AGENTS.md",
+        "README.md",
+        "docs/IMPLEMENTATION-STANDARDS.md",
+        "package.json",
+        "package-lock.json",
+        "docs/plans/",
+        "docs/decisions/",
+        "docs/qualification/G1-REMAINING-WORK.md",
+        "docs/qualification/"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "historical-pickup",
+      "paths": [
+        "docs/handover/20261011/",
+        "docs/coordination/REMOTE-CLEANUP-BOUNDARY-20261011.md"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "human-inputs",
+      "paths": [
+        "docs/handover/20261012/inputs/manifest.json",
+        "docs/handover/20261012/inputs/"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "current-source-and-evidence",
+      "paths": [
+        "apps/",
+        "packages/contracts/",
+        "scripts/qualification/",
+        "infra/",
+        "docs/coordination/tasks/",
+        "docs/coordination/reports/",
+        "docs/qualification/candidates/"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "frontend-source-and-context",
+      "paths": [
+        "AGENTS.md",
+        "ARCHITECTURE.md",
+        "apps/web/",
+        "packages/",
+        "docs/coordination/",
+        "docs/qualification/",
+        "docs/handover/",
+        "docs/qualification/candidates/run-workspace-20261012/context-files.json"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "private-producer-locators",
+      "paths": [
+        "docs/handover/20261012/PRIVATE-SOURCE-REFERENCES.json",
+        "docs/qualification/candidates/memory-proposals-20261012/context-files.json"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "owned-proof-helpers",
+      "paths": [
+        "docs/handover/20261012/context-helpers/manifest.json"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    },
+    {
+      "name": "external-design-research-runtime",
+      "paths": [
+        "docs/qualification/candidates/critical-applicability-20261012/context-files.json",
+        "docs/qualification/candidates/gateway-source-disabled-20261012/context-files.json",
+        "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/context-files.json",
+        "docs/qualification/candidates/memory-proposals-20261012/context-files.json",
+        "docs/qualification/candidates/rel02-catalog-bindings-20261012/context-files.json"
+      ],
+      "resolution": "Complete immutable source inventory plus author/reviewer usage labels; paths may denote directory groups, not fabricated file reads"
+    }
+  ],
+  "backendAuthorReviewerContextManifests": [
+    "docs/qualification/candidates/critical-applicability-20261012/context-files.json",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/context-files.json",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/context-files.json",
+    "docs/qualification/candidates/memory-proposals-20261012/context-files.json",
+    "docs/qualification/candidates/rel02-catalog-bindings-20261012/context-files.json"
+  ],
+  "frontendAuthorContextManifest": {
+    "repository": "neo-capiro/capiro-frontend",
+    "ref": "3cc30ff3182e8050d563516607866cf07efe2aef",
+    "path": "docs/qualification/candidates/run-workspace-20261012/context-files.json"
+  },
+  "externalContext": {
+    "figma": {
+      "file": "Zc2dEN5aLU47dVdsewDmiJ",
+      "nodes": [
+        "411:40601",
+        "439:81406",
+        "442:81437",
+        "442:81682",
+        "443:82175",
+        "443:82027",
+        "443:84463",
+        "443:84316",
+        "456:90811"
+      ]
+    },
+    "sharedPolicy": {
+      "repository": "neo-capiro/capiro-agent-ops",
+      "currentPolicyVerified": false,
+      "inheritedBootstrapRef": "b2b0ce8c2bf03817b81e671d968b7892985b8d06",
+      "paths": [
+        "BOOTSTRAP.md",
+        "AGENTS.md",
+        "hermes/OPERATING.md",
+        "actual host-specific path map"
+      ]
+    },
+    "skills": [
+      "skill://flora-artifact-skills/root/.codex/skills/builtins/documents",
+      "figma:figma-design-to-code",
+      "personal-context:personal-context"
+    ],
+    "officialResearchUrls": "critical-applicability author context contains 117 individual locators and retrieval-status labels; no claim all were retrieved",
+    "portfolioReportedCheckpoint": {
+      "sha": "85aa5c0a816f52e23a0def34e91353ba41eda163",
+      "sourceVerifiedHere": false,
+      "bundleSha256": "e20a45c16b40200c9d7178be3c4aff4d24c18d775cd3646e003f38ea6cb3e7f2"
+    }
+  },
+  "completeness": {
+    "allTrackedSnapshotPathsIncluded": true,
+    "knownPersistedInputsIncluded": true,
+    "osFileReadAuditExists": false,
+    "preCompactionFullCommandTranscriptExists": false,
+    "completeInstalledDependencySBOM": false,
+    "distinction": "Snapshot closure, byte verification, actual semantic reads and referenced/unavailable context are separate claims; preserve worker usage labels."
+  },
+  "excluded": [
+    "Credentials/historical login tokens",
+    "14 private Capiro source bodies (hash/refetch metadata retained)",
+    "Private source ZIP/customer payloads",
+    "Installed dependencies/disposable build caches",
+    "Unrelated other-session files"
+  ]
+}

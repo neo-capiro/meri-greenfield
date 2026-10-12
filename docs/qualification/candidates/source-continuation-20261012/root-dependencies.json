@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "exitCode": 254,
+  "source": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+  "runtime": "v24.19.0",
+  "at": "2026-10-12T01:46:53.342836+00:00"
+}

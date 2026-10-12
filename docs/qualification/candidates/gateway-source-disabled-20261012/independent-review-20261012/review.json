@@ -1,0 +1,98 @@
+{
+  "decision": "HOLD_SOURCE",
+  "sourceCommit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "sourceTree": "309fcb76b3effab1f34e78445a311e0c8f74b150",
+  "catalogDependencyCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "report": {
+    "path": "docs/coordination/reports/CODEX-GATEWAY-INDEPENDENT-20261012.md",
+    "bytes": 7815,
+    "sha256": "dd345610e4196f5e09dda6a81b3297bcf0da6df1f93bb96045fdf4e9dd0641ce"
+  },
+  "evidence": [
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/actual13-gateway17.json",
+      "bytes": 1237,
+      "sha256": "7120115c2246cd69ed4e59c10a5196c3aed0e849de796864e328095dc70962f9"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/actual13-gateway17.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/actual13-gateway17.stdout.bin",
+      "bytes": 1677,
+      "sha256": "96d6ffce5f29bab69bbb22c7f06adcfa62c6fedd3af3e372dd7a54d22f43cc03"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/catalog13-overlay.json",
+      "bytes": 7274,
+      "sha256": "a47a8e1e571ecc7194c67cfe4f7344d9b63843bb2e60f13f0272b87678aba43e"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/context-files.json",
+      "bytes": 22581,
+      "sha256": "2928001e3aef95fa8e2482dd7ee928e2987da724cfb7dbd9cc8720e562899b43"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/freeze-cleanup.json",
+      "bytes": 498,
+      "sha256": "b2cca257edb638be95b348589f5018e3047ffbcac0da44c37d50c2340ed91d81"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/gateway17.json",
+      "bytes": 1150,
+      "sha256": "7b361160c70526eeeecdc3f689f71d71757a8f689fe7536089588fa830175126"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/gateway17.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/gateway17.stdout.bin",
+      "bytes": 1678,
+      "sha256": "478bfeb523ff9f3b89713c9654dc1cb30c17bcaf67cd94b3441abd619a730399"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.json",
+      "bytes": 1252,
+      "sha256": "312d0fddbffa2977fabb50195dc926364d3b806f28fc8e0738f3e2435aa9ae45"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs",
+      "bytes": 1910,
+      "sha256": "008e08e6d3ccf2bbe2eb44793b96e0a9a87a74d16b5a1dde5a7e167a459060cf"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.stderr.bin",
+      "bytes": 548,
+      "sha256": "08741f22024d974518c50b2ebc7c62142566eb3ca1a39df55488b7e81045fa5e"
+    },
+    {
+      "path": "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.stdout.bin",
+      "bytes": 277,
+      "sha256": "dd820176a52bc01684d0fa249a84db2ded396738b69768434347f5323b911313"
+    }
+  ],
+  "originalGatewayTests": {
+    "pass": 17,
+    "physicalExitCode": 0
+  },
+  "actual13DisabledComposition": {
+    "pass": 17,
+    "physicalExitCode": 0,
+    "productionExposed": 0,
+    "productionExecuted": 0
+  },
+  "releaseDeadlineControl": {
+    "physicalExitCode": 1,
+    "finding": "fresh release deadline not shrunk before parked settlement"
+  },
+  "userFreeze": true,
+  "activeOwnedProcesses": [],
+  "ownedScaffoldingRemoved": true,
+  "productEdits": false,
+  "runtimeOrCloud": false,
+  "nextTask": "Shrink lifetime on fresh release deadline and independently replay exact retained control before source acceptance."
+}

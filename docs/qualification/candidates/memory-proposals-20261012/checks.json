@@ -1,0 +1,131 @@
+{
+  "baseCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "dependencyAcceptance": "PENDING_ROOT_REVIEW",
+  "sourceFileSha256": {
+    "packages/contracts/retrieval-0.2/memory-proposals.schema.json": "e881b3786e40e3c579f230633b1a59a725b8da59499ac5f284c9b3b84f3ac7ce",
+    "packages/contracts/retrieval-0.2/memory-proposals-validation.mjs": "59a341681f43170c9c3d5978b59137729b5aaea80a6670bb6837592a333e4b1a",
+    "packages/contracts/retrieval-0.2/validate.mjs": "43c537f453720eb6691ee3ca82636c85eeff3e6b0c9598088ada0a631838e523",
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs": "d832531fa2187fef8e354ba5ec4559c156f352d68544165ab7c558f310325fff"
+  },
+  "checks": [
+    {
+      "label": "final-contracts",
+      "argv": [
+        "node",
+        "--test",
+        "packages/contracts/test/boundaries.test.mjs",
+        "packages/contracts/test/public-package.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-data-search.test.mjs",
+        "packages/contracts/test/retrieval-federal-market.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-meeting-source.test.mjs",
+        "packages/contracts/test/retrieval-memory-proposals.test.mjs",
+        "packages/contracts/test/retrieval-operational-reads.test.mjs",
+        "packages/contracts/test/retrieval-r2.test.mjs",
+        "packages/contracts/test/sdk-fixture-contract.test.mjs",
+        "packages/contracts/test/sdk-fixture-wire.test.mjs",
+        "packages/contracts/test/sdk-native-evidence.test.mjs"
+      ],
+      "exitCode": 0,
+      "timeoutSeconds": 60,
+      "timing": "Raw prior final wrapper invocation; dates not reconstructed",
+      "stdout": {
+        "bytes": 19674,
+        "sha256": "0d6991991073d64796bb1a4fb7bf9233e1d7fca252a23ec607f5b1d4a452895f"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "final-public",
+      "argv": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts",
+      "startedAt": "2026-10-12T00:52:11.863994+00:00",
+      "endedAt": "2026-10-12T00:52:16.750841+00:00",
+      "timeoutSeconds": 60,
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 1944,
+        "sha256": "a66dfe0dd20f09e14f17b30cd584ad8cb7f2ef45d1efe314b4f9c0f496813382"
+      },
+      "stderr": {
+        "bytes": 396,
+        "sha256": "a06ef387e31a00721dc55e3b480ef2c346bf46d83f2d3e96b16ddc342895761f"
+      }
+    },
+    {
+      "label": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "contractTests": 211,
+  "newMemoryGroups": 15,
+  "publicTests": 7,
+  "generatedBytesUnchanged": true,
+  "strictTypecheck": "PASS",
+  "awsRequests": 0,
+  "cloudMutations": 0,
+  "dataApiRequests": 0,
+  "modelRequests": 0,
+  "unmapped": true,
+  "availability": "unimplemented",
+  "runtimeQualified": false,
+  "setupHistory": [
+    {
+      "stage": "first schema writer",
+      "exitCode": 1,
+      "reason": "Python SyntaxError before output; corrected writer succeeded"
+    },
+    {
+      "stage": "first and second focused tool runs",
+      "pass": 7,
+      "fail": 8,
+      "reason": "Synthetic canonical subject/scope fixture wrong; unchanged-source raw recaptures retained before correction"
+    },
+    {
+      "stage": "initial external-Ajv layout",
+      "contractPass": 209,
+      "contractFail": 2,
+      "publicCheckExit": 1,
+      "rawCapture": "Tool observation truncated; no exact full raw claim",
+      "reason": "Realpath comments/public drift and permission refusal; source unchanged; root authorized small physical pinned copy"
+    },
+    {
+      "stage": "physical Ajv before root alias repair",
+      "contractPass": 210,
+      "contractFail": 1,
+      "reason": "Permission probe denied external canonicalize; exact failed recapture retained; owned aliases repointed to permitted borrowed root"
+    },
+    {
+      "stage": "public receipt before dev bin repair",
+      "exitCode": 127,
+      "reason": "Owned .bin alias repointed to runtime-only root with no tsc; fixed to existing qualified dev bins; failed raw receipt retained"
+    },
+    {
+      "stage": "receipt wrapper",
+      "exitCode": 1,
+      "reason": "Assertion after public127 stopped before metadata output; source/tests not modified; recovered metadata is labeled reconstructed where appropriate"
+    }
+  ]
+}

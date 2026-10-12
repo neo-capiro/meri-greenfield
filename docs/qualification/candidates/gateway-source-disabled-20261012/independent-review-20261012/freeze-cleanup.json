@@ -1,0 +1,12 @@
+{
+  "ownedProcessGroupsAbsent": true,
+  "activeOwnedProcesses": [],
+  "syntheticPendingSettlementReleased": true,
+  "uncertaintyCallsOnProbeCancellation": 1,
+  "ownedTempRootsRemoved": true,
+  "ownedCatalogOverlayRemoved": true,
+  "ownedDependencyLinkRemoved": true,
+  "borrowedDependencyTreesDisposed": false,
+  "productFilesChanged": false,
+  "nextAction": "Repair missing release deadline shrink, then replay exact retained negative control and actual13 composition before source acceptance."
+}

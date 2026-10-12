@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--cache",
+    "/tmp/meri-continuation-npm-cache"
+  ],
+  "exitCode": 0,
+  "at": "2026-10-12T01:47:18.962179+00:00"
+}

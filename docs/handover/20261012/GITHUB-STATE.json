@@ -1,0 +1,212 @@
+{
+  "schema": "meri-remote-handover-github-state/1",
+  "observedAt": "2026-10-12T01:13:48.688Z",
+  "backendBranches": [
+    {
+      "name": "codex/portfolio-31-20261010",
+      "sha": "7dbf8e1ee7e2ded8c6f7b0e3d3b9bc557cdca1a3"
+    },
+    {
+      "name": "codex/portfolio-continuation-20261011",
+      "sha": "606a6a81744e5a2373af79fc0896adb728fda68f"
+    },
+    {
+      "name": "codex/portfolio-preview-service-taskdef-20261011",
+      "sha": "97d0e7ffa8626ac38b3fa88371fc395acfd2975d"
+    },
+    {
+      "name": "codex/portfolio-source-removal-20261011",
+      "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+    },
+    {
+      "name": "codex/sessionstore-recovery-20261011",
+      "sha": "65d9c750639e0d370985827983f24019a3f585ab"
+    },
+    {
+      "name": "handoff/meri-remote-resume-20261011",
+      "sha": "8d045221aa314871edf214deb2c9f1800fde6b17"
+    },
+    {
+      "name": "handoff/sdk-worker-adapter-wip-20261011",
+      "sha": "4d33640d9eaadc045c1c1f15dfcceddfe330f3fa"
+    },
+    {
+      "name": "main",
+      "sha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc"
+    },
+    {
+      "name": "resume/meri-g1-review-20261011",
+      "sha": "1eac54274223729d69a0d44456a3f090dc1a0b80"
+    },
+    {
+      "name": "shipper/aws-preflight-20261011-r1",
+      "sha": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9"
+    },
+    {
+      "name": "task/codex-g1-publish-20261011",
+      "sha": "5ee46446b5f60034916f00b2a665b3e2bef9cf60"
+    },
+    {
+      "name": "task/g1-parallel-integration",
+      "sha": "2f0e03ac656e393165ebc539bf6bfe9209623e2d"
+    },
+    {
+      "name": "task/g1-rel02-mail-list-search-contract",
+      "sha": "dd98d6268d2e7057b4ef236bb2fd352f0fb0cec6"
+    },
+    {
+      "name": "task/g1-rel02-remaining-capability-metadata",
+      "sha": "086263abdf1b5c34b502a44d957b5568e837f992"
+    },
+    {
+      "name": "task/handover-20261011",
+      "sha": "05271df2bbe7fd50031e7486316a23f05a70bc49"
+    }
+  ],
+  "frontendBranches": [
+    {
+      "name": "codex/portfolio-continuation-20261011",
+      "sha": "02c02d95bdf3949662b9123f425271c6491ffdab"
+    },
+    {
+      "name": "codex/portfolio-handover-closeout-20261011",
+      "sha": "02c02d95bdf3949662b9123f425271c6491ffdab"
+    },
+    {
+      "name": "codex/portfolio-repo-move-20261011",
+      "sha": "8e8e6999c385beccd245e94e8f32a8a3120e8131"
+    },
+    {
+      "name": "main",
+      "sha": "02c02d95bdf3949662b9123f425271c6491ffdab"
+    },
+    {
+      "name": "task/meri-cited-answer-20261011",
+      "sha": "b697cfcba6589ef193de4e3bcb25aad773871125"
+    },
+    {
+      "name": "task/meri-ui-publish-20261011",
+      "sha": "3cc30ff3182e8050d563516607866cf07efe2aef"
+    },
+    {
+      "name": "task/modules-settings-20261011",
+      "sha": "e717867300e8568d467ac1cc9a54cab6540f4312"
+    }
+  ],
+  "frontendOpenPRs": [
+    {
+      "number": 5,
+      "title": "Build Modules and Settings UI with reviewed Capiro service integrations",
+      "head": "e717867300e8568d467ac1cc9a54cab6540f4312",
+      "branch": "task/modules-settings-20261011",
+      "base": "main",
+      "baseSha": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "draft": true,
+      "state": "open"
+    },
+    {
+      "number": 4,
+      "title": "Preserve Figma-based Meri Home, cited answer and run workspace in the shared frontend",
+      "head": "3cc30ff3182e8050d563516607866cf07efe2aef",
+      "branch": "task/meri-ui-publish-20261011",
+      "base": "main",
+      "baseSha": "02c02d95bdf3949662b9123f425271c6491ffdab",
+      "draft": true,
+      "state": "open"
+    },
+    {
+      "number": 1,
+      "title": "Add synthetic Meri cited-answer fixture from Figma",
+      "head": "b697cfcba6589ef193de4e3bcb25aad773871125",
+      "branch": "task/meri-cited-answer-20261011",
+      "base": "main",
+      "baseSha": "28c300093c0886018c49df8764a8e6fac44819eb",
+      "draft": true,
+      "state": "open"
+    }
+  ],
+  "backendOpenPRs": [
+    {
+      "number": 8,
+      "title": "Record Meri AWS preflight and immutable shipping evidence",
+      "head": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "branch": "shipper/aws-preflight-20261011-r1",
+      "base": "task/codex-g1-publish-20261011",
+      "baseSha": "415a55827b3f6343a0835e1d0e30fa0c69d673e6",
+      "draft": true,
+      "state": "open"
+    },
+    {
+      "number": 7,
+      "title": "Preserve Meri accepted source, qualification evidence and original handoff inputs",
+      "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "branch": "task/codex-g1-publish-20261011",
+      "base": "main",
+      "baseSha": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "draft": true,
+      "state": "open"
+    },
+    {
+      "number": 3,
+      "title": "G1 remote pickup: reviewed source candidates and coordination hold",
+      "head": "1eac54274223729d69a0d44456a3f090dc1a0b80",
+      "branch": "resume/meri-g1-review-20261011",
+      "base": "task/handover-20261011",
+      "baseSha": "05271df2bbe7fd50031e7486316a23f05a70bc49",
+      "draft": true,
+      "state": "open"
+    },
+    {
+      "number": 2,
+      "title": "SessionStore: bounded run-scoped qualification candidate",
+      "head": "65d9c750639e0d370985827983f24019a3f585ab",
+      "branch": "codex/sessionstore-recovery-20261011",
+      "base": "main",
+      "baseSha": "0c8e9e153fd38d8a62d6de96f596269c05af3b4c",
+      "draft": true,
+      "state": "open"
+    }
+  ],
+  "modulesCommit": {
+    "sha": "e717867300e8568d467ac1cc9a54cab6540f4312",
+    "node_id": "C_kwDOVD8qFdoAKGU3MTc4NjczMDBlODU2OGQ0NjdhYzFjYzlhNTRjYWI2NTQwZjQzMTI",
+    "url": "https://api.github.com/repos/neo-capiro/capiro-frontend/git/commits/e717867300e8568d467ac1cc9a54cab6540f4312",
+    "html_url": "https://github.com/neo-capiro/capiro-frontend/commit/e717867300e8568d467ac1cc9a54cab6540f4312",
+    "tree": {
+      "sha": "b77e8c0980fcf9e202c960d766b242835ffcbc02",
+      "url": "https://api.github.com/repos/neo-capiro/capiro-frontend/git/trees/b77e8c0980fcf9e202c960d766b242835ffcbc02"
+    },
+    "message": "feat(modules): implement Modules and Settings with reviewed Capiro integrations\n\nAdd cohesive feature screens, shared controls and a validated Clerk/capability gateway for 528 existing service operations. Preserve Meri and Portfolio ownership and expose missing contracts explicitly.\n\nInclude Figma provenance, integration coverage, source-bound architecture reviews, representative screenshots and passing contract/browser/build verification.",
+    "parents": [
+      {
+        "sha": "02c02d95bdf3949662b9123f425271c6491ffdab",
+        "url": "https://api.github.com/repos/neo-capiro/capiro-frontend/git/commits/02c02d95bdf3949662b9123f425271c6491ffdab",
+        "html_url": "https://github.com/neo-capiro/capiro-frontend/commit/02c02d95bdf3949662b9123f425271c6491ffdab"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "acceptedBackend": {
+    "head": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+    "tree": "985e0fdafe23d68b6f2e81a092cf098d8ede3182",
+    "sourceEquivalentLocal": "ddb92c6e08bcedf4063897e37ca05d14614f72ea"
+  },
+  "frontend": {
+    "head": "3cc30ff3182e8050d563516607866cf07efe2aef",
+    "tree": "d67a73f5a3d68ed3d927d3611b5f8377f826f9b1",
+    "sourceEquivalentLocal": "d792cb5791a998dc886c74d24da086703879878f"
+  },
+  "notes": [
+    "Point-in-time GET observations, not all-branch acceptance or present deployment state.",
+    "Meri main refs unmodified; no branch deleted or force-updated.",
+    "Portfolio 85aa5c0a cross-session report remains not visible on recorded GitHub branch list and is not source-audited here.",
+    "New Modules PR5 observed, not reviewed/accepted in this Meri session.",
+    "Handover preservation branch is created after this snapshot. Final exact head and tree are in the final publication receipt/PR."
+  ]
+}

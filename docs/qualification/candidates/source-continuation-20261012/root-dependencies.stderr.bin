@@ -1,0 +1,62 @@
+npm warn tarball tarball data for aws-cdk-lib@https://registry.npmjs.org/aws-cdk-lib/-/aws-cdk-lib-2.273.0.tgz (sha512-H7hBQHnKn0ZBbpnWRL1Hn0GunSQUsYaLqOk2xIqV0HWr3qbYMwTEZT0HbJBUSxeUdzp1nz0AE2LN3K6qvYr4Zg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @aws-cdk/cloud-assembly-schema@https://registry.npmjs.org/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-54.26.0.tgz (sha512-zYI3XhQ/bpuSXuPaF77f7u2q6rZBPwdrPh8a0v+e/B3IxbRQAtQv0fmacQ8uYh9RPVuIVnExE6IsFJBSALH7BA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @aws-cdk/cloud-assembly-schema@https://registry.npmjs.org/@aws-cdk/cloud-assembly-schema/-/cloud-assembly-schema-54.26.0.tgz (sha512-zYI3XhQ/bpuSXuPaF77f7u2q6rZBPwdrPh8a0v+e/B3IxbRQAtQv0fmacQ8uYh9RPVuIVnExE6IsFJBSALH7BA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for aws-cdk-lib@https://registry.npmjs.org/aws-cdk-lib/-/aws-cdk-lib-2.273.0.tgz (sha512-H7hBQHnKn0ZBbpnWRL1Hn0GunSQUsYaLqOk2xIqV0HWr3qbYMwTEZT0HbJBUSxeUdzp1nz0AE2LN3K6qvYr4Zg==) seems to be corrupted. Trying again.
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, open '/workspace/meri-source-continuation-20261012/node_modules/aws-cdk-lib/custom-resource-handlers/.is_custom_resource'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, open '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/schema/version.json'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/node_modules/jsonschema'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/workspace/meri-source-continuation-20261012/node_modules/aws-cdk-lib/custom-resources/lib/provider-framework/runtime'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/node_modules/semver'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/node_modules/jsonschema'
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/schema'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/schema'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/workspace/meri-source-continuation-20261012/node_modules',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/lib'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/lib'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/lib'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/workspace/meri-source-continuation-20261012/node_modules/@aws-cdk/cloud-assembly-schema/lib'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/workspace/meri-source-continuation-20261012/node_modules/aws-cdk-lib',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/workspace/meri-source-continuation-20261012/node_modules/aws-cdk-lib'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/workspace/meri-source-continuation-20261012/node_modules/aws-cdk-lib'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+npm error code ENOENT
+npm error syscall mkdir
+npm error path /home/agent/.npm/_cacache
+npm error errno -2
+npm error enoent ENOENT: no such file or directory, mkdir '/home/agent/.npm/_cacache'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm error Log files were not written due to an error writing to the directory: /home/agent/.npm/_logs
+npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal

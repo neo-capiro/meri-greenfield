@@ -1,0 +1,36 @@
+{
+  "ownedIgnoredSymlinksOnly": true,
+  "borrowedBytesModified": false,
+  "aliases": [
+    {
+      "name": "require-from-string",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/require-from-string",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/require-from-string"
+    },
+    {
+      "name": ".bin",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/.bin",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/.bin"
+    },
+    {
+      "name": "json-schema-traverse",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/json-schema-traverse",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/json-schema-traverse"
+    },
+    {
+      "name": ".package-lock.json",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/.package-lock.json",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/.package-lock.json"
+    },
+    {
+      "name": "fast-uri",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/fast-uri",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/fast-uri"
+    },
+    {
+      "name": "canonicalize",
+      "previousTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/packages/contracts/node_modules/canonicalize",
+      "currentTarget": "/workspace/scratch/853fba62b1f1/meri-rel02-catalog-bindings-20261012/node_modules/canonicalize"
+    }
+  ]
+}

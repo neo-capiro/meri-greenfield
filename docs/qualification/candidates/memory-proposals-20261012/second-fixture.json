@@ -1,0 +1,19 @@
+{
+  "label": "second-fixture-recapture",
+  "argv": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+  ],
+  "timeoutSeconds": 30,
+  "exitCode": 1,
+  "reason": "Second tool run 7/15 passed after partial fixture correction; scope resourceId/private-user fields remained wrong. Recapture before correction preserves raw unchanged-source outcome.",
+  "stdout": {
+    "bytes": 14363,
+    "sha256": "0fee382d2b8fcab11237155862a4f43b5d2dc1a56d2fe34bcd52fe74443f7478"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
