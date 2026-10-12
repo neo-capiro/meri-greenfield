@@ -1,0 +1,330 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "runtime": "HOLD",
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "tree": "6d127cfcd443c748b246e05139533b23350736ed",
+  "reviewer": "Codex /root/memory_reviewer",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-G1-DURABLE-BUDGET-REVIEW-20261012.md",
+      "bytes": 9503,
+      "sha256": "fb57618187c8be22602b84ea4002b5a9e9a6ea8a464938b0443694ddcf66beab"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/accounting-invariant-cases.json",
+      "bytes": 2777,
+      "sha256": "12e1a0da66447db42e1ba094e919e5a6fb939e768dd6daa206586c45fb4abf4b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/adapted-probes-command.json",
+      "bytes": 615,
+      "sha256": "c6c89a223e3630e5a14251dbca1d0215f5523ad17c18f57336be72966cfd1ecb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/adapted-probes.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/adapted-probes.stdout.txt",
+      "bytes": 1825,
+      "sha256": "3019d8a70d3b6fef40ce22db115b2cc971b19e5240649213c4ef12c649de8799"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/allocated-scope.json",
+      "bytes": 1662,
+      "sha256": "c36fbefa6a7dc7f1e3b69baa37ae3b117b44b69b8e354bfb328160f10d0ad157"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/author-evidence-verification.json",
+      "bytes": 4923,
+      "sha256": "b934296fd2b2377f40965a1ebd886dfb0c6108eca04697e05b5b263515ab4597"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/baseline-gateway-command.json",
+      "bytes": 782,
+      "sha256": "e06bb0e8c59ec3e7d7f936e358ed62a95d80b10d011daa0008755f87592b2de6"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/baseline-gateway.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/baseline-gateway.stdout.txt",
+      "bytes": 8809,
+      "sha256": "8a5b84aef12f47c76ccecf9ffa53bb436bb360c39884d85d45ce95a4c2688067"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/cleanup.json",
+      "bytes": 626,
+      "sha256": "fb91588ae10c4a43ad69563e0a385ff3a04b3760b852a3734cede5024b1d26a1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-before-command.json",
+      "bytes": 709,
+      "sha256": "ad5c0d26e73aa85597827cae34ff2905d34ef4926a7391e469181d93da1635e4"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-before.stdout.txt",
+      "bytes": 1292,
+      "sha256": "3c17c5861ad1a1d46eab03e362c21e88ff1cb8e1bc87adca60b1550544a84c92"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-mutant-command.json",
+      "bytes": 751,
+      "sha256": "4d3c3285bda61ef97c4e52b80ba0528d9fd34657334a3ff4aac2955be5e1fa16"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-mutant.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/deadline-mutant.stdout.txt",
+      "bytes": 2936,
+      "sha256": "ef933c1227c0cd453421a13b3bcc61b1d1e30c2c92f3d4a524d5ccb9a8301376"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-before-command.json",
+      "bytes": 706,
+      "sha256": "4968d03ba85803daf64685208d4e4458807c34361c205aa7ab1275986cee381d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-before.stdout.txt",
+      "bytes": 6116,
+      "sha256": "5c7e7fcbfb52f44769adbe3d5207c2b68ae31dad2ebfb4f08e8923648038efe8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs",
+      "bytes": 18172,
+      "sha256": "f898a62014f7611c650db7660e607a1b2256d7d76be88a24bccfd8af5dd288d8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/exact-source.patch",
+      "bytes": 67072,
+      "sha256": "fab07c5d1f2d9c35afe9ed963d9430d610bf4c3aca92c5fdae431222d0da42f7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/expanded-before-command.json",
+      "bytes": 286,
+      "sha256": "f4fb874b682d85a8eee89da9db92829fd931bdfcae02048c3c8ed3b48990d59c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/expanded-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/expanded-before.stdout.txt",
+      "bytes": 3026,
+      "sha256": "cb1a622584d57c1ff853cfe5cb3f2cb350f0e8df655edb04a48be387eac240fc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-distribution-command.json",
+      "bytes": 478,
+      "sha256": "73fa6faf1f0c315d5e4b92151f29dbc4c119ae8fd2fbd8934840e4c4fed828eb"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-distribution.stderr.txt",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-distribution.stdout.txt",
+      "bytes": 2046,
+      "sha256": "59300e5c57d70e18b2e69b601d5f883ed7be4b5911ceac1001e9c6f06e760357"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-gateway-command.json",
+      "bytes": 761,
+      "sha256": "9999867cd1c49103600bae4a1728ebd3091634a3162f27bbf2a13f446c2161f9"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-gateway.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-gateway.stdout.txt",
+      "bytes": 11881,
+      "sha256": "f89d7dc8506fbd5ddcb87cbe4f6dc2d3dba4f3169606e811f4740f5ee1624b5f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-model-command.json",
+      "bytes": 661,
+      "sha256": "fe2c3dee460e9acac23ede83856d8e562ccac0a8f19235195a4873f98d26c1f7"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-model.stderr.txt",
+      "bytes": 931,
+      "sha256": "8bb9210883e246b2d83291546e9fb4439e21e4b2dbb38afd0c1065be38e5c316"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-model.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-node-command.json",
+      "bytes": 747,
+      "sha256": "5a28287282b12c1ae9c638389285069c40335836acc77d4eeb17536bffcd7fa8"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-node.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-independent-node.stdout.txt",
+      "bytes": 2733,
+      "sha256": "7b9d2b2852c119e21a9ee61dd048d60086aacdf370133c59696fc2cfbcef4352"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-model-source-command.json",
+      "bytes": 544,
+      "sha256": "b0db0d20f148d2650ecf91f04a6bf5d3240bdc512164d5f0be2a6c8e72929d5a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-model-source.stderr.txt",
+      "bytes": 1491,
+      "sha256": "99c88223327c2bafa37a73feaf6c7326b73ca141999b01912fa30473d2d0d5ab"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-model-source.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-preservation.json",
+      "bytes": 16847,
+      "sha256": "7a3e6c6c6ad4bfb7d9168223a964a178e42e1f03cbea1a345b347f525fcbe416"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-root-command.json",
+      "bytes": 456,
+      "sha256": "601ada8fb935a7bfbc1a1b8068193374c204db99fc61ca40bfe932d3d62bb3fc"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-root.stderr.txt",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/final-root.stdout.txt",
+      "bytes": 22959,
+      "sha256": "068f63c20e97396d328930002539ae3737e6f6c710e14305d450357e831b932b"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/first-authority-fixture-error-command.json",
+      "bytes": 697,
+      "sha256": "bcc2eaba9717add154387bd287be5f8c0d2cbdeb0a48ec1ecb6f11e94911a89c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/first-authority-fixture-error.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/first-authority-fixture-error.stdout.txt",
+      "bytes": 3417,
+      "sha256": "fb2b820db8baf9f9762140303815ab78929c370eaf2dd3f19c5a30d907a37337"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/frozen-criteria.json",
+      "bytes": 3689,
+      "sha256": "fe13a0cb451a927b8dc39bd78a9214da7f2fdcb7efc9806851f9f56baba2b64a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/known-expiry-before-command.json",
+      "bytes": 720,
+      "sha256": "389bc01e3c481a8ced0302f320889c11a6deaad528eb84e3e226c2f24c0bcaaa"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/known-expiry-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/known-expiry-before.stdout.txt",
+      "bytes": 2918,
+      "sha256": "a3cf19dff95cfa786841c8b5587fc22400bbe0c0e735b9455bc706c43df5bd3a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/model-accounting-independent.py",
+      "bytes": 4692,
+      "sha256": "df26b4041dfb3d8ff948081547cb0d9ed5a92feb6b460632f19b33dc1a82c6ef"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/model-before-command.json",
+      "bytes": 418,
+      "sha256": "a2c777ef6ec06120e986666910a967a6471fd7eeab6b7a39001c2cc4ec23423f"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/model-before.stderr.txt",
+      "bytes": 931,
+      "sha256": "8bb9210883e246b2d83291546e9fb4439e21e4b2dbb38afd0c1065be38e5c316"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/model-before.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/owner-direction-and-test-intake.json",
+      "bytes": 2137,
+      "sha256": "173da79a640f6c3db61858ded4c20e646254be8d3b376af4c4e3e25534b852f1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/postgres-fixture-allocation.json",
+      "bytes": 813,
+      "sha256": "fb32395a6784817d3f1a63df535f22a83279584098b13f9d7f8a776d1ed6751c"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/source-intake.json",
+      "bytes": 1833,
+      "sha256": "eb1efe92af66eed6c0a7631cac5f3d4f9332581dbd6a3a327dffc3fbeac0a67a"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/store-before-command.json",
+      "bytes": 364,
+      "sha256": "ec3480f3ce87d75ddaff930075e030636404c5cee877609711e7550da9b9e003"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/store-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/store-before.stdout.txt",
+      "bytes": 4601,
+      "sha256": "ac20fe67db5c10dacc2ec25d6e0a680929d3598c80fc6e628bc39e665114e7b2"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs",
+      "bytes": 5366,
+      "sha256": "0c407333d2736951b4ff0d297630a45a2fb693e8047cf45ea712d0fb396636b1"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-durable-budget-20261012/review/verify-source.py",
+      "bytes": 5052,
+      "sha256": "06d1930dc545b41017f7689497a63b1d861b7dc2850405429caca0d678b48027"
+    }
+  ]
+}

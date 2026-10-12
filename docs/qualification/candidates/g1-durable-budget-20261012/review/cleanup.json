@@ -1,0 +1,17 @@
+{
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "time": "2026-10-12T04:45:23.367242+00:00",
+  "author_worktree_clean": true,
+  "owned_final_test_groups": {
+    "final-distribution-command.json": true,
+    "final-independent-model-command.json": true,
+    "final-model-source-command.json": true,
+    "final-independent-node-command.json": true,
+    "final-gateway-command.json": true,
+    "final-root-command.json": true
+  },
+  "independent_temp_mutant_removed": true,
+  "database_native_cloud_provider_model_process_started": false,
+  "source_edits_or_installs": false,
+  "background_service_started": false
+}

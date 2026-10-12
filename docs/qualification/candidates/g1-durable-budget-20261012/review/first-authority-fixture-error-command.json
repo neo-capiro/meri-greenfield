@@ -1,0 +1,15 @@
+{
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "time": "2026-10-12T04:41:16.390039+00:00",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs"
+  ],
+  "exit_code": 1,
+  "test_sha256": {
+    "dispatch-independent.test.mjs": "6b7512bb9b53da03a3008733e337d025e99ea30ab9eef30eb48f11c90b487c12",
+    "store-independent.test.mjs": "0c407333d2736951b4ff0d297630a45a2fb693e8047cf45ea712d0fb396636b1"
+  }
+}

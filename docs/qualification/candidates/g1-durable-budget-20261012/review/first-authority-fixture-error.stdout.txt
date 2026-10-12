@@ -1,0 +1,46 @@
+✔ actual dispatcher consumes concrete SQL reservation and settlement once (16.809801ms)
+✔ fresh adapter and reservation identity cannot replay settled invocation (8.226437ms)
+✔ parallel same invocation has one handler and one debit (6.804346ms)
+✔ lost reserve COMMIT acknowledgement retains UNKNOWN and suppresses effect (3.976368ms)
+✔ mixed model/tool holds enforce global exact bound without counting settled twice (4.637302ms)
+✔ installed run cap includes settled and unknown model liability (4.779747ms)
+✔ database revocation/expiry/stale fence blocks actual effect despite fresh synthetic gateway claims (4.837074ms)
+✔ trusted binding substitution cannot mutate admitted allocation (0.939635ms)
+✔ late reserve after deadline keeps hold and never starts handler (52.47281ms)
+✔ default composition stays disabled before any SQL or handler (1.380159ms)
+✔ installed manifest runtime bounds parked handler before longer authority deadline (12.693472ms)
+✔ installed manifest runtime bounds parked settlement before longer authority deadline (32.06344ms)
+✔ manifest body/hash, exact budgets and allowed operation are required before SQL (1.178395ms)
+✔ known grant expiry bounds a parked tool before longer authority deadline (12.008472ms)
+✔ known schedule expiry bounds a parked tool before longer authority deadline (11.604232ms)
+✔ validated grant deadline is published before a later allocation read can park (40.937082ms)
+✔ canonical durable entry is inert, unavailable for every catalog operation, and refuses activation override (12.609105ms)
+✖ known schedule expiry bounds parked first authority and suppresses late effects (0.71081ms)
+✔ known schedule expiry bounds parked pool acquisition and suppresses late effects (41.261217ms)
+✔ success uses one transaction and releases one healthy connection (1.417234ms)
+✔ connect failure starts no transaction and creates no retry (1.120597ms)
+✔ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.233412ms)
+✔ acknowledged rollback preserves domain refusal and can release healthy (0.219511ms)
+✔ failed rollback evicts rather than returning dirty transaction to pool (0.232781ms)
+✔ lost COMMIT acknowledgement remains uncertain and never retries (0.268855ms)
+✔ release failure cannot overwrite lost COMMIT classification (0.216445ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (0.213041ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (4.744654ms)
+✔ missing budget and invalid database clock fail closed (0.408565ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1103.221896
+
+✖ failing tests:
+
+test at ../meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:114:61
+✖ known schedule expiry bounds parked first authority and suppresses late effects (0.71081ms)
+  TypeError: Cannot assign to read only property 'identify' of object '#<Object>'
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/dispatch-independent.test.mjs:118:25)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
