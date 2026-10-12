@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-federal-legislation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-federal-legislation-review-20261012",
+  "sourceHead": "76fdbcfd722211d415aafffcbfbb87446d9a6102",
+  "sourceDiffSha256": "e46974215353fc264fab5e5bfddffe9894bd66a99d958e1d38f521c3249f4a3f",
+  "sourceDiffBytes": 2083,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:02:57.401809+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 171126,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stdout.bin",
+      "bytes": 3830,
+      "sha256": "b93c8cb7cdf03fa9b93f9c65228dfb1dea3aaa59b8bb1e32463461a4064a2665"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "New independent inherited-status negative; private AST metadata confirms ordinary object plus in-operator label lookup, not own-property fallback.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
