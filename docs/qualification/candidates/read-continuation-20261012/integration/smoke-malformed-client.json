@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "-e",
+    "import('./packages/contracts/retrieval-0.2/validate.mjs').then(v=>v.resolveOperationContract({id:'search_funding_opportunities',version:'0.2.0'}).normalizeInput({clientId:'synthetic'}, {asOf:'2026-10-12T00:00:00.000Z'}))"
+  ],
+  "cwd": "/workspace/meri-read-continuation-20261012",
+  "sourceHead": "ec960fa92ad01836a5df8f6220e67a88a657eab1",
+  "sourceDiffSha256": "31042405050f6e5a00df83da8d2a353bb8e1a54189de09c08d4800061fc8c701",
+  "sourceDiffBytes": 60155,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:42:47.405123+00:00",
+  "durationSeconds": 1.321,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 158001,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/smoke-malformed-client.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/integration/smoke-malformed-client.stderr.bin",
+      "bytes": 1140,
+      "sha256": "05e6d9140a98517b95e9d16dfeb14b6bc880ba06c552fd4411354eacbd3ead00"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

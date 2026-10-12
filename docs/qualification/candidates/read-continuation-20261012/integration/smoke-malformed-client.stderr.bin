@@ -1,0 +1,13 @@
+file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/validate.mjs:37
+  if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
+                           ^
+
+Error: FundingSearchInput: data/clientId must match pattern "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    at validateShape (file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/validate.mjs:37:28)
+    at validateFundingOpportunitiesShape (file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:26:5)
+    at Object.normalizeFundingOpportunitiesInput (file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs:35:5)
+    at Object.normalize (file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/catalog-validation.mjs:25:53)
+    at Object.normalizeInput (file:///workspace/meri-read-continuation-20261012/packages/contracts/retrieval-0.2/operation-contracts.mjs:91:36)
+    at [eval]:1:147
+
+Node.js v24.19.0

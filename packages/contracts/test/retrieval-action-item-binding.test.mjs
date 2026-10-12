@@ -1,3 +1,5 @@
+// Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -14,8 +16,8 @@ const context={actorId,nowMs:0};
 test('partial action binding does not declare full native parity or activate a handler',()=>{
  const c=catalog(),binding=CATALOG_OPERATION_BINDINGS.find(row=>row.id===reference.id),resolved=contract();
  assertCatalog(c);assert.equal(binding.nativeCoverage,'partial');assert.equal(resolved.binding,binding);
- assert.equal(c.operations.length,21);assert.equal(c.originals.filter(row=>row.state==='mapped').length,20);
- assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,76);
+ assert.equal(c.operations.length,37);assert.equal(c.originals.filter(row=>row.state==='mapped').length,36);
+ assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,60);
  const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'pending');assert.equal(original.replacement,null);
  assert.deepEqual(resolved.descriptor.aliases,[]);assert.equal(resolved.descriptor.handler,null);
  assert.equal(resolved.descriptor.availability,'unimplemented');assert.equal(resolved.descriptor.qualification,'pending');
@@ -79,7 +81,7 @@ test('all fourteen original descriptors and all139 native rows remain exact',()=
  assert.equal(canonicalSha256(c.operations.slice(0,14)),'50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92');
  const priorRows=structuredClone(c.originals);
  for(const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
-  'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes']){
+  'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]){
   const row=priorRows.find(row=>row.id===id);
   assert.equal(row.state,'mapped');assert.deepEqual(row.replacement,{id,version:'0.2.0'});
   row.state='pending';row.replacement=null;

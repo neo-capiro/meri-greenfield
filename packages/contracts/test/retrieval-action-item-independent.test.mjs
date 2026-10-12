@@ -1,3 +1,5 @@
+// Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape"];
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -13,19 +15,19 @@ test('independent literal recommendation and outcome source proofs satisfy uncha
   assert.equal(assertActionItemReadInput({}).mode,'unscoped_legacy_pending');
 });
 test('partial binding preserves every original row and fourteen descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.operations.length,21);
+  assertCatalog(catalog);assert.equal(catalog.operations.length,37);
   const priorRows = structuredClone(catalog.originals);
   for (const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
-    'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes']) {
+    'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]) {
     const row = priorRows.find(row => row.id === id);
     assert.equal(row.state,'mapped'); assert.deepEqual(row.replacement,{id,version:'0.2.0'});
-    // Undo only the six explicit new mappings for the unchanged historical hash.
+    // Undo only the six prior and16 explicit reviewed continuation mappings for the unchanged historical hash.
     row.state='pending'; row.replacement=null;
   }
   assert.equal(sha(priorRows),baseline.originalsSha256);
   assert.equal(sha(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id))),baseline.originalOperationsSha256);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,20);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,76);
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,36);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,60);
   const c=contract();assert.equal(c.binding.nativeCoverage,'partial');assert.deepEqual(c.descriptor.aliases,[]);
   assert.equal(catalog.originals.find(x=>x.id===operation.id).replacement,null);
 });
