@@ -1,0 +1,65 @@
+✔ original139 rows and63 descriptors/callbacks survive exactly four full mappings (8.845026ms)
+✔ all67 descriptors have exact schema byte pins and no implementation admission (11.830872ms)
+✔ search_public_web: actual canonical normalizer/output callbacks preserve detached request and digest (4.424421ms)
+✔ search_public_web: allowlisted contexts and original request survive callback stripping (1.160787ms)
+✔ search_public_web: family substitution and hostile JSON refuse before effects (2.961108ms)
+✔ search_public_web: mapping, handler, retry, and schema mutation are rejected (38.860906ms)
+✔ scrape_web_page: actual canonical normalizer/output callbacks preserve detached request and digest (2.792264ms)
+✔ scrape_web_page: allowlisted contexts and original request survive callback stripping (0.606683ms)
+✔ scrape_web_page: family substitution and hostile JSON refuse before effects (1.870766ms)
+✔ scrape_web_page: mapping, handler, retry, and schema mutation are rejected (24.438132ms)
+✔ search_sam_opportunities: actual canonical normalizer/output callbacks preserve detached request and digest (2.86303ms)
+✖ search_sam_opportunities: allowlisted contexts and original request survive callback stripping (1.658978ms)
+✔ search_sam_opportunities: family substitution and hostile JSON refuse before effects (1.735002ms)
+✔ search_sam_opportunities: mapping, handler, retry, and schema mutation are rejected (28.068838ms)
+✔ get_florida_budget_project: actual canonical normalizer/output callbacks preserve detached request and digest (3.323423ms)
+✔ get_florida_budget_project: allowlisted contexts and original request survive callback stripping (3.070452ms)
+✔ get_florida_budget_project: family substitution and hostile JSON refuse before effects (1.357955ms)
+✔ get_florida_budget_project: mapping, handler, retry, and schema mutation are rejected (22.828137ms)
+✔ production gateway denies every descriptor before authority/budget and rejects activation (8.599437ms)
+✔ web search callback retains limit/UTF16 and discovered evidence only (1.243633ms)
+✔ web page callback preserves redirects and coverage but no network/hash proof (0.893896ms)
+✔ web truncation callback is connected to original requested window (0.734986ms)
+✔ SAM independent status and health clocks are consumed by real callbacks (1.601981ms)
+✔ SAM count races, active selector and trusted mode are distinct from completeness (2.279922ms)
+✔ Florida normalized Input pin retains raw defaults and named client resolution (0.948919ms)
+✔ Florida nested output callback binds all scope facts and request continuation (1.227218ms)
+✔ Florida folder derived client cannot override explicit selector (0.603138ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2049.422626
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-observed-integration-independent.test.mjs:43:2
+✖ search_sam_opportunities: allowlisted contexts and original request survive callback stripping (1.658978ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'asOf',
+  +   'evidenceAccuracyMode',
+      'sourceStatusAsOf',
+      'sourceHealthAsOf',
+  -   'evidenceAccuracyMode'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-observed-reads-review-20261012/packages/contracts/test/retrieval-observed-integration-independent.test.mjs:44:161)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'asOf', 'evidenceAccuracyMode', 'sourceStatusAsOf', 'sourceHealthAsOf' ],
+    expected: [ 'asOf', 'sourceStatusAsOf', 'sourceHealthAsOf', 'evidenceAccuracyMode' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

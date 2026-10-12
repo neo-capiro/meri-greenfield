@@ -1,0 +1,35 @@
+✔ original139 rows and63 descriptors/callbacks survive exactly four full mappings (10.160209ms)
+✔ all67 descriptors have exact schema byte pins and no implementation admission (11.609841ms)
+✔ search_public_web: actual canonical normalizer/output callbacks preserve detached request and digest (4.427222ms)
+✔ search_public_web: allowlisted contexts and original request survive callback stripping (0.915167ms)
+✔ search_public_web: family substitution and hostile JSON refuse before effects (3.602952ms)
+✔ search_public_web: mapping, handler, retry, and schema mutation are rejected (45.646953ms)
+✔ scrape_web_page: actual canonical normalizer/output callbacks preserve detached request and digest (2.855307ms)
+✔ scrape_web_page: allowlisted contexts and original request survive callback stripping (0.69146ms)
+✔ scrape_web_page: family substitution and hostile JSON refuse before effects (2.4522ms)
+✔ scrape_web_page: mapping, handler, retry, and schema mutation are rejected (24.995433ms)
+✔ search_sam_opportunities: actual canonical normalizer/output callbacks preserve detached request and digest (2.696497ms)
+✔ search_sam_opportunities: allowlisted contexts and original request survive callback stripping (2.391609ms)
+✔ search_sam_opportunities: family substitution and hostile JSON refuse before effects (1.765767ms)
+✔ search_sam_opportunities: mapping, handler, retry, and schema mutation are rejected (24.446657ms)
+✔ get_florida_budget_project: actual canonical normalizer/output callbacks preserve detached request and digest (3.703363ms)
+✔ get_florida_budget_project: allowlisted contexts and original request survive callback stripping (3.766207ms)
+✔ get_florida_budget_project: family substitution and hostile JSON refuse before effects (1.56801ms)
+✔ get_florida_budget_project: mapping, handler, retry, and schema mutation are rejected (27.739031ms)
+✔ production gateway denies every descriptor before authority/budget and rejects activation (11.778269ms)
+✔ web search callback retains limit/UTF16 and discovered evidence only (1.590673ms)
+✔ web page callback preserves redirects and coverage but no network/hash proof (1.393026ms)
+✔ web truncation callback is connected to original requested window (0.733834ms)
+✔ SAM independent status and health clocks are consumed by real callbacks (1.804956ms)
+✔ SAM count races, active selector and trusted mode are distinct from completeness (2.409906ms)
+✔ Florida normalized Input pin retains raw defaults and named client resolution (1.100176ms)
+✔ Florida nested output callback binds all scope facts and request continuation (1.592907ms)
+✔ Florida folder derived client cannot override explicit selector (0.545591ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2073.622762
