@@ -1,0 +1,129 @@
+{
+  "scope": "INDEPENDENT_SOURCE_REVIEW",
+  "sourceCandidate": "530416e490763155c5531140f4b70e95a9493b7b",
+  "excluded": [
+    "MANIFEST.json (self recursion only)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-FACILITY-REPRESENTATION-REVIEW-20261012.md",
+      "bytes": 5500,
+      "sha256": "09cdc68e75f24c04d9830dca1d37456be11665ec0f6a59af5f29c12449b8604c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/audit.py",
+      "bytes": 5761,
+      "sha256": "15f2e29ddaa7fd382f26810ab02bb34821f6e9546e4c5fa6dc896d7c44d9a134"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/criteria-amendment-before-replay.md",
+      "bytes": 1332,
+      "sha256": "4fca65a372779a6b4f9e5ec86bdaefd7fd2fec396fa5e858943a6cc9c1c48965"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/criteria.md",
+      "bytes": 5664,
+      "sha256": "391f925324d372a731377cf00566b426ec519270be1664423e698bcc3088d388"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/dependency-layout.json",
+      "bytes": 504,
+      "sha256": "700f177fc61886d45418f71a6876a99d5a141fabefcc926fdcaf3bc7cb71642c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.json",
+      "bytes": 1378,
+      "sha256": "b2064d8b5be931a7e0dc2ec0ad745c8c056b0150085330e210e0dc76f1a41369"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/full-root.stdout.bin",
+      "bytes": 126425,
+      "sha256": "69fcc6646f1d840067352035c010d9e55d09af7deae9b29f355fbce6b7eee1bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-complete.json",
+      "bytes": 1366,
+      "sha256": "2f7ef63882e8f6811f126ac29ffdb30a91ed33e1ecc3bfd329473db0a5276fc9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-complete.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-complete.stdout.bin",
+      "bytes": 2972,
+      "sha256": "1c05f26d87bf932deb4bd6b709e3498a3a6b68b5b4cf2c9b3396db229a4fd1af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.json",
+      "bytes": 1360,
+      "sha256": "f71c3f08c5b119ebee467b05c85e1d7f195e0e57088a4fb0eb027694f059a685"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/independent-first.stdout.bin",
+      "bytes": 2682,
+      "sha256": "d4bc20d0527ce3c70717fece6c1f34fd3637b97255b0752712a41082dbf3b280"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/public-distribution.json",
+      "bytes": 1471,
+      "sha256": "cf6a4027cfb75040b3c0c16c25a871032aff2357a0758fbf22f88393888fbd92"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/public-distribution.stdout.bin",
+      "bytes": 2046,
+      "sha256": "e7c6fdbf8a6cc0dce8c4b6b4b0e6c73ef37c25dd86ac5f934203a58256e5fdee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/reference-identities.json",
+      "bytes": 8460,
+      "sha256": "d363c92057e351298a37eba6a36dce740e8059d8bd72a91ebe1c5e0446419a0e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/source-audit.json",
+      "bytes": 1368,
+      "sha256": "0cec10f0049804001bdad42a7e537994ac197608ac71b10d62876cd3733ccc60"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/source-audit.stdout.bin",
+      "bytes": 12423,
+      "sha256": "870ab8eef0bb1d950844c135566146541ab4662e955a95b4d4018646f2efe6ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-review/verdict.json",
+      "bytes": 1914,
+      "sha256": "83e98e6e459a82092860a577e44031b01d96e3bf2e69965b82df795ff6884789"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-facility-representation-independent.test.mjs",
+      "bytes": 15486,
+      "sha256": "156b132b02f439c2ae88752c2abf1c8c9b55050d5d0a21593e08a518b076fc59"
+    }
+  ]
+}
