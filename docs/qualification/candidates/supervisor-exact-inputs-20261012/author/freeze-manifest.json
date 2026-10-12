@@ -1,0 +1,48 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "scope": "Exact-input documentation and source/data-only evidence",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-SUPERVISOR-EXACT-INPUTS-20261012.md",
+      "bytes": 6565,
+      "sha256": "04631791a32d1fba5905f7d28b8f2e738553e4d4677ff3fa9c59bff1a0905604"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/check-map.py",
+      "bytes": 7779,
+      "sha256": "08b01a09bcff86fc9c04b2dbc7bdc0c4fc3a450b3c8b3f0349c813d47dd8f334"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/data-ast-checks.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/data-ast-checks.stdout.json",
+      "bytes": 2126,
+      "sha256": "ab8c27da4d58b82b024bfa458c73ffe1faec5a8e8c38e8c8646233e79125921e"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/exact-inputs.json",
+      "bytes": 11265,
+      "sha256": "d996c70d396c7ed1f27770c9d263845b90e8b3557535eb3d9c48a8e566084d7b"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/outline.json",
+      "bytes": 867,
+      "sha256": "283dca39ed273618f02f8a58d421b9a4defafb56f3194f9ff27e4f6d21f6799b"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/staging-inventory.json",
+      "bytes": 1970,
+      "sha256": "e7e4fcbb1ebbe6c9dd8d5d78c831eb405ee2bd1161438a0d19a5c4a50696cc3b"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/verification-receipt.json",
+      "bytes": 334,
+      "sha256": "7dc4c87ceb55b2a5ae6de71b4df74d0eed8002b08a62108d816266f304dbd5ce"
+    }
+  ],
+  "nativeExecution": false
+}

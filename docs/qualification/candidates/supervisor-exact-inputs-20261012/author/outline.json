@@ -1,0 +1,10 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "scope": "Documentation-only exact input mapping; no source or admission change",
+  "owners": {"author": "native_supervisor_author", "reviewer": "memory_reviewer", "acceptance": "root"},
+  "inputs": ["actual restricted staging inventory", "accepted run-supervised.py", "canonical inventory guards", "verified original supervisor current bytes"],
+  "method": "Read/hash staged data, parse source as AST only, map exact consumed fields and immutable pins, distinguish local receipt from original member, request only identified missing members or scalar/schema metadata",
+  "privateBodiesPublished": false,
+  "targetImportsOrExecution": false,
+  "allowedPaths": ["docs/coordination/reports/MERI-SUPERVISOR-EXACT-INPUTS-20261012.md", "docs/qualification/candidates/supervisor-exact-inputs-20261012/author/**"]
+}
