@@ -1,0 +1,90 @@
+{
+  "base": "6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e",
+  "authorCommit": "9d8358ba559134d82265f07840fd537943302090",
+  "authorTree": "6788a4846dcbffed0861315242c606076a5cdd14",
+  "originalFiles": 4430,
+  "unchangedOriginalFiles": 4424,
+  "changedOriginalFiles": [
+    "apps/gateway/budget/README.md",
+    "apps/gateway/budget/durable-tool-dispatch.mjs",
+    "apps/gateway/budget/postgres-budget-store.mjs",
+    "apps/gateway/budget/postgres-tool-budget.mjs",
+    "apps/gateway/dispatch/tool-dispatch.mjs",
+    "apps/proxy/qualification/state/postgres_store.py"
+  ],
+  "sourceHashes": [
+    {
+      "path": "apps/control/test/tool-invocations.test.mjs",
+      "bytes": 1364,
+      "sha256": "85a63340bfc98c7307d640eace9a9e4807cdaae85e23c6f4feda92184f2f6a86"
+    },
+    {
+      "path": "apps/control/tool-invocations.mjs",
+      "bytes": 2738,
+      "sha256": "96bb3dd5b64a64fd59ac57fda8bd1198ad32bf0401d8e4f9447ffb9301e7e70c"
+    },
+    {
+      "path": "apps/gateway/budget/README.md",
+      "bytes": 17448,
+      "sha256": "33b6bf03a1c71a8b9f5217ed840e3a88f91aa1ee0cd9a05b8f14d04a1eadc469"
+    },
+    {
+      "path": "apps/gateway/budget/durable-tool-dispatch.mjs",
+      "bytes": 263,
+      "sha256": "508a706096f3de433418be642718bbb093bb00685ca4477640c2fd8af6428fdf"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-budget-store.mjs",
+      "bytes": 2155,
+      "sha256": "2178dcfe773f288087644ab42403d637c1aeea97e42058a19d50f7b39e51f772"
+    },
+    {
+      "path": "apps/gateway/budget/postgres-tool-budget.mjs",
+      "bytes": 12279,
+      "sha256": "4f3d3336e2cdf01785cecd0ea22aeccea1e5c9a8d773b20492f8cd5fefb06ed4"
+    },
+    {
+      "path": "apps/gateway/budget/tool-budget-dispatch.mjs",
+      "bytes": 4693,
+      "sha256": "ee866f6abb29222b868d1950027b66a0115e5791122d66415d34dbdcb393ee35"
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-owner.mjs",
+      "bytes": 9007,
+      "sha256": "ede1672b79da5055f3ea8a2e1b8603c50d5ba9783914fab24195a8e6356aec75"
+    },
+    {
+      "path": "apps/gateway/budget/tool-invocation-record.mjs",
+      "bytes": 3580,
+      "sha256": "dc3fc265fe10d2013d50a96441c9af8ec8032b16f4c74c2cd7f446ee588f47c3"
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 7213,
+      "sha256": "b935e5a9841c1c934398351af54439854ecfd6f3e1492e3694e58be633b5570d"
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-owner.test.mjs",
+      "bytes": 19890,
+      "sha256": "2b64a89a1d8eaa1f4e81bdb74067390b8314a65a6de37d347d2ff2f59ec0ab95"
+    },
+    {
+      "path": "apps/gateway/test/tool-invocation-transaction.test.mjs",
+      "bytes": 3071,
+      "sha256": "a7ddb8660ebff3ed0abae6b864ea8dca11566c93cb5d60ec189135c5a3b12fdc"
+    },
+    {
+      "path": "apps/proxy/qualification/state/migrations/0003_tool_invocations.sql",
+      "bytes": 1097,
+      "sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5"
+    },
+    {
+      "path": "apps/proxy/qualification/state/postgres_store.py",
+      "bytes": 5019,
+      "sha256": "a51cf9ab2bd7eab81ce5b52d48557eab61bd33c3d7ec10089b8c7e4cbcaa713f"
+    }
+  ],
+  "migrationExecuted": false,
+  "nativeDatabaseConnected": false,
+  "scope": "exact source, static Python parse and metadata schema inspection only"
+}

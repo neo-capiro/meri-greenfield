@@ -1,0 +1,30 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/durable-invocation-20261012/review/invocation-independent.test.mjs",
+    "docs/qualification/candidates/durable-invocation-20261012/review/exposed-marker-independent.test.mjs",
+    "docs/qualification/candidates/durable-invocation-20261012/review/private-composition-injection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "sourceRoot": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791790571.4390624,
+  "elapsedSeconds": 1.5309739112854004,
+  "exitCode": 0,
+  "ownedPidAndGroup": 101525,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "exact-independent.stdout.txt",
+      "bytes": 4049,
+      "sha256": "9159a2371be8c660cc8ca9c695b6c24b2b65098835e6a4dbae16de0bb92398f3"
+    },
+    "stderr": {
+      "path": "exact-independent.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

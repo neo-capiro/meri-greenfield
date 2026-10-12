@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/durable-invocation-20261012/review/private-composition-injection.test.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791789698.7116525,
+  "elapsedSeconds": 1.2179100513458252,
+  "exitCode": 1,
+  "ownedPidAndGroup": 99601,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "private-owner-injection.stdout.txt",
+      "bytes": 1058,
+      "sha256": "5b75c8df014abbdb1a2bcb850c7731d915ced0e57132809249f185c50151d9f3"
+    },
+    "stderr": {
+      "path": "private-owner-injection.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

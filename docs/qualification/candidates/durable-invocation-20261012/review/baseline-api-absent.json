@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/durable-invocation-20261012/review/initial-baseline.mjs"
+  ],
+  "cwd": "/workspace/meri-durable-invocation-review-20261012",
+  "startUnixSeconds": 1791789033.088654,
+  "elapsedSeconds": 1.5716402530670166,
+  "exitCode": 1,
+  "ownedPidAndGroup": 97920,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "baseline-api-absent.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "baseline-api-absent.stderr.txt",
+      "bytes": 514,
+      "sha256": "50175ff7adfff5693d36ea9d3b554d3880e323d2919a5d7014a0d4e207c68fa0"
+    }
+  }
+}
