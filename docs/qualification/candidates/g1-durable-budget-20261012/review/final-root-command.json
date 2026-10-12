@@ -1,0 +1,15 @@
+{
+  "candidate": "d58a2b1c51c43420fa64c1036c509ab14d872996",
+  "time": "2026-10-12T04:42:10.832400+00:00",
+  "argv": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-g1-durable-budget-20261012",
+  "exit_code": 0,
+  "seconds": 9.250702176999766,
+  "reaped": true,
+  "stdout_sha256": "068f63c20e97396d328930002539ae3737e6f6c710e14305d450357e831b932b",
+  "stderr_sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+}

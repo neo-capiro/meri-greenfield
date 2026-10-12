@@ -110,3 +110,19 @@ test('canonical durable entry is inert, unavailable for every catalog operation,
  assert.equal(poolCalls,0);assert.deepEqual(h.f.calls,[]);assert.throws(()=>createDurableSourceDisabledGateway({...options,sourceEnabled:true}),/GATEWAY_CONFIGURATION/);
  const wrong={...h.allocation,catalogSha256:'f'.repeat(64)};assert.throws(()=>createDurableSourceDisabledGateway({...options,allocationJson:JSON.stringify(wrong)}));
 });
+
+for (const phase of ['first authority','pool acquisition']) test(`known schedule expiry bounds parked ${phase} and suppresses late effects`,async()=>{
+ const h=harness({scheduleMs:10});await h.install();let release;let timer;let reached;let authority=h.f.authority;
+ if(phase==='first authority'){
+  const identify=h.f.authority.identify.bind(h.f.authority);
+  authority={...authority,identify:call=>new Promise(resolve=>{release=()=>resolve(identify(call));})};
+ }else{
+  const connect=h.pool.connect.bind(h.pool);let reach;
+  reached=new Promise(resolve=>{reach=resolve;});
+  h.pool.connect=()=>new Promise(resolve=>{release=()=>resolve(connect());reach();});
+ }
+ const before=h.queries.length;const outcome=h.call(h.create({authority,limits:{...limits,maxCleanupMs:20}}));outcome.catch(()=>{});
+ try{if(reached)await reached;await assert.rejects(Promise.race([outcome,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('known schedule failed to bound '+phase)),100);})]),/^GatewayDenied: (DEADLINE|BUDGET_UNCERTAIN)$/);assert.equal(h.queries.length,before);}
+ finally{clearTimeout(timer);release?.();await outcome.catch(()=>{});await new Promise(r=>setTimeout(r,10));}
+ assert.equal(h.f.calls.includes('handler'),false);assert.equal(h.state().reservations.size,0);assert.equal(h.state().budget.consumed_micro_usd,'0');
+});
