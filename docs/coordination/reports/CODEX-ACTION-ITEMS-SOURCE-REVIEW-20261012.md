@@ -1,0 +1,37 @@
+# Action recommendation source review
+
+Source review complete; final packet audit pending. This reviews concrete selected-client source execution and the narrow shared dispatch profile. It does not enable an operation or qualify runtime.
+
+## Exact scope
+
+PR38 base `77cedb126d57a0223d2df42ad2f3fe988eb51759`; independent criteria `e0e93973822c4810ce7cc74ac1ff43e7bdb4efab` precede the candidate. Author source `eaa00fd0ea8ec98bc77b050caaa6526a2738405e` contains four new cohesive request-context, HTTP adapter, native projection and handler modules. Root profile `2c21104fd51608293fe21914e6f057691b4decb4` and normalization repair `84a9313735ec9fb079e35a92adb074f6afaf32e7` are independently reviewed here. Tested composition `4c214f7b9e4b1d52f9443c17bbf60c4f83e9309f` contains their exact source bytes.
+
+The actual canonical resolver, current authority and ToolDispatch consume the new adapter/handler through inert HTTP and accounting ports. The connected path accepts an already selected client UUID; names and unscoped lookup remain unavailable in that path. The adapter can validate unscoped native DTOs separately; that is not an unscoped policy qualification. Syntactic UUID normalization before policy does not establish client authority: fresh policy must still select the same client, full run binding and policy revision. All five policy checks now receive the same canonical normalized shape.
+
+The fixed POST route is `/clio/tools/query_action_items` on an explicitly configured HTTPS origin. The eight-field scoped producer DTO is preserved through canonical validation; new receipt IDs, current Meri binding/subject, unbounded transport window and retrieval time describe this receipt. The projection keeps source proofs, source coverage and recommendation flags; it adds no snapshot, source freshness, exhaustive coverage or negative assertion. Recommendations remain distinct from accepted tasks or completed/delivered work. Inner selection digest and outer complete-input digest have separate tested roles.
+
+## Independent evidence
+
+- Exact repaired source: **64/64** tests pass, comprising **30** new independent connected/adversarial controls, **18** unchanged gateway controls and **16** unchanged authority-deadline controls. No skipped/cancelled cases. Includes strict policy input, current selection drift, rotating decision IDs, every credential binding coordinate, credential expiry, transport status/media/encoding/byte/UTF8 limits, inert hostile objects, same-turn response acquisition, parked credentials/fetch/body, clock callback abort, proof/DTO/lineage substitutions, revocation and final authorization after settlement. Both the original and new shortened-release/parked-settlement controls pass.
+- Source/reference/receipt audit: **19,419** checks pass. All **9,667** PR38 entries remain; **9,664** are byte-identical. The only changed originals are root-allocated `operation-context.mjs`, `read-result-envelope.mjs`, and `catalog-validation.mjs`. Every author module and shared source matches its exact freeze. Original tests, contracts, locks, public0.1 and the 97 catalog descriptors remain unchanged; all descriptors retain null handlers/unimplemented availability.
+- **19** independent private reference pairs are byte-identical between `fd8765ec01d292013758606204f2c9d886cd31c1` and observed `4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace`. The packet stores only source identities/locators and derived findings; no producer bodies, imports or execution.
+
+Commands and raw streams are under `docs/qualification/candidates/task-slice-20261012/action-source-review/`. Exact replay: `node --test apps/gateway/test/action-items-source-independent.test.mjs apps/gateway/test/gateway.test.mjs apps/gateway/test/authority-deadline.test.mjs`, wrapped by the packet's 240-second subreaper capture. It uses seven existing copied contract dependencies, no install or external request.
+
+## Preserved failures and corrections
+
+1. Initial reviewer setup omitted the seventh dependency, `canonicalize`: module load **0/1**. Copying that existing donor package resolved only the local setup issue.
+2. Initial source imported family functions that canonical `validate.mjs` does not export: **0/1** after dependency correction. Four source preimages and raw failure remain. Author switched to the existing canonical resolver; no new shared exports or replacement schemas.
+3. Resolver-repaired draft: **21/22**. The only failure was the reviewer's assumption that optional null action/status/cursor fields must be sent. The adapter correctly omits them. The original test preimage remains in Git; one exact expected-body assertion changed, preserving fixed route/method/identity/selection checks. Seven additional controls were then added.
+4. Root's initial profile passed **29/30**: a normalized-only policy port refused the initial raw request. This proved an interface inconsistency, not unauthorized release. The unchanged negative became positive after root `84a93137`; current selected-client checks remain mandatory.
+5. Git emitted a directory-rename ambiguity while importing the root repair. There were no unmerged file entries; staged paths matched the exact five-file patch. Continuing the dependency cherry-pick retained all three root raw receipt files at their original paths. Source audit verifies byte correspondence; no manual production repair occurred.
+
+## Pinned producer and policy findings
+
+`meri.controller.ts:310–312,512–552` binds `clio`, standard-user RolesGuard and the tool POST secret guard to authenticated execution. `tool-service-secret.guard.ts:25–65` depends on production/staging/configuration settings and the internal service secret. `tenant-context.middleware.ts:112–365` verifies the session token, resolves tenant/user membership and may provision/heal identity; telemetry/audit effects mean invocation is not globally side-effect-free. `roles.guard.ts:28` consumes tenant context. Broker-supplied binding plus expiry is structural correlation; it does not attest the actual JWT's tenant, actor or effective role.
+
+`meri-tools.service.ts:8441–8478,9789–9828` chooses native modes and resolves current nonarchived tenant clients. `action-recommendation-read.service.ts:202–235` uses tenant-only unscoped reads and parallel row/count queries: total may be below the returned count. Its scoped path `240–338` rechecks client/wall and linked source access. `meri-action-item-read.helpers.ts:194–256` supplies eight top-level scoped fields and scoped coverage; its cursor remains a producer-owned opaque contract, not newly authenticated by this adapter. The actual family validators retain their documented nested transport narrowing. No client-wall requirement is invented for the unscoped producer.
+
+## Limits and ownership
+
+No live producer, JWT broker, credentials, SQL service, provider, customer data, native worker, cloud or paid model was used. Current policy/broker adapters and native cursor behavior remain unqualified. These tests exercise actual source code on synthetic boundaries; accounting acknowledgements are inert, not PostgreSQL durability evidence. Cancellation requests and bounded logical refusal do not prove physical socket retirement. Original SDK orchestration, Temporal, Aurora and full capability scope are unchanged. Source connectivity remains disabled; source acceptance does not pass G1, evaluate real-task/model quality, deliver UI events or establish a user-facing release. Root's wider control/evaluation integration remains separate.

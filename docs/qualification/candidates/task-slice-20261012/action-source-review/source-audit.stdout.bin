@@ -1,0 +1,59 @@
+{
+  "checksPassed": 19419,
+  "reviewHead": "4c214f7b9e4b1d52f9443c17bbf60c4f83e9309f",
+  "base": "77cedb126d57a0223d2df42ad2f3fe988eb51759",
+  "author": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e",
+  "rootProfile": "2c21104fd51608293fe21914e6f057691b4decb4",
+  "rootRepair": "84a9313735ec9fb079e35a92adb074f6afaf32e7",
+  "baseEntries": 9667,
+  "unchangedBaseEntries": 9664,
+  "changedOriginals": [
+    "apps/gateway/dispatch/operation-context.mjs",
+    "apps/gateway/dispatch/read-result-envelope.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs"
+  ],
+  "pairedPrivateReferences": 19,
+  "source": [
+    {
+      "path": "apps/gateway/sources/action-items/request-context.mjs",
+      "sha256": "a8c5ed754bcd9115fac8413f14a5606a01b9df5d7438b0be8d11e3e87929b2c2",
+      "bytes": 2860
+    },
+    {
+      "path": "apps/gateway/sources/action-items/projection.mjs",
+      "sha256": "aace23939d1fae09ae69979642157f09a8bd0823ad8dba1ee8f87d5ae27d0382",
+      "bytes": 2499
+    },
+    {
+      "path": "apps/gateway/sources/action-items/http-adapter.mjs",
+      "sha256": "937f24e55f9c2a981f54eea7124899d091cc4ac24e38839333eed6621a3a1db6",
+      "bytes": 4281
+    },
+    {
+      "path": "apps/gateway/sources/action-items/handler.mjs",
+      "sha256": "c701f71fea2d1e808a09adb9d6907adbaffbda1ad4f79bd0c11a3d631f7fc453",
+      "bytes": 1804
+    },
+    {
+      "path": "apps/gateway/dispatch/action-read-context.mjs",
+      "sha256": "6fd65759d8557d35152e258e316d9ff9863e9ade65fd95b99cb433651c3d5519",
+      "bytes": 2048
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "sha256": "484c9f53ec6f18b57af82f6267df98f2504432ab7aa551106daa9a35cd424bb0",
+      "bytes": 3180
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "sha256": "d69827d3e46c53c544af183cbb43ca21bc932be4aa4c6c1bacec93fede7e7bfb",
+      "bytes": 1010
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "sha256": "e9e654dd1ad2dcaa666dd04996d72adc8c157e735cfbf5c8535cd2aa2849f0cc",
+      "bytes": 58950
+    }
+  ],
+  "runtimeAccepted": false
+}

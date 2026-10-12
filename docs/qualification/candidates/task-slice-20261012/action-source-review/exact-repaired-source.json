@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/action-items-source-independent.test.mjs",
+    "apps/gateway/test/gateway.test.mjs",
+    "apps/gateway/test/authority-deadline.test.mjs"
+  ],
+  "cwd": "/workspace/meri-action-items-source-review-20261012",
+  "sourceHead": "4c214f7b9e4b1d52f9443c17bbf60c4f83e9309f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T23:44:12.832044+00:00",
+  "durationSeconds": 4.507,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 411323,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-review/exact-repaired-source.stdout.bin",
+      "bytes": 6679,
+      "sha256": "12127bfb4da5a6985820576f425a4b5477d22a46cafbac48a1b74f8b04a5bc0f"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-review/exact-repaired-source.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
