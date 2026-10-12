@@ -1,0 +1,273 @@
+✔ independent positive authorizeFixturePhase (6.581417ms)
+✔ independent positive commitFixtureCheckpoint (9.66451ms)
+✔ independent positive loadFixtureCheckpoint (3.759418ms)
+✔ independent positive verifyFixtureCheckpoint (2.949882ms)
+✖ independent aborted before authorizeFixturePhase starts zero ports (1.470599ms)
+✔ independent aborted before commitFixtureCheckpoint starts zero ports (1.016267ms)
+✖ independent aborted before loadFixtureCheckpoint starts zero ports (2.279916ms)
+✖ independent aborted before verifyFixtureCheckpoint starts zero ports (2.059074ms)
+✖ independent abort after parked authorizeFixturePhase/authorize:1 causes no next port or success (0.993012ms)
+✔ independent abort after parked commitFixtureCheckpoint/authorize:1 causes no next port or success (0.650647ms)
+✔ independent abort after parked commitFixtureCheckpoint/prepare:1 causes no next port or success (0.451558ms)
+✖ independent abort after parked commitFixtureCheckpoint/publish:1 causes no next port or success (2.127326ms)
+✖ independent abort after parked loadFixtureCheckpoint/load:1 causes no next port or success (1.941006ms)
+✖ independent abort after parked loadFixtureCheckpoint/objects:1 causes no next port or success (1.779433ms)
+✖ independent abort after parked loadFixtureCheckpoint/load:2 causes no next port or success (1.714406ms)
+✖ independent abort after parked verifyFixtureCheckpoint/load:1 causes no next port or success (2.64277ms)
+✖ independent abort after parked verifyFixtureCheckpoint/objects:1 causes no next port or success (1.889489ms)
+✖ independent abort after parked verifyFixtureCheckpoint/verify:1 causes no next port or success (1.845703ms)
+✖ independent expiry during final commitFixtureCheckpoint port never releases success (2.020796ms)
+✖ independent expiry during final loadFixtureCheckpoint port never releases success (1.611701ms)
+✖ independent expiry during final verifyFixtureCheckpoint port never releases success (1.595647ms)
+✖ independent ambiguous commit aborted before catch starts no reconciliation (1.907686ms)
+✖ independent abort during ambiguity readback never releases reconciled receipt (1.997491ms)
+✖ independent expiry during ambiguity readback never releases reconciled receipt (1.86996ms)
+✔ independent active ambiguous commit still reconciles original identity (1.655587ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 8
+ℹ fail 17
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 489.075802
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:35
+✖ independent aborted before authorizeFixturePhase starts zero ports (1.470599ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:35
+✖ independent aborted before loadFixtureCheckpoint starts zero ports (2.279916ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:35
+✖ independent aborted before verifyFixtureCheckpoint starts zero ports (2.059074ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:21:149)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked authorizeFixturePhase/authorize:1 causes no next port or success (0.993012ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked commitFixtureCheckpoint/publish:1 causes no next port or success (2.127326ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked loadFixtureCheckpoint/load:1 causes no next port or success (1.941006ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked loadFixtureCheckpoint/objects:1 causes no next port or success (1.779433ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked loadFixtureCheckpoint/load:2 causes no next port or success (1.714406ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked verifyFixtureCheckpoint/load:1 causes no next port or success (2.64277ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked verifyFixtureCheckpoint/objects:1 causes no next port or success (1.889489ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:23:82
+✖ independent abort after parked verifyFixtureCheckpoint/verify:1 causes no next port or success (1.845703ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:25:137)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:102
+✖ independent expiry during final commitFixtureCheckpoint port never releases success (2.020796ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:277)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:102
+✖ independent expiry during final loadFixtureCheckpoint port never releases success (1.611701ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:277)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:102
+✖ independent expiry during final verifyFixtureCheckpoint port never releases success (1.595647ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:27:277)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:28:1
+✖ independent ambiguous commit aborted before catch starts no reconciliation (1.907686ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:28:194)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:29:1
+✖ independent abort during ambiguity readback never releases reconciled receipt (1.997491ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:29:230)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:30:1
+✖ independent expiry during ambiguity readback never releases reconciled receipt (1.86996ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-next-behavior-review-20261012/docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs:30:215)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
