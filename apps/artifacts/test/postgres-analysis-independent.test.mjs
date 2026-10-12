@@ -77,3 +77,7 @@ for(const phase of ['reserve','admission'])test(`revocation while ${phase} is pa
  if(phase==='reserve'){const gate=t.db.parkCommit('reserve');resume=gate.resume;ready=gate.ready;}else{const entered=deferred(),gate=deferred();t.state.proofHook=async()=>{entered.resolve();await gate.promise;};ready=entered.promise;resume=gate.resolve;}
  const pending=t.run();await ready;t.state.revoked=true;resume();await assert.rejects(pending);assert.equal(t.state.dispatches,0,'fresh current policy must refuse before a newly started external effect');assert.equal(t.row().completion,null);assert.equal(t.reservation().state,'UNKNOWN');
 });
+for(const field of ['deadline','bytes'])test(`changed current ${field} during admission refuses immutable intent before dispatch`,async()=>{
+ const t=setup();await t.bind();t.state.proofHook=()=>{if(field==='deadline')t.state.runDeadline=NOW+6000;else t.db.f.claims.budgets.maxOutputBytes=512;};
+ await assert.rejects(t.run());assert.equal(t.state.dispatches,0);assert.equal(t.row().completion,null);assert.equal(t.reservation().state,'UNKNOWN');
+});

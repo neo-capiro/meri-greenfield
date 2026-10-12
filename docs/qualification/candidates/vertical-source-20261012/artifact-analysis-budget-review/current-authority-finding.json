@@ -1,0 +1,10 @@
+{
+  "source": "fbe44560ef89c1d2a235cb97f440aaee4f0babfc",
+  "testFreeze": "c73e190ca8f0f85165dbf74d404ae92a4f2884ec",
+  "pass": 65,
+  "fail": 2,
+  "independent": 34,
+  "author": 33,
+  "finding": "Revocation while reserve ACK or admission is parked still starts native port before post-dispatch policy check rejects. The admission proof is a distinct immutable intent/image gate and does not replace current business/capability authority.",
+  "requestedRepair": "Recheck current authority before starting external effect, preserving exact immutable intent, separate admission expiry, pending result semantics and canonical UNKNOWN liability."
+}
