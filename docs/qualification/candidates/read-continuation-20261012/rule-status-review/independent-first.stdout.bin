@@ -1,0 +1,48 @@
+✔ required independent trusted clocks refuse missing malformed or model authority (5.901617ms)
+✔ normalization is frozen detached trim-UTF16-cap then uppercase (2.062492ms)
+✔ typed request preserves nullable strings and refuses coercion and aliases (0.965893ms)
+✔ all public selector APIs reject coercion without effects (0.543838ms)
+✔ hostile request output and clock objects remain inert (0.556807ms)
+✔ clocks and generatedAt are independent observations with no order requirement (24.068789ms)
+✔ no ambient clock is consulted by normalize or assertion (0.521705ms)
+✔ missing query has only exact refusal, even with a state selector (1.508138ms)
+✔ no-match note binds normalized query and state without extra authority (0.686132ms)
+✔ ambiguity is exactly2 through6-per-jurisdiction and never an exhaustive count (1.553277ms)
+✔ ambiguity namespace order state filter and identities are exact (0.802607ms)
+✔ ambiguity rows are closed stored projections with exact clarification note (1.068187ms)
+✔ proposed stage exact threshold: PROPOSED_RULE (2.36628ms)
+✔ proposed stage exact threshold: PROPOSED (2.823898ms)
+✔ proposed stage exact threshold: proposed_rule (2.330605ms)
+✔ proposed stage exact threshold: proposed (1.72241ms)
+✔ final/effective exact threshold: RULE (0.978943ms)
+✔ final/effective exact threshold: FINAL (1.156059ms)
+✔ final/effective exact threshold: PRESIDENTIAL_DOCUMENT (0.809308ms)
+✔ final/effective exact threshold: EXECUTIVE_ORDER (0.595466ms)
+✔ final/effective exact threshold: EMERGENCY (1.205824ms)
+✔ final/effective exact threshold: rule (0.639892ms)
+✔ notice fallback retains raw stored type: "NOTICE" (0.278429ms)
+✔ notice fallback retains raw stored type: "notice" (0.226361ms)
+✔ notice fallback retains raw stored type: "unknown-stored-type" (0.178228ms)
+✔ notice fallback retains raw stored type: "" (0.175064ms)
+✔ notice fallback retains raw stored type: " RULE " (0.258609ms)
+✔ comment equality uses the separate comment clock after stage evaluation (0.529286ms)
+✔ closed-stage gates comments even when independent comment clock precedes end (0.316697ms)
+✔ state comment starts at boundary; end boundary is closed (0.680925ms)
+✔ no invented temporal ordering rejects neither reversed windows nor clock observations (0.224979ms)
+✔ unknown end has exact conditional caveat; known end forbids extra note (0.707604ms)
+✔ state: closed found envelope and required null fields (3.013402ms)
+✔ federal: closed found envelope and required null fields (2.745219ms)
+✔ federal preserves general DateTime nullURL arrays and fixed null start (0.767634ms)
+✔ state nullable dates coverage one agency and single nonempty docket (1.167446ms)
+✔ state date-only fields require midnight; federal dates need only canonical ISO (1.038723ms)
+✔ scope suppresses federal but cannot prove unprojected state geography or title matching (0.448775ms)
+✔ returned result is detached from mutable caller objects (0.180933ms)
+✔ canonical resolver admits only the two trusted context keys and original request (1.401699ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 230.591125
