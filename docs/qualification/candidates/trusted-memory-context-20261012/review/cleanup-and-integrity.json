@@ -1,0 +1,67 @@
+{
+  "checks": [
+    {
+      "path": "preserved-base-memory-controls.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-memory67.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "proxy-fixture-diagnostic.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-legacy79.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "prefreeze-author-memory-controls.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-original-release.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "npm-default-offline.json",
+      "exitCode": 1,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "npm-cached-offline.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-memory67-corrected-fixture.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-accepted13-release.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "frozen-accepted13.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    },
+    {
+      "path": "final-whitespace.json",
+      "exitCode": 0,
+      "ownedProcessGroupAbsent": true
+    }
+  ],
+  "allStreamHashesVerified": true,
+  "allOwnedCheckGroupsAbsent": true,
+  "otherOwnersTouched": false
+}

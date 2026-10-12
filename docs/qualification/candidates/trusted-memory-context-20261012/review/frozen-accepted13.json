@@ -1,0 +1,28 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/tmp/meri-trusted-memory-accepted13-review-20261012/apps/gateway/test/authority-deadline.test.mjs",
+    "/tmp/meri-trusted-memory-accepted13-review-20261012/apps/gateway/test/gateway.test.mjs",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/accepted-catalog.test.mjs"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773939.6812918,
+  "elapsedSeconds": 3.7361183166503906,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": "/tmp/meri-trusted-memory-accepted13-review-20261012",
+  "streams": {
+    "stdout": {
+      "path": "frozen-accepted13.stdout.txt",
+      "bytes": 3519,
+      "sha256": "f50a5c8834f08004be5c30b08d84b564089ec9ced8c9c294eb5f345d7cf2d1d0"
+    },
+    "stderr": {
+      "path": "frozen-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

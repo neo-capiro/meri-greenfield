@@ -195,7 +195,9 @@ for(const field of ['decision','keySha256','previousSha256','checkedAtMs'])test(
 
 for(const target of ['load','retain'])test(`independent: ${target} rejects hostile non-JSON receipt without property effects`,async()=>{
   const f=target==='load'?await seeded():fixture({nextCursor:'cursor-one'});let effects=0;
-  const hostile=new Proxy({},{get(){effects++;throw Error('get');},ownKeys(){effects++;throw Error('keys');}});
+  // An async port necessarily performs Promise thenable assimilation before
+  // its value reaches the raw-JSON boundary; keep that language lookup inert.
+  const hostile=new Proxy({},{get(_value,key){if(key==='then')return undefined;effects++;throw Error('get');},ownKeys(){effects++;throw Error('keys');}});
   f.contextPorts[target==='load'?'loadPrevious':'retain']=async()=>hostile;
   await denied(f,target==='load'?{cursor:'cursor-one'}:{});assert.equal(effects,0);
   assert.equal(f.events.includes('settle'),false);if(target==='load')assert.equal(f.events.includes('handler'),false);

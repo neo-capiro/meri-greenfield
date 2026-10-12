@@ -1,6 +1,6 @@
 # Independent trusted memory-context source review
 
-Status: IN PROGRESS, not accepted. Base `5db2714b6dcbd3109c528e0afafcb654216133ca` (PR11). Reviewer branch `review/meri-trusted-memory-context-20261012`, isolated worktree `/workspace/meri-trusted-memory-context-review-20261012`. Production author is a separate role and worktree. Reviewer owns only this report, the new review evidence directory, and `apps/gateway/test/memory-context-independent.test.mjs`.
+Status: **ACCEPT_SOURCE** for exact author freeze `5ebe58d6480496689f409b03060b5fdb76c5d7fe`; runtime acceptance remains withheld. Base `5db2714b6dcbd3109c528e0afafcb654216133ca` (PR11). Reviewer branch `review/meri-trusted-memory-context-20261012`, isolated worktree `/workspace/meri-trusted-memory-context-review-20261012`. Production author is a separate role and worktree. Reviewer owns only this report, the new review evidence directory, and `apps/gateway/test/memory-context-independent.test.mjs`.
 
 ## Before implementation: independent verification outline
 
@@ -34,3 +34,32 @@ The private registry owns one memory-only dispatchProfile field. The operation-c
 The independent success fixtures deliberately inject a trusted internal catalog entry to exercise the real dispatcher with the actual canonical memory resolver and current-authority composition. They do not weaken or edit actual catalog availability. A separate control verifies all 14 actual entries remain disabled in the production composition. Thus the tests establish consumption at the private source interface; they establish no production source exposure, live adapter support or native durability.
 
 Port records bind the complete RunBinding, operation/version, stable authorized subject, policy and cursor. Record digests cover the original raw request and raw page; existing family validation enforces request limit, cursor continuity, ordering and coverage. Shortening current authority below a previous record's expiration rejects that record rather than extending authority. This conservative source behavior is not a measured production paging policy. Injected trusted ports may continue physical I/O after abort; the coordinator rejects and never releases late output, while real storage cancellation, exactly-once retention and durability remain unqualified.
+
+
+## Final independent decision
+
+**ACCEPT_SOURCE**, restricted to the private trusted memory-context consumption prerequisite. The exact author commit `5ebe58d6480496689f409b03060b5fdb76c5d7fe` is retained in reviewer ancestry by an unmodified merge. No production source was edited by the reviewer.
+
+| Independently replayed check | Result | Receipt |
+| --- | --- | --- |
+| New memory suite: 54 independent + 13 unchanged author cases | 67/67 PASS | `review/frozen-memory67-corrected-fixture.json` |
+| Unchanged gateway, inner deadlines, late cancellation, issuance and budgets | 79/79 PASS | `review/frozen-legacy79.json` |
+| Exact PR7 accepted 13-operation contracts with new frozen gateway | 35/35 PASS | `review/frozen-accepted13.json` |
+| Original freshly shortened release deadline with parked settlement, current composition | PASS | `review/frozen-original-release.json` |
+| Same original deadline control, exact accepted 13-operation composition | PASS | `review/frozen-accepted13-release.json` |
+| Exact original file byte preservation | PASS | `review/source-preservation.json` |
+| Final source/evidence whitespace | PASS | `review/final-whitespace.json` |
+
+The 13-operation composition uses exact Git contract bytes from accepted `5ee46446b5f60034916f00b2a665b3e2bef9cf60` and exact gateway bytes from the author freeze. It is an explicit temporary source composition, not an invented historical commit. Its 64-file hash manifest is `review/accepted-composition.json`. The current 14-operation catalog is separately checked by the new independent suite and remains entirely unavailable.
+
+Of 2,134 base tracked files, 2,132 are byte-identical. The only changed original files are the existing dispatcher and exactly one memory dispatchProfile registry line; all 55 other contract files and every original gateway test/fixture remain identical. Three cohesive production modules and one author test are new. Schemas, catalog.json, public 0.1 exports, locks, authorization, lifetime and disabled production composition are unchanged. No new private-source bodies or external data were read or written in this review.
+
+The first frozen 67-case replay yielded 65 PASS / 2 FAIL in the two added hostile receipt cases. Their synthetic async ports returned proxies whose `then` getter intentionally threw, so JavaScript Promise assimilation failed before any value reached the gateway boundary. The gateway returned content-free INTERNAL_ERROR, and no source defect was claimed. A standalone language diagnostic proves this without invoking production code. The only correction makes the unavoidable `then` lookup inert; every other property/reflection counter, non-JSON rejection assertion and source code remains unchanged. These cases were two of the three added in `d316c0c`, outside the original 51 controls frozen in `738d5f1`; all original 51 assertions are unchanged. Initial frozen stdout/receipt, diagnostic, original test Git hashes and the final corrected test hash are preserved in the evidence packet.
+
+Author-reported root contracts 244/244 and public distribution 7/7 passed; those broader author checks were inspected as author evidence, not relabeled as independent executions. The independent checks above directly cover the changed source boundary and retained compatibility.
+
+## Remaining gates and cleanup
+
+All actual 14 descriptors retain `unimplemented` / `pending` / null handlers, discovery returns no tools, and the production gateway remains `sourceEnabled:false`. The new context ports have no concrete production storage adapter. This review does not qualify live grants/walls, source accuracy, storage consistency/durability, native checkpoint task-A/B recovery, revocation latency, sandbox/egress/teardown, runner images or budgets. G1 remains OPEN, and later gates remain unentered. No runtime or deployment permission is requested or inferred.
+
+Every supervised review receipt records exited processes and absence of its owned process group; no test timed out. Parked synthetic promises were released and drained. Owned ignored dependencies, local cache and the exact accepted-13 composition are retained for reproduction. No other owner's resources/processes were touched. No cloud, credential, customer, database, paid-provider, image build/push, frontend or Hermes action occurred. Parent owns integration/publication; this branch is local and reviewable with no further source blocker.

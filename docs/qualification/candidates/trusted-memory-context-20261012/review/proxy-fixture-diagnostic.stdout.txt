@@ -1,0 +1,1 @@
+{"classification":"REVIEWER_FIXTURE_CORRECTION","sourceCodeInvoked":false,"lookedUp":["then"],"errorClass":"TypeError","result":"ASYNC_RETURN_ASSIMILATES_THENABLE_BEFORE_GATEWAY_RECEIVES_VALUE"}

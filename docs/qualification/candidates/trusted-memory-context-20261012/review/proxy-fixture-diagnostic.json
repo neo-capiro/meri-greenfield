@@ -1,0 +1,25 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/trusted-memory-context-20261012/review/proxy-fixture-diagnostic.mjs"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773995.5640943,
+  "elapsedSeconds": 0.03190159797668457,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "proxy-fixture-diagnostic.stdout.txt",
+      "bytes": 195,
+      "sha256": "f12630cfe8e11bf85b2066e6f37863ce568e4d223453c1d1d7a19f8e79d85b66"
+    },
+    "stderr": {
+      "path": "proxy-fixture-diagnostic.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
