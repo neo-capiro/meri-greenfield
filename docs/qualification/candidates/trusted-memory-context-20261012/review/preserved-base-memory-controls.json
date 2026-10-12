@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-trusted-memory-context-review-20261012",
+  "startUnixSeconds": 1791773572.4562771,
+  "elapsedSeconds": 1.2696213722229004,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-base-memory-controls.stdout.txt",
+      "bytes": 41071,
+      "sha256": "63213947406b107afe55d64cef21b88f3edb03ef74e94941ed8105f4ae1ca7e9"
+    },
+    "stderr": {
+      "path": "preserved-base-memory-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

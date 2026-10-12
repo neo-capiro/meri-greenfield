@@ -1,0 +1,80 @@
+{
+  "source": "Parent independent evidence reader report; original ZIP bytes still unavailable in this consumer environment",
+  "recordedAt": "2026-10-12T03:00:08.310099+00:00",
+  "parentVerifiedZip": {
+    "bytes": 247272,
+    "members": 117,
+    "sha256": "44ff0a58cd5f6b34279d3844a84952bb498d5973c116127e4a8295cc9f5a9c65"
+  },
+  "capture": {
+    "exitCode": 2,
+    "startedAt": "2026-10-12T02:20:34.088053Z",
+    "endedAt": "2026-10-12T02:20:34.504478Z",
+    "durationSeconds": 0.416425,
+    "stdoutBytes": 0,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrBytes": 60,
+    "stderrSha256": "d7e0ba4371b0fd0f31fbda3f98769ad43b6d18d3719deca38d9ae7e665271b12",
+    "stderrExact": "Runner capture refused/failed; no build authority granted.\r\n",
+    "timedOut": false,
+    "overflow": false,
+    "readerErrors": [],
+    "streamsAtEof": true,
+    "retryAllowed": false,
+    "outerDeadlineSeconds": 75,
+    "streamCapBytesEach": 65536,
+    "descendantTeardownQualified": false,
+    "captureExecutedOnce": true,
+    "captureRerun": false,
+    "sourceMonkeyPatched": false,
+    "outputSlotExists": false,
+    "collectorFiles": [],
+    "trackedFilesUnchanged": 1538,
+    "checkoutClean": true
+  },
+  "runtime": {
+    "platform": "win32",
+    "version": [
+      3,
+      11,
+      15
+    ],
+    "isolated": 1,
+    "noSite": 1,
+    "dontWriteBytecode": true,
+    "executableSha256": "9e5a907025a94dde258f331e366117d8e95ad07e7a3eecb21973b04d30898dc0"
+  },
+  "independentLocalPinnedSourceVerification": {
+    "commit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+    "files": [
+      {
+        "path": "scripts/qualification/worker_runner_capture.py",
+        "sha256": "3219d21ec7d7bfa63deb07f87125e3ffcf5b6ff5df4f2b5f87f487cb6594153c",
+        "bytes": 10069
+      },
+      {
+        "path": "scripts/qualification/worker_runner_inventory.py",
+        "sha256": "7615e26a5d038ff2fa054cde3cdb04077def5636874f848c97e050dae9df03e9",
+        "bytes": 13224
+      },
+      {
+        "path": "scripts/qualification/test_worker_runner_capture.py",
+        "sha256": "fa5bf1783299d2b00f740f951163a2904059c0a9510604282e40afcbb455d2ac",
+        "bytes": 22365
+      }
+    ]
+  },
+  "conclusion": "Generic caught-error branch consistent with original bytes; failing stage UNKNOWN; AWS CLI invocation presence/absence UNKNOWN; descendantTeardownQualified is not a diagnosed cause",
+  "consumerLocalRouteReattempt": {
+    "authority": "Parent explicitly supplied renewed consumer-local route after earlier two failures",
+    "request": "items contains library_file_id only; destination /workspace/meri-native-evidence-20261012/parent-route",
+    "workspacePath": null,
+    "transferKind": "signed URL handled unchanged by current Library helper",
+    "helperExitCode": 1,
+    "error": "library file transfer failed: download failed",
+    "localFileExists": false,
+    "localHashVerified": false
+  },
+  "collectorRerunAuthorized": false,
+  "nativeAdmission": false
+}

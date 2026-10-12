@@ -1,0 +1,64 @@
+{
+  "outcome": "ACCEPT_HANDOFF",
+  "reviewer": "Codex /root/memory_reviewer",
+  "reviewed_at_utc": "2026-10-12T02:54:53.953079+00:00",
+  "review_base_commit": "33a22f6a1122d14c6c3b9fb41950aa21cf8940b0",
+  "handoff_path": "docs/coordination/reports/CAPIRO-MEMORY-WORDING-HANDOFF-20261012.md",
+  "handoff_sha256": "de5ef566d45b74b0468e597ab991414b1730a0ccdc769edbf78e230201e2439f",
+  "prior_handoff_sha256": "d8bd24a27e947a18d2ec501afdd1cd2e317b71c8cb145243a9ec2a04352decd2",
+  "initial_finding": {
+    "severity": "handoff completeness",
+    "status": "resolved by handoff owner before acceptance",
+    "description": "Initial comments instruction omitted universal independent-review language at lines 57\u201358 and categorical self-ratification language at lines 75\u201377. Revised handoff covers the entire 56\u201379 block and preserves the ban on automatic same-request promotion."
+  },
+  "private_reference_pin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observed_capirov2_head": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "reference_verification": [
+    {
+      "path": "apps/api/src/memory/memory-candidate-rules.ts",
+      "bytes": 6467,
+      "sha256": "17f48ff5ca477057ed622afca0412481e0ba9220c6891df12d21bf5f1c87ceaf",
+      "pinned_current_byte_equal": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "pinned_current_byte_equal": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-review-admin-policy.ts",
+      "bytes": 687,
+      "sha256": "ce7d9b36b52b7b63d1a8bdcaf0bab2acf3c57187dedc5752a80f8e95f733adc3",
+      "pinned_current_byte_equal": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-authorization.helpers.ts",
+      "bytes": 7526,
+      "sha256": "a0c2ece14a7d8164d3a7c7a2f028ffe75a486c91f6fdda8b11fa48cab66c60e7",
+      "pinned_current_byte_equal": true
+    },
+    {
+      "path": "apps/api/src/memory/governed-memory-candidate.service.ts",
+      "bytes": 21792,
+      "sha256": "00616d8adeaf7631fc5ad467feff8598a23e1dc8e76a60711157d3998324ccb1",
+      "pinned_current_byte_equal": true
+    }
+  ],
+  "checks": {
+    "pinned_current_references": "5/5 exact byte matches",
+    "revised_handoff_required_wording": "7/7 presence checks passed",
+    "manual_policy_and_scope_review": "passed",
+    "private_bodies_written_to_git": false,
+    "capirov2_or_shared_files_edited_by_reviewer": false
+  },
+  "unrun": [
+    "Producer implementation, unit/integration/runtime checks: handoff has not been implemented; no source change was assigned.",
+    "No live, paid, provider, cloud, database, customer-data, Hermes, frontend or external action."
+  ],
+  "acceptance_limits": [
+    "Document handoff only; no implementation/source/runtime acceptance granted.",
+    "Existing capirov2 owner must recheck its current head, implement the wording/comment changes, and retain the specified behavioral controls."
+  ],
+  "owned_processes_started": 0
+}

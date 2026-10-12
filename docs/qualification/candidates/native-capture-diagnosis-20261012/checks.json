@@ -1,0 +1,69 @@
+{
+  "schema": "meri-native-diagnosis-author-checks/1",
+  "checks": [
+    {
+      "kind": "STATIC_AST_AND_SOURCE_HASH",
+      "status": "PASS",
+      "nativeExecuted": false
+    },
+    {
+      "kind": "LOCAL_SYNTHETIC_DIAGNOSTIC_TESTS",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012",
+        "-p",
+        "test_local_metadata.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "synthetic-checks.stdout",
+      "stderr": "synthetic-checks.stderr",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "eef49b455eb66e184a8c18320ba76c8aa8dcc793e7ac1b961b470211c50e5feb",
+      "nativeExecuted": false
+    },
+    {
+      "kind": "LOCAL_SYNTHETIC_DIAGNOSTIC_TESTS_ADDED_REPARSE_AND_REMOTE_DRIVE",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012",
+        "-p",
+        "test_local_metadata.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "stdout": "synthetic-checks-extended.stdout",
+      "stderr": "synthetic-checks-extended.stderr",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "bff11a18212e5da5de4303e6c69b282c6133419b468455e5f4138af2bf470f66",
+      "nativeExecuted": false
+    },
+    {
+      "kind": "STAGED_WHITESPACE_AND_ALLOCATED_PATHS",
+      "status": "PASS",
+      "paths": [
+        "docs/coordination/reports/MERI-NATIVE-CAPTURE-STATIC-DIAGNOSIS-20261012.md",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/checks.json",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/diagnostic-proposal.json",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/inspect-local-metadata.py",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/static-analysis.json",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/synthetic-checks-extended.stderr",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/synthetic-checks-extended.stdout",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/synthetic-checks.stderr",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/synthetic-checks.stdout",
+        "docs/qualification/candidates/native-capture-diagnosis-20261012/test_local_metadata.py"
+      ],
+      "nativeExecuted": false
+    }
+  ]
+}

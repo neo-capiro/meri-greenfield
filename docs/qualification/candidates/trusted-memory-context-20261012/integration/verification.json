@@ -1,0 +1,106 @@
+{
+  "decision": "ACCEPT_SOURCE_ONLY",
+  "testedSource": "7fadbbf987b85755a39898527509e17953f1a750",
+  "testedTree": "34f69c07bc59447b76a5ac1abb5c03a4a92d4260",
+  "preservedBase": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+  "author": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+  "review": "fc725f80a52a13c3958fc615880f9d65821a95d7",
+  "baseTrackedFiles": 2134,
+  "unchangedBaseFiles": 2131,
+  "preservedManifestSha256": "e0e172a447128688e1b85be846aa8ed087610cfbf356bf2ec6b493b438b5373d",
+  "reviewedSource": [
+    {
+      "path": "apps/gateway/dispatch/memory-read-context.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "8f4dc2f3b6ff1506ff694454625a624378ea7d6bfa7edd8a8b4703d472aafa14",
+      "bytes": 3610
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "0598ca96e1bff2817b0c0f02ef0a857a94a0d67508582d2b9369c5b6035855d5",
+      "bytes": 1613
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "878bb4da296c8e1aca3dc0a6155f4ee6e3466423e4a0f6612db54178a78cc848",
+      "bytes": 958
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb",
+      "bytes": 7174
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "ownerCommit": "fc725f80a52a13c3958fc615880f9d65821a95d7",
+      "sha256": "e478ec0ea725feb54003bfdd11a99d0b44303c920c16838a175b68be6fcf657a",
+      "bytes": 18589
+    },
+    {
+      "path": "apps/gateway/test/memory-context.test.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "675653ef2aac9de901f3bc2ab0280c38058b435835c5a4c808e564a7563a571d",
+      "bytes": 12610
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "ownerCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+      "sha256": "8084c4065ff782d4f996d27c001e0a1b5b075810b4f51d61852f3c3d9bfcdabe",
+      "bytes": 11917
+    }
+  ],
+  "checks": [
+    {
+      "label": "combined-root",
+      "tests": 244,
+      "receiptSha256": "bacd48dc1124d8cdb4b999a333ca644f364f9b64cc2e08c5848a017636f084d1",
+      "ownedProcessGroupAbsent": true,
+      "pidAndPgid": 26965
+    },
+    {
+      "label": "combined-gateway",
+      "tests": 146,
+      "receiptSha256": "b2451d8ab86581792e495c7ffe6a7f9348ef2b4582031775a691310d28d0b8ea",
+      "ownedProcessGroupAbsent": true,
+      "pidAndPgid": 27005
+    },
+    {
+      "label": "combined-independent",
+      "tests": 35,
+      "receiptSha256": "d21ba8ddd8e57966eb25da73cf2b678728609b28935be86af5a64c4377ff9de0",
+      "ownedProcessGroupAbsent": true,
+      "pidAndPgid": 26972
+    },
+    {
+      "label": "combined-public",
+      "tests": 7,
+      "receiptSha256": "83bf319322fd7e15eff1796edce2e54b6b8b802bf4c797047a12fb6570f7d5fb",
+      "ownedProcessGroupAbsent": true,
+      "pidAndPgid": 26949
+    },
+    {
+      "label": "original-release-control",
+      "tests": null,
+      "receiptSha256": "c0bf7654ce288eb7d23cc3b360df965fa4167ce417ff2da77a8d8265550f4dde",
+      "ownedProcessGroupAbsent": true,
+      "pidAndPgid": 26981
+    }
+  ],
+  "counts": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "boundUnavailable": 14,
+    "selectedUnmapped": 82
+  },
+  "canonicalCatalogUnchanged": true,
+  "canonicalCatalogSha256": "733438a232fafbc7aaf8635ba30fd33d1fab94bc73949d2c9264b14c92e8cbce",
+  "public01AndRawMemorySchemaUnchanged": true,
+  "originalControlsUnchanged": true,
+  "all14OperationsUnavailable": true,
+  "runtimeAccepted": false,
+  "g1": "OPEN"
+}

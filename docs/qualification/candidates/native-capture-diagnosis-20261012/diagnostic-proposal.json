@@ -1,0 +1,79 @@
+{
+  "schema": "meri-native-local-diagnostic-proposal/1",
+  "status": "NOT_NATIVE_EXECUTION_APPROVED",
+  "collectorSourceCommit": "c225c4f6247c22c8906a23758477e431e3d88c15",
+  "diagnosticScript": {
+    "path": "docs/qualification/candidates/native-capture-diagnosis-20261012/inspect-local-metadata.py",
+    "bytes": 9447,
+    "sha256": "3780982e6906e6798232d9a7d7f1c5efa07f6dd7b9a25356976a2a73ed026bd3"
+  },
+  "commands": [
+    {
+      "id": "READ_EXISTING_STREAMS",
+      "sequence": 1,
+      "powershell": "& '<EXACT_ORIGINAL_PYTHON_EXE>' -I -B -S '<REVIEWED_DIAGNOSTIC_SCRIPT_ABSOLUTE_PATH>' evidence --stdout-file '<ORIGINAL_STDOUT_ABSOLUTE_PATH>' --stderr-file '<ORIGINAL_STDERR_ABSOLUTE_PATH>'",
+      "inputs": "Exact original preserved stream files, never reconstructed output. Parent must confirm immutable script hash and original executable path.",
+      "output": "One JSON stdout record with bytes/SHA256/known-message comparison; unknown body omitted; exit0 observation or2 refusal.",
+      "inferenceLimit": "Even generic CRLF match gives only catch branch, not stage/cause."
+    },
+    {
+      "id": "READ_CURRENT_RUNTIME_METADATA",
+      "sequence": 2,
+      "conditional": "Only after first result review and exact-path user approval; no automatic chaining.",
+      "powershell": "& '<EXACT_ORIGINAL_PYTHON_EXE>' -I -B -S '<REVIEWED_DIAGNOSTIC_SCRIPT_ABSOLUTE_PATH>' metadata --repository '<EXACT_ORIGINAL_REPOSITORY_ABSOLUTE_PATH>' --original-output '<EXACT_ORIGINAL_OUTPUT_ARGUMENT>'",
+      "inputs": "Actual original repo/output paths supplied by owner; no guessed NEOMART paths.",
+      "output": "Runtime facts, slot presence, plain local root status, selected .py size/link anomalies; no file bodies/credentials/full paths.",
+      "inferenceLimit": "Current metadata only; cannot establish original first failure or runner qualification."
+    }
+  ],
+  "limits": {
+    "processes": 1,
+    "childProcesses": 0,
+    "threadsCreated": 0,
+    "internalDeadlineSeconds": 10,
+    "requiredExternalSupervisorSeconds": 15,
+    "externalSupervisor": "PARENT_EXISTING_SUPPORTED_PROCESS_SUPERVISION; exact interface/path invocation not supplied and must be reviewed before native execution",
+    "externalSupervisorImplementedHere": false,
+    "hardFilesystemTimeoutClaimed": false,
+    "maxOriginalStreamBytesEach": 65536,
+    "maxDirectoryEntries": 80000,
+    "maxSelectedPyFiles": 20000,
+    "maxIssueExamples": 100,
+    "maxStdoutBytes": 1048576,
+    "driveType": "Windows DRIVE_FIXED only; UNC/mapped remote/removable drives refused before metadata IO",
+    "links": "Ancestor links/reparse refused; subtree links/reparse reported without following",
+    "sitePackages": "Excluded",
+    "runtimeFileBodyReads": 0,
+    "originalEvidenceBodyReads": "Only explicitly named stdout/stderr, bounded; bodies never emitted"
+  },
+  "prohibited": {
+    "collectorExecution": true,
+    "collectorImport": true,
+    "collectorInstrumentation": true,
+    "originalPinEdits": true,
+    "awsCliExecution": true,
+    "awsApiCalls": true,
+    "networkCalls": true,
+    "providerCalls": true,
+    "builds": true,
+    "imageLaunch": true,
+    "newSupervisorImplementation": true,
+    "databaseCalls": true,
+    "credentialsOrPrivateBodiesPublished": true,
+    "originalOutputSlotMutation": true
+  },
+  "unresolvedInputs": [
+    "Exact original Python executable path",
+    "Reviewed diagnostic script native path/hash",
+    "Exact original stdout/stderr paths",
+    "Exact original repository and output argument",
+    "Existing approved process-supervision invocation",
+    "User approval of bounded exact native invocation"
+  ],
+  "acceptance": {
+    "runnerQualified": false,
+    "buildAuthorized": false,
+    "runtimeAccepted": false,
+    "G1": false
+  }
+}

@@ -52,6 +52,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
     normalize: (v, request, context, binding) => federal(v.normalizeFederalMarketInput(binding.id, request)),
     outputAssert: (v, page, request, context, binding) => v.validateFederalMarketShape(binding.output, page)}),
   Object.freeze({id: 'memory.list_own_proposals', nativeId: 'list_memory_proposals', group: 'memory-proposals', input: 'MemoryProposalInput', output: 'MemoryProposalReadResult', version: '0.2.0',
+    dispatchProfile: 'memory-proposals/1',
     contextKeys: Object.freeze(['subject', 'previous']),
     normalize: (v, request, context, binding) => ({input: v.normalizeMemoryProposalInput(request, context)}),
     outputAssert: (v, page, request, context, binding) => v.assertMemoryProposalReadResult(page, request, clock(context, binding.contextKeys))}),

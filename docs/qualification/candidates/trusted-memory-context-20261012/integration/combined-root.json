@@ -1,0 +1,43 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-g1-source-continuation-20261012",
+  "sourceHead": "7fadbbf987b85755a39898527509e17953f1a750",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "ac429ace91582a4837113c14078319c29e507a4e2ec31ef33b2d476a0a8d14c9",
+  "startedAt": "2026-10-12T03:02:26.274581+00:00",
+  "durationSeconds": 12.34,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 26965,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 27204,
+      "status": 0
+    },
+    {
+      "pid": 27269,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/integration/combined-root.stdout.bin",
+      "bytes": 22972,
+      "sha256": "dd2b693da603db83177f5dbd85a0def876f232ffd02d18a3fecf935c3a2a2941"
+    },
+    {
+      "path": "docs/qualification/candidates/trusted-memory-context-20261012/integration/combined-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "checkReason": "Independent integration verification of the reviewed trusted memory gateway context; owned local process groups only.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

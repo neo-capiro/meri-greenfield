@@ -1,0 +1,8 @@
+test_hardlinked_stream_refuses_before_body_read (__main__.IndependentBoundaries.test_hardlinked_stream_refuses_before_body_read) ... ok
+test_real_wrong_host_entrypoint_refuses_missing_paths (__main__.IndependentBoundaries.test_real_wrong_host_entrypoint_refuses_missing_paths) ... ok
+test_stream_exact_cap_and_unknown_bytes_stay_private (__main__.IndependentBoundaries.test_stream_exact_cap_and_unknown_bytes_stay_private) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.028s
+
+OK

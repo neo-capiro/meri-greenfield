@@ -1,0 +1,89 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "scope": "SOURCE_ONLY_TRUSTED_MEMORY_CONTEXT_CONSUMPTION",
+  "base": "5db2714b6dcbd3109c528e0afafcb654216133ca",
+  "authorCommit": "5ebe58d6480496689f409b03060b5fdb76c5d7fe",
+  "authorTree": "b90f824e1a942ab3f683238eae9ac808a73a62b4",
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb"
+    },
+    {
+      "path": "apps/gateway/dispatch/memory-read-context.mjs",
+      "sha256": "8f4dc2f3b6ff1506ff694454625a624378ea7d6bfa7edd8a8b4703d472aafa14"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-context.mjs",
+      "sha256": "0598ca96e1bff2817b0c0f02ef0a857a94a0d67508582d2b9369c5b6035855d5"
+    },
+    {
+      "path": "apps/gateway/dispatch/read-result-envelope.mjs",
+      "sha256": "878bb4da296c8e1aca3dc0a6155f4ee6e3466423e4a0f6612db54178a78cc848"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "sha256": "8084c4065ff782d4f996d27c001e0a1b5b075810b4f51d61852f3c3d9bfcdabe"
+    }
+  ],
+  "independentChecks": [
+    {
+      "receipt": "frozen-memory67-corrected-fixture.json",
+      "sha256": "9adb03fd4445dd94fd537d54a8128f5681dcde9238ca8355e1719d34db1a3087"
+    },
+    {
+      "receipt": "frozen-legacy79.json",
+      "sha256": "a4cda0a9007ca8eabd7d3727d4b0ac9eae7db695d3a7e238a061dad11d453235"
+    },
+    {
+      "receipt": "frozen-accepted13.json",
+      "sha256": "eaa010f8c3ad3e746d54c953a43940b7cf77059fdad4531a01591a88f207c2d8"
+    },
+    {
+      "receipt": "frozen-original-release.json",
+      "sha256": "4b7e5cb8544b1c6466b5959698925f231667824d0b66426665e2a923a0e1b9c3"
+    },
+    {
+      "receipt": "frozen-accepted13-release.json",
+      "sha256": "034bd45ddac305551957c9545023d8981ffcec0cbaa57eb8c86e1c3f99f59b34"
+    },
+    {
+      "receipt": "proxy-fixture-diagnostic.json",
+      "sha256": "166e660cab5b9259e2f356f62418692e6c6a228dc7ec3ec28aa8b7031e4c765b"
+    }
+  ],
+  "testCounts": {
+    "independentMemory": 54,
+    "unchangedAuthorMemory": 13,
+    "combinedMemory": 67,
+    "unchangedGateway": 79,
+    "exactAccepted13Composition": 35,
+    "originalReleaseControls": 2
+  },
+  "preservedFailures": [
+    "preserved-base-memory-controls.json",
+    "prefreeze-author-memory-controls.json",
+    "frozen-memory67.json",
+    "npm-default-offline.json"
+  ],
+  "reviewerFixtureCorrection": {
+    "reason": "JavaScript async return assimilates thenable before gateway receipt boundary",
+    "original51TestSha256": "6aeaa8ef1d4c8001db7f896b48d83221768ac334a6c71be148dfd063d8204e07",
+    "added54TestSha256": "9f70b952cdcc76e1a4e84e94f095b755221239676f04b1ee82c2670aa0e772db",
+    "final54TestSha256": "e478ec0ea725feb54003bfdd11a99d0b44303c920c16838a175b68be6fcf657a",
+    "productionSourceChanged": false,
+    "original51AssertionsChanged": false,
+    "correctedAddedCases": 2
+  },
+  "production": {
+    "sourceEnabled": false,
+    "unavailableDescriptors": 14,
+    "liveAdapters": false,
+    "runtimeQualification": "UNQUALIFIED",
+    "g1": "OPEN"
+  },
+  "broaderAuthorChecksNotIndependentlyRerun": {
+    "root": 244,
+    "publicDistribution": 7
+  }
+}

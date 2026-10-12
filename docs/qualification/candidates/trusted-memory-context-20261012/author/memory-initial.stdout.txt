@@ -1,0 +1,21 @@
+✔ memory dispatch consumes canonical raw DTO inside current request/lineage wrapper (14.504482ms)
+✔ memory shape rejects model supplied subject/previous and legacy context before business ports (2.84201ms)
+✔ selected client comes from fresh server authority and model client substitution refuses (4.188362ms)
+✔ stable authority cannot drift between preflight and normalized authorization (1.335046ms)
+✔ refreshed decision IDs do not change stable subject selection or prevent release (2.740758ms)
+✔ trusted retained first page enables advancing continuation without model-supplied history (6.148738ms)
+✔ missing context ports and unknown cursor cannot execute or reserve (1.834516ms)
+✔ retained pages reject corrupt digest, wrong run fence/operation/subject and stale or future times (45.402911ms)
+✔ even correctly digested retained substitution must pass canonical limit/cursor/order validation (9.681957ms)
+✔ result wrapper must bind exact operation/digest/lineage and preserve raw pending DTO semantics (7.653429ms)
+✔ loadPrevious: parked trusted context is bounded; late completion starts no further effect (23.207739ms)
+✔ retain: parked trusted context is bounded; late completion starts no further effect (20.47967ms)
+✔ revocation during retention cannot settle or release a result (2.990473ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1174.140762

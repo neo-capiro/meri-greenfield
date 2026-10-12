@@ -1,0 +1,83 @@
+✔ independent: canonical memory profile alone is selected; actual14 stay unavailable (9.95092ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (14.962229ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (6.690131ms)
+✖ independent: all invalid model shape/context inputs fail before trusted ports (1.892393ms)
+✔ independent: client selector cannot override server subject before effects (0.937719ms)
+✔ independent: decision IDs rotate while stable authority remains required (2.501768ms)
+✔ independent: stable subject drift at authority stage 2 never releases (1.158841ms)
+✔ independent: stable subject drift at authority stage 3 never releases (1.415327ms)
+✔ independent: stable subject drift at authority stage 4 never releases (2.360587ms)
+✔ independent: stable subject drift at authority stage 5 never releases (2.375158ms)
+✔ independent: absent retained context or context ports cannot invent continuation (1.113142ms)
+✔ independent: retained context rejects tenant (2.689901ms)
+✔ independent: retained context rejects actor (2.352524ms)
+✔ independent: retained context rejects conversation (2.729731ms)
+✔ independent: retained context rejects run (2.053055ms)
+✔ independent: retained context rejects attempt (2.516952ms)
+✔ independent: retained context rejects worker (2.162089ms)
+✔ independent: retained context rejects fence (2.273436ms)
+✔ independent: retained context rejects policy (2.246054ms)
+✔ independent: retained context rejects operation (2.345725ms)
+✔ independent: retained context rejects version (2.492154ms)
+✔ independent: retained context rejects subject (2.147046ms)
+✔ independent: retained context rejects cursor (2.204593ms)
+✔ independent: retained context rejects digest (2.437563ms)
+✔ independent: retained context rejects staleRead (2.248808ms)
+✔ independent: retained context rejects futureRead (1.957541ms)
+✔ independent: retained context rejects futureRecord (2.521518ms)
+✔ independent: retained context rejects expired (2.288789ms)
+✔ independent: retained context rejects beyondAuthority (2.136079ms)
+✔ independent: retained context rejects extra (1.951892ms)
+✔ independent: retained context rejects limit (2.334637ms)
+✔ independent: retained context rejects poisonedCursor (3.20173ms)
+✔ independent: retained context rejects invalidPage (3.424255ms)
+✔ independent: envelope and raw DTO reject operation (1.293954ms)
+✔ independent: envelope and raw DTO reject arguments (1.144319ms)
+✔ independent: envelope and raw DTO reject binding (1.132942ms)
+✔ independent: envelope and raw DTO reject subject (1.200874ms)
+✔ independent: envelope and raw DTO reject extra (1.340193ms)
+✔ independent: envelope and raw DTO reject missing (1.372722ms)
+✔ independent: envelope and raw DTO reject approved (1.334806ms)
+✔ independent: envelope and raw DTO reject actor (1.309898ms)
+✔ independent: envelope and raw DTO reject restricted (1.253994ms)
+✔ independent: envelope and raw DTO reject coverage (1.232222ms)
+✔ independent: retain receipt rejects decision (1.662087ms)
+✔ independent: retain receipt rejects keySha256 (1.334985ms)
+✔ independent: retain receipt rejects previousSha256 (1.658983ms)
+✔ independent: retain receipt rejects checkedAtMs (1.399242ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (3.752648ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (103.664496ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (101.374192ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (100.836909ms)
+ℹ tests 51
+ℹ suites 0
+ℹ pass 50
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1353.978724
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-context-independent.test.mjs:130:1
+✖ independent: all invalid model shape/context inputs fail before trusted ports (1.892393ms)
+  AssertionError [ERR_ASSERTION]: {"subject":{}}
+  + actual - expected
+  
+  + [
+  +   'capability',
+  +   'run'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-trusted-memory-context-review-20261012/apps/gateway/test/memory-context-independent.test.mjs:133:51)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ 'capability', 'run' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
