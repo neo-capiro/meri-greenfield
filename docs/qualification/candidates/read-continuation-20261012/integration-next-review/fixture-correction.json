@@ -1,0 +1,9 @@
+{
+  "initialPassed": 85,
+  "initialFailed": 1,
+  "finding": "Independent synthetic admin phone omitted its required uploadedDirectoryContact metadata projection",
+  "sourceBehavior": "Admin phone is trimmed metadata.uploadedDirectoryContact.phone; missing metadata correctly rejects supplied phone",
+  "correction": "Add matching synthetic uploaded contact data; preserve admin positive and downgrade negative",
+  "productionChanged": false,
+  "originalRetained": "first-independent.test.mjs.txt and independent-deps-repaired streams"
+}
