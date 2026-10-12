@@ -17,3 +17,63 @@ Under the shared budget-row lock, reservations count both model and tool UNKNOWN
 Settlement records the full fixed `charged_micro_usd`; it does not claim measured usage. Exact historical settlement remains possible after revocation without authorizing another effect. Cleanup only reads the original exact reservation: UNKNOWN remains UNKNOWN and SETTLED remains terminal. Expiry, abort, missing replies, worker replacement and elapsed time never refund liability. There is no automatic no-dispatch reconciliation path.
 
 Tests with a scripted SQL boundary establish source control flow and outcomes, including the actual dispatcher. They do not establish PostgreSQL atomicity, isolation, SQL execution, driver behavior, restart durability, real trusted identity, Temporal replay, image/runtime or G1 acceptance. Existing Aurora selection and the unknown remainder of the historical $10 allowance are unchanged; no database or paid provider action is authorized by this source.
+
+## Explicit real-pg test source (UNRUN)
+
+The separate source suite `../test/postgres-budget.integration.mjs` consumes
+actual `pg.Pool`8.23.1 from the existing fixture-state package lock. It preserves
+canonical `createDurableSourceDisabledGateway`: only explicit grant binding uses
+SQL; execution remains UNAVAILABLE without additional SQL. Reservations and
+settlements exercise the actual existing budget adapter. At most three child
+Node processes each use their own real pool. Test-only forwarding can throw
+**after an acknowledged real COMMIT**; that is synthetic acknowledgement loss,
+not a proved network failure or PostgreSQL server-crash/restart drill. SQL row
+readback is evidence, not a production outcome/reconciliation API.
+
+Only the following offline check is admitted by the source-authoring task:
+
+```sh
+node --test apps/gateway/test/postgres-budget-admission.test.mjs
+```
+
+Future real-engine command, **not currently authorized and never auto-chained**:
+
+```sh
+MERI_BUDGET_PG_TEST_RUN=explicit-isolated-engine \
+MERI_BUDGET_PG_TEST_CONFIG='<EXACT_PRIVATE_OWNER_JSON>' \
+MERI_BUDGET_PG_TEST_CONFIG_SHA256='<SHA256_OF_EXACT_UTF8_JSON>' \
+<ADMITTED_NODE> --test --test-concurrency=1 apps/gateway/test/postgres-budget.integration.mjs
+```
+
+The closed JSON has exactly: `host` (`127.0.0.1`), integer `port`, `database`
+(`meri_qualification_test`), `user` (`qualification_owner`), nonempty synthetic
+`password`, decimal-string `systemIdentifier`, timestamp-string `serverStartTime`,
+exact six-digit-string `serverVersion`, safe integer `t0Ms`, `workDeadlineMs`
+(`t0Ms+720000`), `cleanupDeadlineMs` (`t0Ms+900000`), and SHA256 strings
+`stateLockSha256` / `migrationSha256` for the existing state package lock and
+`0002_tool_budget.sql`. Values/password/config stay private; never print the
+config or put credentials in command history. The template denotes separately
+bound environment values, not permission to mint a role/password. Nonempty
+PG*, provider, NODE_OPTIONS and NODE_PATH overrides refuse. Children inherit
+only the bounded test configuration and a minimal operating-system environment.
+
+These names, opt-in, digest and SQL identity checks are **partial binding**, not
+host authority. A separately reviewed action packet must admit the actual host,
+Node/pg/PostgreSQL executable and library provenance, fresh cluster system ID,
+postmaster PID/start time/listeners, ownership, isolated role/HBA/configuration,
+no-provider/no-egress controls and external watchdog with original work/cleanup
+cutoffs. `pg_control_system()` read privilege must already be separately admitted;
+the suite never grants it. It requires a fresh empty pre-migrated0001+0002 schema,
+fsync and synchronous_commit enabled. It never provisions, migrates, resets,
+truncates, drops, stops or restarts a server. Existing L1 command/action scope is
+unchanged; this suite requires its own reviewed inclusion before execution.
+
+Bounds: real pools max3 clients each, connect5s/query6s, transaction statement5s/
+lock2s; each child group max3 children,30s within the original work cutoff,
+8KiB combined output per child, TERM then owned-child KILL/reap fallback within
+5s and the original cleanup cutoff. Only owned ChildProcess handles are signaled;
+unknown exit/stream closure stays failure. The external supervisor must bound
+all work and final pool/client teardown; JavaScript timers do not prove physical
+cleanup. Pool ownership stays with the test owner, which ends it in teardown;
+the borrowed production adapter never ends it. All integration cases, cross-process
+behavior, actual SQL/pg-client release and database durability remain UNRUN.

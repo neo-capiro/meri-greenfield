@@ -1,0 +1,78 @@
+{
+  "checks": [
+    {
+      "name": "offline-exact",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/postgres-budget-admission.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.116
+    },
+    {
+      "name": "syntax-0",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget-native-fixture.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "syntax-1",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget-child.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "syntax-2",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget.integration.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "syntax-3",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget-admission.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.032
+    },
+    {
+      "name": "offline-final-active",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/postgres-budget-admission.test.mjs"
+      ],
+      "exit": 0,
+      "tests": 33
+    },
+    {
+      "name": "syntax-final-integration",
+      "argv": [
+        "node",
+        "--check",
+        "apps/gateway/test/postgres-budget.integration.mjs"
+      ],
+      "exit": 0
+    }
+  ],
+  "realEngineCases": 9,
+  "realEngineExecution": "UNRUN",
+  "integrationEntryExecuted": false,
+  "childModeExecuted": false,
+  "poolOrSQLExecuted": false
+}
