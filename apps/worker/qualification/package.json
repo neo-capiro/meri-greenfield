@@ -8,7 +8,7 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "test": "node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs",
+    "test": "node --test probes/static.test.mjs checkpoint/fixture-channel.test.mjs checkpoint/fixture-transport.test.mjs checkpoint/resume-admission.test.mjs checkpoint/fixture-sentinel.test.mjs probes/office-export.test.mjs probes/owned-probe-child.test.mjs probes/browser-lifetime.test.mjs",
     "check": "npm test",
     "probe:runtime": "node probes/runtime.mjs",
     "probe:browser": "node probes/browser.mjs",

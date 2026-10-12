@@ -327,8 +327,8 @@ export async function runProbeScript(script, { name, required = true, deadlineMs
 /** Actual runtime sequence: independent semantic failures continue only after containment. */
 export async function runQualificationChildren(options = {}) {
   const browser = await runProbeScript('browser.mjs', { ...options, name: 'browser-sandbox', required: true });
-  if (!browser.cleanupConfirmed) return [browser, { name: 'office-artifacts', required: true,
-    status: 'fail', detail: 'NOT-RUN/HOLD: prior owned cleanup UNKNOWN', evidencePaths: [], notRun: true }];
+  if (!browser.cleanupConfirmed || options.signal?.aborted) return [browser, { name: 'office-artifacts', required: true,
+    status: 'fail', detail: options.signal?.aborted ? 'NOT-RUN/HOLD: qualification cancelled' : 'NOT-RUN/HOLD: prior owned cleanup UNKNOWN', evidencePaths: [], notRun: true }];
   return [browser, await runProbeScript('artifacts.mjs', { ...options, name: 'office-artifacts', required: true })];
 }
 
