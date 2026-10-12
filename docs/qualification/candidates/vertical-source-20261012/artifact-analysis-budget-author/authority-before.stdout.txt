@@ -1,0 +1,128 @@
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (94.471793ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (5.595526ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (3.358286ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (14.738812ms)
+✔ same delivery rejects changed immutable program without a second dispatch (13.945215ms)
+✔ changed admission manifest conflicts with same owned delivery identity (14.68451ms)
+✔ foreign program scope and changed trusted binding refuse before pool (3.828902ms)
+✔ credential mismatch and revoked first authority execute no native port (8.244045ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (8.037144ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (6.930622ms)
+✔ shorter persisted allocation window is detected during preparation without native dispatch or reservation (6.034055ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (7.163261ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (7.404624ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (7.652466ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (12.515222ms)
+✔ invalid produced hash retains uncertainty and never publishes (8.36118ms)
+✔ invalid produced output retains uncertainty and never publishes (7.823173ms)
+✔ invalid produced scope retains uncertainty and never publishes (18.002775ms)
+✔ invalid produced bytes retains uncertainty and never publishes (9.389295ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (12.687931ms)
+✔ authority refusal at check2 retains known immutable outputs and pending state (10.369248ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (12.147729ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (6.660576ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (10.587966ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (12.166046ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (12.576814ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (9.739101ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (25.901452ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (8.232648ms)
+✔ outer cancellation during sandbox dispatch retains explicit output uncertainty (7.825756ms)
+✔ outer cancellation during reserve preserves known output/accounting state (7.346827ms)
+✔ outer cancellation during marker preserves known output/accounting state (9.73862ms)
+✔ outer cancellation during settle preserves known output/accounting state (9.151429ms)
+✖ fresh revocation after parked reserve refuses native dispatch (8.517886ms)
+✖ fresh revocation after parked admission refuses native dispatch (7.741681ms)
+✖ changed run-deadline during admission refuses unchanged intent before dispatch (9.894564ms)
+✖ changed capability-expiry during admission refuses unchanged intent before dispatch (11.101147ms)
+✖ changed output-bytes during admission refuses unchanged intent before dispatch (7.503362ms)
+✔ shorter independent admission expiry permits original intent within current authority (8.680952ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 34
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2814.126494
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:57:44
+✖ fresh revocation after parked reserve refuses native dispatch (8.517886ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:61:114)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:57:44
+✖ fresh revocation after parked admission refuses native dispatch (7.741681ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:61:114)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:63:72
+✖ changed run-deadline during admission refuses unchanged intent before dispatch (9.894564ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:65:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:63:72
+✖ changed capability-expiry during admission refuses unchanged intent before dispatch (11.101147ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:65:2)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:63:72
+✖ changed output-bytes during admission refuses unchanged intent before dispatch (7.503362ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:65:39)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
