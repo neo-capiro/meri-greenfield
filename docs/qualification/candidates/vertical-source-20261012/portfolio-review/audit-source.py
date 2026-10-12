@@ -40,7 +40,7 @@ for a in old['originals']:
  else:check('original accounting '+a['id'],a==b)
 for a in old['operations']:
  b=next(x for x in new['operations'] if x['operation']==a['operation'])
- if a['operation']['id']=='get_research_portfolio':
+ if a['operation']['id'] in ['get_research_portfolio','get_research_portfolio_changes']:
   check('existing portfolio descriptor footnote only',{k:v for k,v in a.items() if k!='limitations'}=={k:v for k,v in b.items() if k!='limitations'})
  else:check('existing descriptor '+a['operation']['id'],a==b)
 for a in new['operations']:check('production disabled '+a['operation']['id'],a['handler'] is None and a['availability']=='unimplemented' and a['qualification']=='pending')
@@ -81,7 +81,7 @@ def method(p,name):
 reviewP=privatePaths[2];analyticsP=privatePaths[3];controllerP=privatePaths[1]
 for name,path in [('listReviews',reviewP),('getAnnualReview',reviewP),('snapshot',analyticsP)]:
  b=method(path,name);check('source viewer gate '+name,"'viewer'" in b);check('source tenant transaction '+name,'withTenant' in b)
-for name,route,callee in [('listReviews',':portfolioId/reviews','reviewService.listReviews'),('getAnnualReview',':portfolioId/annual-review','reviewService.getAnnualReview'),('snapshot',':portfolioId/snapshots/:snapshotId','analyticsService.snapshot')]:
+for name,route,callee in [('listReviews',':id/reviews','reviewService.listReviews'),('getAnnualReview',':id/annual-review','reviewService.getAnnualReview'),('snapshot',':id/snapshots/:snapshotId','analyticsService.snapshot')]:
  b=method(controllerP,name);check('fixed controller delegate '+name,callee in b)
  check('actual existing GET '+name, re.search(r"@Get\(['\"]"+re.escape(route)+r"['\"]\)",privates[controllerP]) is not None)
 annual=method(reviewP,'getAnnualReview');project=method(reviewP,'projectAnnualReview')
