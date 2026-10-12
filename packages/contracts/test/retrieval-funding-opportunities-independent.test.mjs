@@ -102,3 +102,59 @@ test('all direct selectors reject prototype aliases and nonread operations', () 
     assert.throws(() => family.fundingOpportunitiesOutputDefinition(id));
   }
 });
+
+function requirement(overrides = {}) {
+  return { id: RECORD, attachmentId: null, requirementType: 'eligibility', statement: 'Synthetic statement', sourceExcerpt: 'A😀B', excerptStart: 2, excerptEnd: 6, sourcePage: null, fileName: null, extractionMethod: 'future_reader', extractionModel: 'synthetic-model', confidence: 'future_confidence', reviewStatus: 'pending', supersededAt: null, ...overrides };
+}
+function requirements(rows = [], overrides = {}) {
+  return { source: 'sam_gov', sourceRecordId: RECORD, requirements: rows, coverage: rows.length ? 'available' : 'no_documents', coverageExplanation: 'Synthetic observed coverage only.', documentTextStatus: [], generatedAt: ASOF,
+    pagination: { offset: 0, limit: 10, total: rows.length, hasMore: false, nextOffset: null }, ...overrides };
+}
+function requirementsOutput(data, request = input(OPS[1])) { return output(OPS[1], envelope(OPS[1], 'available', data), request); }
+
+test('requirements nullable provenance, declared read vocabulary and review status remain separate', () => {
+  for (const reviewStatus of ['pending', 'accepted', 'rejected']) {
+    assert.doesNotThrow(() => requirementsOutput(requirements([requirement({ reviewStatus, requirementType: 'future_type' })])));
+  }
+  assert.throws(() => requirementsOutput(requirements([requirement({ reviewStatus: 'approved_by_model' })])));
+  assert.doesNotThrow(() => requirementsOutput(requirements([requirement({ supersededAt: '2026-10-10T01:00:00.000Z', reviewStatus: 'rejected' })])));
+  const extra = requirement({ isApprovedEvidence: true }); assert.throws(() => requirementsOutput(requirements([extra])));
+});
+test('requirements content span counts UTF-16 and forbids malformed or substituted spans', () => {
+  assert.doesNotThrow(() => requirementsOutput(requirements([requirement()])));
+  for (const patch of [{ excerptEnd: 5 }, { excerptStart: -1 }, { excerptEnd: 2 }, { excerptStart: 1.5 }]) {
+    assert.throws(() => requirementsOutput(requirements([requirement(patch)])));
+  }
+});
+test('requirements bind exact source, record, generation instant, offset and limit', () => {
+  const good = requirements([requirement()]); assert.doesNotThrow(() => requirementsOutput(good));
+  for (const patch of [{ source: 'grants_gov' }, { sourceRecordId: CLIENT }, { generatedAt: '2026-10-12T12:34:57.000Z' }]) assert.throws(() => requirementsOutput({ ...good, ...patch }));
+  for (const patch of [{ offset: 1 }, { limit: 9 }, { nextOffset: 1 }]) assert.throws(() => requirementsOutput({ ...good, pagination: { ...good.pagination, ...patch } }));
+});
+test('requirements stale or unavailable total does not erase retained rows or extra-row continuation', () => {
+  const data = requirements([requirement()], { pagination: { offset: 8, limit: 1, total: 0, hasMore: true, nextOffset: 9 } });
+  const request = { ...input(OPS[1]), offset: 8, limit: 1 };
+  assert.doesNotThrow(() => requirementsOutput(data, request));
+  data.pagination.total = null; assert.doesNotThrow(() => requirementsOutput(data, request));
+  data.pagination.nextOffset = 10; assert.throws(() => requirementsOutput(data, request));
+});
+test('empty exhausted requirements can remain available with an independent positive total', () => {
+  const data = requirements([], { coverage: 'available', pagination: { offset: 10, limit: 10, total: 5, hasMore: false, nextOffset: null } });
+  assert.doesNotThrow(() => requirementsOutput(data, { ...input(OPS[1]), offset: 10 }));
+  data.pagination.hasMore = true; data.pagination.nextOffset = 10;
+  assert.throws(() => requirementsOutput(data, { ...input(OPS[1]), offset: 10 }));
+});
+test('requirements retain nonavailable coverage states without claiming absence beyond observed documents', () => {
+  for (const coverage of ['no_documents', 'no_text', 'read_none_found']) {
+    const data = requirements([], { coverage });
+    assert.doesNotThrow(() => requirementsOutput(data));
+    assert.throws(() => requirementsOutput({ ...data, complete: true }));
+  }
+});
+test('requirements page max25 and paging row count are actual request constraints', () => {
+  const rows = Array.from({ length: 25 }, (_, i) => requirement({ id: `row-${i}` }));
+  const data = requirements(rows, { pagination: { offset: 0, limit: 25, total: 25, hasMore: false, nextOffset: null } });
+  assert.doesNotThrow(() => requirementsOutput(data, { ...input(OPS[1]), limit: 25 }));
+  data.requirements.push(requirement()); data.pagination.total = 26;
+  assert.throws(() => requirementsOutput(data, { ...input(OPS[1]), limit: 25 }));
+});
