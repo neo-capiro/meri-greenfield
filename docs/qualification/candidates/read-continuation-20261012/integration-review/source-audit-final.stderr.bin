@@ -1,0 +1,4 @@
+  File "/workspace/meri-read-continuation-integration-review-20261012/docs/qualification/candidates/read-continuation-20261012/integration-review/verify-source.py", line 60
+    check('gateway-no-added-skips:' + name, expected.count(b'.skip(') == git('show', f'{production_freeze}:{path}').count(b'.skip(')) )
+                                                                                                                                      ^
+SyntaxError: unmatched ')'

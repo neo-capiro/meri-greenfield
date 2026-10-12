@@ -57,7 +57,7 @@ for name, transitions in gateway_transitions.items():
         expected = expected.replace(before, after)
     check('exact-gateway-count-transition:' + name, git('show', f'{candidate}:{path}') == expected)
     check('working-gateway-count-transition:' + name, (root / path).read_bytes() == expected)
-    check('gateway-no-added-skips:' + name, expected.count(b'.skip(') == git('show', f'{production_freeze}:{path}').count(b'.skip(')) )
+    check('gateway-no-added-skips:' + name, expected.count(b'.skip(') == git('show', f'{production_freeze}:{path}').count(b'.skip('))
 for path, blob in tree(production_freeze).items():
     if path.startswith(('apps/', 'infra/', 'scripts/', 'evals/', 'packages/')) and '/test/' not in path:
         check('production-unchanged-after-guards:' + path, current.get(path) == blob)
