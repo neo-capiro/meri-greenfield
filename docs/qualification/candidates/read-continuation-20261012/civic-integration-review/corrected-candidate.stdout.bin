@@ -1,0 +1,46 @@
+✔ all original139 rows,56 descriptors and callback implementations survive seven exact additions (12.517491ms)
+✔ every schema pin resolves exact bytes while every descriptor remains unavailable (12.649339ms)
+✔ get_state_bill_status: real canonical normalizer/output callback accepts detached data and canonical digest (3.809504ms)
+✔ get_state_bill_status: context allowlist, original request and output callback stripping are enforced (1.797832ms)
+✔ get_state_bill_status: foreign family, model authority fields and hostile input remain refused without effects (2.612897ms)
+✔ get_state_bill_status: catalog fingerprint, mapping and promotion mutations fail closed (52.276916ms)
+✔ search_state_floor_votes: real canonical normalizer/output callback accepts detached data and canonical digest (1.707095ms)
+✔ search_state_floor_votes: context allowlist, original request and output callback stripping are enforced (1.079682ms)
+✔ search_state_floor_votes: foreign family, model authority fields and hostile input remain refused without effects (5.438413ms)
+✔ search_state_floor_votes: catalog fingerprint, mapping and promotion mutations fail closed (27.55527ms)
+✔ query_regulatory_dockets: real canonical normalizer/output callback accepts detached data and canonical digest (1.94334ms)
+✔ query_regulatory_dockets: context allowlist, original request and output callback stripping are enforced (0.956017ms)
+✔ query_regulatory_dockets: foreign family, model authority fields and hostile input remain refused without effects (2.084182ms)
+✔ query_regulatory_dockets: catalog fingerprint, mapping and promotion mutations fail closed (28.935173ms)
+✔ find_contacts: real canonical normalizer/output callback accepts detached data and canonical digest (1.991202ms)
+✔ find_contacts: context allowlist, original request and output callback stripping are enforced (0.335894ms)
+✔ find_contacts: foreign family, model authority fields and hostile input remain refused without effects (1.751833ms)
+✔ find_contacts: catalog fingerprint, mapping and promotion mutations fail closed (27.330012ms)
+✔ resolve_entity: real canonical normalizer/output callback accepts detached data and canonical digest (2.17618ms)
+✔ resolve_entity: context allowlist, original request and output callback stripping are enforced (1.61053ms)
+✔ resolve_entity: foreign family, model authority fields and hostile input remain refused without effects (2.841551ms)
+✔ resolve_entity: catalog fingerprint, mapping and promotion mutations fail closed (22.35182ms)
+✔ search_tracked_bills: real canonical normalizer/output callback accepts detached data and canonical digest (4.195615ms)
+✔ search_tracked_bills: context allowlist, original request and output callback stripping are enforced (2.197051ms)
+✔ search_tracked_bills: foreign family, model authority fields and hostile input remain refused without effects (2.494869ms)
+✔ search_tracked_bills: catalog fingerprint, mapping and promotion mutations fail closed (27.932557ms)
+✔ query_intelligence: real canonical normalizer/output callback accepts detached data and canonical digest (0.902587ms)
+✔ query_intelligence: context allowlist, original request and output callback stripping are enforced (0.517117ms)
+✔ query_intelligence: foreign family, model authority fields and hostile input remain refused without effects (1.958513ms)
+✔ query_intelligence: catalog fingerprint, mapping and promotion mutations fail closed (30.108928ms)
+✔ production gateway rejects all63 before any authority/budget port and has no activation option (10.810716ms)
+✔ state unresolved selection refuses state-wide result broadening and preserves source reasons (1.342046ms)
+✔ regulatory count race and selected upcoming window remain different projections (0.827594ms)
+✔ contacts preserve explicit selector refusal, normalized domain and no implied profile writes (1.202417ms)
+✔ entity effective Congress is trusted context, absent and candidate facts are not authority (1.078621ms)
+✔ tracked callbacks bind full task/actor/client context and preserve exact resolver assertion (4.164599ms)
+✔ summary keeps opaque nonempty output and UTF16 selector truncation without completeness claims (0.392359ms)
+✔ entity output callback receives effective Congress and cannot rebind a direct bill candidate (1.890872ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2022.521694

@@ -8,7 +8,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[5]
 E=Path(__file__).resolve().parent
 BASE='c1c9bfde7dd466a0474589a224a99b44277adbc9'
-CANDIDATE=sys.argv[1]
+CANDIDATE=subprocess.check_output(['git','rev-parse',sys.argv[1]],cwd=ROOT,text=True).strip()
 checks=[]
 def git(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
 def blob(ref,path):return git('show',f'{ref}:{path}')
@@ -45,6 +45,9 @@ for family in freezes['families']:
  for path in paths:
   exact=family.get('rootRepair',source) if name=='tenant-contacts' else source
   check('accepted source bytes '+path,blob(CANDIDATE,path)==blob(exact,path))
+ for suffix,ref in [('.test.mjs',family.get('rootAuthorTestCorrection',source)),('-independent.test.mjs',family.get('repairReview',family['review']))]:
+  path='packages/contracts/test/retrieval-'+name+suffix
+  check('accepted family test bytes '+path,blob(CANDIDATE,path)==blob(ref,path))
  if name=='tenant-contacts':
   check('contact repair accepted',family.get('repairReviewPending'),False)
   check('contact repair review object',len(git('rev-parse',family['repairReview']).decode().strip()) if family.get('repairReview') else None,40)
