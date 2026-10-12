@@ -1,0 +1,36 @@
+{
+  "initialCheckpointCommit": "1b2264a24620a4eb40785ec13cc093dbbe393f22",
+  "initialEvidence": "candidate-freezes.initial-author-base.json",
+  "sourceIdentitiesChanged": false,
+  "runtimeAccepted": false,
+  "changes": [
+    {
+      "family": "legislative-directory",
+      "initialCount": 22,
+      "correctedCount": 6,
+      "reason": "Reviewer started from a later integration base than its author; subtract exact reviewer base to avoid duplicate accepted ancestors."
+    },
+    {
+      "family": "rule-status",
+      "initialCount": 50,
+      "correctedCount": 5,
+      "reason": "Reviewer started from a later integration base than its author; subtract exact reviewer base to avoid duplicate accepted ancestors."
+    }
+  ],
+  "finalAuthorCommitCounts": [
+    6,
+    2,
+    4,
+    2,
+    2,
+    4
+  ],
+  "finalReviewOnlyCommitCounts": [
+    6,
+    5,
+    5,
+    5,
+    3,
+    6
+  ]
+}
