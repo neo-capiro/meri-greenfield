@@ -1,5 +1,5 @@
 {
-  "passed": 79,
+  "passed": 121,
   "failed": 0,
   "checks": [
     {
@@ -40,6 +40,54 @@
     },
     {
       "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/api.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stdout.txt",
       "pass": true
     },
     {
@@ -96,6 +144,70 @@
     },
     {
       "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/api.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/api.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/failures-and-repairs.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/provenance.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/provenance.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/report.md",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/report.md",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "bytes:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify.py",
+      "pass": true
+    },
+    {
+      "name": "sha256:docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify.py",
       "pass": true
     },
     {
@@ -303,6 +415,46 @@
       "pass": true
     },
     {
+      "name": "authority-before raw streams",
+      "pass": true
+    },
+    {
+      "name": "authority-before exact counts",
+      "pass": true
+    },
+    {
+      "name": "authority-before source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "authority-before source file:apps/artifacts/postgres-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "authority-before source file:apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "authority-repaired raw streams",
+      "pass": true
+    },
+    {
+      "name": "authority-repaired exact counts",
+      "pass": true
+    },
+    {
+      "name": "authority-repaired source and cleanup",
+      "pass": true
+    },
+    {
+      "name": "authority-repaired source file:apps/artifacts/postgres-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "authority-repaired source file:apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+      "pass": true
+    },
+    {
       "name": "public budget import",
       "pass": true
     },
@@ -316,6 +468,22 @@
     },
     {
       "name": "no automatic failed settlement",
+      "pass": true
+    },
+    {
+      "name": "original controls preserved with explicit stage shift",
+      "pass": true
+    },
+    {
+      "name": "current product matches source freeze",
+      "pass": true
+    },
+    {
+      "name": "fresh dispatch fence",
+      "pass": true
+    },
+    {
+      "name": "independent current deadline bound",
       "pass": true
     }
   ]

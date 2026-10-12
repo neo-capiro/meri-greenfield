@@ -1,6 +1,6 @@
 {
   "base": "2e65dfedfe043ea0e2693f506d104c8de05c24ca",
-  "source": "fbe44560ef89c1d2a235cb97f440aaee4f0babfc",
+  "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
   "baseEntries": 8797,
   "changedOriginals": [],
   "newProductPaths": [
@@ -10,14 +10,31 @@
   "allAdditions": [
     "apps/artifacts/postgres-analysis.mjs",
     "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+    "docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
     "docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/api.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stderr.txt",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/failures-and-repairs.json",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stderr.txt",
     "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
-    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/run-focused.py"
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/manifest.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/references.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/repaired.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/run-focused.py",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/source-preservation.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-manifest.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-verify-result.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-verify.py",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verify-result.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verify.py"
   ],
   "typedBudgetRepairs": "Separate task/meri-artifact-budget-20261012; not imported or reviewed as part of this source packet."
 }

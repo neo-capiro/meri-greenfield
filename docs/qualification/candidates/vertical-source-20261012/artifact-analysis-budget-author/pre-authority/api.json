@@ -1,0 +1,59 @@
+{
+  "module": "apps/artifacts/postgres-analysis.mjs",
+  "export": "createPostgresAnalysisExecutor",
+  "requiredFactoryKeys": [
+    "pool",
+    "allocationJson",
+    "producerContext",
+    "descriptor",
+    "context",
+    "validators",
+    "authority",
+    "port",
+    "verifyAdmission",
+    "now",
+    "newReservationId",
+    "limits"
+  ],
+  "optionalFactoryKeys": {
+    "sourceEnabled": false
+  },
+  "applicationInput": [
+    "deliveryId",
+    "request"
+  ],
+  "rawModelRequest": "Canonical AnalysisRequest format sandbox: immutable program and input ObjectReferences, output filenames; no code, ports or authority.",
+  "trustedContext": "Exact ArtifactContext including analysisAdmission receiptSha256/manifestSha256/imageDigest, not model authority.",
+  "methods": [
+    "prepareInvocation(value,signal)",
+    "execute(value,credential,signal)",
+    "reconcileInvocation(value)",
+    "bindTrustedGrant(invocationJson)"
+  ],
+  "requestSha256": "canonicalSha256({request,context})",
+  "rawIdentity": "{operation:{id:run_analysis,version:0.2.0},arguments:{intentSha256:requestSha256}}",
+  "completionSha256": "canonicalSha256(actual closed validated GeneralAnalysisResult)",
+  "accountedBytes": "Sum of immutable output object.bytes; no claim about actual provider usage or independently inspected bytes.",
+  "result": "Exact GeneralAnalysisResult, inspectionStatus pending, publicationStatus pending, no ArtifactVersion.",
+  "uncertaintyFields": [
+    "requestSha256",
+    "reservationId",
+    "binding",
+    "reservationAcknowledged",
+    "dispatchStarted",
+    "settlementAcknowledged",
+    "outputReceiptSha256",
+    "resultSha256",
+    "outputs",
+    "inspectionStatus",
+    "publicationStatus"
+  ],
+  "uncertaintySemantics": "Outputs present only after boundary and actual output validation; null means no validated output receipt was observed, not proof no outputs exist. ACK false means unconfirmed as of rejection, never proof transaction did not commit.",
+  "remainingRuntimeInputs": [
+    "Qualified sandbox port/immutable program admission",
+    "Actual PostgreSQL qualification",
+    "Production current authority and object storage",
+    "Output bytes inspection and immutable publication"
+  ],
+  "noActivation": true
+}

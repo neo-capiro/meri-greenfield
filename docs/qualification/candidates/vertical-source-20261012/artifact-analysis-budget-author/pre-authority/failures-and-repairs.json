@@ -1,0 +1,29 @@
+{
+  "first": {
+    "source": "aadcd77e0440b6263994a47325e346de7975f5a1",
+    "pass": 28,
+    "fail": 1,
+    "classification": "fixture assumed later reservation admission",
+    "correction": "dd47b6d0cfc80b994efbcf304045170479c2f4ab",
+    "explanation": "Canonical prepare already bounds persisted allocation started_at+runtime. Existing shorter window refuses before reservation; test now asserts that stronger no-effect/no-liability boundary. No source admission weakened."
+  },
+  "cancellation-before": {
+    "source": "dd47b6d0cfc80b994efbcf304045170479c2f4ab",
+    "pass": 29,
+    "fail": 4,
+    "classification": "real source uncertainty disclosure",
+    "repair": "fbe44560ef89c1d2a235cb97f440aaee4f0babfc",
+    "explanation": "Outer canonical waiter raced inner general boundary, returning bare CANCELLED after dispatch or reservation/marker/settle. Per-call observation closure now returns exact known accounting/output facts and original cause. No timer/ledger/retry/refund; four controls unchanged."
+  },
+  "repaired": {
+    "pass": 33,
+    "fail": 0,
+    "skips": 0
+  },
+  "notExecuted": [
+    "Database/SQL engine",
+    "Native program or sandbox",
+    "Provider/model/network/cloud"
+  ],
+  "sourceTests": "Actual contracts, immutable-program boundary, canonical owner/store code; inert scripted pool and declared fake sandbox/authority."
+}

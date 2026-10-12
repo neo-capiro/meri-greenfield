@@ -55,5 +55,12 @@
     "Production current authority and object storage",
     "Output bytes inspection and immutable publication"
   ],
-  "noActivation": true
+  "noActivation": true,
+  "authorityCheckpoints": [
+    "before reservation",
+    "after admission and immediately before sandbox dispatch",
+    "after output validation before settlement",
+    "after settlement before result release"
+  ],
+  "immutableCurrentBounds": "Original context deadline must fit freshly returned current run/capability expiry; maxBytes must fit allocation/current capability. Independent admission expiry narrows lifetime without rewriting original intent."
 }

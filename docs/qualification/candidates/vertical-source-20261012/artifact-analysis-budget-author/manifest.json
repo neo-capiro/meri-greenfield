@@ -1,20 +1,20 @@
 {
-  "source": "fbe44560ef89c1d2a235cb97f440aaee4f0babfc",
+  "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
   "members": [
     {
       "path": "apps/artifacts/postgres-analysis.mjs",
-      "bytes": 9323,
-      "sha256": "37f177e9f0013ce1236406d4008a56f36b590d25c6be66e2d094e14c9f89204d"
+      "bytes": 9669,
+      "sha256": "248b73760f296298fc5424b25fffee8aa02beccbccd8c4bd9c27c95c47fd51b5"
     },
     {
       "path": "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
-      "bytes": 15047,
-      "sha256": "f7d10a320dc128967a1e811738e7442438fe94cc2ecd62a5653170305d497757"
+      "bytes": 16954,
+      "sha256": "f0950e2b10ef434b5c1c99439d936d2f297223d8e01dfe372fd0022b8d45ed33"
     },
     {
       "path": "docs/coordination/reports/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
-      "bytes": 6367,
-      "sha256": "79e6ee18ad26746867cbca26208df7e605c15fcad013775e5ab04fafd0fbc71f"
+      "bytes": 7425,
+      "sha256": "0c9b0967f81c23e1a994347b608a2d665482e5569d6701e00ad0a7f129c2d855"
     },
     {
       "path": "docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
@@ -23,8 +23,38 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/api.json",
-      "bytes": 2234,
-      "sha256": "3d18d7d2751cd29ec90d53a7b8dc918537eb5cc963a97fe94a228f0c9269ba9d"
+      "bytes": 2694,
+      "sha256": "6d64a4e5bcc376e6590a1c36b55dcde730a13481e6f9db82106ef164c096150d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.json",
+      "bytes": 491,
+      "sha256": "0aedc88ad6e266aab3ff419611d49766fc654d7961a4fd0f2e2d3051a49a253a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-before.stdout.txt",
+      "bytes": 7281,
+      "sha256": "8c867ef875b830fdf81033c96b7c998ec7b013cda04ec87d3adb2a371730cd72"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.json",
+      "bytes": 491,
+      "sha256": "9163a4cb69db36d88920d3edc3db6bf100c4a91ded5607517eec8faeceb845a1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/authority-repaired.stdout.txt",
+      "bytes": 3817,
+      "sha256": "269ece77573917ce8fadeb8e5e7aded4c2efbb861d6abb55d42546ee0a73395f"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
@@ -43,8 +73,8 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/failures-and-repairs.json",
-      "bytes": 1354,
-      "sha256": "beb94c2e43cbb06bc31c65c236291260f7f9451f4b9368c2bf352cc7dadad385"
+      "bytes": 2816,
+      "sha256": "61fa6eab6a56fa05de7c258fbe290f55e1e689a60fcea1b629e5d1897d3f275e"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
@@ -60,6 +90,46 @@
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
       "bytes": 4043,
       "sha256": "504c8c83e673ffe0d1834b219f58dd7b995ff716239386ce6bc17ec176c55827"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/api.json",
+      "bytes": 2234,
+      "sha256": "3d18d7d2751cd29ec90d53a7b8dc918537eb5cc963a97fe94a228f0c9269ba9d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/failures-and-repairs.json",
+      "bytes": 1354,
+      "sha256": "beb94c2e43cbb06bc31c65c236291260f7f9451f4b9368c2bf352cc7dadad385"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/manifest.json",
+      "bytes": 5294,
+      "sha256": "73b7d3779cc53b5ada57e5160732acf35637a17511e0a17a0519b8df809047b5"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/provenance.json",
+      "bytes": 192,
+      "sha256": "f4220ecbe56da4c3e2f1f5ee741e2d661c7d7b98e275ba78cfbc635137224e76"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/report.md",
+      "bytes": 6367,
+      "sha256": "79e6ee18ad26746867cbca26208df7e605c15fcad013775e5ab04fafd0fbc71f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/source-preservation.json",
+      "bytes": 1434,
+      "sha256": "69d2b3bfc965ff425cfc955f51a108b8bc9e809bd827bfcf324d10e9f083dac6"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify-result.json",
+      "bytes": 10083,
+      "sha256": "e87f5954553569e4d59e36fe0e0b7f7294a144ca7a58a7c0c36bae6b76bb0c03"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/pre-authority/verify.py",
+      "bytes": 2841,
+      "sha256": "1d7d3f5a5f407d826149d00c52d383150414dd8030fc32bf032169de86f64344"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/references.json",
@@ -88,8 +158,8 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/source-preservation.json",
-      "bytes": 1434,
-      "sha256": "69d2b3bfc965ff425cfc955f51a108b8bc9e809bd827bfcf324d10e9f083dac6"
+      "bytes": 3359,
+      "sha256": "f9d536988e63b20ccd129e3cd91ef95a792253b838c064f729de96e081e4ad09"
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verifier-initial-manifest.json",
@@ -108,12 +178,12 @@
     },
     {
       "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/verify.py",
-      "bytes": 2841,
-      "sha256": "1d7d3f5a5f407d826149d00c52d383150414dd8030fc32bf032169de86f64344"
+      "bytes": 3923,
+      "sha256": "0ae90da41646cbfbac33d23e9926e9a6ed7da817bb6011ff46ac383be35e4cc1"
     }
   ],
   "exclusions": [
-    "manifest.json: self-reference",
-    "verify-result.json: verifier output"
+    "manifest.json (self-reference)",
+    "verify-result.json (generated verifier result)"
   ]
 }

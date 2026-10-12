@@ -1,0 +1,23 @@
+{
+  "base": "2e65dfedfe043ea0e2693f506d104c8de05c24ca",
+  "source": "fbe44560ef89c1d2a235cb97f440aaee4f0babfc",
+  "baseEntries": 8797,
+  "changedOriginals": [],
+  "newProductPaths": [
+    "apps/artifacts/postgres-analysis.mjs",
+    "apps/artifacts/test/artifact-postgres-analysis.test.mjs"
+  ],
+  "allAdditions": [
+    "apps/artifacts/postgres-analysis.mjs",
+    "apps/artifacts/test/artifact-postgres-analysis.test.mjs",
+    "docs/coordination/tasks/CODEX-ARTIFACT-ANALYSIS-BUDGET-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/cancellation-before.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/first.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-author/run-focused.py"
+  ],
+  "typedBudgetRepairs": "Separate task/meri-artifact-budget-20261012; not imported or reviewed as part of this source packet."
+}

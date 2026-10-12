@@ -25,5 +25,30 @@
     "Native program or sandbox",
     "Provider/model/network/cloud"
   ],
-  "sourceTests": "Actual contracts, immutable-program boundary, canonical owner/store code; inert scripted pool and declared fake sandbox/authority."
+  "sourceTests": "Actual contracts, immutable-program boundary, canonical owner/store code; inert scripted pool and declared fake sandbox/authority.",
+  "authority-before": {
+    "source": "6564816500e54f46a60832ad75f0cc88c8e6f9ba",
+    "pass": 34,
+    "fail": 5,
+    "classification": "real stale current-authority fence",
+    "repair": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+    "explanation": "Revoked capability after parked reserve/admission and changed current run deadline, capability expiry or output ceiling could start native effect. Recheck current authority after admission immediately before effect; reject original immutable intent above freshly returned current authority limits separately from admission expiry. No change to kernel, native boundary or intent."
+  },
+  "authority-repaired": {
+    "source": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+    "pass": 39,
+    "fail": 0,
+    "skips": 0
+  },
+  "fixtureStageShift": {
+    "base": "6564816500e54f46a60832ad75f0cc88c8e6f9ba",
+    "repair": "cee27278cc58ab35f72763faa8c9b49ff80c8725",
+    "meaning": "Added pre-dispatch authority checkpoint shifts success count3->4, borrowed-result mutation2->3, and post-output/post-settlement denial cases2/3->3/4. Requirements unchanged; new six controls replay unchanged."
+  },
+  "independentFailureEvidence": {
+    "reviewSource": "c73e190c",
+    "extendedControls": "26eca5aa",
+    "path": "docs/qualification/candidates/vertical-source-20261012/artifact-analysis-budget-review",
+    "meaning": "Independent review owns original65/67 and32/36 failures; no private bodies or runtime effects."
+  }
 }
