@@ -1,0 +1,213 @@
+{
+  "scope": "METADATA_ONLY_NO_PRIVATE_BODIES",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "bytes": 415704,
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "598e9146e5568349f213cbd548de0213113dc924",
+        "bytes": 44992,
+        "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "598e9146e5568349f213cbd548de0213113dc924",
+        "bytes": 44992,
+        "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+        "bytes": 2604,
+        "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.controller.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "efa69833bd7c471c860553bfe210217a9d1dab27",
+        "bytes": 83446,
+        "sha256": "fa9b07bfa54c122ce749b366d00781cc88b837aa5e4f02681faa4b52d7890666"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "efa69833bd7c471c860553bfe210217a9d1dab27",
+        "bytes": 83446,
+        "sha256": "fa9b07bfa54c122ce749b366d00781cc88b837aa5e4f02681faa4b52d7890666"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "bytes": 499454,
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "bytes": 499454,
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ee57144c931a1abe741fb721c3c2c1abe43a6a42",
+        "bytes": 1052,
+        "sha256": "3d4db8050ca7b8581c65acfc5255d140f3d4a7c8cdb4d4937443842cba69daa5"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ee57144c931a1abe741fb721c3c2c1abe43a6a42",
+        "bytes": 1052,
+        "sha256": "3d4db8050ca7b8581c65acfc5255d140f3d4a7c8cdb4d4937443842cba69daa5"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+        "bytes": 2703,
+        "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+        "bytes": 2703,
+        "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/tenant/tenant-context.middleware.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+        "bytes": 22931,
+        "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "fece0915d869778984cd9987840e1bd41c203e01",
+        "bytes": 22931,
+        "sha256": "dabb24d3ab31777aeee64cd2b943ca8d256a89cd2f3e7196b90b06bc3945b346"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/memory-candidate.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+        "bytes": 39448,
+        "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "75e317f6b1b45872f28e2e0533a9e645419ec7dd",
+        "bytes": 39448,
+        "sha256": "0dd0ed91a682ebb5f1104ebacbb0ae682b1735e1f7e77518b8d7de04dc24bbc9"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/memory/internal-memory.controller.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "b0966f7c2142f8b852bc71e5a39caa0a34a2711c",
+        "bytes": 3165,
+        "sha256": "b2dc5710ba004507964729c8a938d5c11dbf00bc8f08e329fb2fdb735e666b4c"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "b0966f7c2142f8b852bc71e5a39caa0a34a2711c",
+        "bytes": 3165,
+        "sha256": "b2dc5710ba004507964729c8a938d5c11dbf00bc8f08e329fb2fdb735e666b4c"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-client-filing.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f3e6bc9928bccf92100daf11ca7b27d67f998e59",
+        "bytes": 11091,
+        "sha256": "b10a55cff329516879f539eac1f6beefe42bfe18b7ff3250979533f74e1e9ad1"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f3e6bc9928bccf92100daf11ca7b27d67f998e59",
+        "bytes": 11091,
+        "sha256": "b10a55cff329516879f539eac1f6beefe42bfe18b7ff3250979533f74e1e9ad1"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "48b7985a1795b1f743c74f1c3b57c37bae9d47d8",
+        "bytes": 10446,
+        "sha256": "76351f9bb8ef6b63f6bc97bff5576e3617bb35314e623bd3326ba076be8933a5"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "48b7985a1795b1f743c74f1c3b57c37bae9d47d8",
+        "bytes": 10446,
+        "sha256": "76351f9bb8ef6b63f6bc97bff5576e3617bb35314e623bd3326ba076be8933a5"
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      "unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+✔ actual task.create contract→authority→journal→HTTP→receipt and exact duplicate observation (44.693839ms)
+✔ actual task.update contract→authority→journal→HTTP→receipt and exact duplicate observation (15.155426ms)
+✔ actual memory.propose contract→authority→journal→HTTP→receipt and exact duplicate observation (11.751411ms)
+✔ actual artifact.file contract→authority→journal→HTTP→receipt and exact duplicate observation (14.143055ms)
+✔ production default refuses before authority, SQL or transport (0.985641ms)
+✔ changed immutable command/idempotency/producer after prior result refuses without redispatch (24.257256ms)
+✔ lost claim COMMIT acknowledgement cannot issue source or retry after reconstruction (5.749781ms)
+✔ lost outcome COMMIT acknowledgement stays explicit and exact stored readback recovers only observed accounting (8.301827ms)
+✔ unknown HTTP effect is held permanently with explicit liability and no redispatch (11.868927ms)
+✔ personal memory refuses before claim or source rather than using auto-commit (1.742248ms)
+✔ stale or revoked approval, wrong approver/policy and expiry refuse before claim (4.811441ms)
+✔ wrong capability action or stale current fence cannot execute writes (2.557283ms)
+✖ fresh replacement executor may observe original command but not rewrite original intent (6.937817ms)
+✔ release revocation retains unknown effect and cannot deliver a successful response (4.329486ms)
+✔ partial or pending filing does not become aggregate success or authorize retries (9.996564ms)
+✔ unmatched returned attachment identity is never attributed to approved object (4.45148ms)
+✔ parked source is bounded and late completion cannot release or settle outcome (14.833933ms)
+✖ exact journal read absence is an observation, not retry or no-effect proof (1.499193ms)
+✔ parallel identical deliveries consume one claim and one HTTP effect (9.106766ms)
+✔ inert input admission rejects getter and proxy before authority ports (0.601164ms)
+✖ capability output budget cannot be bypassed by larger configured transport ceiling (6.593219ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 18
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2474.246268
+
+✖ failing tests:
+
+test at apps/control/test/commands-execution.test.mjs:12:1
+✖ fresh replacement executor may observe original command but not rewrite original intent (6.937817ms)
+  Error [CommandError]: COMMAND_COMMIT_UNCERTAIN
+      at transact (file:///workspace/meri-command-execution-20261012/apps/control/commands/postgres-command-journal.mjs:34:23)
+
+test at apps/control/test/commands-execution.test.mjs:17:1
+✖ exact journal read absence is an observation, not retry or no-effect proof (1.499193ms)
+  Error [CommandError]: COMMAND_COMMIT_UNCERTAIN
+      at transact (file:///workspace/meri-command-execution-20261012/apps/control/commands/postgres-command-journal.mjs:34:23)
+
+test at apps/control/test/commands-execution.test.mjs:20:1
+✖ capability output budget cannot be bypassed by larger configured transport ceiling (6.593219ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-command-execution-20261012/apps/control/test/commands-execution.test.mjs:20:153)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
