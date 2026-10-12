@@ -21,7 +21,7 @@ const privateSchema=JSON.parse(await readFile(new URL('../../../packages/contrac
 const ajv=addFormats(new Ajv({strict:true,allErrors:true}));ajv.addSchema(publicSchema);ajv.addSchema(privateSchema);
 const shape=(schema,name,value)=>{const check=ajv.getSchema(schema+'#/$defs/'+name);if(!check(value))throw new Error(ajv.errorsText(check.errors));};
 const validators=createArtifactValidators({validateShape:(name,value)=>shape(privateSchema.$id,name,value),validatePublicShape:(name,value)=>shape(publicSchema.$id,name,value),canonicalSha256:hash});
-const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR2kAAAAASUVORK5CYII=','base64');
+const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGNkcGhgYGBgYmBgYGBgAAAIqgDETgW9lQAAAABJRU5ErkJggg==','base64');
 const chart={kind:'bar',title:'Totals',categories:['A','B'],series:[{name:'Value',values:[2,3]}]};
 const text={operation:'create_word',format:'txt',title:'Notes',content:{text:'  exact \n\nlast line\n'}};
 const word={operation:'create_word',format:'docx',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Title',runs:[{text:'Policy',bold:true}]},{kind:'table',rows:[['Name','Value'],['A','2']]},{kind:'chart',chart}]}};
