@@ -2,6 +2,7 @@ import test from 'node:test';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {semanticResult} from '../contracts.mjs';
 import {freezeCorpus,runnerCases,verifyCorpus} from '../corpus.mjs';
 import {scoreObservations} from '../score.mjs';
@@ -62,7 +63,7 @@ function evaluation(outcome='returned',nonempty=true){
  const c=record();c.expected.outcome=outcome;
  let delivery=null,read=null;
  if(outcome==='returned'){
-  const page=makePage(nonempty),observation={binding:binding(),subject:page.subject,operation:{id:'actions.query',version:'0.2.0'},argumentsSha256:hash(c.request),result:page};
+  const page=makePage(nonempty),observation={binding:binding(),subject:page.subject,operation:{id:'actions.query',version:'0.2.0'},argumentsSha256:resolveOperationContract({id:'actions.query',version:'0.2.0'}).normalizeInput(c.request,c.context).argumentsSha256,result:page};
   const events=[{contractVersion:'0.1.0',eventId:id(40),binding:binding(),sequence:1,createdAt:at,scopes:[scope()],type:'tool.started',data:{requestId:id(41),tool:'actions.query@0.2.0'}},{contractVersion:'0.1.0',eventId:id(42),binding:binding(),sequence:2,createdAt:at,scopes:[scope()],type:'tool.completed',data:{requestId:id(41),resultReference:id(43)}}];
   delivery={lookupId:id(41),resultReference:id(43),resultSha256:hash(observation),classification:'recommendations',acceptedTasks:false,events};read={...structuredClone(delivery),observation};c.expected.semanticSha256=hash(semanticResult(observation));c.expected.recordIds=page.actions.map(x=>x.id);
  }
@@ -83,7 +84,7 @@ test('actual closed returned observation and matching frozen gold score',()=>{co
 test('expected denied and clarify remain independently observable',()=>{for(const status of ['denied','clarify']){const r=scored(evaluation(status));assert.equal(r.counts.passed,1,status);}});
 test('wrong route and wrong client argument are visible failures',()=>{fails(o=>o.route.operation.id='tasks.query');fails(o=>o.route.request.clientId=id(99));});
 test('wrong case/config/source/run identities cannot score',()=>{for(const key of ['caseSha256','configSha256','sourceSetSha256'])fails(o=>o[key]=digest('wrong'));fails(o=>o.runId=id(99));});
-test('wrong run envelope corpus/config/source pin refuses batch',()=>{for(const key of ['corpusSha256','configSha256','sourceSetSha256']){const f=evaluation();f.batch.run[key]=digest('wrong');assert.throws(()=>scored(f));}});
+test('wrong run envelope corpus/config/source pin fails entire cohort',()=>{for(const key of ['corpusSha256','configSha256','sourceSetSha256']){const f=evaluation();f.batch.run[key]=digest('wrong');const r=scored(f);assert.equal(r.counts.failed,r.counts.total);assert.equal(r.counts.passed,0);assert.equal(r.observationSetValid,false);}});
 test('altered source records or missing coverage fails',()=>{fails(o=>o.read.observation.result.total=99);fails(o=>delete o.read.observation.result.coverage);});
 test('current authorization actor/scope/receipt/denial cannot release success',()=>{fails(o=>o.authorization[1].binding.current.actorId='other');fails(o=>o.authorization[1].binding.scopes[0].resourceId=id(99));fails(o=>o.authorization[1].receipt.bindingSha256=digest('other'));fails(o=>o.authorization[1].receipt.authorized=false);});
 test('current read attempt may change while original scope/binding remains',()=>{const f=evaluation();for(const a of f.o.authorization){a.binding.current.attemptId=id(77);a.binding.current.writerFence=2;const {bindingSha256,...b}=a.binding;a.binding.bindingSha256=hash(b);a.receipt.bindingSha256=hash(b);}assert.equal(scored(f).counts.passed,1);});
