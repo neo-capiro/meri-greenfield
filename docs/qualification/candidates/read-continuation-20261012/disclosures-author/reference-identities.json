@@ -1,0 +1,81 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "discoveryFreeze": "d978dd3975ee1e08e7495dc2992593a7312c2442",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "bytes": 415704,
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "bytes": 968034,
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/lda-intel/lda-intel.service.ts",
+      "blob": "aa3948d594a1d422994ee64381c7bd476637e364",
+      "bytes": 26016,
+      "sha256": "cd10b04fb04e3801438bb9d7327346eb4cd46137802a4103a587da3cab984969",
+      "observedBlob": "aa3948d594a1d422994ee64381c7bd476637e364",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "bytes": 44992,
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedBlob": "598e9146e5568349f213cbd548de0213113dc924",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/lda-intel/lda-intel.controller.ts",
+      "blob": "f38f806bb78ca867c01cc1d29c7b06f34125d555",
+      "bytes": 6493,
+      "sha256": "9bacbca526e9ee4ea3a0c5a251bdae88b5aae4e2a21b6e13093261a288c54da0",
+      "observedBlob": "f38f806bb78ca867c01cc1d29c7b06f34125d555",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "bytes": 2703,
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedBlob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.decorator.ts",
+      "blob": "ec576399d6ad69e4a42f8e87eb08df43663edde9",
+      "bytes": 447,
+      "sha256": "48273cb64384cd3b22c90e3abc8a0a0e0c77d774ac1d30602e1d0a1a26715a62",
+      "observedBlob": "ec576399d6ad69e4a42f8e87eb08df43663edde9",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+      "bytes": 2604,
+      "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca",
+      "observedBlob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "bytes": 273389,
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}

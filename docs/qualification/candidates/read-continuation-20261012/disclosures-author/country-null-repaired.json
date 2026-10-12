@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-disclosures.test.mjs"
+  ],
+  "cwd": "/workspace/meri-disclosures-20261012",
+  "sourceHead": "283c30f2b0d9e990caa5d680843a19281318df9c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:46:52.942671+00:00",
+  "durationSeconds": 0.32,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 159567,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-author/country-null-repaired.stdout.bin",
+      "bytes": 2743,
+      "sha256": "0d802f538e7f9bb76aca2573dbec7d23e81bf835b813cc68a16ccc3142cad76a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/disclosures-author/country-null-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Narrow FARA country/null correlation repair; corrected previous positive fixture to nonnull country without adding substring matching.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
