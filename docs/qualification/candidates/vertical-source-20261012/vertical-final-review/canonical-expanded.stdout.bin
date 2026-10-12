@@ -1,0 +1,48 @@
+✔ final canonical create_task advertises actual raw and invokes normalizer (4.306994ms)
+✔ final canonical create_task refuses caller authority context and hostile substitutions (0.807536ms)
+✔ final canonical update_task advertises actual raw and invokes normalizer (1.263502ms)
+✔ final canonical update_task refuses caller authority context and hostile substitutions (0.529427ms)
+✔ final canonical save_memory advertises actual raw and invokes normalizer (1.709975ms)
+✔ final canonical save_memory refuses caller authority context and hostile substitutions (0.666633ms)
+✔ final canonical save_chat_attachments advertises actual raw and invokes normalizer (2.503249ms)
+✔ final canonical save_chat_attachments refuses caller authority context and hostile substitutions (0.641986ms)
+✔ final canonical create_word advertises actual raw and invokes normalizer (13.744453ms)
+✔ final canonical create_word refuses caller authority context and hostile substitutions (3.968074ms)
+✔ final canonical create_excel advertises actual raw and invokes normalizer (1.954592ms)
+✔ final canonical create_excel refuses caller authority context and hostile substitutions (1.092094ms)
+✔ final canonical create_powerpoint advertises actual raw and invokes normalizer (1.490824ms)
+✔ final canonical create_powerpoint refuses caller authority context and hostile substitutions (0.979224ms)
+✔ final canonical run_analysis advertises actual raw and invokes normalizer (1.186086ms)
+✔ final canonical run_analysis refuses caller authority context and hostile substitutions (0.784371ms)
+✔ final canonical schedule_task advertises actual raw and invokes normalizer (44.026243ms)
+✔ final canonical schedule_task refuses caller authority context and hostile substitutions (3.303293ms)
+✔ final canonical update_scheduled_task advertises actual raw and invokes normalizer (5.268292ms)
+✔ final canonical update_scheduled_task refuses caller authority context and hostile substitutions (2.276377ms)
+✔ final canonical cancel_scheduled_task advertises actual raw and invokes normalizer (4.126312ms)
+✔ final canonical cancel_scheduled_task refuses caller authority context and hostile substitutions (1.16922ms)
+✔ final canonical list_scheduled_tasks advertises actual raw and invokes normalizer (7.504418ms)
+✔ final canonical list_scheduled_tasks refuses caller authority context and hostile substitutions (1.124674ms)
+✔ final canonical get_research_evidence advertises actual raw and invokes normalizer (2.689679ms)
+✔ final canonical get_research_evidence refuses caller authority context and hostile substitutions (1.146586ms)
+✔ final canonical create_task correlates exact command even for indeterminate observation (5.749276ms)
+✔ final canonical update_task correlates exact command even for indeterminate observation (5.49322ms)
+✔ final canonical save_memory correlates exact command even for indeterminate observation (4.086962ms)
+✔ final canonical save_chat_attachments correlates exact command even for indeterminate observation (6.286355ms)
+✔ final canonical schedule_task validators feed actual accepted schedule application (20.239752ms)
+✔ final canonical update_scheduled_task validators feed actual accepted schedule application (15.656822ms)
+✔ final canonical cancel_scheduled_task validators feed actual accepted schedule application (8.167186ms)
+✔ final canonical list_scheduled_tasks validators feed actual accepted schedule application (3.568352ms)
+✔ final loader keeps generic private schema names out of global namespace (0.386391ms)
+✔ final one canonical catalog covers139 original96selected43deferred and97typed96mapped0pending (6.215548ms)
+✔ final all97 production routes remain unavailable before authority budget or source effects (10.687671ms)
+✔ final thirteen descriptors bind exact schema bytes and refuse tampering (109.287706ms)
+✔ final all84 prior descriptors and full callback bodies survive with only two precise Portfolio footnotes (8.216541ms)
+✔ final source accounting cannot promote whole requirements or native gates (0.78363ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3202.323365

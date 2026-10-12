@@ -1,0 +1,19 @@
+fatal: path 'apps/control/commands/README.md' exists on disk, but not in 'ca506ba1591b35eae5d389e551787017328eea73'
+Traceback (most recent call last):
+  File "/workspace/meri-vertical-final-review-20261012/docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration.py", line 45, in <module>
+    bound(p,refs[kind])
+  File "/workspace/meri-vertical-final-review-20261012/docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration.py", line 31, in bound
+    b=blob(CANDIDATE,p);check('accepted source exact '+p,b==blob(ref,p));identities.append({'path':p,'source':ref,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})
+                                                            ^^^^^^^^^^^
+  File "/workspace/meri-vertical-final-review-20261012/docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration.py", line 10, in blob
+    def blob(ref,p):return git('show',ref+':'+p)
+                           ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/meri-vertical-final-review-20261012/docs/qualification/candidates/vertical-source-20261012/vertical-final-review/audit-integration.py", line 9, in git
+    def git(*args,env=None):return subprocess.check_output(['git','-C',str(R),*args],env=env)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', '-C', '/workspace/meri-vertical-final-review-20261012', 'show', 'ca506ba1591b35eae5d389e551787017328eea73:apps/control/commands/README.md']' returned non-zero exit status 128.
