@@ -28,6 +28,7 @@ export function createClientKnowledgeMondayValidators({validateShape, schema}) {
       fail('Monday wrapper identity/status substitution');
     if (page.coverage.requestedDomains.length !== 1 || page.coverage.requestedDomains[0] !== 'monday' ||
         page.coverage.sources.some(source => source.domain !== 'monday')) fail('Monday coverage domain substitution');
+    if (input.pageSize !== null && page.records.length > input.pageSize) fail('Monday explicit page size exceeded');
     const ids = new Set();
     for (const row of page.records) {
       const p = row.payload, o = p.origin, provenance = row.provenance;
