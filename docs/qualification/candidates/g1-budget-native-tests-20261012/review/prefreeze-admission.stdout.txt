@@ -1,0 +1,62 @@
+✔ configuration is frozen correlation only, with no resource invocation (3.542411ms)
+✔ default closed and exact opt-in (0.586941ms)
+✔ exact raw JSON digest and byte ceiling (0.297367ms)
+✔ configuration has closed fields and scalar identity (0.50599ms)
+✖ numeric system identity is rejected before native use (0.666761ms)
+✖ SHA object cannot execute string conversion (0.476736ms)
+✔ getter environment rejected without evaluating body (0.148273ms)
+✔ proxy environment rejected before reflection (0.129235ms)
+✔ inherited environment rejected (0.170666ms)
+✔ ambient provider/database/native injection configuration denied (0.641253ms)
+✔ future, elapsed and malformed trusted clock refused (0.344958ms)
+✔ loopback-only identity, port and bounded password (0.409475ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 10
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.031696
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs:34:1
+✖ numeric system identity is rejected before native use (0.666761ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at deny (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs:18:30)
+      at TestContext.<anonymous> (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs:34:67)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /BUDGET_NATIVE_TEST_ADMISSION_REQUIRED/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs:35:1
+✖ SHA object cannot execute string conversion (0.476736ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/meri-g1-budget-native-tests-review-20261012/docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs:37:106)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

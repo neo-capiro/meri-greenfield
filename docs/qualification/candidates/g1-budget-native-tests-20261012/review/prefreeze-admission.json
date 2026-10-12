@@ -1,0 +1,27 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-budget-native-tests-review-20261012",
+  "startUnixSeconds": 1791784303.7370749,
+  "elapsedSeconds": 0.11495542526245117,
+  "exitCode": 1,
+  "ownedPidAndGroup": 71015,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-admission.stdout.txt",
+      "bytes": 3141,
+      "sha256": "d011128940c9284eed8d04b96facaf4fb3417f52deec0029d3ea1598b336a578"
+    },
+    "stderr": {
+      "path": "prefreeze-admission.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -26,3 +26,9 @@ Only offline admission/source controls and syntax checks may execute during this
 The existing migration enforces one UNKNOWN tool reservation per grant, with a combined model/tool liabilities view. The adapter refuses any reused invocation ID and retains UNKNOWN under `markUncertain`; raw SQL assertions must not be described as owner reconciliation. Existing real-engine revocation tests use a weaker loopback/name opt-in, which is precedent for syntax only and does not meet this task's fresh host/cluster/action prerequisites.
 
 No native operation or integration/child entry has been invoked in this review. Final checks, source hashes and verdict will be appended after exact author freeze.
+
+## Preserved prefreeze findings
+
+The first independent offline parser replay ran 12 groups: 10 PASS / 2 FAIL. A numeric system identifier passed a coercing regular expression, and a caller-supplied SHA object executed its `toString` once before refusal. The getter, proxy, inherited-environment, ambient-injection, exact-digest, byte-limit and deadline controls passed. Exact fixture hash and unmodified stdout/stderr are retained under `review/prefreeze-*`; no Pool/resource/child/integration function was invoked. The author's promised repair is explicit string admission before coercion; unchanged independent cases will be replayed against the final source.
+
+Static draft inspection also found that the originally labelled per-run call-cap race used one grant, so the earlier one-UNKNOWN-per-grant refusal could mask the intended assertion. This is a source coverage finding, not a native runtime failure. Author reports replacing that case with distinct synthetic grants sharing one run/allocation, adding a mixed model/tool liability case, and adding bounded TERM/KILL/reap fallback for owned children. These changes remain pending exact review.
