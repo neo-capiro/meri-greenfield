@@ -1,3 +1,4 @@
+import {schemaRelativePath} from './vertical-source-expectations.mjs';
 // Canonical composition controls. Synthetic projected data; no source or service IO.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,7 +14,7 @@ import {addedOperations,fullActionReference} from './backend-execution-expectati
 
 const T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const copy=structuredClone,sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-const load=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
+const load=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
 const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
 const rawAudit=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/backend-execution-20261012/integration/raw-request-admission-before.json',import.meta.url))).rows;
 const expectedIds=['read_chat_attachments','read_monday_client_boards','get_client_context','search_client_knowledge','query_knowledge_graph','search_memory','search_research_sources','search_legislative_research','get_legal_reference','query_global_data','search_committee_hearings','search_legiwatch_news','actions.query'];
@@ -63,10 +64,10 @@ function output(id){
 }
 
 test('exact13 accepted mappings preserve139 original identities and84 unavailable descriptors',()=>{
- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
  assert.deepEqual([...addedOperations].sort(),[...expectedIds].sort());assert.equal(catalog.originals.length,139);
  assert.equal(catalog.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='deferred').length,43);
- assert.equal(catalog.originals.filter(r=>r.state==='mapped').length,83);assert.equal(catalog.originals.filter(r=>r.disposition==='selected'&&r.state==='pending').length,13);
+ assert.equal(catalog.originals.filter(r=>r.state==='mapped').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='selected'&&r.state==='pending').length,0);
  for(const id of expectedIds){const nativeId=id==='actions.query'?'query_action_items':id;assert.deepEqual(catalog.originals.find(r=>r.id===nativeId).replacement,{id,version:'0.2.0'});}
 });
 for(const id of expectedIds){
@@ -95,7 +96,7 @@ test('all31 corrected advertised caller definitions retain exact normalized outc
  assert.equal(formerlyRefused,22);
 });
 test('13 new and31 repaired bindings pin exact unchanged family schema bytes and output definitions',()=>{
- for(const id of [...expectedIds,...rawAudit.map(r=>r.id)]){const c=resolve(id),bytes=readFileSync(new URL(`../retrieval-0.2/${c.binding.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);
+ for(const id of [...expectedIds,...rawAudit.map(r=>r.id)]){const c=resolve(id),bytes=readFileSync(new URL(schemaRelativePath(c.binding.group),import.meta.url)),s=JSON.parse(bytes);
   for(const [field,def]of[['inputSchema',c.binding.input],['outputSchema',c.binding.output]])assert.deepEqual(c.descriptor[field],{id:`${s.$id}#/$defs/${def}`,sha256:sha(bytes)});
  }
 });

@@ -17,9 +17,11 @@ const version=cmd=>({contractVersion:'0.1.0',artifactId:uuid(50),versionId:uuid(
 
 test('connected namespace is private0.2 with only deliberately named validators',()=>{
  assert.equal(commands.contractVersion,'0.2.0');
- const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult'];
- assert.deepEqual(Object.keys(commands).sort(),['contractVersion',...functions].sort());
+ const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult','normalizeTaskUpdateInput','assertTaskUpdateCommand','assertTaskUpdateProposal','assertTaskUpdateExecution','assertTaskUpdateResult'];
+ assert.deepEqual(Object.keys(commands).sort(),['contractVersion','taskUpdateValidators',...functions].sort());
  for(const name of functions)assert.equal(typeof commands[name],'function');
+ assert.deepEqual(Object.keys(commands.taskUpdateValidators).sort(),['normalizeTaskUpdateInput','assertTaskUpdateCommand','assertTaskUpdateProposal','assertTaskUpdateExecution','assertTaskUpdateResult'].sort());
+ for(const name of Object.keys(commands.taskUpdateValidators))assert.equal(commands.taskUpdateValidators[name],commands[name]);
 });
 test('unknown private definition names refuse',()=>{for(const name of ['Unknown','__proto__','constructor','Command','ApprovalDecision'])assert.throws(()=>commands.validateCommandShape(name,{}));});
 test('connected shape validation detaches data without claiming correlation',()=>{const raw={title:'Review task',clientId:null,dueDate:null};const out=commands.validateCommandShape('TaskCreateArguments',raw);assert.deepEqual(out,raw);assert.notEqual(out,raw);raw.title='changed';assert.equal(out.title,'Review task');});

@@ -1,3 +1,4 @@
+import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
 import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
 const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
@@ -68,24 +69,24 @@ test('independent exact baseline: only the six prior and16 reviewed continuation
   assert.equal(catalog.originals.length,139);
   assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
-  assert.equal(catalog.operations.length,84);
-  assert.deepEqual(catalog.operations.filter(x=>!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
+  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
+  assert.equal(catalog.operations.length,97);
+  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
   for(const old of baseline.originals.map(expectedExistingOriginal)){
     const current=catalog.originals.find(x=>x.id===old.id);assert.ok(current);
     assert.deepEqual(current,(names.includes(old.id)||continuationIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
   }
   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
   for(const id of ['get_research_evidence','get_business_development_brief','create_client'])
-    assert.throws(()=>resolve(id));
+    if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });
 
 test('all 84 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,84);
+  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,97);
   for(const binding of CATALOG_OPERATION_BINDINGS){
     const {descriptor}=resolve(binding.id);
-    const raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
+    const raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
     const schema=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
     for(const [field,definition] of [['inputSchema',binding.input],['outputSchema',binding.output]]){
       assert.ok(Object.hasOwn(schema.$defs,definition));

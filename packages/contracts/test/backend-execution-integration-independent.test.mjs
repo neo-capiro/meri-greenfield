@@ -82,8 +82,8 @@ test('supersession mutations cannot broaden the concrete same-native replacement
 });
 test('all original139/96selected/43deferred remain tracked with84typed/83mapped/13pending',()=>{
  const originals=catalog.originals;assert.equal(originals.length,139);assert.equal(new Set(originals.map(x=>x.id)).size,139);
- assert.equal(originals.filter(x=>x.state==='deferred').length,43);assert.equal(originals.filter(x=>x.state==='mapped').length,83);assert.equal(originals.filter(x=>x.state==='pending').length,13);assert.equal(catalog.operations.length,84);
- assert.equal(CATALOG_OPERATION_BINDINGS.length,84);retrieval.assertCatalog(catalog);
+ assert.equal(originals.filter(x=>x.state==='deferred').length,43);assert.equal(originals.filter(x=>x.state==='mapped').length,96);assert.equal(originals.filter(x=>x.state==='pending').length,0);assert.equal(catalog.operations.length,97);
+ assert.equal(CATALOG_OPERATION_BINDINGS.length,97);retrieval.assertCatalog(catalog);
  for(const d of catalog.operations){assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.deepEqual(d.retry.retryableCodes,[]);}
 });
 test('all84 actual production operations reject before authority source or budget ports',async()=>{

@@ -1,3 +1,4 @@
+import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
 import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 // Explicit next reviewed additions; prior descriptor values and hashes remain unchanged.
 const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
@@ -47,13 +48,13 @@ function output(id) {
 }
 
 test('reviewed continuation preserves139 originals and the exact prior21 descriptors',()=>{
-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');
+  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');
   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
+  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration/pr24-catalog-baseline.json',import.meta.url)));
-  assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
+  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
   for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),
     (additions.includes(old.id)||nextIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
 });
@@ -70,7 +71,7 @@ for(const id of additions) {
     assert.throws(()=>contract.assertOutput({...page,authority:'verified'},{...ctx,request:raw}));
   });
   test(`canonical continuation pins unavailable schemas and rejects promotion: ${id}`,()=>{
-    const {descriptor,binding}=resolve(id),raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
+    const {descriptor,binding}=resolve(id),raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
     const schema=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
     for(const [field,name] of [['inputSchema',binding.input],['outputSchema',binding.output]])
       assert.deepEqual(descriptor[field],{id:`${schema.$id}#/$defs/${name}`,sha256});

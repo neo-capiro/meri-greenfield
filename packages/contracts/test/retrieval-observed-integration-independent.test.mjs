@@ -1,3 +1,4 @@
+import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
 import {fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,7 +16,7 @@ const [SEARCH,PAGE,SAM,FLORIDA]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaa
 const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/',import.meta.url);
 const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
 const copy=structuredClone, resolve=id=>resolveOperationContract({id,version:'0.2.0'});
-const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
+const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
 function context(id){return id===SAM?{asOf:T,sourceStatusAsOf:T,sourceHealthAsOf:T,evidenceAccuracyMode:'off'}:id===FLORIDA?{asOf:T,effectiveScope:{jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null},clientResolution:null}:{};}
 const request=id=>id===SEARCH?{query:' synthetic evidence '}:id===PAGE?{url:'https://example.test/original'}:{};
 function output(id){switch(id){
@@ -28,14 +29,14 @@ const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).as
 const samRow=()=>({id:U,noticeId:'notice',solicitationNumber:null,title:'Synthetic notice',noticeType:'stored',agency:null,office:null,pscCode:null,naicsCode:'541100',postedDate:null,responseDeadline:null,description:'Synthetic description.',sourceUrl:null,active:true});
 
 test('original139 rows and63 descriptors/callbacks survive exactly four full mappings',()=>{
- assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
- assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
+ assertCatalog(catalog);assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+ assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
  for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
- for(const id of ['save_memory','create_task','run_analysis'])assert.throws(()=>resolve(id));
+ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+ for(const id of ['save_memory','create_task','run_analysis'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
 });
 test('all84 descriptors have exact schema byte pins and no implementation admission',()=>{
- for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
+ for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
 });
 for(const id of ids){
  test(`${id}: actual canonical normalizer/output callbacks preserve detached request and digest`,()=>{

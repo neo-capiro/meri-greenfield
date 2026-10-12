@@ -1,0 +1,22 @@
+{
+  "base": "1375349a62f4abc036ee091d0d2ebe3a6ec62910",
+  "existingTestPaths": [
+    "packages/contracts/test/backend-execution-connected.test.mjs",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "packages/contracts/test/command-contracts-integration-independent.test.mjs",
+    "packages/contracts/test/command-payloads-independent.test.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-backend-next-independent.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/vertical-execution-integration-independent.test.mjs"
+  ],
+  "newHelper": "packages/contracts/test/vertical-continuation-expectations.mjs",
+  "excluded": "root prior11 paths, both root helpers, production source, commands-durable-budget.test.mjs"
+}
