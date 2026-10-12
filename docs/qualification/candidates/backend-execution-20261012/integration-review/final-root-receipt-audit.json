@@ -1,0 +1,39 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-final-receipts.py",
+    "9fbeefcd221fbbd3b3f94004d249062709ae0880",
+    "combined-source-corrected",
+    "public-distribution-corrected"
+  ],
+  "cwd": "/workspace/meri-backend-execution-integration-review-20261012",
+  "sourceHead": "d8169d78e4d1c2d9f7c88e54fdb4e6469a6eaf30",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:47:31.358780+00:00",
+  "durationSeconds": 0.315,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 350135,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.stdout.bin",
+      "bytes": 8772,
+      "sha256": "ad9d6617eb44a533c5aa3d84bfc8811517a76201a29228b1c416462449f047a5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

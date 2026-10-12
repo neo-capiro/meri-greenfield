@@ -23,6 +23,7 @@ packets = [
  ('public-legal-review/complete-manifest.json', 'fb7fd02d2b38c1c64b315b3df8d43e053c2bbe6b'),
  ('integration/test-author-manifest.json', '36af89b921f37adcc15032b913d520bc9fbac25d'),
  ('raw-request-review/manifest.json', '10b79037683421d2e07ffbe17b98e8ab36d16cc6'),
+ ('integration/test-author-operational-manifest.json', '17b7d43e7f7d8fbe518c8399e5674c7fd6c32556'),
 ]
 checks = []
 def blob(ref, path):
@@ -51,6 +52,11 @@ for relative, ref in packets:
         current = blob(target, member_path)
         if member_path == 'packages/runtime/operation-lifetime.mjs':
             same('documented sole EOF removal ' + relative, current, original[:-1])
+        elif relative == 'integration/test-author-manifest.json' and member_path in {
+                prefix + 'integration/test-expectation-updates.json',
+                prefix + 'integration/update-test-expectations.py'}:
+            same('explicit twentieth-test successor metadata ' + member_path, sha(current),
+                 sha(blob('17b7d43e7f7d8fbe518c8399e5674c7fd6c32556', member_path)))
         else:
             same('integrated packet member ' + relative + ':' + member_path,
                  [len(current), sha(current)], [len(original), sha(original)])

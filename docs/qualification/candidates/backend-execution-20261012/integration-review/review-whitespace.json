@@ -1,0 +1,41 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+    "HEAD",
+    "--",
+    "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+    "docs/coordination/tasks/CODEX-BACKEND-EXECUTION-INTEGRATION-REVIEW-20261012.md",
+    "docs/coordination/reports/CODEX-BACKEND-EXECUTION-INTEGRATION-REVIEW-20261012.md",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review"
+  ],
+  "cwd": "/workspace/meri-backend-execution-integration-review-20261012",
+  "sourceHead": "fd28b8164b2c7169e345db76a7b8011c4961fc9a",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:42:16.385641+00:00",
+  "durationSeconds": 0.018,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 344487,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
