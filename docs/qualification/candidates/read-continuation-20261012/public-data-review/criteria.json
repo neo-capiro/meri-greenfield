@@ -1,0 +1,18 @@
+{
+  "role": "Read-only discovery then independent review; root authors all production source",
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "referenceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "operations": ["query_economic_data", "search_federal_grants", "search_federal_awards"],
+  "criteria": [
+    "Trace actual immutable input/result projections, imported DTOs and owner methods without requiring invented named result interfaces",
+    "Bind exact source path/blob/hash and compare observed4be13b0b without publishing private bodies",
+    "Preserve each operation's normalization/defaults, paging, serialization, nullable/scalar/unit/time boundaries and failure distinctions",
+    "Trace actual authorization and provider paths; legacy awards is not the distinct federal-market rail",
+    "Treat projections and provider data as reported facts; no inferred grants, absence, completeness, freshness or authorization",
+    "Root's candidate composes canonical private loader/resolver/registry; no second compiler, adapter, service or model loop",
+    "Independent controls use real canonical loader once allocated candidate is frozen; hostile data and precise negative boundaries retained",
+    "Preserve public0.1, original schemas/rows/descriptors, locks, plans, unavailable handlers and disabled source connectivity",
+    "No private source execution/copy, native fixtures, service, database/provider/model/cloud action or recursive delegation"
+  ],
+  "verdictScope": "Source only; runtime and current authority remain unqualified"
+}
