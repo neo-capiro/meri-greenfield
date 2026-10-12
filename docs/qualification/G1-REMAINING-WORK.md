@@ -1,6 +1,18 @@
 # G1 remaining scope and sequence
 
-## Source continuation — 12 October 2026 UTC
+## Memory source continuation — 12 October 2026 UTC
+
+**G0 accepted / G1 OPEN; G2–G7 unentered. Source acceptance does not admit runtime.** Preserved PR10 stays at `7ba0e9d10ebf684e162dcc7c143915afdbf00f32`; this continuation uses a separate branch and draft PR.
+
+The [independent read-binding review](../coordination/reports/MERI-MEMORY-READ-BINDING-REVIEW-20261012.md) accepts `a210db8445537ccfad301d1266e9c53ea71201ac`. The canonical catalog now binds `memory.list_own_proposals@0.2.0` to its already reviewed private family. The full scope remains **139 original / 96 selected / 43 deferred; 14 bound unavailable / 82 selected unmapped**. All fourteen descriptors have null handlers, pending qualification and zero retries; gateway discovery and source execution stay disabled. The existing thirteen descriptors and public 0.1 remain unchanged. The latest [capability table](../CAPABILITY-CATALOG.md) is derived from that single catalog.
+
+Activation still needs authenticated current subject construction, retained request/page ownership, actual proposer/client/wall checks, source wiring and release lineage. Current gateway dispatch supplies legacy clock/actor context; it is not a qualified caller for the memory contract. Source-only normalization of a supplied subject is not authentication. Pending proposals never become approved facts, evidence-ready material or general absence assertions.
+
+Neo approved retaining the existing administrator self-approval exception for Institutional Memory. Exact existing administrator roles and current tenant/client/wall checks remain required; the exception does not authorize shared self-rejection or withdrawal of another person's proposal. Separate review remains required for eligible non-administrator reviewers. Private policy-description and wrapper-wording alignment is independently reviewed in this continuation; no approval/review/save handler is enabled, and the existing capirov2 wrapper correction belongs to its source owner. Historical conflict reports below remain unchanged evidence of the earlier decision state.
+
+The parent reported separate approval and resumption of the local read-only runner capture and metadata upload. No returned native artifacts have been reviewed here. Supported patched image/dependency/license closure, actual task identity/authentication/expiry/revocation, durable budgets, native task-A/B recovery and stale rejection, isolated browser/renderer sandbox, egress/watchdog/teardown and artifact inspection remain open. The old image with 47 findings (5 critical / 17 high) must never be launched. Existing Aurora remains selected; paid-model aggregate remainder and exact cloud/security/action authority remain unresolved. No main merge, frontend edit, live permission or database/network change is admitted by this source continuation.
+
+## Preserved PR10 source checkpoint — 12 October 2026 UTC
 
 **G0 accepted / G1 OPEN; G2–G7 unentered. Source acceptance is not runtime acceptance.**
 

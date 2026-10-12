@@ -1,0 +1,8 @@
+{
+  "status": "PREFREEZE_SOURCE_INSPECTION",
+  "sha256": "09cb5e0831492114f0def96821505cc33615995871ae34d9cbaa9718678236a2",
+  "sourceBytes": 8251,
+  "sourceOwnerPath": "/workspace/meri-memory-policy-20261012/packages/contracts/retrieval-0.2/memory-review-policy.mjs",
+  "ownedSnapshotPath": "/tmp/meri-policy-selector-prefreeze-09cb5e0831492114f0def96821505cc33615995871ae34d9cbaa9718678236a2.mjs",
+  "scope": "new Meri descriptive source, not private producer source"
+}
