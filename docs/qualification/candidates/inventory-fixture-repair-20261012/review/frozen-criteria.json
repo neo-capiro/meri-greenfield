@@ -1,0 +1,50 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "frozen_at_utc": "2026-10-12T03:40:03.357344+00:00",
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "scope": "One test fixture repair only; production probe, original assertions, original negative controls and shared pins unchanged.",
+  "source_fingerprints": {
+    "apps/worker/qualification/probes/image-inventory.test.mjs": {
+      "bytes": 25547,
+      "sha256": "6f43c0d24e97f766aa588b6773dd6a3399074b35e6ad226e47e73adde27627e7"
+    },
+    "apps/worker/qualification/probes/image-inventory.py": {
+      "bytes": 17978,
+      "sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58"
+    }
+  },
+  "criteria": [
+    {
+      "id": "F1",
+      "assertion": "Independently reproduce the baseline 24-pass/1-fail deterministic fixture defect, preserving raw output and root-size evidence. If the environment does not reproduce, state that and qualify acceptance."
+    },
+    {
+      "id": "F2",
+      "assertion": "Candidate changes only assigned test path; all original test names/assertions and production probe bytes remain preserved. Additional regression coverage may be appended."
+    },
+    {
+      "id": "F3",
+      "assertion": "Output creation/writes must not mutate the inspected fixture tree or fabricate/normalize observed directory metadata. Repeated unchanged scans must compare actual manifests with no redaction of real differences."
+    },
+    {
+      "id": "F4",
+      "assertion": "Actual input mutation between scans remains observable; file contents/hashes, extra/missing entries, membership and symlink target changes must remain detectable."
+    },
+    {
+      "id": "F5",
+      "assertion": "Original path replacement, changed descriptor, short read, deadline, coverage, privilege/SUID/SGID/mode/ownership/hash, root/output and traversal negative controls continue failing closed as asserted."
+    },
+    {
+      "id": "F6",
+      "assertion": "Fixture-owned temporary roots and output directories are cleaned even on thrown assertions; no new jobs, network/provider/native binary/image operations or installs."
+    },
+    {
+      "id": "F7",
+      "assertion": "Independently identify direct and transitive current source packaging/hash references affected by the changed test and preserve historical evidence; do not update shared pins or claim package admission."
+    },
+    {
+      "id": "F8",
+      "assertion": "Run bounded meaningful local test checks against exact author freeze and preserve failures. Return ACCEPT_SOURCE or HOLD with exact source fingerprint and unresolved packaging/admission gates."
+    }
+  ]
+}
