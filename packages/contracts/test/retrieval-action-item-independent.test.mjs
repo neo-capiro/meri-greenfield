@@ -59,9 +59,9 @@ test('opaque cursor boundary and page disclosure remain bounded but unqualified'
 test('catalog mutants cannot promote partial parity, aliases, availability or source pins',()=>{
   for(const change of [
     c=>{const x=c.originals.find(x=>x.id===operation.id);x.state='mapped';x.replacement=operation;},
-    c=>c.operations.at(-1).aliases.push('client-action-compat'),c=>c.operations.at(-1).handler={module:'synthetic/module.mjs',sourceSha256:'a'.repeat(64)},
-    c=>c.operations.at(-1).availability='enabled',c=>c.operations.at(-1).qualification='qualified',
-    c=>c.operations.at(-1).retry.maxRetries=1,c=>c.operations.at(-1).inputSchema.sha256='b'.repeat(64),
+    c=>c.operations.find(row=>row.operation.id===operation.id).aliases.push('client-action-compat'),c=>c.operations.find(row=>row.operation.id===operation.id).handler={module:'synthetic/module.mjs',sourceSha256:'a'.repeat(64)},
+    c=>c.operations.find(row=>row.operation.id===operation.id).availability='enabled',c=>c.operations.find(row=>row.operation.id===operation.id).qualification='qualified',
+    c=>c.operations.find(row=>row.operation.id===operation.id).retry.maxRetries=1,c=>c.operations.find(row=>row.operation.id===operation.id).inputSchema.sha256='b'.repeat(64),
   ]){const copy=structuredClone(catalog);change(copy);assert.throws(()=>assertCatalog(copy));}
 });
 test('bound pages preserve recommendation semantics for a reported outcome',()=>{

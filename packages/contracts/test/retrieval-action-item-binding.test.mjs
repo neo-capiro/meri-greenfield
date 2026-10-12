@@ -30,11 +30,11 @@ test('partial binding refuses original mapping, aliases and executable/retry pro
  for(const mutate of [
   c=>Object.assign(c.originals.find(row=>row.id===reference.id),{state:'mapped',replacement:reference}),
   c=>c.originals.find(row=>row.id===reference.id).state='deferred',
-  c=>c.operations.at(-1).aliases.push('read_action_items'),
-  c=>c.operations.at(-1).aliases.push('query_action_items'),
-  c=>c.operations.at(-1).retry.maxRetries=1,
-  c=>c.operations.at(-1).retry.retryableCodes.push('timeout'),
-  c=>Object.assign(c.operations.at(-1),{availability:'enabled',qualification:'qualified',handler:{module:'synthetic/read.mjs',export:'read',sourceSha256:'a'.repeat(64)}}),
+  c=>c.operations.find(row=>row.operation.id===reference.id).aliases.push('read_action_items'),
+  c=>c.operations.find(row=>row.operation.id===reference.id).aliases.push('query_action_items'),
+  c=>c.operations.find(row=>row.operation.id===reference.id).retry.maxRetries=1,
+  c=>c.operations.find(row=>row.operation.id===reference.id).retry.retryableCodes.push('timeout'),
+  c=>Object.assign(c.operations.find(row=>row.operation.id===reference.id),{availability:'enabled',qualification:'qualified',handler:{module:'synthetic/read.mjs',export:'read',sourceSha256:'a'.repeat(64)}}),
  ]){const c=catalog();mutate(c);assert.throws(()=>assertCatalog(c));}
 });
 
