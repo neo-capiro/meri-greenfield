@@ -1,0 +1,1424 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-legal-legislation:0.2.0",
+  "title": "Private retained legislative and legal evidence projections; no parser, source or current authority qualification",
+  "$defs": {
+    "ResearchLegalScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "sessionKey": {
+          "type": "string"
+        },
+        "folderId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "sessionKey",
+        "folderId",
+        "clientId"
+      ]
+    },
+    "ResearchLegalLegislationContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "clientResolution": {
+          "$ref": "urn:meri:retrieval:outreach-query:0.2.0#/$defs/OutreachQueryContext/properties/clientResolution"
+        },
+        "citationResolution": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "citation": {
+                  "type": "string"
+                },
+                "referenceId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "code": {
+                  "enum": [
+                    "statute",
+                    "constitution"
+                  ]
+                }
+              },
+              "required": [
+                "citation",
+                "referenceId",
+                "code"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "clientResolution",
+        "citationResolution"
+      ]
+    },
+    "ResearchLegalLegislationSearchRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sessionKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "folderId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "versionPolicy": {
+          "anyOf": [
+            {
+              "enum": [
+                "any_retained",
+                "current_extractions",
+                "newest_dated_text"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versionStage": {
+          "anyOf": [
+            {
+              "enum": [
+                "all",
+                "enrolled",
+                "chaptered"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "all",
+                "text",
+                "amendment",
+                "supplement"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "billIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "minItems": 1
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sponsor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "action": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "referenceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "ResearchLegalLegislationReferenceRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sessionKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "folderId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clientId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "view": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "citation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "referenceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ruleNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "noticeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "ResearchLegalLegislationSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "query": {
+          "type": "string"
+        },
+        "versionPolicy": {
+          "enum": [
+            "any_retained",
+            "current_extractions",
+            "newest_dated_text"
+          ]
+        },
+        "versionStage": {
+          "enum": [
+            "all",
+            "enrolled",
+            "chaptered"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "all",
+            "text",
+            "amendment",
+            "supplement"
+          ]
+        },
+        "billIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30
+        },
+        "title": {
+          "type": "string"
+        },
+        "sponsor": {
+          "type": "string"
+        },
+        "chamber": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "referenceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "query",
+        "versionPolicy",
+        "versionStage",
+        "kind",
+        "billIds",
+        "title",
+        "sponsor",
+        "chamber",
+        "action",
+        "referenceId",
+        "cursor"
+      ]
+    },
+    "ResearchLegalLegislationReferenceInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "view": {
+          "enum": [
+            "references",
+            "rules",
+            "versions"
+          ]
+        },
+        "billId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "citation": {
+          "type": "string"
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "code": {
+          "type": "string"
+        },
+        "ruleNumber": {
+          "type": "string"
+        },
+        "noticeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "scope",
+        "view",
+        "billId",
+        "citation",
+        "referenceId",
+        "edition",
+        "code",
+        "ruleNumber",
+        "noticeId"
+      ]
+    },
+    "ResearchLegalVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "sessionKey": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "extractorVersion": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isCurrent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "billId",
+        "jurisdiction",
+        "sessionKey",
+        "revision",
+        "contentHash",
+        "extractorVersion",
+        "sourceUrl",
+        "kind",
+        "publishedDate",
+        "observedAt",
+        "complete",
+        "title",
+        "isCurrent"
+      ]
+    },
+    "ResearchLegalQueryAst": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "term"
+            },
+            "value": {
+              "type": "string"
+            },
+            "wildcard": {
+              "enum": [
+                "none",
+                "prefix",
+                "suffix"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "value",
+            "wildcard"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "phrase"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "not"
+            },
+            "child": {
+              "$ref": "#/$defs/ResearchLegalQueryAst"
+            }
+          },
+          "required": [
+            "kind",
+            "child"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "and",
+                "or"
+              ]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ResearchLegalQueryAst"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "children"
+          ]
+        }
+      ]
+    },
+    "ResearchLegalQueryCompilation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "raw": {
+          "type": "string"
+        },
+        "parserVersion": {
+          "const": "legiwatch-query-v1"
+        },
+        "status": {
+          "const": "supported"
+        },
+        "ast": {
+          "$ref": "#/$defs/ResearchLegalQueryAst"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0
+        },
+        "interpretation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "raw",
+        "parserVersion",
+        "status",
+        "ast",
+        "reasons",
+        "interpretation"
+      ]
+    },
+    "ResearchLegalQueryEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string"
+        },
+        "expression": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "quote",
+        "expression"
+      ]
+    },
+    "ResearchLegalExcerpt": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ResearchLegalQueryEvidence"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "const": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 280
+            },
+            "quote": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "quote"
+          ]
+        }
+      ]
+    },
+    "ResearchLegalQueryEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "const": "match"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalQueryEvidence"
+          },
+          "maxItems": 32
+        }
+      },
+      "required": [
+        "outcome",
+        "complete",
+        "evidence"
+      ]
+    },
+    "ResearchLegalSearchItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "billId": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "sessionKey": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "extractorVersion": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publishedDate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "billTitle": {
+          "type": "string"
+        },
+        "billIdentifier": {
+          "type": "string"
+        },
+        "sponsor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "chamber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lastAction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "versionType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isCurrent": {
+          "type": "boolean"
+        },
+        "excerpt": {
+          "$ref": "#/$defs/ResearchLegalExcerpt"
+        },
+        "evaluation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalQueryEvaluation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "billId",
+        "jurisdiction",
+        "sessionKey",
+        "revision",
+        "contentHash",
+        "extractorVersion",
+        "sourceUrl",
+        "kind",
+        "publishedDate",
+        "observedAt",
+        "complete",
+        "title",
+        "billTitle",
+        "billIdentifier",
+        "sponsor",
+        "chamber",
+        "lastAction",
+        "versionType",
+        "isCurrent",
+        "excerpt",
+        "evaluation"
+      ]
+    },
+    "ResearchLegalSearchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalSearchItem"
+          },
+          "maxItems": 25
+        },
+        "interpretedQuery": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalQueryCompilation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "versionPolicy": {
+          "enum": [
+            "any_retained",
+            "current_extractions",
+            "newest_dated_text"
+          ]
+        },
+        "searchedKinds": {
+          "enum": [
+            "all",
+            "text",
+            "amendment",
+            "supplement"
+          ]
+        },
+        "scanned": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "cursor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "reason": {
+              "enum": [
+                "LEGAL_REFERENCE_CLASSIFICATION_NOT_QUALIFIED",
+                "EXPLICIT_BILL_INVENTORY_ONLY",
+                "SOURCE_DOCUMENT_INVENTORY_NOT_QUALIFIED"
+              ]
+            },
+            "manifestId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "billIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30
+            },
+            "retainedVersionsOnly": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "complete",
+            "reason",
+            "manifestId",
+            "billIds",
+            "retainedVersionsOnly"
+          ]
+        },
+        "message": {
+          "enum": [
+            "Coverage is limited to the explicit bill selection and its retained provider inventory.",
+            "Positive matches use retained source versions. Search completeness requires a qualified provider inventory."
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "items",
+        "interpretedQuery",
+        "versionPolicy",
+        "searchedKinds",
+        "scanned",
+        "cursor",
+        "coverage",
+        "message"
+      ]
+    },
+    "ResearchLegalVersionsResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalVersion"
+          },
+          "maxItems": 200
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "order": {
+          "const": "source_identity_not_legislative_sequence"
+        }
+      },
+      "required": [
+        "scope",
+        "versions",
+        "complete",
+        "order"
+      ]
+    },
+    "ResearchLegalNotice": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "notice_id": {
+          "type": "string"
+        },
+        "payload": {},
+        "source_url": {
+          "type": "string"
+        },
+        "content_hash": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "notice_id",
+        "payload",
+        "source_url",
+        "content_hash",
+        "observed_at"
+      ]
+    },
+    "ResearchLegalAdopted": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "content_hash": {
+          "type": "string"
+        },
+        "extraction_hash": {
+          "type": "string"
+        },
+        "sections": {},
+        "complete": {
+          "type": "boolean"
+        },
+        "coverage": {},
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "source_url",
+        "content_hash",
+        "extraction_hash",
+        "sections",
+        "complete",
+        "coverage",
+        "observed_at"
+      ]
+    },
+    "ResearchLegalRulesResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalNotice"
+          },
+          "maxItems": 101
+        },
+        "adopted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalAdopted"
+          },
+          "maxItems": 10
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "const": false
+            },
+            "reason": {
+              "const": "SELECTED_NOTICES_AND_HISTORY_ONLY"
+            }
+          },
+          "required": [
+            "complete",
+            "reason"
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "rows",
+        "adopted",
+        "coverage"
+      ]
+    },
+    "ResearchLegalReferenceRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "code_kind": {
+          "enum": [
+            "statute",
+            "constitution"
+          ]
+        },
+        "reference_kind": {
+          "enum": [
+            "chapter",
+            "section",
+            "subsection",
+            "article",
+            "rule"
+          ]
+        },
+        "chapter": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "section": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "subdivisions": {},
+        "identity": {},
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revision_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "content_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extraction_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parser_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sections": {},
+        "history_text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "complete": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "coverage": {},
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "jurisdiction",
+        "code_kind",
+        "reference_kind",
+        "chapter",
+        "section",
+        "subdivisions",
+        "identity",
+        "created_at",
+        "revision_id",
+        "edition",
+        "title",
+        "source_url",
+        "content_hash",
+        "extraction_hash",
+        "parser_version",
+        "sections",
+        "history_text",
+        "complete",
+        "coverage",
+        "observed_at"
+      ]
+    },
+    "ResearchLegalOccurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "document_id": {
+          "type": "string"
+        },
+        "bill_id": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "type": "string"
+        },
+        "session_key": {
+          "type": "string"
+        },
+        "document_revision": {
+          "type": "string"
+        },
+        "reference_id": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "quote": {
+          "type": "string"
+        },
+        "basis": {
+          "type": "string"
+        },
+        "parser_version": {
+          "type": "string"
+        },
+        "start_offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "end_offset": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "relation": {
+          "enum": [
+            "cites",
+            "proposes_amend",
+            "proposes_repeal",
+            "proposes_create",
+            "proposes_renumber",
+            "reenacts",
+            "unresolved"
+          ]
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "document_kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "is_current": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "document_id",
+        "bill_id",
+        "jurisdiction",
+        "session_key",
+        "document_revision",
+        "reference_id",
+        "locator",
+        "quote",
+        "basis",
+        "parser_version",
+        "start_offset",
+        "end_offset",
+        "relation",
+        "observed_at",
+        "source_url",
+        "document_kind",
+        "is_current"
+      ]
+    },
+    "ResearchLegalReferencesResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "#/$defs/ResearchLegalScope"
+        },
+        "referenceId": {
+          "type": "string"
+        },
+        "edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalReferenceRow"
+          },
+          "maxItems": 101
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchLegalOccurrence"
+          },
+          "maxItems": 201
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "const": false
+            },
+            "reason": {
+              "const": "SELECTED_INGESTED_REFERENCES_ONLY"
+            }
+          },
+          "required": [
+            "complete",
+            "reason"
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "referenceId",
+        "edition",
+        "rows",
+        "related",
+        "coverage"
+      ]
+    },
+    "ResearchLegalLegislationSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_legislative_research"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "$ref": "#/$defs/ResearchLegalSearchResult"
+        },
+        "authority": {
+          "const": "Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments."
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "result",
+        "authority"
+      ]
+    },
+    "ResearchLegalLegislationReferenceOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_legal_reference"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ResearchLegalVersionsResult"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalRulesResult"
+            },
+            {
+              "$ref": "#/$defs/ResearchLegalReferencesResult"
+            }
+          ]
+        },
+        "authority": {
+          "const": "Source quotations retain their document identity. Meri relevance is an inference for review; keyword grammar and current folder decisions control assignments."
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "result",
+        "authority"
+      ]
+    }
+  }
+}

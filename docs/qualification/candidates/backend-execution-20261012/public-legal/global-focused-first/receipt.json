@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-public-domain-query.test.mjs"
+  ],
+  "source": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+  "exitCode": 0,
+  "elapsedSeconds": 0.45514535903930664,
+  "timeout": false,
+  "processGroup": 310314,
+  "ownedGroupAbsent": true,
+  "sourceDiff": "",
+  "stdoutSha256": "4079d49178cd0a6c7468473eade4445493c80dc2d88c3a61296f89b948538d42",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

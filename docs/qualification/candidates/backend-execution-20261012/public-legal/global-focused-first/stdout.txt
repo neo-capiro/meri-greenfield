@@ -1,0 +1,33 @@
+✔ one immutable provider supplies all12 datasets and88 fields without physical expressions (7.212168ms)
+✔ unknown or decorative provider refuses instead of adopting arbitrary field maps (0.330156ms)
+✔ exact family exports and normalization bind selected immutable snapshot (12.008178ms)
+✔ model SQL/table/alias/registry authority is refused at closed boundaries (1.234264ms)
+✔ selectors reject coercion hooks, hidden fields, proxies and callbacks (0.278288ms)
+✔ typed requests exclude legacy nonarray ignoring and broad Number coercion (0.801254ms)
+✔ positive finite row limit preserves floor/default and per-dataset maximum (2.005602ms)
+✔ all six aggregates preserve source type/group capabilities (1.515406ms)
+✔ bare count and alias collision rules remain exact (0.79878ms)
+✔ grouped mixed projections retain ordinary fields and groupable flags (0.837448ms)
+✔ ordering is limited to selected aliases and preserves legacy desc-exact default (0.59276ms)
+✔ every closed filter operator is admitted with its actual value contract (1.58425ms)
+✔ numeric boolean and date filters remain type-correct without invented ordering (1.245391ms)
+✔ filter windows and nonfilterable arrays fail closed (0.96508ms)
+✔ trusted default as-of is distinct from explicit date and generatedAt (1.234204ms)
+✔ all twelve dataset projections accept their complete field selection windows (6.662848ms)
+✔ success omits SQL and retains exact aliases, dataset and pretrim count (5.669336ms)
+✔ counts retain exact unsafe integer strings and refuse fractional or null values (3.177033ms)
+✔ numbers preserve decimal strings and nullable stored/aggregate results (2.126837ms)
+✔ array scalars preserve null elements; dates and booleans retain source types (0.776227ms)
+✔ truncation reports whole-row prefix and original fetched count, including zero retained (0.748314ms)
+✔ legacy256Ki ceiling counts UTF16 not UTF8 and never silently drops half a row (4.675697ms)
+✔ error envelope remains explicit and never doubles as empty success (0.811299ms)
+✔ result observation is independent; validator never claims audit or role admission (0.67852ms)
+✔ snapshots cannot mutate provider, requests, normalized tuples or returned siblings (0.541554ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 414.417181
