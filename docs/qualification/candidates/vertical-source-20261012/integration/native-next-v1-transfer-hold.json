@@ -31,5 +31,11 @@
   "requiredNext": "Three module paths and expected base/current hashes or fetchable Git branch; no user approval is required for read-only agreement",
   "nativeVerdict": "NOT_JOINED",
   "G1Accepted": false,
-  "browser": "HOLD"
+  "browser": "HOLD",
+  "freshTransferNetworkRetry": {
+    "additionalNetworkPermission": true,
+    "exitCode": 1,
+    "error": "library file transfer failed: download failed",
+    "bytesObtained": false
+  }
 }
