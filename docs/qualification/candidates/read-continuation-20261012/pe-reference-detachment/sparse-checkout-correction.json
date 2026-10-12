@@ -1,0 +1,10 @@
+{
+  "cause": "Focused canonical tests import baseline docs/coordination/r2 and apps/gateway outside initial sparse checkout. Two missing-file failures; all84 executed controls passed.",
+  "failedAttempt": "git sparse-checkout add --no-cone rejected unsupported add option; initial rerun retained same missing-file failures. No product file changed.",
+  "change": "git sparse-checkout add without --no-cone expanded only this owned worktree to exact baseline r2 docs and gateway sources; existence asserted before rerun.",
+  "failedReceipts": [
+    "repaired-focused.json",
+    "repaired-focused-complete.json"
+  ],
+  "rerun": "repaired-focused-final"
+}
