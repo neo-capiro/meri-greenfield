@@ -1,0 +1,26 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/qualification/candidates/image-patch-20261012/review/final_packet_check.py"
+  ],
+  "cwd": "/workspace/meri-image-patch-review-20261012",
+  "startUnixSeconds": 1791775522.2595296,
+  "elapsedSeconds": 0.16423630714416504,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "final-packet-integrity.stdout.txt",
+      "bytes": 900,
+      "sha256": "510a52ce4b7aaa7770cbaba620de95afcafca5de49320006a3bb799986d8da84"
+    },
+    "stderr": {
+      "path": "final-packet-integrity.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

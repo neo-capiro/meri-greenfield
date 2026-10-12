@@ -1,0 +1,30 @@
+{
+  "verdict": "ACCEPT_SOURCE_PREPARATION",
+  "patchedImage": "HOLD",
+  "authorCommit": "9aff2d9e1e125fe9e0fc4d2e7bef49d7ff623d53",
+  "allBaseFilesUnchanged": 2243,
+  "authorEvidenceFilesHashVerified": 25,
+  "all54CohortEvidenceHashVerified": true,
+  "exactOriginal47": true,
+  "oldAndOmittedRetained": [
+    "CVE-2026-107708",
+    "CVE-2026-107778",
+    "CVE-2026-76642",
+    "CVE-2026-78408",
+    "CVE-2026-78409",
+    "CVE-2026-78410",
+    "CVE-2026-95619"
+  ],
+  "imageDispositions": {
+    "OPEN": 54
+  },
+  "sidStatus": {
+    "VULNERABLE": 19,
+    "FIXED": 35
+  },
+  "matrixSha256": "4235a8074c314e497071afc8858eeaf26d7adf43d6afd89ba8f3fd322a1e7ad5",
+  "parentVerifierSha256": "3ba182480086e838be9d4217742a88362afd2709627b1e9d4a03e85205513ab5",
+  "parentReceiptSha256": "69446fc6dfa5f0aef343b667cffedfece5105095d393583e76d41d2e991d8683",
+  "runtimeAccepted": false,
+  "buildAuthorized": false
+}
