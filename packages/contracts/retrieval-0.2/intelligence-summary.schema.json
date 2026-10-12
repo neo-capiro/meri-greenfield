@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:intelligence-summary:0.2.0",
+  "$defs": {
+    "IntelligenceSummaryInput": {
+      "type": "object",
+      "properties": {"clientName": {"type": ["string", "null"]}},
+      "additionalProperties": false
+    },
+    "IntelligenceSummaryContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "IntelligenceSummaryOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {"const": "query_intelligence"},
+        "generatedAt": {"type": "string", "format": "date-time", "pattern": "^\\d{4}-"},
+        "data": {"type": "string", "minLength": 1}
+      },
+      "required": ["tool", "generatedAt", "data"],
+      "additionalProperties": false
+    }
+  }
+}
