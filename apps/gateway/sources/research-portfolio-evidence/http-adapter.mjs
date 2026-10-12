@@ -20,7 +20,7 @@ export function createResearchPortfolioEvidenceHttpAdapter(options) {
       deny('GATEWAY_CONFIGURATION');
   } catch { deny('GATEWAY_CONFIGURATION'); }
   async function read(call) {
-    let lifetime;
+    let lifetime, acquiredResponse;
     try {
       const context = evidenceContext(call,now), {input,authority} = context;
       lifetime = createDispatchLifetime({deadlineMs:Math.min(context.deadlineMs,now()+maxRequestMs),now,signal:context.signal});
@@ -42,17 +42,24 @@ export function createResearchPortfolioEvidenceHttpAdapter(options) {
           const result = await fetchImpl(new URL(path,origin).href, {method:'GET',redirect:'error',
             credentials:'omit',cache:'no-store',signal,headers:{authorization:`Bearer ${credentials.bearerToken}`,
               accept:'application/json','accept-encoding':'identity'}});
+          // Own it before the lifetime handoff; an abort between the two await
+          // continuations must still cancel a body whose reader was not acquired.
+          acquiredResponse = result;
           try { lifetime.check(); return result; }
           catch (error) { try { cancelBody(responseBody(result)); } catch {} throw error; }
         });
         responses.push(await readJsonResponse(response,{lifetime,maxResponseBytes}));
+        acquiredResponse = undefined;
       }
       const projected = projectPortfolioEvidence(input.origin === 'review' ? responses : responses[0],input,authority);
       const page = assertResearchPortfolioEvidenceOutput(operation.id,projected,context.request,
         {binding:authority.binding,subject:authority.subject});
       lifetime.check(); return frozenData(page);
     } catch (error) { throw safeFailure(error); }
-    finally { lifetime?.close(); }
+    finally {
+      try { if (acquiredResponse) cancelBody(responseBody(acquiredResponse)); } catch {}
+      lifetime?.close();
+    }
   }
   return Object.freeze({read});
 }

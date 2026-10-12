@@ -18,7 +18,7 @@ export function createMemoryProposalHttpAdapter(options) {
   try{const url=new URL(origin);if(url.protocol!=='https:'||url.origin!==origin||url.username||url.password)deny('GATEWAY_CONFIGURATION');endpoint=new URL(route,url).href;}
   catch{deny('GATEWAY_CONFIGURATION');}
   async function read(call) {
-    let lifetime;
+    let lifetime, acquiredResponse;
     try {
       const context=readContext(call,now);
       let deadlineMs=Math.min(context.deadlineMs,now()+maxRequestMs);
@@ -34,6 +34,9 @@ export function createMemoryProposalHttpAdapter(options) {
         const result=await fetchImpl(endpoint,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
           headers:{authorization:`Bearer ${credentials.bearerToken}`,'x-internal-service-secret':credentials.serviceSecret,
             'content-type':'application/json',accept:'application/json','accept-encoding':'identity'},body:JSON.stringify(context.input)});
+        // Own the response before the lifetime's outer await can reject. Abort
+        // can occur after this callback returns but before its caller resumes.
+        acquiredResponse=result;
         try{lifetime.check();return result;}catch(error){try{cancel(responseBody(result));}catch{}throw error;}
       });
       const page=frozenData(await readJsonResponse(response,{lifetime,maxResponseBytes}));
@@ -41,6 +44,7 @@ export function createMemoryProposalHttpAdapter(options) {
       lifetime.check();return page;
     }catch(error){throw safeFailure(error);}
     finally {
+      try{if(acquiredResponse)cancel(responseBody(acquiredResponse));}catch{}
       lifetime?.close();
     }
   }

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/gateway/test/research-evidence-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source.test.mjs",
+    "apps/gateway/test/memory-proposal-source-independent.test.mjs",
+    "packages/contracts/test/retrieval-research-portfolio.test.mjs"
+  ],
+  "cwd": "/workspace/meri-vertical-source-20261012",
+  "sourceHead": "468be0b9d047bc43338e0ad4aa1b55baea5f3355",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T22:26:04.908013+00:00",
+  "durationSeconds": 5.404,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 367958,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-uuid-repaired.stdout.bin",
+      "bytes": 8334,
+      "sha256": "2832af0cd41e0d315e99f47f9ac3e0715c851f803fe8013c2d1f58739b306101"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/integration/portfolio-uuid-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
