@@ -304,3 +304,120 @@ for(const count of[0,1])test(`legal independent: logical AST requires multiple c
  const p=wrap({...searchResult(),interpretedQuery:{...compiled,ast:{kind:'and',children:Array.from({length:count},()=>({kind:'term',value:'needle',wildcard:'none'}))}}});
  assert.throws(()=>lp(p,{...sr,query:'needle'}));
 });
+
+// News controls frozen against original source before candidate inspection.
+import {createResearchLegalNewsValidators} from '../retrieval-0.2/research-legal-news-validation.mjs';
+const newsSchema=load('research-legal-news');ajv.addSchema(newsSchema);
+const newsShapes=new Map(Object.keys(newsSchema.$defs).map(n=>[n,ajv.compile({$ref:`${newsSchema.$id}#/$defs/${n}`})]));
+const news=createResearchLegalNewsValidators({schema:newsSchema,validateShape(n,x){const f=newsShapes.get(n);if(!f?.(x))throw Error(`${n}: ${ajv.errorsText(f?.errors)}`);}});
+const NEWS='search_legiwatch_news',ns={jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null};
+const nc={clientResolution:null,effectiveScope:ns,windowAsOf:at,defaultYear:null,owner:null};
+const sourceCtx={...nc,windowAsOf:null};
+const nn=(r={},c=nc)=>news.normalizeResearchLegalNewsInput(NEWS,r,c);
+const nw=result=>({tool:NEWS,generatedAt:at,result,authority});
+const newsResult=(items=[])=>({scope:{...ns},matchDefinition:null,items,nextOffset:null,coverage:[],window:{since:'2026-10-05T12:00:00.000Z',days:7},coverageMessage:'Results reflect retained sources. Missing article bodies and unavailable providers limit coverage.'});
+const np=(p=nw(newsResult()),r={},c=nc)=>news.assertResearchLegalNewsOutput(NEWS,p,r,c);
+const baseNews=(id='n:a')=>({id,article_id:'article:a',revision:'revision:a',provider:'rss',provider_id:null,original_url:'',canonical_url:'',publisher:'publisher',author:null,provider_parsed_at:null,title:'title',summary:null,body:null,body_complete:false,language:null,publisher_country:null,article_geography:null,published_at:null,publication_precision:'unknown',observed_at:at,source_url:'',rights:'headline_link',is_current:true});
+const listNews=(id='n:a')=>({...baseNews(id),saved:false,tracking_version:null});
+const exactNews=(id='n:a')=>({...baseNews(id),sourceUrl:'',text:'title',observedAt:at,complete:false,authority:'Attributed publisher reporting'});
+const personnel=(id='p:a')=>({id,source_key:'person:a',revision:'rev',kind:'change',name:'person',branch:null,registration_year:null,firm:null,principal:null,old_role:null,new_role:null,announced_date:null,effective_date:null,withdrawal_date:null,confirmation:'unconfirmed',canonical_person_id:null,directory_url:null,source_url:'',receipt_id:'receipt',payload:null,observed_at:at});
+const personPage=(items=[])=>({items,nextOffset:null,year:2026,notice:'Source-linked observations; withdrawal does not establish employment termination. Unresolved identities remain unmerged.'});
+const personnelCtx={...sourceCtx,defaultYear:2026};
+const monitorOwner={tenantId:clientId,clerkUserId:'clerk:a'},monitorCtx={...sourceCtx,effectiveScope:null,owner:monitorOwner};
+const emptyNewsQuery={raw:'',parserVersion:'legiwatch-query-v1',status:'empty',ast:null,reasons:['EMPTY_QUERY'],interpretation:null,adapterVersion:'legiwatch-news-query-v1',providerQuery:null};
+const monitor=(id='m:a')=>({id,tenant_id:clientId,owner_clerk_id:'clerk:a',source_key:id,source:null,config:null,version:0,state:'needs_review',baseline_at:null,checkpoint:null,pending_window:null,last_attempt_at:null,last_error:null,created_at:at,interpretation:emptyNewsQuery});
+
+test('news independent: exact namespace selectors and default normalized envelope',()=>{
+ assert.equal(newsSchema.$id,'urn:meri:retrieval:research-legal-news:0.2.0');assert.equal(news.researchLegalNewsInputDefinition(NEWS),'ResearchLegalNewsInput');assert.equal(news.researchLegalNewsOutputDefinition(NEWS),'ResearchLegalNewsOutput');
+ assert.deepEqual(nn().input,{view:'news',scope:ns,q:'',publisher:'',monitorId:null,kind:null,id:null,branch:'',limit:50,offset:0,days:7,year:null});
+ for(const id of['__proto__','constructor','get_legal_reference'])assert.throws(()=>news.normalizeResearchLegalNewsInput(id,{},nc));
+});
+test('news independent: branch facts cannot be supplied by model or borrowed from another branch',()=>{
+ for(const key of['effectiveScope','windowAsOf','defaultYear','owner','clientResolution'])assert.throws(()=>nn({[key]:null}));
+ for(const c of[{},null,{...nc,owner:monitorOwner},{...nc,defaultYear:2026},{...nc,windowAsOf:null},{...nc,effectiveScope:null}])assert.throws(()=>nn({},c));
+ assert.throws(()=>nn({view:'source',kind:'news',id:'n:a'},nc));assert.throws(()=>nn({view:'monitors'},sourceCtx));
+});
+test('news independent: exact default and numeric-string limit behavior',()=>{
+ for(const[limit,want]of[[null,50],['',50],[0,50],[-1,1],['Infinity',100],[999,100],[2.9,2],['nonsense',50]])assert.equal(nn({limit}).input.limit,want);
+ for(const limit of[false,{},[],Infinity])assert.throws(()=>nn({limit}));
+});
+test('news independent: news offsets reject fractions while personnel truncates them',()=>{
+ assert.throws(()=>nn({offset:'1.5'}));assert.equal(nn({view:'personnel',offset:'1.5'},personnelCtx).input.offset,1);assert.equal(nn({offset:-2}).input.offset,0);
+ for(const offset of[10001,'Infinity'])assert.throws(()=>nn({offset}));
+});
+test('news independent: actual days enum and UTF16 query clipping',()=>{
+ for(const days of[1,3,7,14])assert.equal(nn({days:String(days)}).input.days,days);for(const days of[0,2,30])assert.throws(()=>nn({days}));
+ assert.equal(nn({q:'x'.repeat(499)+'😀'}).input.q,'x'.repeat(499)+'\ud83d');assert.equal(nn({view:'personnel',q:'x'.repeat(199)+'😀'},personnelCtx).input.q,'x'.repeat(199)+'\ud83d');
+});
+test('news independent: effective folder client may differ from absent raw client but not explicit resolution',()=>{
+ const c={...nc,effectiveScope:{...ns,folderId:'folder',clientId}};assert.equal(nn({folderId:'folder'},c).input.scope.clientId,clientId);
+ assert.throws(()=>nn({},c));assert.throws(()=>nn({folderId:'folder',clientId:'named'},{...c,clientResolution:{reference:'named',clientId:other}}));
+ assert.throws(()=>nn({}, {...nc,effectiveScope:{...ns,clientId}}));
+});
+test('news independent: personnel year is branch-specific source observation',()=>{
+ assert.equal(nn({view:'personnel'},personnelCtx).input.year,2026);assert.equal(nn({view:'personnel',year:'2025'},sourceCtx).input.year,2025);
+ assert.throws(()=>nn({view:'personnel',year:'2025'},personnelCtx));assert.throws(()=>nn({view:'personnel'},sourceCtx));assert.throws(()=>nn({view:'personnel',year:1.5},sourceCtx));
+});
+test('news independent: monitors ignores input scope only after wrapper client resolution',()=>{
+ assert.equal(nn({view:'monitors',folderId:'ignored',sessionKey:'ignored'},monitorCtx).input.scope,null);
+ assert.throws(()=>nn({view:'monitors',clientId:'named'},monitorCtx));assert.equal(nn({view:'monitors',clientId:'named'},{...monitorCtx,clientResolution:{reference:'named',clientId}}).input.scope,null);
+});
+test('news independent: empty news is an exact page not absence evidence',()=>{
+ np();assert.throws(()=>np(nw({...newsResult(),complete:true})));const n=nn();assert.ok(Object.isFrozen(n.input));assert.ok(Object.isFrozen(n.metadata));
+});
+test('news independent: complete nullable list row and exact mandatory fields',()=>{
+ const row=listNews();np(nw(newsResult([row])));for(const key of Object.keys(row)){const bad=structuredClone(row);delete bad[key];assert.throws(()=>np(nw(newsResult([bad]))),key);}
+ assert.throws(()=>np(nw(newsResult([{...row,body_complete:true}]))));assert.throws(()=>np(nw(newsResult([{...row,is_current:false}]))));
+});
+test('news independent: lower window cutoff is inclusive and future rows remain possible',()=>{
+ np(nw(newsResult([{...listNews(),observed_at:'2026-10-05T12:00:00.000Z'}])));np(nw(newsResult([{...listNews(),observed_at:'2099-01-01T00:00:00.000Z'}])));
+ assert.throws(()=>np(nw(newsResult([{...listNews(),observed_at:'2026-10-05T11:59:59.999Z'}]))));assert.throws(()=>np(nw({...newsResult(),window:{since:at,days:7}})));
+});
+test('news independent: paging retains limit and exact next offset',()=>{
+ const r={limit:1,offset:4},p=nw({...newsResult([listNews()]),nextOffset:5});np(p,r);assert.throws(()=>np({...p,result:{...p.result,nextOffset:6}},r));assert.throws(()=>np(nw({...newsResult(),nextOffset:5}),r));
+});
+test('news independent: raw publisher equality is separate from wildcard query truth',()=>{
+ np(nw(newsResult([listNews()])),{q:'%_no literal match'});assert.throws(()=>np(nw(newsResult([listNews()])),{publisher:'other'}));
+});
+test('news independent: missing match-definition optional config values remain omitted',()=>{
+ const p=nw({...newsResult(),matchDefinition:{id:'m:a',version:0,interpretation:'undefined'}});np(p,{monitorId:'m:a'});assert.throws(()=>np(p));assert.throws(()=>np(p,{monitorId:'m:b'}));
+});
+test('news independent: no verified endpoint and retained zero remain distinct source fields',()=>{
+ const c={id:'coverage',publisher:'unmapped-publisher',source_group:'x',source_url:null,status:'unavailable',evidence:null,owner:'owner',version:0,intake:{status:'no_verified_endpoint',feeds:[]},retained:{articles:0,fullTextArticles:0,latestPublishedAt:null,latestObservedAt:null}};
+ np(nw({...newsResult(),coverage:[c]}));assert.throws(()=>np(nw({...newsResult(),coverage:[{...c,retained:{...c.retained,articles:-1}}]})));
+});
+test('news independent: exact news source preserves historical row and raw versus alias observation',()=>{
+ const r={view:'source',kind:'news',id:'n:a'};np(nw({...exactNews(),is_current:false}),r,sourceCtx);
+ const p={...exactNews(),observed_at:'1969-12-31T23:59:59.999Z',observedAt:'1969-12-31T23:59:59.000Z'};np(nw(p),r,sourceCtx);
+ assert.throws(()=>np(nw({...p,observedAt:'1970-01-01T00:00:00.000Z'}),r,sourceCtx));assert.throws(()=>np(nw({...exactNews(),id:'other'}),r,sourceCtx));
+});
+test('news independent: exact source text and rights are correlated without current coverage inference',()=>{
+ const r={view:'source',kind:'news',id:'n:a'};np(nw({...exactNews(),body:'body',body_complete:true,complete:true,text:'title\nbody',rights:'full_text'}),r,sourceCtx);
+ assert.throws(()=>np(nw({...exactNews(),text:'different'}),r,sourceCtx));assert.throws(()=>np(nw({...exactNews(),complete:true}),r,sourceCtx));
+});
+test('news independent: personnel null-year rows and explicit scope remain source observations',()=>{
+ const row={...personnel(),saved:false,tracking_version:null};np(nw(personPage([row])),{view:'personnel'},personnelCtx);
+ assert.throws(()=>np(nw(personPage([{...row,registration_year:2025}])),{view:'personnel'},personnelCtx));assert.throws(()=>np(nw(personPage([{...row,kind:'registration'}])),{view:'personnel'},personnelCtx));
+});
+test('news independent: exact personnel completeness and opaque payload are retained',()=>{
+ const row={...personnel(),title:'person',sourceUrl:'',text:'',observedAt:at,complete:true,authority:'unconfirmed',rights:'full_text'};np(nw(row),{view:'source',kind:'personnel',id:'p:a'},sourceCtx);
+ assert.throws(()=>np(nw({...row,text:'invented'}),{view:'source',kind:'personnel',id:'p:a'},sourceCtx));
+});
+test('news independent: exact budget keeps all raw document fields plus source-derived aliases',()=>{
+ const p={id:'b:a',publisher:'',source_url:'',content_hash:'hash',title:'title',fiscal_year:'2026-27',session_key:'',chamber:'',stage:'proposed',role:'',offer:null,publication_date:null,observed_at:at,receipt_id:'r',sections:null,metadata:null,complete:false,revision:'hash',sourceUrl:'',text:'',observedAt:at,authority:'Florida fiscal source: proposed',rights:'full_text'};
+ np(nw(p),{view:'source',kind:'budget',id:'b:a'},sourceCtx);assert.throws(()=>np(nw({...p,revision:'other'}),{view:'source',kind:'budget',id:'b:a'},sourceCtx));
+});
+test('news independent: exact research source is a distinct section projection',()=>{
+ const p={id:'d:a',billId:'bill',revision:'rev',title:'text',sourceUrl:'',text:'one\ntwo',sections:[{locator:'a',text:'one',hash:'x'},{locator:'b',text:'two',hash:'y'}],observedAt:at,complete:true,authority:'Published legislative record',rights:'full_text'};
+ np(nw(p),{view:'source',kind:'research',id:'d:a'},sourceCtx);assert.throws(()=>np(nw({...p,text:'one'}),{view:'source',kind:'research',id:'d:a'},sourceCtx));
+});
+test('news independent: monitor complete raw projection correlates exact current owner',()=>{
+ const p=nw({monitors:[monitor()]});np(p,{view:'monitors'},monitorCtx);assert.throws(()=>np(nw({monitors:[{...monitor(),tenant_id:other}]}),{view:'monitors'},monitorCtx));assert.throws(()=>np(nw({monitors:[{...monitor(),owner_clerk_id:'other'}]}),{view:'monitors'},monitorCtx));
+ for(const key of Object.keys(monitor())){const m=monitor();delete m[key];assert.throws(()=>np(nw({monitors:[m]}),{view:'monitors'},monitorCtx),key);}
+});
+test('news independent: returned outputs remain detached throughout JSON and rows',()=>{
+ const p=nw(newsResult([{...listNews(),article_geography:{nested:['x']}}])),saved=structuredClone(p),out=np(p);assert.deepEqual(out,saved);assert.notEqual(out.result.items[0].article_geography,p.result.items[0].article_geography);p.result.items[0].article_geography.nested.push('y');assert.deepEqual(out,saved);
+});
+test('news independent: hostile selectors output and context invoke no hooks',()=>{
+ let n=0;const r={};Object.defineProperty(r,'view',{enumerable:true,get(){n++;return'news';}});assert.throws(()=>nn(r));assert.throws(()=>np(new Proxy(nw(newsResult()),{get(){n++;}})));const c={...nc};Object.defineProperty(c,'windowAsOf',{enumerable:true,get(){n++;return at;}});assert.throws(()=>nn({},c));assert.equal(n,0);
+});
