@@ -1,0 +1,9 @@
+diff --git a/apps/artifacts/process.mjs b/apps/artifacts/process.mjs
+index fc9980d3..adffc22a 100644
+--- a/apps/artifacts/process.mjs
++++ b/apps/artifacts/process.mjs
+@@ -30,3 +30,4 @@ export async function runArtifactProcess(executable,args,{cwd,input,signal,deadl
+     return {stdout:Buffer.concat(stdout),receipt};
+   }finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
+ }
++

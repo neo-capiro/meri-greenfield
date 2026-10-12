@@ -1,0 +1,203 @@
+{
+  "base": "9f9e7e4e12fc81d3727ba556089dd8b1b64f4ce7",
+  "source": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "tree": "5778b3f027ec5a29dcbb3b25867b80a154640180",
+  "baseEntries": 8889,
+  "unchangedBaseEntries": 8885,
+  "allowedPriorChanges": [
+    "docs/coordination/tasks/CODEX-VERTICAL-SOURCE-20261012.md",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs"
+  ],
+  "existingUnchangedDefinitionCollisions": [],
+  "exposedArtifactDefinitions": [
+    "WordRequest",
+    "ExcelRequest",
+    "PowerpointRequest",
+    "AnalysisRequest",
+    "ArtifactCreatedResult",
+    "ArtifactOperationResult"
+  ],
+  "outOfScope": [
+    "packages/contracts/commands-0.2/tool-interface.schema.json",
+    "packages/contracts/commands-0.2/tool-interface-validation.mjs"
+  ],
+  "checks": [
+    {
+      "name": "exact declared prior changes only",
+      "pass": true
+    },
+    {
+      "name": "all other baseline mode/blobs preserved",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/local-executor.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/local-store.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/office-transform.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/presentation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/process.mjs",
+      "pass": false
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/python/analysis.py",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/python/entry.py",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/python/office.py",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/sandbox-analysis.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/service.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact apps/artifacts/test/artifact-execution.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact packages/contracts/artifacts-0.2/artifact-formats.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact packages/contracts/artifacts-0.2/artifact-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact accepted artifact packages/contracts/artifacts-0.2/artifact.schema.json",
+      "pass": true
+    },
+    {
+      "name": "preserved reference AGENTS.md",
+      "pass": true
+    },
+    {
+      "name": "preserved reference docs/IMPLEMENTATION-STANDARDS.md",
+      "pass": true
+    },
+    {
+      "name": "preserved reference docs/plans/MERI-DEPLOYMENT.md",
+      "pass": true
+    },
+    {
+      "name": "preserved reference packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "name": "preserved reference packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "name": "preserved reference packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "name": "strict Ajv remains enabled",
+      "pass": true
+    },
+    {
+      "name": "domain callback uses namespaced schema",
+      "pass": true
+    },
+    {
+      "name": "no application executor imported by new validator composition",
+      "pass": true
+    },
+    {
+      "name": "one fixed artifact group extension",
+      "pass": true
+    },
+    {
+      "name": "six artifact exposed names exist and collide with none",
+      "pass": true
+    },
+    {
+      "name": "artifact2020 schema namespace is exact",
+      "pass": true
+    },
+    {
+      "name": "root raw docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root raw docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root cleanup artifact-registry-before",
+      "pass": true
+    },
+    {
+      "name": "root raw docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-import-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "root raw docs/qualification/candidates/vertical-source-20261012/integration/artifact-registry-import-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "root cleanup artifact-registry-import-repaired",
+      "pass": true
+    },
+    {
+      "name": "root actual empty requirement failure retained",
+      "pass": true
+    },
+    {
+      "name": "independent raw docs/qualification/candidates/vertical-source-20261012/integration-review/artifact-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent raw docs/qualification/candidates/vertical-source-20261012/integration-review/artifact-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent source clean artifact-first",
+      "pass": true
+    },
+    {
+      "name": "independent owned group absent artifact-first",
+      "pass": true
+    },
+    {
+      "name": "independent raw docs/qualification/candidates/vertical-source-20261012/integration-review/artifact-complete.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "independent raw docs/qualification/candidates/vertical-source-20261012/integration-review/artifact-complete.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "independent source clean artifact-complete",
+      "pass": true
+    },
+    {
+      "name": "independent owned group absent artifact-complete",
+      "pass": true
+    }
+  ],
+  "passed": 42,
+  "failed": 1,
+  "verdictScope": "Artifact4 registry/loader only; combined13 and all runtime gates pending."
+}
