@@ -7,7 +7,8 @@ import subprocess
 
 lane = Path(__file__).resolve().parent
 root = lane.parents[4]
-candidate = '4aaba8adeef8543548bfed15cf82b26e1afcc6bd'
+candidate = '4280ebaba4cab554baf7e6b23175c34d21027097'
+production_freeze = '4aaba8adeef8543548bfed15cf82b26e1afcc6bd'
 prior = 'fd78590bff1b8551b145a7eafa0ed5f8e23d7bcc'
 checks = []
 source_files = []
@@ -38,6 +39,28 @@ prior_tests = ['retrieval-action-item-binding', 'retrieval-action-item-independe
 allowed = {f'packages/contracts/test/{name}.test.mjs' for name in prior_tests}
 allowed.update('packages/contracts/retrieval-0.2/' + name for name in
                ['catalog.json', 'catalog-validation.mjs', 'validate.mjs'])
+gateway_transitions = {
+    'action-item-context-independent': [(b'all15 production operations', b'all37 production operations'),
+                                        (b'catalog.operations.length,21', b'catalog.operations.length,37')],
+    'capability-next-independent': [(b'refuses all21 operations', b'refuses all37 operations'),
+                                    (b'catalog.operations.length,21', b'catalog.operations.length,37')],
+    'mail-context-independent': [(b"x.state==='mapped').length,20", b"x.state==='mapped').length,36")],
+    'memory-context-independent': [(b'catalog.operations.length,21', b'catalog.operations.length,37')],
+}
+allowed.update(f'apps/gateway/test/{name}.test.mjs' for name in gateway_transitions)
+check('exact-fourteen-prior-path-exceptions', len(allowed) == 14)
+for name, transitions in gateway_transitions.items():
+    path = f'apps/gateway/test/{name}.test.mjs'
+    expected = git('show', f'{production_freeze}:{path}')
+    for before, after in transitions:
+        check('single-gateway-count-target:' + name + ':' + before.decode(), expected.count(before) == 1)
+        expected = expected.replace(before, after)
+    check('exact-gateway-count-transition:' + name, git('show', f'{candidate}:{path}') == expected)
+    check('working-gateway-count-transition:' + name, (root / path).read_bytes() == expected)
+    check('gateway-no-added-skips:' + name, expected.count(b'.skip(') == git('show', f'{production_freeze}:{path}').count(b'.skip(')) )
+for path, blob in tree(production_freeze).items():
+    if path.startswith(('apps/', 'infra/', 'scripts/', 'evals/', 'packages/')) and '/test/' not in path:
+        check('production-unchanged-after-guards:' + path, current.get(path) == blob)
 for path, blob in old.items():
     if path.startswith(('apps/', 'infra/', 'scripts/', 'evals/', 'packages/')) or path in ['package.json', 'package-lock.json']:
         if path not in allowed:
@@ -104,7 +127,8 @@ for directory in ['funding-review', 'documents-review', 'public-data-review', 'd
 
 expected_exits = {'independent-first': 1, 'selector-before': 1, 'selector-after-first-repair': 1,
                   'independent-repaired': 0, 'full-source': 1, 'public-distribution': 1,
-                  'full-source-repaired': 0, 'public-distribution-repaired': 0}
+                  'full-source-repaired': 0, 'public-distribution-repaired': 0,
+                  'gateway-count-before': 1, 'gateway-prior-before': 1, 'combined-final': 0}
 for label, expected in expected_exits.items():
     receipt = json.loads((lane / f'{label}.json').read_text())
     check(label + ':exit', receipt['exitCode'] == expected and not receipt['timedOut'])
@@ -115,6 +139,7 @@ for label, expected in expected_exits.items():
         check(stream['path'] + ':integrity', len(raw) == stream['bytes'] and hashlib.sha256(raw).hexdigest() == stream['sha256'])
 
 summary = {'scope': 'OFFLINE_EXACT_SOURCE_AND_EVIDENCE_AUDIT', 'candidate': candidate,
+           'productionFreeze': production_freeze, 'priorChangedPathAllowlist': sorted(allowed),
            'candidateTree': git('rev-parse', candidate + '^{tree}').decode().strip(), 'priorPublication': prior,
            'passed': sum(x['passed'] for x in checks), 'total': len(checks), 'privateDefinitionCount': len(defs),
            'domainReviewManifestMembers': manifest_members, 'sourceFiles': source_files,
