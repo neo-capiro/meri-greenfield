@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-business-development.test.mjs"
+  ],
+  "cwd": "/workspace/meri-business-development-20261012",
+  "sourceHead": "443814c519edacb88eeae215d6f0c41c57e51a96",
+  "sourceDiffSha256": "4c45fcc3b42ea692fdc3f1645b4491bced4511734adf955625827512cb58be36",
+  "sourceDiffBytes": 58245,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:27:59.920623+00:00",
+  "durationSeconds": 0.567,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 130692,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "bytes": 3425,
+      "sha256": "f4f854b9da7d2ede1a46d8cae2ef842a13f02384eb8c364ae12e6838f8dd6bfc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Reuse root-owned canonical snapshotOperationData and add standalone inert-output controls; previous successful source patch preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
