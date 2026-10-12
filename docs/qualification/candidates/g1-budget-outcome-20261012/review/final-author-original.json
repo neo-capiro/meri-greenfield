@@ -1,0 +1,29 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/workspace/meri-budget-outcome-20261012/apps/gateway/test/tool-budget-outcome.test.mjs",
+    "/workspace/meri-budget-outcome-20261012/apps/gateway/test/durable-tool-budget.test.mjs",
+    "/workspace/meri-budget-outcome-20261012/apps/gateway/test/postgres-tool-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-budget-outcome-review-20261012",
+  "startUnixSeconds": 1791786676.994892,
+  "elapsedSeconds": 1.8971126079559326,
+  "exitCode": 0,
+  "ownedPidAndGroup": 93007,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "reapedDescendants": [],
+  "streams": {
+    "stdout": {
+      "path": "final-author-original.stdout.txt",
+      "bytes": 5995,
+      "sha256": "f6504b6ac33907d52e52c2e0441c5af635f5d6a2a11f59d33cf8aef718382071"
+    },
+    "stderr": {
+      "path": "final-author-original.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
