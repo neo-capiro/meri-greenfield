@@ -36,5 +36,5 @@ for label,total in [('initial-independent',(26,24,2)),('corrected-independent',(
  for stream in r['streams']:
   b=(ROOT/stream['path']).read_bytes();check(label+':stream:'+Path(stream['path']).suffix,hashlib.sha256(b).hexdigest(),stream['sha256'])
 result=dict(status='PASS' if all(x['passed'] for x in checks) else 'FAIL',sourceCommit=SOURCE,sourceTree=git('rev-parse',SOURCE+'^{tree}').decode().strip(),base=BASE,originalPaths=len(base),unchangedOriginalPaths=len(base)-len(changed),sourceFiles=files,checks=checks,passed=sum(x['passed'] for x in checks),failed=sum(not x['passed'] for x in checks),runtimeAccepted=False)
-(E/'source-audit.json').write_text(json.dumps(result,indent=2)+'\n')
+(E/'source-preservation.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result));raise SystemExit(bool(result['failed']))
