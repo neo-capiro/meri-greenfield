@@ -1,0 +1,42 @@
+✔ actual dispatcher uses persistent SQL slot and settles fixed charge once (18.408815ms)
+✔ lost reserve commit acknowledgement blocks handler and retains UNKNOWN on fresh owner replay (3.992207ms)
+✔ lost settlement acknowledgement and cleanup preserve terminal charge (3.88122ms)
+✔ trusted tenantId substitution denies before handler (0.831339ms)
+✔ trusted actorId substitution denies before handler (0.776366ms)
+✔ trusted conversationId substitution denies before handler (0.898249ms)
+✔ trusted runId substitution denies before handler (1.074093ms)
+✔ trusted attemptId substitution denies before handler (1.228926ms)
+✔ trusted workerId substitution denies before handler (1.073673ms)
+✔ trusted writerFence substitution denies before handler (0.870989ms)
+✔ wrong capability and policy mapping refuse before handler (1.447685ms)
+✔ expired durable admission denies effect (1.939854ms)
+✔ revoked durable admission denies effect (1.509648ms)
+✔ stale durable admission denies effect (1.499412ms)
+✔ schedule durable admission denies effect (1.46494ms)
+✔ missing-binding durable admission denies effect (1.320965ms)
+✔ shared global model UNKNOWN liability refuses over-cap and allows exact bound (3.226096ms)
+✔ shared run model settled and UNKNOWN liability enforce installed run cap (4.536505ms)
+✔ narrow capability cost and private tool count cannot be widened (6.264791ms)
+✔ missing schedule refuses; trusted JSON rejects object/getter without executing it (0.496826ms)
+✔ historical exact settlement survives revocation and cleanup does not grant authority (1.627155ms)
+✔ default source-disabled composition creates no database work or handler call (0.644428ms)
+✔ actual manifest body/hash/budgets/allowed-operation consistency is mandatory (0.665239ms)
+✔ private runtime deadline stops parked handler and preserves liability (53.731679ms)
+✔ private runtime deadline stops parked settlement and preserves liability (52.320514ms)
+✔ unknown replay with fresh reservation and changed arguments never repeats handler (3.293318ms)
+✔ canonical entry composes concrete budget and remains inert/unavailable without pool work (7.794149ms)
+✔ replacement attempt retains original UNKNOWN and cannot reuse trusted invocation slot (3.538586ms)
+✔ narrow private output limit retains UNKNOWN and returns no oversized result (2.472584ms)
+✔ uncertain BEGIN evicts connection and never retries (1.106773ms)
+✔ uncertain ROLLBACK evicts connection and never retries (0.209765ms)
+✔ uncertain COMMIT evicts connection and never retries (0.169365ms)
+✔ release error preserves original commit uncertainty (0.938039ms)
+✔ database time is sampled only after budget lock acknowledgement (6.764112ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1045.965367

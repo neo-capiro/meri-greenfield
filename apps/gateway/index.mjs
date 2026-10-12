@@ -15,3 +15,20 @@ export function createSourceDisabledGateway(options) {
   return Object.freeze({ ...dispatcher, sourceEnabled: false,
     status: 'SOURCE_ONLY_NO_PRODUCTION_ADAPTERS', catalogVersion: view.catalogVersion });
 }
+
+import { createDurableToolDispatch } from './budget/durable-tool-dispatch.mjs';
+import { allocation as parseBudgetAllocation } from './budget/tool-budget-binding.mjs';
+import { canonicalSha256 } from '../../packages/contracts/validate.mjs';
+
+/** Concrete durable-budget entry; canonical source connectivity remains disabled. */
+export function createDurableSourceDisabledGateway(options) {
+  if (!options || Object.keys(options).some(key => !['authorityPorts', 'pool', 'allocationJson', 'limits', 'now', 'newId'].includes(key))) deny('GATEWAY_CONFIGURATION');
+  const { authorityPorts, pool, allocationJson, limits, now, newId } = options;
+  if (parseBudgetAllocation(allocationJson).catalogSha256 !== canonicalSha256(catalog)) deny('GATEWAY_CONFIGURATION');
+  const authority = createCurrentToolAuthority({ ports: authorityPorts, now, maxFactBytes: limits?.maxResponseBytes });
+  const view = createRuntimeCatalog({ catalogJson: JSON.stringify(catalog), contracts });
+  const dispatcher = createDurableToolDispatch({ pool, allocationJson, catalog: view, authority,
+    limits, now, newId, sourceEnabled: false });
+  return Object.freeze({ ...dispatcher, sourceEnabled: false,
+    status: 'SOURCE_ONLY_DURABLE_BUDGET_NO_PRODUCTION_ADAPTERS', catalogVersion: view.catalogVersion });
+}

@@ -1,0 +1,18 @@
+✔ success uses one transaction and releases one healthy connection (1.416278ms)
+✔ connect failure starts no transaction and creates no retry (1.19844ms)
+✔ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.234673ms)
+✔ acknowledged rollback preserves domain refusal and can release healthy (0.269745ms)
+✔ failed rollback evicts rather than returning dirty transaction to pool (0.235985ms)
+✔ lost COMMIT acknowledgement remains uncertain and never retries (0.264507ms)
+✔ release failure cannot overwrite lost COMMIT classification (0.216616ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (0.224187ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (8.149514ms)
+✔ missing budget and invalid database clock fail closed (0.432359ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.302223

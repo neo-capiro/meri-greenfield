@@ -1,0 +1,29 @@
+# G1 durable tool budget source prerequisite
+
+Author: memory_author. Pinned base: PR14 `1e6d430cf9c239caca4198aea42a762f13021cd5`, tree `4584edc9cba1ee6e9f81464d47b477039994bbfb`. Dedicated branch: `task/meri-g1-durable-budget-20261012`; worktree: `/workspace/meri-g1-durable-budget-20261012`. Discovery began 2026-10-12 04:13:52 UTC, bounded to fifteen minutes before scope review; any approved implementation receives a separate twenty-five-minute bound. Independent reviewer: memory_reviewer.
+
+Read AGENTS.md, implementation standards, adopted deployment R2, skill contract foundation, gateway dispatcher/lifetime/authority and actual callers, qualification proxy store/grants/admission/model ledger/migration0001, and prior durable-state allocation/acceptance. No repository `.agents/skills` directory is present in this worktree or `/workspace/.agents`; no relevant skill file was available to apply.
+
+Initial exclusive paths are this task, `docs/coordination/reports/MERI-G1-DURABLE-BUDGET-20261012.md`, and `docs/qualification/candidates/g1-durable-budget-20261012/author/**`. Production/shared-contract/registry/lock/migration changes require root's path allocation before authoring. Gateway author separately owns the runtime lifecycle/revocation slice. Original source, controls, evidence and branches remain preserved.
+
+## Outline before implementation
+
+1. Trace the real gateway reserve/settle/uncertain calls and identify the actual durable owner, exact binding formats, ambiguity behavior and existing accounting scope.
+2. Propose a small gateway adapter, distinct tool-state domain owner, shared liability query and centrally allocated migration. Reuse the existing transaction/budget lock and grants; keep native model evidence and tool evidence distinct.
+3. Obtain root allocation and explicitly resolve trusted invocation identity, full binding mapping, private pinned manifest limits, tool liability policy and trusted inter-application transport. Do not invent prices, equate SDK turns with tool calls, or label an injected port as implemented durable composition.
+4. When allocated, implement source with import-safe boundaries and source connectivity disabled. Exercise actual dispatcher calls through the concrete adapter/domain owner. Retain lost-acknowledgement, replay, wrong identity, stale/expired/revoked grants, parked ports and mixed-liability controls. Preserve raw failures and rerun reasons.
+5. Freeze exact commit and source/evidence hashes for independent review. Real database concurrency, restart/WAL durability, live native execution, credentials, paid usage and deployment remain separate unrun gates.
+
+## Allowed and prohibited actions
+
+Allowed: local source reads, allocated source edits, bounded local tests, retained scrubbed evidence, commit in this branch. No database provisioning, connections, migrations or customer data; no image/native SDK/browser/cloud/provider/model calls; no resource, network/security or credential changes; no paid use; no frontend/Hermes/legacy implementation import. Existing Aurora remains the eventual selected state. Public0.1 and private0.2 remain separate. Claude Agent SDK owns the model loop, Temporal durable orchestration, AI SDK/Elements UI transport, and governed proxies trusted context.
+
+## Root allocation and implementation outline, 04:22 UTC
+
+Root approved NEW `apps/gateway/budget/{postgres-tool-budget.mjs,tool-budget-binding.mjs,postgres-budget-store.mjs,durable-tool-dispatch.mjs,README.md}`, NEW `apps/gateway/test/{durable-tool-budget.test.mjs,postgres-tool-budget.test.mjs}`, NEW qualification migration `apps/proxy/qualification/state/migrations/0002_tool_budget.sql`, narrow existing `state/{ledger.py,postgres_store.py}` and NEW `apps/proxy/qualification/test/test_tool_budget_source.py`. No package/lock/contract/old migration edits. Implementation bound: twenty-five minutes, checkpoint after ten.
+
+The chosen path supersedes the preliminary disconnected Python-tool-ledger proposal: a concrete gateway-owned PostgreSQL adapter consumes an injected pg8.23.1-compatible pool and wraps the actual existing dispatcher. Separate binding validation, transaction ownership, tool budget domain and composition modules preserve cohesion. Trusted per-invocation JSON is snapshotted synchronously before awaits and is separate from model request JSON. An explicit trusted grant-binding installation method stores full public/qualification correlation and immutable run allocation; it never creates or activates grants. Every transition retains that identity. Existing grant/current-fence rows and the existing aggregate budget lock remain authoritative.
+
+Qualification migration0002 supplies tool allocations/grant correlations/reservations and a combined liability view; loader is explicit and separate from migration0001. Both model and tool admission enforce the shared global ceiling plus an installed run ceiling. Missing migrated view fails closed. Root approved a positive fixed-per-dispatch conservative accounting charge supplied by a trusted immutable schedule; missing charges refuse. Tool settlement records `charged_micro_usd`, not actual provider cost, and never treats the schedule as spend authorization. UNKNOWN is retained through abort/replay/revocation and commit ambiguity; terminal cleanup cannot revert settlement. Actual database execution remains prohibited/unrun.
+
+Root later allocated additive `apps/gateway/index.mjs` canonical source-disabled durable factory, preserving the complete existing file prefix, and two setup-only changes in `test_postgres_state.py`: explicit migration0002 call and new tables in the synthetic reset. Canonical entry verifies the actual catalog digest. Final source also binds actual manifest body/hash/budgets/operation membership and synchronously publishes known budget/grant/schedule expiry ceilings into the unchanged dispatcher lifetime. No production connectivity is enabled.

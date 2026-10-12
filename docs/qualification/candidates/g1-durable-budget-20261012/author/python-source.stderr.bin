@@ -1,0 +1,12 @@
+test_loader_is_explicit_and_migration_preserves_domain_identity (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_loader_is_explicit_and_migration_preserves_domain_identity) ... ok
+test_missing_migration_fails_before_send_receipt (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_missing_migration_fails_before_send_receipt) ... ok
+test_model_reserve_counts_shared_global_hold (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_model_reserve_counts_shared_global_hold) ... ok
+test_model_reserve_counts_shared_run_settled_and_unknown (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_model_reserve_counts_shared_run_settled_and_unknown) ... ok
+test_model_reserve_exact_global_and_run_bound (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_model_reserve_exact_global_and_run_bound) ... ok
+test_model_snapshot_keeps_original_shape_with_combined_counts (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_model_snapshot_keeps_original_shape_with_combined_counts) ... ok
+test_settlement_excludes_only_model_slot_and_quarantines_shared_run_overage (apps.proxy.qualification.test.test_tool_budget_source.ToolBudgetSourceTests.test_settlement_excludes_only_model_slot_and_quarantines_shared_run_overage) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+OK

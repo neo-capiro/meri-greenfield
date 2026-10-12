@@ -66,7 +66,7 @@ class PostgresTests(unittest.TestCase):
             or engine['user']!='qualification_owner' or type(engine['port']) is not int):
             raise RuntimeError('unexpected test database')
         cls.params={k:engine[k] for k in ('host','port','user')};cls.params['dbname']=engine['database']
-        cls.store=PostgresStore(cls.params);cls.store.migrate_new_database()
+        cls.store=PostgresStore(cls.params);cls.store.migrate_new_database();cls.store.migrate_tool_budget()
         with cls.store.connect() as connection:
             row=connection.execute('SHOW fsync').fetchone()
             if row['fsync']!='on':raise RuntimeError('fsync disabled')
@@ -76,7 +76,7 @@ class PostgresTests(unittest.TestCase):
         # Explicit synthetic fixture reset between independent cases, never a
         # runtime API or demonstration that production budget may be reset.
         with self.store.connect() as c:
-            c.execute('TRUNCATE meri_qualification.requests,meri_qualification.grants,meri_qualification.runs')
+            c.execute('TRUNCATE meri_qualification.tool_reservations,meri_qualification.tool_grant_bindings,meri_qualification.tool_run_allocations,meri_qualification.requests,meri_qualification.grants,meri_qualification.runs')
             c.execute('UPDATE meri_qualification.budget SET consumed_micro_usd=0,quarantined=false WHERE id=1')
         self.grants=Grants(self.store)
 
