@@ -1,0 +1,516 @@
+{
+  "before": "39b6da63289241b368a5003d47e98352c7cbc817",
+  "after": "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a",
+  "passed": 127,
+  "total": 127,
+  "checks": [
+    {
+      "name": "W00 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W00 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W01 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W01 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W02 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W02 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W03 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W03 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W04 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W04 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W05 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W05 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W06 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W06 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W07 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W07 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W08 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W08 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W09 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W09 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W10 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W10 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "W11 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "W11 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-01 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-01 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-02 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-02 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-03 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-03 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-04 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-04 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-05 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-05 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-06 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-06 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-07 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-07 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-08 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-08 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-09 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-09 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-10 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-10 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-11 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-11 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "R-12 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "R-12 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-01 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-01 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-02 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-02 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-03 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-03 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-04 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-04 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-05 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-05 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-06 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-06 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-07 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-07 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-08 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-08 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "REL-09 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "REL-09 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G0 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G0 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G1 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G1 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G2 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G2 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G3 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G3 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G4 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G4 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G5 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G5 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G6 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G6 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "G7 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "G7 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-01 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-01 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-02 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-02 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-03 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-03 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-04 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-04 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-05 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-05 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-06 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-06 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-07 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-07 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-08 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-08 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-09 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-09 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-10 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-10 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-11 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-11 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "RG-12 unaffected semantics preserved",
+      "pass": true
+    },
+    {
+      "name": "RG-12 amended scope label remains bounded",
+      "pass": true
+    },
+    {
+      "name": "all three original affected rows exactly preserved",
+      "pass": true
+    },
+    {
+      "name": "preserved original identity build.py",
+      "pass": true
+    },
+    {
+      "name": "preserved original identity verify.py",
+      "pass": true
+    },
+    {
+      "name": "preserved original identity requirements.json",
+      "pass": true
+    },
+    {
+      "name": "preserved original identity receipts.json",
+      "pass": true
+    },
+    {
+      "name": "old raw author receipt verification.json",
+      "pass": true
+    },
+    {
+      "name": "old raw author receipt verify.stdout",
+      "pass": true
+    },
+    {
+      "name": "old raw author receipt verify.stderr",
+      "pass": true
+    },
+    {
+      "name": "all original20 receipt records unchanged",
+      "pass": true
+    },
+    {
+      "name": "only prior discovery completed;51 remaining pending",
+      "pass": true
+    },
+    {
+      "name": "whitespace-all stdout integrity",
+      "pass": true
+    },
+    {
+      "name": "whitespace-all stderr integrity",
+      "pass": true
+    },
+    {
+      "name": "whitespace-all original exit preserved",
+      "pass": true
+    },
+    {
+      "name": "whitespace-authored stdout integrity",
+      "pass": true
+    },
+    {
+      "name": "whitespace-authored stderr integrity",
+      "pass": true
+    },
+    {
+      "name": "whitespace-authored original exit preserved",
+      "pass": true
+    },
+    {
+      "name": "exact five extra-LF warning preimages",
+      "pass": true
+    },
+    {
+      "name": "unrelated boundaries/source report unchanged boundaries.json",
+      "pass": true
+    },
+    {
+      "name": "unrelated boundaries/source report unchanged frontend/STATUS.json",
+      "pass": true
+    },
+    {
+      "name": "unrelated boundaries/source report unchanged frontend/SOURCE.json",
+      "pass": true
+    },
+    {
+      "name": "unrelated boundaries/source report unchanged frontend/publication-review.md",
+      "pass": true
+    }
+  ]
+}

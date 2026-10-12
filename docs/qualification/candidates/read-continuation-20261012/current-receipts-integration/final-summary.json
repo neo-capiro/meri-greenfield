@@ -1,0 +1,28 @@
+{
+  "verdict": "ACCEPT_METADATA",
+  "author": "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a",
+  "independentReview": "9e4e50a8b35e2371897eddba134a6d66b05b7b8e",
+  "requirements": 53,
+  "completedDiscoveryRequirements": [
+    "W00",
+    "G0"
+  ],
+  "wholeRequirementsPending": 51,
+  "wholeRuntimeQualified": 0,
+  "authorChecks": 765,
+  "independentChecks": 345,
+  "independentNegativeControlsIncluded": 10,
+  "repairChecks": 127,
+  "rootPreservationChecks": 7519,
+  "baselineEntriesPreserved": 7269,
+  "acceptedPacketMembers": 59,
+  "gateStates": {
+    "G0": "accepted discovery",
+    "G1": "OPEN",
+    "G2-G7": "unentered"
+  },
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "ownedProcessGroup": 303041,
+  "ownedProcessGroupAbsent": true
+}

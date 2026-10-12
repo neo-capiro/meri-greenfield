@@ -1,0 +1,52 @@
+{
+  "qualifiedSource": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+  "rootTree": "bce79ae8c0f526e113468b885fc2c7a5515ac7b9",
+  "applicationTree": "17385e9404d12baa01e695c72584a375f4842813",
+  "applicationSourceTree": "7b269ad4ecdd3071acb0a0fec9775a2190458388",
+  "qualificationState": "PASSED_COMBINED_LOCAL_GATES",
+  "frozenShippingSource": "d5dd0be9bf5ad7800e648ff1421ce047523288b3",
+  "baselineEvidenceCommit": "fd1176790a6fb31b7ae68587f965a22d4145d8a2",
+  "plannedDraftBranch": "integration/capiro-followup-20261012",
+  "plannedDraftBase": "integration/capiro-p1-successor-20261012",
+  "upstreamHeads": {
+    "refs/heads/codex/portfolio-continuation-20261011": "c330cebbd021eb984b4bf64ae13dbb991ae6b1c0",
+    "refs/heads/integration/capiro-p1-successor-20261012": "fd1176790a6fb31b7ae68587f965a22d4145d8a2",
+    "refs/heads/main": "02c02d95bdf3949662b9123f425271c6491ffdab",
+    "refs/heads/task/meri-ui-publish-20261011": "3cc30ff3182e8050d563516607866cf07efe2aef",
+    "refs/heads/task/modules-settings-20261011": "50155cbbf0e4df1eecba22cbfc9b2c35bff87e0a"
+  },
+  "nativeBackendReadOnlySource": "243248e726243c44bd4b9d24fd1ed220da18c56a",
+  "sourceOwnership": "One Next apps/web with Portfolio /, Meri /meri, Modules /modules, Settings /settings; existing compatibility/deep links preserved.",
+  "integrationChanges": [
+    "Test-only Portfolio harness composes the two existing governed transports",
+    "Canonical Portfolio Clerk test mock reuses existing Modules session exports and preserves avatar",
+    "Exact reviewed size records refreshed; no scanner/guard baseline weakening"
+  ],
+  "nativeOrCloudActions": [],
+  "original337Rows": "UNCHANGED_NO_BLANKET_ACCEPTANCE",
+  "sourceArchive": {
+    "commit": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+    "rootTree": "bce79ae8c0f526e113468b885fc2c7a5515ac7b9",
+    "appSourceTree": "7b269ad4ecdd3071acb0a0fec9775a2190458388",
+    "archiveSHA256": "6d9297afed3c0447783472c4d3e19a9b20ee50b8c8729321d27b369eeac5b61e",
+    "archiveBytes": 770461228,
+    "trackedBlobs": 8211,
+    "cloudActions": [],
+    "path": "/tmp/capiro-source-ee01be3/source-ee01be3.zip",
+    "independentVerification": {
+      "archiveBytes": 770461228,
+      "archiveSHA256": "6d9297afed3c0447783472c4d3e19a9b20ee50b8c8729321d27b369eeac5b61e",
+      "cloudActions": [],
+      "commit": "ee01be3b2c5c64a53744994ae4ad0d992a111054",
+      "independentManifestSHA256": "455031311d78e32e37a0dd4b284088d03ec89884da2f9e41559d3b33058f1e5c",
+      "marker": "source-commit.txt",
+      "metadataPolicy": "ZIP timestamps/comments/compression may vary; source paths, Git modes and all payload bytes must match",
+      "trackedBlobs": 8211,
+      "trackedPayloadBytes": 1145563434,
+      "tree": "bce79ae8c0f526e113468b885fc2c7a5515ac7b9",
+      "verified": true,
+      "zipMembers": 8212
+    }
+  },
+  "qualifiedAtUTC": "2026-10-12T19:08:22.797609+00:00"
+}

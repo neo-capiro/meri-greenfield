@@ -1,0 +1,194 @@
+{
+  "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "catalogPath": "packages/contracts/retrieval-0.2/catalog.json",
+  "bytes": 242133,
+  "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218",
+  "counts": {
+    "originals": 139,
+    "dispositions": {
+      "deferred": 43,
+      "selected": 96
+    },
+    "states": {
+      "deferred": 43,
+      "mapped": 66,
+      "pending": 30
+    },
+    "typed": 67,
+    "allUnavailable": true
+  },
+  "fourNativeRows": [
+    {
+      "id": "find_path_to",
+      "disposition": "deferred",
+      "boundary": "Relationship-path recommendation behavior and policy fixture are not sufficiently defined; graph record reads remain proposed.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "confirm_memory",
+      "disposition": "deferred",
+      "boundary": "Direct canonical memory confirmation is beyond initial sourced proposals; review/lifecycle policy must be separately qualified.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "correct_memory",
+      "disposition": "deferred",
+      "boundary": "Direct canonical memory correction is deferred; v1 can propose a sourced correction without editing active memory.",
+      "replacement": null,
+      "state": "deferred"
+    },
+    {
+      "id": "forget_memory",
+      "disposition": "deferred",
+      "boundary": "Canonical revocation/deletion and legal-hold workflow is deferred; application retention/deletion remains mandatory.",
+      "replacement": null,
+      "state": "deferred"
+    }
+  ],
+  "fourWorkbookRows": [
+    {
+      "id": "Current native tools:find_path_to",
+      "locator": {
+        "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+        "sheet": "Current native tools",
+        "row": 37,
+        "cells": [
+          "A37",
+          "B37",
+          "C37",
+          "D37",
+          "E37",
+          "F37",
+          "G37",
+          "H37",
+          "I37",
+          "J37",
+          "K37"
+        ]
+      },
+      "originalFields": {
+        "ID": "find_path_to",
+        "Category": "Relationship graph",
+        "Current capability": "Find the warm-introduction routes from your clients to a target office or person in the knowledge graph (\"who do we already know near the Senate Defense Approps subcommittee?\"). Pass a target node id (e.g. 'office:<id>' or 'person:<id>'); returns the shortest connection paths so you can see which client/person gets you there. Tenant + own-private scoped.",
+        "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
+        "New Meri coverage": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "Coverage status": "Covered family; exact contract qualification pending",
+        "Action to retain parity": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "Registry access flag": "Read",
+        "Current surfaces": "full_chat, in_editor",
+        "Backend": "meri",
+        "Pinned source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts#L4206\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-tools.service.ts#L2645"
+      }
+    },
+    {
+      "id": "Current native tools:confirm_memory",
+      "locator": {
+        "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+        "sheet": "Current native tools",
+        "row": 94,
+        "cells": [
+          "A94",
+          "B94",
+          "C94",
+          "D94",
+          "E94",
+          "F94",
+          "G94",
+          "H94",
+          "I94",
+          "J94",
+          "K94"
+        ]
+      },
+      "originalFields": {
+        "ID": "confirm_memory",
+        "Category": "Memory lifecycle",
+        "Current capability": "Re-affirm that a remembered fact is still true and current, resetting its confirmation date. Use when the user verifies something Meri remembers (\"yes, that's still right\"). Pass the memoryItemId from search_memory. Does not change the content.",
+        "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
+        "New Meri coverage": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "Coverage status": "Covered family; exact contract qualification pending",
+        "Action to retain parity": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "Registry access flag": "Write flag",
+        "Current surfaces": "full_chat",
+        "Backend": "meri",
+        "Pinned source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts#L4661\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-tools.service.ts#L2745"
+      }
+    },
+    {
+      "id": "Current native tools:correct_memory",
+      "locator": {
+        "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+        "sheet": "Current native tools",
+        "row": 95,
+        "cells": [
+          "A95",
+          "B95",
+          "C95",
+          "D95",
+          "E95",
+          "F95",
+          "G95",
+          "H95",
+          "I95",
+          "J95",
+          "K95"
+        ]
+      },
+      "originalFields": {
+        "ID": "correct_memory",
+        "Category": "Memory lifecycle",
+        "Current capability": "Correct a remembered fact: supersede it with new content while preserving the prior version as history. The old memory is retired from recall and the new one takes its place. Use when the user says a remembered fact is wrong or outdated (\"actually it's X now\"). Pass the memoryItemId from search_memory plus the corrected content.",
+        "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
+        "New Meri coverage": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "Coverage status": "Covered family; exact contract qualification pending",
+        "Action to retain parity": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "Registry access flag": "Write flag",
+        "Current surfaces": "full_chat",
+        "Backend": "meri",
+        "Pinned source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts#L4669\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-tools.service.ts#L2747"
+      }
+    },
+    {
+      "id": "Current native tools:forget_memory",
+      "locator": {
+        "path": "docs/plans/revisions/20261010-R2/Meri_Capability_Inventory-20261010-R2.xlsx",
+        "sheet": "Current native tools",
+        "row": 96,
+        "cells": [
+          "A96",
+          "B96",
+          "C96",
+          "D96",
+          "E96",
+          "F96",
+          "G96",
+          "H96",
+          "I96",
+          "J96",
+          "K96"
+        ]
+      },
+      "originalFields": {
+        "ID": "forget_memory",
+        "Category": "Memory lifecycle",
+        "Current capability": "Forget a remembered fact: stop recalling it immediately and remove it from Meri's memory (a recoverable soft-delete with an audit trail). Use when the user asks Meri to forget something. Pass the memoryItemId from search_memory. Refuses if the item is under a legal hold.",
+        "Current code evidence": "Registered native capability; schema/backend handler present in pinned main. Tenant flags, deployment and operational quality are not proven by this read-only audit.",
+        "New Meri coverage": "Selected in the standalone SDK/data/memory/artifact/task/schedule family. Existing code is behavior reference only; new contracts and fixtures still required.",
+        "Coverage status": "Covered family; exact contract qualification pending",
+        "Action to retain parity": "Map exact behavior to a new authorized tool/workflow and acceptance fixture; preserve paging, source scopes, revocation and accurate receipts. For memory confirm/correct/forget explicitly name supported lifecycle verbs/holds; for schedules name run-now/resume/timezone semantics.",
+        "Registry access flag": "Write flag",
+        "Current surfaces": "full_chat",
+        "Backend": "meri",
+        "Pinned source references": "https://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/packages/shared/src/index.ts#L4677\nhttps://github.com/neo-capiro/capirov2/blob/fd8765ec01d292013758606204f2c9d886cd31c1/apps/api/src/meri/meri-tools.service.ts#L2749"
+      }
+    }
+  ],
+  "pendingSuccessorReportedOnly": {
+    "typed": 71,
+    "mapped": 70,
+    "pending": 26,
+    "acceptedByThisReview": false
+  }
+}

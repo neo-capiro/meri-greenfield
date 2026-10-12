@@ -1,0 +1,124 @@
+{
+  "base": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "records": [
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+      "gitBlob": "642845e74f716d5bf8377e84250b52dcccc4686a",
+      "bytes": 63609,
+      "sha256": "3b2f81a369f7b090538f1bace1f2969ebeac4cb8ab41334d45b1f62d72a1df1a"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/DECISIONS.md",
+      "gitBlob": "fd58ed15daa8d3a093893e49e901f28570c91f51",
+      "bytes": 24662,
+      "sha256": "8d5238335bbc9e68b58cbe083bd275dc24938eb7d13dc8d047342b8f37a819ae"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "gitBlob": "84c2c04dd09ab2da3db8a9d325e48fa344eb2115",
+      "bytes": 5910,
+      "sha256": "0c79b223d82ae6c374636eeb89c90a9ea4bcb5271d2358eb6a8eff93ac347232"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "gitBlob": "c0436b3578b634f0441b7557a64571f21dba2761",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md",
+      "gitBlob": "9032b07453f783cdc405862b02349dad7fd1e3f3",
+      "bytes": 6726,
+      "sha256": "daa8c7fece2343c9338cc2b1cdee53b70fd3c689c697f14eb9000adcafb9a695"
+    },
+    {
+      "ref": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "gitBlob": "420c7dcb5ff8422cc67cf0336fec50f8d25313dc",
+      "bytes": 242133,
+      "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+    },
+    {
+      "ref": "a838c3819ca01798d9175a1d07bef1eb81355808",
+      "path": "docs/coordination/reports/CODEX-COMMAND-CONTRACTS-INTEGRATION-20261012.md",
+      "gitBlob": "272a41589524b33f931352b24047f016b0d95655",
+      "bytes": 7016,
+      "sha256": "fded336448fece04bbbea753848dc95b8dd040ede2ec420815c1934f4e7cae3f"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-REL02-CANONICAL-COMPOSITION-ACCEPTANCE-20261011.md",
+      "gitBlob": "c7178bbfa9ac6efade9b40a710669abea872bd2c",
+      "bytes": 6423,
+      "sha256": "9a4b8cb85aedbdaa235588cdbb39dc5e075871b616327d69e906aa546c3dc117"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/SKILL-CONTRACT.md",
+      "gitBlob": "785c2fb5ae9472345bd9c54adf86a7ee829542ed",
+      "bytes": 5772,
+      "sha256": "fbba378db2dc95e26996c26620c599ffaf69386ff495ee83fefa56d06ae2f3f7"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/MERI-G1-NATIVE-PATH-20261012.md",
+      "gitBlob": "4a5597ece389b46a50a69f357c9198fc200f6cc0",
+      "bytes": 11833,
+      "sha256": "e35867ce3fd1ed758daae8c87cea4bbd987fff95d5963ff4877fa85b010b277d"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/ROUTING-EVALUATION.md",
+      "gitBlob": "fab563ae2e8f3185d4506dbcb023a07e9900bccf",
+      "bytes": 4222,
+      "sha256": "b908086bb036a0bbe04572975ed9d04e180770a2c333c68bfe7fef360a200add"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "gitBlob": "141fd339cf03df73d6333f77461d671a66be7c6a",
+      "bytes": 11712,
+      "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/MERI-G1-EXECUTION-OPTIONS-20261012.md",
+      "gitBlob": "b012bf5f2ba967ed461010917451befa80dd8ca2",
+      "bytes": 14285,
+      "sha256": "7744a806437ac0ae3dfdb5417203327acd1530a943026c0cba3f5a123cece819"
+    },
+    {
+      "ref": "3b06986d2f2dd2b89d17acff97c1fc1091aab85b",
+      "path": "docs/coordination/reports/CODEX-PROGRAM-ELEMENTS-REVIEW-20261012.md",
+      "gitBlob": "e7d4e8595acafb346db324bbe5d3246449a1d9a3",
+      "bytes": 6954,
+      "sha256": "a0a9eb70ec95c2a0bae5fb4b26882d600f0ba9de15a5f6c78d52ef79ce10cacb"
+    },
+    {
+      "ref": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "gitBlob": "1f261f8e3fef9f4c90b68f826eb1e7bab5b1fc2f",
+      "bytes": 253882,
+      "sha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a"
+    },
+    {
+      "ref": "d0b181e312b797e0fe181c16be814da23e126767",
+      "path": "docs/coordination/reports/CODEX-BACKEND-NEXT-REVIEW-20261012.md",
+      "gitBlob": "00b33cee2b3557ea223f161e500d973ecc2a23c7",
+      "bytes": 5173,
+      "sha256": "3fb43c41e39a81d767dd294e4b761a29e13e6a8c235988d4bd40accc031e5ca1"
+    },
+    {
+      "ref": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+      "path": "docs/qualification/candidates/read-continuation-20261012/backend-next-integration/publication-receipt.json",
+      "gitBlob": "24a0cd7ef1c1a74a2c08c247ce3ef07e939a1288",
+      "bytes": 1069,
+      "sha256": "aaefc3696a6aec9a446b013fb286fa0fb41ecd26fe0e055f72b09df16fa71b5a"
+    }
+  ]
+}

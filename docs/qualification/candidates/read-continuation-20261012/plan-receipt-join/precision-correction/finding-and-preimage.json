@@ -1,0 +1,113 @@
+{
+  "priorFreeze": "39b6da63289241b368a5003d47e98352c7cbc817",
+  "findingOrigin": "Parent spot review, independently confirmed by native_supervisor_author; four semantic findings retained in reviewer packet.",
+  "oldRows": [
+    {
+      "id": "W00",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 176
+      },
+      "originalRequirement": "| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |",
+      "originalRecordSha256": "2f2b6111ec0ac0504721d931d1bde4fd777178a456d8679c8c2e3d0ec43981e5",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "G0 discovery and PR34 authority/requirements metadata accepted.",
+      "sourceReceiptIds": [
+        "g0",
+        "plan-index",
+        "scope",
+        "frontend",
+        "native-reported"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [
+        "native-reported"
+      ],
+      "remaining": "Current owner receipts and any remaining source/design/discovery gaps still need exact joins.",
+      "owner": "integration + source/design owners",
+      "nextParallelSourceOrMetadataWork": "Bind latest external-owner receipts to existing inventory and unresolved source boundaries.",
+      "decisionOrExternalPrerequisite": "Obtain current receipts; four authority tensions remain visible without reclassifying.",
+      "optional": false,
+      "optionalDisposition": null
+    },
+    {
+      "id": "REL-07",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 314
+      },
+      "originalRequirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
+      "originalRecordSha256": "c103b5051dc7de7c13ad43c03ede486f4eaccba2fc0de3703341eec13fa95981",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional boundary preserved.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Paired Decisions shadow/adoption unrun.",
+      "owner": "optional evaluation",
+      "nextParallelSourceOrMetadataWork": "Prepare abstention/mixed-family/fallback design; leave disabled.",
+      "decisionOrExternalPrerequisite": "Qualified REL06 and separately authorized supported API.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    },
+    {
+      "id": "REL-08",
+      "originalLocator": {
+        "path": "docs/plans/MERI-DEPLOYMENT.md",
+        "line": 315
+      },
+      "originalRequirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
+      "originalRecordSha256": "3fed09dafcf0e8be030acc543ddaeab3e6b283994c6b26d6c7d2c81efe5dcf3b",
+      "status": "pending",
+      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "completedSourceComponents": "Optional boundary preserved.",
+      "sourceReceiptIds": [
+        "benchmark"
+      ],
+      "qualifiedRuntime": false,
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "Labelled JEV evidence shadow/calibration unrun.",
+      "owner": "optional evaluation",
+      "nextParallelSourceOrMetadataWork": "Prepare separate task-specific judge rubric; leave disabled.",
+      "decisionOrExternalPrerequisite": "Qualified REL06 and task/model availability/authority.",
+      "optional": true,
+      "optionalDisposition": "disabled/shadow pending baseline and own adoption; not mandatory or permanently excluded"
+    }
+  ],
+  "oldWholeRequirementCounts": {
+    "completed-source": 1,
+    "pending": 52
+  },
+  "oldMetadataCheckResult": "751/751 PASS was mechanical, not semantic acceptance; exact streams and verifier identity preserved.",
+  "correction": "W00 accepted discovery outputs are not reopened by later implementation/native/UI receipt gaps. REL-07/08 received evidence does not establish qualification; no absence of work by other owners inferred.",
+  "oldFiles": [
+    {
+      "ref": "39b6da63289241b368a5003d47e98352c7cbc817",
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/build.py",
+      "bytes": 35367,
+      "sha256": "78b77f14c52af0556d328bc98052944b4922670b4a4db38b8f0242a0e0599a91"
+    },
+    {
+      "ref": "39b6da63289241b368a5003d47e98352c7cbc817",
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/verify.py",
+      "bytes": 4527,
+      "sha256": "465bb4e494d10024fa0cbe7971714ad6b782d1512c89b152b25ae6b8ceb30d16"
+    },
+    {
+      "ref": "39b6da63289241b368a5003d47e98352c7cbc817",
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/requirements.json",
+      "bytes": 78910,
+      "sha256": "c94e19c0b7dc8fdbfe54bd3255e24603120f6e48b525c8d48dcfa142cbcbe5b3"
+    },
+    {
+      "ref": "39b6da63289241b368a5003d47e98352c7cbc817",
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-receipt-join/receipts.json",
+      "bytes": 17527,
+      "sha256": "78622e6d3c0e854cb1c337db8eb91e001c70fa8157df40b834db15f5b498174f"
+    }
+  ]
+}

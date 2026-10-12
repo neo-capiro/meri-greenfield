@@ -1,0 +1,57 @@
+{
+  "purpose": "Additive update after the frozen initial pending-successor observation; previous evidence is unchanged.",
+  "catalog": {
+    "commit": "fecf97a4a8b742c6c09b781d3b799816e8b548e4",
+    "path": "packages/contracts/retrieval-0.2/catalog.json",
+    "blob": "1f261f8e3fef9f4c90b68f826eb1e7bab5b1fc2f",
+    "bytes": 253882,
+    "sha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a"
+  },
+  "independentSourceReport": {
+    "commit": "d0b181e312b797e0fe181c16be814da23e126767",
+    "path": "docs/coordination/reports/CODEX-BACKEND-NEXT-REVIEW-20261012.md",
+    "blob": "00b33cee2b3557ea223f161e500d973ecc2a23c7",
+    "bytes": 5173,
+    "sha256": "3fb43c41e39a81d767dd294e4b761a29e13e6a8c235988d4bd40accc031e5ca1"
+  },
+  "reviewObservation": "Reviewer read exact committed source-acceptance report and parsed catalog; reported tests were not rerun.",
+  "counts": {
+    "originals": 139,
+    "dispositions": {
+      "deferred": 43,
+      "selected": 96
+    },
+    "states": {
+      "deferred": 43,
+      "mapped": 70,
+      "pending": 26
+    },
+    "typed": 71,
+    "allUnavailable": true
+  },
+  "sourceAccepted": true,
+  "runtimeAccepted": false,
+  "testFreeze": "46b0ec6ce52cd7acc8405a9b8d2d0e33e082f806",
+  "reportedChecks": {
+    "independent": [
+      29,
+      7429,
+      795,
+      52
+    ],
+    "rootExpanded": 3196,
+    "public": 7,
+    "generatedAndTypes": "PASS per committed source review"
+  },
+  "publication": {
+    "provenance": "parent-reported publication receipt; not remotely refreshed by reviewer",
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/35",
+    "head": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8"
+  },
+  "phaseState": {
+    "G0": "accepted",
+    "G1": "OPEN",
+    "G2-G7": "unentered"
+  },
+  "wholeRequirementClosureInferred": false
+}

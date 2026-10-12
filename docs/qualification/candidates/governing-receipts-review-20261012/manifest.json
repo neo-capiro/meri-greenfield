@@ -1,0 +1,116 @@
+{
+  "schema": "meri.governing-receipts-review.manifest/1",
+  "baseline": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "acceptedAuthor": "e652b5d5abd52b2d10fafbbe0e0f74c163fe786a",
+  "excluded": [
+    "manifest.json (self hash)",
+    "packet-verification.json (manifest verifier output)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-GOVERNING-RECEIPTS-REVIEW-20261012.md",
+      "bytes": 4600,
+      "sha256": "2aa6f4dcb3f9fc2506888c86162995d41da5c8cd6b0ca6edbe65d6531bf4c12d"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/audit.py",
+      "bytes": 16141,
+      "sha256": "33f56b3decd4fe9cf0b9b6a27e98dcabb356a4b3afb7ed8ac06262de93295c89"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/baseline-catalog.json",
+      "bytes": 10141,
+      "sha256": "751f740036c932ac434205a1c45d20d9b766a5be4a6e997a07748096d237fd9b"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/baseline-facts.json",
+      "bytes": 8179,
+      "sha256": "905dda4b7b99913e01b2ff2abdbf1c23160059125085a18ae5fc861a1b77d833"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/criteria.md",
+      "bytes": 4192,
+      "sha256": "3d137554d963c14ff67adef21c24e9f6085a28ce58cb5f7eadff2c6f956c97fc"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/current-source-update.json",
+      "bytes": 1809,
+      "sha256": "0b01fee26790ec13f84ee4f9b6e232f3f8ec193310e1b77ebdff5aa1dd92dc88"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/final-audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/final-audit.stdout.json",
+      "bytes": 30875,
+      "sha256": "78a000c7a9d0105ce0ed640392518dc63b63aa6e094e9b2e9f633962022bc9f9"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.py.txt",
+      "bytes": 15075,
+      "sha256": "843a0f4f4d25ac22a12b0597511863c4ca2a3b48624c93346e4f4c918864043d"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/initial-audit.stdout.json",
+      "bytes": 29538,
+      "sha256": "06704b28e714479bef036ffbe4d3aaa5cafa00648fafb930a13b4cb5a415033d"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/provenance-precision.md",
+      "bytes": 720,
+      "sha256": "dd81955104f41670a83600e5e0d8e2cc7098558f1aa6b5f140ef96bf81df24dc"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.py",
+      "bytes": 3335,
+      "sha256": "e7e5e71aece3b4491881977b1189ae456bc01ba10262bf80e7f264ebd300036d"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/repair-audit.stdout.json",
+      "bytes": 11423,
+      "sha256": "2395b5180d6e08dc43fd1f0e535a9177ea2cbd356b8b94d27225cdb1b3df2882"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/review-receipts.json",
+      "bytes": 5376,
+      "sha256": "e666ff665621758807e3d1d7d73969901f75d01d2eeef441c976834bea19dfd2"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-before.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-before.stdout.json",
+      "bytes": 30399,
+      "sha256": "d68f74548a7f58e58554e28a5917997c56cb376a5ebcd8d1b7d9c1fcbae689d9"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-findings.json",
+      "bytes": 7376,
+      "sha256": "ae57684fcf24e755d32ef61eb610a93529ba28f3e1071ea8a90e9cee56804911"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-frozen-before.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/governing-receipts-review-20261012/semantic-frozen-before.stdout.json",
+      "bytes": 30423,
+      "sha256": "40eedaca7324c2695b8275d6d06d1cde4c6dbdf2d01b3c0ab0c1d4bc1ec5f041"
+    }
+  ]
+}
