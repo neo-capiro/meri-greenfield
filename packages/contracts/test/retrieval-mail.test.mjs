@@ -128,12 +128,12 @@ test('transport refuses absence, evidence-ready, complete enumeration and cursor
 test('empty stored thread page never certifies absence',()=>{
   const p=page();p.messages=[];p.totalMessages=0;p.coverage.returnedCount=0;p.coverage.enumerableTotal=0;p.continuation.requiredReads=[];assertMailThreadSourcePage(p,input());assert.equal(p.negativeAssertion.kind,'none');assert.equal(p.evidenceReady,false);
 });
-test('concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings',()=>{
+test('concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation',()=>{
   const c=catalog();assertCatalog(c);
   const ledger=JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json',import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary})=>({id,disposition,boundary})),ledger.records.map(r=>({id:r.fields.ID,disposition:r.acceptedScope.disposition,boundary:r.acceptedScope.boundary})));
   assert.equal(c.originals.length,139);assert.equal(c.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(c.originals.filter(r=>r.disposition==='deferred').length,43);
-  assert.equal(c.operations.length,14);assert.equal(c.originals.filter(r=>r.state==='mapped').length,14);
+  assert.equal(c.operations.length,15);assert.equal(c.originals.filter(r=>r.state==='mapped').length,14);
   assert.deepEqual(c.originals.filter(r=>r.state==='mapped' && ['list_emails','search_emails','get_email_thread'].includes(r.id)).map(r=>r.id),['list_emails','search_emails','get_email_thread']);
   assert.equal(c.operations[0].availability,'unimplemented');assert.equal(c.operations[0].qualification,'pending');assert.equal(c.operations[0].handler,null);
 });

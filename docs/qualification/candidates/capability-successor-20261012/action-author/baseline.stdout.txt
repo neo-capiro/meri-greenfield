@@ -1,0 +1,175 @@
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (4.054644ms)
+✔ independent: first page uses fresh server-selected client and canonical normalized input (16.532787ms)
+✔ independent: canonical continuation consumes retained raw request/page and advances (8.173354ms)
+✔ independent: all invalid model shape/context inputs fail before trusted ports (3.139038ms)
+✔ independent: client selector cannot override server subject before effects (1.141426ms)
+✔ independent: decision IDs rotate while stable authority remains required (3.510736ms)
+✔ independent: stable subject drift at authority stage 2 never releases (1.833536ms)
+✔ independent: stable subject drift at authority stage 3 never releases (1.738592ms)
+✔ independent: stable subject drift at authority stage 4 never releases (2.78176ms)
+✔ independent: stable subject drift at authority stage 5 never releases (3.253109ms)
+✔ independent: absent retained context or context ports cannot invent continuation (11.894215ms)
+✔ independent: retained context rejects tenant (3.674663ms)
+✔ independent: retained context rejects actor (4.439502ms)
+✔ independent: retained context rejects conversation (9.680008ms)
+✔ independent: retained context rejects run (3.977929ms)
+✔ independent: retained context rejects attempt (3.026659ms)
+✔ independent: retained context rejects worker (2.555331ms)
+✔ independent: retained context rejects fence (3.34031ms)
+✔ independent: retained context rejects policy (3.663485ms)
+✔ independent: retained context rejects operation (3.257866ms)
+✔ independent: retained context rejects version (4.825072ms)
+✔ independent: retained context rejects subject (3.524126ms)
+✔ independent: retained context rejects cursor (3.334592ms)
+✔ independent: retained context rejects digest (4.061765ms)
+✔ independent: retained context rejects staleRead (3.138908ms)
+✔ independent: retained context rejects futureRead (4.525952ms)
+✔ independent: retained context rejects futureRecord (4.925203ms)
+✔ independent: retained context rejects expired (3.770406ms)
+✔ independent: retained context rejects beyondAuthority (4.208605ms)
+✔ independent: retained context rejects extra (3.59926ms)
+✔ independent: retained context rejects limit (3.437396ms)
+✔ independent: retained context rejects poisonedCursor (3.268492ms)
+✔ independent: retained context rejects invalidPage (3.24102ms)
+✔ independent: envelope and raw DTO reject operation (1.578423ms)
+✔ independent: envelope and raw DTO reject arguments (1.199022ms)
+✔ independent: envelope and raw DTO reject binding (1.398392ms)
+✔ independent: envelope and raw DTO reject subject (1.423289ms)
+✔ independent: envelope and raw DTO reject extra (1.160264ms)
+✔ independent: envelope and raw DTO reject missing (1.579093ms)
+✔ independent: envelope and raw DTO reject approved (1.611ms)
+✔ independent: envelope and raw DTO reject actor (1.714236ms)
+✔ independent: envelope and raw DTO reject restricted (1.855038ms)
+✔ independent: envelope and raw DTO reject coverage (1.537721ms)
+✔ independent: retain receipt rejects decision (2.325745ms)
+✔ independent: retain receipt rejects keySha256 (1.915059ms)
+✔ independent: retain receipt rejects previousSha256 (9.185384ms)
+✔ independent: retain receipt rejects checkedAtMs (2.371364ms)
+✔ independent: load rejects hostile non-JSON receipt without property effects (5.494688ms)
+✔ independent: retain rejects hostile non-JSON receipt without property effects (6.915623ms)
+✔ independent: retained ports receive immutable context detached from model objects (5.06362ms)
+✔ independent: release revocation prevents retain, final revocation prevents release (4.642496ms)
+✔ independent: fresh shortened authority bounds parked load and late completion (103.254078ms)
+✔ independent: fresh shortened authority bounds parked retain and late completion (100.504455ms)
+✔ independent: fresh shortened authority bounds parked settle and late completion (101.021267ms)
+✔ preserves the ten typed additions plus memory read within all139/96/43 boundaries (9.849813ms)
+✔ every binding resolves the correct existing definition and exact raw schema hash (4.282497ms)
+✔ allknown input/output hash, foreign definition and version substitutions refuse (269.189333ms)
+✔ missing, foreign and incorrectly remapped registered operations refuse (6.038646ms)
+✔ aliases, cycles and forbidden unrestricted query identifiers retain refusal guards (13.05514ms)
+✔ everycurrent descriptor stays pending/null; fabricated executable metadata cannot expose it (29.923532ms)
+✔ resolver refuses unknown versions and unsafe references without invoking getters (0.407052ms)
+✔ family default materialization and argument digest happen before dispatch (3.189364ms)
+✔ data-search normalized domains, cursors and conditional memory retain canonical behavior (1.739464ms)
+✔ mail defaults/context and meeting inventory/body modes reuse their original domain rules (20.400529ms)
+✔ federal output uses actual family paging invariants and retains unproven total relation (1.035476ms)
+✔ real calendar DTO validates only with its original request and explicit trusted clock (6.642783ms)
+✔ normalizer data ownership prevents accessor/proxy/toJSON effects and caller mutation (0.567413ms)
+✔ private JSON admission bounds deep, wide and oversized values before family execution (79.320359ms)
+✔ materializes verified legacy defaults without mutating strict input (2.523743ms)
+✔ rejects coercion, null numeric values, injected authority and unsupported subjects (0.943158ms)
+✔ preserves exact numeric bounds and requires message identity for body continuation (0.361824ms)
+✔ mail external DTO accessors and cycles refuse before executing getters (1.069067ms)
+✔ stored disconnected reads remain transport-only with unknown immutable identities (23.81413ms)
+✔ UTF-16 offsets count a surrogate pair as two units and permit its legacy split (2.480378ms)
+✔ late decisive body section remains an unresolved read despite ending the stored body (1.148376ms)
+✔ offset beyond stored body is disclosed empty transport, not absent material (0.876127ms)
+✔ all upstream completeness states stay incomplete and missing differs from empty (1.483149ms)
+✔ unknown body size and snapshot cannot imply completion (0.975316ms)
+✔ selection and exact normalized argument digest must agree with original request (1.101736ms)
+✔ personal/client request and resolved subject agree without broadening authority (1.396338ms)
+✔ denied source cannot contribute; mixed source accounting keeps eligible stored read (1.205341ms)
+✔ message count and continuation use the filtered message collection (1.013303ms)
+✔ unknown message totals cannot invent next positions or aggregate totals (2.048689ms)
+✔ body continuation inventory, page bounds and truncation agree (1.922189ms)
+✔ duplicate messages cannot inflate count using another citation or version (0.423336ms)
+✔ transport refuses absence, evidence-ready, complete enumeration and cursor guarantees (7.965882ms)
+✔ empty stored thread page never certifies absence (0.330958ms)
+✔ concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings (9.643463ms)
+✔ mail descriptor raw-byte schema pins and exact definition IDs cannot drift (16.925858ms)
+✔ no skill can expose the pending mail operation (5.637913ms)
+✔ mail schema objects stay closed and package public exports stay 0.1 only (0.957689ms)
+✔ mailbox identity and authoritative body lineage cannot be substituted (1.373915ms)
+✔ list/search defaults are strict inert normalized DATA with no clock invention (2.500368ms)
+✔ search literal terms remain distinct AND filters and keyword-free scoped search is valid (0.72516ms)
+✔ list/search getters hidden fields null and nonfinite values are refused without effects (0.455294ms)
+✔ candidate query inclusive anchor is separate from exclusive requester window (41.141971ms)
+✔ message totals and page-only groups differ; exhausted preview never proves absence (7.269975ms)
+✔ continuation binds retained anchor filters actor window and message offset (7.078679ms)
+✔ dedup is mailbox-specific; order nulls-last and immutable versions are conservative (2.891106ms)
+✔ authorization source and mailbox scopes are independent of connection state (3.998098ms)
+✔ preview has no body offsets size guarantee or recipient completeness upgrade (2.034978ms)
+✔ search page operation groups counts filters and all pending descriptor pins are closed (46.779043ms)
+✔ cross-mailbox identical internet IDs stay distinct stored candidates (2.020537ms)
+✔ offset ceiling keeps hasMore true with null nextOffset and no completeness (4.615336ms)
+✔ empty search and unknown stored totals cannot become complete or absent (1.678753ms)
+✔ canonical memory binding resolves only its private version and remains unavailable (1.928015ms)
+✔ memory normalization returns frozen original request and effective selection digest (2.542639ms)
+✔ memory requires trusted subject and refuses legacy or model authority keys (2.077601ms)
+✔ memory binding preserves selected-client and result actor tenant scope checks (3.790233ms)
+✔ complete empty and disabled queue results never become evidence facts or absence (2.269369ms)
+✔ restricted truncated and missing proposal text retain partial coverage and redaction (1.451931ms)
+✔ binding continuation retains exact original request page cursor limit and advancing keys (2.544451ms)
+✔ finite timestamp admission survives the canonical binding and retained page path (1.47772ms)
+✔ binding inert admission refuses getters proxies cycles and serialization hooks without effects (0.674623ms)
+✔ strict family limits and output original request survive binding normalization (1.530179ms)
+✔ all thirteen earlier bindings retain legacy context grammar and refuse memory-only keys (9.694721ms)
+✔ catalog preserves the original thirteen descriptors and complete selected/deferred ledger (1.218089ms)
+✔ task read materializes verified defaults without mutating strict input (2.427756ms)
+✔ task read rejects coercion, extra authority, bounds, unknown status and missing trusted context (1.214274ms)
+✔ client-scoped task page pins scope, identity, provenance and honest coverage (24.446657ms)
+✔ authorized-tasks page derives overdue only when unscoped and never invents client scope (1.434324ms)
+✔ task pagination resumes only by a disclosed cursor and never claims complete absence (2.106364ms)
+✔ action-item read keeps the client-scoped exact read distinct from the pending unscoped list (1.367574ms)
+✔ client-scoped action-item page pins scope, order, identity and provenance (17.353293ms)
+✔ action-item page resumes page >= 2 only with a cursor and binds linked evidence (1.80446ms)
+✔ operational-read DTO accessors, cycles and non-finite values refuse before executing getters (0.563256ms)
+✔ shared collaborators are delegated, not re-implemented, and still have teeth (1.91056ms)
+✔ task pages enforce canonical single-subject and authorized-roster identities (1.379663ms)
+✔ task pages enforce canonical timezone and calendar-month boundaries (14.779677ms)
+✔ operational source observations retain their pending timestamp boundary (0.685619ms)
+✔ operational-read schema objects stay closed and package public exports stay 0.1 only (0.581213ms)
+✔ private task registration keeps action items unmapped and exposes no live handler or skill (7.618413ms)
+ℹ tests 132
+ℹ suites 0
+ℹ pass 131
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3494.080556
+
+✖ failing tests:
+
+test at apps/gateway/test/memory-context-independent.test.mjs:97:1
+✖ independent: canonical memory profile alone is selected; actual14 stay unavailable (4.054644ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'mail.list_messages',
+  +     'mail-candidates/1'
+  +   ],
+  +   [
+  +     'mail.search_messages',
+  +     'mail-candidates/1'
+  +   ],
+  +   [
+        'memory.list_own_proposals',
+        'memory-proposals/1'
+      ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-action-successor-20261012/apps/gateway/test/memory-context-independent.test.mjs:99:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'mail.list_messages', 'mail-candidates/1' ], [ 'mail.search_messages', 'mail-candidates/1' ], [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    expected: [ [ 'memory.list_own_proposals', 'memory-proposals/1' ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
