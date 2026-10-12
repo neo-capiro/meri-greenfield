@@ -1,0 +1,243 @@
+{
+  "verdict": "PASS",
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "revocation": "7831e5c0780ffaf233b81867b0e250bdbf02fbbd",
+  "final": "4c1c6c7e382d3bab6aa32c0ea1dfd228482c7dee",
+  "finalTree": "6e2144820373a37bd14b70737c4071d935ab7a8a",
+  "authorWorktreeClean": true,
+  "baseFiles": 2884,
+  "unchangedBaseFiles": 2880,
+  "changedBaseFiles": [
+    "apps/control/qualification-sdk-fixture/service/README.md",
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+    "apps/control/qualification-sdk-fixture/state/README.md",
+    "apps/control/qualification-sdk-fixture/state/registry.mjs"
+  ],
+  "baselineHandlerSha256": "fd0fe3058782b9c673bcb4e5e03dde7d744499aa2f2a8a8509417e63e3b362b8",
+  "files": {
+    "apps/control/qualification-sdk-fixture/state/registry.mjs": {
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720",
+      "gitBlob": "24a7c305b874db63645900fd755cf42426ff625b"
+    },
+    "apps/control/qualification-sdk-fixture/state/revocation.mjs": {
+      "bytes": 2623,
+      "sha256": "cd020d2874f14db039dc84cd299762246697ad153c5da6d45d47ce6acd145154",
+      "gitBlob": "a1750497f6e548f9a88fa97ac3b7b4d75652b3c5"
+    },
+    "apps/control/qualification-sdk-fixture/state/README.md": {
+      "bytes": 6408,
+      "sha256": "52c970e177766d24eb2476d05ba218235a4e9fbcbb24a49ff874335d3a3c40de",
+      "gitBlob": "4f91aee8ba3d38bf3e537608d2e3e69054692751"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/revocation.test.mjs": {
+      "bytes": 6796,
+      "sha256": "5cd415d4ae8f71d1b1922ea4f62b3b1e40ae755fba685918d261fb90479f06ad",
+      "gitBlob": "628068bea7bfc8322c5afe55c0e893c95eba478c"
+    },
+    "apps/control/qualification-sdk-fixture/state/test/revocation-postgres.test.mjs": {
+      "bytes": 4306,
+      "sha256": "a834e4d59f473686dc6230e4f88409719ae62b3fd160682da9b058d0a5637a7b",
+      "gitBlob": "452a240052281316f387033d18a588ab8772e602"
+    },
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs": {
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510",
+      "gitBlob": "84224f9ca8aca1a1a6e1bfefbaba51bf83034860"
+    },
+    "apps/control/qualification-sdk-fixture/service/README.md": {
+      "bytes": 9656,
+      "sha256": "ab82e4e5a278b4f1d1b46f41cdd33f5c48f37c377fa845a2a278b742dd7bf360",
+      "gitBlob": "dbefe47b593bcc13ca490b33d0892212636baa0b"
+    },
+    "apps/control/qualification-sdk-fixture/service/test/cancellation.test.mjs": {
+      "bytes": 5802,
+      "sha256": "b67d238abe2e6cad5b350412ed82d326b1ef01e46cd2eb8c52f690aa3f03922a",
+      "gitBlob": "9ccfd37fb3d877ddb0f706af31e46f7125d1b39f"
+    },
+    "apps/control/qualification-sdk-fixture/state/errors.mjs": {
+      "bytes": 982,
+      "sha256": "4bc40e78cb615881b5e396a3967944150d0a1fd0a3298f34494782af27c7041d",
+      "gitBlob": "a03e62e09ad714b3c49535bfe1d7453520cb44e4"
+    },
+    "apps/control/qualification-sdk-fixture/state/store.mjs": {
+      "bytes": 5512,
+      "sha256": "6285aa361434f63060801446ebbea16868fbe59344a56c24e27c57403d2796a1",
+      "gitBlob": "429f611c9e2028756258fd32c1bf01011c273d82"
+    },
+    "apps/control/qualification-sdk-fixture/state/binding.mjs": {
+      "bytes": 14534,
+      "sha256": "1cc5c10b31335cc46a6c5285f72ae8d71bd392efc7b633e94df225539fd0dec4",
+      "gitBlob": "0eb27fcd25e8066402c49c7536ca533e64b49632"
+    },
+    "apps/control/qualification-sdk-fixture/state/credential-resolution.mjs": {
+      "bytes": 4485,
+      "sha256": "a60222f0f862251e5be2c3d9189dd87b1ac5ead79e01fa6bc912509326a6c90a",
+      "gitBlob": "3840efd7d8e5f200961718d2bd71863e363493bb"
+    },
+    "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql": {
+      "bytes": 10051,
+      "sha256": "1fac190528f3fdd96c910acea5cc3cd15403470b5bacd6f93e7139114d788cbb",
+      "gitBlob": "519efa1f22ff75ae47f3a440cc6af9c5140334dc"
+    }
+  },
+  "checks": {
+    "baseline-cancellation26.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 25,
+        "pass": 8,
+        "fail": 17,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "baseline-historical3.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 3,
+        "pass": 2,
+        "fail": 1,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "baseline-revocation.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 45,
+        "pass": 0,
+        "fail": 45,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "baseline-uncertainty8.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 8,
+        "pass": 1,
+        "fail": 7,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "exact-revocation47.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 47,
+        "pass": 47,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "final-independent83.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 83,
+        "pass": 83,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "final-original-author56.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 56,
+        "pass": 56,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "final-root244.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 244,
+        "pass": 244,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": false
+    },
+    "prefreeze-cancellation25-corrected.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "prefreeze-cancellation25.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 25,
+        "pass": 23,
+        "fail": 2,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "prefreeze-historical3-corrected.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 3,
+        "pass": 3,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "prefreeze-revocation47-corrected.json": {
+      "exitCode": 0,
+      "counts": {
+        "tests": 47,
+        "pass": 47,
+        "fail": 0,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "prefreeze-revocation47.json": {
+      "exitCode": 1,
+      "counts": {
+        "tests": 47,
+        "pass": 46,
+        "fail": 1,
+        "skipped": 0
+      },
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "real-postgres-syntax-only.json": {
+      "exitCode": 0,
+      "counts": {},
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    },
+    "root-install.json": {
+      "exitCode": 0,
+      "counts": {},
+      "externalTimeout": false,
+      "ownedProcessGroupAbsent": true
+    }
+  },
+  "databaseExecution": "UNRUN",
+  "nativeRuntime": "UNRUN"
+}

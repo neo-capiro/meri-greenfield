@@ -1,0 +1,28 @@
+{
+  "command": [
+    "env",
+    "G1_REVIEW_SOURCE_ROOT=/workspace/meri-g1-next-behavior-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/cancellation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-review-20261012",
+  "startUnixSeconds": 1791777056.7113945,
+  "elapsedSeconds": 0.816154956817627,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "prefreeze-cancellation25.stdout.txt",
+      "bytes": 4836,
+      "sha256": "62c34b89c9469dc31d295da983f13fb72226f6972a62339a4577a1582e8478ba"
+    },
+    "stderr": {
+      "path": "prefreeze-cancellation25.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

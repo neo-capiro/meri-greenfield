@@ -1,0 +1,11 @@
+{
+  "classification": "REVIEW_FIXTURE_ERROR_NOT_SOURCE_DEFECT",
+  "originalTestCommit": "b5caae3",
+  "originalTestSha256": "941f88fc7e38f3a2094eab450129a2904cc9b31a72128b877572a2ca25bedb01",
+  "rawFailure": "prefreeze-revocation47.stdout.txt",
+  "observedResult": "46PASS/1FAIL",
+  "cause": "Policy mutation used d repeated64, identical to the existing canonical fixture policy.",
+  "onlyChange": "Set policy negative-control sentinel to e repeated64.",
+  "correctedTestSha256": "ff6819ecea12fae476f21632836c60e833f63a1351463371d2acb118318d968b",
+  "originalSourceUnchanged": true
+}

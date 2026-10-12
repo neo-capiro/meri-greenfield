@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { liveFixture, requestFor } from '../../../../../apps/control/qualification-sdk-fixture/service/test/fixture.mjs';
-import { CommitUncertain } from '../../../../../apps/control/qualification-sdk-fixture/state/errors.mjs';
 const root=process.env.G1_REVIEW_SOURCE_ROOT??resolve('.');
+const {CommitUncertain}=await import(pathToFileURL(resolve(root,'apps/control/qualification-sdk-fixture/state/errors.mjs')));
 const {createFixtureServiceHandlers}=await import(pathToFileURL(resolve(root,'apps/control/qualification-sdk-fixture/service/handlers.mjs')));
 const operations=['authorizeFixturePhase','commitFixtureCheckpoint','loadFixtureCheckpoint','verifyFixtureCheckpoint'];
 function fixture() {

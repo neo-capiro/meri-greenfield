@@ -1,0 +1,28 @@
+{
+  "command": [
+    "env",
+    "G1_REVIEW_SOURCE_ROOT=/workspace/meri-g1-next-behavior-20261012",
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/revocation-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-review-20261012",
+  "startUnixSeconds": 1791776988.9682498,
+  "elapsedSeconds": 0.9183399677276611,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "exact-revocation47.stdout.txt",
+      "bytes": 3665,
+      "sha256": "03307c7567806269e22a4c405733813bd2b55784563e3b0dd00ee3635928f8d9"
+    },
+    "stderr": {
+      "path": "exact-revocation47.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

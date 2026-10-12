@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/g1-next-behavior-20261012/review/historical-context-positive.test.mjs"
+  ],
+  "cwd": "/workspace/meri-g1-next-behavior-review-20261012",
+  "startUnixSeconds": 1791776988.4259963,
+  "elapsedSeconds": 0.5158028602600098,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "baseline-historical3.stdout.txt",
+      "bytes": 2019,
+      "sha256": "8870507f4260c69b0d2b04091ffb2b997d52dd827772bbfede31ddb67d26071e"
+    },
+    "stderr": {
+      "path": "baseline-historical3.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
