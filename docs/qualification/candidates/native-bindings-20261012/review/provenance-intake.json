@@ -1,0 +1,52 @@
+{
+  "verifiedRecord": {
+    "bytes": 15241,
+    "sha256": "983c22b7aaf0578b148579ca009c6d23603f4ab760b85936013b7e8991963c06",
+    "serialization": "CRLF; no final newline"
+  },
+  "collectorReceiptReference": {
+    "bytes": 1407,
+    "sha256": "9b0b0633ce4f1bec0c59fa4acc8e1637f7236a1e1b87a4a5e2aae3fcbc302842",
+    "matchesExistingWrapperPin": true,
+    "referencedOriginalBytesReceived": false
+  },
+  "sourceReference": {
+    "commitMatchesExistingPin": true,
+    "treeMatchesExistingPin": true,
+    "full1538SourceFileHashAuditRepeated": false,
+    "discoveryRerun": false
+  },
+  "priorFullAuditReference": {
+    "basename": "source-and-input-verification.json",
+    "bytes": 42321,
+    "sha256": "fbce57f071e94db5e7ceff03141fdc7bd9467e5b205965d45f93ae1fcd740400",
+    "isRequiredOriginalSourceVerification": false,
+    "actualReferencedBytesReceived": false
+  },
+  "gitReference": {
+    "pathPresent": true,
+    "hashProvided": false,
+    "sizeProvided": false,
+    "gitPinsExitCode": 0,
+    "statusExitCode": 0,
+    "statusStdoutEmpty": true
+  },
+  "candidateMetadataReused": {
+    "exactVersionMetadataVerified": true,
+    "requiredPathsPlain": true,
+    "metadataEligible": true
+  },
+  "referencesCount": 7,
+  "qualificationsCount": 3,
+  "manifestRelay": {
+    "bytes": 2245,
+    "sha256": "e8aae481a5f8f2fab356068dff1a33cc9c67ce9207d3841d5ca27f4a18f9dd4f",
+    "members": 13,
+    "originalBytesIdentityEstablished": false
+  },
+  "candidateHashRelayTruncated": true,
+  "comparisonSourceReceived": false,
+  "nativeEvidenceAccepted": false,
+  "newPinEstablished": false,
+  "privateBodiesOrPathsCopied": false
+}

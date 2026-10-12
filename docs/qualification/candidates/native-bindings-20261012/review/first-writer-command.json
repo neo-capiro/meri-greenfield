@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/writer-controls.py",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/first-writer-draft.py.txt",
+    "/workspace/meri-native-bindings-review-20261012/docs/qualification/candidates/native-bindings-20261012/review/first-writer-controls.json"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.044013483999151504,
+  "sourceSha256": "77ee4a3969a7b69a6b673ab5a746181762fe9d1676677d4a3bc5fce5c0cdf267",
+  "harnessCompleted": true,
+  "nativeProcesses": 0,
+  "nativeFilesystemOperations": 0,
+  "targetImported": false
+}
