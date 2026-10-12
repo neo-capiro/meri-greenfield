@@ -16,7 +16,7 @@ for a,b in zip(old,new):
  check(hashlib.sha256(json.dumps(a,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()==b['originalRecordSha256'],b['id']+' originalhash')
  for k in ['completedSourceComponents','remaining','owner','nextParallelSourceOrMetadataWork','decisionOrExternalPrerequisite']:check(bool(b[k]),b['id']+' '+k)
  check(b['qualifiedRuntime'] is False,b['id']+' no runtime promotion')
- check(b['status']==('completed-source' if b['id']=='G0' else 'pending'),b['id']+' complete criterion status')
+ check(b['status']==('completed-source' if b['id'] in ['W00','G0'] else 'pending'),b['id']+' complete criterion status')
 rs=read('receipts.json')['receipts'];by={r['id']:r for r in rs};check(len(by)==len(rs),'unique receipts')
 for r in new:
  for id in r['sourceReceiptIds']+r['reportedRuntimeReceiptIds']:check(id in by,r['id']+' reference')
@@ -32,4 +32,15 @@ b=read('boundaries.json');a=b['acceptedRead'];cat=json.loads(raw(a['source'],'pa
 check('ACCEPT_SOURCE' in raw(by['combined-review']['identity']['ref'],by['combined-review']['identity']['path']).decode(),'acceptedsourceexact');check(b['scopeTensions']==['find_path_to','confirm_memory','correct_memory','forget_memory'],'four tensions');check(b['skills']==14,'14skills');check(b['nativeReportedCohorts']==[33,9,12],'nativecohorts')
 orig=b['originalBenchmarks'];check((orig['realTasksMinimum'],orig['completionRateMinimum'],orig['factualCorrectnessMinimum'],orig['adversarialIsolationCasesMinimum'])==(60,.9,.95,100),'originalcore');check((b['r2Benchmark']['realSeedRequestsMinimum'],b['r2Benchmark']['labelledCasesMinimum'])==(75,200),'r2additional');check(b['r2Benchmark']['syntheticReplacementAllowed'] is False,'noreplacement');check(b['shipping']['sourceFromFrontendReceipt']==f['shippingSource']!=f['source'],'separate shipping/newsource');check(b['shipping']['buildStartedUTC']=='2026-10-12T19:42:46Z','startnotterminal');check(b['shipping']['latestIndependentState'].startswith('not queried'),'shippingunknown')
 check({r['id'] for r in new if r['optional']}=={'R-11','R-12','REL-07','REL-08','RG-10','RG-11'},'optionalnotdeleted')
+rows={r['id']:r for r in new}
+check(set(rows['W00']['sourceReceiptIds'])=={'g0','g0-discovery','r2-adoption','plan-index','scope'},'W00 exact discovery receipts')
+check(rows['W00']['reportedRuntimeReceiptIds']==[],'W00 not reopened by native receipt')
+check('CODEX-G0-DISCOVERY.md' in by['g0-discovery']['identity']['path'],'exact G0 report')
+check('CODEX-R2-ADOPTION.md' in by['r2-adoption']['identity']['path'],'exact R2 report')
+for id in ['REL-07','REL-08']:
+ check('not established or qualified by received evidence' in rows[id]['remaining'],id+' no unseen work assertion')
+check(collections.Counter(r['status'] for r in new)=={'completed-source':2,'pending':51},'full criterion status totals')
+prior=read('precision-correction/finding-and-preimage.json')
+check(prior['priorFreeze']=='39b6da63289241b368a5003d47e98352c7cbc817','preserved preimage')
+check(json.loads((P/'precision-correction/prior-verify.stdout').read_text())['checks']==751,'prior751 retained')
 print(json.dumps({'status':'PASS','checks':n,'requirements':53,'fullRuntimeCriteriaPromoted':0,'productTestsRun':False,'nativeActions':False,'baseline':j['base']}))

@@ -30,6 +30,32 @@
       "limit": "No G1/live authorization; later explicit decisions govern over historical examples."
     },
     {
+      "id": "g0-discovery",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+        "gitBlob": "84c2c04dd09ab2da3db8a9d325e48fa344eb2115",
+        "bytes": 5910,
+        "sha256": "0c79b223d82ae6c374636eeb89c90a9ea4bcb5271d2358eb6a8eff93ac347232"
+      },
+      "supportedClaim": "Accepted W00/G0 discovery outputs: inventory, selected scope, account/repository/region and identity/source decisions, pinned design/UI inventory and shared-shell decision.",
+      "limit": "Discovery acceptance only. Full semantic UI/service mapping and actual identity/source/runtime qualification belong to later work packages."
+    },
+    {
+      "id": "r2-adoption",
+      "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
+      "identity": {
+        "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+        "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+        "gitBlob": "c0436b3578b634f0441b7557a64571f21dba2761",
+        "bytes": 5774,
+        "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5"
+      },
+      "supportedClaim": "D013 R2 tooling and reliability adoption retains accepted G0 and adopts W00 inventory plus REL01 audit/baseline plan.",
+      "limit": "The real REL01 dataset and measured baseline remain incomplete; this does not reopen the accepted discovery/planning output. The exact R2-titled D013 section is distinguished from another historical D013 heading."
+    },
+    {
       "id": "read-source",
       "provenance": "committed report/source inspected locally; underlying raw qualification not rerun or fully re-audited here",
       "identity": {

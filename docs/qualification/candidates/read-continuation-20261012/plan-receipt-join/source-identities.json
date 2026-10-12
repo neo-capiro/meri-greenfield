@@ -17,6 +17,20 @@
     },
     {
       "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-G0-DISCOVERY.md",
+      "gitBlob": "84c2c04dd09ab2da3db8a9d325e48fa344eb2115",
+      "bytes": 5910,
+      "sha256": "0c79b223d82ae6c374636eeb89c90a9ea4bcb5271d2358eb6a8eff93ac347232"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "path": "docs/coordination/reports/CODEX-R2-ADOPTION.md",
+      "gitBlob": "c0436b3578b634f0441b7557a64571f21dba2761",
+      "bytes": 5774,
+      "sha256": "8ea4fc14c75747d27cb5ceb51a41551f71618c92cb89ca6113027aef56a7d0f5"
+    },
+    {
+      "ref": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
       "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md",
       "gitBlob": "9032b07453f783cdc405862b02349dad7fd1e3f3",
       "bytes": 6726,

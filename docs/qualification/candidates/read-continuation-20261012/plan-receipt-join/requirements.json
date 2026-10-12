@@ -17,24 +17,22 @@
       },
       "originalRequirement": "| W00 Discovery and scope | Codex, read-only Hermes support | Access to environment | Source inventory; selected/deferred capability ledger; account/repository decision; pinned Meri Figma baseline and shared-shell decision; REL-01 baseline/trace plan |",
       "originalRecordSha256": "2f2b6111ec0ac0504721d931d1bde4fd777178a456d8679c8c2e3d0ec43981e5",
-      "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
-      "completedSourceComponents": "G0 discovery and PR34 authority/requirements metadata accepted.",
+      "status": "completed-source",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
+      "completedSourceComponents": "Accepted G0 discovery outputs plus adopted R2 inventory and REL01 audit/baseline plan; exact D012/G0 discovery and R2-titled D013/adoption reports bind completion.",
       "sourceReceiptIds": [
         "g0",
+        "g0-discovery",
+        "r2-adoption",
         "plan-index",
-        "scope",
-        "frontend",
-        "native-reported"
+        "scope"
       ],
       "qualifiedRuntime": false,
-      "reportedRuntimeReceiptIds": [
-        "native-reported"
-      ],
-      "remaining": "Current owner receipts and any remaining source/design/discovery gaps still need exact joins.",
-      "owner": "integration + source/design owners",
-      "nextParallelSourceOrMetadataWork": "Bind latest external-owner receipts to existing inventory and unresolved source boundaries.",
-      "decisionOrExternalPrerequisite": "Obtain current receipts; four authority tensions remain visible without reclassifying.",
+      "reportedRuntimeReceiptIds": [],
+      "remaining": "No distinct outstanding W00 discovery output is established. Real REL01 dataset/baseline and later source, UI and native qualification remain in their own requirements.",
+      "owner": "integration owner",
+      "nextParallelSourceOrMetadataWork": "Preserve accepted discovery outputs; advance dependent W01/W02/W04/W06/W09 work without reopening W00 for current owner receipts.",
+      "decisionOrExternalPrerequisite": "No new discovery decision or execution authority. Four recorded scope tensions remain visible without reclassification.",
       "optional": false,
       "optionalDisposition": null
     },
@@ -47,7 +45,7 @@
       "originalRequirement": "| W01 Shared contracts | Codex with one Hermes session | W00 | Versioned catalog, typed operations, skill invocation/manifests, normalized evidence, events, proposals and artifact/checkpoint schemas; REL-02; fixture and UI control/state mappings |",
       "originalRecordSha256": "df77a6709f04f0b64afd50769a982955fadee8b24527a2d821a11e71d03b9b43",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Accepted public/private schema boundaries, canonical unavailable read contracts and command payload loader.",
       "sourceReceiptIds": [
         "read-source",
@@ -76,7 +74,7 @@
       "originalRequirement": "| W02 Runtime qualification | A | W00–W01 | SDK/Fargate/browser/model-proxy spike, native discovery compatibility and Temporal production-topology decision; REL-05 runtime-only checkpoint, not its later end-to-end acceptance |",
       "originalRecordSha256": "a559394283e92a743034749a542ec19679629ac4fe124464a9df92b15670c483",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Runtime/proxy/checkpoint/budget source exists; native33/9/12 passes reported.",
       "sourceReceiptIds": [
         "runtime-source",
@@ -104,7 +102,7 @@
       "originalRequirement": "| W03 Isolated foundation | A | W02 | New CDK stacks, OIDC CI roles, persistence, networking, secrets, deployment/runbooks |",
       "originalRecordSha256": "a10977538c44b1b96cf5728a7015e3bbedf5be35ecb66fcc47c76c11cd940853",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Separate stack source and existing Aurora decision preserved.",
       "sourceReceiptIds": [
         "g0",
@@ -129,7 +127,7 @@
       "originalRequirement": "| W04 Authorization and reads | B | W01/REL-02; W03 for live integration | Two-tenant and within-tenant fixtures; exact/search/evidence adapters; memory read; source coverage/freshness/paging; REL-03 and REL-06 |",
       "originalRecordSha256": "ea1c63384fe861dcdbb0ea781a327fd788dc7f7c786606c47a313ae2f921d103",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "71 typed unavailable reads and shared declared scope/evidence checks accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -158,7 +156,7 @@
       "originalRequirement": "| W05 Durable runs | A | W02–W03 | Broker ownership/fencing, SDK SessionStore, file checkpoints, events, approvals and schedules |",
       "originalRecordSha256": "a837456cac28263a7276a9d83ceb500aa8661116321e288ed8630200452891ec",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Temporal recovery, session/file and fence source exists; native state controls reported passing.",
       "sourceReceiptIds": [
         "runtime-source",
@@ -185,7 +183,7 @@
       "originalRequirement": "| W06 Workspace interface | C | W01/REL-02; W05 for integration | Figma-mapped AI Elements screens and responsive states; explicit skill ID/version/scope/dates; real streaming, history, stop/steer/resume/fork, approvals, files, evidence and schedules; three mode buttons; REL-04 |",
       "originalRecordSha256": "9e3d840a8d16017b3c0e9a7b385d6eca524525bb1ffb714f0ce3f41b66df5bd7",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Current frontend owner packet binds nine repaired findings and passing bounded local qualification.",
       "sourceReceiptIds": [
         "frontend",
@@ -210,7 +208,7 @@
       "originalRequirement": "| W07 Artifacts and browser | C, sequential scoped tickets | W02; W04–W06 for authorized integration | Native files, render/revise/download workflow; public browsing, then qualified authenticated work |",
       "originalRecordSha256": "4ec0bb11f5a0c9708ea9bf81c14ab49b0fd6cb591d8d07d03952a76adf30b93e",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Artifact/browser adoption and source scaffold; command file-payload validation accepted.",
       "sourceReceiptIds": [
         "command-source",
@@ -237,7 +235,7 @@
       "originalRequirement": "| W08 Selected mutations | B | W04 passes; W05 | Memory proposals, tasks and artifact filing with approval, idempotency and receipts |",
       "originalRecordSha256": "05d1dc1f91985e175976c48022fb722731991859fcaa89f47446964596508681",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Memory policy and task/artifact payload contracts accepted.",
       "sourceReceiptIds": [
         "command-source",
@@ -262,7 +260,7 @@
       "originalRequirement": "| W09 Independent verification | D | Starts with W01; expands as packages land | Held-out RG suite and oracle checks, adversarial policy suite, UI behavior/visual/accessibility, browser/artifact/recovery/load evidence; independent REL-06/REL-09 acceptance |",
       "originalRecordSha256": "3fca9a8d98f0a4a83f2cb981462c74687b3fc7e985daa3bd4190a410c9673c05",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Independent source reviews, benchmark protocol and frontend bounded checks exist.",
       "sourceReceiptIds": [
         "benchmark",
@@ -290,7 +288,7 @@
       "originalRequirement": "| W10 Staging candidate | Codex; D verifies | W03–W09 accepted | Immutable candidate deployed and complete release evidence |",
       "originalRecordSha256": "b89ac0d96e44feff18f069abcd4655c7a30c111bc34342266ff2c1a2d4b2bec6",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Immutable source publications exist, not a qualified staging deployment.",
       "sourceReceiptIds": [
         "shipping-reported",
@@ -316,7 +314,7 @@
       "originalRequirement": "| W11 Controlled release | Codex | W10; release authorization | Internal allowlist, bounded tenant canary, production rollout and rollback evidence |",
       "originalRecordSha256": "deeff379a6494e24a898adb373215dc3efffaffb13d661e077359c7909d3bbcb",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Release/allowlist/rollback requirements retained.",
       "sourceReceiptIds": [
         "g0",
@@ -341,7 +339,7 @@
       "originalRequirement": "| R-01 | Canonical catalog and typed operations: one source for schemas, adapters, descriptions, availability, authority and eval mappings; no fixed total count, giant free-text query operation or raw SQL exposure | Catalog/handler drift checks, distinct operation examples, selected/deferred/replacement mapping, unavailable-recipe lint |",
       "originalRecordSha256": "67e7c9fc11ec703a897dbff48fed5d028cdef04e73d00d9409ed0ae54f195d09",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Canonical catalog and closed schema callbacks source accepted; no second registry.",
       "sourceReceiptIds": [
         "read-source",
@@ -369,7 +367,7 @@
       "originalRequirement": "| R-02 | Server-bound scope/entity identity: bind current actor/tenant/client or authorized portfolio, grants and entity IDs; validate model/UI scope requests; reauthorize every read/write/publication | Same-name clients, pronouns/follow-ups, denied IDs, portfolio/client/personal distinctions, revocation and within-tenant fixtures |",
       "originalRecordSha256": "648c44edd8b86615afa31a7416eb550c602f5b68c116508c25af56a83eb72bb5",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Trusted context DTO/correlation/current-grant source boundaries exist.",
       "sourceReceiptIds": [
         "contracts",
@@ -397,7 +395,7 @@
       "originalRequirement": "| R-03 | Calendar/FY/version windows: calendar periods, relative durations and fiscal years are distinct; normalize timezone, inclusive start/exclusive end, document version and funding stage | This/last week, Monday/Sunday policy, DST, month/year boundaries, last seven days, fiscal-year rollover and conflicting version/stage fixtures |",
       "originalRecordSha256": "d42de6b61d0768b656a4a46fc4d179ae7102e4c9e19bf81ecf36f49899cdad74",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Typed window/FY/version and domain observation boundaries exist.",
       "sourceReceiptIds": [
         "contracts",
@@ -422,7 +420,7 @@
       "originalRequirement": "| R-04 | Candidate search/exact query/source-read distinction: hybrid candidate discovery where useful; typed authoritative counts/status/history/comparisons; full decisive passage reads | Search coverage versus enumerated counts; late-body match; multi-source history; bill version/status and PE identity/budget-stage truth |",
       "originalRecordSha256": "4c5573411f6f5eea19788ca03c17faf67cb2d72f049b087b8b74d6ab897a78ad",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Exact/candidate/full-read contract separation and domain DTOs accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -450,7 +448,7 @@
       "originalRequirement": "| R-05 | Normalized evidence/coverage/freshness/paging: consistent envelopes, explicit status and method, authorized citations, source versions, filters and continuation | Partial/unavailable/stale/empty/truncated fixtures; no absence claim from incomplete coverage; exact-version evidence continuity |",
       "originalRecordSha256": "d663b5e399aac596ea907fe5126f37d573b90194c271e8b854cbd471e4ecdf1d",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Normalized coverage/freshness/continuation/lineage consistency accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -474,7 +472,7 @@
       "originalRequirement": "| R-06 | Native SDK discovery and proxy compatibility: small measured default surface and authorized domain discovery through pinned supported model/runtime/proxy | End-to-end reference/stream/header/compaction/resume compatibility; adversarial catalog recall; observed token/call/latency evidence |",
       "originalRecordSha256": "ef37aa8f4320744029e7e4aa204b67554ddb664c7c9567a0cd08059a78693a99",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Catalog resolution and source proxy/discovery scaffolding accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -502,7 +500,7 @@
       "originalRequirement": "| R-07 | Explicit skill invocation and executable manifest: selected ID/version plus typed scope/dates; manifest pins required evidence, allowed operations, approval constraints, completion and budget | Submit/steer/reconnect/resume/fork fixtures, manifest validation, active-version migration policy and required-source completion checks |",
       "originalRecordSha256": "e7bb768c5d686d74bfa5289f5dcb1a7c73d40464cc894bd8a178d66bbcff1f79",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Invocation/version/manifest pin and continuity structure exists.",
       "sourceReceiptIds": [
         "skills",
@@ -527,7 +525,7 @@
       "originalRequirement": "| R-08 | Scoped original skills including Commitments: preserve the 14 quick-action workflow intents as proposed v1 selections; qualify their promises; ordinary questions remain lightweight | Skill-by-skill expected evidence/output rubric; Commitments proof/owner/date/ambiguity/dedup/coverage fixtures; no forbidden source widening |",
       "originalRecordSha256": "7bbf86fd900163e0956887b0bf403d426f8ffc63adccbff602a72f2a1752d7ba",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Fourteen quick-action IDs and required Commitments rubric constraints preserved.",
       "sourceReceiptIds": [
         "skills",
@@ -552,7 +550,7 @@
       "originalRequirement": "| R-09 | Complexity budget and bounded recovery: budget follows requested work and evidence, not a domain keyword; direct known-ID lookup avoids unnecessary discovery; recovery follows diagnosed failure | Simple versus comprehensive paired fixtures; no blind repeated search; explicit partial/clarify/block outcomes; enforced runtime/token/tool budgets |",
       "originalRecordSha256": "c10ae4532bae25e9c7cc7a3bec0b5ea435fafad9fc455648592ed729603bb494",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Budget/fence/admission/recovery source;9 budget+12 invocation cases reported passing.",
       "sourceReceiptIds": [
         "runtime-source",
@@ -579,7 +577,7 @@
       "originalRequirement": "| R-10 | End-to-end trace/oracle diagnostics: correlated route, arguments, result coverage, evidence read and final claims; correct-tool and correct-evidence runs localize failure | Replayable redacted traces, failure taxonomy, original/oracle comparisons and per-stage timings/costs |",
       "originalRecordSha256": "5ddc513bc3c1c0016f028f0ebf7e65ba0bb691098de111a36f60f4e2cdbf9ee2",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Trace/oracle/scoring protocol adopted.",
       "sourceReceiptIds": [
         "benchmark"
@@ -602,7 +600,7 @@
       "originalRequirement": "| R-11 | Optional Decisions routing benchmark: bounded choice/predicate/score advice, multi-source coverage, abstention/fallback, no authority or argument generation | SDK baseline first, paired held-out shadow trials, calibrated confidence, outage/timeout tests and independent adoption decision |",
       "originalRecordSha256": "147036f8c04d7bbfbd3b0738ea1639eaf6fb23e43278d8db5d3b8df265dc968a",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional advisory boundary documented, no mandatory second loop.",
       "sourceReceiptIds": [
         "benchmark"
@@ -625,7 +623,7 @@
       "originalRequirement": "| R-12 | Optional calibrated JEV evidence benchmark: task-specific passage relevance/claim support/client-fit improvement with abstention; no unsupported tool-router integration | Human-labelled gold data, withheld-evidence/authoritative-state safeguards, calibration plots, error slices and fallback tests |",
       "originalRecordSha256": "c1ef9159ff075010e90f2c8a8e44ead6127f0f51b0e340239498bfaa9cd5af52",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional evidence-judge boundary documented.",
       "sourceReceiptIds": [
         "benchmark"
@@ -648,7 +646,7 @@
       "originalRequirement": "| REL-01 Traces and baseline | Codex + B/D scoped sessions; `docs/RETRIEVAL-AUDIT.md`, `evals/` baseline fixtures | W00; read-only current-Meri trace/source access where available | 75-case initial set, failure taxonomy, deployed settings, source snapshots, oracle protocol and measured budgets; inaccessible production traces explicitly blocked | R-09/R-10; RG-09 |",
       "originalRecordSha256": "da0f8de298839f055b82282508e46e504765e2c369ba5a62d43cc19246f5907f",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Inventory/protocol source and current report joins exist.",
       "sourceReceiptIds": [
         "benchmark",
@@ -672,7 +670,7 @@
       "originalRequirement": "| REL-02 Contracts and catalog | Codex + one B session; `packages/contracts/`, catalog/retrieval/skill docs | W00 discovery accepted; W01 contract ownership allocated; REL-01 inventory findings (REL-02 contributes to W01 completion) | Frozen typed operations, scope/window/evidence/skill contracts, handler/schema/description mapping and unavailable-recipe checks | R-01–R-05/R-07; RG-02/RG-07 |",
       "originalRecordSha256": "b4cf180b32b865b3a20f5acaa654dfad39c577d24fe5fb2f46d2868ba3efc08c",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Canonical private read and command payload composition accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -699,7 +697,7 @@
       "originalRequirement": "| REL-03 Retrieval adapters | B; `apps/gateway/` source adapters, scoped fixture files | Accepted REL-02; W03 for live source checks | Independently written exact/search/read adapters with coverage/freshness/paging; memory/client/portfolio and selected domain truth fixtures | R-02–R-05; RG-02–RG-05/RG-07/RG-12 |",
       "originalRecordSha256": "d1b36bcb52f1a9f48b4dc45657b1ee87e87432844a72be859e22507715b7b1cc",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Many source contracts and normalization semantics accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -724,7 +722,7 @@
       "originalRequirement": "| REL-04 Skills and UI identity | C; `apps/web/`, `packages/skills/`, owned manifests/UI ledger | Accepted REL-02; W05 for resume/fork integration | Typed explicit invocation, original scoped skills, Commitments, required evidence/completion, calendar/portfolio/memory regressions and Playwright checks | R-03/R-07/R-08; RG-02/RG-06/RG-12 |",
       "originalRecordSha256": "973c80db415124f3a843e5af5945f3eff767e80ceed1567e7609f919365d00e7",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Typed invocation/manifest foundation plus current frontend source evidence.",
       "sourceReceiptIds": [
         "skills",
@@ -748,7 +746,7 @@
       "originalRequirement": "| REL-05 SDK discovery and loop | A; `apps/worker/`, trusted proxy integration; Codex owns catalog shared changes | Runtime checkpoint: accepted REL-02 and W02 spike environment ready. Final end-to-end checkpoint: accepted REL-03/04 and W03/W05 integration | Runtime-only discovery/proxy evidence contributes to W02 before W03. Later lightweight baseline, budgets/recovery, resume/compaction and adversarial integration evidence qualify under W09 | R-01/R-06/R-09/R-10; RG-01/RG-08/RG-09/RG-12 |",
       "originalRecordSha256": "becdc40e5c488b7ac203e3076c2bf1451a98a12690ed7d849e528da4fc91ce30",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "SDK/proxy/runtime source; limited native state suites reported.",
       "sourceReceiptIds": [
         "runtime-source",
@@ -775,7 +773,7 @@
       "originalRequirement": "| REL-06 Benchmark and domain truth | D with scoped B evidence support; `evals/`, `docs/ROUTING-EVALUATION.md` | REL-01; accepted REL-03/04/05 baseline | Expanded 200-case frozen suite and held-out labels, exact domain truth, oracle diagnostics, baseline result manifest and independent adjudication | R-01–R-10; RG-01–RG-09/RG-12 |",
       "originalRecordSha256": "b2f2e31fc8553e1b6da1d06f9d7b31cb36c38425246122604cc251cd6dd4d85e",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Evaluation protocol and source checks exist.",
       "sourceReceiptIds": [
         "benchmark",
@@ -799,14 +797,14 @@
       "originalRequirement": "| REL-07 Optional Decisions shadow | B/A scoped new adapter; separate D review | Accepted REL-06 baseline; actual API availability | One bounded advisor, multi-source/abstention/fallback fixtures, paired held-out improvement and latency evidence; adopt or remain disabled | R-11; RG-09/RG-10 |",
       "originalRecordSha256": "c103b5051dc7de7c13ad43c03ede486f4eaccba2fc0de3703341eec13fa95981",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional boundary preserved.",
       "sourceReceiptIds": [
         "benchmark"
       ],
       "qualifiedRuntime": false,
       "reportedRuntimeReceiptIds": [],
-      "remaining": "Paired Decisions shadow/adoption unrun.",
+      "remaining": "Paired Decisions shadow/adoption is not established or qualified by received evidence; this metadata lane ran none and makes no claim about unseen other-owner work.",
       "owner": "optional evaluation",
       "nextParallelSourceOrMetadataWork": "Prepare abstention/mixed-family/fallback design; leave disabled.",
       "decisionOrExternalPrerequisite": "Qualified REL06 and separately authorized supported API.",
@@ -822,14 +820,14 @@
       "originalRequirement": "| REL-08 Optional JEV shadow | B scoped trusted judge adapter; separate D review | Accepted REL-06 baseline; task/model availability | Labelled evidence calibration, required-evidence safeguards, paired quality/latency evidence; adopt or remain disabled | R-12; RG-09/RG-11 |",
       "originalRecordSha256": "3fed09dafcf0e8be030acc543ddaeab3e6b283994c6b26d6c7d2c81efe5dcf3b",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional boundary preserved.",
       "sourceReceiptIds": [
         "benchmark"
       ],
       "qualifiedRuntime": false,
       "reportedRuntimeReceiptIds": [],
-      "remaining": "Labelled JEV evidence shadow/calibration unrun.",
+      "remaining": "Labelled JEV evidence shadow/calibration is not established or qualified by received evidence; this metadata lane ran none and makes no claim about unseen other-owner work.",
       "owner": "optional evaluation",
       "nextParallelSourceOrMetadataWork": "Prepare separate task-specific judge rubric; leave disabled.",
       "decisionOrExternalPrerequisite": "Qualified REL06 and task/model availability/authority.",
@@ -845,7 +843,7 @@
       "originalRequirement": "| REL-09 Integration and canary | Codex; D reviews exact candidate | Pre-staging checkpoint: accepted REL-03–REL-06, W04–W08 and prior W09 checks; promoted optional services only. Canary checkpoint: W10 accepted, then W11 authorization | Pre-staging trace/reconnect/revocation/full-read/RG evidence completes W09 for W10. Post-staging immutable candidate and bounded canary evidence complete the ticket under W11; canary is not a W09 prerequisite | R-01–R-12 as applicable; RG-01–RG-12 as applicable |",
       "originalRecordSha256": "6801e55e344aebb238863e6492daedd273a6ed155d8166a1e289b5ab32e50b43",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Source releases/reviews exist; active frontend build only reported.",
       "sourceReceiptIds": [
         "read-source",
@@ -871,7 +869,7 @@
       "originalRequirement": "| G0 Discovery | Real account/repository/region/identity/source decisions; selected capability/data inventory; pinned Figma/UI/shell decision; current deployment/session evidence preserved; REL-01 audit/baseline plan; no guessed target |",
       "originalRecordSha256": "9ebac8db73e6cbfb871931b1b1a15a553b6cae50cc214f4fad6e085061728fbe",
       "status": "completed-source",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "D012 accepted discovery; current requirement/authority documentary index independently accepted.",
       "sourceReceiptIds": [
         "g0",
@@ -896,7 +894,7 @@
       "originalRequirement": "| G1 Qualification | Pinned SDK/runtime/UI/browser/Office/Temporal components; Fargate sandbox, actual-proxy native discovery (RG-08), interrupt/resume/checkpoint/egress spike; accepted REL-02 contracts; Temporal persistence/authentication/TLS/backup/upgrade design; measured cohort budgets frozen |",
       "originalRecordSha256": "f9cd4e42b49a361fde69e3f8f1e197cabf103a5945dccdaaf687e26cfd148387",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Offline runtime source plus parent-reported33baseline/9budget/12invocation passes.",
       "sourceReceiptIds": [
         "runtime-source",
@@ -924,7 +922,7 @@
       "originalRequirement": "| G2 Isolated development | New stack deployed with source connections disabled; seeded identity/policy fixtures; task capabilities, restricted IAM/network paths, encryption, and conversation ownership pass |",
       "originalRecordSha256": "f97b6f7f6e199b5add0c4c6cad23959f6157a3ab6567757ea260ed7ecefae74a",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Identity/source contract preparation exists.",
       "sourceReceiptIds": [
         "g0",
@@ -949,7 +947,7 @@
       "originalRequirement": "| G3 Read-only data | One client and memory, then all agreed domains; exact/search/full-evidence/coverage/freshness/paging, calendar/FY/version and authority fixtures (RG-02–RG-05/RG-07); measured revocation deadline and tenant/within-tenant policy checks pass |",
       "originalRecordSha256": "cdb2dc1285dc739aa40106307921551121621bcff4cb6a8105d7ff9ec053b464",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Typed source/policy/coverage contracts source accepted.",
       "sourceReceiptIds": [
         "read-source",
@@ -975,7 +973,7 @@
       "originalRequirement": "| G4 Execution workspace | SDK baseline plus Figma-mapped UI/artifact/browser integration; selected skill ID/version/manifest and evidence completion (RG-06); native discovery/reconnect/full-read/recovery (RG-08/RG-12); real walkthroughs, worker loss, approval wait, cancellation and fencing pass |",
       "originalRecordSha256": "2a7a606235329d4d4713d14eb56abff0237df403e0f23637777af99f9cc0c4b6",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Artifact/browser/durability source prep; frontend local views passed in bounded scope.",
       "sourceReceiptIds": [
         "frontend",
@@ -1001,7 +999,7 @@
       "originalRequirement": "| G5 Selected commands | Immutable proposals, approval expiry, current authorization, revocation, idempotent outcomes and receipts pass; repeated delivery creates zero duplicate mutations |",
       "originalRecordSha256": "3c7efd765efa6c8d474501545a5426e3d12a55c4a336b3204a54cd3d44f77a57",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Task/artifact command payloads and memory policy accepted as source.",
       "sourceReceiptIds": [
         "command-source",
@@ -1028,7 +1026,7 @@
       "originalRequirement": "| G6 Staging | Exact immutable candidate passes original full suite, frozen reliability benchmark (core RG-01–RG-09/RG-12), Figma/UI/visual/accessibility, retention/deletion, rollback/restore/workflow compatibility; RG-10/RG-11 additionally pass only for promoted optional services |",
       "originalRecordSha256": "6d1ed492bfe416cb269caf362eca3ee558af545073137a9ff98856262549c70a",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Source publications and local checks exist.",
       "sourceReceiptIds": [
         "shipping-reported",
@@ -1054,7 +1052,7 @@
       "originalRequirement": "| G7 Controlled release | Internal users, then bounded tenant allowlist; observe routing/evidence/task quality/latency/cost/error; optional services have independent bypass; release owner authorizes the exact candidate before broader rollout |",
       "originalRecordSha256": "0ed7b8fb036d2002cb90f7d02c3f399662216b1b813bb7968ff100dcc25a3b5a",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Release criteria and preservation boundaries exist.",
       "sourceReceiptIds": [
         "g0",
@@ -1079,7 +1077,7 @@
       "originalRequirement": "| RG-01 | Accepted route on at least 95% of held-out cases | Score allowed source/tool paths and all required families, including expected clarification; a route need not use one identical call sequence |",
       "originalRecordSha256": "72906ff730282598d1b44a4dd84a2cb30595b9841b7c0d6b108d46b996cb8c1e",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Catalog source selection controls",
       "sourceReceiptIds": [
         "read-source",
@@ -1103,7 +1101,7 @@
       "originalRequirement": "| RG-02 | 100% deterministic subject/window/FY/version fixtures pass | Server-bound scope/entity IDs; normalized calendar/timezone, relative duration, funding stage and evidence version |",
       "originalRecordSha256": "c948cb2cc8ecd4125761e9884e2fc74932b1567824d937471edcdf195ca9edeb",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Scope/window/version validators",
       "sourceReceiptIds": [
         "contracts",
@@ -1129,7 +1127,7 @@
       "originalRequirement": "| RG-03 | Labelled answer-bearing evidence Recall@10 at least 95% on frozen discovery retrieval units with at most 10 gold records | Define unit/source/candidate pool; retain all gold labels and report denominators/source slices. Cases with more than 10 required records use completeness/paging RG-05/RG-12; exact lookup/counts use RG-04 |",
       "originalRecordSha256": "b8ea24e93a203272d3ba69e0e188f3dea7eb06ef684d992a6b5f2d3236b5e7aa",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Candidate-result DTOs",
       "sourceReceiptIds": [
         "read-source",
@@ -1153,7 +1151,7 @@
       "originalRequirement": "| RG-04 | 100% deterministic count/status/comparison fixtures pass | Authorized source snapshots, exact filters, bill/document version, PE identity/FY/stage and comparison consistency |",
       "originalRecordSha256": "2afd80640ce1b53021bad42bd1c15cc7208a42325a8ec5c85049f8c99faa4cad",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Domain count/status/comparison contracts",
       "sourceReceiptIds": [
         "read-source",
@@ -1178,7 +1176,7 @@
       "originalRequirement": "| RG-05 | Zero false absence claims on partial, unavailable or stale cases | Complete coverage or a clear limitation; empty candidate search does not prove no matching records |",
       "originalRecordSha256": "c4e180bb61e41bf49176250f4b7fe9b2187fd4d3da5bc40f9ab27bc87152a1f8",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Incomplete/empty/denied/unavailable consistency controls",
       "sourceReceiptIds": [
         "read-source",
@@ -1202,7 +1200,7 @@
       "originalRequirement": "| RG-06 | 100% selected skill ID/version and required evidence/completion fixtures pass | Includes client/portfolio/relationship/memory collisions and Commitments; replay, steer, reconnect, resume and fork preserve or explicitly version the contract |",
       "originalRecordSha256": "05105e98c85dcd87ed3028dc72d6e376c8d4ff4585f813d7670e6467c289a800",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Fourteen selected skill identifiers and structural continuity",
       "sourceReceiptIds": [
         "skills",
@@ -1227,7 +1225,7 @@
       "originalRequirement": "| RG-07 | Zero unauthorized disclosure/mutation in the qualification suite | Cross-tenant and within-tenant boundaries; current grants, memory/mailbox walls, stored context, citations, files and revoked access |",
       "originalRecordSha256": "ce03a4aaf8ce9dcee26e2558814ac0903cd7cd60f06f3a169757ffce41c8d9d2",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Policy/context/fence source controls and reported native state checks",
       "sourceReceiptIds": [
         "contracts",
@@ -1255,7 +1253,7 @@
       "originalRequirement": "| RG-08 | Native discovery actual-proxy compatibility and adversarial catalog recall suite pass | Known required capabilities found or an explicit supported fallback invoked; reference/header/stream/compaction/resume behavior and authorization at execution verified |",
       "originalRecordSha256": "137004bd9f9e9dc01181f1ece2099724dd4d5569da26ca437cc0c7f431c059eb",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "SDK/proxy preparation and catalog unavailable guard",
       "sourceReceiptIds": [
         "runtime-source",
@@ -1282,7 +1280,7 @@
       "originalRequirement": "| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |",
       "originalRecordSha256": "9bd86264d781c53727de856b590090ea8a73d3f1c56a14f3959107f7e7d91a4c",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Declared budget limits and reported9budget/12invocation controls",
       "sourceReceiptIds": [
         "native-reported",
@@ -1308,7 +1306,7 @@
       "originalRequirement": "| RG-10 | Optional classifier reduces held-out routing errors by at least 25% relatively, with no material coverage/argument regression | Paired sufficiently powered labelled cases, confidence intervals and human adjudication; low baseline error or insufficient data can require more cases; latency must also pass RG-09 |",
       "originalRecordSha256": "0fa16a012eee042e97a8296e9bb7899fbcc9cc6f74a09d9d8292008178ed3613",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional Decisions boundary only",
       "sourceReceiptIds": [
         "benchmark"
@@ -1331,7 +1329,7 @@
       "originalRequirement": "| RG-11 | Optional JEV improves labelled evidence quality with calibrated abstention and no required-evidence loss | Freeze task-specific improvement/calibration/adoption thresholds before shadow scoring; report relevant/support/client-fit separately; authoritative facts and mandatory reads remain protected |",
       "originalRecordSha256": "3df5389e2ad8f0a1135623fd34fc39f353853a768a578f79ce28adf04a50b2f7",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Optional JEV boundary only",
       "sourceReceiptIds": [
         "benchmark"
@@ -1354,7 +1352,7 @@
       "originalRequirement": "| RG-12 | Replay/reconnect/revocation/full-evidence-read/coverage-completeness contract suite passes | No stale discovered authorization; session/files/source versions pinned; decisive passage actually read; partial outcomes and continuation preserved |",
       "originalRecordSha256": "cd5d7ef436e2229f6a9db2c44b6d401ff64c3a4985013c689216d2360e8ea2c0",
       "status": "pending",
-      "statusScope": "entire exact requirement; completed-source on G0 means accepted discovery only",
+      "statusScope": "entire exact requirement; completed-source on W00/G0 means accepted discovery/planning outputs only, not downstream implementation or runtime",
       "completedSourceComponents": "Declared lineage/continuity/coverage source; limited native controls reported",
       "sourceReceiptIds": [
         "read-source",
