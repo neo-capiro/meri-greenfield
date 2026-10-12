@@ -1,0 +1,101 @@
+{
+  "frozen_at_utc": "2026-10-12T04:22:10.268111+00:00",
+  "cases": [
+    {
+      "id": "global-conservation",
+      "inputs": {
+        "consumed": 20,
+        "modelUnknown": 40,
+        "toolUnknown": 30,
+        "cap": 100,
+        "newCharge": 20
+      },
+      "expected": "deny; combined110"
+    },
+    {
+      "id": "global-exact-bound",
+      "inputs": {
+        "consumed": 20,
+        "modelUnknown": 40,
+        "toolUnknown": 30,
+        "cap": 100,
+        "newCharge": 10
+      },
+      "expected": "reserve; combined100"
+    },
+    {
+      "id": "run-conservation",
+      "inputs": {
+        "modelSettled": 20,
+        "modelUnknown": 10,
+        "toolCharged": 10,
+        "toolUnknown": 5,
+        "runCap": 50,
+        "newCharge": 6
+      },
+      "expected": "deny; combined51"
+    },
+    {
+      "id": "run-exact-bound",
+      "inputs": {
+        "modelSettled": 20,
+        "modelUnknown": 10,
+        "toolCharged": 10,
+        "toolUnknown": 5,
+        "runCap": 50,
+        "newCharge": 5
+      },
+      "expected": "reserve; combined50"
+    },
+    {
+      "id": "settlement-conservation",
+      "inputs": {
+        "held": 10,
+        "charged": 0
+      },
+      "expected": "UNKNOWN10 becomes SETTLED charged10; combined liability unchanged; replay no second debit"
+    },
+    {
+      "id": "terminal-cleanup",
+      "inputs": {
+        "state": "SETTLED",
+        "charged": 10
+      },
+      "expected": "late uncertainty cannot revert state/refund/recharge"
+    },
+    {
+      "id": "lost-reserve-ack",
+      "inputs": {
+        "committedState": "UNKNOWN",
+        "charge": 10
+      },
+      "expected": "no effect; hold retained; same invocation new reservation cannot bypass"
+    },
+    {
+      "id": "model-tool-mutual-accounting",
+      "inputs": {},
+      "expected": "both model and tool reserve/settle consume same shared views; missing0002 refuses both"
+    },
+    {
+      "id": "post-lock-expiry",
+      "inputs": {},
+      "expected": "database clock sampled after lock; expired/revoked/stale binding refuses insertion"
+    },
+    {
+      "id": "numeric-poisoning",
+      "inputs": {},
+      "expected": "negative/NaN/Infinity/unsafe integer/overflow/fraction/malformed DB bigint refuses"
+    },
+    {
+      "id": "replay-identity",
+      "inputs": {},
+      "expected": "same call under fresh adapter/run-attempt replacement cannot redispatch or debit twice; altered identity cannot mutate other reservation"
+    },
+    {
+      "id": "authority-vs-reconciliation",
+      "inputs": {},
+      "expected": "stale grant refuses new reserve; exact historical full-charge settlement may reconcile prior liability"
+    }
+  ],
+  "note": "Behavioral oracles, not evidence that PostgreSQL ran; actual API probes will bind exact candidate."
+}
