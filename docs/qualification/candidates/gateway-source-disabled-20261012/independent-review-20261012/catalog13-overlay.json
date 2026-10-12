@@ -1,0 +1,182 @@
+{
+  "sourceGatewayCommit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "catalogCommit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 11365,
+      "sha256": "8fbf9c152c7a08678150f122bdfa0dec33253dc877509f72ef0e1b17ac9b8307"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 76401,
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 16814,
+      "sha256": "95eec52796389bbe2e515637024280015993f3a74d971b7680aacddea4e34488"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/common.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 15134,
+      "sha256": "7d7ac22eff809cc31e84d1fc9b2fada1b56c316f73e50115207b579de0d92c4b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 18029,
+      "sha256": "5049b9177664275f763ab97f92fe722ae5d4e2064ca8400f6448d89027f5cd43"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/data-search.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 25959,
+      "sha256": "96e5d1ebc461dc53db86e2fd14e2863d93d5c651e134382a2da5daefd3836fec"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 8669,
+      "sha256": "eebf8b073bc8b25e6c7aea415c269cb034eb9976d45ab6ae0411d709e11295df"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/federal-market.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 40586,
+      "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 15957,
+      "sha256": "e15eec9ea611daa70d8605e8b350c20535fab27f516937897914eeb55d6f8cdc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/mail.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 30679,
+      "sha256": "d45681f76ba5f5d7f65b7385ab1e1c3deb9626d4166e55fc6039e88bc3d804e6"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 23313,
+      "sha256": "5fc7e262efc9be933c760ee089e02f58e4a8d74a958c8e412c216846bbba8ac2"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/meeting-source.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 37907,
+      "sha256": "b7ec6ecbdaab3fcccac3b83b9530828c90bda96685385b6f49f929fbd2776664"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 5255,
+      "sha256": "e76240850b6436b49ee8dba87b75579c3e59bc6187b35c7ea6353286f1ec943a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads-validation.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 21346,
+      "sha256": "81be7fe48c5d34f9352e145d9c47dc2e143ffc0b985a5f1ac26e0be07c344a42"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operational-reads.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 31381,
+      "sha256": "a8556220e2285239e9d46aba97954594f245daad20ab126c1733f2360d3f109c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/retrieval.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 21023,
+      "sha256": "6058aa0d735b595a093907eec8bf7e4e8f4eb96952f497caa3c1eb00f3ad1a8c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/skill.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 9072,
+      "sha256": "146a78397cf72fbb899769fe23a83ab609fd8d67803f543ab5a76dba7a37ee7e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 16841,
+      "sha256": "405983458447c4dc2221f7fff944446862ebe9be15c2df4e1b8ba0fde1b7c52d"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "commit": "475e970bb0776b63a80a1ac8170bfaabf27959a3",
+      "bytes": 1291,
+      "sha256": "5ffd1042ab28e234a4803344f34a882bd0695580914d21136e7c13e43c7ddbe7"
+    },
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 5718,
+      "sha256": "cd090d987e5603d93c111b8ea36e6933fe108bfdeeb8d77ce03f66a4e85f0217"
+    },
+    {
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 2396,
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff"
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 2994,
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248"
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 2818,
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468"
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 6409,
+      "sha256": "ac0f957a4b8c3716af8fbedaac1e547e033077f3d0642bc49ba6d7c7d33fa916"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9"
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 5042,
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c"
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "commit": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+      "bytes": 10635,
+      "sha256": "ae9e94ae696ebf0982b0e1592438ec510f502bee29a315a567f6f27faeb62268"
+    }
+  ],
+  "producerFilesModified": false,
+  "activation": false
+}

@@ -1,0 +1,9 @@
+{
+  "base": "0eb81023343fcfd2d5129a09c0048371cc9ccaa2",
+  "allBaseBlobsUnchanged": true,
+  "baseBlobs": 1385,
+  "publicContractsUnchanged": true,
+  "dependencyPackageLocksUnchanged": true,
+  "sourceConnectionsDisabled": true,
+  "canonical13ResolverIntegrationPending": true
+}

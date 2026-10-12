@@ -1,0 +1,1787 @@
+{
+  "name": "aws-shipper-materialized",
+  "repository": "neo-capiro/meri-greenfield",
+  "publicRef": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+  "localRef": null,
+  "usage": "MATERIALIZED_SCRUBBED_EVIDENCE_NOT_GIT_CHECKOUT",
+  "fileCount": 296,
+  "totalBytes": 6851210,
+  "files": [
+    {
+      "path": "docs/coordination/reports/AWS-SHIPPER-20261011-r1.md",
+      "bytes": 18270,
+      "sha256": "b49a976d9b2f1e29b6c52dcd2cd24f0667c7481e19aa4c5f364632ac0c818fe7",
+      "gitBlob": "fcce5a3b4bc76bdc436ddec8cb6ec3a1a645a9e2"
+    },
+    {
+      "path": "docs/coordination/tasks/AWS-SHIPPER-20261011-r1.md",
+      "bytes": 3429,
+      "sha256": "c2277d4f7d58ff60d1681970bb0a8761e094d7fcbbc888d7a2a11ac7173c7b58",
+      "gitBlob": "9520a77f0808941c57f6a6d7f341aef5b25beb70"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/.gitattributes",
+      "bytes": 72,
+      "sha256": "308a40fa1d89ae5ea4390b4c9b46a0108b09f171f07898f25d451fa0c69c4e9f",
+      "gitBlob": "e11c72b55f06e648f9ab243b05b210f5bdc3a420"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-hold-scaffold.json",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6",
+      "gitBlob": "7938929707ba2e81575a476338f3318e089c3411"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/canonical-repaired-scan-summary.json",
+      "bytes": 1476,
+      "sha256": "6ba45277654c988e1869ff34395077984ea095768cfd58144aa45118a8d7cabd",
+      "gitBlob": "4e5e2d02df1f86c0169c916581ef42e7a80b4999"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-encryption/process.json",
+      "bytes": 999,
+      "sha256": "68d5bde5ddc45f20e318773c404d73e7e06683035a18f48b3674a07d5d5966dc",
+      "gitBlob": "8cbb23534767ff0ae1555a5ec9fb47e38ef1155b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-encryption/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-encryption/stdout.bin",
+      "bytes": 565,
+      "sha256": "75ff5c80a64a3291236285afdcc600d6a8e90d38bde2201ea9ac130b05507e9c",
+      "gitBlob": "d9563453914eb2b53732ccf5ae8e4a22ccfe4ab8"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-location/process.json",
+      "bytes": 996,
+      "sha256": "605849d5b91865e98bf301c61faba79411c95bd37c697d0fc4f3c21d9f012a25",
+      "gitBlob": "07511182a5d733b3aef12e7db2885c26e8243a8e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-location/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-location/stdout.bin",
+      "bytes": 38,
+      "sha256": "580f3ae63e65899a657e0565d3b73977606157c01bfaf3e83130dccda2df186f",
+      "gitBlob": "855b3bb502f676eb01f5f39ac2bd1e2b1b9b504f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-policy/process.json",
+      "bytes": 995,
+      "sha256": "cad7681306dcae472905ff96df7bbebd94861e66f97b9c6a91f58d9168594401",
+      "gitBlob": "44d8d53fb9539e0bb4699f3316b0bd24c2eef242"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-policy/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-policy/stdout.bin",
+      "bytes": 352,
+      "sha256": "7c7bd9ba4735be665758959bbe0d89688a1361a20715b060e33638b364367368",
+      "gitBlob": "952a5d66d77c23dba4c551e4117cf6aa7622fb62"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-tagging/process.json",
+      "bytes": 996,
+      "sha256": "d0b6be458444d3bd73d35827f21e035f36b06d847f5a6d2699f84d767b418473",
+      "gitBlob": "c1f7122c2dde4d4785fba474ab6d0adb26bb79ae"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-tagging/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-tagging/stdout.bin",
+      "bytes": 879,
+      "sha256": "4e3dbe4f875dcc38294ff2206f2156975e8b12acb8825e465ddf1e74e6996452",
+      "gitBlob": "005d7d1b6b4b4293dbce21503c280b9c1f210821"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-versioning/process.json",
+      "bytes": 998,
+      "sha256": "57c7ffee9b1b4184ae8616c633a97559f2ccbd0af2a7d6ac914455677bf6a9c1",
+      "gitBlob": "1cd0ac369586b7b61be19219e3fefde8382d6392"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-versioning/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-bucket-versioning/stdout.bin",
+      "bytes": 31,
+      "sha256": "c09f5c2ec78beeb6322bd85f53999dfd2bb6a0db15c1596d9781e483e98604f9",
+      "gitBlob": "21fbd5bd90c1fad1f9f5a8529114cd1e5fb1dec4"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-public-access-block/process.json",
+      "bytes": 1001,
+      "sha256": "a8bbce1ef38b1b8817ffa8958e5df098f1cad5ae663d3ccb6e673597a42df083",
+      "gitBlob": "a37606825f254baff6704878baafec4267ac13ef"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-public-access-block/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-get-public-access-block/stdout.bin",
+      "bytes": 198,
+      "sha256": "2d5dddfa40f86db2f2f342efff9f819a9edec785ecec6b4bec5dd23b3219377e",
+      "gitBlob": "141c7da1f9ca8a1402fa0a9d9fd16c72e0b40d3d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-history/process.json",
+      "bytes": 1004,
+      "sha256": "680dbd6906df53c9d20664852371decb02f392b26c24c87c0a4e7eb1c6880669",
+      "gitBlob": "ae3693e4d97691eab2176eaad7ec69ba9ee1c131"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-history/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/build-history/stdout.bin",
+      "bytes": 1726,
+      "sha256": "dd70ad59a9cc4d2552833c33fa16161724c5a59b5f58cb254aaba20247cd4c17",
+      "gitBlob": "4c8c4818394d013c6a313245c94e356b04efd38f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-get-role/process.json",
+      "bytes": 971,
+      "sha256": "8e9c1804fb250f436ad0ead0eeea458326e21dd6ca35f11e933a1f1a7ff5940c",
+      "gitBlob": "ed1949753c3cd92126dac0b165560d1f3eddd30d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-get-role/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-get-role/stdout.bin",
+      "bytes": 1879,
+      "sha256": "553d218c033e4b3884ea8dba7e4804926fd8926e9b2f0410c961f004d501c18c",
+      "gitBlob": "d400d777431b74c08e1cec4e7764b8b461c5660d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-inline-0/process.json",
+      "bytes": 1039,
+      "sha256": "703e1b91e016e495bb566c82ba91f2dba80d35bf2cb564205a6e01c4c866df71",
+      "gitBlob": "9fbb565f398f98fe392ea3de77c14629485abd20"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-inline-0/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-inline-0/stdout.bin",
+      "bytes": 5309,
+      "sha256": "c7c6d267e782f766dc8e460b79b416db37b413857f80ac66fa3a2adc2347b24e",
+      "gitBlob": "9446430759a7d0db2e44c003b92cfd7dbf93a798"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-attached-role-policies/process.json",
+      "bytes": 988,
+      "sha256": "f9f716f0af48290b53d1158cda09955f66f772d35e0758f4c00e1bbfe620eb6f",
+      "gitBlob": "73322e15a67105d22d8de2e811ecf075f4135b41"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-attached-role-policies/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-attached-role-policies/stdout.bin",
+      "bytes": 34,
+      "sha256": "ff7675aab7d020cd91d45cf598910ca3aeea005387cea360be64bb74ab120fe0",
+      "gitBlob": "1a655624402a540e67b233603c27695f5bd60631"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-role-policies/process.json",
+      "bytes": 979,
+      "sha256": "57adc6e0b14ecc1ebab1cb25a11d411b927e26ceb8a18bc4712468211aec5cba",
+      "gitBlob": "5e4e4ee5231d7e562508642bc7528b28bd9daf88"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-role-policies/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/builder-list-role-policies/stdout.bin",
+      "bytes": 79,
+      "sha256": "045b4210f235b31cda241e3da42bea77ad39fb6e060cc60f18031a445ee6fcea",
+      "gitBlob": "8e39c78a1b9317ef73b77b4918061bd488cf3d5a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-encryption/process.json",
+      "bytes": 1004,
+      "sha256": "f09a79879b53b567986411224f88baed5523d4c7ff2e76875dc1b8ef2c5dc677",
+      "gitBlob": "2a371800f00acfc252abab042bfd8dac3f626ee6"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-encryption/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-encryption/stdout.bin",
+      "bytes": 565,
+      "sha256": "f87fbd877375038b8a9c5de71ae93222c04f2bac39552d3057072f4cb2dd17fc",
+      "gitBlob": "8f9ecb19c2841ba131e5804580a5e7180aff48e6"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-location/process.json",
+      "bytes": 1001,
+      "sha256": "e9cc6264fe4121ebc895835deaea037cde8e4b79e6b4f654e27e69c79e9c2ef8",
+      "gitBlob": "e8922f5a00fcbb9d213fbfdecc7595367c01fe44"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-location/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-location/stdout.bin",
+      "bytes": 38,
+      "sha256": "580f3ae63e65899a657e0565d3b73977606157c01bfaf3e83130dccda2df186f",
+      "gitBlob": "855b3bb502f676eb01f5f39ac2bd1e2b1b9b504f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-policy/process.json",
+      "bytes": 1001,
+      "sha256": "4595b794c9ddda8f6990114cff59ac6e4e7a0b098ce5142d6ed470c858c77201",
+      "gitBlob": "1776c34969b8f0d5ea45d696da8046086d63dff9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-policy/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-policy/stdout.bin",
+      "bytes": 1317,
+      "sha256": "671ceb73898245ef1ebfea8ca181ed1b36d4697a5fba84e683ad053deae005ac",
+      "gitBlob": "8114fbf7ee23aef8af0f1fdd704f0ffa1deabfd7"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-tagging/process.json",
+      "bytes": 1001,
+      "sha256": "6149d667b2d798c449c16496823c0c80e47b6c4cc2d24f173c17e16a875c7552",
+      "gitBlob": "3afbeb4ff2c8b52e0789b2d21bed7e7f011ce59a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-tagging/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-tagging/stdout.bin",
+      "bytes": 900,
+      "sha256": "504418ef9502136ce25b4086a8b37041f668a28c4f56ee1152bdbdbb4a984487",
+      "gitBlob": "6f8035e7983841050e7a8af7a9b2ba1276d72536"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-versioning/process.json",
+      "bytes": 1003,
+      "sha256": "09b92f57575a27a3ea7a3aca258a0bfebf93e3936b68595dae17c4e6c904403f",
+      "gitBlob": "f7407d932c31b62280222961d6beac33e1d9c7f3"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-versioning/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-bucket-versioning/stdout.bin",
+      "bytes": 61,
+      "sha256": "18ced3c308b631f8dd00d4ea1b4b7b6ee9c956b7a473972337d99279418d81a2",
+      "gitBlob": "e9c1703c2e7ec52a81d6e55b8bdc2acbc80273a1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-public-access-block/process.json",
+      "bytes": 1006,
+      "sha256": "929059b9421d454e075ce117b04e36220692e7df01ddf1ea21f9182c3cf21b09",
+      "gitBlob": "bd1a8b22e0f4a99e8c88849dfc9319e35b4a855d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-public-access-block/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-get-public-access-block/stdout.bin",
+      "bytes": 198,
+      "sha256": "2d5dddfa40f86db2f2f342efff9f819a9edec785ecec6b4bec5dd23b3219377e",
+      "gitBlob": "141c7da1f9ca8a1402fa0a9d9fd16c72e0b40d3d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-lock/process.json",
+      "bytes": 1012,
+      "sha256": "500dd5aa213a309eee82b793703a219f74c0b4335ac2401291c18fe18af89752",
+      "gitBlob": "b646e750f19e05f24407eb06244901665e344cce"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-lock/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/checkpoint-lock/stdout.bin",
+      "bytes": 234,
+      "sha256": "b6f534b0ca603ad51bb4714a04493dbb74f1518eb8e8234f0d348b93dbe89120",
+      "gitBlob": "17ae4bd9cf22e798e554bdcb446406980b9219cc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-get-role/process.json",
+      "bytes": 948,
+      "sha256": "9480dd31d03c0cac90687456983bba0db2b0a0d213f9c78704058ab5b7589fb9",
+      "gitBlob": "7f2d8658e433531b9df81b2059db4ca507fa5746"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-get-role/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-get-role/stdout.bin",
+      "bytes": 1661,
+      "sha256": "2ea6d27280ca5a5c4bae1a7d6b605639460016d1a644d654fb77f3f07a182fb6",
+      "gitBlob": "c2a65360dd2307ef5708c23fe5b5b2f689dccddb"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-inline-0/process.json",
+      "bytes": 1020,
+      "sha256": "772e7c9281fd549b13d128ed19e45cdc2914d47d74906bd789e03c3977ec2a9a",
+      "gitBlob": "b7a64e5fb4e8237e5a4260a4d36cefcb83c1117a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-inline-0/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-inline-0/stdout.bin",
+      "bytes": 1978,
+      "sha256": "f3b2ec19fa3270e43851098df3535c69e9805b9517a022dbc91895cba251a1bb",
+      "gitBlob": "2864976e581e123a56400e4f623ccf48174e5bc6"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-attached-role-policies/process.json",
+      "bytes": 965,
+      "sha256": "cc6401755385a0d3e3e67ec0cebecb3436d5387404db40ae9c39c171f371fb54",
+      "gitBlob": "eae0b489147f6707f711aa734ea73df404e3a584"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-attached-role-policies/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-attached-role-policies/stdout.bin",
+      "bytes": 34,
+      "sha256": "ff7675aab7d020cd91d45cf598910ca3aeea005387cea360be64bb74ab120fe0",
+      "gitBlob": "1a655624402a540e67b233603c27695f5bd60631"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-role-policies/process.json",
+      "bytes": 956,
+      "sha256": "13b193f0a499e7307b4964ce611a60f35332d9255b31274a61fa114e14784024",
+      "gitBlob": "5e5b53ebaff794c268db0895525c3bd503fe4b02"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-role-policies/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/control-list-role-policies/stdout.bin",
+      "bytes": 83,
+      "sha256": "e013e455ecf408bd268e18a25bbe6409d8a9bd66af3457aaf363fd9eae387ecb",
+      "gitBlob": "89025afee397b1a04a80df69a9315c83080e6dda"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-2/process.json",
+      "bytes": 989,
+      "sha256": "8ca34309ff8b9742a64b94c3cd13c48283502d591416546eec0eef90c2121f1a",
+      "gitBlob": "2573f7ac0f4d3758d8094959920cad09b71c0927"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-2/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-2/stdout.bin",
+      "bytes": 6436,
+      "sha256": "05ed196a12a128b8d5a1887009f5c9aac1b8fe18c9d60ed91fd622d05bf23f2a",
+      "gitBlob": "9059044ebddfd1cc2de4f4e3cc75ee05dbd842f1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-canary-1/process.json",
+      "bytes": 996,
+      "sha256": "9b0a63948bc64356c05c4af928ea447ddba350754f366a0476aa4e73869b3f90",
+      "gitBlob": "26c02a09274a535dc2b628e14ac3b57fc4637900"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-canary-1/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-canary-1/stdout.bin",
+      "bytes": 6334,
+      "sha256": "1946b31eb186011aeb8283be234afa5ef63def4e6126d69bf3a3720cb7512947",
+      "gitBlob": "391a991b6c8bfd0ac3e1ea843290fb2a4588a3f9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-office-2/process.json",
+      "bytes": 996,
+      "sha256": "04a44627e108617a005f6ab38ca99d787726d067e1e934091f3c88dff47928cb",
+      "gitBlob": "a15d540243dcd6e911e7b278431e5a961d6e4b27"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-office-2/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-office-2/stdout.bin",
+      "bytes": 6137,
+      "sha256": "d361b79678795326cd5c78333685a39480486f5856ee054b746b635a7bd5a508",
+      "gitBlob": "36d0537f7da3e74e99f57dd478036c0959957bf9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-sdk-2/process.json",
+      "bytes": 993,
+      "sha256": "ca55cbd015910aeea4a1d3b1efbd0029cad8dc98dcee75059a303c534e0117d0",
+      "gitBlob": "5826f6da74a1a77c32b5ed0fed63ff84b20c543f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-sdk-2/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/definition-meri-greenfield-qualification-sdk-2/stdout.bin",
+      "bytes": 6126,
+      "sha256": "fb11d5dc0536e79eeb0f6903629734863d9ab08186d07f47aa6ab172dbeecade",
+      "gitBlob": "7f6fd22b5f6c6a094edd893f9ec1f2402bdf1120"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/process.json",
+      "bytes": 1079,
+      "sha256": "78a9fc8a07d34e99f4a3b18e44d81b9636d2de1f92ca3fba146daff5e9364fea",
+      "gitBlob": "32c57586a013db91856e4f41d35e28c65f2de269"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-canonical-repaired-scan/stdout.bin",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+      "gitBlob": "54c5e3e1a9d8e48ea922cfd078aef6e25a434713"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-fresh-scan/process.json",
+      "bytes": 1080,
+      "sha256": "5204e441107d46b94e2a76d724f874dcbde54fb7d64b699dca76c77e3cf23f35",
+      "gitBlob": "af32f721a87033b84fd8090f22a7204c6fce1fd5"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-fresh-scan/stderr.bin",
+      "bytes": 285,
+      "sha256": "9300e6832f7e04ea69e8f754831c79d83b750822a82c4a7366a80c0473e7ceb3",
+      "gitBlob": "01147805dbbe5b411e44efdb618c64c0c8d92179"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-fresh-scan/stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-images/process.json",
+      "bytes": 956,
+      "sha256": "a5a38da51f6165002230bea79a1933ab53b20e6d6f55ff47d145ba45ef67e722",
+      "gitBlob": "f48c30b3be58e2c74261a5a28768df54f2c27aaf"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-images/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-images/stdout.bin",
+      "bytes": 5313,
+      "sha256": "adad85ad4fef76dd24c43e5084ac83c529c6226fccbf8632d19d0037420dbee5",
+      "gitBlob": "b480ab95ad3cc5be408541c610abc07f4a67ddef"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-native-diagnostic-scan/process.json",
+      "bytes": 1113,
+      "sha256": "48b06e3f5256de4ed017a5181b3318eea2abecfae7928f3dc13ac3ffeaae94d7",
+      "gitBlob": "a2a4682b709dc627f35884ba8b38d00975d4d56a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-native-diagnostic-scan/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-native-diagnostic-scan/stdout.bin",
+      "bytes": 59678,
+      "sha256": "011fff3c6b57794e0674644c0f8d14c56a7b6a94c1512e3806b256abe2afaa6a",
+      "gitBlob": "3508f6b9349787fca0995c070a23090f16428473"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-old-manifest/process.json",
+      "bytes": 1066,
+      "sha256": "725a95479c213f799708dd34b7664479ef7a43d145b5472f9838072043938758",
+      "gitBlob": "7994272c778d38880972b1a497e16cc6fb76dcac"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-old-manifest/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-old-manifest/stdout.bin",
+      "bytes": 8323,
+      "sha256": "bc263eb6f309ec45d17c1c45a35c9aa9db733c88ffeca34483ba9948307e7056",
+      "gitBlob": "a15003817aae69379d0f67f81445626f5d2ce934"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-repository/process.json",
+      "bytes": 962,
+      "sha256": "95b46723c7b4148a9bd9a5bb7bea02948538dfa7fe3cf4928581f6f05d14e2a9",
+      "gitBlob": "e968a820d98899770c85bd6aab1a338b2f72ede9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-repository/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecr-repository/stdout.bin",
+      "bytes": 814,
+      "sha256": "62090ccda9db29ab31af4a6407fd77e5fa3dbbb95d73ec44848136511e96981e",
+      "gitBlob": "994f07482c2a3fe0d932b1885927807889d5bdc1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-cluster/process.json",
+      "bytes": 1006,
+      "sha256": "65b3cae84bdb1a034903dc82aa052b1015d84f2595a0789cbae4f1dd4bdb6cbb",
+      "gitBlob": "ca0d30eff33b546c7fa2a1c072adc18909973054"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-cluster/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-cluster/stdout.bin",
+      "bytes": 3975,
+      "sha256": "3ac866e9a408b71bfb343635573c0c278e46de47e12424320051c8369acb5a04",
+      "gitBlob": "6e8ad2917ab9912394fdad8adb4ce18c192a74da"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-running/process.json",
+      "bytes": 973,
+      "sha256": "b0e8ad24c73bfe6b3f183eedd473cfa530ddb6d16658730ca5c7ed3901abf758",
+      "gitBlob": "ac6df177195fbaf1c764534270b4d46bed99ac47"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-running/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-running/stdout.bin",
+      "bytes": 26,
+      "sha256": "97c8df30bd5dee0cd66a3c74327d2ca398bcabc8e81afe0293ecf467e8a617d8",
+      "gitBlob": "0c0de69d59e5a6da7ab86514ec6ceb24c2d8f930"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-services/process.json",
+      "bytes": 969,
+      "sha256": "d2bab0eda348afa0d574a142b37c6116b44d453b29928b636fad0f9528f91a83",
+      "gitBlob": "574ca26766e281dc18ad59e1dc1702fd0c6f6fbc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-services/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-services/stdout.bin",
+      "bytes": 29,
+      "sha256": "36076713ab63a52bc980c6f0a7b243a843284e0f84e46c586f2d243753a93819",
+      "gitBlob": "5a2964fa1592c85019b84099bc1053951e629b9d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-stopped/process.json",
+      "bytes": 973,
+      "sha256": "bf61e7a6720a5ef30cc3eaa1ba8894f4dc5d465ee82a63fec5ffa886b53a28a5",
+      "gitBlob": "1e16297740b80b04932e1b8271a8fabf622df0a1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-stopped/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/ecs-stopped/stdout.bin",
+      "bytes": 26,
+      "sha256": "97c8df30bd5dee0cd66a3c74327d2ca398bcabc8e81afe0293ecf467e8a617d8",
+      "gitBlob": "0c0de69d59e5a6da7ab86514ec6ceb24c2d8f930"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-download/process.json",
+      "bytes": 1293,
+      "sha256": "0bc0cf6697158fd8a2798a8e7d3753aefa707aea555bcbe3eb0ccf275b0a1a68",
+      "gitBlob": "69b42666de9619ec9ca10f2b0a22b3d3269d8312"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-download/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-download/stdout.bin",
+      "bytes": 533,
+      "sha256": "c1738e622028e8401b94c8fdf9c992b79f674b7ae208f0a53de8a878e99f262d",
+      "gitBlob": "d866f15ad804c0a346aa3d104d0c164fb5c993ed"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-head/process.json",
+      "bytes": 1153,
+      "sha256": "99bd22a10f9d1f42a5db22f8994221dd4dfb979d74667da0aca919c4adbda8e4",
+      "gitBlob": "eea74958a1afe58b46d03f4425fa38512eb5054f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-head/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-head/stdout.bin",
+      "bytes": 533,
+      "sha256": "e44f03a76045bdc1518a800dc79cb5df3fffc0c9179f8437f8e0d768740544b9",
+      "gitBlob": "c2dcc75f2a53182b520526a3ae09700983337d94"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-prefix-versions/process.json",
+      "bytes": 1086,
+      "sha256": "bf496a6e781723dd3cf2f2b74b23f1d06930a05c71376d3648c71d263baaf860",
+      "gitBlob": "43478c08d1d1c89082c0590ef7e599db9cc74a9b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-prefix-versions/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-prefix-versions/stdout.bin",
+      "bytes": 799,
+      "sha256": "14ba918f93557903a4a53611beea19d0959c184d17ce46cf5f6b3d74bd227ce8",
+      "gitBlob": "f9ca07bd2b91290744809bab00aa6118b19b9e2d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-source-download/process.json",
+      "bytes": 1282,
+      "sha256": "ffa90eb9417d2efdee38386338a952ded8775671d4318c0123bea6ba11f6ce27",
+      "gitBlob": "41959ca298b6b282abc19ea21bb47a44699a7410"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-source-download/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/historical-source-download/stdout.bin",
+      "bytes": 700,
+      "sha256": "a879cd30d15e748691b85b21ae57121b6d231cbb296400d00fd11082b397f6e8",
+      "gitBlob": "893ebad1464b0a1537a9b7373d0221a29efc0aa7"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity/process.json",
+      "bytes": 890,
+      "sha256": "f9f8af8000c66afa3ab647f0a6689cb3cd9b972edcdadff4be4928966d835852",
+      "gitBlob": "cea5a5a077c9b66a1e4d2077fc702857d079c83d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity/stdout.bin",
+      "bytes": 133,
+      "sha256": "6875b3013ad0ed8bca5296cb6ff420e80280b50fe34035cad7dc82ec7e857110",
+      "gitBlob": "377d2668c8fa4bd3b417fa24cc18f138a746597b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity-repair/process.json",
+      "bytes": 890,
+      "sha256": "b787cb6a76165203899668d72ad3709f6d98226ecb9b4d994b291ad0c0e571eb",
+      "gitBlob": "6249860404689818767ed3900f90e5b9693c76ee"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity-repair/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/identity-repair/stdout.bin",
+      "bytes": 133,
+      "sha256": "6875b3013ad0ed8bca5296cb6ff420e80280b50fe34035cad7dc82ec7e857110",
+      "gitBlob": "377d2668c8fa4bd3b417fa24cc18f138a746597b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-1cca74fc-d9ae-43a6-8bfd-b93107e90042/process.json",
+      "bytes": 943,
+      "sha256": "6411807bedfaaadc0daf39e92e6f9c18c77975c5448d818e090b19161274b541",
+      "gitBlob": "0ee64ce0c8b71caffe51c1b4e24eda05f1ee30bc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-1cca74fc-d9ae-43a6-8bfd-b93107e90042/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-1cca74fc-d9ae-43a6-8bfd-b93107e90042/stdout.bin",
+      "bytes": 788,
+      "sha256": "b108660ec45911ce0443f272c7928d6a02ba246aaa6bc41f8a49d93532d4075d",
+      "gitBlob": "904ffb303036279d2377ff02e1b20d9af75e03ad"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-3a04f062-40de-4ed8-9a24-dad87c488e0c/process.json",
+      "bytes": 943,
+      "sha256": "77becd3165b4933a75bc92c570fa5cc96002afe681e163585d8b2377366eb97c",
+      "gitBlob": "0f495bab388384a4d2a3ba9f52330270ddbd2343"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-3a04f062-40de-4ed8-9a24-dad87c488e0c/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-3a04f062-40de-4ed8-9a24-dad87c488e0c/stdout.bin",
+      "bytes": 788,
+      "sha256": "b1e12bdb900703b1dc477a87773a544824a48e2612a6c8d32c82f501df0345c6",
+      "gitBlob": "3966d47f02dc3be5066dec3c5c22d76cede6d77e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-1cca74fc-d9ae-43a6-8bfd-b93107e90042/process.json",
+      "bytes": 981,
+      "sha256": "6f6f8810aa1d460a38ab8783ddcf9af91f0bfd288929e5fde65d9b797bdafd9f",
+      "gitBlob": "48370bef1e3a2f91a4c40d435ec872a457a4959d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-1cca74fc-d9ae-43a6-8bfd-b93107e90042/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-1cca74fc-d9ae-43a6-8bfd-b93107e90042/stdout.bin",
+      "bytes": 761,
+      "sha256": "8fd6fd21c736ba57377e210f18b1ee4f6a7238708566b2228dcf2e6d724160fa",
+      "gitBlob": "0d2712519ef0eeda18fbc9297e7f9c7da865fb60"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-3a04f062-40de-4ed8-9a24-dad87c488e0c/process.json",
+      "bytes": 981,
+      "sha256": "1a037c6f9890f7d40a29cccd8bf7653674ea3038e2e49d7a1787f81f5e146665",
+      "gitBlob": "9ccd7bc3b76ec44d628f7eddfb72fb739f3af792"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-3a04f062-40de-4ed8-9a24-dad87c488e0c/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/kms-policy-3a04f062-40de-4ed8-9a24-dad87c488e0c/stdout.bin",
+      "bytes": 288,
+      "sha256": "756f4c2bc42b7d79aa11947edc37f9a6d40995806c8bb3014975d8c8a018a397",
+      "gitBlob": "b966fcd4f85306368942c4e0b1e67f602c615651"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-0-executions/process.json",
+      "bytes": 1072,
+      "sha256": "8904d0aef6191c471613a62be8d6032cef68175eaef21a6ba15b88401a31272a",
+      "gitBlob": "a75b48fde1baf25a1379717f1010349c04dee90e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-0-executions/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-0-executions/stdout.bin",
+      "bytes": 824,
+      "sha256": "8bbd20fd452918e0fa28efa89a415635a07923ff67d9c917b3df3549d5aff1b5",
+      "gitBlob": "3e13cbd8745b4aac6a0860d9cdd012fd1ef42767"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-1-executions/process.json",
+      "bytes": 1065,
+      "sha256": "c45b8b8e18c88d6a05d144194a9f8e56114854fa7746a66fdd98a2d871f75a91",
+      "gitBlob": "f6a3a521f4d5d83587dbef2504be96bfa94c2e86"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-1-executions/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-1-executions/stdout.bin",
+      "bytes": 2277,
+      "sha256": "2075cd049afe605c3f09658a6b7b55e477792e41be29b913a22e90bdfa4a4339",
+      "gitBlob": "c3fc79bc842de02b1a9003f8e443ba5fe719d4ab"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-2-executions/process.json",
+      "bytes": 1061,
+      "sha256": "95969e356bfe034330d70b710e70183b9ae48cc61083900b76bf888c43ef1abf",
+      "gitBlob": "fda18504f6fdc90363e3c2f005501f0d88eb51da"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-2-executions/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/machine-2-executions/stdout.bin",
+      "bytes": 781,
+      "sha256": "87c29c7bb7ebc7c59687e9fd1a20b061f8c593417de28810c7b486a128271d0c",
+      "gitBlob": "b4dc0620e49024afcda7020f31b2542c1a03a699"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-network-interfaces/process.json",
+      "bytes": 965,
+      "sha256": "d0aa9de9fd092048db47b11b314f76365d9724af2b76ea2123aa0e737b32153a",
+      "gitBlob": "36bec1c82a142477235f3308a36123a8dd671492"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-network-interfaces/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-network-interfaces/stdout.bin",
+      "bytes": 10536,
+      "sha256": "e5e2a4cbb3691974bf9a11e21a66adcb9bb5b39ad2ffa8ad3a98b04c6c09a8d9",
+      "gitBlob": "619d2a9c4c06a4145befc8a5073553c8d07f2629"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-route-tables/process.json",
+      "bytes": 958,
+      "sha256": "b26916e030995c6a0b87f0ae76a419aae692417d01d61f1f52d8c5f792459c49",
+      "gitBlob": "add9830d9991aa2e095f43e6e9d89189f11f1a99"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-route-tables/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-route-tables/stdout.bin",
+      "bytes": 5830,
+      "sha256": "6afcb84a863c15003e89c973c97410121686650253d1b2e918e3500535fccdce",
+      "gitBlob": "5def2a4b1a459374972790edd9b37fa9ec0536ac"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-security-groups/process.json",
+      "bytes": 961,
+      "sha256": "2144db5edf82803c25394a4678ef174dccb0f72cafd25401a4de66597bb75bd6",
+      "gitBlob": "1a1ce5647cb07b5243279927d79432a24df7327a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-security-groups/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-security-groups/stdout.bin",
+      "bytes": 6583,
+      "sha256": "411ff9b09304e6477f8dbc8e405d338c0596a6304aad1de254626a4983ae0597",
+      "gitBlob": "5e3d5b2086645f800b161679fc7f3f5426eb2791"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-subnets/process.json",
+      "bytes": 953,
+      "sha256": "ddd0d1e381389c7d4d1f477e9544824758d75184c247c8688df13e91c8b1717b",
+      "gitBlob": "3b797f9855a1aa7758323bd48cb6ef3a481d66b1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-subnets/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-subnets/stdout.bin",
+      "bytes": 5382,
+      "sha256": "b5f621a2965a2e5881b8a64ec781988d262f479271071a2e6463f1d66ad9fa70",
+      "gitBlob": "6122ed4e037fc937626dd05ad0679fce8487e7dd"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-vpc-endpoints/process.json",
+      "bytes": 960,
+      "sha256": "f9c2adaf92af15fe2f40c4a66074b87145d2fd876b93f5cc7e8d59b7ff204955",
+      "gitBlob": "54346ee14ed64eb432d7e652f138f4d49b0f9ba1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-vpc-endpoints/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-describe-vpc-endpoints/stdout.bin",
+      "bytes": 13873,
+      "sha256": "73c6ec7b1c64b557728e21b72c585909f8bf5adbb3d2ebe126ac1e662be3a833",
+      "gitBlob": "14b52cf12d02713297a63098b30f37878d486b6c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-logs/process.json",
+      "bytes": 948,
+      "sha256": "fc2d36886f60587f0bb89268986125e9d747f263383a8d274ee06f3035f52779",
+      "gitBlob": "60913658bfaab2dc50260141f6b70f1b54249def"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-logs/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-logs/stdout.bin",
+      "bytes": 1471,
+      "sha256": "7ac0acd5ac2973ec7aeaec2b70d474b6831e922f71089de6fb3989eeb2f85cd8",
+      "gitBlob": "668c7a2a111127d16ebb27e737531d790a6167c1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-accepter/process.json",
+      "bytes": 1017,
+      "sha256": "6a575dda6a351486c17340887dc84b68531bed7594aba5a4035aef9aa542a6fa",
+      "gitBlob": "0c845f7e574a59440dcd84c4bfc79756739aec7a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-accepter/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-accepter/stdout.bin",
+      "bytes": 39,
+      "sha256": "2d89a301035a4e4c2bd1fe12a673547a09755258bf9878665b44a759dd07c802",
+      "gitBlob": "396d0dc451cbc0d9a4ed44785ff24045e162dba2"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-requester/process.json",
+      "bytes": 1018,
+      "sha256": "916a7656704f15f3793cd56f7196b2545f3e83124a2967be72d62c3adcc19396",
+      "gitBlob": "469a72e6434afc2aba3a49d235944fbca1866adc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-requester/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-peerings-requester/stdout.bin",
+      "bytes": 39,
+      "sha256": "2d89a301035a4e4c2bd1fe12a673547a09755258bf9878665b44a759dd07c802",
+      "gitBlob": "396d0dc451cbc0d9a4ed44785ff24045e162dba2"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-vpc-ec2-instances/process.json",
+      "bytes": 985,
+      "sha256": "7d5b78c0ca747d0f5d66280f6a7dfb7d83ccee4abd3712b474bfdc055dabf111",
+      "gitBlob": "09a11ed10dff793081724bbc87a507ae14ddcf1e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-vpc-ec2-instances/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/meri-vpc-ec2-instances/stdout.bin",
+      "bytes": 30,
+      "sha256": "933a2f6138a1c82589807ab8a77d2ebb930948eb0f472f564d0cfb491f7a2d34",
+      "gitBlob": "908611fc32442a4df85d58f600fea089c4cdd836"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/merigreenfield-instances/process.json",
+      "bytes": 961,
+      "sha256": "c94b549f69525b913f873ab50b5dc62eee42c40098c014bcdb7f4a3dbc9fda87",
+      "gitBlob": "49ba61266d41b039ca1d20c4c41583dc87a57b28"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/merigreenfield-instances/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/merigreenfield-instances/stdout.bin",
+      "bytes": 35,
+      "sha256": "0d4d0d97529e20fec7ad5b3c063cc5401acf40a80343dbb1132f25525b5f0d6d",
+      "gitBlob": "87b7ddbcf4db329cc825173c8d9f1d779efbe69d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/named-vpcs/process.json",
+      "bytes": 1004,
+      "sha256": "3783f224815b7bab2ef13373a5ee1c7aa181f4a35005f58d6b2fb28ee26255cd",
+      "gitBlob": "d4411a724ac2e3d8133cee02d2989daf318928bb"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/named-vpcs/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/named-vpcs/stdout.bin",
+      "bytes": 3840,
+      "sha256": "b6f646831fcc8243fd6af5d8c47e4e6105c5882ea9da6349e3c8cc60820ce644",
+      "gitBlob": "001eb6b002102199a0c751ccf7117702c9000312"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browsermanagedfixture-20261011/process.json",
+      "bytes": 1008,
+      "sha256": "1b609680a810cab6ee3d020081305f4c2821e2deeda549f3989d8726bf0ea471",
+      "gitBlob": "e15a4389019f40746781e3098865325da8aa3751"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browsermanagedfixture-20261011/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browsermanagedfixture-20261011/stdout.bin",
+      "bytes": 1021,
+      "sha256": "b97a13fe08631e568ef9a0d07990e53681e5725ccc8f63791f1b643bb930e996",
+      "gitBlob": "b2b1ac038bc9395ad378e8a6299cb869e8a09a3e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browserwirereadonly-20261010/process.json",
+      "bytes": 1005,
+      "sha256": "b079cee47469c7e0134887e107ad666fd7d229fd608fe98ea691a666fb6971cc",
+      "gitBlob": "d603433fc19354ce68fa2b2dfd2990cb23b92d03"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browserwirereadonly-20261010/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-browserwirereadonly-20261010/stdout.bin",
+      "bytes": 490,
+      "sha256": "e9f94a3056ea5dab75aa8497ba1767403d71b7769017ef9dfd54cc10c0e0a4be",
+      "gitBlob": "53ae60b7eb1f602a6c8f8646a3cdf3cf6b396334"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryenforcement/process.json",
+      "bytes": 1001,
+      "sha256": "46d2a5c7ae0d0ff51da32ce649be771a597ad1d40ac7fc2a1cb06e7a365c8ab6",
+      "gitBlob": "82238b8ea42ff6a979afa8a8ea4b32593704bbb6"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryenforcement/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryenforcement/stdout.bin",
+      "bytes": 1015,
+      "sha256": "f89009ed99139ab6e1b421f0faed6b7f095a5c2ee30e6a1d7afd4749f1aa4190",
+      "gitBlob": "7b90cffd6e8c137d248799449da205c6e2432c9d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryqualification/process.json",
+      "bytes": 1002,
+      "sha256": "128df8742e4b85ad925ed143a180e07ec3de952defcd7756285523abc82d1ab2",
+      "gitBlob": "225226c9a93b0ee9b1fd97d2f05e0856d6c1fbe0"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryqualification/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativecanaryqualification/stdout.bin",
+      "bytes": 543,
+      "sha256": "e7bdd0f0b8eec228e0632be93c79995cefa90933c3f453228f3818e2d9b1de1e",
+      "gitBlob": "4204899c4ed04a254f75c0654b0df5d2f215199b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativequalification/process.json",
+      "bytes": 997,
+      "sha256": "bc9bce0314cdcc4e72ccaf37c860267b3756a7e2c211700fcb4e44b73bb9bb2b",
+      "gitBlob": "550a729d2e8c8ae442b3e6b1bb5ace735f9fd3a9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativequalification/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativequalification/stdout.bin",
+      "bytes": 1035,
+      "sha256": "38e17bc15613a07e293c66b024f94be021df83c89eb475344931ee96828aa1c4",
+      "gitBlob": "325fa6836ffd758be2d67afdd9c799acedb74aa1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativesdkenforcement/process.json",
+      "bytes": 998,
+      "sha256": "2d6c98baa362db1b9363f42afaf02a6cf5c210dd44d26382e0c4971e8af5c720",
+      "gitBlob": "68684190782c433854a2a999ba9bcf06adb30191"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativesdkenforcement/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-nativesdkenforcement/stdout.bin",
+      "bytes": 1009,
+      "sha256": "09691ed579e960d7f8b21d4230d43421e047bd70fb5595dd4b5cc35dce70f25a",
+      "gitBlob": "f415535754f2f4bc4c7af19cf9a90a6638eaaefa"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationbuild/process.json",
+      "bytes": 996,
+      "sha256": "dd0c746a902135d5eed182c8e9bd65103e1ace80de6e10b43c5fd00f5c4ced64",
+      "gitBlob": "81f160c39bf9ffd3ff01fe33f9fb4b907e85f5b9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationbuild/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationbuild/stdout.bin",
+      "bytes": 4049,
+      "sha256": "ca342c7be9fa816ede0e6b22f9570cf5ca094f6462530dfa7e3ae2e4a2f65aa6",
+      "gitBlob": "a451fc276ec7a234141ad238697b94fc4c92996c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationruntime/process.json",
+      "bytes": 999,
+      "sha256": "90e103added1e320caf6ff105409a584f111846263e4bb41ce6ca013e3dbbb36",
+      "gitBlob": "e4f87b695b147f9e63a965c6cd4d03de7ce21d5e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationruntime/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationruntime/stdout.bin",
+      "bytes": 12655,
+      "sha256": "40f59ec6cc1d85860fff9e91d320508482d156c5cd13cbe716da6f4708e952d7",
+      "gitBlob": "6519e7020db85b0742541e9118c47efa17eadb2c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationsdkcheckpoint/process.json",
+      "bytes": 1004,
+      "sha256": "955719a5198e85a8f2ad87439fb227175e8b75840f46eabe108142a0a2263962",
+      "gitBlob": "6e419cae2c05b57c65c8f63e02161a9c3f0dfad3"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationsdkcheckpoint/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-qualificationsdkcheckpoint/stdout.bin",
+      "bytes": 2748,
+      "sha256": "8ccaf83ff55542b3a0794a353484c8121b064a399bde10033db9df4045db54ff",
+      "gitBlob": "930be244d3256ce8eb412138641f5c02f677fca3"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-teststatereadonly/process.json",
+      "bytes": 994,
+      "sha256": "706e6fd484ea947faa909083914f0f1c8a271bb42b8a689b6bdaf06d05e57696",
+      "gitBlob": "9a9faf3c988a0ae0ce5d9ed70ef895879f8a8801"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-teststatereadonly/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/resources-merigreenfield-teststatereadonly/stdout.bin",
+      "bytes": 486,
+      "sha256": "e07476f41e7ab67ff6b006fa68e5045483e5f113e7af7c80ec05b6f7cd981c58",
+      "gitBlob": "54ac7d7d586ddfb8f11e09e8c0754166787a5ba9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/runtime-kms/process.json",
+      "bytes": 943,
+      "sha256": "55e99842f74a3ed958ed01cfb20f7a75a645e200319092752e3dadc49a1daf6a",
+      "gitBlob": "6a18e3856046775dc77e230bce92141110528e74"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/runtime-kms/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/runtime-kms/stdout.bin",
+      "bytes": 788,
+      "sha256": "372176cd2c0ad1df2f05433383b8914e9f5a2b5b9667d54562a5eb983e86f1b7",
+      "gitBlob": "f8a03b253c39ec983f85a13b829c0b255f45aff9"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-metadata/process.json",
+      "bytes": 1309,
+      "sha256": "ef1a672afb8a84dd1363dd4fe68130aba27230a411b1490b3b9e571cd46f198e",
+      "gitBlob": "46ab05df1aaec4aaf577f27e511e120b7f3ca307"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-metadata/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-metadata/stdout.bin",
+      "bytes": 725,
+      "sha256": "299206b62c3793660f324e01d6a8ec85251866d3e61c685e212fb0f4d4f27d58",
+      "gitBlob": "336b74139b7454dfddf013a51f339778a887270c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-subnet-metadata/process.json",
+      "bytes": 1024,
+      "sha256": "d7232216a4b4f848c90a8ad004f9158ed6967eab49ed1e08e528f649b9bed61c",
+      "gitBlob": "95ab526450880c33e65e8e79b6506502fc223d66"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-subnet-metadata/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/selected-aurora-subnet-metadata/stdout.bin",
+      "bytes": 1528,
+      "sha256": "f81c287eca81eadd85d4ee41361851f2bdf058e5e17486848a6a750ae45b48d2",
+      "gitBlob": "655d5b8b71fbb33840e181bf74c1f8ce4d15ee35"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browsermanagedfixture-20261011/process.json",
+      "bytes": 971,
+      "sha256": "31fd76254b2f7aa5661796f4bc8d25757b3022d3949aa6c014fb80ba3877a541",
+      "gitBlob": "c04bc2bbf9d0feded8cf4b402c42635f8cded951"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browsermanagedfixture-20261011/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browsermanagedfixture-20261011/stdout.bin",
+      "bytes": 1454,
+      "sha256": "07f93bce3f1c9e341273903ae3063d904aee84f287a98a6e7268923b6b4148e1",
+      "gitBlob": "4010935fc0c393346a18979a1e82c52d874b6ef7"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browserwirereadonly-20261010/process.json",
+      "bytes": 969,
+      "sha256": "eb5f3536658732c135c4ecd56de2ef7cb44512337a3b8a5a9b4dec7f4fe6343c",
+      "gitBlob": "9203c0e756eda4425fb83b3f797c3f5cd59f1861"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browserwirereadonly-20261010/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-browserwirereadonly-20261010/stdout.bin",
+      "bytes": 2020,
+      "sha256": "b4f3b5c1808afc9b30782deb133ced47e95862aae3d018665265c00438bb66db",
+      "gitBlob": "267e70826f76627744f19ddd6677c5a1042ba20e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryenforcement/process.json",
+      "bytes": 964,
+      "sha256": "158fbdf5840c0e30c0a83f16559c1c7e367ba35deac87ffc0b4596e9729c8d1c",
+      "gitBlob": "1ddf0564042b05cb06d503721eb66d419754a757"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryenforcement/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryenforcement/stdout.bin",
+      "bytes": 1665,
+      "sha256": "8c7f98b9a39d635c061a1b1d9d110fa489daad73ca4cd7c97c967e9f3d09ebd0",
+      "gitBlob": "4632f82b37d686e63334cfe622cb1a5555137f89"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryqualification/process.json",
+      "bytes": 966,
+      "sha256": "17c165c61499bd8a63dc5966b47454fbddb8741b213a6173c0db8918bfe8256c",
+      "gitBlob": "231408a18e287339e050ac6bc6d1dc00fe2411db"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryqualification/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativecanaryqualification/stdout.bin",
+      "bytes": 1649,
+      "sha256": "b6a3cd76cf10be0fbfc44127994e179d384a990b2957e3525420abc31d4049fb",
+      "gitBlob": "06bf0d77fa7966861a9c1a2ec361fdee0c7d457d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativequalification/process.json",
+      "bytes": 960,
+      "sha256": "5a009c05e0b77c0d4a579e18c9cc6d01d94a0b4bcf2f4911e792bb3f7b9eb5c8",
+      "gitBlob": "ba31b6b5da9dd24852a708f5a54a0f39552ed59d"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativequalification/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativequalification/stdout.bin",
+      "bytes": 2250,
+      "sha256": "73c3fe34de9e8248b255e27b54397f50b0a919c63704d7e6dae5b67253927a97",
+      "gitBlob": "e7b19363c229624b71efd0f3814dadb80daf9819"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativesdkenforcement/process.json",
+      "bytes": 961,
+      "sha256": "c812952f8095274db72669e3a45c8dad3a96900b672c93ceb82cd9f0f3941723",
+      "gitBlob": "c5c290ab085909970968431a85c550d878c0daaf"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativesdkenforcement/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-nativesdkenforcement/stdout.bin",
+      "bytes": 1656,
+      "sha256": "de71f01665c752268ac289d3b92231672761615201d9a183d89630702ea93e44",
+      "gitBlob": "e75d452d3164f6cad1ed8863b9d71ab31abf2df6"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationbuild/process.json",
+      "bytes": 959,
+      "sha256": "40522e888315c67e7771524d2e2f8c4aeb5149f21aeedd42dd21d2beb3eecf22",
+      "gitBlob": "7e9b5e502746b6fc3cc77ccf090c4ee6901584e4"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationbuild/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationbuild/stdout.bin",
+      "bytes": 2560,
+      "sha256": "4b26a8ee39310c672c8e87cf1e158e216bdf8b1beb92b9b70125cb8236856bc0",
+      "gitBlob": "12fb98e522846bf5db95369e36c4ae14a79d0551"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationruntime/process.json",
+      "bytes": 961,
+      "sha256": "da060fb989af6eb964052bac8118db344e6d6ebb958a8332f9f962e064a3370a",
+      "gitBlob": "831f85f647de0dcb61721cff5b267121d4e734ca"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationruntime/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationruntime/stdout.bin",
+      "bytes": 3313,
+      "sha256": "528703183dd45ca12bda6b60b1fe1482569308c6884059814efbd050ce39f12e",
+      "gitBlob": "e7bbec8b67a68b3924b48e09fd97f4295617a3fc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationsdkcheckpoint/process.json",
+      "bytes": 967,
+      "sha256": "2668176cb56d6b8874e52a9af5f955d817290fe1fe0f31cd91193a53f65a85f1",
+      "gitBlob": "f4a2488801e3ddbd433918074bf37a5c33d85c86"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationsdkcheckpoint/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-qualificationsdkcheckpoint/stdout.bin",
+      "bytes": 2608,
+      "sha256": "cf59118d0ae7ef6a8098e92c39d35320d41be63ba92e20fe74298194679bbfd7",
+      "gitBlob": "d005ee27e3783e86ed31f786c35729290e5d8ab1"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-teststatereadonly/process.json",
+      "bytes": 958,
+      "sha256": "11d1a8ee70793e35a6f744670f8830de91108820b8f89f6152862ceed5f8cde1",
+      "gitBlob": "0de42c7275023f59dd3392b42b817c8384b85813"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-teststatereadonly/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/captures/stack-merigreenfield-teststatereadonly/stdout.bin",
+      "bytes": 1655,
+      "sha256": "c9c8f48304a56790791798fc81314bfa56c6bc834dba71bf096738e5580ef427",
+      "gitBlob": "5c474b7b17829580a5529cffb704c151649e1747"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/command-ledger.json",
+      "bytes": 136516,
+      "sha256": "ddf121d2f40d642bf39f831f7e5c4143b4a753cd38c86b1ab64ecd208f292bf6",
+      "gitBlob": "20d3a323df612eebad20f62993f15d18e091199c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/current-context-manifest.json",
+      "bytes": 11180,
+      "sha256": "da96000546d9688bafd50ffb5d6101ce5a76300e65a47bfb5ea55a1273bd13a4",
+      "gitBlob": "8ccdf9e52e84bcfda9d639999a49ae18d6d7c072"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/evidence-index.json",
+      "bytes": 58973,
+      "sha256": "286a15e74c35452959e7130735d49381b3d908ba0f108b29485073c8bffd9c84",
+      "gitBlob": "135b6a0bb3f23db7c6a589bcdf24a74f77947844"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/followup-read-results.json",
+      "bytes": 1768,
+      "sha256": "8128dfc17ff98b75e04e32cb7b5542596ebcc6cb9e5d58e2aa1efc7944baf1a0",
+      "gitBlob": "0b306375ef09e58da931e3fd3e33b2cd6e296e67"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/fresh-scan-derived-utf8.json",
+      "bytes": 59680,
+      "sha256": "3e7a92a7e8a876b5468b5495f3b415c8d0728ee8b28af69f21b175f60ea4e127",
+      "gitBlob": "54c5e3e1a9d8e48ea922cfd078aef6e25a434713"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/fresh-scan-hold-scaffold.json",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6",
+      "gitBlob": "7938929707ba2e81575a476338f3318e089c3411"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/fresh-scan-lineage.json",
+      "bytes": 856,
+      "sha256": "e3fd22407a06a050269777563e5bed590378932ab3e968dbd214a15e799728d2",
+      "gitBlob": "b220e66561975e8cf04c838dce79a0d8423d534b"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/00-image-inventory.json",
+      "bytes": 5684552,
+      "sha256": "6b7675aa90422a9572a902012cebef87c78af7c6669f9b1fed20668e1b17c74c",
+      "gitBlob": "cfb425f918c303d7f8658fa9f065bacdc0cd3e38"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/01-os-installed-packages.txt",
+      "bytes": 8570,
+      "sha256": "1fa4f64de64341e41eb02988cb362a393102949122b331a44334049aee121c83",
+      "gitBlob": "3d944803995727e5f7c7231437cbb02e2f9c93a5"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/02-runtime-versions.txt",
+      "bytes": 57,
+      "sha256": "572df9ceee8fbd7375436093d6797459b34078e9eab10aff39ef3d57d75365bd",
+      "gitBlob": "d12fa6bb7a79e6f46c27e35b4faf1d5ecfd799ea"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/03-libreoffice-version.err",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/04-cft-hashes.txt",
+      "bytes": 605,
+      "sha256": "a6f95cfbac88b6f0185ff797b392cb97f6d2e8e7c992534115da9a731f87092f",
+      "gitBlob": "bacf7c741b3e75116aa67df02247ddb1ce3b0fbc"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/05-suid-sgid-reduced.txt",
+      "bytes": 283,
+      "sha256": "7b9851287f88277c0698737566b4e87a457e601c0e07b78adf360005fac30505",
+      "gitBlob": "66c9260206fff6dd723e9e4a489b115df480fd45"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/06-package-lock.json",
+      "bytes": 68705,
+      "sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+      "gitBlob": "93afb40b97d0ed80b790660c3c8129e04a59f4e2"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/07-package.json",
+      "bytes": 2546,
+      "sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211",
+      "gitBlob": "a7c6512a5882638281ddfc41180241ba38ec4900"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/08-package.json",
+      "bytes": 282,
+      "sha256": "8cb928d63aa51ed7117257d2f162bc00ba85d335d54baf659e4097f3ec0b907c",
+      "gitBlob": "477806bc11af61176d7426b9bf6c6ea29ab7430a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-artifacts/09-package.json",
+      "bytes": 1259,
+      "sha256": "4289ada283f77263a17f5b5690a72be41f1ed39224f9a97745fd794938af2942",
+      "gitBlob": "c0398a597d016a956807e36c56a466b936370f7a"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/historical-reconciliation.json",
+      "bytes": 40866,
+      "sha256": "939be78af9316ae5679c5e4ea6f78cd97b15a203c7808319de36fd8fa67feb79",
+      "gitBlob": "1d8a3e574283c11ab4dce76f0bc0ec73fb677981"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/inventory-summary.json",
+      "bytes": 90684,
+      "sha256": "d5995105561df6d348bb7bcc69f3147888906a73a77cbddfa01a9955bd3d7dc8",
+      "gitBlob": "6ec7251924b9bb4230ff2ad2d2228667e7508c4e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/builder-runtime-binding/process.json",
+      "bytes": 840,
+      "sha256": "7bda21179514b73006176075443cd14923e577d0c7bf69e109996e77ed4856f5",
+      "gitBlob": "bed25abf87ac18a2143fa7c25a1673dd697e91ca"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/builder-runtime-binding/stderr.bin",
+      "bytes": 562,
+      "sha256": "d88375b006758bc85213bece804e6f28d269ab6a48213be48c6b5f45eab0250d",
+      "gitBlob": "8c6f3379d6ecb8aa866d385ce22ddd91e4361262"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/builder-runtime-binding/stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7/process.json",
+      "bytes": 796,
+      "sha256": "d498cd0d9646f5dc7347063685439b10dadcdc09d87ea64d201e5b8b8d601e75",
+      "gitBlob": "ece1dd134f864d6b9cfa802cc61cbf11012a53c2"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7/stdout.bin",
+      "bytes": 313,
+      "sha256": "446892b6c1af96e78148c2bac205861e6c23460977214f4637818219469f9674",
+      "gitBlob": "e81cd2e8d395066c4fd324e9bd6e4772e0beae36"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7-repair/process.json",
+      "bytes": 897,
+      "sha256": "6f26cd2d0b9af47c534df4d47540ff3ad59c4b02df21aa60e249d066a39f2ba4",
+      "gitBlob": "10003a4b1096e4ff06495eb45f9a96029b286a0f"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7-repair/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-backend-pr7-repair/stdout.bin",
+      "bytes": 265,
+      "sha256": "c2a1786e4aac9691986c039eef3dcc1890a3491c15249d4b437c610830f5a187",
+      "gitBlob": "324097616b2b5cbb132eabbed27e129cf816d649"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-frontend-pr4/process.json",
+      "bytes": 796,
+      "sha256": "612b918e38b0f472679aa4fc92991224e690d9f4d28a912aaca7a6f3c69ffc82",
+      "gitBlob": "9885cff3a008a90c2f3bc4a9d7cab74cea4535d5"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-frontend-pr4/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/github-frontend-pr4/stdout.bin",
+      "bytes": 312,
+      "sha256": "ff322ee1245f3cf933a040a73d42111945a5d5be4b80cbf4b52b3ab0bef59975",
+      "gitBlob": "4e8ffba2fd63f048ed5efeac3377708986622312"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-canonical-repaired/process.json",
+      "bytes": 1383,
+      "sha256": "5c14dd694509604f1f5496b6c04b704d0ee2dc2f511c2614ac198b75339d937b",
+      "gitBlob": "2ce722bcd467d1323a17663f05c3857fde6bcdb4"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-canonical-repaired/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-canonical-repaired/stdout.bin",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6",
+      "gitBlob": "7938929707ba2e81575a476338f3318e089c3411"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-derived/process.json",
+      "bytes": 1226,
+      "sha256": "b339e4364e58ace4ef18a77ef7f87fa51644e4f0d78747b270790185e0acb44e",
+      "gitBlob": "a9298fdd3994ac5324bb72fd62b69a55014ee771"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-derived/stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-derived/stdout.bin",
+      "bytes": 66474,
+      "sha256": "b32216ba93c2ce480fb1cc9d44d6f738f4279b10410fce294cf6c3e7de6fbcd6",
+      "gitBlob": "7938929707ba2e81575a476338f3318e089c3411"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-original/process.json",
+      "bytes": 1243,
+      "sha256": "af4a2ac1dd12e273283f6d2340116610be8097070c31a17b16ee0cc11a6b241c",
+      "gitBlob": "ad96cff4d01f7e9ac5f98529e968e6e1aa55652e"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-original/stderr.bin",
+      "bytes": 81,
+      "sha256": "f5fd938e826f51ccbd70d63f06f6255796eb9923ad4370ee357c16bc6551d817",
+      "gitBlob": "7175e80f3786b4332adae65d2759ec6493be5e9c"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/local-checks/scan-analyzer-original/stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/next-action-packet.json",
+      "bytes": 8650,
+      "sha256": "2823758c690dc998d53e4d9e0dc0efad9f58df112e672c3300859a2805db885a",
+      "gitBlob": "f9af505bcf714fa640c76984bfcb8bc7e17ba2ef"
+    },
+    {
+      "path": "docs/qualification/aws-shipper-20261011-r1/preflight-read-results.json",
+      "bytes": 6742,
+      "sha256": "05df0cf138bfa6cf602351a941a7d5c8cf681506ea1d35926cd779ec2f132b35",
+      "gitBlob": "5b85e4ff21369dc23b971f80bc1d9ce065bba78a"
+    }
+  ]
+}

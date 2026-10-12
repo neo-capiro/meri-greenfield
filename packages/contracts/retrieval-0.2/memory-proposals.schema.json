@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:memory-proposals:0.2.0",
+  "title": "Meri private pending own memory proposal read shapes",
+  "description": "Source-only shape candidate; validation grants no source, review or approval authority. No approved recall or global absence claim.",
+  "$defs": {
+    "MemoryProposalInput": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "default": 5
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "MemoryProposalSelection": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "clientId",
+        "cursor",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "MemoryProposalCandidate": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+        },
+        "status": {
+          "const": "pending"
+        },
+        "approvedFact": {
+          "const": false
+        },
+        "scope": {
+          "enum": [
+            "firm",
+            "client",
+            "personal"
+          ]
+        },
+        "clientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "restricted": {
+          "type": "boolean"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "proposedText": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contentTruncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "approvedFact",
+        "scope",
+        "clientId",
+        "sourceKind",
+        "createdAt",
+        "restricted",
+        "title",
+        "proposedText",
+        "contentTruncated"
+      ],
+      "additionalProperties": false
+    },
+    "MemoryProposalReadResult": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "list_memory_proposals"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "authority": {
+          "const": "own_pending_proposals"
+        },
+        "claimsAreApprovedFacts": {
+          "const": false
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "tenantId": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            "userId": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "tenantId",
+            "userId",
+            "clientId"
+          ],
+          "additionalProperties": false
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/MemoryProposalCandidate"
+          }
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "firstPage": {
+              "type": "boolean"
+            },
+            "complete": {
+              "type": "boolean"
+            },
+            "reason": {
+              "enum": [
+                "review_disabled",
+                "own_pending_proposals_complete",
+                "unread_pages_restricted_or_truncated_content"
+              ]
+            }
+          },
+          "required": [
+            "firstPage",
+            "complete",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "tool",
+        "enabled",
+        "authority",
+        "claimsAreApprovedFacts",
+        "scope",
+        "candidates",
+        "nextCursor",
+        "coverage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

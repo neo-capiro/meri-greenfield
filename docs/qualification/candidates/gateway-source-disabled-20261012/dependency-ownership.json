@@ -1,0 +1,12 @@
+{
+  "strategy": "owned copy of existing immutable root and contracts dependency bytes for permission-scoped child CLI verification",
+  "sourceRoot": "/workspace/scratch/853fba62b1f1/meri-consolidation-closeout-20261011",
+  "ownedDirectories": [
+    "node_modules",
+    "packages/contracts/node_modules"
+  ],
+  "borrowedDependenciesModified": false,
+  "installPerformed": false,
+  "packageAndLockChanges": false,
+  "initialOwnedSymlinksRemoved": true
+}

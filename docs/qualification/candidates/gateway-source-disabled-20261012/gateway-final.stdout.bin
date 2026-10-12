@@ -1,0 +1,22 @@
+✔ production catalog exposes no tools, has no activation override, performs zero effects (17.870627ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.292822ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (3.973406ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.776574ms)
+✔ actual federal defaults precede canonical digest and resource reservation (7.470359ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (2.898291ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (1.217484ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (1.064129ms)
+✔ revocation during handler or settlement never releases the result (3.124906ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (4.215683ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.589498ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (0.31258ms)
+✔ timeout suppresses late work without claiming physical stop or refund (20.882456ms)
+✔ configuration and import allocate no live resource (0.418056ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1060.020007
