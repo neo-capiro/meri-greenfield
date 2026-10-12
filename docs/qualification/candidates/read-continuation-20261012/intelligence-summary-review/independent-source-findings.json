@@ -1,0 +1,18 @@
+{
+  "operation": "query_intelligence",
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "references": "reference-identities.json",
+  "findings": [
+    {"owner":"meri-tools.service.ts","lines":"3573-3704","input":"Optional clientName uses optionalString at9948: string trim, blank/nonstring null, then UTF16 slice200; strict string|null admission is a separately approved contract compatibility boundary.","output":"Exactly tool=query_intelligence, generatedAt Date.toISOString, and nonempty opaque data prose. No source-established total prose cap or parseable coverage/result/provenance envelope."},
+    {"owner":"lobby-intel.service.ts","lines":"144-158;269-300;442-503","calls":"Parallel surgingIssuesRows10 and trendingTopicsRows10 stored reads; configured lda/openlobby source selects SELECT from lobby_issue_ref_v or lobbyIssueRef; trending kind filter. Pure row maps. Wrapper renders8 issue rows and10 topics. No model/provider call in these inspected paths."},
+    {"owner":"lda-intel.service.ts","lines":"482-511","calls":"Wrapper sends undefined search/policy/congress, page1 and limit15. Stored congressBill findMany/count run concurrently; wrapper renders at most12 bill summaries. Separate count is not complete result or transaction evidence."},
+    {"owner":"federal-spending.service.ts","lines":"87-130;287-389","calls":"Optional client name exact insensitive match then SELECT trigram fallback; below0.4 returns null. Contractor mapper is local projection. getAiContext reads top5 federal agencies even when wrapper does not render topAgencyTotals; matched contractor topAgencies already sliced4. An agency read failure can omit the whole client section."},
+    {"owner":"meri-tools.service.ts","lines":"3670-3696","calls":"Eight separate withSystem count callbacks: SEC filings,FARA registrations,GAO reports,federal grants,state bills,intelligence articles,committee hearings,CRS reports. Each catches errors to0. Hearings alone use federalHearingWhere; CRS count has no active-only filter. Falsy counts are omitted from text, so absence cannot distinguish error/empty source."},
+    {"owner":"prisma.service.ts","lines":"237-248","limits":"withSystem executes a scoped transaction and transaction-local set_config before the read callback; read intent does not imply no transaction/session effects. Actual access, isolation, cancellation and runtime service behavior remain unqualified."},
+    {"owner":"meri-tools.service.ts;meri-tool-request-control.ts;tool-execution-control.ts","lines":"2577-2642;8-10;8-15","limits":"Dispatch calls active-request guard before selecting operation. Guard checks cancellation/expiry; it is not independent current actor/client/tenant authorization proof. No model-owned selector grants authority."},
+    {"owner":"wrapper","limits":"Independent try/catch sections log and omit service failures; count failures become0, and fallback prose remains possible. generatedAt is assembly metadata, not freshness or truth. Contract accepts opaque strings without interpreting instructions or absence claims."}
+  ],
+  "runtimeAccepted": false,
+  "sourceConnected": false
+}

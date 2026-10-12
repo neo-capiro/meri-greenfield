@@ -1,0 +1,37 @@
+{
+  "packages": [
+    {
+      "name": "ajv",
+      "bytes": 1033496
+    },
+    {
+      "name": "ajv-formats",
+      "bytes": 56763
+    },
+    {
+      "name": "canonicalize",
+      "bytes": 24474
+    },
+    {
+      "name": "fast-uri",
+      "bytes": 220886
+    },
+    {
+      "name": "fast-deep-equal",
+      "bytes": 12966
+    },
+    {
+      "name": "json-schema-traverse",
+      "bytes": 22220
+    },
+    {
+      "name": "require-from-string",
+      "bytes": 3422
+    }
+  ],
+  "source": "Previously owned completed reference integration review dependency tree",
+  "install": false,
+  "fullNodeModulesCopy": false,
+  "locksChanged": false,
+  "typescriptInspection": "Read-only exact5.9.3 from prior owned reference-integration-review packages/contracts dependency tree; never target source execution."
+}
