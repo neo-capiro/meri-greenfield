@@ -1,6 +1,6 @@
 # Gateway budget native-test source review — 2026-10-12
 
-Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Status: criteria frozen before author freeze; final source verdict pending.
+Reviewer: gateway_reviewer. Exact base: PR16 `e8d2c0d0e5db8fb01ba2df26c4eb3f79b296c0b5`. Isolated branch `review/meri-g1-budget-native-tests-20261012`. Verdict: **ACCEPT_SOURCE_TESTS** for author commit `e350ff3bae99ad5d2e53648c1f83f9814d6c5044`, tree `b725fbed1757e836508b85defeb02e081c3751fd`. Native execution, admission and G1 remain **HOLD**.
 
 ## Scope and implementation outline
 
@@ -34,3 +34,39 @@ The first independent offline parser replay ran 12 groups: 10 PASS / 2 FAIL. A n
 Static draft inspection also found that the originally labelled per-run call-cap race used one grant, so the earlier one-UNKNOWN-per-grant refusal could mask the intended assertion. This is a source coverage finding, not a native runtime failure. Author reports replacing that case with distinct synthetic grants sharing one run/allocation, adding a mixed model/tool liability case, and adding bounded TERM/KILL/reap fallback for owned children. These changes remain pending exact review.
 
 A further static draft defect could leave the all-ready barrier pending forever: early exits did not reject the ready promises, while all completed child promises cleared its only deadline. This was reported before freeze without executing any child. Reviewer also requested exact aggregate consumed-budget deltas around settlement and duplicate refusal. Root amended the allocated native entry to `apps/gateway/test/postgres-budget.integration.mjs`, outside ordinary `*.test.mjs` discovery; the draft name is historical evidence only. The offline admission test remains discoverable.
+
+## Native evidence boundaries
+
+The nine future native cases cover production-disabled gateway binding/UNAVAILABLE, retained invocation refusal and historical settlement, post-COMMIT synthetic acknowledgement loss at reserve and settle, returned/evicted clients and borrowed-pool ownership, two three-process contention cases, and two mixed model/tool per-run cost boundaries. Distinct grants isolate the run call limit from the one-UNKNOWN-per-grant constraint. The synthetic model request row exercises the combined liability view; it does not call a model/provider. Aggregate consumed-budget deltas complement the reservation-row assertions.
+
+The local installed primary pg8.23.1/pg-pool3.14.0 source was read without importing it: `release(error)` removes the client, while normal release can return it to the idle pool. Exact read source hashes are in `review/pg-primary-source.json`. This source inspection does not prove installed native host provenance or runtime driver behavior.
+
+The explicit future packet must establish host/executable/library provenance, fresh isolated cluster/system identity, postmaster/PID/listeners, scoped role/HBA, separately admitted pg_control_system read permission, pre-migrated empty schema, no provider/egress access and an external supervisor. The test config digest and WeakSet brand are correlation/admission mechanics within the test process, not independent host authority. No credentials were obtained or created here.
+
+The suite supplies no production outcome API, no automatic replay reconciliation, no real network-ack-loss proof, no server restart/WAL/power-loss proof, no global-cap native result, and no claim of runtime invocation persistence. All native SQL, three-process contention, Pool connect/driver eviction and native cleanup remain UNRUN. Child close/TERM/KILL source guards still require an independently admitted external watchdog; JavaScript timers and assertions do not establish physical task teardown. Existing Aurora choice, SDK/Temporal ownership, all fourteen disabled descriptors, first L1 action packet and G1 HOLD remain unchanged.
+
+## Exact-source result and reproducible checks
+
+Criteria commit `fc01f7a` preceded author freeze. Original independent failures and tests were committed at `1a2882e`; source preservation/native discovery controls followed at `967b44c`. Both original parser failures are repaired by explicit string validation. The unchanged independent suite now passes 12/12. The static child barrier repair rejects early close, owns its ready timer until barrier completion, and waits for close/EOF; distinct-grant contention and exact aggregate accounting assertions are present. No native behavior was sampled to reach this verdict.
+
+| Check | Exact result |
+| --- | --- |
+| Independent offline admission | 12/12 PASS; original 10 PASS / 2 FAIL preserved |
+| Author offline admission/source replay | 33/33 PASS |
+| Syntax-only four new modules | 4/4 PASS |
+| Exact tree/preservation/discovery/whitespace | PASS; 3944/3945 original tracked files unchanged; only budget README changed |
+| Nine native engine cases | UNRUN; no integration entry or child mode invoked |
+
+From the repository containing this review, replay only these offline commands (SOURCE_ROOT is the clean exact author checkout):
+
+```sh
+MERI_REVIEW_SOURCE_ROOT="$SOURCE_ROOT" node --test docs/qualification/candidates/g1-budget-native-tests-20261012/review/admission-independent.test.mjs
+node --test "$SOURCE_ROOT/apps/gateway/test/postgres-budget-admission.test.mjs"
+python3 -I -B -S docs/qualification/candidates/g1-budget-native-tests-20261012/review/verify-source.py "$SOURCE_ROOT" e350ff3bae99ad5d2e53648c1f83f9814d6c5044
+```
+
+Each new module was separately parsed with `node --check` and never evaluated through its native entry. `source-final.stdout.txt` retains full hashes: integration `227780eb228fd92640d11fe9f0eeecde2b1b24dfbe4702d382728b5aff69f06f`; fixture `a4a4cc8205668d72e15b2df46408f20172c1adc5914590b871f9ac206065f22a`; child `493834c03bec2effaf0932049ad375e3624166ddcd230e8965dac32ff04bb9e9`; offline test `cd10701cf440379962ddb077a741ceac8f340a7d1c96dbc9ce984a89d8a3b0e4`. Exact native filename is excluded from ordinary gateway test discovery; the offline test remains included.
+
+Eight bounded local check process groups (one failed baseline plus seven final checks) were waited under an inherited Linux subreaper. Every receipt reports its owned group absent, no timeout, no kill and no orphan descendant to reap. These are local offline check receipts only, not native database/task teardown evidence. No other owner's processes were touched. Raw output contains only public source paths and synthetic values; no private producer body, credentials or customer data is present.
+
+The accepted change is useful future native test preparation with explicit partial admission and evidence boundaries. Actual host/action qualification, native execution and returned independent real-engine evidence remain blocking prerequisites. No expansion of the first L1 action is implied.

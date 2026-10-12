@@ -1,0 +1,20 @@
+✔ configuration is frozen correlation only, with no resource invocation (2.365164ms)
+✔ default closed and exact opt-in (1.496408ms)
+✔ exact raw JSON digest and byte ceiling (0.297848ms)
+✔ configuration has closed fields and scalar identity (0.459951ms)
+✔ numeric system identity is rejected before native use (0.258859ms)
+✔ SHA object cannot execute string conversion (0.203175ms)
+✔ getter environment rejected without evaluating body (0.145398ms)
+✔ proxy environment rejected before reflection (0.124968ms)
+✔ inherited environment rejected (0.202545ms)
+✔ ambient provider/database/native injection configuration denied (0.340131ms)
+✔ future, elapsed and malformed trusted clock refused (0.330526ms)
+✔ loopback-only identity, port and bounded password (0.444388ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 154.018902
