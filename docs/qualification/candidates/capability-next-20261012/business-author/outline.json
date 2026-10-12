@@ -1,0 +1,17 @@
+{
+  "baseCommit": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "scope": "Three private source-only business-development read projections; no producer, authority or runtime qualification",
+  "owned": ["packages/contracts/retrieval-0.2/business-development.schema.json", "packages/contracts/retrieval-0.2/business-development-validation.mjs", "packages/contracts/test/retrieval-business-development.test.mjs"],
+  "outline": [
+    "Declare distinct closed request/result definitions from frozen operation projections and imported evidence, watch-alert, dossier and Prisma types; preserve nullable fields and actual coverage meanings.",
+    "Normalize only required conversation UUID and the absent recent-changes limit default10; reject unknown fields and coercion, return immutable data with explicit non-authority metadata.",
+    "Reuse injected canonical schema validation; enforce producer-established count, alias, omission and truncation relationships without reimplementing source querying, scoring, watch diffing or authorization.",
+    "Use local test-only Ajv until root integrates the canonical loader; cover three variants, boundary negatives, scope non-authority, provider caveat and inert JSON through actual resolver fixtures.",
+    "Freeze source, then preserve command/output/hash/cleanup receipts and a source-reference-only report; never copy private source bodies."
+  ],
+  "frozenCapiroCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCapiroCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "qualificationLimits": ["No current conversation ownership or persisted prospect scope producer", "No current grants/flags/source/tenant entitlement qualification", "suppressJev is not a no-provider guarantee: dossier can call flag-gated SAM", "Watch read neither marks alerts read nor proves bid/win intent", "Evidence complete and partial can both be true", "Raw projections have no native Meri RunBinding/subject lineage"],
+  "dependencies": "Existing pinned dependency trees physically copied by root; no install or hooks.",
+  "processes": "Use provided capture-reaped.py, unique capture labels and ordinary local source tests only. No native fixture execution."
+}

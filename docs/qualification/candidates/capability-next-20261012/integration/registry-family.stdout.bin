@@ -1,0 +1,16 @@
+✔ registry name follows frozen trim and UTF-16 truncation without caller mutation (1.570921ms)
+✔ registry refuses missing, blank, coerced and unsupported authority arguments (0.470267ms)
+✔ registry input accessors, proxies and hidden fields never run (0.281653ms)
+✔ registry preserves nullable exact, candidate and existing-client branches (0.929317ms)
+✔ registry candidate bound and exact-ID exclusion do not invent exhaustive enumeration (0.330086ms)
+✔ registry rows preserve null versus omitted and reject extra private fields (0.421013ms)
+✔ registry scalar projection preserves numeric IDs and bounded descriptions (0.243015ms)
+✔ registry guidance remains inert data and cannot add approval, absence or freshness claims (0.218929ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1568.474566

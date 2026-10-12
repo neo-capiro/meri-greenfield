@@ -1,0 +1,129 @@
+{
+  "sourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "exclusions": [
+    "manifest.json (self)",
+    "verify-result.json and verify-result.stderr (subsequent offline verification receipts)"
+  ],
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-AUTHOR-20261012.md",
+      "bytes": 11801,
+      "sha256": "6ef43029d807505e9be9ffa42694dd1412e99fa549db2f701a1a2d816ec23070"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development-validation.mjs",
+      "bytes": 8256,
+      "sha256": "f8c2425fc1efb123ca116ed96f89fda8e4a236a3d1f399d459eb49b952070059"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development.schema.json",
+      "bytes": 26651,
+      "sha256": "b10f57e5e59d13641577cc125b2713c1a74da30b2390dbf4c05896f0c8402b10"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/retrieval-business-development.test.mjs",
+      "bytes": 20281,
+      "sha256": "f0d3dc9dea183ca7daaf7e031708774468e953a3950e2f255898f71f831e7695"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/source-identities.json",
+      "bytes": 811,
+      "sha256": "ad82fbb3e38dc2c4d6bb2fc8534bf8207abf0e26c8d8ec66017d75d4cf2ca716"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "bytes": 1378,
+      "sha256": "6e694c3d78a1839c2a47b74be5bcb436ba1f421aa23ebd8569c3c0a2003ab7fd"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "bytes": 3425,
+      "sha256": "f4f854b9da7d2ede1a46d8cae2ef842a13f02384eb8c364ae12e6838f8dd6bfc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "bytes": 1293,
+      "sha256": "9a45fc920d924bbf229d1f63a435e21b55b7b582b08e3b7b7c348f320e82eb3a"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stdout.bin",
+      "bytes": 2126,
+      "sha256": "fd119d031467ef49236e2a25342f561de8aa98431cb2ca840e15e5b9bbdfed42"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "bytes": 1343,
+      "sha256": "1ca096d88fba863fdc21a4ec5e201487aa006eb37500e3c985aeff2d869d9cbe"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "bytes": 3220,
+      "sha256": "5d6512d08ef054f6d66a03ea1fdd28fb6cea306d8421cf614b46a220c02e1921"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "bytes": 1351,
+      "sha256": "709d44eeff7eace4bf73ee43760c9d41930fca1847c9269e376363655cfc84ed"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stdout.bin",
+      "bytes": 28005,
+      "sha256": "3288b07aa23d7a682f5d4dd8c11e9dd43ec67c02b77d2673ae7d51fb44612741"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/outline.json",
+      "bytes": 2198,
+      "sha256": "0db5d7da0b6ef2e11566152c962fdaec15aa29ed33f95f8479da99228d74174c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/reference-identities.json",
+      "bytes": 4389,
+      "sha256": "4d038028d7f96ef15f7b580be7e3a80b488cef307778d060a84a8d1e36d7a19d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/source-before-snapshot.patch",
+      "bytes": 57648,
+      "sha256": "30a20fccb660ac45612b82a5ecfcba79965d01b8ac7ac73e39f6eeb647c29280"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/source-preservation.json",
+      "bytes": 1319,
+      "sha256": "47c122c65afbcfbe615f766c0fd77fbe90b10dd512ef3bad8e11cfcdb2323a32"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/source-validated.patch",
+      "bytes": 58245,
+      "sha256": "4c45fcc3b42ea692fdc3f1645b4491bced4511734adf955625827512cb58be36"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/verify-packet.py",
+      "bytes": 3833,
+      "sha256": "722ed3e0beda75aff966ab99ad908e31e5a33410ffc570ae3f9dd2dadbd38f08"
+    }
+  ]
+}

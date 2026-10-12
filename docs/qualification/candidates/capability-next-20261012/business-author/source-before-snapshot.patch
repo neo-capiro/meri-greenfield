@@ -1,0 +1,1537 @@
+diff --git a/packages/contracts/retrieval-0.2/business-development-validation.mjs b/packages/contracts/retrieval-0.2/business-development-validation.mjs
+new file mode 100644
+index 0000000..c9aa7e3
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/business-development-validation.mjs
+@@ -0,0 +1,142 @@
++/** Private frozen read projections; no producer, policy, source or watch owner.
++ * The canonical loader owns Ajv, and the operation resolver owns inert JSON
++ * admission/snapshots/hashing. This factory validates domain relationships only.
++ */
++import { types } from 'node:util';
++
++const fail = message => { throw new Error(message); };
++export const BUSINESS_DEVELOPMENT_OPERATION_IDS = Object.freeze([
++  'get_business_development_context',
++  'get_business_development_evidence',
++  'get_business_development_recent_changes',
++]);
++
++// The producer requires this selector even though its advertised schema did not
++// mark it required. No trimming, case conversion or model-supplied scope exists.
++function inputData(value) {
++  if (!value || typeof value !== 'object' || types.isProxy(value) ||
++      ![Object.prototype, null].includes(Object.getPrototypeOf(value))) fail('Business-development input must be inert JSON');
++  const fields = Object.getOwnPropertyDescriptors(value), result = {};
++  for (const name of Reflect.ownKeys(fields)) {
++    const field = fields[name];
++    if (typeof name !== 'string' || !field.enumerable || !Object.hasOwn(field, 'value') ||
++        !['conversationId', 'limit'].includes(name)) fail('Unknown or non-data business-development input field');
++    if (typeof field.value !== 'string' && !(typeof field.value === 'number' && Number.isFinite(field.value)))
++      fail('Business-development input refuses coercion and non-JSON values');
++    result[name] = field.value;
++  }
++  return result;
++}
++
++export function createBusinessDevelopmentValidators({ validateShape, schema }) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Business-development validator configuration');
++  const definitions = new Set(Object.keys(schema.$defs));
++  // Projection tool constants are the operation/definition owner, not a second
++  // handler catalog. Unknown aliases and prototype property names are refused.
++  const outputs = new Map(Object.entries(schema.$defs)
++    .filter(([, value]) => BUSINESS_DEVELOPMENT_OPERATION_IDS.includes(value.properties?.tool?.const))
++    .map(([name, value]) => [value.properties.tool.const, name]));
++  if (outputs.size !== 3) fail('Business-development schema operation mismatch');
++  const descriptive = new Set(schema.$defs.BizDevDescriptiveFactKey.enum);
++  const excerpt = '…[truncated]';
++
++  function businessDevelopmentOutputDefinition(id) {
++    if (!outputs.has(id)) fail('Unknown business-development operation');
++    return outputs.get(id);
++  }
++  function businessDevelopmentInputDefinition(id) {
++    return businessDevelopmentOutputDefinition(id).replace(/Output$/, 'Input');
++  }
++  function countWindow(total, returned, truncated, rows, cap) {
++    if (returned !== rows.length || returned !== Math.min(total, cap) || truncated !== (total > returned))
++      fail('Business-development count/window mismatch');
++  }
++  function instant(value) {
++    if (!Number.isFinite(Date.parse(value))) fail('Business-development generated instant is not comparable');
++  }
++  function assertFacts(row) {
++    const omitted = row.factsOmitted ?? [], truncated = row.factsTruncated ?? [];
++    if (Object.hasOwn(row, 'factsOmittedNote') !== (omitted.length > 0)) fail('Evidence omission note mismatch');
++    for (const key of omitted) {
++      if (descriptive.has(key) || Object.hasOwn(row.facts, key)) fail('Omitted evidence fact still present or descriptive');
++    }
++    for (const [key, value] of Object.entries(row.facts)) {
++      if (!descriptive.has(key)) {
++        if (JSON.stringify(value).length > 600) fail('Oversized exact evidence fact must be omitted');
++        continue;
++      }
++      const values = Array.isArray(value) ? value : [value];
++      if (Array.isArray(value) && value.length > 12) fail('Descriptive fact array exceeds producer cap');
++      for (const item of values) if (typeof item === 'string' && item.length > 600) {
++        if (item.length !== 600 + excerpt.length || !item.endsWith(excerpt) || !truncated.includes(key))
++          fail('Descriptive excerpt requires exact bound and marker');
++      }
++    }
++    for (const key of truncated) {
++      if (!Object.hasOwn(row.facts, key)) fail('Truncated evidence fact is absent');
++      const value = row.facts[key], values = Array.isArray(value) ? value : [value];
++      if (!(Array.isArray(value) && value.length === 12) && !values.some(item =>
++        typeof item === 'string' && item.length === 600 + excerpt.length && item.endsWith(excerpt)))
++        fail('Truncation marker does not describe an excerpt or capped array');
++    }
++    if (row.id !== (row.recordId ?? row.originalSourceId ?? '') || row.url !== row.locator)
++      fail('Evidence citation alias substitution');
++  }
++  function consistency(definition, value) {
++    if (!outputs.has(value?.tool) || outputs.get(value.tool) !== definition) return;
++    instant(value.generatedAt);
++    if (definition === 'BusinessDevelopmentContextOutput') {
++      countWindow(value.history.total, value.history.returned, value.history.truncated, value.history.entries, 20);
++      let last = Infinity;
++      for (const row of value.history.entries) {
++        instant(row.at);
++        const stamp = Date.parse(row.at);
++        if (stamp > last) fail('Context history is not newest first');
++        last = stamp;
++      }
++    } else if (definition === 'BusinessDevelopmentEvidenceOutput') {
++      const { evidence, coverage } = value;
++      countWindow(evidence.total, evidence.returned, evidence.truncated, value.data, 24);
++      const sections = value.sectionStates.map(row => row.section);
++      if (new Set(sections).size !== sections.length) fail('Duplicate evidence section state');
++      for (const row of value.data) assertFacts(row);
++      const partial = evidence.truncated || value.data.some(row => row.factsTruncated || row.factsOmitted) ||
++        value.sectionStates.some(row => !['available', 'empty_in_queried_scope'].includes(row.status));
++      if (coverage.complete !== (evidence.total <= 24) || coverage.partial !== partial)
++        fail('Evidence coverage flags do not match the producer projection');
++      if ((value.identityBasis === 'unresolved_prospect') !== (value.canonicalEntityId === null && value.canonicalName === null) ||
++          (value.canonicalEntityId === null) !== (value.canonicalName === null)) fail('Dossier identity basis mismatch');
++    } else {
++      if (value.alerts.returned !== value.alerts.items.length || value.alerts.returned > value.alerts.limit)
++        fail('Recent changes returned/limit mismatch');
++      // No total, continuation token, bid/win assertion or completeness is
++      // inferred from this first-page projection or from the unread count.
++    }
++  }
++  function validateBusinessDevelopmentShape(definition, value) {
++    if (!definitions.has(definition)) fail('Unknown business-development definition');
++    validateShape(definition, value);
++    consistency(definition, value);
++    return value;
++  }
++  function normalizeBusinessDevelopmentInput(id, request) {
++    const definition = businessDevelopmentInputDefinition(id), input = inputData(request);
++    validateBusinessDevelopmentShape(definition, input);
++    if (id === 'get_business_development_recent_changes' && !Object.hasOwn(input, 'limit')) input.limit = 10;
++    return Object.freeze({ input: Object.freeze(input), metadata: Object.freeze({
++      conversationId: input.conversationId, authoritative: false, sourceConnected: false,
++      producerQualified: false, absenceEvidence: false,
++      scope: 'server-resolved-prospect-conversation', providerCalls: 'unqualified',
++    }) });
++  }
++  function assertBusinessDevelopmentOutput(id, value, request) {
++    const { input } = normalizeBusinessDevelopmentInput(id, request);
++    validateBusinessDevelopmentShape(businessDevelopmentOutputDefinition(id), value);
++    if (id === 'get_business_development_recent_changes' && value.alerts.limit !== input.limit)
++      fail('Recent changes request limit substitution');
++    return value;
++  }
++  return Object.freeze({ businessDevelopmentSchemaId: schema.$id, BUSINESS_DEVELOPMENT_OPERATION_IDS,
++    businessDevelopmentInputDefinition, businessDevelopmentOutputDefinition,
++    normalizeBusinessDevelopmentInput, validateBusinessDevelopmentShape, assertBusinessDevelopmentOutput });
++}
+diff --git a/packages/contracts/retrieval-0.2/business-development.schema.json b/packages/contracts/retrieval-0.2/business-development.schema.json
+new file mode 100644
+index 0000000..9d96412
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/business-development.schema.json
+@@ -0,0 +1,1083 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:business-development:0.2.0",
++  "title": "Private business-development read projections 0.2.0",
++  "description": "Source-only structural contracts for three frozen producer projections. Validation grants no access and proves no source availability, live policy, source freshness, authoritative absence or runtime parity. Conversation ownership and current prospect scope are server responsibilities. Dossier suppressJev does not suppress all provider calls: SAM can be invoked under provider flags. Source date fields retain their declared string types; only producer-generated ISO timestamps are date-time. Generic JSON fact/change values are inert source data, not executable instructions or domain truth. Raw results do not carry Meri RunBinding or current authorization lineage. Meri refuses unknown input/output keys, non-JSON values and numerical coercion; canonical resolver admission bounds total JSON depth, nodes and bytes.",
++  "$defs": {
++    "BusinessDevelopmentOperationId": {
++      "type": "string",
++      "enum": [
++        "get_business_development_context",
++        "get_business_development_evidence",
++        "get_business_development_recent_changes"
++      ]
++    },
++    "BusinessDevelopmentContextInput": {
++      "type": "object",
++      "properties": {
++        "conversationId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++        }
++      },
++      "required": [
++        "conversationId"
++      ],
++      "additionalProperties": false
++    },
++    "BusinessDevelopmentEvidenceInput": {
++      "type": "object",
++      "properties": {
++        "conversationId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++        }
++      },
++      "required": [
++        "conversationId"
++      ],
++      "additionalProperties": false
++    },
++    "BusinessDevelopmentRecentChangesInput": {
++      "type": "object",
++      "properties": {
++        "conversationId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 25
++        }
++      },
++      "required": [
++        "conversationId"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevJsonValue": {
++      "anyOf": [
++        {
++          "type": "string"
++        },
++        {
++          "type": "number"
++        },
++        {
++          "type": "boolean"
++        },
++        {
++          "type": "null"
++        },
++        {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevJsonValue"
++          }
++        },
++        {
++          "type": "object",
++          "additionalProperties": {
++            "$ref": "#/$defs/BizDevJsonValue"
++          }
++        }
++      ]
++    },
++    "BizDevEvidenceStatus": {
++      "type": "string",
++      "enum": [
++        "available",
++        "empty_in_queried_scope",
++        "ambiguous",
++        "stale",
++        "partial",
++        "error"
++      ]
++    },
++    "BizDevSectionKind": {
++      "type": "string",
++      "enum": [
++        "identity",
++        "government_exposure",
++        "relevant_signals",
++        "footprint",
++        "lobbying",
++        "people"
++      ]
++    },
++    "BizDevEvidenceFactKey": {
++      "type": "string",
++      "enum": [
++        "agency",
++        "subTier",
++        "amount",
++        "amountType",
++        "description",
++        "kind",
++        "matchBasis",
++        "peCode",
++        "peCodeSource",
++        "peCodeConfidence",
++        "peCodeCandidateCount",
++        "dodAcqProgramCode",
++        "dodAcqProgramName",
++        "peEvidenceStrength",
++        "meaning",
++        "ambiguityWarning",
++        "office",
++        "noticeType",
++        "responseDeadline",
++        "contextOnly",
++        "popState",
++        "popCongressionalDistrict",
++        "recipientState",
++        "recipientCongressionalDistrict",
++        "distinctMeaning",
++        "facilityKind",
++        "name",
++        "city",
++        "state",
++        "congressionalDistrict",
++        "employeeCount",
++        "registrant",
++        "clientOfRecord",
++        "filingPeriod",
++        "income",
++        "issueCodes",
++        "uei",
++        "cageCode",
++        "dbaName",
++        "physicalAddress",
++        "registrationStatus",
++        "registrationExpirationDate",
++        "entityStructure",
++        "stateOfIncorporation",
++        "primaryNaics"
++      ]
++    },
++    "BizDevDescriptiveFactKey": {
++      "type": "string",
++      "enum": [
++        "description",
++        "meaning",
++        "ambiguityWarning",
++        "distinctMeaning",
++        "contextOnly"
++      ]
++    },
++    "BizDevSectionState": {
++      "type": "object",
++      "properties": {
++        "section": {
++          "$ref": "#/$defs/BizDevSectionKind"
++        },
++        "status": {
++          "$ref": "#/$defs/BizDevEvidenceStatus"
++        },
++        "statusText": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "section",
++        "status",
++        "statusText"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevContextProspect": {
++      "type": "object",
++      "properties": {
++        "id": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++        },
++        "displayName": {
++          "type": "string"
++        },
++        "ownerUserId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "stage": {
++          "type": "string"
++        },
++        "serviceHypothesis": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "geography": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "nextAction": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "canonicalEntityId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "linkedClientId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "id",
++        "displayName",
++        "ownerUserId",
++        "stage",
++        "serviceHypothesis",
++        "geography",
++        "nextAction",
++        "canonicalEntityId",
++        "linkedClientId"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevContextHistoryEntry": {
++      "type": "object",
++      "properties": {
++        "id": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++        },
++        "kind": {
++          "type": "string"
++        },
++        "body": {
++          "type": "string"
++        },
++        "at": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "actorUserId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "id",
++        "kind",
++        "body",
++        "at",
++        "actorUserId"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevEvidenceFacts": {
++      "type": "object",
++      "properties": {
++        "agency": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "subTier": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "amount": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "amountType": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "description": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "kind": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "matchBasis": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "peCode": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "peCodeSource": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "peCodeConfidence": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "peCodeCandidateCount": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "dodAcqProgramCode": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "dodAcqProgramName": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "peEvidenceStrength": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "meaning": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "ambiguityWarning": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "office": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "noticeType": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "responseDeadline": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "contextOnly": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "popState": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "popCongressionalDistrict": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "recipientState": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "recipientCongressionalDistrict": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "distinctMeaning": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "facilityKind": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "name": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "city": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "state": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "congressionalDistrict": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "employeeCount": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "registrant": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "clientOfRecord": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "filingPeriod": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "income": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "issueCodes": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "uei": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "cageCode": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "dbaName": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "physicalAddress": {
++          "anyOf": [
++            {
++              "type": "object",
++              "properties": {
++                "line1": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "line2": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "city": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "state": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "zip": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "country": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                }
++              },
++              "required": [],
++              "additionalProperties": false
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "registrationStatus": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "registrationExpirationDate": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "entityStructure": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "stateOfIncorporation": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "primaryNaics": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        }
++      },
++      "required": [],
++      "additionalProperties": false
++    },
++    "BizDevEvidenceRow": {
++      "type": "object",
++      "properties": {
++        "sourceFamily": {
++          "type": "string",
++          "enum": [
++            "capiro_canonical_identity",
++            "capiro_prospect_state",
++            "usaspending_contract",
++            "usaspending_assistance",
++            "sam_entity",
++            "sam_opportunity",
++            "tango_vehicle",
++            "lda_filing",
++            "pdl_company",
++            "pdl_people"
++          ]
++        },
++        "recordId": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "locator": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "originalSourceName": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "originalSourceId": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "claimType": {
++          "type": "string",
++          "enum": [
++            "identity",
++            "government_exposure",
++            "relevant_signal",
++            "footprint",
++            "lobbying",
++            "people"
++          ]
++        },
++        "relationshipStrength": {
++          "type": "string",
++          "enum": [
++            "direct",
++            "conditional",
++            "thematic",
++            "unresolved"
++          ]
++        },
++        "eventDate": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "effectiveDate": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "fiscalYear": {
++          "type": [
++            "number",
++            "null"
++          ]
++        },
++        "stage": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "enum": [
++            "requested",
++            "authorized",
++            "obligated",
++            "awarded",
++            "ceiling",
++            "forecast",
++            null
++          ]
++        },
++        "sourceUpdatedAt": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "retrievedAt": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "scopeChecked": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "status": {
++          "$ref": "#/$defs/BizDevEvidenceStatus"
++        },
++        "title": {
++          "type": "string"
++        },
++        "facts": {
++          "$ref": "#/$defs/BizDevEvidenceFacts"
++        },
++        "id": {
++          "type": "string"
++        },
++        "url": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "snippet": {
++          "type": "string"
++        },
++        "factsTruncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevDescriptiveFactKey"
++          },
++          "maxItems": 5,
++          "minItems": 1,
++          "uniqueItems": true
++        },
++        "factsOmitted": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevEvidenceFactKey"
++          },
++          "maxItems": 45,
++          "minItems": 1,
++          "uniqueItems": true
++        },
++        "factsOmittedNote": {
++          "const": "These factual fields were too large to include exactly and were omitted rather than cut; treat them as unsupported here."
++        }
++      },
++      "required": [
++        "sourceFamily",
++        "recordId",
++        "locator",
++        "originalSourceName",
++        "originalSourceId",
++        "claimType",
++        "relationshipStrength",
++        "eventDate",
++        "effectiveDate",
++        "fiscalYear",
++        "stage",
++        "sourceUpdatedAt",
++        "retrievedAt",
++        "scopeChecked",
++        "status",
++        "title",
++        "facts",
++        "id",
++        "url",
++        "snippet"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevChangedField": {
++      "type": "object",
++      "properties": {
++        "field": {
++          "type": "string"
++        },
++        "before": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        },
++        "after": {
++          "$ref": "#/$defs/BizDevJsonValue"
++        }
++      },
++      "required": [
++        "field",
++        "before",
++        "after"
++      ],
++      "additionalProperties": false
++    },
++    "BizDevRecentAlert": {
++      "type": "object",
++      "properties": {
++        "id": {
++          "type": "string"
++        },
++        "sourceFamily": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "category": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "title": {
++          "type": "string"
++        },
++        "summary": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "materiality": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "dates": {
++          "type": "object",
++          "properties": {
++            "eventAt": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "effectiveAt": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "publishedAt": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "firstObservedAt": {
++              "type": [
++                "string",
++                "null"
++              ]
++            }
++          },
++          "required": [
++            "eventAt",
++            "effectiveAt",
++            "publishedAt",
++            "firstObservedAt"
++          ],
++          "additionalProperties": false
++        },
++        "sourceLocator": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "implication": {
++          "type": "object",
++          "properties": {
++            "text": {
++              "type": [
++                "string",
++                "null"
++              ]
++            },
++            "inference": {
++              "const": true
++            },
++            "note": {
++              "const": "Inference drawn from the ingested change diff, not a source fact. Preserve any conditional or thematic wording."
++            }
++          },
++          "required": [
++            "text",
++            "inference",
++            "note"
++          ],
++          "additionalProperties": false
++        },
++        "changedFields": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevChangedField"
++          }
++        }
++      },
++      "required": [
++        "id",
++        "sourceFamily",
++        "category",
++        "title",
++        "summary",
++        "materiality",
++        "dates",
++        "sourceLocator",
++        "implication",
++        "changedFields"
++      ],
++      "additionalProperties": false
++    },
++    "BusinessDevelopmentContextOutput": {
++      "type": "object",
++      "properties": {
++        "tool": {
++          "const": "get_business_development_context"
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "prospect": {
++          "$ref": "#/$defs/BizDevContextProspect"
++        },
++        "firmPreferences": {
++          "type": "object",
++          "properties": {
++            "practiceServiceAreas": {
++              "type": "array",
++              "items": {
++                "type": "string"
++              }
++            },
++            "agenciesIssues": {
++              "type": "array",
++              "items": {
++                "type": "string"
++              }
++            },
++            "geographies": {
++              "type": "array",
++              "items": {
++                "type": "string"
++              }
++            }
++          },
++          "required": [
++            "practiceServiceAreas",
++            "agenciesIssues",
++            "geographies"
++          ],
++          "additionalProperties": false
++        },
++        "history": {
++          "type": "object",
++          "properties": {
++            "entries": {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/BizDevContextHistoryEntry"
++              },
++              "maxItems": 20
++            },
++            "total": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "returned": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "truncated": {
++              "type": "boolean"
++            }
++          },
++          "required": [
++            "entries",
++            "total",
++            "returned",
++            "truncated"
++          ],
++          "additionalProperties": false
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "prospect",
++        "firmPreferences",
++        "history"
++      ],
++      "additionalProperties": false
++    },
++    "BusinessDevelopmentEvidenceOutput": {
++      "type": "object",
++      "properties": {
++        "tool": {
++          "const": "get_business_development_evidence"
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "identityBasis": {
++          "type": "string",
++          "enum": [
++            "exact_uei",
++            "exact_name",
++            "unresolved_prospect"
++          ]
++        },
++        "canonicalEntityId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "canonicalName": {
++          "type": [
++            "string",
++            "null"
++          ]
++        },
++        "sectionStates": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevSectionState"
++          },
++          "maxItems": 6
++        },
++        "data": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BizDevEvidenceRow"
++          },
++          "maxItems": 24
++        },
++        "evidence": {
++          "type": "object",
++          "properties": {
++            "total": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "returned": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "truncated": {
++              "type": "boolean"
++            }
++          },
++          "required": [
++            "total",
++            "returned",
++            "truncated"
++          ],
++          "additionalProperties": false
++        },
++        "coverage": {
++          "type": "object",
++          "properties": {
++            "complete": {
++              "type": "boolean"
++            },
++            "partial": {
++              "type": "boolean"
++            },
++            "note": {
++              "type": "string"
++            }
++          },
++          "required": [
++            "complete",
++            "partial",
++            "note"
++          ],
++          "additionalProperties": false
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "identityBasis",
++        "canonicalEntityId",
++        "canonicalName",
++        "sectionStates",
++        "data",
++        "evidence",
++        "coverage"
++      ],
++      "additionalProperties": false
++    },
++    "BusinessDevelopmentRecentChangesOutput": {
++      "type": "object",
++      "properties": {
++        "tool": {
++          "const": "get_business_development_recent_changes"
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "prospect": {
++          "type": "object",
++          "properties": {
++            "id": {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++            },
++            "name": {
++              "type": "string"
++            }
++          },
++          "required": [
++            "id",
++            "name"
++          ],
++          "additionalProperties": false
++        },
++        "alerts": {
++          "type": "object",
++          "properties": {
++            "items": {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/BizDevRecentAlert"
++              },
++              "maxItems": 25
++            },
++            "returned": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "unreadCount": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "truncated": {
++              "type": "boolean"
++            },
++            "limit": {
++              "type": "integer",
++              "minimum": 1,
++              "maximum": 25
++            },
++            "note": {
++              "const": "These are already-ingested change alerts for this prospect. Reading them does not mark them read. This summary never proves bid or win intent."
++            }
++          },
++          "required": [
++            "items",
++            "returned",
++            "unreadCount",
++            "truncated",
++            "limit",
++            "note"
++          ],
++          "additionalProperties": false
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "prospect",
++        "alerts"
++      ],
++      "additionalProperties": false
++    }
++  }
++}
+diff --git a/packages/contracts/test/retrieval-business-development.test.mjs b/packages/contracts/test/retrieval-business-development.test.mjs
+new file mode 100644
+index 0000000..6a1bbeb
+--- /dev/null
++++ b/packages/contracts/test/retrieval-business-development.test.mjs
+@@ -0,0 +1,294 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { readFileSync } from 'node:fs';
++import { createHash } from 'node:crypto';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import { createBusinessDevelopmentValidators, BUSINESS_DEVELOPMENT_OPERATION_IDS } from '../retrieval-0.2/business-development-validation.mjs';
++import { createOperationContracts } from '../retrieval-0.2/operation-contracts.mjs';
++import { canonicalSha256 } from '../validate.mjs';
++
++// Test-only schema compiler. Root owns integration into the canonical loader.
++const raw = readFileSync(new URL('../retrieval-0.2/business-development.schema.json', import.meta.url));
++const schema = JSON.parse(raw);
++const ajv = new Ajv({ strict: true, allErrors: true }); addFormats(ajv); ajv.addSchema(schema);
++const checks = new Map(Object.keys(schema.$defs).map(name => [name, ajv.compile({ $ref: `${schema.$id}#/$defs/${name}` })]));
++const v = createBusinessDevelopmentValidators({ schema, validateShape(name, value) {
++  const check = checks.get(name); if (!check?.(value)) throw new Error(`${name}: ${ajv.errorsText(check?.errors)}`);
++  return value;
++} });
++const [contextId, evidenceId, changesId] = BUSINESS_DEVELOPMENT_OPERATION_IDS;
++const conversationId = '11111111-1111-4111-8111-111111111111';
++const prospectId = '22222222-2222-4222-8222-222222222222';
++const canonicalId = '33333333-3333-4333-8333-333333333333';
++const stamp = '2026-10-12T12:00:00.000Z';
++const request = () => ({ conversationId });
++const clone = value => structuredClone(value);
++function historyRow(n) {
++  return { id: `44444444-4444-4444-8444-${String(n).padStart(12, '0')}`, kind: 'note', body: `Synthetic history ${n}`, at: stamp, actorUserId: null };
++}
++function context(total = 1) {
++  const entries = Array.from({ length: Math.min(total, 20) }, (_, n) => historyRow(n));
++  return { tool: contextId, generatedAt: stamp,
++    prospect: { id: prospectId, displayName: 'Synthetic prospect', ownerUserId: null, stage: 'researching',
++      serviceHypothesis: null, geography: null, nextAction: null, canonicalEntityId: canonicalId, linkedClientId: null },
++    firmPreferences: { practiceServiceAreas: [], agenciesIssues: [], geographies: [] },
++    history: { entries, total, returned: entries.length, truncated: total > entries.length } };
++}
++function evidenceRow(n = 1) {
++  return { sourceFamily: 'usaspending_contract', recordId: `record-${n}`, locator: null, originalSourceName: null,
++    originalSourceId: null, claimType: 'government_exposure', relationshipStrength: 'conditional',
++    eventDate: '2026-01-01', effectiveDate: null, fiscalYear: 2026, stage: 'obligated', sourceUpdatedAt: null,
++    retrievedAt: null, scopeChecked: 'synthetic exact-name query', status: 'available', title: 'Synthetic claim',
++    facts: { amount: 123.45, amountType: 'obligated', agency: 'Synthetic agency' },
++    id: `record-${n}`, url: null, snippet: 'Synthetic claim' };
++}
++function evidence(total = 1) {
++  const data = Array.from({ length: Math.min(total, 24) }, (_, n) => evidenceRow(n));
++  return { tool: evidenceId, generatedAt: stamp, identityBasis: 'exact_name', canonicalEntityId: canonicalId,
++    canonicalName: 'Synthetic prospect', sectionStates: [{ section: 'government_exposure', status: 'available', statusText: 'Synthetic scope only' }], data,
++    evidence: { total, returned: data.length, truncated: total > data.length },
++    coverage: { complete: total <= 24, partial: total > 24, note: 'Synthetic record-window description; no source qualification.' } };
++}
++function alert() {
++  return { id: 'alert-synthetic', sourceFamily: 'sam_gov', category: 'funding', title: 'Synthetic ingested change',
++    summary: null, materiality: null, dates: { eventAt: null, effectiveAt: null, publishedAt: null, firstObservedAt: null }, sourceLocator: null,
++    implication: { text: null, inference: true, note: 'Inference drawn from the ingested change diff, not a source fact. Preserve any conditional or thematic wording.' },
++    changedFields: [{ field: 'amount', before: null, after: 123.45 }] };
++}
++function changes(limit = 10, count = 1) {
++  return { tool: changesId, generatedAt: stamp, prospect: { id: prospectId, name: 'Synthetic prospect' },
++    alerts: { items: Array.from({ length: count }, alert), returned: count, unreadCount: 0, truncated: false, limit,
++      note: 'These are already-ingested change alerts for this prospect. Reading them does not mark them read. This summary never proves bid or win intent.' } };
++}
++const fixtures = new Map([[contextId, context], [evidenceId, evidence], [changesId, changes]]);
++
++test('three distinct operation definitions and schema identity are explicit', () => {
++  assert.equal(v.businessDevelopmentSchemaId, 'urn:meri:retrieval:business-development:0.2.0');
++  assert.deepEqual(schema.$defs.BusinessDevelopmentOperationId.enum, [...BUSINESS_DEVELOPMENT_OPERATION_IDS]);
++  assert.equal(new Set(BUSINESS_DEVELOPMENT_OPERATION_IDS.map(v.businessDevelopmentInputDefinition)).size, 3);
++  assert.equal(new Set(BUSINESS_DEVELOPMENT_OPERATION_IDS.map(v.businessDevelopmentOutputDefinition)).size, 3);
++  assert.equal(createHash('sha256').update(raw).digest('hex').length, 64);
++  for (const id of ['get_business_development_brief', 'save_business_development_brief', '__proto__', 'constructor']) {
++    assert.throws(() => v.businessDevelopmentInputDefinition(id));
++    assert.throws(() => v.businessDevelopmentOutputDefinition(id));
++    assert.throws(() => v.normalizeBusinessDevelopmentInput(id, request()));
++  }
++});
++
++for (const id of BUSINESS_DEVELOPMENT_OPERATION_IDS) {
++  test(`${id}: accepted frozen projection preserves caller data and selector`, () => {
++    const input = request(), before = clone(input), result = v.normalizeBusinessDevelopmentInput(id, input);
++    const page = fixtures.get(id)(), saved = clone(page);
++    assert.deepEqual(input, before); assert.notEqual(result.input, input);
++    assert.equal(result.input.conversationId, conversationId); assert.ok(Object.isFrozen(result.input));
++    assert.ok(Object.isFrozen(result.metadata)); assert.equal(result.metadata.authoritative, false);
++    assert.equal(result.metadata.sourceConnected, false); assert.equal(result.metadata.producerQualified, false);
++    assert.equal(result.metadata.absenceEvidence, false); assert.equal(result.metadata.providerCalls, 'unqualified');
++    assert.equal(v.assertBusinessDevelopmentOutput(id, page, input), page); assert.deepEqual(page, saved);
++    assert.throws(() => { result.input.conversationId = prospectId; }, TypeError);
++  });
++  test(`${id}: missing/malformed/coerced conversation identifiers refuse`, () => {
++    for (const value of [undefined, null, 1, '', ' '+conversationId, conversationId+' ', 'not-a-uuid', []]) {
++      assert.throws(() => v.normalizeBusinessDevelopmentInput(id, value === undefined ? {} : { conversationId: value }));
++    }
++  });
++  test(`${id}: authority and unknown model fields refuse`, () => {
++    for (const key of ['tenantId','userId','actorId','prospectId','canonicalOrganizationId','linkedClientId','scopeVersion','alertId','watchId','cursor','extra']) {
++      assert.throws(() => v.normalizeBusinessDevelopmentInput(id, { ...request(), [key]: 'synthetic' }));
++    }
++  });
++  test(`${id}: wrong operation and unprojected result fields refuse`, () => {
++    const page = fixtures.get(id)(); page.tool = 'get_business_development_brief';
++    assert.throws(() => v.assertBusinessDevelopmentOutput(id, page, request()));
++    const leaked = fixtures.get(id)(); leaked.rawProviderPayload = {};
++    assert.throws(() => v.assertBusinessDevelopmentOutput(id, leaked, request()));
++    const missing = fixtures.get(id)(); delete missing.generatedAt;
++    assert.throws(() => v.assertBusinessDevelopmentOutput(id, missing, request()));
++  });
++}
++
++test('only recent changes accepts limit and supplies default10 without coercion', () => {
++  assert.deepEqual(v.normalizeBusinessDevelopmentInput(changesId, request()).input, { conversationId, limit: 10 });
++  for (const limit of [1,25]) {
++    assert.equal(v.normalizeBusinessDevelopmentInput(changesId, { ...request(), limit }).input.limit, limit);
++    v.assertBusinessDevelopmentOutput(changesId, changes(limit), { ...request(), limit });
++  }
++  for (const limit of [0,26,-1,1.5,'10',null,undefined,NaN,Infinity])
++    assert.throws(() => v.normalizeBusinessDevelopmentInput(changesId, { ...request(), limit }));
++  for (const id of [contextId,evidenceId]) assert.throws(() => v.normalizeBusinessDevelopmentInput(id, { ...request(), limit: 10 }));
++});
++
++test('input accessors/proxies/coercion hooks are rejected without execution', () => {
++  let hooks = 0;
++  for (const input of [
++    Object.defineProperty({}, 'conversationId', { enumerable: true, get() { hooks++; return conversationId; } }),
++    new Proxy({}, { get() { hooks++; }, ownKeys() { hooks++; return []; }, getPrototypeOf() { hooks++; return Object.prototype; } }),
++    { ...request(), toJSON() { hooks++; return request(); } },
++    Object.defineProperty(request(), 'hidden', { value: 1 }),
++    Object.assign(Object.create({ inherited: true }), request()),
++  ]) assert.throws(() => v.normalizeBusinessDevelopmentInput(contextId, input));
++  assert.equal(hooks, 0);
++});
++
++test('context history cap/count/truncation and newest-first order are preserved', () => {
++  for (const total of [0,1,20,21,35]) v.assertBusinessDevelopmentOutput(contextId, context(total), request());
++  for (const mutate of [p=>p.history.returned++,p=>p.history.total--,p=>p.history.truncated=true,p=>p.history.entries.push(historyRow(9))]) {
++    const page=context();mutate(page);assert.throws(()=>v.assertBusinessDevelopmentOutput(contextId,page,request()));
++  }
++  const page=context(2);page.history.entries[1].at='2026-10-13T12:00:00Z';
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(contextId,page,request()),/newest first/);
++});
++
++test('context keeps nullable projection fields but rejects hidden history/conflict/contact payloads', () => {
++  const page=context(); page.prospect.canonicalEntityId=null;
++  v.assertBusinessDevelopmentOutput(contextId,page,request());
++  for (const field of ['before','after','contact','conflictOfInterestCheck']) {
++    const modified=context(); modified.history.entries[0][field]={};
++    assert.throws(()=>v.assertBusinessDevelopmentOutput(contextId,modified,request()));
++  }
++  const missing=context();delete missing.prospect.ownerUserId;
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(contextId,missing,request()));
++});
++
++test('producer-generated timestamps reject NaN leap-second instants', () => {
++  for (const [id, make] of fixtures) {
++    const page=make();page.generatedAt='2026-06-30T23:59:60Z';
++    assert.throws(()=>v.assertBusinessDevelopmentOutput(id,page,request()),/comparable/);
++  }
++  const page=context();page.history.entries[0].at='2026-06-30T23:59:60Z';
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(contextId,page,request()),/comparable/);
++});
++
++test('evidence complete and partial remain independent at24-row boundary', () => {
++  for (const total of [0,1,24,25,30]) v.assertBusinessDevelopmentOutput(evidenceId,evidence(total),request());
++  const page=evidence();page.sectionStates[0].status='stale';page.coverage.partial=true;
++  assert.equal(page.coverage.complete,true);v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  page.coverage.partial=false;assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,page,request()),/coverage/);
++});
++
++test('evidence derived counts and every section limitation agree with coverage', () => {
++  for (const mutate of [p=>p.evidence.returned++,p=>p.evidence.total=30,p=>p.evidence.truncated=true,p=>p.coverage.complete=false,p=>p.coverage.partial=true]) {
++    const page=evidence();mutate(page);assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,page,request()));
++  }
++  for (const status of ['ambiguous','stale','partial','error']) {
++    const page=evidence();page.sectionStates[0].status=status;page.coverage.partial=true;
++    v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  }
++  const duplicate=evidence();duplicate.sectionStates.push(clone(duplicate.sectionStates[0]));
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,duplicate,request()),/Duplicate/);
++});
++
++test('evidence nullable identity and citation aliases preserve actual source identity', () => {
++  const page=evidence();page.identityBasis='unresolved_prospect';page.canonicalEntityId=null;page.canonicalName=null;
++  page.data[0].recordId=null;page.data[0].originalSourceId='original-id';page.data[0].id='original-id';
++  v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  page.data[0].originalSourceId=null;page.data[0].id='';v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  for (const mutate of [p=>p.data[0].id='foreign',p=>p.data[0].url='https://example.invalid/invented',p=>p.canonicalEntityId=null]) {
++    const value=evidence();mutate(value);assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,value,request()));
++  }
++});
++
++test('evidence preserves source date strings, relationship grades and stages without promotion', () => {
++  const page=evidence();page.data[0].eventDate='source reports FY2026';page.data[0].relationshipStrength='thematic';page.data[0].stage='forecast';
++  v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  assert.equal(page.data[0].stage,'forecast'); assert.equal(page.data[0].relationshipStrength,'thematic');
++  for (const [field,value] of [['status','verified'],['claimType','win'],['sourceFamily','unknown'],['relationshipStrength','certain'],['stage','won']]) {
++    const bad=evidence();bad.data[0][field]=value;assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,bad,request()));
++  }
++});
++
++test('facts expose only allowlisted projection fields and normalized address keys', () => {
++  const page=evidence();page.data[0].facts.physicalAddress={line1:'Synthetic street',city:null};
++  v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  for (const mutate of [p=>p.data[0].facts.providerPayload={},p=>p.data[0].facts.contact={},p=>p.data[0].facts.physicalAddress={email:'x'},p=>p.data[0].facts.physicalAddress='raw']) {
++    const bad=evidence();mutate(bad);assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,bad,request()));
++  }
++});
++
++test('factual values are exact or omitted with markers, never substring-cut', () => {
++  const page=evidence();page.data[0].facts.issueCodes=['A','B'];
++  v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  page.data[0].facts.issueCodes='X'.repeat(600);
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,page,request()),/Oversized/);
++  delete page.data[0].facts.issueCodes;page.data[0].factsOmitted=['issueCodes'];
++  page.data[0].factsOmittedNote='These factual fields were too large to include exactly and were omitted rather than cut; treat them as unsupported here.';
++  page.coverage.partial=true;v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  page.data[0].facts.issueCodes=['X'];assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,page,request()),/Omitted/);
++});
++
++test('descriptive string and array excerpts require honest markers and bounded retained values', () => {
++  const page=evidence();page.data[0].facts.description='X'.repeat(600)+'…[truncated]';
++  page.data[0].factsTruncated=['description'];page.coverage.partial=true;
++  v.assertBusinessDevelopmentOutput(evidenceId,page,request());
++  delete page.data[0].factsTruncated;assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,page,request()),/marker/);
++  const array=evidence();array.data[0].facts.description=Array(12).fill('short');array.data[0].factsTruncated=['description'];array.coverage.partial=true;
++  v.assertBusinessDevelopmentOutput(evidenceId,array,request());
++  array.data[0].facts.description.push('extra');assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,array,request()),/cap/);
++});
++
++test('invented omission/truncation markers and omitted-note substitutions refuse', () => {
++  for (const mutate of [p=>p.data[0].factsTruncated=['description'],p=>p.data[0].factsTruncated=['amount'],
++    p=>{p.data[0].factsOmitted=['description'];p.data[0].factsOmittedNote='wrong';},
++    p=>{p.data[0].factsOmitted=[];},p=>{p.data[0].factsTruncated=[];}]) {
++    const bad=evidence();mutate(bad);bad.coverage.partial=true;assert.throws(()=>v.assertBusinessDevelopmentOutput(evidenceId,bad,request()));
++  }
++});
++
++test('recent changes use actual nullable alert DTO vocabulary, not internal diff enums', () => {
++  const page=changes();v.assertBusinessDevelopmentOutput(changesId,page,request());
++  assert.equal(page.alerts.items[0].sourceFamily,'sam_gov');assert.equal(page.alerts.items[0].category,'funding');
++  page.alerts.items[0].sourceFamily=null;page.alerts.items[0].category=null;page.alerts.items[0].changedFields=[];
++  v.assertBusinessDevelopmentOutput(changesId,page,request());
++});
++
++test('recent changes keep inference explicit and never expose raw baseline or delivery state', () => {
++  for (const mutate of [p=>p.alerts.items[0].implication.inference=false,p=>p.alerts.items[0].beforeState={},
++    p=>p.alerts.items[0].changesJsonb=[],p=>p.alerts.items[0].readAt=stamp,p=>p.alerts.nextCursor='token']) {
++    const bad=changes();mutate(bad);assert.throws(()=>v.assertBusinessDevelopmentOutput(changesId,bad,request()));
++  }
++  const page=changes();page.alerts.truncated=true;v.assertBusinessDevelopmentOutput(changesId,page,request());
++  assert.equal(page.alerts.unreadCount,0,'unread count need not equal returned page size');
++});
++
++test('recent changes returned counts and effective request limit must match', () => {
++  v.assertBusinessDevelopmentOutput(changesId,changes(25,25),{...request(),limit:25});
++  for (const mutate of [p=>p.alerts.returned++,p=>p.alerts.limit=1,p=>p.alerts.items.push(alert())]) {
++    const bad=changes();mutate(bad);assert.throws(()=>v.assertBusinessDevelopmentOutput(changesId,bad,request()));
++  }
++  assert.throws(()=>v.assertBusinessDevelopmentOutput(changesId,changes(10,11),request()));
++});
++
++// Real resolver, synthetic descriptors only: root separately owns canonical
++// registration and source-disabled gateway checks. No production handler exists.
++function resolverFixture() {
++  const bindings=BUSINESS_DEVELOPMENT_OPERATION_IDS.map(id=>({id,version:'0.2.0',
++    normalize:(validators, input)=>validators.normalizeBusinessDevelopmentInput(id,input),
++    outputAssert:(validators,page,input)=>validators.assertBusinessDevelopmentOutput(id,page,input)}));
++  const catalog={operations:bindings.map(row=>({operation:{id:row.id,version:row.version},handler:null}))};
++  return createOperationContracts({catalog,bindings,validators:v,assertCatalog(value){assert.equal(value.operations.length,3);},canonicalSha256});
++}
++
++test('canonical resolver owns immutable original request, normalized digest and output admission', () => {
++  const resolver=resolverFixture();
++  for (const id of BUSINESS_DEVELOPMENT_OPERATION_IDS) {
++    const contract=resolver.resolveOperationContract({id,version:'0.2.0'}), input=request();
++    const normalized=contract.normalizeInput(input);
++    input.conversationId=prospectId;
++    assert.equal(normalized.request.conversationId,conversationId);
++    assert.equal(normalized.argumentsSha256,canonicalSha256(normalized.input));
++    assert.ok(Object.isFrozen(normalized));assert.ok(Object.isFrozen(normalized.request));
++    contract.assertOutput(fixtures.get(id)(),{request:normalized.request});
++    assert.throws(()=>contract.assertOutput(fixtures.get(id)(),{}));
++  }
++});
++
++test('canonical output boundary refuses accessors, proxies, cycles and oversized structure without hooks', () => {
++  const contract=resolverFixture().resolveOperationContract({id:evidenceId,version:'0.2.0'});let hooks=0;
++  const getter=evidence();Object.defineProperty(getter,'data',{enumerable:true,get(){hooks++;return [];}});
++  const proxy=new Proxy(evidence(),{ownKeys(){hooks++;return [];}});
++  const cycle=evidence();cycle.data[0].facts.description=cycle;
++  let nested=null;for(let i=0;i<70;i++)nested={nested};const deep=evidence();deep.data[0].facts.description=nested;
++  for(const page of [getter,proxy,cycle,deep])assert.throws(()=>contract.assertOutput(page,{request:request()}));
++  assert.equal(hooks,0);
++});

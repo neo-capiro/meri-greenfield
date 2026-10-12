@@ -2,6 +2,19 @@
 
 Status: additive R2 foundation, pending independent review. The [common](../packages/contracts/retrieval-0.2/common.schema.json) and [retrieval](../packages/contracts/retrieval-0.2/retrieval.schema.json) schemas establish request-context and response shapes. [validate.mjs](../packages/contracts/retrieval-0.2/validate.mjs) checks declared cross-field consistency. These checks do not authenticate, authorize, connect sources, implement retrieval or qualify a domain operation. REL-02 and REL-03 remain open.
 
+The current private catalog candidate is 0.2.4: 21 typed unavailable operations,
+20 mapped originals and 76 selected originals still unmapped, within the unchanged
+139 original IDs / 96 selected / 43 deferred. The extra client-scoped action-item
+binding remains partial and does not reduce the unmapped count. New selected
+reads cover client registry lookup, three business-development projections and
+Research Portfolio detail/changes. Domain schemas and validators remain private;
+public package 0.1 is unchanged. Null handlers, pending qualification and disabled
+source connectivity remain mandatory. Historical slice counts below describe
+their original additions; the canonical catalog owns the current ledger.
+The [continuation priorities](coordination/reports/CODEX-CAPABILITY-NEXT-PRIORITIES-20261012.md)
+record the next concrete funding reads and the unresolved Clio/portfolio scope
+mismatch for `get_research_evidence`.
+
 The gateway binds Clerk identity, current authoritative user/membership and actual grants before resolving a requested subject. Model/UI requests contain requested client/entity identity, all-authorized active portfolio selection or personal scope; they cannot supply tenant/actor/grants. Ambiguous names, pronouns, denied IDs and unresolved entities require a trusted resolver and clarification rather than guessed identity. No resolver is implemented here. A server-resolved subject records canonical IDs, current tenant/actor, decision/policy revision, contributing scopes and a roster version for portfolios. A Meri portfolio is an authorized client roster; a Defense Research Portfolio or prospect is a distinct entity and does not gain new authority from its type name.
 
 Every read, discovery/load/use, citation/read handle, replay/resume, publication and destination needs current authorization. Mailbox ownership, client walls, approved-memory lifecycle and private-user grants remain independent of tenant membership. Derived content inherits all contributing scopes; public evidence does not erase private lineage. Reusing the 0.1 Scope shape is not a new grant model. Protected resource/provider access stays disabled until source contracts and G2/G3 fixtures pass. [Source inventory](SOURCE-INVENTORY.md) and [integration boundary](INTEGRATION-BOUNDARY.md) retain the 22-domain discovery and missing-surface distinctions; availability is not assumed.

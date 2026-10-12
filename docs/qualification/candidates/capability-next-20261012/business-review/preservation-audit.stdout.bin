@@ -1,0 +1,217 @@
+{
+  "sourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "authorEvidenceCommit": "92d90eaee967d675724a3b8ce4079121e1961f9a",
+  "originalPaths": 5055,
+  "originalIdentical": 5054,
+  "expectedOriginalChanges": [
+    "packages/contracts/retrieval-0.2/operation-contracts.mjs"
+  ],
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+      "bytes": 26703,
+      "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "bytes": 7517,
+      "sha256": "c6ede747a9ffce2acba96130bef2afd1fdaa0460b54dfd1603bde2b8911ffe5a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development.test.mjs",
+      "bytes": 21613,
+      "sha256": "ab1a5b01cbe69c1d04c96e1c5150395c9a9cecf54f34cf21a9068ede77c79adb"
+    }
+  ],
+  "authorManifestMembers": 24,
+  "checks": [
+    {
+      "name": "all original paths preserved except exact root-owned export",
+      "pass": true
+    },
+    {
+      "name": "shared helper dependency equals root source",
+      "pass": true
+    },
+    {
+      "name": "family commit adds exactly three allocated files",
+      "pass": true
+    },
+    {
+      "name": "family commit changes no dependency paths",
+      "pass": true
+    },
+    {
+      "name": "exact source and final packet bytes: packages/contracts/retrieval-0.2/business-development.schema.json",
+      "pass": true
+    },
+    {
+      "name": "exact source and final packet bytes: packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "exact source and final packet bytes: packages/contracts/test/retrieval-business-development.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "all prior contract tests unchanged",
+      "pass": true
+    },
+    {
+      "name": "public distribution and all dependency manifests unchanged",
+      "pass": true
+    },
+    {
+      "name": "catalog and loader unchanged by family",
+      "pass": true
+    },
+    {
+      "name": "author manifest exact recorded identity",
+      "pass": true
+    },
+    {
+      "name": "author manifest source freeze",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/retrieval-business-development.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/outline.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/source-before-snapshot.patch",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/source-validated.patch",
+      "pass": true
+    },
+    {
+      "name": "author packet member: docs/qualification/candidates/capability-next-20261012/business-author/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "all 18 inspected reference identities have no observed drift",
+      "pass": true
+    },
+    {
+      "name": "exact 45 fact allowlist equality recorded",
+      "pass": true
+    },
+    {
+      "name": "independent-first source-only capture exited and owned group absent",
+      "pass": true
+    },
+    {
+      "name": "independent-first exact stream .bin",
+      "pass": true
+    },
+    {
+      "name": "independent-first exact stream .bin",
+      "pass": true
+    },
+    {
+      "name": "independent-first expected test total",
+      "pass": true
+    },
+    {
+      "name": "full-source source-only capture exited and owned group absent",
+      "pass": true
+    },
+    {
+      "name": "full-source exact stream .bin",
+      "pass": true
+    },
+    {
+      "name": "full-source exact stream .bin",
+      "pass": true
+    },
+    {
+      "name": "full-source expected test total",
+      "pass": true
+    }
+  ],
+  "passed": 46,
+  "failed": 0,
+  "sourceExecution": false,
+  "runtimeAccepted": false
+}

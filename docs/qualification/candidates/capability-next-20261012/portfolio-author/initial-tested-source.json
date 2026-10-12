@@ -1,0 +1,21 @@
+{
+  "capture": "portfolio-focused-initial.json",
+  "note": "Capture git diff omits untracked new files. These hashes identify the actual new files used for that run, recorded before further source edits.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio.schema.json",
+      "bytes": 17893,
+      "sha256": "cb6d881f19cd7f37561e5955a082080211f1fa69ef520f7208ace9c2e3eb41bc"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-portfolio-validation.mjs",
+      "bytes": 7859,
+      "sha256": "d52fd56772bbb4f3d4967b05c4614f96b2a2a4b3d2b7f6727c68cb95e5c64604"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio.test.mjs",
+      "bytes": 14520,
+      "sha256": "b9129dadabc34bbe6654a6381a1bdcb4c5797809b5d3aeb799230cd9b1bcc45d"
+    }
+  ]
+}

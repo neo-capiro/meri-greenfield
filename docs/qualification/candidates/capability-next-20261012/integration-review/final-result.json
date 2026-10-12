@@ -1,0 +1,94 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "c463f7f7e7580e26d07b31c5f4020eaa469d4f67",
+  "sourceTree": "552b333286dc42d98602fc255b2e3ec75d834c4a",
+  "criteriaCommit": "8f140ec62b5b9b52024698016ce180422b5299e4",
+  "testedReviewCommit": "1dcb3ce5752a4ba53d1ec98d4fc5aa553f3f89c3",
+  "productionRepairRequired": false,
+  "checks": {
+    "independent": {
+      "pass": 33,
+      "fail": 0
+    },
+    "combined": {
+      "pass": 871,
+      "fail": 0
+    },
+    "publicDistribution": {
+      "pass": 7,
+      "fail": 0
+    },
+    "sourceAndReceiptAudit": {
+      "pass": 426,
+      "fail": 0
+    },
+    "whitespaceExit": 0
+  },
+  "retainedReviewerFailure": {
+    "receipt": "independent-first.json",
+    "pass": 29,
+    "fail": 3,
+    "cause": "Reviewer positive fixture used undeclared event kind and null required actor; corrected without production edits, retained as negative controls."
+  },
+  "counts": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 20,
+    "selectedUnmapped": 76,
+    "typedUnavailable": 21,
+    "actionCoverage": "partial"
+  },
+  "runtimeAccepted": false,
+  "sourceConnectivity": false,
+  "ownedGroups": [
+    {
+      "label": "independent-first",
+      "ownedPidAndPgid": 141416,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 1
+    },
+    {
+      "label": "independent-corrected",
+      "ownedPidAndPgid": 141513,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 0
+    },
+    {
+      "label": "combined-reviewed",
+      "ownedPidAndPgid": 141716,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 0
+    },
+    {
+      "label": "public-distribution",
+      "ownedPidAndPgid": 141686,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 0
+    },
+    {
+      "label": "source-audit",
+      "ownedPidAndPgid": 141705,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 0
+    },
+    {
+      "label": "final-whitespace",
+      "ownedPidAndPgid": 142891,
+      "absentAtCloseout": true,
+      "timedOut": false,
+      "exitCode": 0
+    }
+  ],
+  "remaining": [
+    "Portfolio gateway trusted binding/subject consumption and current conversation/scope owner",
+    "Qualified producers and current tenant/client/portfolio/provider authority; preserve result lineage and failures",
+    "All native/runtime gates; G1 OPEN, G2-G7 unentered",
+    "Memory approval-policy decision and fourteen skill qualifications"
+  ]
+}

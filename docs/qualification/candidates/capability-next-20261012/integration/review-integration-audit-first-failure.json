@@ -1,0 +1,9 @@
+{
+  "status": "FAILED_LOCAL_AUDIT_SETUP",
+  "commandType": "inline Python read-only audit",
+  "exitCode": 1,
+  "observedOutput": "['sourceCommit', 'verdict', 'members', 'exclusions', 'scope']\nTraceback (most recent call last):\n  File \"<stdin>\", line 13, in <module>\nKeyError: 'files'\n",
+  "reason": "Root verifier assumed files array; reviewer manifest declares members. No source or reviewer evidence was edited. Correct verifier to declared format and rerun.",
+  "provenance": "Retained exact output from exec_command chunk d9f181, except tool metadata; no subprocess stream file existed.",
+  "runtimeAccepted": false
+}

@@ -1,0 +1,10 @@
+{
+  "status": "PASS_COMMITTED_PACKET",
+  "packetCommit": "703cfd31af3b62aad031b0f998520037cdd3134d",
+  "packetTree": "056b838224d96a99408e4d84f16da1a7e3ca0789",
+  "manifest": "docs/qualification/candidates/capability-next-20261012/integration/source-packet-manifest.json",
+  "manifestSha256": "8d69bcda57c1da9a90bf17a01f696fca63178b43caedfc3b1b2abe06c3b0e0c2",
+  "fileCount": 218,
+  "workingTreeClean": true,
+  "runtimeAccepted": false
+}

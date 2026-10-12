@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-capability-next-integration-review-20261012",
+  "sourceHead": "225d6275b553701a68e93ff02333b405bd694767",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:52:39.598184+00:00",
+  "durationSeconds": 2.623,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 141513,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-corrected.stdout.bin",
+      "bytes": 3741,
+      "sha256": "3881a4fa0f07df5b852e4e57e4717610332f856ade48c470a66f3fc11927aadb"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration-review/independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Initial 29/32 reflected reviewer fixture with undeclared event kind and null required actor; correct positive fixture and retain both values as explicit negative controls. Production unchanged.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

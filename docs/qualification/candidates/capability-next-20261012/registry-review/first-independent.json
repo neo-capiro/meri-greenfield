@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-client-registry-independent.test.mjs"
+  ],
+  "cwd": "/workspace/meri-registry-next-review-20261012",
+  "sourceHead": "63bfb5dc9abe397c35704c98f211b0bf78866f2d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:26:21.571444+00:00",
+  "durationSeconds": 1.118,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 130303,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stdout.bin",
+      "bytes": 6642,
+      "sha256": "1deb540eef208f6b2997ad1a32f625a44b31659c2aba50a64e94ff693435bad1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,20 @@
+{
+  "reason": "Initial strict Ajv compilation refused multi-type scalar union. Source was untracked, so capture diff did not include these new paths; this archive binds their exact bytes.",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+      "bytes": 26651,
+      "sha256": "b10f57e5e59d13641577cc125b2713c1a74da30b2390dbf4c05896f0c8402b10"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "bytes": 8256,
+      "sha256": "f8c2425fc1efb123ca116ed96f89fda8e4a236a3d1f399d459eb49b952070059"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development.test.mjs",
+      "bytes": 20281,
+      "sha256": "f0d3dc9dea183ca7daaf7e031708774468e953a3950e2f255898f71f831e7695"
+    }
+  ]
+}

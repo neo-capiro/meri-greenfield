@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-client-registry.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs"
+  ],
+  "cwd": "/workspace/meri-capability-next-20261012",
+  "sourceHead": "060d97a906341a1c3fe11f51a00375864e50f2af",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:22:56.555272+00:00",
+  "durationSeconds": 2.034,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 129889,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.stdout.bin",
+      "bytes": 1177,
+      "sha256": "7ad38454a4d410c6cec562c76f5099773db381bdb5148626a6edf6fed2d8e9f7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/integration/registry-canonical.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
