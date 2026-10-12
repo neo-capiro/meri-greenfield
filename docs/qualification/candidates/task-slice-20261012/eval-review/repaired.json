@@ -1,0 +1,38 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/eval-independent.test.mjs",
+    "evals/task-lookup/test/score.test.mjs"
+  ],
+  "cwd": "/workspace/meri-task-lookup-eval-review-20261012",
+  "sourceHead": "6fb47cd24386b30aaeaba87295f293d59ad6ead6",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "b65b7291f4743e3ee45993d9589338c021b2bfa1cba0cd1b4c7a73847f1e813b",
+  "startedAt": "2026-10-12T23:54:54.200858+00:00",
+  "durationSeconds": 5.982,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 418869,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/repaired.stdout.bin",
+      "bytes": 9169,
+      "sha256": "01b3c68587d249e33207461e41971a94f7949acdd9d28e2abcc175b8b4bfd4bf"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/eval-review/repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

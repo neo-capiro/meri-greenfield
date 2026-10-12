@@ -1,0 +1,4 @@
+{
+  "event": "Initial report write attempted before sparse report directory existed; shell refused path, no report written. Cleanup proceeded successfully.",
+  "repair": "Create owned report directory and write same review conclusions. No source/test replay or change."
+}
