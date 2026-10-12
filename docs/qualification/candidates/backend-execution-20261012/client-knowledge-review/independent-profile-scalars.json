@@ -1,0 +1,1055 @@
+{
+  "count": 150,
+  "fields": [
+    {
+      "model": "Client",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "name",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "website",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "description",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "productDescription",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactName",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactEmail",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "primaryContactPhone",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "logoS3Key",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "logoContentType",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "logoUploadedAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "intakeData",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "status",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "sectorTag",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "profileType",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "profileStatus",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "submissionTracks",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "issueCodes",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "uei",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "cageCode",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "naicsCodes",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "pscCodes",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastSyncedAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastAttemptAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "tangoEntityLastError",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "applicantTypes",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "setAsideCertifications",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "ldaClientIds",
+      "type": "Int[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "memoryWall",
+      "type": "Boolean",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "createdByUserId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "Client",
+      "field": "canonicalEntityId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "clientId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "connectionId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "source",
+      "type": "EngagementSource",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "externalId",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "subject",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "snippet",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "participants",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "lastMessageAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "status",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "metadata",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "raw",
+      "type": "Json?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationScore",
+      "type": "Float?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationReason",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "associationSignals",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "MailThread",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "clientId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "meetingId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "contactId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "mailThreadId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "title",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "description",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "ownerUserId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "dueDate",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "status",
+      "type": "EngagementTaskStatus",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "sourceType",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "sourceId",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "createdByUserId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "EngagementTask",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "clientId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "name",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "type",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "description",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "sector",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "tags",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "issueCodes",
+      "type": "Json",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "trl",
+      "type": "Int?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "mrl",
+      "type": "Int?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "peNumber",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "peNumbers",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "keywords",
+      "type": "String[]",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "appropriationAccount",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "serviceBranch",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "targetSubcommittee",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "fundingAsk",
+      "type": "Int?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "fundingAskLabel",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "justification",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "districtNexus",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "existingContracts",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "notes",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "sortOrder",
+      "type": "Int",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientCapability",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "clientId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "name",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "title",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "email",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "phone",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "role",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "lastContact",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "notes",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "hierarchyLevel",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "reportsToPersonId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "placementSource",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientPerson",
+      "field": "placementConfidence",
+      "type": "Decimal?",
+      "uuid": false,
+      "decimal43": true
+    },
+    {
+      "model": "ClientPerson",
+      "field": "reviewRequired",
+      "type": "Boolean",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "clientId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "name",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "addressLine",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "city",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "state",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "zip",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "congressionalDistrict",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "congressionalDistrictCongress",
+      "type": "Int?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "districtSource",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "employeeCount",
+      "type": "Int?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "notes",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "latitude",
+      "type": "Float?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "longitude",
+      "type": "Float?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "stateHouseDistrict",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "stateSenateDistrict",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodedAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeStatus",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeInputHash",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeAttemptCount",
+      "type": "Int",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeNextAttemptAt",
+      "type": "DateTime?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeLastError",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeMatchedAddress",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "geocodeCandidates",
+      "type": "Json?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientFacility",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "id",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "tenantId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "clientId",
+      "type": "String",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "capabilityId",
+      "type": "String?",
+      "uuid": true,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "fiscalYear",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "title",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "meta",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "outcome",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "outcomeType",
+      "type": "String",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "notes",
+      "type": "String?",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "createdAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    },
+    {
+      "model": "ClientSubmissionHistory",
+      "field": "updatedAt",
+      "type": "DateTime",
+      "uuid": false,
+      "decimal43": false
+    }
+  ]
+}

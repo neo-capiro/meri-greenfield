@@ -1,0 +1,17 @@
+{
+  "failures": [
+    {
+      "receipt": "projection-audit-import-failure",
+      "reason": "Bare TypeScript import cannot resolve from documentation directory."
+    },
+    {
+      "receipt": "projection-audit-repaired",
+      "reason": "Seven minimal local contract dependencies do not include TypeScript; local-path assumption was wrong."
+    },
+    {
+      "receipt": "projection-audit-donor",
+      "reason": "Audit required const:null although exactly equivalent schema type:null is used. Source AST confirms null branch; assertions corrected for schema form only."
+    }
+  ],
+  "parser": "Read-only explicit TypeScript5.9.3 donor path passed as argument, source hash recorded; no new package installed."
+}
