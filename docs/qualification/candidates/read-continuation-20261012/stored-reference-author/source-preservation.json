@@ -1,0 +1,49 @@
+{
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourceFreeze": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "sourceTree": "b05312f1586ea5b055a9ea9bbd7c9b1b52eeb687",
+  "originalFiles": 6001,
+  "originalChangedOrDeleted": [],
+  "added": [
+    {
+      "path": "packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "blob": "a4287fd60cea38205faa487020bd959fd89eb97f",
+      "bytes": 2995,
+      "sha256": "75293e81c30eb3d5429b97bfc9d5bf9193f5265fe332b2613b29ec4eb0b57ead"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "blob": "4f56d0865d791056be327f3f54f1ba73b705c428",
+      "bytes": 2191,
+      "sha256": "77ee177ac0b95cd961928f975e8f87bf7c69f57e30de6957b86988dd44ff35ec"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "blob": "d986ba8aa5885b5e7c315b8b74123cd592c9cd74",
+      "bytes": 3896,
+      "sha256": "c65bd5101d132b93a604ba04e625e024396240c212978b0c68733f2dfb51808a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "blob": "4a1ba03d835c2416a2aae364a93a439c4299cddf",
+      "bytes": 2505,
+      "sha256": "6de0e82a4b3c6e8d11c44da2f0a18d464172e58dd44b43830186fcfd45bdca3c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "blob": "1164232fb22bea8bb11c738a6c80092ffdcce5b1",
+      "bytes": 9340,
+      "sha256": "63dcada0640d6728fbd122a2c370d701b16d8cbd7049200616521f704a07d46b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "blob": "e26ee3d89416afd44f2484d4fe49a333b015fe07",
+      "bytes": 10479,
+      "sha256": "668dfad7d401485442b50d8135307f45e7b6a3db75281c5211185a25b9b0cd21"
+    }
+  ],
+  "publicContractsUnchanged": true,
+  "sharedLoaderCatalogUnchanged": true,
+  "dependencies": "Root/contracts node_modules physically copied from prior accepted bill-text author worktree, no installs/scripts; no locks or borrowed trees changed",
+  "captureHelperSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+}
