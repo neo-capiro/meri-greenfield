@@ -48,7 +48,7 @@ test('closed typed requests reject invented authority and legacy object coercion
  for(const clientId of [false,1,{},[]])assert.throws(()=>normalize({query:'x',clientId}));
 });
 test('context is mandatory and closed, even without client',()=>{
- for(const ctx of [undefined,{},null,[],{clientResolution:null,actor:'x'}])assert.throws(()=>normalize({query:'x'},ctx));
+ for(const ctx of [undefined,{},null,[],{clientResolution:null,actor:'x'}])assert.throws(()=>v.normalizeResearchLegalCandidatesInput(operation,{query:'x'},ctx));
  assert.throws(()=>normalize({query:'x'},resolution('Client')));
 });
 test('name selectors require exact trusted resolution, never infer authority',()=>{
