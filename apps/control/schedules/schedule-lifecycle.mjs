@@ -77,15 +77,24 @@ export function createScheduleLifecycle(options) {
         const key=p.scheduleId.toLowerCase();
         if(Object.keys(row).length!==3||!Number.isSafeInteger(row.generation)||row.generation<0||typeof row.unresolved!=='boolean'||canonicalSha256(p.owner)!==canonicalSha256(s.owner)||(previous!==null&&key<=previous)||seen.has(key))denySchedule('SCHEDULE_LIST');
         previous=key;seen.add(key);
+        let authorizationFailed=false;
         const inspector=createTemporalScheduleInspector({scheduleClient,clock,authorize:async args=>{
-          args.limitDeadline(c.deadline());const a=await current(args.phase,p);args.limitDeadline(a.expiresAtMs);
-          return {authorized:true,projectionSha256:args.projectionSha256,callerIdentity:binding.callerIdentity,expiresAtMs:a.expiresAtMs};
+          try {
+            args.limitDeadline(c.deadline());const a=await current(args.phase,p);args.limitDeadline(a.expiresAtMs);
+            return {authorized:true,projectionSha256:args.projectionSha256,callerIdentity:binding.callerIdentity,expiresAtMs:a.expiresAtMs};
+          } catch(error) {authorizationFailed=true;throw error;}
         }});
         // Cancelled means application state only; still inspect the exact ID.
         // Missing Temporal or unresolved rows are explicit, never hidden/empty.
-        const inspection=await lifetime.run(signal=>inspector.inspect({projection:p,callerIdentity:binding.callerIdentity,deadlineMs:c.deadline(),signal}));
-        rows.push({...row,inspection});
-        for(const action of inspection.temporal.recentActions)refs.push(action.workflow);
+        let inspection;
+        try {inspection=await lifetime.run(signal=>inspector.inspect({projection:p,callerIdentity:binding.callerIdentity,deadlineMs:c.deadline(),signal}));}
+        catch(error) {
+          lifetime.check();
+          if(authorizationFailed||scheduleErrorCode(error)!=='SCHEDULE_INSPECTION_FAILED')throw error;
+          await current('before_unavailable_row_release',p);inspection=null;
+        }
+        rows.push({...row,inspection,inspectionState:inspection===null?'unavailable':'observed'});
+        if(inspection!==null)for(const action of inspection.temporal.recentActions)refs.push(action.workflow);
       }
       const originalRuns=await inspectOriginalRuns({workflowClient,references:refs,limit:s.historyLimit,lifetime,read:(phase,fn)=>c.rpc(workflowConnection,phase,fn,{selection:s,originalReferences:refs.slice(0,s.historyLimit)})});
       await current('before_release');lifetime.check();
