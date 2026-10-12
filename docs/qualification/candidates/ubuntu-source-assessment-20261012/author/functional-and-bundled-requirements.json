@@ -1,0 +1,129 @@
+{
+  "executionAdmission": "NOT_EXECUTABLE",
+  "requiredBehaviors": [
+    {
+      "function": "Claude Agent SDK model loop",
+      "currentPin": "0.3.295; native CLI2.1.295",
+      "sourceBasis": "Existing reviewed source contracts and pinned official runtime; Ubuntu compatibility does not alter SDK responsibility.",
+      "nextEvidence": "Supported native CLI glibc runtime and full proprietary/native license binding; offline model orchestration fixtures remain source-only; no paid calls."
+    },
+    {
+      "function": "Node and exact Playwright MCP",
+      "currentPin": "Node24.21.0; @playwright/mcp0.0.83; core1.64.0-alpha-1790635538000",
+      "sourceBasis": "Exact alpha hostPlatform archive explicitly supports Ubuntu26 x64; preserved nativeDeps has 21 Chromium library requirements.",
+      "nextEvidence": "Node signed-release verification; preserve lock integrity; build/runtime browser and renderer sandbox qualification unrun."
+    },
+    {
+      "function": "Native Office generation/conversion/recalculation",
+      "currentPin": "Proposal: LibreOffice4:26.2.6.3-0ubuntu0.26.04.2 core/writer/calc/impress-nogui plus actual UNO/Draw/common dependencies",
+      "sourceBasis": "Same-suite package Depends/Conflicts records are retained; headless module names are available, not substituted with fixtures.",
+      "nextEvidence": "Approve composition/module delta; exact DOCX/PPTX/XLSX/PDF roundtrip, spreadsheet recalc, charts/images/embedded fonts; fall back to complete same-release Office modules if needed."
+    },
+    {
+      "function": "PDF rendering and text extraction",
+      "currentPin": "poppler-utils26.01.0-2ubuntu0.2; pypdf6.20.0 unchanged",
+      "sourceBasis": "Vendor package + PyPI immutable-wheel metadata",
+      "nextEvidence": "Real pdftoppm/pdftotext/pypdf interoperability, malformed input limits and artifact inspection."
+    },
+    {
+      "function": "Python Office/PDF libraries",
+      "currentPin": "All seven current library versions retained in metadata assessment; interpreter proposal3.14",
+      "sourceBasis": "Six pure Python wheels retain exact old hashes. lxml6.1.3 has cp314 wheels but parser closure remains open.",
+      "nextEvidence": "No lock change now. Decide supported parser linkage; verify import/API/runtime and every dependency on CPython3.14."
+    },
+    {
+      "function": "Required font families",
+      "currentPin": "Liberation, DejaVu, Noto, Carlito, Caladea; transitive OpenSymbol/fontconfig retained",
+      "sourceBasis": "All five original font packages mapped in base Main/Universe; Office Depends retains fonts-opensymbol.",
+      "nextEvidence": "Exact font files, font embedding licenses, fallback selection, glyph coverage and PDF/Office metrics."
+    }
+  ],
+  "bundledLibraryClosure": [
+    {
+      "copy": "OS shared libraries and base image",
+      "requirement": "All six live indices are metadata only; immutable base inventory and full solved installed closure required. Preserve all54 obligations."
+    },
+    {
+      "copy": "lxml Python extension",
+      "requirement": "Old cp313 wheel embedded libxml2 2.14.6/libxslt1.1.43; source-only Ubuntu libxml2 update cannot replace it. cp314 wheel actual bytes/headers uninspected; do not assume same/different vulnerability state."
+    },
+    {
+      "copy": "Node runtime",
+      "requirement": "Review bundled zlib/OpenSSL/libuv/ICU and other embedded copies using exact Node release source/build provenance; vendor OS statements do not automatically apply."
+    },
+    {
+      "copy": "Claude native CLI",
+      "requirement": "Review native runtime and embedded libraries including bundled JS runtime; existing SDK license and third-party notice obligations remain open."
+    },
+    {
+      "copy": "Chromium/browser assets",
+      "requirement": "Separate exact Chrome-for-Testing artifact provenance, embedded parsers/codecs/fonts/shared libraries and renderer isolation; OS CVE absence cannot close bundled copies."
+    },
+    {
+      "copy": "LibreOffice and Poppler",
+      "requirement": "Prove actual shared vs internal library use from exact installed build and provenance; retain any internal copies and additional dependencies in final SBOM."
+    }
+  ],
+  "supportAndLicense": {
+    "ubuntu26Main": "Existing prior evidence standard maintenance through May2031; actual package component matters.",
+    "universe": "Headless LibreOffice/font/transitive Universe availability does not itself establish funded ESM/support coverage; no Pro subscription or cost approved.",
+    "metadataLicense": "Canonical VEX CC-BY-SA-4.0, license retained; Ubuntu documentation CC-BY-SA-3.0, attributed factual observations only.",
+    "runtimeLicenses": "NOT_ACCEPTED; prior license review remains authoritative, requires exact new Ubuntu and Python3.14 composition."
+  },
+  "retainedPriorProposalObservations": {
+    "ociTag": "resolute-20260927",
+    "ociIndexDigest": "sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7",
+    "ociAmd64ManifestDigest": "sha256:88a381d5b5eeb2b35d3ad70925a362c37ce569daf43ede89ff818ec20e4d3794",
+    "officialImageSourceCommit": "97b63f1d28d5d0c4a7374bfa87241a49f984ed04",
+    "node": {
+      "downloaded": false,
+      "publishedTarXzSha256": "fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6",
+      "releaseSignatureVerified": false,
+      "version": "24.21.0"
+    },
+    "playwright": {
+      "browserAssetSha256": "a24546e0e6c763bf864861ce50498f38783663e24cd2af2a16798c25dc3a9489",
+      "chromiumRevision": "1247",
+      "chromiumVersion": "155.0.8059.12",
+      "explicitPlatformSupportInExactArchive": true,
+      "gitHead": "e8149b8257d32dcf8f72573ecc43e72439da7080",
+      "mcp": "0.0.83",
+      "nativeDependencies": [
+        "libasound2t64",
+        "libatk-bridge2.0-0t64",
+        "libatk1.0-0t64",
+        "libatspi2.0-0t64",
+        "libcairo2",
+        "libcups2t64",
+        "libdbus-1-3",
+        "libdrm2",
+        "libgbm1",
+        "libglib2.0-0t64",
+        "libnspr4",
+        "libnss3",
+        "libpango-1.0-0",
+        "libx11-6",
+        "libxcb1",
+        "libxcomposite1",
+        "libxdamage1",
+        "libxext6",
+        "libxfixes3",
+        "libxkbcommon0",
+        "libxrandr2"
+      ],
+      "playwrightCore": "1.64.0-alpha-1790635538000",
+      "runtimeABIQualification": "UNRUN"
+    },
+    "pythonMinor": "3.14",
+    "lxmlWheelMetadata": {
+      "downloaded": false,
+      "filename": "lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+      "securityAdmitted": false,
+      "sha256": "a7eb78ba28b187e1e9203a55c60fcf70df2d22cb205fe6d51b9383d6097419f0",
+      "size": 5245991,
+      "uploadedUtc": "2026-09-02T14:49:14.154819Z",
+      "url": "https://files.pythonhosted.org/packages/e9/44/27e3cee3dcdb3b7bc09727b642bdbfcd098490ea77df04611db9060d7722/lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl",
+      "yanked": false
+    }
+  }
+}

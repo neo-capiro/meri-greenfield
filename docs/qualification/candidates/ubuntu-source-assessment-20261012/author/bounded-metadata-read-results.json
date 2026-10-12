@@ -1,0 +1,31 @@
+[
+  {
+    "name": "gcc-vex-raw",
+    "url": "https://raw.githubusercontent.com/canonical/ubuntu-security-notices/6609070af95e04758e8895a14e22e292b8ebc587/vex/cve/2026/CVE-2026-95619.json",
+    "maxBytes": 2500000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:23:21.111773+00:00",
+    "httpStatus": 200,
+    "declaredLength": "7647008",
+    "contentType": "text/plain; charset=utf-8",
+    "result": "FAILED",
+    "error": "metadata byte bound exceeded",
+    "bytes": 2500001,
+    "sha256": "9bf537e3382ab819fe475202c6181644c70dddb513664981ef0a831a1f962be2",
+    "path": "raw/gcc-vex-raw.body"
+  },
+  {
+    "name": "resolute-base-inrelease",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute/InRelease",
+    "maxBytes": 400000,
+    "timeoutSeconds": 8,
+    "startedUtc": "2026-10-12T04:23:21.596604+00:00",
+    "httpStatus": 200,
+    "declaredLength": "135549",
+    "contentType": null,
+    "result": "READ",
+    "bytes": 135549,
+    "sha256": "45f95ce276cdba3e41870516a130e03c58b8b7a79e9546b0efe9e526d255740c",
+    "path": "raw/resolute-base-inrelease.body"
+  }
+]

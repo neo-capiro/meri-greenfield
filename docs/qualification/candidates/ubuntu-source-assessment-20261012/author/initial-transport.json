@@ -1,0 +1,41 @@
+{
+  "dateUtc": "2026-10-12T04:15:17.293449+00:00",
+  "rows": [
+    {
+      "label": "tracker-readme",
+      "url": "https://git.launchpad.net/ubuntu-cve-tracker/plain/README",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/tracker-readme.body.txt"
+    },
+    {
+      "label": "gnutls88647-tracker",
+      "url": "https://git.launchpad.net/ubuntu-cve-tracker/plain/active/CVE-2026-88647",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/gnutls88647-tracker.body.txt"
+    },
+    {
+      "label": "gnutls95210-tracker",
+      "url": "https://git.launchpad.net/ubuntu-cve-tracker/plain/active/CVE-2026-95210",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/gnutls95210-tracker.body.txt"
+    },
+    {
+      "label": "tiff52490-page",
+      "url": "https://ubuntu.com/security/CVE-2026-52490",
+      "status": null,
+      "error": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "path": "raw/tiff52490-page.body.txt"
+    }
+  ]
+}

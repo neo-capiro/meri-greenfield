@@ -1,0 +1,13 @@
+{
+  "url": "https://archive.ubuntu.com/ubuntu/dists/resolute/universe/binary-amd64/Packages.xz",
+  "maxBytes": 16000000,
+  "timeoutSeconds": 8,
+  "startedUtc": "2026-10-12T04:25:15.408235+00:00",
+  "reason": "metadata only: complete remaining direct font and venv package mappings and transitive dependency presence",
+  "declaredLength": "15960824",
+  "httpStatus": 200,
+  "result": "READ",
+  "bytes": 15960824,
+  "sha256": "1587be86d66d38542325215e0e109f75bd695c8f24d793ace2762038a6ad581e",
+  "path": "raw/resolute-base-universe-packages.body"
+}
