@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-client-documents.test.mjs"
+  ],
+  "cwd": "/workspace/meri-client-documents-20261012",
+  "sourceHead": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:21:20.728754+00:00",
+  "durationSeconds": 1.775,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 147892,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-author/documents-query-repair.stdout.bin",
+      "bytes": 2622,
+      "sha256": "f26c63f36f969b9265169db2bab8362a8dd40e01386f5ea1a707549c49f66363"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/documents-author/documents-query-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent query-evidence correlation findings plus inspected readability truth guards; preserve raw initial failure and reviewer 22-pass/2-fail",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,21 @@
+{
+  "capture": "../documents-initial.json",
+  "result": "23 PASS / 1 FAIL: unqueried read length incorrectly allowed up to240 characters when requestedlimit smaller",
+  "files": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents.schema.json",
+      "bytes": 21288,
+      "sha256": "71dd53119af2c0226372916e3645765687e8653da2f48b60d55c1a7a75c05247"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-documents-validation.mjs",
+      "bytes": 12193,
+      "sha256": "a1451415b9658636d376669a58fa05c4c88979ec6438946c91b72a9900aa1314"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-documents.test.mjs",
+      "bytes": 16161,
+      "sha256": "f5c8e27c1ece5da0101ebb8858cf503d6d51f6e80ef0752ecc25c46203d1b435"
+    }
+  ]
+}
