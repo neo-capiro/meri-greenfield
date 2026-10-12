@@ -4,13 +4,13 @@
   "members": [
     {
       "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-REMAINING-DISCOVERY-20261012.md",
-      "bytes": 5424,
-      "sha256": "bc8f4262d8cca529ff42522c936aab3d0ea5db4a572685d44663a2dd7e3c11ba"
+      "bytes": 5791,
+      "sha256": "22cd0b657c2f470e36787d629929ff58f1efd6ec394911820328cef24e8c0e21"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/candidate-families.json",
-      "bytes": 14970,
-      "sha256": "7a6a21ba18c93a6bcd3b98ef4dfaa9ef994669de037dc866c238422dd4570e8a"
+      "bytes": 14995,
+      "sha256": "a2edc5440636efa84a660410eefe3e05a4dad100727319430e348f951cb6c7ae"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/capture-reaped.py",
@@ -19,8 +19,8 @@
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/corrections.json",
-      "bytes": 1177,
-      "sha256": "3935a90775680003bf3ac70372ef1a41c60673b0d910c6f6d05ed18872f071ed"
+      "bytes": 1563,
+      "sha256": "874b641f752df28760623233e778828676ee6c4dbd06fce9b1f5aca8d5df6ab9"
     },
     {
       "path": "docs/qualification/candidates/read-continuation-20261012/remaining-discovery/inventory-snapshot.json",
@@ -68,5 +68,6 @@
       "sha256": "ef549ea00d3108ca1320e03617b91ee4e8ef1a8b1c29a8a1cb759c6b479e22c8"
     }
   ],
-  "selfExcluded": true
+  "selfExcluded": true,
+  "supersedesManifestAt": "b3c405d15742f85a33743658a885fd024236b191"
 }
