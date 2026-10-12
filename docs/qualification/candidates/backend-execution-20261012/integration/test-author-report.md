@@ -17,7 +17,7 @@ Checks actually completed:
 - Exact predecessor suite: **634/634 pass** at `5c87a258`; its19 files are unchanged by `60ef3f09`.
 - Connected controls: **33/33 pass** at `60ef3f09`.
 - Offline inverse/source/capture audit: **154/154 pass**. Lexical assertion/declaration counts supplement the exact inverse; they are not described as an AST semantic proof.
-- Full staged whitespace check failed only on preserved raw patch/failed-output spacing (five exact paths recorded in `test-author-whitespace.json`); the check over all remaining staged files passed. Raw evidence was not normalized.
+- Full staged whitespace check failed only on preserved raw patch/failed-output spacing (four exact paths recorded in `test-author-whitespace.json`); the check over all remaining staged files passed. Raw evidence was not normalized.
 - Nine owned capture groups are physically absent; none required a kill or timed out. Their original exit codes and raw streams remain in the packet.
 
 Preserved failures and corrections:
