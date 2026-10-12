@@ -1,0 +1,49 @@
+{
+  "groups": [
+    {
+      "label": "full-root",
+      "pgid": 187446,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 2
+    },
+    {
+      "label": "independent-corrected",
+      "pgid": 187127,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "independent-first",
+      "pgid": 186704,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "notice-policy",
+      "pgid": 189253,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    },
+    {
+      "label": "public-distribution-corrected",
+      "pgid": 188465,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 3
+    },
+    {
+      "label": "public-distribution",
+      "pgid": 187466,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 1
+    },
+    {
+      "label": "source-audit",
+      "pgid": 188884,
+      "freshGroupAbsent": true,
+      "reapedExitedDescendants": 0
+    }
+  ],
+  "allAbsent": true,
+  "reapedExitedDescendants": 6,
+  "noInstall": true
+}

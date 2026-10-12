@@ -1,0 +1,18 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "2aa0a33",
+    "--",
+    "packages/contracts/retrieval-0.2/rule-status.schema.json",
+    "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+    "packages/contracts/test/retrieval-rule-status.test.mjs",
+    "docs/coordination/reports/CODEX-RULE-STATUS-AUTHOR-20261012.md",
+    "docs/qualification/candidates/read-continuation-20261012/rule-status-author/outline.md",
+    "docs/qualification/candidates/read-continuation-20261012/rule-status-author/verify-source.py"
+  ],
+  "exitCode": 0,
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

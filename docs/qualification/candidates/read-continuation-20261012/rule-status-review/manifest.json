@@ -1,0 +1,168 @@
+{
+  "status": "ACCEPT_SOURCE_RUNTIME_HOLD",
+  "source": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+  "authorPacket": "86c701c87f36b4b42d8923a53b190e1a2213ce70",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-RULE-STATUS-REVIEW-20261012.md",
+      "bytes": 5591,
+      "sha256": "f87122ee976b6e50aa33316c15983273318e97832e9ee5b5906ab449077f4ac1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/audit-correction.json",
+      "bytes": 564,
+      "sha256": "a84554a27f4c9c6eae16d713db131603d1257ec6cfaa0684ec7e44308c64a6f9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/cleanup-final.json",
+      "bytes": 912,
+      "sha256": "e6b1a72e48a95cd88fb43e1d3cd4eed33b5220cde4bc2559b233c177413fcde7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/criteria.md",
+      "bytes": 3701,
+      "sha256": "afc32bff12a39018d4ab77d7947c113794f678cc6bada898ae771cb32b08d854"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/full-root.json",
+      "bytes": 1342,
+      "sha256": "dfb75fe60022a26a88bb1a914c1bc0778b286e8d27e4446225a06294513da92a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/full-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/full-root.stdout.bin",
+      "bytes": 127697,
+      "sha256": "483f32c30cea0460ecd87cf6465e3c674ea8e8610ab37832316da69b7887561a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/independent-first.json",
+      "bytes": 1312,
+      "sha256": "cd3c31341a3f940c2b66bd9ec04266972d5a6b971ce64845f204fbade371d355"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/independent-first.stdout.bin",
+      "bytes": 3220,
+      "sha256": "72483cdf371684a2fcac3788a80f4b6c4b75e3a9cdc88dda6208240362632286"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit-corrected.json",
+      "bytes": 1333,
+      "sha256": "aa374d89830dd7a26cbf26b0934ba46235a1c6c59cef095e3ad4b3bacb84cbb5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit-corrected.stdout.bin",
+      "bytes": 912,
+      "sha256": "0ccf4102107f8419e1616a8d772e441a99bcefffe90b306df314e1791c8c65f2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.json",
+      "bytes": 1313,
+      "sha256": "66a4385177d75f89acd564214137c35f09fa8fc8e9d44ca276b5594494f3fb60"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.mjs",
+      "bytes": 3780,
+      "sha256": "a12bc18b87c57e7f9d418c56656fd75eb383ad6638391aededee78b8ca6bbc6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/policy-audit.stdout.bin",
+      "bytes": 895,
+      "sha256": "4bd429477f32fb5b55cc4a2678ee887ce9a538b760239fe9e3a929fbb3aecded"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/public-distribution.json",
+      "bytes": 1434,
+      "sha256": "5d10a8678ccaf1215495362a1cefb770802120120956a905741c718d80b1b97d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "ede14f951e256e837c6d51ca95753db8c817e75852939d31bba821642283a04d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/source-audit.json",
+      "bytes": 1327,
+      "sha256": "b8fcfd5cfaa7cc64b9b815fe7ca5a416a68fef6b478ccaeefe3268007cb18ec4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/source-audit.stdout.bin",
+      "bytes": 9839,
+      "sha256": "60a3b73bb5a992fcfab34e971d84212a6dc842a4c97d5235c5881838f216c3b5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/verdict.json",
+      "bytes": 1707,
+      "sha256": "c2fafe3685b9fa5046a7d938d6494fdf6944d1e5a3875bdc15d744ccef0fbad2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/verify-source.py",
+      "bytes": 3831,
+      "sha256": "73045118ed2e52123b379ce30d2122f1a859f01a9cbde493de0000aab415553b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/whitespace-full.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/rule-status-review/whitespace.json",
+      "bytes": 101,
+      "sha256": "889b72f23bed5738cf47642c6b3a9385741e36a470c9dbe495b67d2190a3766c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-rule-status-independent.test.mjs",
+      "bytes": 17223,
+      "sha256": "f4c662e06dcc9eb4e475da1018f86c12eab2d3fa8b0380a9e09a6276abe4517b"
+    }
+  ],
+  "selfExcluded": true
+}

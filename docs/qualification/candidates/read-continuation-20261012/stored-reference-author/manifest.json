@@ -1,0 +1,95 @@
+{
+  "sourceFreeze": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "report": "docs/coordination/reports/CODEX-STORED-REFERENCE-AUTHOR-20261012.md",
+  "exclusions": [
+    "manifest.json self-reference",
+    "verification.json derived output"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-STORED-REFERENCE-AUTHOR-20261012.md",
+      "bytes": 8036,
+      "sha256": "1e461be4e54d15c5ab2cb6e3eb8491593e1fb812b41b9a281c0b9bc18adb769a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/build-schemas.py",
+      "bytes": 2188,
+      "sha256": "5e2376858b68e2593551bcfc75d685728dab9ea6beb15465e4c7f582a25e94bb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial-source.patch",
+      "bytes": 33687,
+      "sha256": "0f35caa511764c08b35fdca76d1839150b122e6cb038b909e143c81b3c5015c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.json",
+      "bytes": 1388,
+      "sha256": "d6283e7f585dadd28d944dd2884686b923ee9d0002b9b996e180a5b391e8a023"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "bytes": 3138,
+      "sha256": "e6a62c71743ee933f40f7b31ac6d7afeccedd9d942355aa871c233a73f840700"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/outline.json",
+      "bytes": 2483,
+      "sha256": "ed19f0ccb6a54a049d69f5ea1cb58c9c6dd819b5b3a40bad3bc900d0725f761d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.json",
+      "bytes": 1449,
+      "sha256": "e7c8847fd8322fbc3a5de0f63702955087a327253e12527ca9ecba55e81dc88b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "31f8151184c0fd13a501e510d5773001a27857c5bb6ddaba3d0a8af526ff46ef"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/reference-identities.json",
+      "bytes": 4069,
+      "sha256": "b185af4d010eb81f5a42057a564864f73392fa99ab1c67393d6db78affae348e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.json",
+      "bytes": 1372,
+      "sha256": "4b65fb0d148c56f38344e41c83f013ff2987de674e52f8063a460bda01a3cfe0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stdout.bin",
+      "bytes": 124641,
+      "sha256": "87cc3cb6c6df05a1150407165497ed083de44cb80ef198aa8966ba615ff4e9d2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/source-preservation.json",
+      "bytes": 2130,
+      "sha256": "db38b5894a9b2f452df635224fe7381e37be0d8fb8a3626d29faab0911b02cdc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/stored-reference-author/verify.py",
+      "bytes": 3941,
+      "sha256": "49c6890948473c8d09f0c09df012c4f888b02a1393bf8777696c670604198903"
+    }
+  ]
+}

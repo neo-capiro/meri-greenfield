@@ -1,0 +1,45 @@
+{
+  "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourcePin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "ownership": "Only six new family/test files plus allocated report/evidence; canonical loader/catalog owned by root",
+  "families": [
+    {
+      "operation": "search_intel_articles",
+      "factory": "createStoredIntelligenceValidators({validateShape,schema})",
+      "schemaId": "urn:meri:retrieval:stored-intelligence:0.2.0",
+      "definitions": [
+        "StoredIntelligenceSearchInput",
+        "StoredIntelligenceSearchOutput"
+      ],
+      "apiPrefix": "storedIntelligence",
+      "contextKeys": [],
+      "semantics": "Stored excerpts and separate count; exact source filter; original date order; no live feed/full article/corpus absence claim"
+    },
+    {
+      "operation": "list_global_datasets",
+      "factory": "createDatasetMetadataValidators({validateShape,schema})",
+      "schemaId": "urn:meri:retrieval:dataset-metadata:0.2.0",
+      "definitions": [
+        "DatasetMetadataListInput",
+        "DatasetMetadataListOutput"
+      ],
+      "apiPrefix": "datasetMetadata",
+      "contextKeys": [],
+      "semantics": "Pure projected registry field metadata only; six-type vocabulary; no SQL or querying/row permissions"
+    }
+  ],
+  "canonicalReuse": "snapshotOperationData unchanged; test-only strict Ajv until root integrates; no copied private implementation or registry bodies",
+  "admissionLimits": "Root-approved strict integer1..50 limit; query/source string|null fallback; canonical comparable four-digit JSON date-times; no guessed ID/URL format; no count equality",
+  "authority": "All source/runtime/producer/registration/auth/coverage unqualified; no active handlers, database, provider, service, model, native or cloud execution",
+  "tests": [
+    "selectors/defaults/caps/nulls",
+    "bounded normalized UTF16 excerpts and surrogate boundaries",
+    "stored date ordering and separate count races",
+    "closed metadata/flags/type correlation with no query authority",
+    "hostile JSON and actual canonical resolver composition",
+    "original/public/source preservation and owned-process cleanup"
+  ],
+  "dependencies": "Physically copied prior accepted root/contracts node_modules; no installation/lifecycle scripts; unchanged source/locks",
+  "capture": "Accepted subreaper copied byte-identically; resolves its own evidence directory, no process-ownership changes"
+}

@@ -1,0 +1,42 @@
+{
+  "status": "CANDIDATE_AWAITING_INDEPENDENT_REVIEW",
+  "sourceFreeze": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "factory": "createLegislativeDirectoryValidators",
+  "contextKeys": [],
+  "operations": [
+    {
+      "id": "get_committee_roster",
+      "request": "CommitteeRosterRequest",
+      "input": "CommitteeRosterInput",
+      "output": "CommitteeRosterOutput"
+    },
+    {
+      "id": "list_members",
+      "request": "MemberListRequest",
+      "input": "MemberListInput",
+      "output": "MemberListOutput"
+    }
+  ],
+  "normalizer": "normalizeLegislativeDirectoryInput",
+  "outputAssertion": "assertLegislativeDirectoryOutput",
+  "metadata": {},
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "bytes": 15111,
+      "sha256": "24c14bfb6a68ee9bb0699663f14a6348196ab069e35034a801fe1766cd3698fb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "bytes": 8511,
+      "sha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    }
+  ],
+  "constraints": [
+    "source connectivity remains disabled",
+    "root owns canonical wiring",
+    "separate current trusted authorization and qualified adapters",
+    "generatedAt is serialized metadata, not freshness",
+    "source name match and state lineage require qualified adapter"
+  ]
+}

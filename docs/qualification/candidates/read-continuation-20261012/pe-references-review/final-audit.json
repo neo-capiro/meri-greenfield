@@ -1,0 +1,35 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/read-continuation-20261012/pe-references-review/audit.py",
+    "c9770ef235ae220159500b12bd1ab885f9ba9b45",
+    "3348a42ff4275c6e60b195f8af03a7c017ced3a4"
+  ],
+  "cwd": "/workspace/meri-pe-references-review-20261012",
+  "sourceHead": "b3c77c5ad99e761114fcf6dbdeead433cc91963b",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:23:29.852238+00:00",
+  "durationSeconds": 0.265,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 188381,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/final-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "37eeed35c39fb4e2d75cc9b637a0e270c4381fa610a627cad67d0d96bc76823f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/pe-references-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

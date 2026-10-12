@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-12T17:49:50.635471+00:00",
+  "command": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/main",
+    "refs/heads/task/meri-rule-status-20261012",
+    "refs/heads/review/meri-rule-status-20261012",
+    "refs/heads/task/meri-certification-status-20261012",
+    "refs/heads/review/meri-certification-status-20261012",
+    "refs/heads/task/meri-stored-reference-reads-20261012",
+    "refs/heads/review/meri-stored-reference-reads-20261012",
+    "refs/heads/task/meri-facility-representation-20261012",
+    "refs/heads/review/meri-facility-representation-20261012",
+    "refs/heads/review/meri-reference-integration-20261012",
+    "refs/tags/meri-rc1-20261012",
+    "refs/tags/meri-rc1-20261012^{}"
+  ],
+  "exitCode": 0,
+  "verifiedRefs": {
+    "refs/heads/main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+    "refs/heads/review/meri-certification-status-20261012": "498f3ef3b6dfe469563ded08a2667d3b94bb4b3d",
+    "refs/heads/review/meri-facility-representation-20261012": "f9b4dbcbbce74565aba852f6d529d006b948653f",
+    "refs/heads/review/meri-reference-integration-20261012": "8c48e75a76e990ddf3c20f31ca32366546107b5c",
+    "refs/heads/review/meri-rule-status-20261012": "b3670edb527aa2cd8f4deaa3b75fbbec4993a267",
+    "refs/heads/review/meri-stored-reference-reads-20261012": "720098fb1b99a5fd15c602940f3621ab0aace68f",
+    "refs/heads/task/meri-certification-status-20261012": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba",
+    "refs/heads/task/meri-facility-representation-20261012": "417e9942bd3e8decd1a5ed40760228e263107ed6",
+    "refs/heads/task/meri-rule-status-20261012": "86c701c87f36b4b42d8923a53b190e1a2213ce70",
+    "refs/heads/task/meri-stored-reference-reads-20261012": "7761e705a5947940814139e39517474ad851eced",
+    "refs/tags/meri-rc1-20261012": "b157217e69d36da1b53fa5944a0781a2f53a2f79",
+    "refs/tags/meri-rc1-20261012^{}": "2f06feccca731d6cd388612cd568185ecc29668f"
+  },
+  "allExpectedRefsMatch": true,
+  "mainAndRc1Unchanged": true,
+  "stdoutSha256": "0d1c5c58ce22b297e761eb23189773da04ea383e2dfe05d565012e53a9d2382e",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "READ_ONLY_REF_VERIFICATION"
+}

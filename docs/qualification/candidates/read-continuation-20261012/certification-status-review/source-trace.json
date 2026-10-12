@@ -1,0 +1,33 @@
+{
+  "scope": "IMMUTABLE_SOURCE_METADATA_ONLY_NO_PRIVATE_EXECUTION",
+  "projection": {
+    "noQueryEcho": true,
+    "noGeneratedAt": true,
+    "searchedEntireDataset": true,
+    "exactIdPrecedesNames": true,
+    "foldOwner": "default-locale toLocaleLowerCase; new trusted comparisonLocale requires adapter qualification",
+    "nameMatch": "CSP OR CSO substring after source lowercasing",
+    "candidateWindow": 10,
+    "candidateCount": "full matched array length",
+    "deduplication": "none observed",
+    "absenceSourceFields": "both optional from first record; no-match retains declared omission variant although normal parser refuses zero valid rows",
+    "singleRecordEnrichedProgram": "fedramp"
+  },
+  "parser": {
+    "productId": "FR followed by digits, case-sensitive wire identity",
+    "nonemptyNames": "decoded raw strings; whitespace not trimmed",
+    "agencies": "decoded nonempty strings, duplicate/whitespace values retained",
+    "authorizationDate": "nullable; millisecond Date to canonical ISO, not date-only",
+    "provenance": "one observedAt and fixed marketplace URL across returned records"
+  },
+  "effects": {
+    "HTTPExecuted": false,
+    "perFetchTimeoutMs": 15000,
+    "declaredAndPostreadBodyBytes": 8388608,
+    "bodyAllocationBeforeActualSizeCheck": true,
+    "maxAttempts": 2,
+    "retry": "one retry except identified non-server HTTP errors; no shared total budget shown",
+    "noStreamingMemoryOrHardCancellationClaim": true
+  },
+  "authority": "Legacy status provenance is separate: raw searchedEntireDataset/evidenceOfAbsence does not establish authoritative coverage; no private provenance engine copied/wired. Current actor/tenant/release/source and comparison locale qualification remain external."
+}

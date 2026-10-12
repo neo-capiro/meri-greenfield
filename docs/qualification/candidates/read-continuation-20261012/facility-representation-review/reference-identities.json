@@ -1,0 +1,239 @@
+{
+  "scope": "INDEPENDENT_REFERENCE_METADATA_ONLY",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+          "bytes": 415704,
+          "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/clients/representation-resolver.service.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "5c01171389851c3b94172e4509c8896c52189d8c",
+          "bytes": 17327,
+          "sha256": "79777d7fca14ff4ebb591f1dd0f54a288a81ddb7f2ef2f8e98dce66048eeeafd"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "5c01171389851c3b94172e4509c8896c52189d8c",
+          "bytes": 17327,
+          "sha256": "79777d7fca14ff4ebb591f1dd0f54a288a81ddb7f2ef2f8e98dce66048eeeafd"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/clients/representation-resolver.service.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "b921720633c21fc4a0dc9c131b80b3cba0a0dbcc",
+          "bytes": 17689,
+          "sha256": "ed606b62ddb1e054c6c2fd09430d4c1ea426f857da09abc4002bde49ae860a77"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "b921720633c21fc4a0dc9c131b80b3cba0a0dbcc",
+          "bytes": 17689,
+          "sha256": "ed606b62ddb1e054c6c2fd09430d4c1ea426f857da09abc4002bde49ae860a77"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/clients/district-code.util.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "d5b6bbc99a2816bfbbc1c9d1ca04e953bd71571f",
+          "bytes": 464,
+          "sha256": "e508fe4641164dceb77ebdc137b62a677d39eef1ae47e87a8c28a5221a943172"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "d5b6bbc99a2816bfbbc1c9d1ca04e953bd71571f",
+          "bytes": 464,
+          "sha256": "e508fe4641164dceb77ebdc137b62a677d39eef1ae47e87a8c28a5221a943172"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/district-code.util.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "3edb55635b39600f315b04f05f981cea96dbbb37",
+          "bytes": 10783,
+          "sha256": "9b6099aecebf20f393ac021420e2d30af55cc3d03a6b035a0c4775d1189e8ce9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "3edb55635b39600f315b04f05f981cea96dbbb37",
+          "bytes": 10783,
+          "sha256": "9b6099aecebf20f393ac021420e2d30af55cc3d03a6b035a0c4775d1189e8ce9"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/clients/district-code.util.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "8c56ce3465852becc1b06fa50182549f60212298",
+          "bytes": 906,
+          "sha256": "894283175797fcebec48e24f307db88809a33af998d63bca1ec2827e6f61cc72"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "8c56ce3465852becc1b06fa50182549f60212298",
+          "bytes": 906,
+          "sha256": "894283175797fcebec48e24f307db88809a33af998d63bca1ec2827e6f61cc72"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/common/us-states.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+          "bytes": 2792,
+          "sha256": "f080718a458d1ac24e75b1b99315b30faea6ee0ab2234ce2c1a49dbd6026ae74"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "03f8a81e77ebf3969dcff8853bbf4cab9887a5fc",
+          "bytes": 2792,
+          "sha256": "f080718a458d1ac24e75b1b99315b30faea6ee0ab2234ce2c1a49dbd6026ae74"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "packages/shared/src/us-states.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "26911d2f758f7ea56347b12efcf596b7119ac574",
+          "bytes": 1573,
+          "sha256": "ad65aa6cd523c745c5fa835abe30b0d4e6bb060bc5c1765af4c707ad1f8e0e8b"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "26911d2f758f7ea56347b12efcf596b7119ac574",
+          "bytes": 1573,
+          "sha256": "ad65aa6cd523c745c5fa835abe30b0d4e6bb060bc5c1765af4c707ad1f8e0e8b"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+          "bytes": 968034,
+          "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-committee-roster-representation-tool.spec.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "650bd98be9fb723a8bf97a9afaa1ac1df9a26fd6",
+          "bytes": 19699,
+          "sha256": "e63975be01cc7240fc3d18c365f8ed6b888eb86d31b640ae15e29ff9a643ec0c"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "650bd98be9fb723a8bf97a9afaa1ac1df9a26fd6",
+          "bytes": 19699,
+          "sha256": "e63975be01cc7240fc3d18c365f8ed6b888eb86d31b640ae15e29ff9a643ec0c"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "598e9146e5568349f213cbd548de0213113dc924",
+          "bytes": 44992,
+          "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/tool-service-secret.guard.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "0c51c7a5da122fcff2f2b5c4cef8b9c92765c35c",
+          "bytes": 2604,
+          "sha256": "75eb2806606057758c0b5e56741bcc97cdb7ef29f94f6a472d9d01ea26bf15ca"
+        }
+      ],
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "versions": [
+        {
+          "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+          "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+          "bytes": 2703,
+          "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+        },
+        {
+          "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+          "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+          "bytes": 2703,
+          "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9"
+        }
+      ],
+      "unchanged": true
+    }
+  ]
+}

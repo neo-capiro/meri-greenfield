@@ -1,0 +1,39 @@
+✔ dataset metadata is one distinct closed operation, not global-data execution (2.08322ms)
+✔ empty request remains immutable and metadata denies query/row authority (1.945754ms)
+✔ no caller selector, SQL, actor or time argument is admitted (0.571909ms)
+✔ projected string supports independent filter/group flags and exact aggregate relation (1.10432ms)
+✔ projected number supports independent filter/group flags and exact aggregate relation (0.709506ms)
+✔ projected boolean supports independent filter/group flags and exact aggregate relation (0.444508ms)
+✔ projected date supports independent filter/group flags and exact aggregate relation (0.467933ms)
+✔ projected timestamp supports independent filter/group flags and exact aggregate relation (0.45194ms)
+✔ projected string[] supports independent filter/group flags and exact aggregate relation (0.552811ms)
+✔ supportsAsOf remains explicit metadata with no inferred time or row permission (0.557418ms)
+✔ source defaults must already be projected, never silently invented by validation (0.930688ms)
+✔ only projected fields cross the boundary; storage/query machinery and completeness refuse (0.836377ms)
+✔ dataset and per-dataset field identity must be unique; cross-dataset field names may repeat (0.565089ms)
+✔ declared metadata does not duplicate private registry values or claim a live snapshot (0.190286ms)
+✔ generatedAt is a finite canonical JSON instant without guessed freshness (0.661194ms)
+✔ inert JSON rejects active values before hooks and preserves resource limits (0.370447ms)
+✔ canonical resolver supplies immutable request/digest with no context or live binding (1.883631ms)
+✔ stored intelligence exposes one distinct operation and closed definitions (1.835739ms)
+✔ selectors preserve optional null/blank, exact case and UTF-16 clipping (1.009177ms)
+✔ strict limit defaults and all admitted boundary values bind returned rows (4.67109ms)
+✔ normalization and assertions preserve caller data and deny authority claims (0.788465ms)
+✔ count can race below returned rows and does not imply full corpus (1.504681ms)
+✔ exact stored source filter is bound without pretending excerpts prove query matching (0.435324ms)
+✔ projected strings preserve nullable author, opaque IDs/URLs and repeated array entries (0.696606ms)
+✔ title preserves normalized UTF-16 excerpts and does not invent ellipsis/truncation (1.155767ms)
+✔ summary preserves normalized UTF-16 excerpts and does not invent ellipsis/truncation (1.103168ms)
+✔ dates are comparable JSON instants, without a midnight or ambient-now constraint (1.165772ms)
+✔ stored ordering and unique identities preserve ties and refuse substitutions (0.602416ms)
+✔ unknown arguments, unprojected source fields and forged coverage refuse (1.098431ms)
+✔ canonical inert admission refuses hooks, cycles, proxies and hidden fields before access (0.406541ms)
+✔ actual canonical resolver binds original request/digest and rejects undeclared context (1.774387ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 475.017441

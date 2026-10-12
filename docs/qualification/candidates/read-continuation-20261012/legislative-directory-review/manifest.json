@@ -1,0 +1,188 @@
+{
+  "status": "ACCEPT_SOURCE_RUNTIME_HOLD",
+  "source": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+  "authorPacket": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-LEGISLATIVE-DIRECTORY-REVIEW-20261012.md",
+      "bytes": 5954,
+      "sha256": "bfa5164df546dc5b185f7dd53946ea7512a4c4caaaa19c209a34c1470c869877"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/cleanup-final.json",
+      "bytes": 1062,
+      "sha256": "f77c55dbcd630e5989778b4f46580400099c5bff59f26c8617f0d4b2c7916874"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/criteria.md",
+      "bytes": 4147,
+      "sha256": "f72f55d9f7a5a7c6576081e1d12ed022370ac8a47df7aedfe1df3b75f8d6ab39"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/dependency-bin-correction.json",
+      "bytes": 818,
+      "sha256": "77e94ff14d8159bbdfd3bb4c7469cc179a42a698512ee72612411c79767dcac2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/fixture-correction.json",
+      "bytes": 442,
+      "sha256": "bd982ed6ae64da745c94458785f41e05b8a98e39973b26621a06c7d241ff65ca"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/full-root.json",
+      "bytes": 1371,
+      "sha256": "4e144203dabfcf689b99f71d81fd30fa1c20d44a003b5686d40cedf56dc38161"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/full-root.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/full-root.stdout.bin",
+      "bytes": 98932,
+      "sha256": "671fd258ecd19ad0c48ffb6915dfffc62254e665d9970d9e49aeb73af07a675b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-corrected.json",
+      "bytes": 1360,
+      "sha256": "7cb8cacd492647cd88810021d3fe0d99f9643d09cd8971957109c08ef0ed46e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-corrected.stdout.bin",
+      "bytes": 2995,
+      "sha256": "b689bdfb2fcc9cde0eb48de243db7bdcced0bc87e017dc7895d2c720f44ab5ec"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-first.json",
+      "bytes": 1352,
+      "sha256": "d500aa3e32a789561052115f5227b6bdcd9d9d1c695992ebfcca2b269eeff5bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/independent-first.stdout.bin",
+      "bytes": 4054,
+      "sha256": "be2b1a68580afa6a9d065443f145762e94ae9473277fc8948b4e9e2c6df6e5fa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/notice-policy-audit.mjs",
+      "bytes": 2035,
+      "sha256": "fcd354a88a23fbe7f53ba767f134b95543cb09a9c5e8c6b2b4327f6fc661adde"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/notice-policy.json",
+      "bytes": 1363,
+      "sha256": "772a036c2b9e0b2c649d497b206f8df8468c6ed921014249e7ab9b961cb94985"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/notice-policy.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/notice-policy.stdout.bin",
+      "bytes": 1144,
+      "sha256": "f696714392ef992763776540c23ecde6dabf0aef66ff4bdaedd3d2c8a17d7018"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution-corrected.json",
+      "bytes": 1485,
+      "sha256": "7c798109ff913ed2c2c76bf10797ba6dff0f74892ffbf545912bb10706d3d398"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution-corrected.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution-corrected.stdout.bin",
+      "bytes": 2045,
+      "sha256": "79390d78277e6150a36b4a9954575b765cc11cea5075788b955b6372f8a5f2e9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.json",
+      "bytes": 1361,
+      "sha256": "54b71b091b32656eb25c2ac267fd0eeaad26651eea4433b070582d69755aac6c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stderr.bin",
+      "bytes": 1744,
+      "sha256": "33d64e243918a1cb07483bc9f9bb3dd8141eab74c1642cca1ba6d0a226da517a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/public-distribution.stdout.bin",
+      "bytes": 1192,
+      "sha256": "e62a07eac3f71e0d7826d5b16c04b7a3d24f49da12343d421a5f6fc524dd16fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/source-audit.json",
+      "bytes": 1368,
+      "sha256": "1dad021f3a98d7b6d772a220046e8fa2c1ed5b2880b7bf9f61de38d6f56e1766"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/source-audit.stdout.bin",
+      "bytes": 11665,
+      "sha256": "195e314fb3144877123da84445a36bea2922ec023f44f620e59c3affd2fe3113"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/verdict.json",
+      "bytes": 1800,
+      "sha256": "ce188a9c456dfa9438a5cf08dc8bb50a0636093443700f40232f061c97450a54"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/verify-source.py",
+      "bytes": 4378,
+      "sha256": "794cc8e6461fdc07e5bd7b06e387778783a748427e10f529abf0d860c17f1282"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/whitespace-authored.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/whitespace-authored.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/whitespace-full.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/whitespace-full.stdout.bin",
+      "bytes": 432,
+      "sha256": "a425208567a825be56bd91893e7f046ebc080e036fcc4186c2c3a293e2b06563"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/legislative-directory-review/whitespace.json",
+      "bytes": 101,
+      "sha256": "bbccd72a6a13791adc7bdc35dfb8d100478f1130b2cde7d4f39d5d075856c447"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-legislative-directory-independent.test.mjs",
+      "bytes": 15647,
+      "sha256": "a016b70a0c0f916f348522f7e098d9906de6fd3b38fb0a1c2d0e10fea1ece92c"
+    }
+  ],
+  "selfExcluded": true
+}

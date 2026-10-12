@@ -1,0 +1,149 @@
+{
+  "source": "fa59df3739a2c43310b86de416d2f455a8715dce",
+  "metadata": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba",
+  "decision": "ACCEPT_SOURCE",
+  "runtime": "HOLD_UNRUN",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/CODEX-CERTIFICATION-STATUS-REVIEW-20261012.md",
+      "bytes": 8934,
+      "sha256": "f9f486a77b88b0013126f34e76ec0aecb3b4f1437b488d2f4139c143ee15e876"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/audit.json",
+      "bytes": 9318,
+      "sha256": "efd2416cd1a1d6ff31b80d81bf9983951cb814992f2cd28500df32a50a234237"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/audit.py",
+      "bytes": 9231,
+      "sha256": "ed8b6171e6a577a7c1d9ed50b1d8234e98f028f1b94ab18cc691a71c657a679f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/criteria.md",
+      "bytes": 2342,
+      "sha256": "c9a3694e4f1e92e159200e3f7fadd8085e04fba9da1191f0cbf54783f5245b37"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/exact-source-tests.json",
+      "bytes": 1421,
+      "sha256": "70064f1879b31f401cb3163754875d823541a867a02f9e32de40145f28ea4f6f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/exact-source-tests.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/exact-source-tests.stdout.bin",
+      "bytes": 5493,
+      "sha256": "052677149a5eae23e951985a5f0b2afa894123c54d53fca9b2e255bc85a412e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/final-audit.json",
+      "bytes": 1437,
+      "sha256": "0b35303cfc8dab083c5c7a039cf5e9054288d2d48595dcc7697dbdf10d69ea0d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/final-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/final-audit.stdout.bin",
+      "bytes": 57,
+      "sha256": "102ea52c9335dc87e1335a8c7466023bf26a210ad26c1251a179eeed7219e974"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-independent.json",
+      "bytes": 1354,
+      "sha256": "a0a1846025e3c0b97d68d2aef7ebab4e73696b2dcd9730dc41667e23f3b24e79"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-independent.stdout.bin",
+      "bytes": 2533,
+      "sha256": "75cf3ceeb348f1cdcf089539a17497150f4b0bbdc55d1046d334ea7414727773"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-negative-source/packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "bytes": 3105,
+      "sha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-negative-source/packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "bytes": 6517,
+      "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-negative-source-after.json",
+      "bytes": 386,
+      "sha256": "12d38c0bc985f37b6b61593c65a239d2f7bfc072e0c64dba34a1289150e22c77"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/identity-negative-source-before.json",
+      "bytes": 386,
+      "sha256": "12d38c0bc985f37b6b61593c65a239d2f7bfc072e0c64dba34a1289150e22c77"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.json",
+      "bytes": 1352,
+      "sha256": "fd45b1970a335b22c201183a8a1118f79ce1751463788ffb8c4da1500e791993"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-independent.stdout.bin",
+      "bytes": 1183,
+      "sha256": "f6d8152c9e39b23cba1a0f010635fcf187d85aee92f009c45e9d1fdfcd3ae979"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-source/packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "bytes": 3105,
+      "sha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-source/packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "bytes": 6517,
+      "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/initial-source-identities.json",
+      "bytes": 386,
+      "sha256": "12d38c0bc985f37b6b61593c65a239d2f7bfc072e0c64dba34a1289150e22c77"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/reference-identities.json",
+      "bytes": 2364,
+      "sha256": "f729ffc6e1b7bc1fec52e2787dc7de7114c4ae6ca00af6239901b7645279d698"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/certification-status-review/source-trace.json",
+      "bytes": 1740,
+      "sha256": "97b7da085323c326daebc3f179e6957098c17158870686bb1cb5944e9cf64989"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-certification-status-independent.test.mjs",
+      "bytes": 10156,
+      "sha256": "36efab4baa9623031fcc70b6eddd474fae7fc56bdcbc62afba87f83a81e7b084"
+    }
+  ]
+}

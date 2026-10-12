@@ -1,0 +1,221 @@
+{
+  "sourceFreeze": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+  "scope": "OFFLINE_PACKET_AND_SOURCE_ONLY",
+  "checks": 53,
+  "passed": 53,
+  "failed": 0,
+  "results": [
+    {
+      "check": "manifest:docs/coordination/reports/CODEX-STORED-REFERENCE-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/build-schemas.py",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/verify.py",
+      "pass": true
+    },
+    {
+      "check": "complete packet membership",
+      "pass": true
+    },
+    {
+      "check": "exact source tree",
+      "pass": true
+    },
+    {
+      "check": "all6001 originals unchanged",
+      "pass": true
+    },
+    {
+      "check": "exact six allocated source paths",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "source:packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "focused capture bound to exact source",
+      "pass": true
+    },
+    {
+      "check": "successful source capture:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "capture helper:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "source receipt identity:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "test count:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "successful source capture:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "capture helper:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "source receipt identity:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "test count:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "successful source capture:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "capture helper:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "source receipt identity:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "test count:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "six metadata-only references",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/src/meri/analytics/global-dataset-registry.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference no drift:apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    }
+  ]
+}

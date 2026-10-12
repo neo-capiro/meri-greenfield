@@ -1,0 +1,61 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+  "sourceTree": "a5911079f7d68d3e94a33ccc65bc1ff658f8d9e8",
+  "authorPacket": "86c701c87f36b4b42d8923a53b190e1a2213ce70",
+  "independent": {
+    "passed": 40,
+    "failed": 0,
+    "unchangedFirstRun": true
+  },
+  "fullRoot": {
+    "passed": 1363,
+    "failed": 0
+  },
+  "public": {
+    "generated": true,
+    "types": true,
+    "passed": 7,
+    "failed": 0
+  },
+  "sourceAudit": {
+    "passed": 70,
+    "failed": 0,
+    "originalsPreserved": 6001,
+    "authorManifestMembers": 17
+  },
+  "policyAudit": {
+    "initialPassed": 6,
+    "initialFailed": 1,
+    "classification": "reviewer representation mismatch",
+    "finalPassed": 7,
+    "finalFailed": 0
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "bytes": 12001,
+      "sha256": "6668f39d0fad44005df43d29f2e0824c8137e6abafb208a1747350b54fc2b43a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "bytes": 6189,
+      "sha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-rule-status.test.mjs",
+      "bytes": 14236,
+      "sha256": "9baeaaa77427ece70fec111eb95f604ca52c5bbff0ab3ab9cb29babb0706273d"
+    }
+  ],
+  "ownedGroups": 6,
+  "allGroupsAbsent": true,
+  "runtimeAccepted": false,
+  "canonicalRegistrationReviewed": false,
+  "sourceConnectivityEnabled": false,
+  "remaining": [
+    "Canonical binding/integration independent review",
+    "Trusted actual stageAsOf/commentAsOf capture and current authority",
+    "Stored source adapter/SQL/runtime qualification"
+  ]
+}

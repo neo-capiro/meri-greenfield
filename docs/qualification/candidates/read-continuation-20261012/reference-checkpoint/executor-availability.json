@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-12T17:48:03.020098+00:00",
+  "available": true,
+  "worktree": "/workspace/meri-reference-reads-20261012",
+  "headBeforeCheckpoint": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "cleanBeforeCheckpointDocument": true,
+  "priorReadOnlyCheckAt": "2026-10-12T17:38:36Z",
+  "capabilitySliceBlockedByDisconnect": false,
+  "facilityFocusedGroupAbsent": true,
+  "runtimeAcceptance": false,
+  "recheckedAt": "2026-10-12T17:49:50.182071+00:00",
+  "processGroupCheckMethod": "os.killpg(pgid,0): ProcessLookupError required"
+}

@@ -1,0 +1,38 @@
+✔ three required selectors trim/cap UTF-16 and preserve case (3.282063ms)
+✔ missing and non-string selectors are typed refusals, never fabricated empty source pages (1.707877ms)
+✔ closed model and context objects accept no authority or request aliases (0.835436ms)
+✔ operation admission rejects unknowns and hostile coercion without effects (0.247893ms)
+✔ all success and fallback envelopes round-trip without caller mutation (6.716025ms)
+✔ bill envelope has no invented PE echo, source coverage or total (1.045943ms)
+✔ bill optional storage values remain nullable and links/package preserve their exact tuples (0.614955ms)
+✔ independent stored bill identity columns and unknown values are not normalized into fabricated facts (0.279289ms)
+✔ bill specificity then stored date ordering permits ties and null epoch semantics (0.665079ms)
+✔ bill source cap and unique stored IDs are enforced (2.3821ms)
+✔ bill SQL Date and all generated timestamps retain exact canonical serialization (0.647403ms)
+✔ contractor absent-table fallback cannot carry fabricated rows or success evidence (0.85126ms)
+✔ R-3 exhibit money cannot be included in award buckets or award count (1.021565ms)
+✔ candidate and uninventory buckets remain distinct; zeros do not grant coverage (1.471381ms)
+✔ award window/provenance/unit/category attribution cannot be silently upgraded (0.876447ms)
+✔ negative award adjustments and nullable exhibit costs preserve finite arithmetic (0.321554ms)
+✔ exhibit attribution follows null defaults and page truthiness without invented positive numeric constraints (0.644469ms)
+✔ contractor count/money correlations and own sorted group identity are enforced (1.59007ms)
+✔ contractor data and named performer source caps cannot imply population totals (1.094835ms)
+✔ report echoed PE binds only the selected syntax (0.598259ms)
+✔ empty report requires loaded-source caveat and cannot certify global absence (0.327081ms)
+✔ any program-level row requires aggregate caution and exact per-row caveat (0.544468ms)
+✔ source link scope is basis-derived including future unknown bases (0.467723ms)
+✔ accepted and candidate links preserve source evidence without approving candidate (0.520602ms)
+✔ report dedup cannot impose accepted-over-stronger-basis selection (0.242014ms)
+✔ report sorting is review status, basis, FY, confidence with ties allowed (0.459461ms)
+✔ report cap, nullable Int pages and unknown committee/action values remain distinct (1.309929ms)
+✔ inert admission rejects getters/proxies/cycles/nonfinite fields before effects (0.630497ms)
+✔ present bill links require stored string evidence, while the whole link may be null (0.286551ms)
+✔ derived award counts can exceed one stored Int32 without overflow or truncation (0.318809ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 237.169951

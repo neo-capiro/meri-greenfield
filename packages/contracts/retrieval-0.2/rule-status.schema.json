@@ -1,0 +1,556 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:rule-status:0.2.0",
+  "title": "Private stored rule status with explicit observed clocks",
+  "$defs": {
+    "RuleStatusLabels": {
+      "const": {
+        "notice": "Notice",
+        "nprm": "NPRM",
+        "comment_closed": "Comment closed",
+        "final": "Final rule",
+        "effective": "Effective"
+      }
+    },
+    "RuleStatusTypeStages": {
+      "const": {
+        "PROPOSED_RULE": "proposed",
+        "PROPOSED": "proposed",
+        "RULE": "final",
+        "FINAL": "final",
+        "PRESIDENTIAL_DOCUMENT": "final",
+        "EXECUTIVE_ORDER": "final",
+        "EMERGENCY": "final"
+      }
+    },
+    "RuleStatusCommentStages": {
+      "const": [
+        "notice",
+        "nprm"
+      ]
+    },
+    "RuleStatusMissingNote": {
+      "const": "Provide a rule/notice id (\"FL-31100933\", a Federal Register document number like \"2026-01234\"), or a title keyword."
+    },
+    "RuleStatusMissingDeadlineNote": {
+      "const": "No comment-end date on record for this open rule — do not assert a deadline."
+    },
+    "RuleStatusStateCoverage": {
+      "const": "Notice metadata; adopted text/history qualification is reported by legislative research."
+    },
+    "RuleStatusRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": []
+    },
+    "RuleStatusInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "state": {
+          "type": "string",
+          "maxLength": 2
+        }
+      },
+      "required": []
+    },
+    "RuleStatusContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stageAsOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commentAsOf": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "stageAsOf",
+        "commentAsOf"
+      ]
+    },
+    "RuleStatusNotFound": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_rule_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "found": {
+          "const": false
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "found",
+        "note"
+      ]
+    },
+    "RuleStatusStateCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "const": "state"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "jurisdiction",
+        "state"
+      ]
+    },
+    "RuleStatusFederalCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "const": "federal"
+        },
+        "state": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "jurisdiction",
+        "state"
+      ]
+    },
+    "RuleStatusAmbiguous": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_rule_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "found": {
+          "const": false
+        },
+        "ambiguousMatches": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/RuleStatusStateCandidate"
+              },
+              {
+                "$ref": "#/$defs/RuleStatusFederalCandidate"
+              }
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 12
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "found",
+        "ambiguousMatches",
+        "note"
+      ]
+    },
+    "RuleStatusState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_rule_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "found": {
+          "const": true
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "abstract": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "notice",
+            "nprm",
+            "comment_closed",
+            "final",
+            "effective"
+          ]
+        },
+        "stageLabel": {
+          "enum": [
+            "Notice",
+            "NPRM",
+            "Comment closed",
+            "Final rule",
+            "Effective"
+          ]
+        },
+        "effectiveDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "const": "state"
+        },
+        "ruleType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "agencyNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "publicationDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commentPeriod": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "end": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "isOpen": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "isOpen"
+          ]
+        },
+        "docketIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "maxItems": 1
+        },
+        "linkedBillKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filingDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "linkedRuleNumbers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sourceRevision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coverage": {
+          "$ref": "#/$defs/RuleStatusStateCoverage"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "found",
+        "id",
+        "title",
+        "abstract",
+        "stage",
+        "stageLabel",
+        "effectiveDate",
+        "sourceUrl",
+        "jurisdiction",
+        "ruleType",
+        "agencyNames",
+        "publicationDate",
+        "commentPeriod",
+        "docketIds",
+        "linkedBillKeys",
+        "filingDate",
+        "linkedRuleNumbers",
+        "sourceRevision",
+        "coverage"
+      ]
+    },
+    "RuleStatusFederal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "get_state_rule_status"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "found": {
+          "const": true
+        },
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "abstract": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "notice",
+            "nprm",
+            "comment_closed",
+            "final",
+            "effective"
+          ]
+        },
+        "stageLabel": {
+          "enum": [
+            "Notice",
+            "NPRM",
+            "Comment closed",
+            "Final rule",
+            "Effective"
+          ]
+        },
+        "effectiveDate": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "jurisdiction": {
+          "const": "federal"
+        },
+        "ruleType": {
+          "type": "string"
+        },
+        "agencyNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "publicationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "commentPeriod": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "type": "null"
+            },
+            "end": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "isOpen": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "isOpen"
+          ]
+        },
+        "docketIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "linkedBillKeys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 0
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "found",
+        "id",
+        "title",
+        "abstract",
+        "stage",
+        "stageLabel",
+        "effectiveDate",
+        "sourceUrl",
+        "jurisdiction",
+        "ruleType",
+        "agencyNames",
+        "publicationDate",
+        "commentPeriod",
+        "docketIds",
+        "linkedBillKeys"
+      ]
+    },
+    "RuleStatusOutput": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/RuleStatusNotFound"
+        },
+        {
+          "$ref": "#/$defs/RuleStatusAmbiguous"
+        },
+        {
+          "$ref": "#/$defs/RuleStatusState"
+        },
+        {
+          "$ref": "#/$defs/RuleStatusFederal"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "capturedAt": "2026-10-12T17:48:03.019726+00:00",
+  "publishedIntegration": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "currentLedger": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 45,
+    "pending": 51,
+    "typedUnavailable": 46
+  },
+  "proposedLedgerAfterAcceptedIntegration": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 55,
+    "pending": 41,
+    "typedUnavailable": 56
+  },
+  "combinedReviewCheckpoint": "8c48e75a76e990ddf3c20f31ca32366546107b5c",
+  "combinedVerdict": "HOLD_UNBUILT",
+  "families": [
+    {
+      "family": "legislative-directory",
+      "capabilityCount": 2,
+      "base": "4280ebaba4cab554baf7e6b23175c34d21027097",
+      "source": "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+      "sourceTree": "476f858af07032e72e56f9322d9864356e0600de",
+      "authorPacket": "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257",
+      "review": "7f287767e15b334e44919d8c2ee9bcd4f60819bc",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 34,
+      "authorBranch": "task/meri-legislative-directory-20261012",
+      "reviewBranch": "review/meri-legislative-directory-20261012",
+      "authorCommitOrder": [
+        "052a85cb9c50387c62c60e841d63460c1827f42c",
+        "04a93406727998e2eda945ff2223b38f881ea4ef",
+        "d2b6a8704d29f4fcd7a222029601bbfc00e29fe0",
+        "c511b4bf6ee3f30674f3bd7badae79df82a61aab",
+        "3c6dec1fdbcad4502b3b218eb81e246a80828900",
+        "62a9f7e3c71d12a2e9e6e3ad4b9d361f3be9d257"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "2f6f2690e36777c7f69692b1655fe32c8c220e67",
+        "53c4f8a4ea56aece2db3c64ae9abed3f131697e5",
+        "7307d85e95bdf123fdf3ca8fae6a054dd6120d44",
+        "bbcb0f8ddb131bfa675ce31a7cd9e897465bb2b6",
+        "c24af4120abc301cb86a16df38c321a40bb7c527",
+        "7f287767e15b334e44919d8c2ee9bcd4f60819bc"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "reviewBase": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3"
+    },
+    {
+      "family": "pe-references",
+      "capabilityCount": 3,
+      "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+      "source": "c9770ef235ae220159500b12bd1ab885f9ba9b45",
+      "sourceTree": "c06472d82474b129799169f01b0de7f83129f463",
+      "authorPacket": "3348a42ff4275c6e60b195f8af03a7c017ced3a4",
+      "review": "e79a7ca4abafb349516ce74f6f95195ee9d877c0",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 32,
+      "authorBranch": "task/meri-pe-references-20261012",
+      "reviewBranch": "review/meri-pe-references-20261012",
+      "authorCommitOrder": [
+        "c9770ef235ae220159500b12bd1ab885f9ba9b45",
+        "3348a42ff4275c6e60b195f8af03a7c017ced3a4"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "2021d4326bf965bd7487b5ce5e0f9e8cb91b6370",
+        "e8650d8df2f65e1b22aa2f1e2d4f335e7ad28471",
+        "d439343a63be721c592348c0dc895f228625af21",
+        "920606d870a4c32bb6afaeb3493bf685f38ccf94",
+        "e79a7ca4abafb349516ce74f6f95195ee9d877c0"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "reviewBase": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3"
+    },
+    {
+      "family": "rule-status",
+      "capabilityCount": 1,
+      "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+      "source": "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+      "sourceTree": "a5911079f7d68d3e94a33ccc65bc1ff658f8d9e8",
+      "authorPacket": "86c701c87f36b4b42d8923a53b190e1a2213ce70",
+      "review": "b3670edb527aa2cd8f4deaa3b75fbbec4993a267",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 40,
+      "authorBranch": "task/meri-rule-status-20261012",
+      "reviewBranch": "review/meri-rule-status-20261012",
+      "authorCommitOrder": [
+        "9b6f1d40f1ff28651968ca86c4837640d8c2eb17",
+        "95442b40d006e48e2215d6acec09fd7f029a2b9b",
+        "51510ced09405ee8d56fccc385509180c589eb9a",
+        "86c701c87f36b4b42d8923a53b190e1a2213ce70"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "73b77f3e4547a5262a3e5c6560f8b060d3abd7fa",
+        "88d28e8c05741d31c1b583c1974e981cb9c9534f",
+        "0970f8585e30f4aa8322d86ea02b53ae89e8f104",
+        "8145339c5f2959dcb05da0c23795e13a3dbce722",
+        "b3670edb527aa2cd8f4deaa3b75fbbec4993a267"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "reviewBase": "4566cef6417428d46274a14f7937ca11df66ae9d"
+    },
+    {
+      "family": "certification-status",
+      "capabilityCount": 1,
+      "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+      "source": "fa59df3739a2c43310b86de416d2f455a8715dce",
+      "sourceTree": "6dcc5ddff9b5e04aa64fd084104eb168825c8dca",
+      "authorPacket": "1142bbd7dabd927653ec5c810b86f8ecba89f0ba",
+      "review": "498f3ef3b6dfe469563ded08a2667d3b94bb4b3d",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 27,
+      "authorBranch": "task/meri-certification-status-20261012",
+      "reviewBranch": "review/meri-certification-status-20261012",
+      "authorCommitOrder": [
+        "fa59df3739a2c43310b86de416d2f455a8715dce",
+        "1142bbd7dabd927653ec5c810b86f8ecba89f0ba"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "df4feac991109026a262ca61d0da6a1099fa2c54",
+        "75182874f32651106fe38e6ee771e063be8dc3ec",
+        "b65401fda898287699341c3b0ac8423d8e96b22a",
+        "5c78c79f27cd711d084a6072544351a7a017521f",
+        "498f3ef3b6dfe469563ded08a2667d3b94bb4b3d"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "reviewBase": "4566cef6417428d46274a14f7937ca11df66ae9d"
+    },
+    {
+      "family": "stored-reference-reads",
+      "capabilityCount": 2,
+      "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+      "source": "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+      "sourceTree": "b05312f1586ea5b055a9ea9bbd7c9b1b52eeb687",
+      "authorPacket": "7761e705a5947940814139e39517474ad851eced",
+      "review": "720098fb1b99a5fd15c602940f3621ab0aace68f",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 60,
+      "authorBranch": "task/meri-stored-reference-reads-20261012",
+      "reviewBranch": "review/meri-stored-reference-reads-20261012",
+      "authorCommitOrder": [
+        "450d48fc158dbcdd24f224ec32d6f5b2f92aca80",
+        "7761e705a5947940814139e39517474ad851eced"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "263f054d0678a6b7459d53b5048899801c8ca1a8",
+        "44ddd1bb55ac510435dcc355b4f010380698bb05",
+        "720098fb1b99a5fd15c602940f3621ab0aace68f"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "reviewBase": "4566cef6417428d46274a14f7937ca11df66ae9d"
+    },
+    {
+      "family": "facility-representation",
+      "capabilityCount": 1,
+      "base": "4566cef6417428d46274a14f7937ca11df66ae9d",
+      "source": "530416e490763155c5531140f4b70e95a9493b7b",
+      "sourceTree": "b0b9210fabbb06422a912562dde257b8e54fa01b",
+      "authorPacket": "417e9942bd3e8decd1a5ed40760228e263107ed6",
+      "review": "f041eed2e46be40d68254187ffd1d9396842bd25",
+      "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+      "independentTestsPassed": 27,
+      "authorBranch": "task/meri-facility-representation-20261012",
+      "reviewBranch": "review/meri-facility-representation-20261012",
+      "authorCommitOrder": [
+        "94830155e274b23db7e6bbfc89b87062a4d6b56e",
+        "530416e490763155c5531140f4b70e95a9493b7b",
+        "6df7b4f46ccb6adf7a6538051a6908724cd20c98",
+        "417e9942bd3e8decd1a5ed40760228e263107ed6"
+      ],
+      "reviewFirstParentCommitOrder": [
+        "f91af3a578cab5481796c703cb49c750d7eb4961",
+        "1d054edd012fd9e5f0e23431b846debaeb19fa74",
+        "78dc1bdfd7b2b3d721dd3e63d6d15da6578537be",
+        "419e67522588d0715c0a7a82e8f5845f06642b97",
+        "35ff6918e7af883de74d996ad0a6b559098530ab",
+        "f041eed2e46be40d68254187ffd1d9396842bd25"
+      ],
+      "integrated": false,
+      "runtimeAccepted": false,
+      "metadataReviewFollowup": "f9b4dbcbbce74565aba852f6d529d006b948653f",
+      "reviewBase": "4566cef6417428d46274a14f7937ca11df66ae9d"
+    }
+  ]
+}

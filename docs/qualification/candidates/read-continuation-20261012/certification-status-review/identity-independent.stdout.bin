@@ -1,0 +1,34 @@
+✔ independent single absent and ambiguous source snapshot variants admit (10.539367ms)
+✔ input requires exact program string and nonblank query with no aliases (1.610022ms)
+✔ query trims only and retains case and full admitted UTF16 sequence (0.881215ms)
+✔ locale context is explicit closed canonical data rather than a model hint (0.687975ms)
+✔ request and context effects are refused before any coercion or access (0.258329ms)
+✔ envelope echoes no query generation time or authority proof (1.440868ms)
+✔ exact ID takes precedence even when provider names do not contain query (0.581675ms)
+✔ single name matching admits CSP or CSO case-insensitive substrings without arbitrary ID prefix match (1.100856ms)
+✔ explicit Turkish name comparison differs from English without inferring adapter locale truth (0.591189ms)
+✔ single and ambiguous markers cannot substitute for one another (1.52862ms)
+✔ full candidate count is distinct from first10 records (0.800855ms)
+✔ small ambiguity count requires every bounded projected candidate (0.61873ms)
+✔ observable exact-ID candidate invalidates ambiguity rather than guessing choice (0.327593ms)
+✔ duplicate records remain possible parser output rather than invented uniqueness (0.205569ms)
+✔ missing dataset context is not manufactured from the bounded result (0.652171ms)
+✔ no-match snapshot claims stay exact but never become record success (0.792833ms)
+✔ optional absence provenance is paired and both omitted remains declared wire variant (0.381043ms)
+✔ fixed source marketplace URL is preserved without proving HTTPS origin was contacted (0.685542ms)
+✔ all parser status and impact vocabulary strings remain exact case-sensitive values (1.176249ms)
+✔ required nullable authorization date is not omitted or conflated with observation time (0.348003ms)
+✔ observed and authorization dates require finite canonical instants with no current clock inference (0.424879ms)
+✔ candidate records share one source snapshot observation (0.182064ms)
+✔ provider names and agencies retain nonempty raw values without inferred trimming or unique agency proof (0.294553ms)
+✔ record fields are closed required values not authorizations or supplied absent fields (1.19682ms)
+✔ product identity is exact FR digits with no extra serialized suffix (0.879504ms)
+✔ nested accessors proxies symbols and cycles refuse without effects (0.303026ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 201.94573

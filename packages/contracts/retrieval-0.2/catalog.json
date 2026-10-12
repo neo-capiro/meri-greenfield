@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.6",
+  "catalogVersion": "0.2.7",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -274,8 +274,11 @@
       "id": "get_certification_status",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_certification_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_floor_votes",
@@ -318,8 +321,11 @@
       "id": "list_global_datasets",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "list_global_datasets",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "query_global_data",
@@ -416,36 +422,51 @@
       "id": "get_committee_roster",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_committee_roster",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_representation",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_representation",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "list_members",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "list_members",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_state_rule_status",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_state_rule_status",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_intel_articles",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_intel_articles",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_committee_hearings",
@@ -734,22 +755,31 @@
       "id": "get_pe_contractors",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_pe_contractors",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_pe_bills",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_pe_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "get_pe_report_language",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_pe_report_language",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "search_acquisition_personnel",
@@ -4378,6 +4408,677 @@
       ],
       "fixtureIds": [
         "catalog.binding.read_bill_text"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_committee_roster",
+        "version": "0.2.0"
+      },
+      "displayName": "Get committee roster",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "State and territory selection uses the accepted schema vocabulary; stored member identity, nullable fields and source ordering remain distinct from current roster truth.",
+        "Unbounded committee rosters are not assigned an invented page cap. Missing selectors and unsupported state/chamber combinations retain refusal outcomes; projection checks do not qualify current source joins."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legislative_directory",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterInput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/CommitteeRosterOutput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_committee_roster"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_members",
+        "version": "0.2.0"
+      },
+      "displayName": "List members",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "State and territory selection uses the accepted schema vocabulary; stored member identity, nullable fields and source ordering remain distinct from current roster truth.",
+        "Unbounded committee rosters are not assigned an invented page cap. Missing selectors and unsupported state/chamber combinations retain refusal outcomes; projection checks do not qualify current source joins."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "legislative_directory",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListInput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:legislative-directory:0.2.0#/$defs/MemberListOutput",
+        "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_members"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_pe_contractors",
+        "version": "0.2.0"
+      },
+      "displayName": "Get pe contractors",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
+        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "pe_references",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeContractorsInput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeContractorsOutput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_pe_contractors"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_pe_bills",
+        "version": "0.2.0"
+      },
+      "displayName": "Get pe bills",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
+        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "pe_references",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeBillsInput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeBillsOutput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_pe_bills"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_pe_report_language",
+        "version": "0.2.0"
+      },
+      "displayName": "Get pe report language",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Awards in the declared 24-month window and R3 exhibit amounts have separate provenance. Match buckets and missing-table fallbacks do not establish complete contractor coverage.",
+        "Report language exposes accepted/candidate review states with stronger matching basis before status; any program-level row requires the declared caveat. Bills and contractors do not gain invented PE echo lineage."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "pe_references",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeReportLanguageInput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:pe-references:0.2.0#/$defs/PeReportLanguageOutput",
+        "sha256": "d0d1faf695b5a38e29b5459d4899c0d8dade4f00552bf5b87ecd924900c7d372"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_pe_report_language"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_state_rule_status",
+        "version": "0.2.0"
+      },
+      "displayName": "Get state rule status",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted stageAsOf and commentAsOf are separate canonical observations; generatedAt is neither clock anchor nor freshness proof. The producer can observe those clocks at different instants.",
+        "Strict comment close/open and effective-date thresholds, federal/state date representations and bounded ambiguity projections preserve their distinct semantics."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "rule_status",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusInput",
+        "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:rule-status:0.2.0#/$defs/RuleStatusOutput",
+        "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_state_rule_status"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_certification_status",
+        "version": "0.2.0"
+      },
+      "displayName": "Get certification status",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted comparisonLocale must be canonical and supported by the local runtime. Admission does not prove the actual source locale, current certification or current visibility.",
+        "The searchedEntireDataset claim and candidate count describe a supplied snapshot; optional absence provenance and the first-ten candidate projection remain distinct. HTTP, retries and body allocation are unqualified execution dependencies."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "certification_status",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:certification-status:0.2.0#/$defs/CertificationStatusInput",
+        "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:certification-status:0.2.0#/$defs/CertificationStatusOutput",
+        "sha256": "31aa9a8aeb6e1dee3871b6bf7c919e1ed48ca1bc8f161a335a80fec158c9dc8f"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_certification_status"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_intel_articles",
+        "version": "0.2.0"
+      },
+      "displayName": "Search intel articles",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "This boundary describes stored normalized article excerpts and an independent observed count, which can be smaller than the returned row count. It does not refresh feeds or establish current article truth.",
+        "UTF-16 title/summary limits and canonical timestamp admission are local wire restrictions. Stored identifiers and URLs remain opaque projected values."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_intelligence",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:stored-intelligence:0.2.0#/$defs/StoredIntelligenceSearchInput",
+        "sha256": "6de0e82a4b3c6e8d11c44da2f0a18d464172e58dd44b43830186fcfd45bdca3c"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:stored-intelligence:0.2.0#/$defs/StoredIntelligenceSearchOutput",
+        "sha256": "6de0e82a4b3c6e8d11c44da2f0a18d464172e58dd44b43830186fcfd45bdca3c"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_intel_articles"
+      ]
+    },
+    {
+      "operation": {
+        "id": "list_global_datasets",
+        "version": "0.2.0"
+      },
+      "displayName": "List global datasets",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Only the public-shaped metadata projection is described; private dataset registry implementation and SQL bodies are not imported. Metadata does not authorize queries or access to any dataset row.",
+        "Six field kinds, per-field flags and number-only aggregatable semantics are declared; generatedAt and listed datasets do not establish current access or complete source inventory."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "dataset_metadata",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:dataset-metadata:0.2.0#/$defs/DatasetMetadataListInput",
+        "sha256": "77ee177ac0b95cd961928f975e8f87bf7c69f57e30de6957b86988dd44ff35ec"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:dataset-metadata:0.2.0#/$defs/DatasetMetadataListOutput",
+        "sha256": "77ee177ac0b95cd961928f975e8f87bf7c69f57e30de6957b86988dd44ff35ec"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.list_global_datasets"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_representation",
+        "version": "0.2.0"
+      },
+      "displayName": "Get representation",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted binding and one-client subject are required for claimed lineage consistency. The selector, legacy tenant/client lookup and matching returned wrapper do not establish current client visibility or grants.",
+        "Missing-client, empty, unresolved and resolved projections remain distinct. No federal geographic join, hidden geocode/district truth, two-senator cap or freshness claim is invented.",
+        "State-legislator slots preserve raw state and chamber correlation. Federal state text remains projected data; the private state-name resolver is not recreated. Stored state bounds use codepoints while selectors preserve UTF-16 caps with uppercase-overflow refusal."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "facility_representation",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:facility-representation:0.2.0#/$defs/FacilityRepresentationInput",
+        "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:facility-representation:0.2.0#/$defs/FacilityRepresentationResult",
+        "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_representation"
       ]
     }
   ]

@@ -1,0 +1,67 @@
+// Metadata-only immutable source audit; parses private text, never imports it.
+const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto');
+const {execFileSync}=require('node:child_process');
+const root=path.resolve(__dirname,'../../../../..');
+const ts=require(path.join(root,'packages/contracts/node_modules/typescript'));
+const frozen='fd8765ec01d292013758606204f2c9d886cd31c1';
+const observed='4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace';
+const checks=[], references=[];
+const check=(name,pass)=>checks.push({name,pass:!!pass});
+const git=(...args)=>execFileSync('git',args,{cwd:'/workspace/capirov2',maxBuffer:4000000});
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const author=JSON.parse(execFileSync('git',['show','7761e705a5947940814139e39517474ad851eced:docs/qualification/candidates/read-continuation-20261012/stored-reference-author/reference-identities.json'],{cwd:root,maxBuffer:4000000}));
+const sources={};
+for(const item of author.references){
+ const a=git('show',`${frozen}:${item.path}`),b=git('show',`${observed}:${item.path}`);
+ const identity={blob:git('rev-parse',`${frozen}:${item.path}`).toString().trim(),bytes:a.length,sha256:sha(a)};
+ check(`frozen identity: ${item.path}`,JSON.stringify(identity)===JSON.stringify(item.frozen));
+ check(`observed unchanged: ${item.path}`,a.equals(b)&&git('rev-parse',`${observed}:${item.path}`).toString().trim()===identity.blob);
+ references.push({path:item.path,...identity,observedUnchanged:a.equals(b)});
+ sources[path.basename(item.path)]=a.toString();
+}
+const parse=name=>ts.createSourceFile(name,sources[name],ts.ScriptTarget.Latest,true);
+const walk=(n,f)=>{f(n);ts.forEachChild(n,c=>walk(c,f));};
+const ref=n=>!n?null:ts.isIdentifier(n)?n.text:n.kind===ts.SyntaxKind.ThisKeyword?'this':ts.isPropertyAccessExpression(n)?`${ref(n.expression)}.${n.name.text}`:null;
+const find=(file,name)=>{let found;walk(file,n=>{if(n.name&&ref(n.name)===name&&(ts.isMethodDeclaration(n)||ts.isFunctionDeclaration(n)||ts.isTypeAliasDeclaration(n)))found=n;});if(!found)throw new Error('Missing declared symbol');return found;};
+const calls=n=>{const a=[];walk(n,x=>{if(ts.isCallExpression(x))a.push(x);});return a;};
+const objects=n=>{const a=[];walk(n,x=>{if(ts.isObjectLiteralExpression(x))a.push(x.properties.map(p=>p.name?.text||'[spread]'));});return a;};
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const literal=n=>ts.isStringLiteral(n)?n.text:ts.isNumericLiteral(n)?Number(n.text):ref(n);
+const service=parse('meri-tools.service.ts');
+const article=find(service,'searchIntelArticles'), summary=find(service,'summarizeText'), datasets=find(service,'listGlobalDatasets');
+const ac=calls(article), sc=calls(summary), dc=calls(datasets);
+const shapes=objects(article);
+check('article query/source exact selectors',same(ac.filter(n=>ref(n.expression)==='this.optionalString').map(n=>n.arguments.map(literal)),[['input','query',240],['input','source',60]]));
+check('article legacy clamp is distinct from typed admission',ac.some(n=>ref(n.expression)==='this.clampInt'&&same(n.arguments.map(literal),['input.limit',1,50,20])));
+check('article has two separate withSystem calls',ac.filter(n=>ref(n.expression)==='this.prisma.withSystem').length===2);
+check('article findMany and count in Promise.all',ac.some(n=>ref(n.expression)==='Promise.all')&&ac.filter(n=>ref(n.expression)?.endsWith('.intelArticle.findMany')).length===1&&ac.filter(n=>ref(n.expression)?.endsWith('.intelArticle.count')).length===1);
+check('article projected result keys',shapes.some(a=>same(a,['tool','generatedAt','total','data'])));
+check('article exact row projection',shapes.some(a=>same(a,['id','source','title','url','author','publishedAt','summary','categories','topics'])));
+check('article excerpts use declared caps',same(ac.filter(n=>ref(n.expression)==='this.summarizeText').map(n=>n.arguments.map(literal)),[['row.title',240],['row.summary',400]]));
+check('article no provider or writes in invoked method',!ac.some(n=>/fetch|\.create$|\.update$|\.delete$|\.upsert$|\.executeRaw/.test(ref(n.expression)||'')));
+check('summary whitespace normalization and trim',sc.some(n=>ref(n.expression)?.endsWith('.replace'))&&sc.some(n=>ts.isPropertyAccessExpression(n.expression)&&n.expression.name.text==='trim'));
+check('summary UTF16 slice and three literal dots',sc.some(n=>ref(n.expression)==='normalized.slice'&&literal(n.arguments[0])===0)&&(()=>{let yes=false;walk(summary,n=>{if(ts.isStringLiteral(n)&&n.text==='...')yes=true;});return yes;})());
+check('dataset wrapper is zero-argument metadata projection',datasets.parameters.length===0&&dc.some(n=>ref(n.expression)==='listDatasetSummaries'));
+check('dataset wrapper exact result keys',objects(datasets).some(a=>same(a,['tool','generatedAt','datasets'])));
+const registry=parse('global-dataset-registry.ts'), ft=find(registry,'FieldType'), listing=find(registry,'listDatasetSummaries');
+check('dataset exact six field types',same(ft.type.types.map(n=>n.literal.text),['string','number','boolean','date','timestamp','string[]']));
+check('dataset summary exact projection keys',objects(listing).some(a=>same(a,['key','description','supportsAsOf','fields'])));
+check('dataset field exact projection keys',objects(listing).some(a=>same(a,['name','type','description','filterable','groupable','aggregatable'])));
+const flags={};walk(listing,n=>{if(ts.isPropertyAssignment(n)&&['supportsAsOf','filterable','groupable','aggregatable'].includes(n.name.text)){const v=n.initializer;flags[n.name.text]={operator:ts.isBinaryExpression(v)?ts.SyntaxKind[v.operatorToken.kind]:null,right:ts.isBinaryExpression(v)?(v.right.kind===ts.SyntaxKind.TrueKeyword?true:v.right.kind===ts.SyntaxKind.FalseKeyword?false:literal(v.right)):null};}});
+check('dataset projected defaults',same(flags.supportsAsOf,{operator:'QuestionQuestionToken',right:false})&&same(flags.filterable,{operator:'QuestionQuestionToken',right:true})&&same(flags.groupable,{operator:'QuestionQuestionToken',right:true}));
+check('dataset only number aggregatable',same(flags.aggregatable,{operator:'EqualsEqualsEqualsToken',right:'number'}));
+const model=sources['schema.prisma'].match(/model IntelArticle\s*\{([\s\S]*?)\n\}/)?.[1];
+const fields=Object.fromEntries([...model.matchAll(/^\s*(\w+)\s+(String\[\]|String\??|DateTime)\b(.*)$/gm)].map(m=>[m[1],m[2]]));
+// Parse null markers without word-boundary ambiguity.
+for(const line of model.split('\n')){const m=line.trim().match(/^(\w+)\s+(\S+)/);if(m&&!m[1].startsWith('@'))fields[m[1]]=m[2];}
+check('article exact storage scalar/null types',same(Object.fromEntries(['id','source','title','url','author','publishedAt','summary','categories','topics'].map(k=>[k,fields[k]])),{id:'String',source:'String',title:'String',url:'String',author:'String?',publishedAt:'DateTime',summary:'String?',categories:'String[]',topics:'String[]'}));
+check('unprojected storage columns remain excluded',fields.feedUrl==='String?'&&fields.agencies==='String[]'&&fields.syncedAt==='DateTime');
+const controller=parse('meri.controller.ts');
+let routeRole=false,rolesGuard=false,currentTenant=false,serviceGuard=false;
+walk(controller,n=>{if(ts.isCallExpression(n)){const r=ref(n.expression);if(r==='Roles'&&n.arguments.some(a=>ts.isStringLiteral(a)&&a.text==='standard_user'))routeRole=true;if(r==='UseGuards'&&n.arguments.some(a=>ref(a)==='RolesGuard'))rolesGuard=true;if(r==='CurrentTenant')currentTenant=true;if(r==='UseGuards'&&n.arguments.some(a=>ref(a)==='ToolServiceSecretGuard'))serviceGuard=true;}});
+check('shared trusted route boundary remains separate',routeRole&&rolesGuard&&currentTenant&&serviceGuard);
+check('active request check remains before scoped dispatch',calls(find(service,'executeScoped')).some(n=>ref(n.expression)==='assertToolRequestActive'));
+const locators=[['searchIntelArticles',article],['summarizeText',summary],['listGlobalDatasets',datasets]].map(([symbol,n])=>({path:'apps/api/src/meri/meri-tools.service.ts',symbol,line:service.getLineAndCharacterOfPosition(n.getStart()).line+1,endLine:service.getLineAndCharacterOfPosition(n.end).line+1}));
+locators.push({path:'apps/api/src/meri/analytics/global-dataset-registry.ts',symbol:'listDatasetSummaries',line:registry.getLineAndCharacterOfPosition(listing.getStart()).line+1,endLine:registry.getLineAndCharacterOfPosition(listing.end).line+1});
+const result={frozen,observed,references,locators,privateBodiesPublished:false,privateSourcesExecuted:false,checks:checks.length,passed:checks.filter(c=>c.pass).length,failed:checks.filter(c=>!c.pass).length,results:checks};
+process.stdout.write(JSON.stringify(result,null,2)+'\n');process.exitCode=result.failed?1:0;

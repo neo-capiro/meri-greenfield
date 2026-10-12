@@ -1,0 +1,62 @@
+{
+  "source": "530416e490763155c5531140f4b70e95a9493b7b",
+  "sourceTree": "b0b9210fabbb06422a912562dde257b8e54fa01b",
+  "review": "f041eed2e46be40d68254187ffd1d9396842bd25",
+  "verdict": "ACCEPT_SOURCE_PRE_REGISTRY_ONLY",
+  "runtimeAccepted": false,
+  "excludes": [
+    "manifest.json (self-reference)"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-FACILITY-REPRESENTATION-AUTHOR-20261012.md",
+      "bytes": 5400,
+      "sha256": "a9526a62a3c136b538a3383eb803612fbf4039222a7dddc124c98c4a7c48b08d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.json",
+      "bytes": 1320,
+      "sha256": "028b01ee9ad275180f3a668ff7a557afb528197fb09c7643c3542ba2f3ddd8b1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/focused.stdout.bin",
+      "bytes": 2059,
+      "sha256": "02d92079bdfdc30a5cefccd9cad452e23a3d0eba48f49027ea869567faf12ba9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/reference-identities.json",
+      "bytes": 5851,
+      "sha256": "4ab67f55db73f58abe5de84794674315b311a94b0a7fced47a952aee03705a8d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/facility-representation-author/source-preservation.json",
+      "bytes": 1153,
+      "sha256": "e5e52c75ecf3058b395e226107c0a962132c932c9494b2e0c4e557f2ae1c9f23"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "bytes": 4060,
+      "sha256": "cb0112fb85d1d4942360184087cbd9a95fc0f3f7898c873df0df99dd9adccb9e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "bytes": 8329,
+      "sha256": "11f656df739ce1465f03f981df2226eb4d9c969013411991347bbe742aeab2a7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "bytes": 9800,
+      "sha256": "32442594d4f32a00f5784a498573a16d1ff45c4e01841207a6a5655aafe48b44"
+    }
+  ]
+}
