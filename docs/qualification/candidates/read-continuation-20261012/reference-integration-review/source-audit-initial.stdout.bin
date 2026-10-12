@@ -1,0 +1,166 @@
+{
+  "candidate": "82906d4ce48eae2029e50fb44009d43bbfedc92a",
+  "tree": "0bba8a61560182cd170e7ee78a8bcfb9437f633e",
+  "base": "a3e946c1fa264ae7b33205f5b87804ee1ef75773",
+  "originalFiles": 6111,
+  "unchangedOriginalFiles": 6107,
+  "changedOriginalPaths": [
+    "docs/qualification/candidates/read-continuation-20261012/reference-integration-review/criteria.json",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs"
+  ],
+  "checks": [
+    {
+      "name": "exact reviewed existing-path changes only",
+      "result": "FAIL"
+    },
+    {
+      "name": "no original files deleted",
+      "result": "FAIL"
+    },
+    {
+      "name": "original public0.1 package and dependencies untouched",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime, worker, proxy and Python source unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "canonical bounded JSON snapshot owner unchanged",
+      "result": "PASS"
+    },
+    {
+      "name": "at most exact two authorized family identity changes",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted directory bytes: packages/contracts/retrieval-0.2/legislative-directory-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "exact authorized single schema identity replacement: packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted directory bytes: packages/contracts/test/retrieval-legislative-directory.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: directory",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-contractors-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-references-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/retrieval-0.2/pe-references.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted pe bytes: packages/contracts/test/retrieval-pe-references.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: pe",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted rule bytes: packages/contracts/retrieval-0.2/rule-status-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "exact authorized single schema identity replacement: packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted rule bytes: packages/contracts/test/retrieval-rule-status.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: rule",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/retrieval-0.2/certification-status-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/retrieval-0.2/certification-status.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted certification bytes: packages/contracts/test/retrieval-certification-status.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: certification",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/dataset-metadata-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/dataset-metadata.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/stored-intelligence-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/retrieval-0.2/stored-intelligence.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/test/retrieval-dataset-metadata.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted stored bytes: packages/contracts/test/retrieval-stored-intelligence.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: stored",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/retrieval-0.2/facility-representation-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/retrieval-0.2/facility-representation.schema.json",
+      "result": "PASS"
+    },
+    {
+      "name": "accepted facility bytes: packages/contracts/test/retrieval-facility-representation.test.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "independent verdict object exists: facility",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/catalog.json",
+      "result": "PASS"
+    },
+    {
+      "name": "reviewed exact existing patch: packages/contracts/retrieval-0.2/validate.mjs",
+      "result": "PASS"
+    }
+  ],
+  "passed": 35,
+  "failed": 2,
+  "scope": "READ_ONLY_GIT_SOURCE_EVIDENCE_NOT_RUNTIME"
+}
