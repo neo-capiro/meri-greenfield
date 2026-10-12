@@ -1,0 +1,39 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check",
+    "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+    "7ff4f758a854781da6a12efa03c9e98fb944a9ad",
+    "--",
+    "docs/qualification/candidates/read-continuation-20261012/funding-author",
+    "docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-AUTHOR-20261012.md"
+  ],
+  "cwd": "/workspace/meri-funding-reads-20261012",
+  "sourceHead": "7ff4f758a854781da6a12efa03c9e98fb944a9ad",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T16:29:22.483899+00:00",
+  "durationSeconds": 0.016,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 151789,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stdout.bin",
+      "bytes": 371,
+      "sha256": "26d4517da1ee4b48823d6fb83c6ccea22031d6853fb3b3cb3a06a588d40659fc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Preserve full evidence whitespace failure caused by exact raw diff context lines; do not normalize bound patches.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

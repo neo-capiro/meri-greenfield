@@ -1,7 +1,7 @@
 {
   "scope": "OFFLINE_SOURCE_EVIDENCE_ONLY",
   "source": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
-  "passed": 161,
+  "passed": 183,
   "failed": 0,
   "checks": [
     {
@@ -10,6 +10,30 @@
     },
     {
       "check": "member docs/coordination/reports/CODEX-READ-CONTINUATION-FUNDING-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/authored-whitespace.stdout.bin",
       "passed": true
     },
     {
@@ -186,6 +210,30 @@
     },
     {
       "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.json",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.json",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "member docs/qualification/candidates/read-continuation-20261012/funding-author/preserved-patch-whitespace.stdout.bin",
       "passed": true
     },
     {
@@ -646,6 +694,46 @@
     },
     {
       "check": "repaired-contracts frozen source",
+      "passed": true
+    },
+    {
+      "check": "preserved-patch-whitespace outcome",
+      "passed": true
+    },
+    {
+      "check": "preserved-patch-whitespace cleanup",
+      "passed": true
+    },
+    {
+      "check": "preserved-patch-whitespace frozen source",
+      "passed": true
+    },
+    {
+      "check": "preserved-patch-whitespace raw stream",
+      "passed": true
+    },
+    {
+      "check": "preserved-patch-whitespace raw stream",
+      "passed": true
+    },
+    {
+      "check": "authored-whitespace outcome",
+      "passed": true
+    },
+    {
+      "check": "authored-whitespace cleanup",
+      "passed": true
+    },
+    {
+      "check": "authored-whitespace frozen source",
+      "passed": true
+    },
+    {
+      "check": "authored-whitespace raw stream",
+      "passed": true
+    },
+    {
+      "check": "authored-whitespace raw stream",
       "passed": true
     }
   ]

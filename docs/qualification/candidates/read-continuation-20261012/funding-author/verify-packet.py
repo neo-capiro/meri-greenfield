@@ -44,6 +44,14 @@ for label,code,count,patch in labels:
  else:check('compiler failure preserved','strictRequired' in (HERE/(label+'.stdout.bin')).read_text())
  if patch:check(label+' exact failed/passed source diff',sha((HERE/patch).read_bytes())==r['sourceDiffSha256'])
  else:check(label+' frozen source',r['sourceHead']==(p['source'] if label=='repaired-contracts' else p['initialSource']) and r['sourceDiffBytes']==0)
+for label,code in [('preserved-patch-whitespace',2),('authored-whitespace',0)]:
+ r=json.loads((HERE/(label+'.json')).read_bytes())
+ check(label+' outcome',r['exitCode']==code and not r['timedOut'])
+ check(label+' cleanup',r['ownedProcessGroupAbsent'] and not r['ownedGroupKillRequired'])
+ check(label+' frozen source',r['sourceHead']=='7ff4f758a854781da6a12efa03c9e98fb944a9ad' and r['sourceDiffBytes']==0)
+ for stream in r['streams']:
+  raw=(ROOT/stream['path']).read_bytes()
+  check(label+' raw stream',len(raw)==stream['bytes'] and sha(raw)==stream['sha256'])
 result={'scope':'OFFLINE_SOURCE_EVIDENCE_ONLY','source':p['source'],'passed':sum(c['passed'] for c in checks),'failed':sum(not c['passed'] for c in checks),'checks':checks}
 print(json.dumps(result,indent=2))
 raise SystemExit(0 if result['failed']==0 else 1)
