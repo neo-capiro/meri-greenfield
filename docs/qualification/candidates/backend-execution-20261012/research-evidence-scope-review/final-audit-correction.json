@@ -1,0 +1,11 @@
+{
+  "originalResult": "first-repaired-author-audit.json",
+  "originalChecks": 138,
+  "passed": 137,
+  "failed": 1,
+  "cause": "Reviewer lexical report assertion expected adjective qualified; exact report says or qualify complete lane coverage. API assertion already correctly passed.",
+  "change": "Only report phrase assertion corrected; result verdict now also derived from all check outcomes.",
+  "productionChanged": false,
+  "authorPacketChanged": false,
+  "priorEvidencePreserved": true
+}

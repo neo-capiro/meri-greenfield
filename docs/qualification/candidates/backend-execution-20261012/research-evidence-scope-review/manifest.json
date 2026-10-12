@@ -1,0 +1,135 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "author": "f749dd4dfd3989466fa663de98ac3f94cb2d8800",
+  "verdict": "ACCEPT_METADATA",
+  "scope": "Authority/carrier inventory/proposed API only",
+  "completeMappingAccepted": false,
+  "implementationAccepted": false,
+  "runtimeAccepted": false,
+  "externalMembers": [
+    "docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md",
+    "docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md"
+  ],
+  "exclusions": [
+    "manifest.json",
+    "verification.json",
+    "verification.stderr.txt"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md",
+      "bytes": 11364,
+      "sha256": "fab634558b2fa19f8c1d763096d90786dc25d83dab944af6bbe788e76a480fdc"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-RESEARCH-EVIDENCE-SCOPE-REVIEW-20261012.md",
+      "bytes": 2596,
+      "sha256": "970ec9dfc19d45f96f26a52e510624ccda6a80381cf1f38240a0037aa95bc83f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/author-audit.json",
+      "bytes": 15717,
+      "sha256": "7118f86dc625f44fdfc15724567db9258de1f42a9ff8e88b0ebaa8ced1c6dfc7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/author-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/facts.json",
+      "bytes": 15717,
+      "sha256": "52cb064ff875f0e1221830cfc1c897d1097151530210da0e76c21b6944a076cb"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/facts.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/final-audit-correction.json",
+      "bytes": 495,
+      "sha256": "6e40de8fef0a3784dc0d2fbbde6effae45441d26aa97a8922821297ca8ab9fc7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-facts.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-facts.stderr.txt",
+      "bytes": 669,
+      "sha256": "94015589aee2dba79698ceafd84d65fe0ed5b3512b82aea16f53fb5a1f6f4e43"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-repaired-author-audit.json",
+      "bytes": 16650,
+      "sha256": "655dc014897c55479c39ab8e3e8d8c778e2bc5503aa5a118e13ace459010672c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-repaired-author-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-verify-repaired-author-packet.py",
+      "bytes": 6379,
+      "sha256": "127ffff8a0073efd47eaa6b6c2c6ad71407fac3624ea051bac336b4928faf0df"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/first-verify-scope-facts.py",
+      "bytes": 7281,
+      "sha256": "484ab197a10a4c3321b010dfebbeb875470d1c825ad4fab238fdca8b2380773a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/metadata-correction.json",
+      "bytes": 285,
+      "sha256": "572c90a1a18860b7f90fa6dce3fb067163a207c1506969743d958eca44a943b5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/repaired-author-audit.json",
+      "bytes": 16649,
+      "sha256": "29d6ed97524ab46aaa11f314ce6b074b95e18fee235e02fc99a1f86932046b36"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/repaired-author-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-author-packet.py",
+      "bytes": 4381,
+      "sha256": "86f309b561f302423d84aac801ed73a35c8b8e33fc1a5d8be98ce3583d4229a3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-repaired-author-packet.py",
+      "bytes": 6426,
+      "sha256": "6cf1cf453a3fdf39b9036f0359b49f4904bc3a745e5242657c097938fdec38e0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-review-packet.py",
+      "bytes": 1613,
+      "sha256": "252b8f32e7fb0be7a8f179c43d4d32d90faed99c486c71f0016056d365c613e5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/verify-scope-facts.py",
+      "bytes": 9251,
+      "sha256": "3a059a994651252750ce20e36acc275657bf87842f440510cd09d138cb6d55e0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.json",
+      "bytes": 123,
+      "sha256": "6cf5bde2b0552069ac5a2c35ee45d09f3a6cfb1e0fc470d7d17f352e573d0011"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/research-evidence-scope-review/whitespace.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
