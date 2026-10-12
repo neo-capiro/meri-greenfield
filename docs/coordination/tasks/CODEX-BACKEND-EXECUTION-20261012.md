@@ -25,7 +25,7 @@ The memory-proposal execution slice connects an already mapped operation and doe
 
 ## Decisions and dependencies
 
-Administrator memory self-approval is already approved; do not reopen it. Proposal-only memory creation must not accidentally call an auto-commit producer branch. Ordinary task update rights and `get_research_evidence` Clio/portfolio meaning require explicit owner decisions; no stricter rights are inferred. New Temporal mutation actions need explicit immutable intent and lifecycle semantics, preserving the approved platform and public0.1 separation. Native worker owner retains SDK/image/runtime qualification. Source receipts consume immutable native dependencies without duplicating that lane.
+Administrator memory self-approval is already approved; do not reopen it. Proposal-only memory creation must not accidentally call an auto-commit producer branch. Ordinary task update retains the pinned tenant/minimum-role boundary; no stricter owner/client wall is inferred from Portfolio policy. Existing D011 and adopted R2 authorize basic Portfolio evidence intent; the exact new evidence projection and source coverage are being resolved independently without reopening blanket scope approval or importing legacy Clio parity. New Temporal mutation actions need explicit immutable intent and lifecycle semantics, preserving the approved platform and public0.1 separation. Native worker owner retains SDK/image/runtime qualification. Source receipts consume immutable native dependencies without duplicating that lane.
 
 ## Current evidence boundary
 
@@ -44,3 +44,7 @@ Root extracts the existing gateway lifetime core to `packages/runtime/operation-
 Root composes only reviewed private families, binds catalog input references to raw caller requests, and nests generic factory APIs. The complete `actions.query` successor preserves the old scoped-only `query_action_items` descriptor and validator with an explicit registered same-native replacement. The canonical registry must reject missing, unrelated, partial, altered or enabled successors. All original tests remain, with exact reversible expectation changes recorded.
 
 The dataset metadata author temporarily owns only the `list_global_datasets` registry row plus `operation-context.mjs` and `read-result-envelope.mjs` for a narrow private dispatch profile; root waits for that commit before modifying the registry. The handler lists the one immutable accepted metadata registry through canonical dispatch; response construction time is not upstream freshness.
+
+## Completed source composition
+
+Canonical source `ea94aff840424843b4b6efbfc21fb9d195f7ff54` joins thirteen selected read mappings, including full `actions.query`, all with independent family acceptance. The ledger now has83mapped/13pending and84typed descriptors; all remain unavailable. Root also joins the actual metadata dispatch handler, borrowed Temporal inspector and private pending-only memory payload. `integration/remaining-selected.json` retains every outstanding selected capability. Independent raw-request advertisement review, exact19 test inverses and final family packet review are separate from root broad checks and runtime qualification.
