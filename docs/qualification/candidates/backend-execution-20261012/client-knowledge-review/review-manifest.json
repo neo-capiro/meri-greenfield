@@ -1,0 +1,573 @@
+{
+  "verdictCommit": "8addfbca637f14988b26513926108b76a2e49a7d",
+  "sourceBundle": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+  "authorPacket": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+  "scope": "All owned reviewer report/tests/evidence; self excluded",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-REVIEW-20261012.md",
+      "bytes": 9152,
+      "sha256": "46c604486ea1c58bec58c78cfd0d3c5b913601a9e589e0341152c2178178d4b2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-independent.test.mjs",
+      "bytes": 11919,
+      "sha256": "a7ad349047a44298308421508ce0448e4a1b385f0987783aa91121ac476bf26d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-monday-independent.test.mjs",
+      "bytes": 6715,
+      "sha256": "0aab8aa540870062631f10dc1d2ff92cc5b7204f5a409dfd96e622844d9b4ca3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-attachments-independent.test.mjs",
+      "bytes": 12792,
+      "sha256": "d3d88cfa0dd6097f35b0a8f24b90093c4ebe8c9400d25d2fdc2f8229abbd0076"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-memory-independent.test.mjs",
+      "bytes": 12818,
+      "sha256": "4a481577c22f6f600800f49ba000a341c05b5813a53c94e0c8cb02ef842e6e66"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-profile-independent.test.mjs",
+      "bytes": 15387,
+      "sha256": "0b496a05d6fafdc1e2d7962070c0fb1ce89825e63cf90c2871d9048babcb6e08"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachment-miss-fixture-correction.json",
+      "bytes": 312,
+      "sha256": "d2722da462a459d1ea3c2af4d46a64f7434618c6469e4c6e6e52cfcf68a1551c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachment-test-before-miss-fixture-correction.mjs.txt",
+      "bytes": 11758,
+      "sha256": "a76ad4091e25f8ab77f37cd8e9a2e501aebfbb95d14db2a28a637dc3ce7c60e9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.json",
+      "bytes": 1439,
+      "sha256": "1a7ea44241975347502f35a8a0ae5d5f87c8fad7134b2c8f65236da5a29065d4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-negative.stdout.bin",
+      "bytes": 6340,
+      "sha256": "022a19251c023c228791f963c582d233feb33300e65ce4f3d869f3145de88c5b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.json",
+      "bytes": 1439,
+      "sha256": "cbe5178eefb33af99867922c98c9a84398927398dcd22b00066e714c2c84de9e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-case-repaired.stdout.bin",
+      "bytes": 3729,
+      "sha256": "c7299ddad48de1932c59b56aeb73b22f6125bc99f3dcf4780adbc983c215abaa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-findings.json",
+      "bytes": 616,
+      "sha256": "45d7a359a5d2a3616ba4ce9f1ea5540e75845c947d9876fa57221766bcc035aa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-followup-findings.json",
+      "bytes": 641,
+      "sha256": "5c20010bf1c0b818c5aa996632a08c364a446e625cb3e0c3223801a9630e6e8d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.json",
+      "bytes": 1427,
+      "sha256": "7d38479634bfde690218cd7228257c94368008ad0ceb28b46c2eec87e386431e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-initial.stdout.bin",
+      "bytes": 5948,
+      "sha256": "d885deda13c345b8c71e19eb7a2bbb0447fc1c419f128e7d2630477771572d10"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.json",
+      "bytes": 1429,
+      "sha256": "c715e8502102a0b2a50ab18115efdc3d803829b6a4dce953da10c196f78c8ab3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-repaired.stdout.bin",
+      "bytes": 3100,
+      "sha256": "21f355fa427a0e399b414e207b80af8d1aae362d047f56ce134665448fc4b82b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.json",
+      "bytes": 1439,
+      "sha256": "0b16f94b5a4231913747c17feb1aba3d1c466e30aac92eb3e3649afe167df5d4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-negative.stdout.bin",
+      "bytes": 5229,
+      "sha256": "150ee2e1800106186e487e417254119f7367840e34c38a9dc21b73507d81c765"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.json",
+      "bytes": 1439,
+      "sha256": "6705e98f04f374c2db74e3ecd62e650d96d088a6a3d4804908b1d5ca98e54068"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/attachments-span-repaired.stdout.bin",
+      "bytes": 3430,
+      "sha256": "73e56eece17a48b077eaf3103eb56fbf8a80bce21d20b450e8a6c074faebed97"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-corrections.json",
+      "bytes": 712,
+      "sha256": "9edb92fe5961b3e86f6048c93b48a346c61681985a000b252e856b736ea17635"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-packet.py",
+      "bytes": 3570,
+      "sha256": "c47778fdf3d496a8c584cfa216ef9a557d47e6e67a533f798e9ad846dbfd22fe"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-explicit-donor.mjs.txt",
+      "bytes": 4332,
+      "sha256": "5adc12c08581ac78a307d099b2d0640fb45576f42adce7cc0d75798c299fce4a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-import-fix.mjs.txt",
+      "bytes": 4267,
+      "sha256": "72902003b693ca8357764cebf0c1f7b6f52b0acd7c95cd13d11797e4429ab58e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection-before-null-type-fix.mjs.txt",
+      "bytes": 4506,
+      "sha256": "b94b810470ec9219f3c3877c466f8c7e70e85698cb6d8fa19e695800d4f6e7df"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-projection.mjs",
+      "bytes": 4507,
+      "sha256": "42953756c317127035e781c65636445f616fb581c233f18faf4189df51c504a0"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/audit-source.py",
+      "bytes": 6068,
+      "sha256": "f7f144fec7e10dff23f5dff35ff217bf1b0de59819934ede4002b4ee8e3aff63"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-final-packet-audit.json",
+      "bytes": 30267,
+      "sha256": "1b509c8514c2c89b4da68ee5c14a9266fa60e6f29a4cf516f52fcfc6a329a9f7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.json",
+      "bytes": 1397,
+      "sha256": "d87b45de2e2b73c43f8444bbc5aef2c932c8e1d5c9441924bfd096597faf8bed"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/author-packet-final.stdout.bin",
+      "bytes": 196,
+      "sha256": "9771c771c9a3b82a47119fe3e40eb1b0980ca686b0c0622757bd05dde75c72c6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/authored-whitespace.json",
+      "bytes": 211,
+      "sha256": "0bc1ad2a87e385a1a34b7a47f32a66f40809aeb02cffd0531cb8b35c7ddc70a7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/authored-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/authored-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/complete-reference-identities.json",
+      "bytes": 24818,
+      "sha256": "0664cb237a28dade700ff3e83aaf446b78e326d2bb74cec9f6c435531919a6bd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/criteria.json",
+      "bytes": 3141,
+      "sha256": "84bc53dbcef174da4c97529dd35c00f4960a15515f4734b17a328021e3d0e26a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/final-source-verdict.json",
+      "bytes": 5746,
+      "sha256": "b0f7f5f780d22981a0751979fbac04191037809f14402bf19506fd51af717b29"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-controls.json",
+      "bytes": 456,
+      "sha256": "4939f2933fe95c168c77d82e21163ba272eafef5aec6a9686cd4017311a21c2d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-findings.json",
+      "bytes": 1002,
+      "sha256": "6be245069803d90add8401c2aeccfeb043698eee290f1af4e8ab9ec02b83a2c9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.json",
+      "bytes": 1408,
+      "sha256": "ad15fd95b2fbcd98c75a2e456222d42ab94d2a46beb8a0dac9082f0a4048a2fa"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-initial.stdout.bin",
+      "bytes": 6183,
+      "sha256": "4bca55933072befdcf7008930d5bf621d7a8d23c6d6d1007dd2d94352e91f180"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.json",
+      "bytes": 1410,
+      "sha256": "142296a6a21b0a3a3a7712b2f588c13ba0acf142b04dfd5d7aca502225f4cef5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-repaired.stdout.bin",
+      "bytes": 4026,
+      "sha256": "9d659dd1106d20cdcced9caef91a94ffa8115f1636bc9999f416daaef3cb42f7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.json",
+      "bytes": 1426,
+      "sha256": "ff4b2fed912f1789fb58d78e2cb8fc68433e5e9e666884e82691cb49d4bbb92a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-scoped-negative.stdout.bin",
+      "bytes": 4655,
+      "sha256": "67fdbe4eee29e27a92bdda50e4e86ed41322ea7fa31c67bce3e20c8ab4727cc5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-test-precorrection.mjs.txt",
+      "bytes": 11468,
+      "sha256": "7938747e63776c3ea577d3c06794096ca834db2c1eb206f39355de9b93ca9324"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-test-typed-admission.mjs.txt",
+      "bytes": 11426,
+      "sha256": "7184d48df7ddd2f5a9e0c3b7302974c07bcef53825aec4677df7afedd777377c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/first-pair-verdict.json",
+      "bytes": 1595,
+      "sha256": "feb982d7f27a70428d7ea26182c2819ff2e13b2272d09e003407c306ba45023c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-profile-scalars.json",
+      "bytes": 21714,
+      "sha256": "088137eae7d9d9c7905beaa087ebe659e7846f1de76d0c216881f8b2f8fa464f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.json",
+      "bytes": 564,
+      "sha256": "ec2f3c36f5df3fff7e05b99e2f9cd13c55d3066abf80da407f9ca9b92c63ea61"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/independent-source-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/inspection-corrections.json",
+      "bytes": 415,
+      "sha256": "1bd684e32dcdb17d18e89c69a0a90bc442d292d2b34d7665ad4d752683203d67"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-fixture-correction.json",
+      "bytes": 385,
+      "sha256": "a4b8d37dc62048b5aa7047d4ea73cc97ae717ab18639175de553ca110ab51d14"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.json",
+      "bytes": 1407,
+      "sha256": "545fb362bd454cefa0369639826eeaea4955145a219263a20b2eac34c343f565"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-initial.stdout.bin",
+      "bytes": 2989,
+      "sha256": "86a412cdb1ae2c95d2dd3206514f0791af3c154be48822e3446f92d99310ae26"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitation-findings.json",
+      "bytes": 427,
+      "sha256": "e70658e610b9841cc936238ebd9b660d2c9c7ab565727918c132dc62a09dbfbd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.json",
+      "bytes": 1433,
+      "sha256": "ceeee99e8126423a10d3a00263d6eaf2cd08a63bede7515023009fb0afc4b58f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-limitations-negative.stdout.bin",
+      "bytes": 5094,
+      "sha256": "c3abf9933b129e2d0df9a189e08d8f817bf455124141213617db441549285509"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.json",
+      "bytes": 1409,
+      "sha256": "af23510a91c1e04dee9564276bd2250e5dcf400e83ea948d5ad76f58a971f6a7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-repaired.stdout.bin",
+      "bytes": 3229,
+      "sha256": "2a2cf2a409a779ee36b99671db3995993dd8adebaf25c4584ff97ff39f4773af"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/memory-test-before-limitation-fixture-correction.mjs.txt",
+      "bytes": 12464,
+      "sha256": "444483b19edc973c32cec7fc9a020217f6e1deca5c475dffa30de28c77157121"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-findings.json",
+      "bytes": 1963,
+      "sha256": "f5e06878f2cc14580def995a267c05765c67373380eeea9061415046f16ddc45"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.json",
+      "bytes": 1407,
+      "sha256": "27b0080e32505cf14a62b9f4928c6d3f725a3070efeb53061b17a8c8bc329772"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-initial.stdout.bin",
+      "bytes": 3078,
+      "sha256": "b0dca267a92c133c6c2b82fceec4ef8057ccc21a2da9204555bb270dd5d94ebe"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.json",
+      "bytes": 1409,
+      "sha256": "a771327e491105dd386061f2e29b5bce9de2b8e49c26dd1de3dd33436d26c2db"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-repaired.stdout.bin",
+      "bytes": 2183,
+      "sha256": "df4bea3141062e3eac83a6bee24aff5abe11af0bf7c85c3ff4b312b25b5662bf"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/monday-verdict.json",
+      "bytes": 1195,
+      "sha256": "da621fa0a623f78598298861370ff8b5dd3f12569a8b80195d6385e79fe10a3c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/packet-whitespace.json",
+      "bytes": 211,
+      "sha256": "0bc1ad2a87e385a1a34b7a47f32a66f40809aeb02cffd0531cb8b35c7ddc70a7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/packet-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/packet-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.json",
+      "bytes": 1427,
+      "sha256": "7c46f9b7a52d860a788b18f52d5b5d105f9c821c4a41077d9ce8335937d4aea6"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-complete-models.stdout.bin",
+      "bytes": 3779,
+      "sha256": "b4424efb1d6e755686975b7783ccf4fb29f3ed86a2a1b120bbe93866a78a43ad"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.json",
+      "bytes": 1411,
+      "sha256": "f92f4b440f26600b42d9e302c63cd560935647417a1c4c2e168cc7d32413ea58"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/profile-initial.stdout.bin",
+      "bytes": 3455,
+      "sha256": "b8fdf82a782d75f707f041f96e9725dfd4c17e6799b8d0fca35cae9d6e1e0b05"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.json",
+      "bytes": 1508,
+      "sha256": "aab694b1f67c839ea661ea7788dc35ae9b8cabbb535d4cb6cc47e44fbeedce4d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-donor.stdout.bin",
+      "bytes": 24,
+      "sha256": "5d66c84ca7310022c8397071c3b608436fe71f393c524c87552d801e97019a7a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final-result.json",
+      "bytes": 1332,
+      "sha256": "9450893279c7b11ddefc4d68aa46e3714d3c69b838e866cfbfc83343bf6cd10e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.json",
+      "bytes": 1515,
+      "sha256": "e087dcf6dbca2daccd77a7b265602b205d77165ff4c07b854735ff97e28b2acc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-final.stdout.bin",
+      "bytes": 25,
+      "sha256": "85462c803449c70c642a3eb0263a3077f80650a26db86b41130b289fabbf6dae"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-first.json",
+      "bytes": 1332,
+      "sha256": "c10bf13b84443a0767bc66978b662f8391eb986dcec95bed0c9615dbd4386267"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.json",
+      "bytes": 1406,
+      "sha256": "7b74796573906954162a123c8e3eb7beab33eb3b6256e15c73ed29fb128d7c2d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stderr.bin",
+      "bytes": 1131,
+      "sha256": "fad5e737754362d34d2fbb4108f6d15eedb0e4d8cb196b59f7c9c682c05f708a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-import-failure.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.json",
+      "bytes": 1394,
+      "sha256": "dd1312d232e500950484a1e864090183b712adee4c35854d01083c840c2fbe69"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stderr.bin",
+      "bytes": 1302,
+      "sha256": "70f3a6adcc3d744e45d536068208a7439188313e0129f5c461526aa730d3e38c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/projection-audit-repaired.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/reference-identities.json",
+      "bytes": 13779,
+      "sha256": "dfd700c962c08f925bee673052c888c59a7dfa5fdaaaa2be8f19af30c4389fab"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/review-only-sequence.json",
+      "bytes": 17743,
+      "sha256": "a91a22c63f000c98ad70113a8b7f77ad499f12511f1a509e0a86acf58e8fee9e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/setup.json",
+      "bytes": 561,
+      "sha256": "d2f071a1d2f345bd571ea35e7b6bd85e0cf4e1ac5fe18b781766857d57d4e263"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/source-audit-final.json",
+      "bytes": 25516,
+      "sha256": "cc95a8d9345d890671df03a4f6e7c9b0268e5c8f193e1836d99ffd1b15648d30"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/source-audit-first.json",
+      "bytes": 20878,
+      "sha256": "71b42049b8b0e49b634258301f738ad4c33fa2e2884c5a6e2b9c1a81711d469f"
+    }
+  ]
+}
