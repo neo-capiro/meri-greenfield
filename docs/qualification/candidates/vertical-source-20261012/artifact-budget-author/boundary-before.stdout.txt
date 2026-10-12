@@ -1,0 +1,78 @@
+✔ create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay (83.561013ms)
+✔ create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay (17.334045ms)
+✔ create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay (15.872318ms)
+✔ run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay (15.16197ms)
+✔ revision consumes exact prior version, charges a distinct delivery and preserves original (21.072194ms)
+✔ default disabled and sandbox refusal precede all pool/executor ports (6.824879ms)
+✔ factory never closes borrowed pool and does not expose kernel bypasses (2.471074ms)
+✔ mutation of factory inputs cannot substitute current request context or scopes (10.500453ms)
+✔ same delivery with changed request conflicts before generation (10.358671ms)
+✔ same delivery with changed trusted evidence conflicts before generation (16.34581ms)
+✔ credential mismatch and current authority denial cause no generation/reservation (5.478174ms)
+✔ unrelated operation and foreign producer binding fail before I/O (2.94685ms)
+✔ canonical allocation/capability ceilings reach actual executor and forbid oversized publication (6.024135ms)
+✔ lower current output ceiling before publication refuses with retained liability (6.803236ms)
+✔ generator failure retains explicit UNKNOWN without marker, refund or retry (8.691824ms)
+✔ lost prepare ACK preserves actual owner identity and only explicit reconciliation (5.043781ms)
+✔ lost reserve ACK preserves actual owner identity and only explicit reconciliation (10.579723ms)
+✔ lost marker ACK preserves actual owner identity and only explicit reconciliation (12.042882ms)
+✔ lost settle ACK preserves actual owner identity and only explicit reconciliation (11.88188ms)
+✔ cancelled preparation at connect cannot start generator or later accounting (11.933728ms)
+✔ cancelled preparation at BEGIN cannot start generator or later accounting (5.305124ms)
+✔ cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting (4.416208ms)
+✔ short artifact release deadline survives parked completion ACK and needs historical reconciliation (14.548047ms)
+✔ post-settlement revocation prevents result release without refund or regeneration (8.078122ms)
+✖ borrowed version read keeps its original receiver for revision (9.612118ms)
+✖ oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure (7.218791ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 24
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2760.804313
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-postgres-service.test.mjs:118:1
+✖ borrowed version read keeps its original receiver for revision (9.612118ms)
+  AssertionError [ERR_ASSERTION]: Values have same structure but are not reference-equal:
+  
+  {
+    commit: [AsyncFunction: commit],
+    read: [AsyncFunction (anonymous)]
+  }
+  
+      at t.options.versions.read (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/test/artifact-postgres-service.test.mjs:119:131)
+      at file:///workspace/meri-artifact-budget-20261012/apps/artifacts/service.mjs:52:63
+      at file:///workspace/meri-artifact-budget-20261012/packages/runtime/operation-lifetime.mjs:38:65 {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Object],
+    expected: [Object],
+    operator: 'strictEqual',
+    diff: 'simple',
+    lifetime: [Object],
+    budgetSettlementUnknown: false,
+    budgetReservationUnknown: false
+  }
+
+test at apps/artifacts/test/artifact-postgres-service.test.mjs:122:1
+✖ oversized released metadata reports committed effect uncertainty rather than apparent no-effect failure (7.218791ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: ARTIFACT_RESPONSE_LIMIT
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/test/artifact-postgres-service.test.mjs:123:37)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ARTIFACT_RESPONSE_LIMIT
+        at fail (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/postgres-service.mjs:6:39)
+        at Object.execute (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/postgres-service.mjs:85:93),
+    operator: 'rejects',
+    diff: 'simple'
+  }

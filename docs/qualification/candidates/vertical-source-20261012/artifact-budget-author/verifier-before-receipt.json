@@ -1,0 +1,6 @@
+{
+  "exitCode": 1,
+  "scope": "Offline integrity verifier only; repeated first path-error to retain exact streams before correction",
+  "cause": "root parent index6 pointed at /workspace; correct repository parent index5",
+  "stderrSha256": "fe9df930aa35c8b73ad2500fb074844161ba144068dbaf103430555efbc6a0d6"
+}

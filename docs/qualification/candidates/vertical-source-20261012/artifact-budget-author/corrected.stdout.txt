@@ -1,0 +1,32 @@
+✔ create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay (78.316311ms)
+✔ create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay (17.37905ms)
+✔ create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay (15.400989ms)
+✔ run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay (19.738615ms)
+✔ revision consumes exact prior version, charges a distinct delivery and preserves original (18.878082ms)
+✔ default disabled and sandbox refusal precede all pool/executor ports (6.063249ms)
+✔ factory never closes borrowed pool and does not expose kernel bypasses (2.759986ms)
+✔ mutation of factory inputs cannot substitute current request context or scopes (11.978867ms)
+✔ same delivery with changed request conflicts before generation (11.007067ms)
+✔ same delivery with changed trusted evidence conflicts before generation (10.425082ms)
+✔ credential mismatch and current authority denial cause no generation/reservation (5.458971ms)
+✔ unrelated operation and foreign producer binding fail before I/O (3.150483ms)
+✔ canonical allocation/capability ceilings reach actual executor and forbid oversized publication (6.386826ms)
+✔ lower current output ceiling before publication refuses with retained liability (6.388187ms)
+✔ generator failure retains explicit UNKNOWN without marker, refund or retry (9.070197ms)
+✔ lost prepare ACK preserves actual owner identity and only explicit reconciliation (11.426507ms)
+✔ lost reserve ACK preserves actual owner identity and only explicit reconciliation (8.687302ms)
+✔ lost marker ACK preserves actual owner identity and only explicit reconciliation (12.203865ms)
+✔ lost settle ACK preserves actual owner identity and only explicit reconciliation (12.104606ms)
+✔ cancelled preparation at connect cannot start generator or later accounting (11.659277ms)
+✔ cancelled preparation at BEGIN cannot start generator or later accounting (4.072849ms)
+✔ cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting (3.631186ms)
+✔ short artifact release deadline survives parked completion ACK and needs historical reconciliation (8.787572ms)
+✔ post-settlement revocation prevents result release without refund or regeneration (9.925201ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3503.540448

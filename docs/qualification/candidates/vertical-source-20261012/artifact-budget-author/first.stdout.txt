@@ -1,0 +1,65 @@
+✔ create_word: actual canonical reserve/marker/settle charges once and never regenerates on replay (82.974565ms)
+✔ create_excel: actual canonical reserve/marker/settle charges once and never regenerates on replay (22.262567ms)
+✔ create_powerpoint: actual canonical reserve/marker/settle charges once and never regenerates on replay (16.804272ms)
+✔ run_analysis: actual canonical reserve/marker/settle charges once and never regenerates on replay (19.846866ms)
+✔ revision consumes exact prior version, charges a distinct delivery and preserves original (23.468901ms)
+✔ default disabled and sandbox refusal precede all pool/executor ports (7.570701ms)
+✔ factory never closes borrowed pool and does not expose kernel bypasses (2.584866ms)
+✔ mutation of factory inputs cannot substitute current request context or scopes (11.429132ms)
+✔ same delivery with changed request conflicts before generation (11.052315ms)
+✔ same delivery with changed trusted evidence conflicts before generation (12.902036ms)
+✔ credential mismatch and current authority denial cause no generation/reservation (5.921902ms)
+✔ unrelated operation and foreign producer binding fail before I/O (3.63863ms)
+✔ canonical allocation/capability ceilings reach actual executor and forbid oversized publication (7.58994ms)
+✔ lower current output ceiling before publication refuses with retained liability (12.719862ms)
+✔ generator failure retains explicit UNKNOWN without marker, refund or retry (10.457942ms)
+✔ lost prepare ACK preserves actual owner identity and only explicit reconciliation (5.534991ms)
+✔ lost reserve ACK preserves actual owner identity and only explicit reconciliation (9.89811ms)
+✔ lost marker ACK preserves actual owner identity and only explicit reconciliation (12.968215ms)
+✔ lost settle ACK preserves actual owner identity and only explicit reconciliation (14.22205ms)
+✔ cancelled preparation at connect cannot start generator or later accounting (13.457381ms)
+✔ cancelled preparation at BEGIN cannot start generator or later accounting (5.9806ms)
+✔ cancelled preparation at SET LOCAL statement_timeout = '5s' cannot start generator or later accounting (11.768141ms)
+✖ short artifact release deadline survives parked completion ACK and needs historical reconciliation (10.020013ms)
+✖ post-settlement revocation prevents result release without refund or regeneration (7.809901ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 22
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2815.379488
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-postgres-service.test.mjs:110:1
+✖ short artifact release deadline survives parked completion ACK and needs historical reconciliation (10.020013ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '10' !== '0'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/test/artifact-postgres-service.test.mjs:112:145)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '10',
+    expected: '0',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-service.test.mjs:115:1
+✖ post-settlement revocation prevents result release without refund or regeneration (7.809901ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-budget-20261012/apps/artifacts/test/artifact-postgres-service.test.mjs:116:114)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ARTIFACT_EFFECT_UNKNOWN/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

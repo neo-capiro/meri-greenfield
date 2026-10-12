@@ -1,0 +1,25 @@
+{
+  "base": "23f2ba78879972538fd1b7b7a56b2f8e2626a6c3",
+  "source": "5647415bb4d8e7548741fb9af7fb92a0df2d6cf6",
+  "baseEntries": 8768,
+  "changedOriginals": [],
+  "newProductPaths": [
+    "apps/artifacts/postgres-service.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs"
+  ],
+  "allAdditions": [
+    "apps/artifacts/postgres-service.mjs",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs",
+    "docs/coordination/tasks/CODEX-ARTIFACT-BUDGET-20261012.md",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/boundary-before.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/corrected.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.json",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stderr.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/first.stdout.txt",
+    "docs/qualification/candidates/vertical-source-20261012/artifact-budget-author/run-focused.py"
+  ]
+}

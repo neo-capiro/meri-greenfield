@@ -1,0 +1,41 @@
+# Artifact canonical budget composition
+
+Repaired source `a73b65dc05b7554c0592bec22d940ef781344dd6` connects the accepted artifact service to the actual shared PostgreSQL budget owner through the public `createPostgresBudgetExecution` export. Only `apps/artifacts/postgres-service.mjs` and its named test are new product files. Independent focused review passes 70/70 (37 independent + 33 author); final metadata review is pending. Runtime remains HOLD.
+
+The base is artifact packet `b97fb68c336da35874923c3f5e83a73e870d6f95`. Prerequisite merge `23f2ba78879972538fd1b7b7a56b2f8e2626a6c3` imports exact accepted command/shared-budget source `ca506ba1591b35eae5d389e551787017328eea73`. That merge is dependency evidence, not artifact authorship of gateway or command changes. Every entry of the prerequisite tree and all accepted artifact/kernel files remain unchanged. The old artifact worktree/branch is preserved.
+
+## Behavior
+
+`createPostgresArtifactService` accepts a borrowed pool/configuration and existing domain ports. It performs no startup I/O and never disposes the pool. Its owned invocation methods are `prepareInvocation`, `execute`, `reconcileInvocation`, and explicit trusted `bindTrustedGrant`. It exposes no budget writer, legacy invocation bypass, scheduler, retry or new lifetime implementation. `sourceEnabled` defaults false. This source option is an application composition seam, not deployment or runtime admission.
+
+Trusted descriptor, binding, scopes, evidence, assets, deadlines and producer facts are detached at construction. Stable delivery ID is supplied by the trusted SDK/control owner; it grants no authority. The caller's artifact request and optional prior version form one immutable intent with that context. Canonical current authority and existing artifact action/resource authority both apply. Binding, operation, policy and exact selected scopes are correlated, and tighter deadlines/output limits survive later checks.
+
+Creation/revision for Word, Excel, PowerPoint and typed analysis reserves through the canonical PostgreSQL owner before generation. Its fixed charge comes from the existing schedule. Binary output is bounded by request, allocation and current capability; response metadata has a separate configured byte bound. Reserve/completion/settlement/reconciliation use the existing schema and transactions; no second ledger or migration is introduced.
+
+The budget completion digest covers the exact committed `{version,spec,specSha256,requestSha256,inspection,expectedParentVersionId}`. It deliberately differs from the later authorization-bearing delivery result: committed artifact accounting does not prove result release. Lost ACKs retain canonical ownership and uncertainty. A failed generator leaves UNKNOWN without a fake settlement, refund or automatic retry. A successful settlement followed by revoked release keeps the charge and refuses delivery. Explicit historical reconciliation may settle a retained completion marker; it never generates or republishes anything and reports `resultDelivered:false`.
+
+Existing artifact inspect/download remain separately authorized APIs; they are not silently added as billed generation aliases. General sandbox analysis refuses before pool use here because it dispatches through the separately accepted immutable-program boundary. This composition does not claim that general-program budget dispatch or runtime execution is implemented.
+
+## Verification and preserved failures
+
+Final author focused **33/33 PASS**, zero skips, exact source diff zero, process group **389614 absent**. Tests connect the real artifact service, shared producer and PostgreSQL store code through the inherited inert scripted pool. They execute no SQL engine, driver connection, server, native runtime or provider. Synthetic executor/storage/authority facts remain explicit; this is concrete source wiring evidence, not actual PostgreSQL or artifact qualification.
+
+Coverage includes all four typed operations, immutable revision, exact completion hashes, one fixed charge, replay refusal, request/context conflicts, output ceilings, current authority and credential rejection, failed generation UNKNOWN, lost prepare/reserve/marker/settle ACKs, cancellation during connection/transaction setup, shorter release deadline while marker ACK is parked, post-settlement revocation, borrowed receiver preservation and response overflow after publication.
+
+Initial **22 PASS / 2 FAIL** came from two timing mistakes in synthetic fixtures; their source and raw receipt remain. Correcting only the trigger sites produced 24/24. Two additive controls then produced **24 PASS / 2 FAIL**, revealing actual adapter defects: lost borrowed `versions.read` receiver and bare response-limit error after commit. Dedicated repair `5647415b` preserves the receiver and reports structured committed-effect uncertainty; all 26 controls pass unchanged. Raw failures, corrected streams and exact source hashes are retained in `artifact-budget-author`.
+
+All four owned test groups were physically absent after exit: 380130, 380716, 381571, 381872. No test timed out. The bounded capture script is reused from accepted artifact evidence with only test path and explicit source-root environment changed; it is not a native qualification supervisor. Small setup-command errors are disclosed in `failures-and-repairs.json`; no source was lost.
+
+The offline packet verifier initially selected `/workspace` rather than the repository root (parent index 6 instead of 5). Its preimage, manifest and exact replayed error streams are preserved. Only that path index was corrected; this metadata check imports no product code and runs no service.
+
+## Remaining qualification
+
+Actual engine concurrency/restart/commit uncertainty, production current-authority ports, object/version persistence, native Office opening/render/recalculation and general-program sandbox execution remain unqualified. Root owns canonical registration and overall execution composition. The four selected artifact obligations and fourteen original workflow intents remain intact; this adapter is not their complete runtime acceptance. G0 remains historically accepted, G1 OPEN, G2–G7 unentered. No customer data, credentials, database, network/provider/model, cloud or security operations occurred in this lane.
+
+## Independent cancellation repairs
+
+Independent review found outer canonical cancellation could win the race against the inner artifact service and return a bare CANCELLED despite started object/version writes or reservation. Reviewer freezes `aea805c7`/`b69340f6` retain exact controls and failure streams. Repair `19ca2562` creates a per-execution observation closure around the same canonical owner, recording allocation and port-start/ACK facts before awaits. This is transient error disclosure, not a second ledger or timer. It preserves the original cause and identifies artifact or budget uncertainty when the outer waiter cancels; no refund, reconciliation or retry runs automatically.
+
+A second independent pair showed `versionCommitted:false` after a valid correlated version ACK when cancellation occurred during marker/settlement. Source `a73b65dc` records the accepted service's exact closed ACK predicate immediately, while started or malformed ACKs remain unconfirmed. `versionCommitted` means an acknowledged commit, never that an unacknowledged started write did not happen. `versionCommitStarted` and budget reservation/settlement ACK fields disclose that distinction. The reviewer preserves the 34 PASS / 2 FAIL source at `18c07952`; unchanged controls now pass. The shared kernel, original artifact service and all prerequisite bytes remain unchanged.
+
+All six author groups are absent: original four plus 388403 and 389614. Independent group 390702 is reported absent in its separate receipt. Current source passes 33 author controls and 37 independent controls (70 total). The original author packet `2e65dfed`, its report, manifest, verifier/result and preservation preimages remain explicit historical evidence. The new general-analysis composition has a separate branch/packet/review and is not imported or accepted by this typed-service packet.

@@ -1,0 +1,17 @@
+{
+  "source": "bad3ecb968813d57a7fa1cf77eb5fa0647cb9a30",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "apps/artifacts/test/artifact-postgres-service.test.mjs"
+  ],
+  "exitCode": 1,
+  "timeout": false,
+  "durationSeconds": 2.866,
+  "group": 380130,
+  "groupAbsent": true,
+  "stdoutSha256": "2f0ce70221908e6cbad083c6ae6e746aa74238b0dbbd2acff6c33599ee74d280",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiff": ""
+}
