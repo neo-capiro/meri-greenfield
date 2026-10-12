@@ -1,0 +1,36 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "HEAD^",
+    "HEAD",
+    "--check"
+  ],
+  "cwd": "/workspace/meri-memory-proposal-source-20261012",
+  "sourceHead": "7466f623a4bc03e0090e569f3b6acdc34a6a90d5",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T20:44:59.262197+00:00",
+  "durationSeconds": 0.008,
+  "exitCode": 2,
+  "timedOut": false,
+  "ownedPidAndPgid": 308682,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.stdout.bin",
+      "bytes": 132,
+      "sha256": "2ebb99fbf84d68818d53a2a4825471aacefb9b41965481e5ebf8467bb514e6f7"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

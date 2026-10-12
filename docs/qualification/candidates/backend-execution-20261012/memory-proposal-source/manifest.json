@@ -24,13 +24,18 @@
     },
     {
       "path": "docs/coordination/reports/CODEX-MEMORY-PROPOSAL-SOURCE-20261012.md",
-      "bytes": 5834,
-      "sha256": "9a1f591f306c64de6513dd1acb73af8c468f463238668c26f7edd093035c8ec8"
+      "bytes": 6197,
+      "sha256": "ff2f3ab5b906813a68f87a25c844e6fe459099d5e7470a544960b94f8b00cd13"
     },
     {
       "path": "docs/coordination/tasks/CODEX-MEMORY-PROPOSAL-SOURCE-20261012.md",
       "bytes": 3323,
       "sha256": "0900cde82e31c9379360c314996fe1c7265c83649704cd8406154dcb2821c9ca"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/audit-initial.json",
@@ -104,8 +109,23 @@
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/owned-cleanup.json",
-      "bytes": 1305,
-      "sha256": "d8490ee2bf2674b1cf096d124c34b70be222134c334abaa2b128b230d5d807d6"
+      "bytes": 1603,
+      "sha256": "ee0ae54a5b411913a0f45edf467dc0e3cec6c68949c7c135005c7759ba50f793"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.json",
+      "bytes": 1296,
+      "sha256": "47fcefbfa661f93961a3abbcb17048cc00b4e74f431ad265853ab0b6183ee3d4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.stdout.bin",
+      "bytes": 132,
+      "sha256": "2ebb99fbf84d68818d53a2a4825471aacefb9b41965481e5ebf8467bb514e6f7"
     },
     {
       "path": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/reference-identities.json",

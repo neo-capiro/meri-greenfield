@@ -36,6 +36,15 @@
       "currentlyAbsent": true,
       "timedOut": false,
       "killRequired": false
+    },
+    {
+      "capture": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/raw-whitespace-failure.json",
+      "group": 308682,
+      "exitCode": 2,
+      "captureAbsent": true,
+      "currentlyAbsent": true,
+      "timedOut": false,
+      "killRequired": false
     }
   ],
   "allAbsent": true,
