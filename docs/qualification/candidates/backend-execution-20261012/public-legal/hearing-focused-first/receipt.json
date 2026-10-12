@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "packages/contracts/test/retrieval-public-domain-hearings.test.mjs"
+  ],
+  "source": "8d0cd50069c64075e56db83d7a012ba2d140f7a0",
+  "sourceDiff": "",
+  "producerSha256": "cef1710b11214f700499a8219cfe013fc0788b0e7ecac33c2e38df737919c0d4",
+  "startedAt": "2026-10-12T21:15:33.851558+00:00",
+  "endedAt": "2026-10-12T21:15:34.206795+00:00",
+  "exitCode": 1,
+  "timeout": false,
+  "processGroup": 325410,
+  "groupAbsent": true,
+  "stdoutSha256": "4b2182c043477d770683d8557bbe02aa6f496df9fae2ec101fc50c3e7f2b3bc4",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
