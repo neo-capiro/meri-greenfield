@@ -18,11 +18,11 @@ const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.s
 const context=id=>id===OUTREACH?{clientResolution:null}:{evidenceAccuracyMode:'off'};
 const request=id=>[DETAIL,TIMELINE].includes(id)?{peCode:'review-pe'}:{};
 const campaign=()=>({id:U,clientId:null,name:'Stored campaign',type:'stored',status:'draft',subject:null,sentAt:null,createdAt:T,clientName:null,recipientCount:0,createdBy:null});
-const year=()=>({id:U,peCode:'review-pe',fy:2026,request:'0.00',hascMark:null,sascMark:null,hacDMark:null,sacDMark:null,conference:null,ndaaConference:null,enacted:null,reprogrammed:null,executed:null,notes:null,rDocSection:null,raw:null,lastSyncedAt:T,fundingClaim:null});
+const year=()=>({id:U,peCode:'review-pe',fy:2026,request:'0.00',hascMark:null,sascMark:null,hacDMark:null,sacDMark:null,conference:null,ndaaConference:null,enacted:null,reprogrammed:null,executed:null,notes:null,rDocSection:null,raw:null,lastSyncedAt:T,fundingClaim:{value:0,fiscalYear:2026,stage:'request',stageLabel:'Request',legislativeVehicle:'request',cycleClass:'unknown',isProjection:false,unit:'USD millions'}});
 function output(id){
  if(id===OUTREACH)return {tool:id,generatedAt:T,total:0,campaigns:[]};
  if(id===SEARCH)return {tool:id,generatedAt:T,data:[],total:0,page:1,limit:20};
- const common={tool:id,generatedAt:T,identifierKind:'pe',budgetExhibitType:'R-1/R-2 RDT&E Program Element',currentCycleFy:null,currentFundingClaim:null};
+ const common={tool:id,generatedAt:T,identifierKind:'other',budgetExhibitType:'budget line (exhibit type not classified)',currentCycleFy:null,currentFundingClaim:null};
  if(id===TIMELINE)return {...common,peCode:'review-pe',title:'Stored line',service:null,appropriationType:null,budgetActivity:null,lineNumber:null,fundingSummary:'No funding observation',years:[],milestones:[]};
  return {...common,programElement:{peCode:'review-pe',service:null,serviceCode:null,appropriationType:null,budgetActivity:null,budgetActivityName:null,lineNumber:null,title:'Stored line',description:null,acatLevel:null,programOfRecord:null,status:null,rDocUrl:null,pDocUrl:null,oDocUrl:null,raw:{opaque:['kept']},source:'stored',sourceConfidence:null,firstSeenFy:null,lastSyncedAt:T,retiredAt:null,retiredReason:null,years:[],fundingSummary:'No funding observation',billCount:null,projectCount:0,sourceCount:0,currentCycleFy:null,currentUserIsWatching:false}};
 }
@@ -92,7 +92,7 @@ test('program evidence mode controls actual lineage output without becoming auth
  for(const id of [DETAIL,TIMELINE]){const p=output(id);assert.throws(()=>check(id,p,request(id),{evidenceAccuracyMode:'enforce'}));p.lineage={accepted:[],candidates:[],note:schema('program-elements').$defs.ProgramElementLineage.properties.note.const};check(id,p,request(id),{evidenceAccuracyMode:'enforce'});assert.throws(()=>check(id,p));assert.throws(()=>check(id,p,request(id),{evidenceAccuracyMode:'shadow'}));}
 });
 test('program Decimal string prerequisite and stored-year identity/order survive composition',()=>{
- const p=output(DETAIL);p.programElement.years=[year(),{...year(),id:V,fy:2027,request:'999999999999.99'}];check(DETAIL,p);
+ const p=output(DETAIL);p.programElement.years=[year(),{...year(),id:V,fy:2027,request:'999999999999.99',fundingClaim:{...year().fundingClaim,value:999999999999.99,fiscalYear:2027}}];check(DETAIL,p);
  for(const change of [x=>x.programElement.years[0].request=0,x=>x.programElement.years[0].request='1.001',x=>x.programElement.years[1].fy=2026,x=>x.programElement.years[1].id=U,x=>x.programElement.years[0].peCode='other']){const bad=copy(p);change(bad);assert.throws(()=>check(DETAIL,bad));}
 });
 test('PE direct factory now returns detached nested result, canonical behavior preserved',()=>{
