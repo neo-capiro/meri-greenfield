@@ -122,3 +122,8 @@ for(const phase of ['marker','settle'])test(`outer cancellation during ${phase} 
   assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(t.state.records.size,1);assert.equal(error.versionCommitted,true,'correlated commit ACK was already accepted before budget.settle');assert.equal(error.cause.message,'CANCELLED');
   assert.equal(error.budgetSettlementUnknown,true);assert.equal((await t.owner().reconcileInvocation(t.call)).stage,'SETTLED');assert.equal(t.db.state().budget.consumed_micro_usd,'13');assert.equal(t.state.generated,1);
 });
+test('schema-valid selected entity change is refused by adapter stable-subject check',async()=>{
+  const t=setup();await t.bind();t.state.policyHook=row=>{if(t.state.policyChecks===2){row.subject.kind='entity';row.subject.entityType='organization';row.subject.entityIds=['different-organization'];}};
+  await assert.rejects(t.run(),e=>e.code==='ARTIFACT_BUDGET_SETTLEMENT_UNKNOWN'&&e.cause.code==='ARTIFACT_BUDGET_AUTHORITY');
+  assert.equal(t.state.policyChecks,2);assert.equal(t.state.generated,0);assert.equal(t.reservation().state,'UNKNOWN');
+});
