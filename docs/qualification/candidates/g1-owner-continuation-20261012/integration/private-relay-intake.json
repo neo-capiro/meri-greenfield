@@ -1,0 +1,20 @@
+{
+  "source": "parent packet relay; evidence only, no execution authority",
+  "verifiedMembers": [
+    {
+      "member": "provenance-and-bindings.json",
+      "bytes": 15241,
+      "sha256": "983c22b7aaf0578b148579ca009c6d23603f4ab760b85936013b7e8991963c06",
+      "reconstruction": "full relayed values, original CRLF with no final newline; exact independently compared to supplied manifest identity"
+    },
+    {
+      "member": "supervisor-source-review.json",
+      "bytes": 6659,
+      "sha256": "71bb9b1ae8648c51ffeccc79d78dd6134445df55aea023089ddd1f93f6aac613",
+      "reconstruction": "full relayed values, original CRLF with no final newline; exact independently compared to supplied manifest identity"
+    }
+  ],
+  "manifestRelayOriginalByteIdentityEstablished": false,
+  "candidateHashRelayTruncated": true,
+  "comparisonSourceReceived": false
+}

@@ -1,0 +1,95 @@
+{
+  "scope": "Derived arithmetic over visible complete field pairs only; NOT the original member or a full field/predicate audit",
+  "originalMember": "candidate-hash-and-paths.json",
+  "originalClaimedBytes": 60160,
+  "originalClaimedSha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84",
+  "relayHasLiteralTruncationMarker": true,
+  "fullMemberPreservedOrVerified": false,
+  "actualComparisonSourceAvailable": false,
+  "visibleChangedFields": [
+    {
+      "role": "root",
+      "ancestorOrdinal": 1,
+      "field": "LastAccessTime",
+      "before": 134362546324784640,
+      "after": 134362546325231486,
+      "delta100ns": 446846
+    },
+    {
+      "role": "root",
+      "ancestorOrdinal": 2,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    },
+    {
+      "role": "root",
+      "ancestorOrdinal": 3,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    },
+    {
+      "role": "Lib",
+      "ancestorOrdinal": 1,
+      "field": "LastAccessTime",
+      "before": 134362546324784640,
+      "after": 134362546325241428,
+      "delta100ns": 456788
+    },
+    {
+      "role": "Lib",
+      "ancestorOrdinal": 2,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    },
+    {
+      "role": "Lib",
+      "ancestorOrdinal": 3,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    },
+    {
+      "role": "DLLs",
+      "ancestorOrdinal": 1,
+      "field": "LastAccessTime",
+      "before": 134362546324869726,
+      "after": 134362546325251447,
+      "delta100ns": 381721
+    },
+    {
+      "role": "DLLs",
+      "ancestorOrdinal": 2,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    },
+    {
+      "role": "DLLs",
+      "ancestorOrdinal": 3,
+      "field": "LastAccessTime",
+      "before": 134362546322405600,
+      "after": 134362546324959889,
+      "delta100ns": 2554289
+    }
+  ],
+  "reportedBooleans": {
+    "executableBeforeOpenedAfterStable": true,
+    "pathIdentityAndPlainMetadataStable": true,
+    "allRecordedPathFieldsStable": false,
+    "boundedHashObservationAccepted": false
+  },
+  "conclusions": [
+    "These observed differences are enough to falsify full recorded-field equality for each listed role.",
+    "The truncated executable comparison and complete opened-handle/hash record cannot be independently recomputed.",
+    "This derivative does not establish that last-access fields are the only differences in the entire original member, or prove why they changed.",
+    "No timestamp is restored, metadata invariant changed, execution admitted, or identity/trust closure claimed."
+  ]
+}
