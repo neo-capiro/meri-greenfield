@@ -1,0 +1,956 @@
+{
+  "status": "FAIL",
+  "reviewHead": "ccdb00010d8cd83823e42de05295d8d395bb9fbb",
+  "source": "77522c80132c8454781d54156fa61669bc5c823f",
+  "sourceTree": "86942db5d0ea216ca6553ab15741809751d999a9",
+  "authorPacket": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+  "authorManifest": {
+    "bytes": 19187,
+    "sha256": "6c605c066870babb9feb007024e19a225f4e39e5c24bda1a9fea961280f4505a"
+  },
+  "authorManifestMembers": 82,
+  "originalEntries": 7677,
+  "passed": 206,
+  "total": 207,
+  "acceptedFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-candidates.schema.json",
+      "acceptedSource": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+      "bytes": 8843,
+      "sha256": "a10095eb41c9185259b65189a966294cc92b8e53236a889d5029d70f09b76aae"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs",
+      "acceptedSource": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+      "bytes": 5630,
+      "sha256": "1f7a82b92d42d838982172dc0b51656ec519b0912c95d933c82bf17ea7daf15c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "acceptedSource": "3da3f17ec677f5c3f67435501e723d1ab23d1d26",
+      "bytes": 12721,
+      "sha256": "6e36d2fc5a4df4d70ce479d6646ed8160f049970ce4a05a6e26763940110268f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "acceptedSource": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "bytes": 26495,
+      "sha256": "ebfd0d113ef66c4151301a3b4432f4e78646921f0a74462d076611a3d25c0865"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "acceptedSource": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "bytes": 2286,
+      "sha256": "62672e810dbf7a86206bf42133bb827102e3d41af79e528bb3e2b4537fe0ba6f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "acceptedSource": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "bytes": 7015,
+      "sha256": "6562176a188bd59a1e64f8133f1a6791d418fe46635e25647132cf21ff37cd3e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "acceptedSource": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "bytes": 9287,
+      "sha256": "c8dfbf18960b03c7a953c9c27640ac0e50f18613ae0d347d661bf10710cbdf61"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "acceptedSource": "0463c80a521c0d0db83f3769b1511e54a4d8b3f5",
+      "bytes": 14362,
+      "sha256": "59a75f0b86d2a0bb9247be5458a6974eeefb6953d05ef2b915c28783b2ba97c5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-legislation.schema.json",
+      "acceptedSource": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "bytes": 30314,
+      "sha256": "fba73bf4f0a5d47bb8d8920acbc40bb2bf9682f5e5c10ae085e47d7c414fcde0"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-legislation-validation.mjs",
+      "acceptedSource": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "bytes": 11301,
+      "sha256": "e70fa87cca43b86380fc3782f7fcf1d22d886e79b8a4524f0b6087bae650cbe7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "acceptedSource": "d8eaa037a0e0505c42d1619136f129ff32232c7e",
+      "bytes": 14741,
+      "sha256": "523aa01d7cc90de8888e2ef308949e05e2b5f7b52352d2b9fcb7b55991b37403"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-news.schema.json",
+      "acceptedSource": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+      "bytes": 39544,
+      "sha256": "bf7f7bd427c8c7b4c47e25e3ac1e0dcb649b4269e8e7910bb3366d9df22bdf5f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/research-legal-news-validation.mjs",
+      "acceptedSource": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+      "bytes": 11100,
+      "sha256": "3d7df4dbe3c1c26eb28f7263fbbcd16a7fad03cd52faaf16e3d7e2e137320910"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "acceptedSource": "64853d387fe98e3ff117fd6ad9c3652bf5465276",
+      "bytes": 14989,
+      "sha256": "929d9c6c5a3378e5fb2ccffd8f9fdc32421661ce660aed34de8bcd51864c942e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearings.schema.json",
+      "acceptedSource": "77522c80132c8454781d54156fa61669bc5c823f",
+      "bytes": 36999,
+      "sha256": "a66098535b31a672767f224e155695266299a176f7de715e38bcbebf8d81f4ca"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearing-records.schema.json",
+      "acceptedSource": "77522c80132c8454781d54156fa61669bc5c823f",
+      "bytes": 18745,
+      "sha256": "36d9653125f39e4a69fbf52cd4cd603b7229b8893c4b14c7195ca18ccb7455a3"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-domain-hearings-validation.mjs",
+      "acceptedSource": "77522c80132c8454781d54156fa61669bc5c823f",
+      "bytes": 12111,
+      "sha256": "55171b160162c91e9dcef8695a43698b6abc98d66ca4840b4ac6d53f04ec39f1"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "acceptedSource": "77522c80132c8454781d54156fa61669bc5c823f",
+      "bytes": 17384,
+      "sha256": "2eb2dac4a0c283210e0ee824de5fc8c70d379f9482b1859b024e93c4430aa46c"
+    }
+  ],
+  "checks": [
+    {
+      "name": "all7677 original tracked entries remain mode/blob exact",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-candidates.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-legislation.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-legislation-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-news.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/research-legal-news-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-hearings.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-hearing-records.schema.json",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/retrieval-0.2/public-domain-hearings-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "accepted staged bytes preserved packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "18 new product/test files exactly",
+      "pass": true
+    },
+    {
+      "name": "bounded audit result research-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "bounded audit result global-metadata-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "bounded audit result legal-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "bounded audit result news-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "bounded audit result hearing-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture global-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent global-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture global-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent global-first.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture hearing-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent hearing-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture hearing-final.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent hearing-final.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture hearing-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent hearing-first.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture legal-arity-before.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent legal-arity-before.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture legal-arity-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-arity-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent legal-arity-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture legal-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent legal-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture legal-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/legal-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent legal-first.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture news-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent news-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture news-final.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent news-final.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture news-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/news-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent news-first.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture research-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent research-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "preserved source capture research-first.json",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw receipt docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned process absent research-first.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/coordination/reports/CODEX-PUBLIC-LEGAL-REVIEW-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/criteria.md",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/first-replay-correction.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-criteria.md",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first-independent.test.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-harness-correction.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.buffer-before.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.mjs.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.initial.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.mjs",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/global-metadata-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/initial-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/local-check-setup.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-branch-findings.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/pending-policy-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.py",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stderr",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-audit.stdout.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-corrected.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.json",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member docs/qualification/candidates/backend-execution-20261012/public-legal-review/research-first.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "historical staged member packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "historical staged member packages/contracts/test/retrieval-research-legal-independent.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author packet source/runtime scope",
+      "pass": true
+    },
+    {
+      "name": "author members unique and safe",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/reports/CODEX-PUBLIC-LEGAL-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/coordination/tasks/CODEX-PUBLIC-LEGAL-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/api-bindings.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-corrected/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-first/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-first/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-focused-first/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/candidate-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/capture-focused.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/capture-provenance.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/discovery-limitations.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/extract-dataset-metadata.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/global-focused-first/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/global-focused-first/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/global-focused-first/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/global-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-first/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-first/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-first/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-repaired/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-repaired/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-focused-repaired/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-fragment-id-before/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-fragment-id-before/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-fragment-id-before/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/hearing-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-arity-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-focused-first/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-focused-first/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-focused-first/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired-second/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired-second/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired-second/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired/capture-failure.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired/capture-preimage.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-news-repaired/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/legal-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-first-failure/failure.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-first-failure/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-first-failure/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-first-failure/verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-first-failure/verify-stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-second-failure/failure.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-second-failure/manifest.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-second-failure/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-second-failure/verify-result.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/metadata-second-failure/verify-stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/news-focused-first/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/news-focused-first/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/news-focused-first/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/news-initial-repair.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/news-reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/operation-ledger.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/owned-cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/six-operations-author-final/receipt.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/six-operations-author-final/stderr.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/six-operations-author-final/stdout.txt",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/source-identities.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/source-preservation.json",
+      "pass": true
+    },
+    {
+      "name": "author member docs/qualification/candidates/backend-execution-20261012/public-legal/verify-packet.py",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-datasets.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-hearing-records.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-hearings-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-hearings.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-query-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-query.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/public-domain-registry.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-candidates-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-candidates.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-legislation-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-legislation.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-news-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/retrieval-0.2/research-legal-news.schema.json",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/test/retrieval-public-domain-hearings.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/test/retrieval-public-domain-query.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/test/retrieval-research-legal-candidates.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/test/retrieval-research-legal-legislation.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author member packages/contracts/test/retrieval-research-legal-news.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "author manifest binds all18 product files",
+      "pass": true
+    },
+    {
+      "name": "author preserves every baseline mode/blob",
+      "pass": true
+    },
+    {
+      "name": "author verifier successful",
+      "pass": false
+    },
+    {
+      "name": "local dependency copies removed only7",
+      "pass": true
+    }
+  ],
+  "scope": "Standalone six-operation source/evidence only; canonical integration and runtime remain separately qualified."
+}

@@ -1,0 +1,15 @@
+{
+  "firstResult": {
+    "pass": 206,
+    "fail": 1
+  },
+  "sourceUnchanged": true,
+  "authorPacketUnchanged": true,
+  "cause": "Reviewer metadata harness assumed a status field; actual author verifier uses checks/passed/failed/failures and exact manifestSha256.",
+  "repair": "Validate the actual full grammar, counts, no-runtime flag, source and digest; add independent raw receipt and author-group checks. No source tests replayed.",
+  "preimages": [
+    "metadata-first-final-integrity.py",
+    "metadata-first-final-integrity.stdout.json",
+    "metadata-first-final-integrity.stderr.txt"
+  ]
+}
