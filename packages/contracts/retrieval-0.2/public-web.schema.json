@@ -1,0 +1,653 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:public-web:0.2.0",
+  "title": "Private public-web search and page evidence projections; validation grants no authority",
+  "$defs": {
+    "PublicWebSearchRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "PublicWebSearchInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 240,
+          "minLength": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      },
+      "required": [
+        "query",
+        "limit"
+      ]
+    },
+    "PublicWebPageRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxChars": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "PublicWebPageInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "mode": {
+          "type": "string",
+          "maxLength": 20,
+          "minLength": 1
+        },
+        "maxChars": {
+          "type": "integer",
+          "minimum": 500,
+          "maximum": 20000
+        }
+      },
+      "required": [
+        "url",
+        "mode",
+        "maxChars"
+      ]
+    },
+    "PublicWebOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {},
+      "required": []
+    },
+    "PublicWebInstant": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "PublicWebTavilyRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 180,
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 320,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "const": "tavily"
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "url",
+        "snippet",
+        "source",
+        "publishedAt"
+      ]
+    },
+    "PublicWebSerperRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 180,
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 320,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "const": "serper"
+        },
+        "publishedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 40,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "url",
+        "snippet",
+        "source",
+        "publishedAt"
+      ]
+    },
+    "PublicWebDuckDuckGoRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "maxLength": 180,
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "snippet": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 320,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "const": "duckduckgo"
+        }
+      },
+      "required": [
+        "title",
+        "url",
+        "snippet",
+        "source"
+      ]
+    },
+    "PublicWebSearchOutput": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "search_public_web"
+            },
+            "contentStatus": {
+              "const": "discovered"
+            },
+            "generatedAt": {
+              "$ref": "#/$defs/PublicWebInstant"
+            },
+            "provider": {
+              "const": "tavily"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            },
+            "results": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "$ref": "#/$defs/PublicWebTavilyRow"
+              }
+            }
+          },
+          "required": [
+            "tool",
+            "contentStatus",
+            "generatedAt",
+            "provider",
+            "total",
+            "results"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "search_public_web"
+            },
+            "contentStatus": {
+              "const": "discovered"
+            },
+            "generatedAt": {
+              "$ref": "#/$defs/PublicWebInstant"
+            },
+            "provider": {
+              "const": "serper"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            },
+            "results": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "$ref": "#/$defs/PublicWebSerperRow"
+              }
+            }
+          },
+          "required": [
+            "tool",
+            "contentStatus",
+            "generatedAt",
+            "provider",
+            "total",
+            "results"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "const": "search_public_web"
+            },
+            "contentStatus": {
+              "const": "discovered"
+            },
+            "generatedAt": {
+              "$ref": "#/$defs/PublicWebInstant"
+            },
+            "provider": {
+              "const": "duckduckgo"
+            },
+            "total": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 12
+            },
+            "results": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "$ref": "#/$defs/PublicWebDuckDuckGoRow"
+              }
+            }
+          },
+          "required": [
+            "tool",
+            "contentStatus",
+            "generatedAt",
+            "provider",
+            "total",
+            "results"
+          ]
+        }
+      ]
+    },
+    "PublicWebLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 120,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "url",
+        "text"
+      ]
+    },
+    "PublicWebLocator": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "characterStart": {
+          "const": 0
+        },
+        "characterEnd": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20000
+        }
+      },
+      "required": [
+        "url",
+        "characterStart",
+        "characterEnd"
+      ]
+    },
+    "PublicWebHtmlCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/PublicWebLocator"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "locator",
+        "complete",
+        "truncated"
+      ]
+    },
+    "PublicWebPdfCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locator": {
+          "$ref": "#/$defs/PublicWebLocator"
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "pages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "locator",
+        "complete",
+        "truncated",
+        "pages"
+      ]
+    },
+    "PublicWebHtmlOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "scrape_web_page"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/PublicWebInstant"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "totalChars": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "links": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/PublicWebLink"
+          }
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authoritativeOwner": {
+          "const": "public_url"
+        },
+        "currentStatus": {
+          "const": "available"
+        },
+        "trust": {
+          "const": "external_untrusted"
+        },
+        "coverage": {
+          "$ref": "#/$defs/PublicWebHtmlCoverage"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "url",
+        "title",
+        "contentType",
+        "text",
+        "totalChars",
+        "truncated",
+        "links",
+        "contentHash",
+        "authoritativeOwner",
+        "currentStatus",
+        "trust",
+        "coverage"
+      ]
+    },
+    "PublicWebPdfOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "scrape_web_page"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/PublicWebInstant"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "null"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 20000
+        },
+        "totalChars": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "links": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "$ref": "#/$defs/PublicWebLink"
+          }
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authoritativeOwner": {
+          "const": "public_url"
+        },
+        "currentStatus": {
+          "const": "available"
+        },
+        "trust": {
+          "const": "external_untrusted"
+        },
+        "coverage": {
+          "$ref": "#/$defs/PublicWebPdfCoverage"
+        },
+        "kind": {
+          "const": "pdf"
+        },
+        "pages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "url",
+        "title",
+        "contentType",
+        "text",
+        "totalChars",
+        "truncated",
+        "links",
+        "contentHash",
+        "authoritativeOwner",
+        "currentStatus",
+        "trust",
+        "coverage",
+        "kind",
+        "pages"
+      ]
+    },
+    "PublicWebPageOutput": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PublicWebHtmlOutput"
+        },
+        {
+          "$ref": "#/$defs/PublicWebPdfOutput"
+        }
+      ]
+    }
+  }
+}
