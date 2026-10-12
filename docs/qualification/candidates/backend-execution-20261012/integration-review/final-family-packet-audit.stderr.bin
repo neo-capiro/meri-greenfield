@@ -1,0 +1,14 @@
+fatal: path 'docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/manifest.json' does not exist in '2a21989e'
+Traceback (most recent call last):
+  File "/workspace/meri-backend-execution-integration-review-20261012/docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets.py", line 40, in <module>
+    raw = blob(ref, path)
+          ^^^^^^^^^^^^^^^
+  File "/workspace/meri-backend-execution-integration-review-20261012/docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets.py", line 29, in blob
+    return subprocess.check_output(['git', 'show', ref + ':' + path])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['git', 'show', '2a21989e:docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/manifest.json']' returned non-zero exit status 128.

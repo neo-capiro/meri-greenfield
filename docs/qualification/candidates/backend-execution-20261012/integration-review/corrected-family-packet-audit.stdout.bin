@@ -1,0 +1,106 @@
+{
+  "scope": "IMMUTABLE_PACKET_AUDIT_NOT_RUNTIME",
+  "target": "f9e0471c3795861460167692826401bc27fb6b33",
+  "checks": 1778,
+  "passed": 1778,
+  "failures": [],
+  "packets": [
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/client-knowledge/manifest.json",
+      "ref": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+      "members": 84,
+      "sha256": "f985b827e23572f74aee5e49a2ff050ddce78d4421c6d9b315ec9df7f301e43c"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/client-knowledge-review/review-manifest.json",
+      "ref": "709555c854ecda089a1421f013dddc06a7e43ee9",
+      "members": 113,
+      "sha256": "76c64787b93619b67761ac9f1f6961b3dd66fb3df5e0b39f3a0c51950104f0e9"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/public-legal/manifest.json",
+      "ref": "9ce4cc63620b2817113bdb55c5922f1a71d148c4",
+      "members": 82,
+      "sha256": "6c605c066870babb9feb007024e19a225f4e39e5c24bda1a9fea961280f4505a"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/action-items-complete/manifest.json",
+      "ref": "cecffb15a7a4ca8974ac818fa0ec45b9f46e0c88",
+      "members": 25,
+      "sha256": "8c7be52a28b7cee9a957ce83903a54e6bc0a7f4337adf9b1c3216fc3736ed578"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/action-items-complete-review/manifest.json",
+      "ref": "c522d3dfde2b7e932fc0c505c9660df2ab843334",
+      "members": 29,
+      "sha256": "5ccd9fdd24e1fa415e35c1f882eee249516229a687e86f718a064a54eeab6e5b"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/memory-propose/manifest.json",
+      "ref": "907e7f05aff0c5433577dace76a8fb4a3cd037e0",
+      "members": 30,
+      "sha256": "7300db4a835bc4221fc27cc9e86279e06a4d3af4fbafcfbb471f848af3bcf06e"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/memory-propose-review/manifest.json",
+      "ref": "68c4aca31f404cc47c089c422825517bec5236aa",
+      "members": 32,
+      "sha256": "e5607971f35c03158bf3379c78dc42ca8ea27d42a002af112f314346975da6b1"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source/manifest.json",
+      "ref": "ee568bef473884d930a54ab112fa32f9325eae0d",
+      "members": 30,
+      "sha256": "e7b10976d3f204a5cc641b7f0d27a225a82a6f27257249d3f46e1e707be9906d"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/memory-proposal-source-review/manifest.json",
+      "ref": "45faf20bbfda4c26a4b24fb0c47b84868bb5c755",
+      "members": 25,
+      "sha256": "a245f96cd301b7fd6b67b7caa58c88892bb386fa880d915a78046aae7ddedd58"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler/manifest.json",
+      "ref": "3dbf6b796bacad59a5f1366c83ad7d9372125f5c",
+      "members": 28,
+      "sha256": "5cb0c16ee27ef569f52c8fa2e72870cbf8003c34e08e79315fae7ab0b4699890"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/dataset-metadata-handler-review/manifest.json",
+      "ref": "8f2e9cfa5f23df23259e2ecbd27bc62edbd68648",
+      "members": 39,
+      "sha256": "685683dc1d0b8c0a9c3eb69cfe709820780f8cbc270bb5a27db76ef47586c190"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/manifest.json",
+      "ref": "f6413801acf949141dea3bb86f7bcd5233eef3f5",
+      "members": 34,
+      "sha256": "0e8997955083e72633e794e750da3220d734eedf8606c6dbd43d6342fe408da2"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection-review/manifest.json",
+      "ref": "a1a78f2e0dfc7f8c265357e75a45b6541632a4dc",
+      "members": 27,
+      "sha256": "59a5534070aae21d28b52dcbf8ddb7cea3bc05532d4c8f0abb0569eb98f831cd"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/complete-manifest.json",
+      "ref": "fb7fd02d2b38c1c64b315b3df8d43e053c2bbe6b",
+      "members": 109,
+      "sha256": "62a3703903b0dc7e68c1670c2c2a84910568c3b1c7373b1905711e17ce59a3e6"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/integration/test-author-manifest.json",
+      "ref": "36af89b921f37adcc15032b913d520bc9fbac25d",
+      "members": 68,
+      "sha256": "a0598540287828c943854db5f686126f8d59fbf969047ebb8595ce7da1ab88d9"
+    },
+    {
+      "manifest": "docs/qualification/candidates/backend-execution-20261012/raw-request-review/manifest.json",
+      "ref": "10b79037683421d2e07ffbe17b98e8ab36d16cc6",
+      "members": 51,
+      "sha256": "a5bbb717bf45b6ef6c8eab37004a53bd0b3e5aa59146294d4dfc6972baaa6ea6"
+    }
+  ],
+  "finalPublicLegalReviewFiles": 111
+}
