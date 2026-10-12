@@ -1,0 +1,50 @@
+{
+  "checksPassed": 115,
+  "authorPacket": "baadc33c95205b169a24994c00f302119e25a48b",
+  "manifestMembers": 43,
+  "manifestSha256": "ee935094175c0f9d1a57e9273cbdde17d7c55e5838058f8225408349635fa09c",
+  "reviewHead": "73949f51cebb00700c07434d8e0b2f53dec68336",
+  "authorReceipts": [
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/exact-source.json",
+      "exitCode": 0,
+      "sourceHead": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit-v2.json",
+      "exitCode": 0,
+      "sourceHead": "926c3cfe250f6e2cb3a171e194f087e1444b9f44"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-audit.json",
+      "exitCode": 0,
+      "sourceHead": "926c3cfe250f6e2cb3a171e194f087e1444b9f44"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-profile.json",
+      "exitCode": 0,
+      "sourceHead": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/final-source.json",
+      "exitCode": 0,
+      "sourceHead": "926c3cfe250f6e2cb3a171e194f087e1444b9f44"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/initial.json",
+      "exitCode": 1,
+      "sourceHead": "164fed60005fa9cd40cbfeb204f882da18713bba"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/resolver-repair.json",
+      "exitCode": 0,
+      "sourceHead": "e6d3db2957119b2893610c1aca4162de010feaa7"
+    },
+    {
+      "path": "docs/qualification/candidates/task-slice-20261012/action-source-author/source-audit.json",
+      "exitCode": 0,
+      "sourceHead": "eaa00fd0ea8ec98bc77b050caaa6526a2738405e"
+    }
+  ],
+  "runtimeAccepted": false
+}
