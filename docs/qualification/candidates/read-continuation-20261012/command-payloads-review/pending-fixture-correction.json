@@ -1,0 +1,11 @@
+{
+  "beforeSha256": "d81b7484dd831c5f9c5eadf34eaae1419582d7cdb859fec2f60b8173b2c68534",
+  "afterSha256": "c36d43f41e7168b136beb320981da15c039336ff21f1a4de36dde562bb8c4abe",
+  "cause": "Reviewer trace error: branch literal is failed, not pending. Change only two invalid positive fixtures to actual failed-before-storage and persisted-pending shapes; retain new pending-before-storage rejection control unchanged.",
+  "counterexample": {
+    "candidate": "8c1f4a5f4287b282f478f3e18aeb376573e53ddd",
+    "pass": 46,
+    "fail": 1
+  },
+  "allOtherAssertionsRetained": true
+}
