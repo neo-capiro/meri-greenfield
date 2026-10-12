@@ -1,0 +1,30 @@
+✔ normalization has explicit nulls and exact trim/slice/uppercase ordering (4.816719ms)
+✔ selectors are closed inert strings or null and model context cannot inject authority (2.511024ms)
+✔ trusted context must be a complete current client lineage declaration (0.717559ms)
+✔ missing selector preserves empty outcome independent of state hint (5.76228ms)
+✔ empty source observation and nonempty source have exact distinct notes (1.581236ms)
+✔ state filter uses exact stored state without source case folding (1.522969ms)
+✔ no_state matches falsy stored state null (2.430593ms)
+✔ no_state matches falsy stored state  (0.851911ms)
+✔ no_geocode remains distinct and cannot prove hidden district/geocode inputs (0.983999ms)
+✔ resolved branch omits unresolved flag and admits empty representatives (1.312452ms)
+✔ unknown nonempty states and two codepoint astral stored states have no invented geography refusal (0.860814ms)
+✔ federal/state slots preserve nullable values and signed stored Senate districts (1.868007ms)
+✔ source slot chamber and raw state-legislator join claims cannot substitute (1.507276ms)
+✔ federal fullname geography remains explicitly unproven by this projection boundary (0.94822ms)
+✔ facility storage UUID identity admits all versions and refuses duplicates case insensitively (0.677468ms)
+✔ senator identity is unique within a facility but counts are not capped at two (0.767323ms)
+✔ facility list has no fabricated page bound or completeness envelope (2.640178ms)
+✔ result wrapper is bound to the exact current lineage (0.837318ms)
+✔ time field is canonical serialization, without currentness or ordering assertion (1.34417ms)
+✔ unknown projection fields and wrong scalar/null types refuse (1.233574ms)
+✔ hostile JSON is refused before getters, hooks, or proxy effects (0.44578ms)
+✔ cycles and non-finite nested scalars refuse within canonical transport admission (0.263025ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1562.831128
