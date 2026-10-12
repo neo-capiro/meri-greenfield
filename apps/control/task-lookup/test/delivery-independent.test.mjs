@@ -119,3 +119,8 @@ test('independent malformed current-authority receipts refuse before durable cla
   const h=harness({authorize:(s,good)=>async q=>change(await good(q))});await assert.rejects(h.lookup());assert.equal(count(h,'claim'),0);assert.equal(count(h,'gateway'),0);
  }
 });
+
+test('independent coherent returned policy replacement cannot relabel original event scopes',async()=>{
+ const h=harness({gateway:()=>({executeOwned:async()=>{const o=envelope();o.subject.policyRevision='replacement-policy';o.subject.scopes[0].policyRevision='replacement-policy';o.result.subject=structuredClone(o.subject);return JSON.stringify(o);}})});
+ await assert.rejects(h.lookup());assert.equal(count(h,'complete'),0);
+});
