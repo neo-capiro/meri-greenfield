@@ -1,0 +1,31 @@
+{
+  "label": "physical-deps-before-root-alias-recapture",
+  "argv": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-meeting-source.test.mjs",
+    "packages/contracts/test/retrieval-operational-reads.test.mjs",
+    "packages/contracts/test/sdk-fixture-contract.test.mjs",
+    "packages/contracts/test/public-package.test.mjs",
+    "packages/contracts/test/sdk-fixture-wire.test.mjs",
+    "packages/contracts/test/boundaries.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-federal-market.test.mjs",
+    "packages/contracts/test/sdk-native-evidence.test.mjs",
+    "packages/contracts/test/retrieval-r2.test.mjs",
+    "packages/contracts/test/retrieval-data-search.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+  ],
+  "timeoutSeconds": 60,
+  "exitCode": 1,
+  "reason": "Recapture of unchanged physical-Ajv layout, retaining the existing permission test refusal of canonicalize alias outside its allowed dependency root.",
+  "stdout": {
+    "bytes": 21698,
+    "sha256": "11c23475e8580240475a924fba114eceb9bb9c3c92ab28fa2025199129c6bd2f"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "meri-source-continuation-publication/1",
+  "verifiedAt": "2026-10-12T02:04:30.789273+00:00",
+  "pr": "https://github.com/neo-capiro/meri-greenfield/pull/10",
+  "state": "OPEN_DRAFT_NOT_MERGED",
+  "publishedCommit": "1f6fd35e1a2195586f9ecb57e15e5672801124d1",
+  "publishedTree": "7ae6b087c128f12153e4917d7369c8eb20c20d66",
+  "testedSourceCommit": "8af9c209c5f39420265ae9f6b4be848955fae6a9",
+  "testedSourceTree": "5922aac66ba023e7d89d38d7fb50b96d276c8734",
+  "independentReviews": {
+    "memory": "606b30bee02013f1cc58513902a829a60423cdfe",
+    "gateway": "77604be9f3fa8e4f07bf8fceaa1d9f53f3f23419"
+  },
+  "readback": {
+    "gitCommand": [
+      "git",
+      "ls-remote",
+      "origin",
+      "refs/heads/task/meri-source-continuation-20261012",
+      "refs/heads/main",
+      "refs/heads/task/codex-g1-publish-20261011",
+      "refs/heads/task/handover-preserve-candidates-20261012",
+      "refs/heads/shipper/aws-preflight-20261011-r1"
+    ],
+    "gitRefExactMatch": true,
+    "githubPrHeadBaseAndDraftMatch": true,
+    "githubImmutableCommitReadback": true,
+    "sourcePathsMatchedIndependentReviews": 62,
+    "unchangedOriginalRemoteRefs": {
+      "refs/heads/main": "8b123bea4c90794dc2d766814b6ddbdbfe0928bc",
+      "refs/heads/shipper/aws-preflight-20261011-r1": "28fbfc7e40799fdb4e59eabd35c5b9bf80f117d9",
+      "refs/heads/task/codex-g1-publish-20261011": "5ee46446b5f60034916f00b2a665b3e2bef9cf60",
+      "refs/heads/task/handover-preserve-candidates-20261012": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a"
+    },
+    "gitRefStdoutSha256": "c85ffd534a1c704a78b0c7d060bc1271643f4d3fa9835ede241bb1c6989fee90"
+  },
+  "admission": {
+    "memory": "ACCEPT_SOURCE",
+    "gateway": "ACCEPT_SOURCE",
+    "readiness": "ACCEPT_EVIDENCE_PREPARATION_ONLY",
+    "sourceConnectivity": false,
+    "G1": false,
+    "runtime": false,
+    "cloudWrites": false,
+    "paidModels": false,
+    "mainMerge": false
+  },
+  "receiptScope": "Verified complete published parent; this receipt is appended in a metadata-only descendant whose exact final head/tree are supplied in PR10 and final response. No self-referential hash invented."
+}

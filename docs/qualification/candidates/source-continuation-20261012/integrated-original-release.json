@@ -1,0 +1,28 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "88e9ffcfe76ced52dc59425e6add0fa24801dfd6",
+  "sourceDiffSha256": "55a6672e8982134b0271187cf3d01bc797329e210355bafe9a6dde4ed3861102",
+  "sourceDiffBytes": 78931,
+  "startedAt": "2026-10-12T01:58:01.277152+00:00",
+  "durationSeconds": 2.655,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessGroupAbsentAfterExit": true,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-original-release.stdout.bin",
+      "bytes": 281,
+      "sha256": "e6dea4b9352e94a2e30f05b85da8babba3068b31e7a83fca6831b6323a06cdef"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-original-release.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769671.5561967,
+  "elapsedSeconds": 2.320357084274292,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-inner-deadlines.stdout.txt",
+      "bytes": 14453,
+      "sha256": "9fc5e49f82719430ea2e0894b31137e8e6117fef67cba8ade9e6ec17c8516f17"
+    },
+    "stderr": {
+      "path": "preserved-inner-deadlines.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "base": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+  "branch": "task/meri-gateway-deadline-repair-20261012",
+  "sourceFiles": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "sha256": "182b5372a07968e64608454b259cd19e5603b4ff4b96e1750a336de5bf4b87a6",
+      "bytes": 6506
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "sha256": "9071d378947273d56e08c6dac38e72cfb52cc89d6f457a20908ed01165b27d39",
+      "bytes": 6593
+    },
+    {
+      "path": "apps/gateway/test/authority-deadline.test.mjs",
+      "sha256": "4e8a9eac66b1481cbce30cec68274a25681026890688644ccdf28a78d0c81d28",
+      "bytes": 5678
+    }
+  ],
+  "originalTestsSha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4",
+  "classification": "AUTHOR_SOURCE_ONLY_PENDING_INDEPENDENT_REVIEW",
+  "runtimeQualified": false,
+  "sourceEnabled": false
+}

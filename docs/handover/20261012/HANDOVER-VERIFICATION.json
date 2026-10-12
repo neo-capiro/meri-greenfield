@@ -1,0 +1,64 @@
+{
+  "schema": "meri-handover-publication-verification/1",
+  "sourceCandidateCommit": "7903c3c181447cc97b4ad788fb7a76278cda9b7e",
+  "localLinks": "PASS",
+  "jsonParse": "PASS",
+  "originalAndHelperByteIdentities": [
+    {
+      "path": "docs/handover/20261012/inputs/Meri_Codex_Hermes_Deployment_Plan.original.md",
+      "bytes": 44322,
+      "sha256": "948f5fa6b3d76f1e6df72496f85d7e09d25cc397bc0f8e1efe0ab58fe0eda560"
+    },
+    {
+      "path": "docs/handover/20261012/inputs/Meri_Greenfield_Agent_Plan.original.docx",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7"
+    },
+    {
+      "path": "docs/handover/20261012/inputs/Shared_Frontend_Handoff.original.md",
+      "bytes": 18193,
+      "sha256": "79e65d2f1ef597a045315553dd11e4ec9f78bf648ccb6fcd229f4742a9808581"
+    },
+    {
+      "path": "docs/handover/20261012/inputs/AWS_Shipper_Return.original.txt",
+      "bytes": 18923,
+      "sha256": "1347f16d39867c9edfe1581d6a8cabfb5ab1c391e595d4d1b9e2e80e79ef9804"
+    },
+    {
+      "path": "docs/handover/20261012/inputs/Mode_Toggle_Reference.original.png",
+      "bytes": 19255,
+      "sha256": "5f26f5f242e57c9557f2940e572fc94e241572b132305afe6e4897b9f4505fe1"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/catalog-row-bindings.json",
+      "bytes": 1916,
+      "sha256": "494cc838f28da8799f65dcd3b880968731fe07215e63615ef2a3266142ba61aa"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/capture.py",
+      "bytes": 1630,
+      "sha256": "cb234d22c3ff29589eaff64a92ac887d9ad92d3f77899205756c304317ec1696"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/evaluate-sessionstore.mjs",
+      "bytes": 1120,
+      "sha256": "1a74ea58aa03a3fc864329aa9aeffa60feb297004e260e89c00ae14397b8fe2f"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/run-sessionstore-checks.py",
+      "bytes": 4093,
+      "sha256": "ba3d456b06cbd314a800a12ef8d764213112a0d68a3edb672a4b65bc9cc968eb"
+    },
+    {
+      "path": "docs/handover/20261012/context-helpers/candidate-native-session-files.mjs",
+      "bytes": 12049,
+      "sha256": "543e05c230bf614cd5cf73f2d69877f1311ec0faf9d7ca205429161a75b842e1"
+    }
+  ],
+  "specificCredentialPatterns": "No AWS access key, Anthropic key or GitHub token matches in handover additions; not a general secret-proof claim",
+  "independentDraftReview": "Backend review owner checked links, acceptance claims and omissions; canonical return/freeze metadata corrected",
+  "candidateCodeTestReplay": "NOT_RUN by root for this preservation publication; author evidence and original HOLD retained",
+  "runtimeActions": false,
+  "scope": "SOURCE_PRESERVATION_HANDOVER_ONLY",
+  "publication": "Final GitHub head/tree must be compared to final local commit before branch movement and read back after publication"
+}

@@ -1,0 +1,136 @@
+✖ normalizes defaults/nulls and binds the server-selected client (1.901564ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (1.005613ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.294765ms)
+✖ complete/empty producer queue metadata never becomes approved evidence or absence (0.301674ms)
+✖ selected client permits own firm/private rows and the selected client, rejects another client (0.211011ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (0.641205ms)
+✖ restricted proposals redact text/title and remain partial (0.214336ms)
+✖ truncated/null-text pages cannot claim complete producer coverage (0.247916ms)
+✖ disabled review is unavailable, including continued-request firstPage semantics (0.214356ms)
+✖ continuation requires retained scope, exact cursor and unchanged page limit (0.294284ms)
+✖ final continued page remains partial and must advance beyond prior key (0.214006ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (0.622268ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.279902ms)
+✔ operation remains unmapped/unavailable and public exports stay separate (3.320948ms)
+✔ family factory import has no process/network/timer effect (56.924066ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 7
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1199.439738
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:31:1
+✖ normalizes defaults/nulls and binds the server-selected client (1.901564ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:32:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:48:1
+✖ complete/empty producer queue metadata never becomes approved evidence or absence (0.301674ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:49:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:52:1
+✖ selected client permits own firm/private rows and the selected client, rejects another client (0.211011ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:54:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:66:1
+✖ restricted proposals redact text/title and remain partial (0.214336ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:68:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:73:1
+✖ truncated/null-text pages cannot claim complete producer coverage (0.247916ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:75:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:79:1
+✖ disabled review is unavailable, including continued-request firstPage semantics (0.214356ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:81:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:86:1
+✖ continuation requires retained scope, exact cursor and unchanged page limit (0.294284ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:88:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:95:1
+✖ final continued page remains partial and must advance beyond prior key (0.214006ms)
+  Error: ResolvedSubject: data/scopes/0 must have required property 'resourceId', data/scopes/0 must NOT have additional properties, data/scopes/0/kind must be equal to one of the allowed values
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:99:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)

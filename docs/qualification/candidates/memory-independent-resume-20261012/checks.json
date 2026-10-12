@@ -1,0 +1,68 @@
+[
+  {
+    "label": "original-focused",
+    "command": [
+      "node",
+      "--test",
+      "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+    ],
+    "exit": 0,
+    "seconds": 1.047,
+    "stdoutSha256": "4bfbdb751ad4243d271aa577974ceed2d0cd7daca3cc96aa429279aa485b50ee",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "label": "full-contracts",
+    "command": [
+      "npm",
+      "run",
+      "check:contracts"
+    ],
+    "exit": 0,
+    "seconds": 4.909,
+    "stdoutSha256": "0c91952dca4614b8681406db0764ccdf5a106e067b7f7ca6166f5cbb8a3aa2d9",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  {
+    "label": "public-distribution",
+    "command": [
+      "npm",
+      "run",
+      "check",
+      "--prefix",
+      "packages/contracts"
+    ],
+    "exit": 0,
+    "seconds": 3.172,
+    "stdoutSha256": "89f7335d15369c1d1f5fd7700e4840b389a99ba5cc9d5da87a525d56415d807a",
+    "stderrSha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+  },
+  {
+    "label": "root-install",
+    "exit": 254,
+    "command": "npm ci --ignore-scripts --no-audit --no-fund",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "cbcc16402f5d1672bff27105fa6f1624b1d7de1ae994269eac705dcb53402311"
+  },
+  {
+    "label": "contracts-install",
+    "exit": 254,
+    "command": "npm ci --ignore-scripts --no-audit --no-fund",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "72c4fc6039c71a91ce27c370782cf28ef82473d562d513d4ad1704feef24dbaa"
+  },
+  {
+    "label": "root-install-cache-retry",
+    "exit": 0,
+    "command": "npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-review-npm-cache",
+    "stdoutSha256": "10a3b21efb70f84d46dae9fd0fc25ede9abef4b84b10aa0eed78fe9f0c6a96fa",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  },
+  {
+    "label": "contracts-install-cache-retry",
+    "exit": 0,
+    "command": "npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/meri-memory-contracts-npm-cache",
+    "stdoutSha256": "1d41eb5f721bb9d5710254973769ef57dc59f277b97c8647bf6ffaff5426b4ba",
+    "stderrSha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+  }
+]

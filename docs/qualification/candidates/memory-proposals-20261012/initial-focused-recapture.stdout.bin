@@ -1,0 +1,136 @@
+✖ normalizes defaults/nulls and binds the server-selected client (2.078752ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (0.948417ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.724217ms)
+✖ complete/empty producer queue metadata never becomes approved evidence or absence (0.281685ms)
+✖ selected client permits own firm/private rows and the selected client, rejects another client (0.391687ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (0.704778ms)
+✖ restricted proposals redact text/title and remain partial (0.293802ms)
+✖ truncated/null-text pages cannot claim complete producer coverage (0.206134ms)
+✖ disabled review is unavailable, including continued-request firstPage semantics (0.242387ms)
+✖ continuation requires retained scope, exact cursor and unchanged page limit (0.327011ms)
+✖ final continued page remains partial and must advance beyond prior key (0.27189ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (0.573685ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.274474ms)
+✔ operation remains unmapped/unavailable and public exports stay separate (3.363165ms)
+✔ family factory import has no process/network/timer effect (65.571658ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 7
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1260.450084
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:29:1
+✖ normalizes defaults/nulls and binds the server-selected client (2.078752ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:30:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:46:1
+✖ complete/empty producer queue metadata never becomes approved evidence or absence (0.281685ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:47:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:50:1
+✖ selected client permits own firm/private rows and the selected client, rejects another client (0.391687ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:52:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:64:1
+✖ restricted proposals redact text/title and remain partial (0.293802ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:66:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:71:1
+✖ truncated/null-text pages cannot claim complete producer coverage (0.206134ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:73:18)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:77:1
+✖ disabled review is unavailable, including continued-request firstPage semantics (0.242387ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:79:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:84:1
+✖ continuation requires retained scope, exact cursor and unchanged page limit (0.327011ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:86:20)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+
+test at packages/contracts/test/retrieval-memory-proposals.test.mjs:93:1
+✖ final continued page remains partial and must advance beyond prior key (0.27189ms)
+  Error: ResolvedSubject: data must have required property 'authorizationDecisionId', data must NOT have additional properties, data/scopes must NOT have fewer than 1 items
+      at validateShape (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:29:28)
+      at assertSubject (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/validate.mjs:72:3)
+      at context (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:49:5)
+      at normalizeMemoryProposalInput (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:104:21)
+      at assertMemoryProposalReadResult (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/retrieval-0.2/memory-proposals-validation.mjs:120:23)
+      at TestContext.<anonymous> (file:///workspace/scratch/853fba62b1f1/meri-memory-proposals-contract-20261012/packages/contracts/test/retrieval-memory-proposals.test.mjs:97:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)

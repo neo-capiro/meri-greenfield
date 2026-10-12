@@ -1,0 +1,29 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/source-readiness-20261012/generate.py",
+    "--check"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "9a8fefb6e9c2da9d2c6a2d255a38bc1de6599596",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "startedAt": "2026-10-12T01:54:44.062294+00:00",
+  "durationSeconds": 0.418,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessGroupAbsentAfterExit": true,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/readiness-snapshot.stdout.bin",
+      "bytes": 330,
+      "sha256": "b5375f20aed24da71b3fe0fffd1c73a47f580de26ce54126f5380847af143787"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/readiness-snapshot.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

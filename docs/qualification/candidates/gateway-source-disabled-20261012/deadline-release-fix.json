@@ -1,0 +1,12 @@
+{
+  "status": "UNREVIEWED_SOURCE_FIX",
+  "reviewedOriginal": "1f0250df1d8d87751b2c4807fa2de2fe88a1d1ee",
+  "independentOriginalDisposition": "HOLD release deadline not propagated before parked settlement",
+  "change": "Shrink lifetime before settlement and after final fresh authority; original17 plus1 parked-settlement regression",
+  "exitCode": 0,
+  "stdoutSha256": "c101a10cf26ca2eef1f7471512bf55fee8cd5101e32833d2371fc6cf200515c5",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "liveActions": 0,
+  "original17TestFileRetainedByteExactPrefix": true,
+  "originalTestFileSha256": "ae9e94ae696ebf0982b0e1592438ec510f502bee29a315a567f6f27faeb62268"
+}

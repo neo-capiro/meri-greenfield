@@ -1,0 +1,257 @@
+{"stage":"initial-identity","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":101.60711900000001}
+✖ fresh deadline at initial-identity bounds parked currentRun (106.053489ms)
+{"stage":"before-reservation","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.87712699999997}
+✖ fresh deadline at before-reservation bounds parked currentRun (101.766032ms)
+{"stage":"before-reservation","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.76414799999998}
+✖ fresh deadline at before-reservation bounds parked authorizeBusiness (103.22818ms)
+{"stage":"before-reservation","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":99.86533099999997}
+✖ fresh deadline at before-reservation bounds parked authorizeSources (100.718183ms)
+{"stage":"before-effect","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.63455699999986}
+✖ fresh deadline at before-effect bounds parked currentRun (101.822301ms)
+{"stage":"before-effect","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.3819410000001}
+✖ fresh deadline at before-effect bounds parked authorizeBusiness (101.507592ms)
+{"stage":"before-effect","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.9264760000001}
+✖ fresh deadline at before-effect bounds parked authorizeSources (101.824485ms)
+{"stage":"before-release","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":101.03460600000017}
+✖ fresh deadline at before-release bounds parked currentRun (101.922369ms)
+{"stage":"before-release","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.94030700000008}
+✖ fresh deadline at before-release bounds parked authorizeBusiness (102.481483ms)
+{"stage":"before-release","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.289894}
+✖ fresh deadline at before-release bounds parked authorizeSources (101.405721ms)
+{"stage":"final","parkedPort":"currentRun","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.49463500000002}
+✖ fresh deadline at final bounds parked currentRun (101.62312ms)
+{"stage":"final","parkedPort":"authorizeBusiness","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.19428000000016}
+✖ fresh deadline at final bounds parked authorizeBusiness (101.112439ms)
+{"stage":"final","parkedPort":"authorizeSources","shortened":true,"parked":true,"completedWithin100ms":false,"failure":null,"parkedSignalAborted":false,"releasedResult":false,"uncertaintyCalls":0,"elapsedMs":100.4376269999998}
+✖ fresh deadline at final bounds parked authorizeSources (101.069908ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 0
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2249.19544
+
+✖ failing tests:
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at initial-identity bounds parked currentRun (106.053489ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-reservation bounds parked currentRun (101.766032ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-reservation bounds parked authorizeBusiness (103.22818ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-reservation bounds parked authorizeSources (100.718183ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-effect bounds parked currentRun (101.822301ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-effect bounds parked authorizeBusiness (101.507592ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-effect bounds parked authorizeSources (101.824485ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-release bounds parked currentRun (101.922369ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-release bounds parked authorizeBusiness (102.481483ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at before-release bounds parked authorizeSources (101.405721ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at final bounds parked currentRun (101.62312ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at final bounds parked authorizeBusiness (101.112439ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:20:3
+✖ fresh deadline at final bounds parked authorizeSources (101.069908ms)
+  AssertionError [ERR_ASSERTION]: fresh inner deadline must bound the next parked port
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/inner-authority-deadlines.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

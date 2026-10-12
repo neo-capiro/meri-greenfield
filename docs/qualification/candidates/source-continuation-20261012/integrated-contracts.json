@@ -1,0 +1,29 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "88e9ffcfe76ced52dc59425e6add0fa24801dfd6",
+  "sourceDiffSha256": "55a6672e8982134b0271187cf3d01bc797329e210355bafe9a6dde4ed3861102",
+  "sourceDiffBytes": 78931,
+  "startedAt": "2026-10-12T01:58:01.211152+00:00",
+  "durationSeconds": 9.868,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessGroupAbsentAfterExit": false,
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-contracts.stdout.bin",
+      "bytes": 20532,
+      "sha256": "be84416c246482df09f020e8d4dc085af64088b81b02ab27a75684a7798b73c3"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-contracts.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    }
+  ],
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

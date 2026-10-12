@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-source-continuation-20261012",
+  "sourceHead": "88e9ffcfe76ced52dc59425e6add0fa24801dfd6",
+  "sourceDiffSha256": "55a6672e8982134b0271187cf3d01bc797329e210355bafe9a6dde4ed3861102",
+  "sourceDiffBytes": 78931,
+  "captureSha256": "fb022939142f296b5d6bbf90d73933c0933852ab23e99ac8ce8be48d1659a4c3",
+  "startedAt": "2026-10-12T02:00:05.272278+00:00",
+  "durationSeconds": 5.778,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 8376,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 8520,
+      "status": 0
+    },
+    {
+      "pid": 8683,
+      "status": 0
+    },
+    {
+      "pid": 8716,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-public-reaped.stdout.bin",
+      "bytes": 2045,
+      "sha256": "b626f665cd09fbf58f85ea312eae2232e5cb53d2d786467bf22aedd29a25200f"
+    },
+    {
+      "path": "docs/qualification/candidates/source-continuation-20261012/integrated-public-reaped.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Initial npm captures passed tests but omitted owned group PID/final absence after one-shot cleanup; add bounded reaping evidence without altering tests or source.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

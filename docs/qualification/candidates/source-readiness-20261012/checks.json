@@ -1,0 +1,81 @@
+{
+  "schema": "meri-readiness-author-checks/1",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "docs/qualification/candidates/source-readiness-20261012/generate.py"
+      ],
+      "cwd": "/workspace/meri-readiness-packet-20261012",
+      "exitCode": 0,
+      "kind": "LOCAL_OFFLINE_GENERATION",
+      "stdoutSha256": "4470a6386b136b8bae52c251b95df81e52c2c9b64033080a8ad99005034bc560",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "generate-initial.stdout",
+      "stderr": "generate-initial.stderr",
+      "runtimeGateAccepted": false
+    },
+    {
+      "command": [
+        "python3",
+        "docs/qualification/candidates/source-readiness-20261012/generate.py",
+        "--check"
+      ],
+      "cwd": "/workspace/meri-readiness-packet-20261012",
+      "exitCode": 0,
+      "kind": "LOCAL_OFFLINE_VERIFICATION",
+      "stdoutSha256": "b5375f20aed24da71b3fe0fffd1c73a47f580de26ce54126f5380847af143787",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "generated-check.stdout",
+      "stderr": "generated-check.stderr",
+      "runtimeGateAccepted": false
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/meri-readiness-packet-20261012",
+      "exitCode": 0,
+      "kind": "LOCAL_OFFLINE_VERIFICATION",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "authored-whitespace.stdout",
+      "stderr": "authored-whitespace.stderr",
+      "runtimeGateAccepted": false
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "cwd": "/workspace/meri-readiness-packet-20261012",
+      "exitCode": 0,
+      "kind": "LOCAL_STAGED_VERIFICATION",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "staged-whitespace.stdout",
+      "stderr": "staged-whitespace.stderr",
+      "runtimeGateAccepted": false
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "cwd": "/workspace/meri-readiness-packet-20261012",
+      "exitCode": 0,
+      "kind": "LOCAL_STAGED_VERIFICATION",
+      "stdoutSha256": "cb77ef4725b80a04988c5bf159164ebc554f56066a035d69534bdb5d3e29f294",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "exclusive-paths.stdout",
+      "stderr": "exclusive-paths.stderr",
+      "runtimeGateAccepted": false
+    }
+  ]
+}

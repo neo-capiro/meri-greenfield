@@ -1,0 +1,21 @@
+{
+  "label": "initial-focused-recapture",
+  "argv": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-memory-proposals.test.mjs"
+  ],
+  "startedAt": "2026-10-12T00:47:02.155541+00:00",
+  "endedAt": "2026-10-12T00:47:03.506038+00:00",
+  "timeoutSeconds": 30,
+  "exitCode": 1,
+  "reason": "Original uncaptured first tool run 7/15 passed, 8 fixture failures; this receipt repeats unchanged source before correction to retain raw streams.",
+  "stdout": {
+    "bytes": 14248,
+    "sha256": "8fdc51b24f150a8edf762fa3f9944a58a935d623595e0cc366c6d4f68a5561d1"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,324 @@
+✖ initial identity: capability expiry immediately bounds the next parked authority port (104.014983ms)
+✖ before reservation: capability expiry immediately bounds the next parked authority port (101.018924ms)
+✖ before reservation: run before business immediately bounds the next parked authority port (103.174274ms)
+✖ before reservation: run before source immediately bounds the next parked authority port (101.556179ms)
+✖ before effect: capability expiry immediately bounds the next parked authority port (100.757222ms)
+✖ before effect: run before business immediately bounds the next parked authority port (101.268237ms)
+✖ before effect: run before source immediately bounds the next parked authority port (101.844596ms)
+✖ before release: capability expiry immediately bounds the next parked authority port (101.890971ms)
+✖ before release: run before business immediately bounds the next parked authority port (102.131219ms)
+✖ before release: run before source immediately bounds the next parked authority port (100.665511ms)
+✖ after settlement: capability expiry immediately bounds the next parked authority port (101.111842ms)
+✖ after settlement: run before business immediately bounds the next parked authority port (101.600314ms)
+✖ after settlement: run before source immediately bounds the next parked authority port (100.989075ms)
+✖ an initial capability completing after cancellation cannot start current-run lookup (23.003512ms)
+✔ stale or invalid deadline facts fail closed before the subsequent port (1.972664ms)
+✔ production catalog exposes no tools, has no activation override, performs zero effects (8.66035ms)
+✔ external object/proxy/getter/toJSON and thrown proxy are never inspected (0.295434ms)
+✔ invalid canonical domain arguments refuse before reservation or handler (2.976575ms)
+✔ raw authority injection is rejected before any trusted port or effect (0.427883ms)
+✔ a mismatched trusted catalog cannot dispatch a substituted or raw SQL operation (0.291258ms)
+✔ actual federal defaults precede canonical digest and resource reservation (5.418125ms)
+✔ canonical raw federal output without qualified lineage cannot be released (1.455678ms)
+✔ the original run deadline stops parked business/source lookup before any reservation (42.440052ms)
+✔ expiry, wrong audience, stale fence, missing grants and disabled source refuse (2.047508ms)
+✔ revocation during reservation prevents handler and preserves uncertain reservation (1.032292ms)
+✔ replacement during source-policy lookup is rejected by the final current-run read (0.597709ms)
+✔ revocation during handler or settlement never releases the result (2.079887ms)
+✔ malformed or oversized raw output and foreign lineage cannot escape (2.998678ms)
+✔ uncertain/malformed budget acknowledgements never dispatch or refund (0.457648ms)
+✔ deadline validates before allocation, shrinks absolutely and closes owned timer/listener (0.200301ms)
+✔ timeout suppresses late work without claiming physical stop or refund (20.596426ms)
+✔ configuration and import allocate no live resource (0.763817ms)
+✔ a deadline shortened during the handler bounds parked settlement and preserves uncertainty (21.274346ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 19
+ℹ fail 14
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2173.933276
+
+✖ failing tests:
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ initial identity: capability expiry immediately bounds the next parked authority port (104.014983ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before reservation: capability expiry immediately bounds the next parked authority port (101.018924ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before reservation: run before business immediately bounds the next parked authority port (103.174274ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before reservation: run before source immediately bounds the next parked authority port (101.556179ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before effect: capability expiry immediately bounds the next parked authority port (100.757222ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before effect: run before business immediately bounds the next parked authority port (101.268237ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before effect: run before source immediately bounds the next parked authority port (101.844596ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before release: capability expiry immediately bounds the next parked authority port (101.890971ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before release: run before business immediately bounds the next parked authority port (102.131219ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ before release: run before source immediately bounds the next parked authority port (100.665511ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ after settlement: capability expiry immediately bounds the next parked authority port (101.111842ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ after settlement: run before business immediately bounds the next parked authority port (101.600314ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:16:5
+✖ after settlement: run before source immediately bounds the next parked authority port (100.989075ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^GatewayDenied: DEADLINE$/. Input:
+  
+  'Error: fresh inner authority deadline stayed pending past 100ms'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:46:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: fresh inner authority deadline stayed pending past 100ms
+        at Timeout.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:47:43)
+        at listOnTimeout (node:internal/timers:635:17)
+        at process.processTimers (node:internal/timers:571:7),
+    expected: /^GatewayDenied: DEADLINE$/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/gateway/test/authority-deadline.test.mjs:64:1
+✖ an initial capability completing after cancellation cannot start current-run lookup (23.003512ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'capability',
+  +   'fence'
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-repair-20261012/apps/gateway/test/authority-deadline.test.mjs:70:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'capability', 'fence' ],
+    expected: [ 'capability' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

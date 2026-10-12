@@ -1,0 +1,27 @@
+✔ normalizes defaults/nulls and binds the server-selected client (3.782741ms)
+✔ strict raw input bounds, numeric coercion and model authority keys refuse (1.076629ms)
+✔ requires canonical trusted actor/subject and rejects client substitution (0.377438ms)
+✔ complete/empty producer queue metadata never becomes approved evidence or absence (1.4955ms)
+✔ selected client permits own firm/private rows and the selected client, rejects another client (1.36993ms)
+✔ result actor/tenant/client and pending-fact constants cannot be substituted (1.031682ms)
+✔ restricted proposals redact text/title and remain partial (0.574354ms)
+✔ truncated/null-text pages cannot claim complete producer coverage (0.583478ms)
+✔ disabled review is unavailable, including continued-request firstPage semantics (0.995778ms)
+✔ continuation requires retained scope, exact cursor and unchanged page limit (1.480788ms)
+✔ final continued page remains partial and must advance beyond prior key (0.744419ms)
+✔ UTF-16 preview caps, date order, duplicates and requested count are enforced (1.437663ms)
+✔ inert admission refuses getters/proxies/cycles/sparse data without invocation (0.336517ms)
+✔ operation remains unmapped/unavailable and public exports stay separate (4.404506ms)
+✔ family factory import has no process/network/timer effect (30.023676ms)
+✔ nonfinite proposal timestamps cannot claim complete or restricted coverage (0.818071ms)
+✔ nonfinite timestamps refuse in either position before within-page ordering (0.393151ms)
+✔ nonfinite retained or current timestamps cannot advance a continuation (0.613894ms)
+✔ finite timestamps preserve offset-aware ordering and equal-instant identity ties (0.843639ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 910.401796

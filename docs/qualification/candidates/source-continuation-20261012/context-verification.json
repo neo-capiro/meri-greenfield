@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-12T01:48:16.767567+00:00",
+  "checks": [
+    {
+      "name": "backend-accepted",
+      "bytes": 474945,
+      "sha256": "998e0fabdc08a20eaa7a1974dbfc0464de4848b699720ac04cfec34797ab25b5",
+      "matches": true
+    },
+    {
+      "name": "backend-candidate-freeze",
+      "bytes": 502303,
+      "sha256": "bfa7250d53e4f9985deaacc166cbb8d246d3718134e2db3ec5f845d645b2b67e",
+      "matches": true
+    },
+    {
+      "name": "frontend",
+      "bytes": 305423,
+      "sha256": "46569924d2201efc202d37fafb41625a64a99f4ec49b0a8f8db987c440441817",
+      "matches": true
+    },
+    {
+      "name": "aws-shipper-materialized",
+      "bytes": 84974,
+      "sha256": "9d1782d51b73f3df82c04354797e01252aa6a9c9e07a7bf5015b187cdaf2cbd8",
+      "matches": true
+    },
+    {
+      "name": "adopted-R2-plan",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388",
+      "matches": true
+    }
+  ],
+  "privatePolicy": {
+    "repository": "neo-capiro/capiro-agent-ops",
+    "supportedConnector": "github.get_repo",
+    "status": 404,
+    "scope": "Host/Hermes affected operations only; independent source work allowed"
+  },
+  "initialPR7MetadataRead": "connector transport closed; Git remote head verified independently",
+  "admission": {
+    "sourceCandidateAccepted": false,
+    "G1": false,
+    "runtime": false,
+    "paidModel": false,
+    "cloudWrites": false
+  }
+}

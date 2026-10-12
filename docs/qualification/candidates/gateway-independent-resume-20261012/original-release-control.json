@@ -1,0 +1,25 @@
+{
+  "command": [
+    "node",
+    "/tmp/meri-gateway-original-review-20261012/docs/qualification/candidates/gateway-source-disabled-20261012/independent-review-20261012/release-deadline-control.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769753.3580031,
+  "elapsedSeconds": 1.476686954498291,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "original-release-control.stdout.txt",
+      "bytes": 277,
+      "sha256": "dd820176a52bc01684d0fa249a84db2ded396738b69768434347f5323b911313"
+    },
+    "stderr": {
+      "path": "original-release-control.stderr.txt",
+      "bytes": 525,
+      "sha256": "effcbb222e0e65c01503550a3378eedb6e09860ee1a9531a5ee20b5e679ab080"
+    }
+  }
+}

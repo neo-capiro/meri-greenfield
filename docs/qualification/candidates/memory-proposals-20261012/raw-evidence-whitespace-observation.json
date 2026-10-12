@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "diagnostic": "docs/qualification/candidates/memory-proposals-20261012/final-public-before-bin-fix.stdout.bin:13: new blank line at EOF.\ndocs/qualification/candidates/memory-proposals-20261012/physical-deps-before-root-alias-recapture.stdout.bin:228: trailing whitespace.\n+  \ndocs/qualification/candidates/memory-proposals-20261012/physical-deps-before-root-alias-recapture.stdout.bin:244: trailing whitespace.\n+  \ndocs/qualification/candidates/memory-proposals-20261012/physical-deps-before-root-alias-recapture.stdout.bin:246: trailing whitespace.\n+  \ndocs/qualification/candidates/memory-proposals-20261012/physical-deps-before-root-alias-recapture.stdout.bin:247: trailing whitespace.\n+  \ndocs/qualification/candidates/memory-proposals-20261012/physical-deps-before-root-alias-recapture.stdout.bin:249: trailing whitespace.\n+  \n",
+  "reason": "Git guessed raw byte-preserving stdout .bin files as text; failed streams include original whitespace. Preserve raw bytes and explicitly mark only owned raw .bin evidence as binary."
+}

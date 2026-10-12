@@ -1,6 +1,20 @@
 # G1 remaining scope and sequence
 
-## Current source checkpoint — 12 October 2026 UTC
+## Source continuation — 12 October 2026 UTC
+
+**G0 accepted / G1 OPEN; G2–G7 unentered. Source acceptance is not runtime acceptance.**
+
+Refreshed accepted PR7 is `5ee46446b5f60034916f00b2a665b3e2bef9cf60`, tree `985e0fdafe23d68b6f2e81a092cf098d8ede3182`. Preservation PR9 is `c57b7d26df7de2acbd8c7d8edc7098f7d495053a`, tree `66135fa4cc69de9fbae12d77b4cc3bc24305a074`. Original PR2 is already in accepted ancestry. This continuation starts from accepted PR7, preserves PR9's evidence, and integrates candidate source only after independent review. The [continuation task](../coordination/tasks/MERI-SOURCE-CONTINUATION-20261012.md) defines exclusive ownership and acceptance boundaries.
+
+The canonical catalog accounts for **139 original capabilities: 96 selected and 43 deferred; thirteen bound but unavailable and 83 selected unmapped**. Fourteen original skills remain pending. Private retrieval 0.2 remains separate from public transport 0.1. Schema binding does not enable a handler or source connection. Historical three-operation counts below are superseded.
+
+Independent resumed review found a memory timestamp-ordering defect and gateway inner-authorization deadline/cancellation defects despite passing original tests. Their retained HOLD proofs, narrow repairs and exact final decisions are recorded in the [memory review](../coordination/reports/MERI-MEMORY-INDEPENDENT-RESUME-20261012.md) and [gateway review](../coordination/reports/MERI-GATEWAY-INDEPENDENT-RESUME-20261012.md). `list_memory_proposals` stays unavailable. Administrator self-approval in the pinned producer conflicts with the wrapper's another-reviewer promise; dot must resolve that policy before affected approval implementation. Proposal reads can be reviewed independently.
+
+The [readiness packet](../coordination/reports/MERI-SOURCE-READINESS-20261012.md) binds the canonical capability accounting and G1 requirements to exact source/evidence. It is **NOT_EXECUTABLE**. Native Windows runner capture, a supported patched image, actual task authentication/expiry/revocation, durable budgets, native task-A/B recovery and stale rejection, browser/renderer sandbox and teardown, egress/watchdog and artifact inspection remain unqualified. The old image with 47 findings (five critical, seventeen high) must never be launched. Existing Aurora remains selected for eventual state; no new RDS, networking or database action is admitted.
+
+Direct backend operations-policy retrieval returned 404 through the supported connector. The coordinating session subsequently reported verified `capiro-agent-ops` main `b2b0ce8` and the October 2 host map on NEOMART, plus AWS CLI 2.36.8 / `capiro-dev` / account `967807252336` / `capirocli` / `us-east-1`. Its separate read-only runner capture and resource inventory are in progress; the returned artifacts and relevant policy have not yet been reviewed here. This report neither replaces runner pins nor grants runtime authority. Paid-model allowance remainder and infrastructure/security/action authority remain unknown. No paid provider calls or cloud writes are authorized here. Shared frontend integration belongs to its separate owner; this continuation edits only the backend repository.
+
+## Historical source checkpoint — earlier 12 October 2026 UTC
 
 **G0 accepted / G1 OPEN. G2–G7 remain unentered. The complete adopted first-release plan remains in scope.**
 

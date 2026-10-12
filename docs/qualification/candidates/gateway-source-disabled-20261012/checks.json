@@ -1,0 +1,102 @@
+{
+  "sourceBase": "0eb81023343fcfd2d5129a09c0048371cc9ccaa2",
+  "checks": [
+    {
+      "label": "gateway",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/gateway.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.2661280790016463,
+      "stdoutSha256": "f9c7bfc761c1f80bef7cfbb4a346ca6296f6426c027d69b4ceb53349f6c6abb7",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "contracts",
+      "argv": [
+        "npm",
+        "run",
+        "check:contracts"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 3.8102298279991373,
+      "stdoutSha256": "81aa6fb2e8b424fab29d56a03d563839e28003050735dcf34bb4380bdd58e94b",
+      "stderrSha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f"
+    },
+    {
+      "label": "source-whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.2930735040026775,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "contracts-dependencies-repaired",
+      "argv": [
+        "npm",
+        "run",
+        "check:contracts"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 3.6036935080010153,
+      "stdoutSha256": "8383a97112866ecc36046d0849c54a95f42f00edb59b05f062d3914115172d94",
+      "stderrSha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f",
+      "repair": "Borrowed pinned existing contracts/node_modules through owned link; no install/vendor/package/lock changes"
+    },
+    {
+      "label": "contracts-owned-copy",
+      "argv": [
+        "npm",
+        "run",
+        "check:contracts"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 3.410855141999491,
+      "stdoutSha256": "e8b95df7beb5befbdf92c913408a52bcc55a8c4a4b295973189a4d4b43ab7c8d",
+      "stderrSha256": "7125f194612fcff2f454c05d848e7cb71facc1967b4d5017e25b34fdee3ba74f",
+      "repair": "Owned byte copies satisfy existing permission-scoped child allowlist; no test/guard/package/lock change"
+    },
+    {
+      "label": "gateway-final",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/gateway.test.mjs"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "60c6b6685f7b6d39de21815067c50ca03492c30ea6ea759e31c55f804b2fa967",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "gateway-final-15",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/gateway.test.mjs"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "aa5c2fca377ea16c42776be2198faba711efbf5c28f7afd470f90f21d350949e",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "gateway-root-corrections",
+      "argv": [
+        "node",
+        "--test",
+        "apps/gateway/test/gateway.test.mjs"
+      ],
+      "exitCode": 0,
+      "stdoutSha256": "a961b99969aa06a80ae21f303e9453df0d135abb6d79875ce1fa6949ae296e0d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "liveActions": 0,
+  "status": "SOURCE_ONLY"
+}

@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769890.000621,
+  "elapsedSeconds": 1.6246886253356934,
+  "exitCode": 1,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "preserved-issued-at.stdout.txt",
+      "bytes": 2862,
+      "sha256": "dd459ca8a05d65bff0021731abbe757fe8817ab37c5a59fe387b75853c7ff428"
+    },
+    "stderr": {
+      "path": "preserved-issued-at.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
