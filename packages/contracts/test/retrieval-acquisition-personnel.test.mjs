@@ -69,7 +69,7 @@ test('search defaults/range are strict while source string trim and UTF16 caps r
  assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{query:' \t ',service:' '},regular).input,{limit:20,page:1});
  assert.equal(v.normalizeAcquisitionPersonnelInput(search,{query:'q'.repeat(239)+' X'},regular).input.query,'q'.repeat(239));
  for(const field of ['limit','page'])for(const value of [0,-1,1.5,'10',null,true,undefined,field==='limit'?51:101])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{[field]:value},regular));
- for(const input of [{q:'hidden alias'},{pe_code:'hidden selector'},{sort:'confidence'},{pe_aligned:'aligned'}])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,input,regular));
+ for(const input of [{query_alias:'unknown selector'},{pe_code:'hidden selector'},{sort:'confidence'},{pe_aligned:'aligned'}])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,input,regular));
 });
 test('search every registered limit/page boundary and echoed selection',()=>{
  for(const limit of [1,50])for(const pageNumber of [1,100]){const p=page();p.limit=limit;p.page=pageNumber;v.assertAcquisitionPersonnelOutput(search,p,{limit,page:pageNumber},regular);}
@@ -135,4 +135,21 @@ test('actual canonical resolver pins request/hash and restricts both trusted con
  const catalog={operations:bindings.map(b=>({operation:{id:b.id,version:b.version},handler:null,status:'unavailable'}))};
  const r=createOperationContracts({catalog,bindings,validators:v,assertCatalog(){},canonicalSha256});
  for(const op of ACQUISITION_PERSONNEL_OPERATION_IDS){const c=r.resolveOperationContract({id:op,version:'0.2.0'}),n=c.normalizeInput(req(op),regular);assert.ok(Object.isFrozen(n.request));assert.equal(n.argumentsSha256,canonicalSha256(n.input));c.assertOutput(make(op),{request:n.request,...regular});assert.throws(()=>c.normalizeInput(req(op),{...regular,nowMs:1}));assert.throws(()=>c.assertOutput(make(op),{request:n.request}));}
+});
+
+// Added after independent review preserved the rejected-q source failure.
+test('query wins only when nonblank; q preserves null/blank fallback and canonical digest equivalence',()=>{
+ for(const query of [undefined,null,'',' \t ']){
+  const request={q:' Alias Person ',...(query===undefined?{}:{query})};
+  assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,request,regular).input,{query:'Alias Person',limit:20,page:1});
+  v.assertAcquisitionPersonnelOutput(search,page(),request,regular);
+ }
+ assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{query:' Preferred ',q:' Alias '},regular).input,{query:'Preferred',limit:20,page:1});
+ for(const q of [null,'',' \n '])assert.deepEqual(v.normalizeAcquisitionPersonnelInput(search,{query:null,q},regular).input,{limit:20,page:1});
+ const capped=v.normalizeAcquisitionPersonnelInput(search,{query:null,q:' '+ 'q'.repeat(239)+'😀 '},regular).input;
+ assert.equal(capped.query,'q'.repeat(239)+'\ud83d');assert.equal(Object.hasOwn(capped,'q'),false);
+ const a=v.normalizeAcquisitionPersonnelInput(search,{q:' Alias '},regular).input,b=v.normalizeAcquisitionPersonnelInput(search,{query:'Alias'},regular).input;
+ assert.equal(canonicalSha256(a),canonicalSha256(b));
+ for(const q of [false,1,{},[]])assert.throws(()=>v.normalizeAcquisitionPersonnelInput(search,{q},regular));
+ const malformed=page();malformed.total=21;assert.throws(()=>v.assertAcquisitionPersonnelOutput(search,malformed,{q:'Alias'},regular),/candidate window/);
 });
