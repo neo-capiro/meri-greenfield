@@ -1,0 +1,361 @@
+{
+  "scope": "AUTHOR_OFFLINE_SOURCE_EVIDENCE_NOT_ACCEPTANCE",
+  "sourceCommit": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+  "sourceTree": "b7e8366162a549f0c4a567a1f43698bb97f9c9a8",
+  "originalFilesPreserved": 6528,
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+      "blob": "ebd00dfe0b98497e7e372f9a53c66482db2de8b6",
+      "bytes": 14083,
+      "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "blob": "98cf4b986817891d4a26dde3627be2c0f3d28318",
+      "bytes": 6904,
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web.test.mjs",
+      "blob": "bb46990ed581d6e3d6fadd15759d4519688e34fe",
+      "bytes": 14822,
+      "sha256": "deddab0e9c6e13b639e856cd8c89e53809d8c8f9267bca4d21943e66ead154f6"
+    }
+  ],
+  "passed": 78,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "all original complete blobs and modes preserved",
+      "pass": true
+    },
+    {
+      "check": "only three source additions",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/retrieval-0.2/public-web.schema.json",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "working exact packages/contracts/test/retrieval-public-web.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical/public/license preserved packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical/public/license preserved packages/contracts/retrieval-0.2/catalog.json",
+      "pass": true
+    },
+    {
+      "check": "canonical/public/license preserved packages/contracts/validate.mjs",
+      "pass": true
+    },
+    {
+      "check": "canonical/public/license preserved packages/contracts/meri.schema.json",
+      "pass": true
+    },
+    {
+      "check": "canonical/public/license preserved packages/contracts/THIRD-PARTY-NOTICES.md",
+      "pass": true
+    },
+    {
+      "check": "ten source policy provider pairs",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/common/web-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/common/web-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/common/web-search.helpers.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/common/web-search.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/common/web-search.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/common/web-search.helpers.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/hardenedWebTransport.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/hardenedWebTransport.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/hardenedWebTransport.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/meri-web-pdf-worker.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/meri-web-pdf-worker.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/meri-web-pdf-worker.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/meri-tool-request-control.ts",
+      "pass": true
+    },
+    {
+      "check": "reference fd8765ec01d292013758606204f2c9d886cd31c1 apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "reference 4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "no drift apps/api/src/meri/tool-service-secret.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "metadata only references",
+      "pass": true
+    },
+    {
+      "check": "original author test preserved",
+      "pass": true
+    },
+    {
+      "check": "schema unchanged during repair",
+      "pass": true
+    },
+    {
+      "check": "exact bounded prefix repair only",
+      "pass": true
+    },
+    {
+      "check": "only two declared fixture corrections; negative assertions unchanged",
+      "pass": true
+    },
+    {
+      "check": "receipt exact source focused-initial",
+      "pass": true
+    },
+    {
+      "check": "receipt completion focused-initial",
+      "pass": true
+    },
+    {
+      "check": "capture identity focused-initial",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact focused result focused-initial",
+      "pass": true
+    },
+    {
+      "check": "owned group currently absent focused-initial",
+      "pass": true
+    },
+    {
+      "check": "receipt exact source truncation-before",
+      "pass": true
+    },
+    {
+      "check": "receipt completion truncation-before",
+      "pass": true
+    },
+    {
+      "check": "capture identity truncation-before",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact focused result truncation-before",
+      "pass": true
+    },
+    {
+      "check": "owned group currently absent truncation-before",
+      "pass": true
+    },
+    {
+      "check": "receipt exact source focused-truncation-repaired",
+      "pass": true
+    },
+    {
+      "check": "receipt completion focused-truncation-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture identity focused-truncation-repaired",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "exact focused result focused-truncation-repaired",
+      "pass": true
+    },
+    {
+      "check": "owned group currently absent focused-truncation-repaired",
+      "pass": true
+    },
+    {
+      "check": "seven existing dependency directories",
+      "pass": true
+    },
+    {
+      "check": "dependency identity ajv",
+      "pass": true
+    },
+    {
+      "check": "dependency identity ajv-formats",
+      "pass": true
+    },
+    {
+      "check": "dependency identity canonicalize",
+      "pass": true
+    },
+    {
+      "check": "dependency identity fast-uri",
+      "pass": true
+    },
+    {
+      "check": "dependency identity fast-deep-equal",
+      "pass": true
+    },
+    {
+      "check": "dependency identity json-schema-traverse",
+      "pass": true
+    },
+    {
+      "check": "dependency identity require-from-string",
+      "pass": true
+    },
+    {
+      "check": "no IO/parser imports",
+      "pass": true
+    },
+    {
+      "check": "canonical snapshot reused",
+      "pass": true
+    },
+    {
+      "check": "source whitespace",
+      "pass": true
+    }
+  ],
+  "ownedGroups": [
+    {
+      "pgid": 249268,
+      "absent": true
+    },
+    {
+      "pgid": 249881,
+      "absent": true
+    },
+    {
+      "pgid": 250224,
+      "absent": true
+    }
+  ],
+  "unrun": [
+    "independent acceptance",
+    "broad/public",
+    "source/network/parser/browser/provider/model/SQL/native runtime"
+  ]
+}

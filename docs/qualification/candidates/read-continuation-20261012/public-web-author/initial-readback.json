@@ -1,0 +1,6 @@
+{
+  "classification": "NON_SOURCE_DISCOVERY_LOOKUP",
+  "detail": "Attempt to read regulatory-dockets-validation.mjs at this older isolated base returned path absent; used available public-reports pattern and canonical operation snapshot instead. No product/source change or test execution.",
+  "originalRawStreamsRetained": false,
+  "evidenceKind": "tool readback summary"
+}
