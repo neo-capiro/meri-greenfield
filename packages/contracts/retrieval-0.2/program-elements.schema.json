@@ -523,6 +523,9 @@
         "none"
       ]
     },
+    "ProgramElementFundingNote": {
+      "const": "Per-chamber marks are NOT included in search results. Before stating or comparing figures, call get_pe_budget_timeline for the full request / HASC / SASC / HAC-D / SAC-D / conference / enacted breakdown with authorization-vs-appropriations labels. \"current\" is the furthest-along stage on record (not necessarily enacted); when its fiscal year differs from the request year, do not compute a change between them."
+    },
     "ProgramElementSearchFunding": {
       "type": "object",
       "properties": {
@@ -856,16 +859,44 @@
           ]
         },
         "currentClaim": {
-          "$ref": "#/$defs/ProgramElementClaim"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "requestClaim": {
-          "$ref": "#/$defs/ProgramElementClaim"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "enactedClaim": {
-          "$ref": "#/$defs/ProgramElementClaim"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "requestAtEnactedClaim": {
-          "$ref": "#/$defs/ProgramElementClaim"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "comparableEnactedVsRequest": {
           "anyOf": [
