@@ -36,6 +36,14 @@ const dates = () => ({latestActionDate: null, baseAwardSignedDate: null, sourceL
 const normalize = (id, raw, context = {}) => v.normalizePublicDataInput(id, raw, context).input;
 const check = (id, output, raw = {}, context = {}) => v.assertPublicDataOutput(id, output, raw, context);
 
+test('standalone operation selection rejects coercive objects before invoking caller code', () => {
+  let effects = 0;
+  const selector = {[Symbol.toPrimitive]() { effects++; return economic; }};
+  assert.throws(() => v.normalizePublicDataInput(selector, {}, {}));
+  assert.equal(effects, 0);
+  for (const id of [null, 1, true, [], Symbol('operation')]) assert.throws(() => v.publicDataInputDefinition(id));
+});
+
 test('economic selectors normalize defaults, exact aliases and supported producer extensions', () => {
   assert.deepEqual(normalize(economic, {}), {source: 'census', limit: 20});
   assert.deepEqual(normalize(economic, {source: ' BEA ', datasetName: ' ', dataset: ' NIPA ', year: '2026', state: 'ca'}),

@@ -14,6 +14,14 @@ const v = createStateLegislationValidators({schema, validateShape(name, value) {
 const bills = 'search_state_bills', people = 'get_state_legislator', stamp = '2026-10-12T12:00:00.000Z';
 const normalize = (id, raw = {}, context = {}) => v.normalizeStateLegislationInput(id, raw, context);
 const check = (id, page, raw = {}, context = {}) => v.assertStateLegislationOutput(id, page, raw, context);
+
+test('standalone state operation selection refuses coercive objects without executing them', () => {
+  let effects = 0;
+  const selector = {[Symbol.toPrimitive]() { effects++; return bills; }};
+  assert.throws(() => v.normalizeStateLegislationInput(selector, {}, {}));
+  assert.equal(effects, 0);
+  for (const id of [null, 1, true, [], Symbol('operation')]) assert.throws(() => v.stateLegislationInputDefinition(id));
+});
 const bill = () => ({id: 'synthetic-bill', state: 'CA', session: '2026', identifier: 'HB 1', title: 'Synthetic',
   chamber: null, subjects: [], status: null, statusLabel: 'Unknown', sponsorName: null, sponsorParty: null,
   sponsorCount: -1, latestActionDate: null, latestActionText: null, stateUrl: null, url: null});
