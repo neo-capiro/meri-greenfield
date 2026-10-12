@@ -29,6 +29,8 @@ families = [
     ('action-items-complete', 'ActionItemsComplete', False, ['binding', 'clientResolution'], [
         ('actions.query', 'ActionItemsCompleteInput', 'ActionItemsCompleteResult')]),
 ]
+raw_repairs = json.loads((packet / 'raw-request-admission-before.json').read_text())['rows']
+assert len(raw_repairs) == 31 and all(row['normalizationSucceeded'] for row in raw_repairs)
 # Later accepted families must be explicit records, never inferred from a file.
 extra = packet / 'additional-accepted-families.json'
 if extra.exists():
@@ -50,6 +52,8 @@ text = imports + text
 needle = "'outreach-query', 'program-elements'];"
 assert text.count(needle) == 1
 text = text.replace(needle, "'outreach-query', 'program-elements', " + ', '.join(repr(row[0]) for row in families) + '];')
+if any(row[0] == 'public-domain-hearings' for row in families):
+    text = text.replace("'public-domain-hearings'];", "'public-domain-hearings', 'public-domain-hearing-records'];")
 declarations = ['export const publicDomainDatasetRegistry = createPublicDomainDatasetRegistry({canonicalSha256, validateMetadata: validateShape});']
 names = []
 for group, factory, nested, *_ in families:
@@ -93,6 +97,11 @@ for group, factory, nested, contexts, bindings in families:
 needle = 'export const CATALOG_OPERATION_BINDINGS = Object.freeze([\n'
 assert text.count(needle) == 1
 text = text.replace(needle, needle + ''.join(rows))
+for repair in raw_repairs:
+    prefix = f"id: '{repair['id']}', nativeId: '{repair['id']}', group: '{repair['group']}', input: "
+    old_input = prefix + repr(repair['before'])
+    assert text.count(old_input) == 1, repair['id']
+    text = text.replace(old_input, prefix + repr(repair['after']))
 text = text.replace("nativeCoverage: 'partial', group: 'operational-reads'", "nativeCoverage: 'partial', supersededBy: 'actions.query', group: 'operational-reads'", 1)
 old = """        if (original.state !== 'pending' || original.replacement !== null || operation.aliases.length !== 0)
           fail('Partial native coverage cannot claim a replacement or compatibility alias');"""
@@ -113,6 +122,11 @@ catalog_file = contracts / 'catalog.json'
 catalog = json.loads(catalog_file.read_text())
 assert catalog['catalogVersion'] == '0.2.10' and len(catalog['operations']) == 71
 catalog['catalogVersion'] = '0.2.11'
+for repair in raw_repairs:
+    descriptor = next(row for row in catalog['operations'] if row['operation']['id'] == repair['id'])
+    before = descriptor['inputSchema']['id']
+    assert before.endswith('#/$defs/' + repair['before'])
+    descriptor['inputSchema']['id'] = before[:-len(repair['before'])] + repair['after']
 partial = next(row for row in catalog['operations'] if row['operation']['id'] == 'query_action_items')
 partial['replacement'] = {'id': 'actions.query', 'version': '0.2.0'}
 partial['limitations'][:2] = [

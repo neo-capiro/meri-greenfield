@@ -1,0 +1,585 @@
+{
+  "sourceOnly": true,
+  "rows": [
+    {
+      "id": "query_outreach",
+      "group": "outreach-query",
+      "before": "OutreachQueryInput",
+      "after": "OutreachQueryRequest",
+      "request": {},
+      "context": {
+        "clientResolution": null
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "clientId": null,
+        "status": null,
+        "limit": 20
+      },
+      "moduleSha256": "b0a1eb8f5be0cb05a6fab05d1336162c050ad717d7c07d733eaead1239c62994"
+    },
+    {
+      "id": "search_program_elements",
+      "group": "program-elements",
+      "before": "ProgramElementSearchInput",
+      "after": "ProgramElementSearchRequest",
+      "request": {},
+      "context": {
+        "evidenceAccuracyMode": "off"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "query": null,
+        "service": null,
+        "budgetActivity": null,
+        "hasData": null,
+        "page": 1,
+        "limit": 20
+      },
+      "moduleSha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311"
+    },
+    {
+      "id": "get_program_element",
+      "group": "program-elements",
+      "before": "ProgramElementDetailInput",
+      "after": "ProgramElementDetailRequest",
+      "request": {
+        "peCode": " 0600001 "
+      },
+      "context": {
+        "evidenceAccuracyMode": "off"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "peCode": "0600001"
+      },
+      "moduleSha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311"
+    },
+    {
+      "id": "get_pe_budget_timeline",
+      "group": "program-elements",
+      "before": "ProgramElementTimelineInput",
+      "after": "ProgramElementTimelineRequest",
+      "request": {
+        "peCode": " 0600001 "
+      },
+      "context": {
+        "evidenceAccuracyMode": "off"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "peCode": "0600001"
+      },
+      "moduleSha256": "be665df6472a07b10042f21e3c95f2cfc3a838042d45a7ac6d7b0ceefeced311"
+    },
+    {
+      "id": "search_public_web",
+      "group": "public-web",
+      "before": "PublicWebSearchInput",
+      "after": "PublicWebSearchRequest",
+      "request": {
+        "query": "synthetic"
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "query": "synthetic",
+        "limit": 6
+      },
+      "moduleSha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "id": "scrape_web_page",
+      "group": "public-web",
+      "before": "PublicWebPageInput",
+      "after": "PublicWebPageRequest",
+      "request": {
+        "url": "https://example.test/"
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "url": "https://example.test/",
+        "mode": "summary",
+        "maxChars": 4000
+      },
+      "moduleSha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "id": "search_sam_opportunities",
+      "group": "sam-opportunities",
+      "before": "SamOpportunitiesInput",
+      "after": "SamOpportunitiesRequest",
+      "request": {},
+      "context": {
+        "asOf": "2026-10-12T12:00:00.000Z",
+        "evidenceAccuracyMode": "off",
+        "sourceStatusAsOf": "2026-10-12T12:00:00.000Z",
+        "sourceHealthAsOf": "2026-10-12T12:00:00.000Z"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "query": null,
+        "naics": null,
+        "includeInactive": false,
+        "limit": 20
+      },
+      "moduleSha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a"
+    },
+    {
+      "id": "get_florida_budget_project",
+      "group": "florida-budget",
+      "before": "FloridaBudgetInput",
+      "after": "FloridaBudgetRequest",
+      "request": {},
+      "context": {
+        "asOf": "2026-10-12T12:00:00.000Z",
+        "effectiveScope": {
+          "jurisdiction": "FL",
+          "sessionKey": "",
+          "folderId": null,
+          "clientId": null
+        },
+        "clientResolution": null
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "q": "",
+        "fiscalYear": "2026-27",
+        "projectId": "",
+        "offset": 0,
+        "sessionKey": "",
+        "folderId": null,
+        "clientId": null
+      },
+      "moduleSha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb"
+    },
+    {
+      "id": "get_state_bill_status",
+      "group": "state-status-votes",
+      "before": "StateBillStatusInput",
+      "after": "StateBillStatusRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {},
+      "moduleSha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "id": "search_state_floor_votes",
+      "group": "state-status-votes",
+      "before": "StateFloorVotesInput",
+      "after": "StateFloorVotesRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 10
+      },
+      "moduleSha256": "43587a404705d7a589000c0bd228beb74be4880c12ebc71c17ca5fca93cfeaa1"
+    },
+    {
+      "id": "find_contacts",
+      "group": "tenant-contacts",
+      "before": "TenantContactsInput",
+      "after": "TenantContactsRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "clientId": null,
+        "domain": null,
+        "query": null,
+        "limit": 25
+      },
+      "moduleSha256": "793b0880b4a1a8cf4d77ad39ee857b1222289d732a7ba9704b4acbae06989767"
+    },
+    {
+      "id": "resolve_entity",
+      "group": "entity-candidates",
+      "before": "EntityCandidatesInput",
+      "after": "EntityCandidatesRequest",
+      "request": {},
+      "context": {
+        "defaultCongress": 119
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 5
+      },
+      "moduleSha256": "2ef046fa6166f5e9011c89081a5f58b0413b0a5ee2d1bd12bbdc8c580f723090"
+    },
+    {
+      "id": "search_tracked_bills",
+      "group": "tracked-bills",
+      "before": "TrackedBillsInput",
+      "after": "TrackedBillsRequest",
+      "request": {
+        "clientId": " Named client "
+      },
+      "context": {
+        "binding": {
+          "tenantId": "synthetic-tenant",
+          "actorId": "synthetic-actor",
+          "conversationId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+          "runId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "attemptId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+          "workerId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "writerFence": 1
+        },
+        "subject": {
+          "kind": "client",
+          "entityType": "client",
+          "entityIds": [
+            "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+          ],
+          "tenantId": "synthetic-tenant",
+          "actorId": "synthetic-actor",
+          "authorizationDecisionId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+          "policyRevision": "synthetic-policy",
+          "rosterVersionId": null,
+          "scopes": [
+            {
+              "tenantId": "synthetic-tenant",
+              "kind": "client",
+              "resourceId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+              "policyRevision": "synthetic-policy"
+            }
+          ]
+        },
+        "clientReference": "Named client"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "clientId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      },
+      "moduleSha256": "697ba30c8cfbf7c02e5b815104e909fd2183633891ccc835373d568e44b6bc67"
+    },
+    {
+      "id": "get_committee_roster",
+      "group": "legislative-directory",
+      "before": "CommitteeRosterInput",
+      "after": "CommitteeRosterRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {},
+      "moduleSha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    },
+    {
+      "id": "list_members",
+      "group": "legislative-directory",
+      "before": "MemberListInput",
+      "after": "MemberListRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 100
+      },
+      "moduleSha256": "c41959f5b8cbee875ecee37f42c9085ef2adde0314f6dbbdcfe2617d3674f6d1"
+    },
+    {
+      "id": "get_pe_contractors",
+      "group": "pe-references",
+      "before": "PeContractorsInput",
+      "after": "PeContractorsRequest",
+      "request": {
+        "peCode": " 0600001 "
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "peCode": "0600001"
+      },
+      "moduleSha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1"
+    },
+    {
+      "id": "get_pe_bills",
+      "group": "pe-references",
+      "before": "PeBillsInput",
+      "after": "PeBillsRequest",
+      "request": {
+        "peCode": " 0600001 "
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "peCode": "0600001"
+      },
+      "moduleSha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1"
+    },
+    {
+      "id": "get_pe_report_language",
+      "group": "pe-references",
+      "before": "PeReportLanguageInput",
+      "after": "PeReportLanguageRequest",
+      "request": {
+        "peCode": " 0600001 "
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "peCode": "0600001"
+      },
+      "moduleSha256": "211b26a73ad790d8c794779a1ca543df4992a380512c40277cbf0ede3689f4f1"
+    },
+    {
+      "id": "get_state_rule_status",
+      "group": "rule-status",
+      "before": "RuleStatusInput",
+      "after": "RuleStatusRequest",
+      "request": {},
+      "context": {
+        "stageAsOf": "2026-10-12T12:00:00.000Z",
+        "commentAsOf": "2026-10-12T12:00:00.000Z"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {},
+      "moduleSha256": "2f866b0fb92a525dcb305dffec05c4870abe42879e6771078dcffd0d567103fb"
+    },
+    {
+      "id": "get_certification_status",
+      "group": "certification-status",
+      "before": "CertificationStatusInput",
+      "after": "CertificationStatusRequest",
+      "request": {
+        "program": "fedramp",
+        "query": " synthetic "
+      },
+      "context": {
+        "comparisonLocale": "en-US"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": true,
+      "normalizedInput": {
+        "program": "fedramp",
+        "query": "synthetic"
+      },
+      "moduleSha256": "122dbd5c095a4c791dcd7c02a2941bbf4e3656d2653bf8d4893ba07cf5ab0f62"
+    },
+    {
+      "id": "search_sec_filings",
+      "group": "disclosures",
+      "before": "DisclosuresSecInput",
+      "after": "DisclosuresSecRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20
+      },
+      "moduleSha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "id": "search_fara_registrations",
+      "group": "disclosures",
+      "before": "DisclosuresFaraInput",
+      "after": "DisclosuresFaraRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20
+      },
+      "moduleSha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "id": "search_lda_filings",
+      "group": "disclosures",
+      "before": "DisclosuresLdaInput",
+      "after": "DisclosuresLdaRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 15,
+        "page": 1
+      },
+      "moduleSha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "id": "get_bill_status",
+      "group": "federal-legislation",
+      "before": "FederalBillStatusInput",
+      "after": "FederalBillStatusRequest",
+      "request": {},
+      "context": {
+        "defaultCongress": 119
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "billId": null
+      },
+      "moduleSha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9"
+    },
+    {
+      "id": "search_floor_votes",
+      "group": "federal-legislation",
+      "before": "FederalFloorVotesInput",
+      "after": "FederalFloorVotesRequest",
+      "request": {},
+      "context": {
+        "defaultCongress": 119
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "billId": null,
+        "query": null,
+        "member": null,
+        "bioguideId": null,
+        "chamber": null,
+        "congress": null,
+        "limit": 10
+      },
+      "moduleSha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9"
+    },
+    {
+      "id": "search_state_bills",
+      "group": "state-legislation",
+      "before": "StateBillSearchInput",
+      "after": "StateBillSearchRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20
+      },
+      "moduleSha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023"
+    },
+    {
+      "id": "get_state_legislator",
+      "group": "state-legislation",
+      "before": "StateLegislatorInput",
+      "after": "StateLegislatorRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 5
+      },
+      "moduleSha256": "4688259e8c9741f65c03810bb4dae6f34adb4b09dc0bc7e5d78f29a7103ef023"
+    },
+    {
+      "id": "query_economic_data",
+      "group": "public-data",
+      "before": "PublicEconomicInput",
+      "after": "PublicEconomicRequest",
+      "request": {},
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20,
+        "source": "census"
+      },
+      "moduleSha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4"
+    },
+    {
+      "id": "search_federal_grants",
+      "group": "public-data",
+      "before": "PublicGrantInput",
+      "after": "PublicGrantRequest",
+      "request": {},
+      "context": {
+        "evidenceAccuracyMode": "off"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20
+      },
+      "moduleSha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4"
+    },
+    {
+      "id": "search_federal_awards",
+      "group": "public-data",
+      "before": "PublicAwardInput",
+      "after": "PublicAwardRequest",
+      "request": {},
+      "context": {
+        "evidenceAccuracyMode": "off"
+      },
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "limit": 20,
+        "page": 1
+      },
+      "moduleSha256": "23adf109a1a7cb4144a1081a809c048d1aa7c9da37d3be32efc84b2a51f100b4"
+    },
+    {
+      "id": "lookup_client_registry",
+      "group": "client-registry",
+      "before": "ClientRegistryInput",
+      "after": "ClientRegistryRequest",
+      "request": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "context": {},
+      "normalizationSucceeded": true,
+      "failure": null,
+      "previousAdvertisementAdmittedRequest": false,
+      "normalizedInput": {
+        "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "moduleSha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e"
+    }
+  ]
+}
