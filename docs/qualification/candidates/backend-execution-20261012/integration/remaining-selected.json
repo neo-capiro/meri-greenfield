@@ -1,0 +1,90 @@
+{
+  "sourceCommit": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "originals": 139,
+  "selected": 96,
+  "deferred": 43,
+  "mappedUnavailable": 83,
+  "selectedPending": 13,
+  "typedUnavailable": 84,
+  "rows": [
+    {
+      "id": "get_research_evidence",
+      "boundary": "Proposed authorized Research Portfolio record/evidence/history read only; owner/client/grant policies and source inclusion require explicit acceptance; management workflow parity deferred.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "run_analysis",
+      "boundary": "New reproducible analysis over authorized inputs; verify referenced values and outputs using adopted Python libraries; no source mutations.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "save_chat_attachments",
+      "boundary": "Initial artifact filing only; verified exact version and source scopes preserved; no arbitrary attachment or folder access expansion.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "save_memory",
+      "boundary": "Candidate proposal only through new memory.propose; no direct publication, confirmation, correction or deletion parity is accepted.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "create_word",
+      "boundary": "New local native Word artifact generation and revisions with byte and render validation; Capiro source writes require separate filing approval.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "create_excel",
+      "boundary": "New native spreadsheet generation and supported revisions; originals, formulas, recalculation limits and reference totals verified.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "create_powerpoint",
+      "boundary": "New editable slide generation and revisions with per-slide render validation and immutable versions.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "schedule_task",
+      "boundary": "New application Temporal Schedule only, bound to initiating actor, scope, timezone and budget; existing Capiro schedule parity is not accepted.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "list_scheduled_tasks",
+      "boundary": "New application-owned Temporal schedule inspection and run history; current Capiro schedule store parity is not accepted.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "cancel_scheduled_task",
+      "boundary": "New application Temporal Schedule cancellation; cancellation and run-history fixtures required.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "update_scheduled_task",
+      "boundary": "New application schedule update and pause controls; recheck authority; no arbitrary external action expansion.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "create_task",
+      "boundary": "Initial task command; immutable approval, current authority, source invariants, idempotency and receipt required after G3-G5.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    },
+    {
+      "id": "update_task",
+      "boundary": "Initial task command; existing task ownership and field invariants require fixtures; repeated delivery must produce one outcome.",
+      "status": "selected_pending",
+      "runtimeQualified": false
+    }
+  ],
+  "note": "Mapping is source-contract coverage only. No selected capability is removed or claimed live from local tests."
+}
