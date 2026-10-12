@@ -1,0 +1,47 @@
+{
+  "source": "Installed public upstream source, read-only; no SDK method executed",
+  "version": "1.24.0",
+  "upstreamCommit": "1fd1c81a0383f5f5c7923dd735472c7d1ffdc867",
+  "donor": "/workspace/meri-temporal-recovery-20261012/apps/control/qualification-temporal/node_modules",
+  "references": [
+    {
+      "relativePath": "@temporalio/client/package.json",
+      "bytes": 1096,
+      "sha256": "946629172fe386280e72e1856aacf0c8f760264991c3268b00790bf4929c2651"
+    },
+    {
+      "relativePath": "@temporalio/client/src/schedule-client.ts",
+      "bytes": 21460,
+      "sha256": "209cba3633017d48231ea72a7d0846d8ca6070e0911b1d36d379f256c3339796"
+    },
+    {
+      "relativePath": "@temporalio/client/src/schedule-types.ts",
+      "bytes": 27417,
+      "sha256": "7282d996927b598eb4870772d34ac75613ae09d3d71741594b7fd7fb062fc6d5"
+    },
+    {
+      "relativePath": "@temporalio/client/src/workflow-client.ts",
+      "bytes": 81685,
+      "sha256": "bd142f9d483b74db626b26196a1a725c19c66a99ebe757fe9fa781884affd3b4"
+    },
+    {
+      "relativePath": "@temporalio/client/src/connection.ts",
+      "bytes": 25915,
+      "sha256": "00be538ef0853e99335bc11e9cdf910f411a8d2cd3ae50b8087fae585a93b43f"
+    },
+    {
+      "relativePath": "@temporalio/client/src/types.ts",
+      "bytes": 15687,
+      "sha256": "a73f2d8462e7dd032b0f3576ed56a2e597665a85dbd0a62fc8d4f0b20adc5e31"
+    }
+  ],
+  "observedSemantics": [
+    "create and update generate random requestId; no application replay authority",
+    "handle.update describes then replaces without conflictToken",
+    "create triggerImmediately uses ALLOW_ALL regardless of normal overlap",
+    "handle.fetchHistory accumulates pages without bound",
+    "schedule.list decodes memo and external payloads before yielding",
+    "workflow describe ignores firstExecutionRunId when selecting execution; exact runId required for exact history",
+    "pause/delete do not confirm that running actions stopped"
+  ]
+}
