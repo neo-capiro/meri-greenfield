@@ -1,0 +1,44 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "sourceDiscovery": "4b8368501acb22ea19486d7ab3a70eeebfd7e4da",
+  "operation": "get_florida_budget_project",
+  "schemaId": "urn:meri:retrieval:florida-budget:0.2.0",
+  "factory": "createFloridaBudgetValidators({validateShape,schema})",
+  "definitions": [
+    "FloridaBudgetRequest",
+    "FloridaBudgetInput",
+    "FloridaBudgetContext",
+    "FloridaBudgetOutput"
+  ],
+  "contextProposal": [
+    "asOf",
+    "effectiveScope"
+  ],
+  "ownedFiles": [
+    "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+    "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+    "packages/contracts/test/retrieval-florida-budget.test.mjs"
+  ],
+  "reuse": "snapshotOperationData and canonical operation resolver digest/freezing; current assertSubject cannot model existing folder-derived Phase8Scope, so do not invent an entity kind or copy authorization.",
+  "normalization": "Nullable typed string selectors; Number offset for number|string|null with existing fallback/nonnegative clamp and integer<=10000; q slices200UTF16, client wrapper trim/slice80, folder raw<=100UTF16; no speculative session/project cap. Omit object/array/bool coercions deliberately.",
+  "scope": "Effective scope is trusted adapter output metadata; session/folder selectors bound exactly, explicit client must match, absent client may derive from folder. No visibility/current membership/wall grant.",
+  "results": "projects100/recentAmounts4/documents101/amounts501/events101; full selected and joined fields; opaque JSON inert; current authorization and source connectivity remain unavailable.",
+  "verification": "Strict Ajv test-only harness, adversarial full-family tests through owned subreaper, immutable references + original-file preservation, focused only.",
+  "authority": "No SQL/native/provider/model/cloud/network; no private imports/execution or bodies committed; no recursive delegation; no root shared registry/public edits.",
+  "rootApproval": "Root approves two-key private projection context, typed narrowing; methods normalizeInput(id,request,context) and assertResult(id,value,request,context). No additional authority.",
+  "scopeCorrection": {
+    "basis": "ensureClientVisible9789-9828 resolves names and canonicalizes stored UUID; read independently after reviewer observation",
+    "approvedContext": [
+      "asOf",
+      "effectiveScope",
+      "clientResolution"
+    ],
+    "resolution": "null without normalized selector; otherwise exact selector plus resolvedUUID. UUID case-insensitive identity, named references require trusted fact; explicit client must match folder-effective client. No lookup or current authorization claim.",
+    "normalization": "input.clientId is resolved explicit client ID; effective folder-derived client remains metadata.effectiveScope. Original request remains canonical resolver snapshot."
+  },
+  "finalDefinitionDecision": {
+    "inputDefinition": "FloridaBudgetInput",
+    "rawAdmission": "FloridaBudgetRequest",
+    "reason": "Root confirmed catalog is normalized boundary; resolver passes original request into normalizer. No raw request admission change."
+  }
+}

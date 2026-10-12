@@ -1,0 +1,196 @@
+{
+  "sourceFreeze": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "exclusions": [
+    "manifest.json self-reference",
+    "packet-audit.json derived verification receipt"
+  ],
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-FLORIDA-BUDGET-AUTHOR-20261012.md",
+      "bytes": 9214,
+      "sha256": "138c5f59b6d6c120a7e0f2e3b78f6303d88716b9e968cf4a6f140a66382ba030"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/audit.py",
+      "bytes": 5477,
+      "sha256": "585d12b7dd1a61efdf59c14f85c6264d5b76e294f7ac0260538d9277becc601b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/authored-whitespace-check.json",
+      "bytes": 270,
+      "sha256": "ab5f016568e9ab582415d5031a1ac9224947eaff6a82077781fb01082627a863"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.json",
+      "bytes": 1417,
+      "sha256": "fef26bf61b5cfa2f580967284c1b7342e01a56693552782a3692aa5ad9c9aa0e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "bytes": 1013,
+      "sha256": "f7e6b82902f960f14a276f7d8cda00304540b63755d3fbdcb6b74a2d4ebadbed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/dependency-provenance.json",
+      "bytes": 305,
+      "sha256": "748fa53704ad3145bf301d3ed99185f6e2c8166bc752295d2c827beb3f4f4224"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/failure-notes.json",
+      "bytes": 3696,
+      "sha256": "f43b03e2bf6de1bf0cfd487ff5f294220de31e1ca20acfc34d90aa26e2d09f14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.json",
+      "bytes": 1364,
+      "sha256": "b9bd17f5d741d98a136c617704f89e755041ead9cc9493c47e81b29a7c26418f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stdout.bin",
+      "bytes": 2584,
+      "sha256": "b4f868f0f5e47db2aaef832d94241280c1164a1f3a19302b9207d4ffc2df1d05"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.json",
+      "bytes": 1362,
+      "sha256": "b31bff44d88c9240e801feeef2615f1874317958d40e5a3eaa4be78da909c38f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stdout.bin",
+      "bytes": 2676,
+      "sha256": "133627d98245bae17185536255047583571084c48736b1d802bfe52c3efa6760"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.json",
+      "bytes": 1376,
+      "sha256": "834e5f26cd4e401cc155a3d884b4dbc7439a8d29863eec0be504e2b622ef3c83"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stdout.bin",
+      "bytes": 2854,
+      "sha256": "6a80b36735bc54f085fd1e85b4cdd213fb19375075df2dd3c42d70a78c910e9d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.json",
+      "bytes": 1350,
+      "sha256": "9e63933b2b5abe5a2b125281f291fb97438e93709cb591dfa6bb00d568c8d08a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stdout.bin",
+      "bytes": 4823,
+      "sha256": "d570b5f10ccafc0d2dd15bfe1b09dea1679251359e10a80cc138d1a1d1a4b2a6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.json",
+      "bytes": 1362,
+      "sha256": "a4cfb35f9e4d3096831b79d7dc73355277886b8d6f88f87ab02f1b30a8d47dee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stdout.bin",
+      "bytes": 2764,
+      "sha256": "0d82ad115e98b019ddae805fb177db09abdf125fb66abd9b00e1cbc9d7d905ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/outline.json",
+      "bytes": 3172,
+      "sha256": "66b6ea656aa437a022b118aa79cb23eac49ad5a21f87457038bdd68ac7f1ef14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.json",
+      "bytes": 1422,
+      "sha256": "f637b7737aab0ac126f25309fd48ac7b71b54319cdaee3ee90aa60944d28bd4c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stdout.bin",
+      "bytes": 3072,
+      "sha256": "41fa931d567c9c99b68c7ef2baf8876ae222a9505fec841949e600e7f4172212"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/reference-identities.json",
+      "bytes": 7343,
+      "sha256": "137532d53e331d852639d4c583f4194918e683c853a7b59392de2f056216a3b6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit-bbc823e.json",
+      "bytes": 11363,
+      "sha256": "853b27ffda65cb0a067d739a078835f06b05fc5c7b2f7ce5a9b3f33610cecf79"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit.json",
+      "bytes": 13141,
+      "sha256": "090fea091c04866a4978b1d9a33c19f1392aea758b938650a43c8e7d38d17760"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.json",
+      "bytes": 435,
+      "sha256": "7a0045378c27fa9039b0bab575bdcd40fcd9341aee8d98cc846ca41b624019da"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stdout.bin",
+      "bytes": 278,
+      "sha256": "6640705b04b991e204166a03dca97b0d61e4b2f68a78a7f5d6039ed23a14f038"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "bytes": 7290,
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "bytes": 18156,
+      "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e"
+    }
+  ]
+}
