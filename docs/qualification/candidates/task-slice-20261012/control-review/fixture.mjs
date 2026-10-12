@@ -1,7 +1,7 @@
 /** Review-owned synthetic identity and canonical page; no source/network data. */
 import {canonicalSha256 as hash,validateShape} from '../../../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {page as previousPage} from '../../../capability-successor-20261012/action-review/fixture.mjs';
+import {page as previousPage} from '../../capability-successor-20261012/action-review/fixture.mjs';
 export {hash,validateShape};
 export const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 export const NOW=Date.parse('2026-10-12T12:00:00.000Z');
