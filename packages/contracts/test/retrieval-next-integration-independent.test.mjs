@@ -25,7 +25,7 @@ function scope(){return {
     actorId:'integration-actor',authorizationDecisionId:V,policyRevision:'review-policy-7',rosterVersionId:null,
     scopes:[{tenantId:'integration-tenant',kind:'tenant',resourceId:'integration-tenant',policyRevision:'review-policy-7'}]},
 };}
-function event(){return {id:'event-9',eventKind:'changed',aggregateRevision:3,actorUserId:null,occurredAt:T,
+function event(){return {id:'event-9',eventKind:'updated',aggregateRevision:3,actorUserId:'historical-actor',occurredAt:T,
   payload:{sourceReported:{complete:true,approved:true},values:[0,null,false]}};}
 function registry(){return {existingClient:{id:'local-client',name:'Synthetic local',website:null},ldaExactMatch:null,
   ldaCandidates:[{ldaClientId:17,name:'Synthetic candidate',state:null,description:null,totalFilings:2,latestFilingYear:null}],
@@ -170,6 +170,13 @@ test('portfolio canonical continuation and identity preserve the domain repair',
   assert.throws(()=>validate(PCH,page,{limit:1,cursor:'event-9'}));
   page.data.nextCursor=null;page.data.items[0].state.recipientUserId='foreign';assert.throws(()=>validate(PCH,page));
   const detail=portfolioDetail();detail.data.id='foreign';assert.throws(()=>validate(PDET,detail));
+});
+
+test('portfolio canonical event requires the declared event kind and non-null actor',()=>{
+  for(const id of [PDET,PCH])for(const [key,value] of [['eventKind','changed'],['actorUserId',null]]){
+    const page=fixtures.get(id)();const row=id===PDET?page.data.recentEvents[0]:page.data.items[0];
+    row[key]=value;assert.throws(()=>validate(id,page));
+  }
 });
 
 test('business callbacks preserve request limit, citation aliases, partial coverage and inference',()=>{
