@@ -307,7 +307,7 @@ for(const count of[0,1])test(`legal independent: logical AST requires multiple c
 
 // News controls frozen against original source before candidate inspection.
 import {createResearchLegalNewsValidators} from '../retrieval-0.2/research-legal-news-validation.mjs';
-const newsSchema=load('research-legal-news');ajv.addSchema(newsSchema);
+const newsSchema=load('research-legal-news');ajv.addSchema(load('florida-budget'));ajv.addSchema(newsSchema);
 const newsShapes=new Map(Object.keys(newsSchema.$defs).map(n=>[n,ajv.compile({$ref:`${newsSchema.$id}#/$defs/${n}`})]));
 const news=createResearchLegalNewsValidators({schema:newsSchema,validateShape(n,x){const f=newsShapes.get(n);if(!f?.(x))throw Error(`${n}: ${ajv.errorsText(f?.errors)}`);}});
 const NEWS='search_legiwatch_news',ns={jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null};
