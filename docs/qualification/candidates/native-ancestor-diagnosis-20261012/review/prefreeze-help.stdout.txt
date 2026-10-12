@@ -1,0 +1,12 @@
+usage: inspect-ancestor-metadata.py [-h] --repository REPOSITORY
+                                    --original-output ORIGINAL_OUTPUT
+
+Observe current Windows ancestor metadata only; no collector or admission. Run
+with the original Python using -I -B -S and the existing 15-second external
+supervisor. Exit 0 is observation only; exit 2 is a bounded refusal. No file
+bodies, directory listing, filesystem writes, subprocesses or network calls.
+
+options:
+  -h, --help            show this help message and exit
+  --repository REPOSITORY
+  --original-output ORIGINAL_OUTPUT
