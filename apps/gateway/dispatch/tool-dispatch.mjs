@@ -33,13 +33,14 @@ export function createToolDispatch({ catalog, authority, budget, limits, now, ne
     const lifetime = createDispatchLifetime({ deadlineMs: now()+limits.maxRequestMs, now, signal });
     let reservationId; let reservationAttempted = false; let settled = false;
     try {
-      const identity = await lifetime.run(signal => authority.identify({ credential, signal }));
+      const identity = await lifetime.run(signal => authority.identify({ credential, signal, limitDeadline: lifetime.limitDeadline }));
       lifetime.limitDeadline(Math.min(identity.run.deadlineMs, Date.parse(identity.claims.expiresAt)));
       let normalized;
       try { normalized = entry.contract.normalizeInput(request.arguments, { nowMs: now(), actorId: identity.claims.binding.actorId }); }
       catch { deny('INVALID_ARGUMENTS'); }
       if (!normalized || canonicalSha256(normalized.input) !== normalized.argumentsSha256) deny('INVALID_ARGUMENTS');
-      const inspect = signal => authority.check({ credential, descriptor: entry.descriptor, input: normalized.input, signal });
+      const inspect = signal => authority.check({ credential, descriptor: entry.descriptor, input: normalized.input,
+        signal, limitDeadline: lifetime.limitDeadline });
       const before = await lifetime.run(inspect);
       if (!sameBinding(before, { binding: identity.claims.binding, policyRevision: identity.claims.policyRevision })) deny('ACCESS_DENIED');
       if (now() >= before.deadlineMs) deny('DEADLINE');

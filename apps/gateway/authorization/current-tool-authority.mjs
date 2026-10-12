@@ -13,8 +13,12 @@ const freeze = value => {
 export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
   if (!ports || PORTS.some(name => typeof ports[name] !== 'function') ||
       typeof now !== 'function' || !Number.isSafeInteger(maxFactBytes) || maxFactBytes < 1) deny('GATEWAY_CONFIGURATION');
-  async function identify({ credential, signal }) {
-    if (typeof credential !== 'string' || credential.length < 1 || credential.length > 8192 || signal?.aborted) deny('ACCESS_DENIED');
+  const active = (signal, deadlineMs) => {
+    if (signal?.aborted || now() >= deadlineMs) deny('ACCESS_DENIED');
+  };
+  async function identify({ credential, signal, limitDeadline }) {
+    if (typeof credential !== 'string' || credential.length < 1 || credential.length > 8192 ||
+        typeof limitDeadline !== 'function' || signal?.aborted) deny('ACCESS_DENIED');
     const started = now();
     const fresh = stamp => {
       if (!Number.isSafeInteger(stamp) || stamp < started || stamp > now() || signal?.aborted) deny('ACCESS_DENIED');
@@ -22,23 +26,34 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
     try {
       const claims = parseRawJson(await ports.verifyCapability(credential, { signal }), maxFactBytes, 'ACCESS_DENIED');
       validateShape('CapabilityClaims', claims);
+      const issuedAt = Date.parse(claims.issuedAt); const expiresAt = Date.parse(claims.expiresAt);
       if (claims.audience !== 'meri-gateway' || !claims.actions.includes('tool.read') ||
-          Date.parse(claims.issuedAt) > now() || Date.parse(claims.expiresAt) <= now() ||
+          !Number.isSafeInteger(issuedAt) || !Number.isSafeInteger(expiresAt) || issuedAt > now() || expiresAt <= now() ||
           claims.scopes.some(scope => scope.tenantId !== claims.binding.tenantId || scope.policyRevision !== claims.policyRevision)) deny('ACCESS_DENIED');
+      active(signal, expiresAt);
+      // Publish each validated fact synchronously before any subsequent port can park.
+      limitDeadline(expiresAt);
+      active(signal, expiresAt);
       const run = parseRawJson(await ports.currentRun(claims.binding, { signal }), maxFactBytes, 'ACCESS_DENIED');
       exactKeys(run, ['binding', 'policyRevision', 'deadlineMs', 'checkedAtMs'], 'ACCESS_DENIED');
       validateShape('RunBinding', run.binding); fresh(run.checkedAtMs);
       if (!same(run.binding, claims.binding) || run.policyRevision !== claims.policyRevision ||
           !Number.isSafeInteger(run.deadlineMs) || run.deadlineMs <= now()) deny('ACCESS_DENIED');
+      active(signal, expiresAt);
+      limitDeadline(run.deadlineMs);
+      active(signal, Math.min(expiresAt, run.deadlineMs));
       return freeze({ claims, run, started });
     } catch { deny('ACCESS_DENIED'); }
   }
-  async function check({ credential, descriptor, input, signal }) {
+  async function check({ credential, descriptor, input, signal, limitDeadline }) {
     try {
-      const { claims, run, started } = await identify({ credential, signal });
+      const { claims, run, started } = await identify({ credential, signal, limitDeadline });
+      const deadlineMs = Math.min(run.deadlineMs, Date.parse(claims.expiresAt));
       const fresh = stamp => {
         if (!Number.isSafeInteger(stamp) || stamp < started || stamp > now() || signal?.aborted) deny('ACCESS_DENIED');
+        active(signal, deadlineMs);
       };
+      active(signal, deadlineMs);
       const policy = parseRawJson(await ports.authorizeBusiness({ claims, operation: descriptor.operation,
         requiredGrants: descriptor.requiredGrants, input, signal }), maxFactBytes, 'ACCESS_DENIED');
       exactKeys(policy, ['decision', 'subject', 'grants'], 'ACCESS_DENIED');
@@ -61,6 +76,7 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
           new Set(sources.sourceIds).size !== sources.sourceIds.length ||
           sources.sourceIds.length !== new Set(descriptor.sourceRequirements.map(source => source.sourceId)).size ||
           descriptor.sourceRequirements.some(source => !sources.sourceIds.includes(source.sourceId))) deny('ACCESS_DENIED');
+      active(signal, deadlineMs);
       const finalRun = parseRawJson(await ports.currentRun(claims.binding, { signal }), maxFactBytes, 'ACCESS_DENIED');
       exactKeys(finalRun, ['binding', 'policyRevision', 'deadlineMs', 'checkedAtMs'], 'ACCESS_DENIED');
       fresh(finalRun.checkedAtMs);
@@ -69,7 +85,7 @@ export function createCurrentToolAuthority({ ports, now, maxFactBytes }) {
       if (Date.parse(claims.expiresAt) <= now() || run.deadlineMs <= now() || signal?.aborted) deny('ACCESS_DENIED');
       return freeze({ binding: claims.binding, policyRevision: claims.policyRevision,
         subject: policy.subject, decision, claims, sourceIds: sources.sourceIds,
-        deadlineMs: Math.min(run.deadlineMs, Date.parse(claims.expiresAt)) });
+        deadlineMs });
     } catch { deny('ACCESS_DENIED'); }
   }
   return Object.freeze({ identify, check });
