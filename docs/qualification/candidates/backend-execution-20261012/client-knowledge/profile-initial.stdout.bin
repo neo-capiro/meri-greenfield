@@ -1,0 +1,18 @@
+✔ profile named selector resolution and default summary are bound (88.016703ms)
+✔ profile all six full-record variants retain nullable and opaque fields (27.90747ms)
+✔ profile missing scalar in full row cannot masquerade as summary (0.686051ms)
+✔ profile mixed stored decimal string and inferred number remain distinct (2.053066ms)
+✔ profile unavailable sections remain unavailable with no evidence (0.637538ms)
+✔ profile cursors bind exact resolved client and section (1.509579ms)
+✔ profile selected sections cannot fabricate unrequested sections (0.521524ms)
+✔ profile separate advocacy total may race returned page (0.476116ms)
+✔ profile open task status and summary counts must correlate (0.775305ms)
+✔ profile exact snapshot and hostile JSON admission (0.574653ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 438.086361

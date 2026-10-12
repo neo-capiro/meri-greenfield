@@ -1,0 +1,31 @@
+✔ attachment manifest defaults and empty query difference (12.660991ms)
+✔ attachment complete manifest does not establish content completeness (25.384046ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (3.579962ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (6.683836ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.470357ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.543577ms)
+✖ attachment partial/empty section is not complete even without next cursor (0.398258ms)
+✔ attachment detached return and hostile nested JSON (0.543698ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 349.627972
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs:23:1
+✖ attachment partial/empty section is not complete even without next cursor (0.398258ms)
+  Error: Attachment section selector mismatch
+      at fail (file:///workspace/meri-client-knowledge-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:4:33)
+      at Object.assertResult (file:///workspace/meri-client-knowledge-20261012/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs:73:108)
+      at TestContext.<anonymous> (file:///workspace/meri-client-knowledge-20261012/packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs:23:266)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

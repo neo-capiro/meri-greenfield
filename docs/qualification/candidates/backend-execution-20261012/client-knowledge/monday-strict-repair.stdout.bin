@@ -1,0 +1,16 @@
+✔ Monday normalized complete/page distinction and Number string semantics (5.787041ms)
+✔ Monday requires UUID and bounded trimmed selectors (0.362916ms)
+✔ Monday full provider JSON fields stay inert without invented scalar types (22.104252ms)
+✔ Monday parent and provenance binding preserves subitems (0.773072ms)
+✔ Monday current status echoes first coverage source including unavailable (0.504558ms)
+✔ Monday client, record, domain and duplicate substitutions fail (1.718163ms)
+✔ Monday invalid cursors remain bounded request data awaiting source refusal (0.274432ms)
+✔ Monday source-only data detaches and rejects getters (0.527283ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 157.321422

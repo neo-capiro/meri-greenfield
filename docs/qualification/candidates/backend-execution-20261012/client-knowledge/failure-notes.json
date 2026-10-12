@@ -1,0 +1,23 @@
+{
+  "retained": [
+    {
+      "label": "search-initial",
+      "note": "Passed14; initial capture at untracked source showed empty git diff. Exact files were then frozen6c3a422; this capture alone is not a source-hash binding."
+    },
+    {
+      "label": "monday-initial",
+      "note": "3 pass/5 fail strict Ajv missing object type for allOf refinement. Full staged patch retained; added type only, strict settings unchanged."
+    },
+    {
+      "label": "attachments-initial",
+      "note": "7 pass/1 fail: synthetic empty-section fixture requested offset3 but coverage locator still0. Preimage patch retained; corrected fixture locator, no production relaxation."
+    }
+  ],
+  "reviewerFailures": [
+    "Scoped graph admitted foreign client node at6c3a422; repaired9cc2d0cf.",
+    "Explicit Monday page size not bound at27cc746; repaired5ee54465.",
+    "Attachment coordinate kind/count/selected section missing atff59080a; repairedd46e3e5a.",
+    "Memory contentStatus/contentLimitation inconsistency atadf34cc4; repaired b24d87c2 with source-owned literals and preserved initial fixture."
+  ],
+  "helperNote": "Reused capture helper retains historical Florida wording in rerunReason. Command/cwd/label/source diff and raw output identify each actual client-knowledge check; helper bytes intentionally unchanged."
+}

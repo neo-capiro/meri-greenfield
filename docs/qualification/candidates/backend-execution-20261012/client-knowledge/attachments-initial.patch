@@ -1,0 +1,1205 @@
+diff --git a/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs b/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs
+new file mode 100644
+index 00000000..01f73bcf
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs
+@@ -0,0 +1,96 @@
++// Typed source projection only. Decoding a cursor does NOT verify its HMAC.
++import {snapshotOperationData} from './operation-contracts.mjs';
++import {canonicalSha256} from '../validate.mjs';
++const fail = message => { throw new Error(message); };
++const operation = 'read_chat_attachments';
++function instant(value) {
++  const ms = typeof value === 'string' ? Date.parse(value) : NaN;
++  if (!Number.isFinite(ms) || new Date(ms).toISOString() !== value) fail('Attachment canonical observation required');
++}
++const same = (a,b) => canonicalSha256(a) === canonicalSha256(b);
++export function createClientKnowledgeAttachmentValidators({validateShape,schema}) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Attachment contract configuration');
++  const check = id => { if (id !== operation) fail('Unknown attachment operation'); };
++  const inputDefinition = id => { check(id); return 'ClientKnowledgeAttachmentInput'; };
++  const outputDefinition = id => { check(id); return 'ClientKnowledgeAttachmentOutput'; };
++  function decode(value) {
++    if (typeof value !== 'string' || value.length > 4096 || !value.startsWith('chat-attachment:v1:')) fail('Invalid attachment cursor');
++    const parts = value.slice('chat-attachment:v1:'.length).split('.');
++    if (parts.length !== 2 || parts.some(p => !/^[A-Za-z0-9_-]+$/.test(p))) fail('Invalid attachment cursor encoding');
++    const bytes = parts.map(p=>Buffer.from(p,'base64url'));
++    if (bytes.some((b,i)=>b.toString('base64url') !== parts[i]) || bytes[1].length !== 32) fail('Invalid attachment cursor encoding');
++    let payload;
++    try { payload = snapshotOperationData(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes[0]))); }
++    catch { fail('Invalid attachment cursor JSON'); }
++    validateShape('AttachmentCursorPayload',payload);
++    return payload;
++  }
++  function bindCursor(cursor,input,scope) {
++    for (const key of ['tenantId','userId','conversationId','clientId','conversationVersion'])
++      if (cursor[key] !== scope[key]) fail('Attachment cursor scope changed');
++    if (cursor.query !== input.query || cursor.conversationId !== input.conversationId ||
++        (cursor.mode === 'read' ? cursor.attachmentId !== input.attachmentId : input.attachmentId !== null))
++      fail('Attachment cursor selector substitution');
++  }
++  function contextData(context) {
++    const ctx=snapshotOperationData(context);validateShape('ClientKnowledgeAttachmentContext',ctx);
++    instant(ctx.asOf);instant(ctx.scope.conversationVersion);return ctx;
++  }
++  function normalizeInput(id,request,context) {
++    check(id); const raw=snapshotOperationData(request),ctx=contextData(context);
++    validateShape('ClientKnowledgeAttachmentRequest',raw);
++    const text=(key,max,required=false)=>{
++      if(raw[key]===undefined&&!required)return null;
++      if(typeof raw[key]!=='string'||!raw[key].trim()||raw[key].length>max)fail(`Invalid attachment ${key}`);
++      return raw[key].trim();
++    };
++    const conversationId=text('conversationId',80,true),attachmentId=text('attachmentId',80);
++    const query=raw.query===undefined?'':text('query',240);
++    const locator={section:raw.section??1,rowStart:raw.rowStart??1,offset:raw.characterOffset??0};
++    if(locator.section>500||locator.rowStart>1000000||locator.offset>2000000)fail('Explicit attachment locator exceeds bounds');
++    const explicit=['section','rowStart','characterOffset'].some(k=>raw[k]!==undefined);
++    if(explicit&&(!attachmentId||raw.cursor!==undefined))fail('Attachment locator/cursor conflict');
++    const cursor=raw.cursor===undefined?null:decode(raw.cursor);
++    const input={conversationId,attachmentId,query,limit:raw.limit??(attachmentId?5000:10),locator:cursor?.mode==='read'?cursor.locator:locator,cursor};
++    if(input.limit>(attachmentId?6000:20))fail('Attachment page limit exceeded');
++    validateShape(inputDefinition(id),input);
++    if(conversationId!==ctx.scope.conversationId)fail('Attachment conversation scope substitution');
++    if(cursor)bindCursor(cursor,input,ctx.scope);
++    return Object.freeze({input,metadata:Object.freeze({sourceConnected:false,authoritative:false,
++      cursorAuthenticated:false,currentPolicyQualified:false,absenceEvidence:false})});
++  }
++  function assertResult(id,value,request,context) {
++    const ctx=contextData(context),{input}=normalizeInput(id,request,ctx),page=snapshotOperationData(value);
++    validateShape(outputDefinition(id),page);instant(page.generatedAt);
++    if(page.generatedAt!==ctx.asOf||page.conversationId!==input.conversationId||page.clientId!==ctx.scope.clientId)fail('Attachment wrapper scope/observation substitution');
++    const c=page.coverage,next=c.nextCursor===null?null:decode(c.nextCursor);
++    if(next)bindCursor(next,input,ctx.scope);
++    if(c.query!==(input.query||null)||c.paginationComplete!==(next===null))fail('Attachment coverage selector/continuation mismatch');
++    if(!input.attachmentId){
++      if(c.mode!=='manifest'||c.returned!==page.records.length||c.returned+c.unavailableInPage>input.limit||c.complete!==(next===null))fail('Attachment manifest count/branch mismatch');
++      for(const row of page.records){instant(row.uploadedAt);if(row.originalBytesAvailable!==(row.originalBytesHash!==null))fail('Attachment byte availability mismatch');}
++    }else{
++      if(c.mode!=='section'||page.source.attachmentId!==input.attachmentId||!same(c.locator,input.locator))fail('Attachment section selector mismatch');
++      const source=page.source;
++      if(input.cursor&&(input.cursor.messageId!==source.sourceMessageId||input.cursor.originalBytesHash!==source.originalBytesHash))fail('Attachment source changed since cursor');
++      if(next&&(next.mode!=='read'||next.messageId!==source.sourceMessageId||next.originalBytesHash!==source.originalBytesHash))fail('Attachment continuation source mismatch');
++      if(c.characterStart>c.characterEnd||c.characterEnd>c.sectionCharacters||c.characterStart<input.locator.offset)fail('Attachment character range mismatch');
++      const sectionComplete=c.characterStart===0&&c.characterEnd===c.sectionCharacters&&c.extractionStatus==='complete';
++      const complete=sectionComplete&&c.locator.section===1&&next===null;
++      if(c.sectionComplete!==sectionComplete||c.contentComplete!==complete||c.complete!==complete||c.truncated!==(next!==null||c.extractionStatus!=='complete'))fail('Attachment completion projection mismatch');
++      if(c.matched!==(input.query?c.matched:null)||input.query&&typeof c.matched!=='boolean')fail('Attachment match projection mismatch');
++      if(input.query&&c.matched===false&&page.records.length)fail('Unmatched attachment section contains a result');
++      const expectedKind=source.sourceKind==='pdf'?'page':source.sourceKind==='pptx'?'slide_with_notes':source.sourceKind==='xlsx'?'sheet_rows':'text_section';
++      if(['image','unsupported'].includes(source.sourceKind)||c.sectionKind!==expectedKind)fail('Attachment reader kind mismatch');
++      for(const row of page.records){
++        const p=row.payload,proof=row.provenance;
++        const reference=`${source.attachmentId}:${source.originalBytesHash.slice(0,16)}:${c.sectionKind}:${c.locator.section}:${c.characterStart}-${c.characterEnd}`;
++        if(row.recordId!==reference||p.id!==reference||p.attachmentId!==source.attachmentId||p.title!==source.filename||p.sourceKind!==source.sourceKind||p.sectionKind!==c.sectionKind||p.sectionLabel!==c.sectionLabel||!same(p.coordinates,c.coordinates)||p.characterStart!==c.characterStart||p.characterEnd!==c.characterEnd)fail('Attachment content projection mismatch');
++        if(!p.text.trim()||p.text.length!==c.characterEnd-c.characterStart||JSON.stringify(p.text).length>6500)fail('Attachment text window mismatch');
++        if(proof.sourceRecordId!==source.attachmentId||proof.sourceMessageId!==source.sourceMessageId||proof.conversationId!==page.conversationId||proof.clientId!==page.clientId||proof.originalBytesHash!==source.originalBytesHash||!same(proof.locator,c.locator))fail('Attachment evidence projection mismatch');
++      }
++    }
++    return page;
++  }
++  return Object.freeze({schemaId:schema.$id,operationIds:Object.freeze([operation]),inputDefinition,outputDefinition,normalizeInput,assertResult});
++}
+diff --git a/packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json b/packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json
+new file mode 100644
+index 00000000..dda23ee0
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json
+@@ -0,0 +1,1067 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:client-knowledge-attachments:0.2.0",
++  "$defs": {
++    "ClientKnowledgeAttachmentScope": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tenantId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "userId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "conversationId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "clientId": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "format": "uuid"
++        },
++        "conversationVersion": {
++          "type": "string",
++          "format": "date-time"
++        }
++      },
++      "required": [
++        "tenantId",
++        "userId",
++        "conversationId",
++        "clientId",
++        "conversationVersion"
++      ]
++    },
++    "ClientKnowledgeAttachmentContext": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "scope": {
++          "$ref": "#/$defs/ClientKnowledgeAttachmentScope"
++        }
++      },
++      "required": [
++        "asOf",
++        "scope"
++      ]
++    },
++    "AttachmentLocator": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "section": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "rowStart": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "offset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "section",
++        "rowStart",
++        "offset"
++      ]
++    },
++    "AttachmentManifestLocator": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "createdAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "messageId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "attachmentIndex": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "createdAt",
++        "messageId",
++        "attachmentIndex"
++      ]
++    },
++    "AttachmentCursorPayload": {
++      "oneOf": [
++        {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "v": {
++              "const": 1
++            },
++            "tenantId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "userId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "conversationId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "clientId": {
++              "type": [
++                "string",
++                "null"
++              ],
++              "format": "uuid"
++            },
++            "conversationVersion": {
++              "type": "string"
++            },
++            "query": {
++              "type": "string"
++            },
++            "mode": {
++              "const": "manifest"
++            },
++            "locator": {
++              "$ref": "#/$defs/AttachmentManifestLocator"
++            }
++          },
++          "required": [
++            "v",
++            "tenantId",
++            "userId",
++            "conversationId",
++            "clientId",
++            "conversationVersion",
++            "query",
++            "mode",
++            "locator"
++          ]
++        },
++        {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "v": {
++              "const": 1
++            },
++            "tenantId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "userId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "conversationId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "clientId": {
++              "type": [
++                "string",
++                "null"
++              ],
++              "format": "uuid"
++            },
++            "conversationVersion": {
++              "type": "string"
++            },
++            "query": {
++              "type": "string"
++            },
++            "mode": {
++              "const": "read"
++            },
++            "attachmentId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "messageId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "originalBytesHash": {
++              "type": "string",
++              "pattern": "^[a-f0-9]{64}$"
++            },
++            "locator": {
++              "$ref": "#/$defs/AttachmentLocator"
++            }
++          },
++          "required": [
++            "v",
++            "tenantId",
++            "userId",
++            "conversationId",
++            "clientId",
++            "conversationVersion",
++            "query",
++            "mode",
++            "attachmentId",
++            "messageId",
++            "originalBytesHash",
++            "locator"
++          ]
++        }
++      ]
++    },
++    "ClientKnowledgeAttachmentRequest": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "conversationId": {
++          "type": "string"
++        },
++        "attachmentId": {
++          "type": "string"
++        },
++        "query": {
++          "type": "string"
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "section": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "rowStart": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "characterOffset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "cursor": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "conversationId"
++      ]
++    },
++    "ClientKnowledgeAttachmentInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "conversationId": {
++          "type": "string",
++          "format": "uuid"
++        },
++        "attachmentId": {
++          "type": [
++            "string",
++            "null"
++          ],
++          "format": "uuid"
++        },
++        "query": {
++          "type": "string"
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9007199254740991
++        },
++        "locator": {
++          "$ref": "#/$defs/AttachmentLocator"
++        },
++        "cursor": {
++          "oneOf": [
++            {
++              "type": "null"
++            },
++            {
++              "$ref": "#/$defs/AttachmentCursorPayload"
++            }
++          ]
++        }
++      },
++      "required": [
++        "conversationId",
++        "attachmentId",
++        "query",
++        "limit",
++        "locator",
++        "cursor"
++      ]
++    },
++    "ClientKnowledgeAttachmentOutput": {
++      "oneOf": [
++        {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "tool": {
++              "const": "read_chat_attachments"
++            },
++            "authoritativeOwner": {
++              "const": "clio_chat_attachment"
++            },
++            "currentStatus": {
++              "const": "available"
++            },
++            "generatedAt": {
++              "type": "string",
++              "format": "date-time"
++            },
++            "conversationId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "clientId": {
++              "type": [
++                "string",
++                "null"
++              ],
++              "format": "uuid"
++            },
++            "coverage": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "mode": {
++                  "const": "manifest"
++                },
++                "total": {
++                  "type": "null"
++                },
++                "returned": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 20
++                },
++                "unavailableInPage": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 20
++                },
++                "scannedMessages": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 25
++                },
++                "paginationComplete": {
++                  "type": "boolean"
++                },
++                "complete": {
++                  "type": "boolean"
++                },
++                "contentComplete": {
++                  "const": false
++                },
++                "nextCursor": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "query": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "queryAppliesTo": {
++                  "const": "filename"
++                },
++                "note": {
++                  "const": "This is a finite metadata manifest, not file content. Follow nextCursor until paginationComplete before treating the inventory as complete."
++                }
++              },
++              "required": [
++                "mode",
++                "total",
++                "returned",
++                "unavailableInPage",
++                "scannedMessages",
++                "paginationComplete",
++                "complete",
++                "contentComplete",
++                "nextCursor",
++                "query",
++                "queryAppliesTo",
++                "note"
++              ]
++            },
++            "records": {
++              "type": "array",
++              "items": {
++                "type": "object",
++                "additionalProperties": false,
++                "properties": {
++                  "attachmentId": {
++                    "type": "string",
++                    "format": "uuid"
++                  },
++                  "filename": {
++                    "type": "string"
++                  },
++                  "kind": {
++                    "type": "string"
++                  },
++                  "sourceMessageId": {
++                    "type": "string",
++                    "format": "uuid"
++                  },
++                  "uploadedAt": {
++                    "type": "string",
++                    "format": "date-time"
++                  },
++                  "extractionStatus": {
++                    "type": "string"
++                  },
++                  "extractionReason": {
++                    "type": [
++                      "string",
++                      "null"
++                    ]
++                  },
++                  "byteSize": {
++                    "type": "integer",
++                    "minimum": -2147483648,
++                    "maximum": 2147483647
++                  },
++                  "pages": {
++                    "type": [
++                      "integer",
++                      "null"
++                    ],
++                    "minimum": -2147483648,
++                    "maximum": 2147483647
++                  },
++                  "originalBytesAvailable": {
++                    "type": "boolean"
++                  },
++                  "originalBytesHash": {
++                    "type": [
++                      "string",
++                      "null"
++                    ],
++                    "pattern": "^[a-f0-9]{64}$"
++                  }
++                },
++                "required": [
++                  "attachmentId",
++                  "filename",
++                  "kind",
++                  "sourceMessageId",
++                  "uploadedAt",
++                  "extractionStatus",
++                  "extractionReason",
++                  "byteSize",
++                  "pages",
++                  "originalBytesAvailable",
++                  "originalBytesHash"
++                ]
++              },
++              "maxItems": 20
++            }
++          },
++          "required": [
++            "tool",
++            "authoritativeOwner",
++            "currentStatus",
++            "generatedAt",
++            "conversationId",
++            "clientId",
++            "coverage",
++            "records"
++          ]
++        },
++        {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "tool": {
++              "const": "read_chat_attachments"
++            },
++            "authoritativeOwner": {
++              "const": "clio_chat_attachment"
++            },
++            "currentStatus": {
++              "const": "available"
++            },
++            "generatedAt": {
++              "type": "string",
++              "format": "date-time"
++            },
++            "conversationId": {
++              "type": "string",
++              "format": "uuid"
++            },
++            "clientId": {
++              "type": [
++                "string",
++                "null"
++              ],
++              "format": "uuid"
++            },
++            "source": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "attachmentId": {
++                  "type": "string",
++                  "format": "uuid"
++                },
++                "sourceMessageId": {
++                  "type": "string",
++                  "format": "uuid"
++                },
++                "filename": {
++                  "type": "string"
++                },
++                "sourceKind": {
++                  "type": "string"
++                },
++                "mediaType": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "byteSize": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                "originalBytesHash": {
++                  "type": "string",
++                  "pattern": "^[a-f0-9]{64}$"
++                },
++                "persistedExtractionStatus": {
++                  "type": "string"
++                },
++                "persistedExtractionReason": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                }
++              },
++              "required": [
++                "attachmentId",
++                "sourceMessageId",
++                "filename",
++                "sourceKind",
++                "mediaType",
++                "byteSize",
++                "originalBytesHash",
++                "persistedExtractionStatus",
++                "persistedExtractionReason"
++              ]
++            },
++            "coverage": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "mode": {
++                  "const": "section"
++                },
++                "locator": {
++                  "$ref": "#/$defs/AttachmentLocator"
++                },
++                "sectionKind": {
++                  "enum": [
++                    "page",
++                    "slide_with_notes",
++                    "sheet_rows",
++                    "text_section"
++                  ]
++                },
++                "sectionLabel": {
++                  "type": "string"
++                },
++                "sectionCount": {
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 9007199254740991
++                },
++                "coordinates": {
++                  "oneOf": [
++                    {
++                      "type": "null"
++                    },
++                    {
++                      "type": "object",
++                      "additionalProperties": false,
++                      "properties": {
++                        "page": {
++                          "type": "integer",
++                          "minimum": 1,
++                          "maximum": 9007199254740991
++                        },
++                        "selectedCharacterStart": {
++                          "type": "integer",
++                          "minimum": 0,
++                          "maximum": 9007199254740991
++                        },
++                        "selectedCharacterEnd": {
++                          "type": "integer",
++                          "minimum": 0,
++                          "maximum": 9007199254740991
++                        },
++                        "nativeCharacters": {
++                          "type": "integer",
++                          "minimum": 0,
++                          "maximum": 9007199254740991
++                        },
++                        "selectedPageTruncated": {
++                          "type": "boolean"
++                        }
++                      },
++                      "required": [
++                        "page",
++                        "selectedCharacterStart",
++                        "selectedCharacterEnd",
++                        "nativeCharacters",
++                        "selectedPageTruncated"
++                      ]
++                    },
++                    {
++                      "type": "object",
++                      "additionalProperties": false,
++                      "properties": {
++                        "slide": {
++                          "type": "integer",
++                          "minimum": 1,
++                          "maximum": 9007199254740991
++                        },
++                        "includesSpeakerNotes": {
++                          "const": true
++                        }
++                      },
++                      "required": [
++                        "slide",
++                        "includesSpeakerNotes"
++                      ]
++                    },
++                    {
++                      "type": "object",
++                      "additionalProperties": false,
++                      "properties": {
++                        "sheet": {
++                          "type": "integer",
++                          "minimum": 1,
++                          "maximum": 9007199254740991
++                        },
++                        "sheetName": {
++                          "type": "string"
++                        },
++                        "rowStart": {
++                          "type": "integer",
++                          "minimum": 1,
++                          "maximum": 9007199254740991
++                        },
++                        "rowEnd": {
++                          "type": "integer",
++                          "minimum": 0,
++                          "maximum": 9007199254740991
++                        },
++                        "rowCount": {
++                          "type": "integer",
++                          "minimum": 0,
++                          "maximum": 9007199254740991
++                        },
++                        "cellCoordinatesIncluded": {
++                          "const": true
++                        }
++                      },
++                      "required": [
++                        "sheet",
++                        "sheetName",
++                        "rowStart",
++                        "rowEnd",
++                        "rowCount",
++                        "cellCoordinatesIncluded"
++                      ]
++                    },
++                    {
++                      "type": "object",
++                      "additionalProperties": false,
++                      "properties": {
++                        "section": {
++                          "type": "integer",
++                          "minimum": 1,
++                          "maximum": 9007199254740991
++                        }
++                      },
++                      "required": [
++                        "section"
++                      ]
++                    }
++                  ]
++                },
++                "characterStart": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                "characterEnd": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                "sectionCharacters": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                "extractionStatus": {
++                  "enum": [
++                    "complete",
++                    "partial",
++                    "unreadable"
++                  ]
++                },
++                "limitation": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "matched": {
++                  "type": [
++                    "boolean",
++                    "null"
++                  ]
++                },
++                "query": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "sectionComplete": {
++                  "type": "boolean"
++                },
++                "contentComplete": {
++                  "type": "boolean"
++                },
++                "paginationComplete": {
++                  "type": "boolean"
++                },
++                "truncated": {
++                  "type": "boolean"
++                },
++                "complete": {
++                  "type": "boolean"
++                },
++                "nextCursor": {
++                  "type": [
++                    "string",
++                    "null"
++                  ]
++                },
++                "note": {
++                  "const": "Content was decoded from the currently authorized original persisted bytes. Follow nextCursor for remaining text or typed sections; an empty or partial section is not evidence that later sections are empty."
++                }
++              },
++              "required": [
++                "mode",
++                "locator",
++                "sectionKind",
++                "sectionLabel",
++                "sectionCount",
++                "coordinates",
++                "characterStart",
++                "characterEnd",
++                "sectionCharacters",
++                "extractionStatus",
++                "limitation",
++                "matched",
++                "query",
++                "sectionComplete",
++                "contentComplete",
++                "paginationComplete",
++                "truncated",
++                "complete",
++                "nextCursor",
++                "note"
++              ]
++            },
++            "records": {
++              "type": "array",
++              "items": {
++                "type": "object",
++                "additionalProperties": false,
++                "properties": {
++                  "domain": {
++                    "const": "chat_attachments"
++                  },
++                  "recordId": {
++                    "type": "string"
++                  },
++                  "payload": {
++                    "type": "object",
++                    "additionalProperties": false,
++                    "properties": {
++                      "id": {
++                        "type": "string"
++                      },
++                      "attachmentId": {
++                        "type": "string",
++                        "format": "uuid"
++                      },
++                      "title": {
++                        "type": "string"
++                      },
++                      "sourceKind": {
++                        "type": "string"
++                      },
++                      "sectionKind": {
++                        "enum": [
++                          "page",
++                          "slide_with_notes",
++                          "sheet_rows",
++                          "text_section"
++                        ]
++                      },
++                      "sectionLabel": {
++                        "type": "string"
++                      },
++                      "coordinates": {
++                        "oneOf": [
++                          {
++                            "type": "null"
++                          },
++                          {
++                            "type": "object",
++                            "additionalProperties": false,
++                            "properties": {
++                              "page": {
++                                "type": "integer",
++                                "minimum": 1,
++                                "maximum": 9007199254740991
++                              },
++                              "selectedCharacterStart": {
++                                "type": "integer",
++                                "minimum": 0,
++                                "maximum": 9007199254740991
++                              },
++                              "selectedCharacterEnd": {
++                                "type": "integer",
++                                "minimum": 0,
++                                "maximum": 9007199254740991
++                              },
++                              "nativeCharacters": {
++                                "type": "integer",
++                                "minimum": 0,
++                                "maximum": 9007199254740991
++                              },
++                              "selectedPageTruncated": {
++                                "type": "boolean"
++                              }
++                            },
++                            "required": [
++                              "page",
++                              "selectedCharacterStart",
++                              "selectedCharacterEnd",
++                              "nativeCharacters",
++                              "selectedPageTruncated"
++                            ]
++                          },
++                          {
++                            "type": "object",
++                            "additionalProperties": false,
++                            "properties": {
++                              "slide": {
++                                "type": "integer",
++                                "minimum": 1,
++                                "maximum": 9007199254740991
++                              },
++                              "includesSpeakerNotes": {
++                                "const": true
++                              }
++                            },
++                            "required": [
++                              "slide",
++                              "includesSpeakerNotes"
++                            ]
++                          },
++                          {
++                            "type": "object",
++                            "additionalProperties": false,
++                            "properties": {
++                              "sheet": {
++                                "type": "integer",
++                                "minimum": 1,
++                                "maximum": 9007199254740991
++                              },
++                              "sheetName": {
++                                "type": "string"
++                              },
++                              "rowStart": {
++                                "type": "integer",
++                                "minimum": 1,
++                                "maximum": 9007199254740991
++                              },
++                              "rowEnd": {
++                                "type": "integer",
++                                "minimum": 0,
++                                "maximum": 9007199254740991
++                              },
++                              "rowCount": {
++                                "type": "integer",
++                                "minimum": 0,
++                                "maximum": 9007199254740991
++                              },
++                              "cellCoordinatesIncluded": {
++                                "const": true
++                              }
++                            },
++                            "required": [
++                              "sheet",
++                              "sheetName",
++                              "rowStart",
++                              "rowEnd",
++                              "rowCount",
++                              "cellCoordinatesIncluded"
++                            ]
++                          },
++                          {
++                            "type": "object",
++                            "additionalProperties": false,
++                            "properties": {
++                              "section": {
++                                "type": "integer",
++                                "minimum": 1,
++                                "maximum": 9007199254740991
++                              }
++                            },
++                            "required": [
++                              "section"
++                            ]
++                          }
++                        ]
++                      },
++                      "characterStart": {
++                        "type": "integer",
++                        "minimum": 0,
++                        "maximum": 9007199254740991
++                      },
++                      "characterEnd": {
++                        "type": "integer",
++                        "minimum": 0,
++                        "maximum": 9007199254740991
++                      },
++                      "text": {
++                        "type": "string"
++                      }
++                    },
++                    "required": [
++                      "id",
++                      "attachmentId",
++                      "title",
++                      "sourceKind",
++                      "sectionKind",
++                      "sectionLabel",
++                      "coordinates",
++                      "characterStart",
++                      "characterEnd",
++                      "text"
++                    ]
++                  },
++                  "provenance": {
++                    "type": "object",
++                    "additionalProperties": false,
++                    "properties": {
++                      "sourceType": {
++                        "const": "ordinary_chat_attachment_original_bytes"
++                      },
++                      "sourceRecordId": {
++                        "type": "string",
++                        "format": "uuid"
++                      },
++                      "sourceMessageId": {
++                        "type": "string",
++                        "format": "uuid"
++                      },
++                      "conversationId": {
++                        "type": "string",
++                        "format": "uuid"
++                      },
++                      "clientId": {
++                        "type": [
++                          "string",
++                          "null"
++                        ],
++                        "format": "uuid"
++                      },
++                      "originalBytesHash": {
++                        "type": "string",
++                        "pattern": "^[a-f0-9]{64}$"
++                      },
++                      "locator": {
++                        "$ref": "#/$defs/AttachmentLocator"
++                      },
++                      "trust": {
++                        "const": "external_untrusted"
++                      }
++                    },
++                    "required": [
++                      "sourceType",
++                      "sourceRecordId",
++                      "sourceMessageId",
++                      "conversationId",
++                      "clientId",
++                      "originalBytesHash",
++                      "locator",
++                      "trust"
++                    ]
++                  }
++                },
++                "required": [
++                  "domain",
++                  "recordId",
++                  "payload",
++                  "provenance"
++                ]
++              },
++              "maxItems": 1
++            }
++          },
++          "required": [
++            "tool",
++            "authoritativeOwner",
++            "currentStatus",
++            "generatedAt",
++            "conversationId",
++            "clientId",
++            "source",
++            "coverage",
++            "records"
++          ]
++        }
++      ]
++    }
++  }
++}
+diff --git a/packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs b/packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs
+new file mode 100644
+index 00000000..5aab9d3d
+--- /dev/null
++++ b/packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs
+@@ -0,0 +1,24 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import Ajv from 'ajv/dist/2020.js';
++import formats from 'ajv-formats';
++import {createClientKnowledgeAttachmentValidators} from '../retrieval-0.2/client-knowledge-attachments-validation.mjs';
++const load=name=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${name}.schema.json`,import.meta.url)));
++const schema=load('client-knowledge-attachments'),ajv=new Ajv({strict:true,allErrors:true});formats(ajv);ajv.addSchema(load('data-search'));ajv.addSchema(schema);
++const v=createClientKnowledgeAttachmentValidators({schema,validateShape:(name,value)=>{const f=ajv.getSchema(`${schema.$id}#/$defs/${name}`);if(!f(value))throw new Error(JSON.stringify(f.errors));}});
++const id='read_chat_attachments',u='11111111-1111-1111-1111-111111111111',a='22222222-2222-2222-2222-222222222222',h='a'.repeat(64),dt='2026-10-12T00:00:00.000Z';
++const ctx={asOf:dt,scope:{tenantId:u,userId:u,conversationId:u,clientId:null,conversationVersion:dt}},req={conversationId:u};
++const base={tool:id,authoritativeOwner:'clio_chat_attachment',currentStatus:'available',generatedAt:dt,conversationId:u,clientId:null};
++const manifest=()=>({...base,coverage:{mode:'manifest',total:null,returned:0,unavailableInPage:0,scannedMessages:0,paginationComplete:true,complete:true,contentComplete:false,nextCursor:null,query:null,queryAppliesTo:'filename',note:'This is a finite metadata manifest, not file content. Follow nextCursor until paginationComplete before treating the inventory as complete.'},records:[]});
++const cursor=payload=>'chat-attachment:v1:'+Buffer.from(JSON.stringify(payload)).toString('base64url')+'.'+Buffer.alloc(32).toString('base64url');
++const payload=()=>({v:1,mode:'read',...ctx.scope,query:'',attachmentId:a,messageId:u,originalBytesHash:h,locator:{section:1,rowStart:1,offset:0}});
++function section(){const locator={section:1,rowStart:1,offset:0},reference=`${a}:${h.slice(0,16)}:text_section:1:0-3`,coordinates={section:1};return {...base,source:{attachmentId:a,sourceMessageId:u,filename:'a.txt',sourceKind:'text',mediaType:'text/plain',byteSize:3,originalBytesHash:h,persistedExtractionStatus:'parsed',persistedExtractionReason:null},coverage:{mode:'section',locator,sectionKind:'text_section',sectionLabel:'Text section 1',sectionCount:1,coordinates,characterStart:0,characterEnd:3,sectionCharacters:3,extractionStatus:'complete',limitation:null,matched:null,query:null,sectionComplete:true,contentComplete:true,paginationComplete:true,truncated:false,complete:true,nextCursor:null,note:'Content was decoded from the currently authorized original persisted bytes. Follow nextCursor for remaining text or typed sections; an empty or partial section is not evidence that later sections are empty.'},records:[{domain:'chat_attachments',recordId:reference,payload:{id:reference,attachmentId:a,title:'a.txt',sourceKind:'text',sectionKind:'text_section',sectionLabel:'Text section 1',coordinates,characterStart:0,characterEnd:3,text:'abc'},provenance:{sourceType:'ordinary_chat_attachment_original_bytes',sourceRecordId:a,sourceMessageId:u,conversationId:u,clientId:null,originalBytesHash:h,locator,trust:'external_untrusted'}}]};}
++test('attachment manifest defaults and empty query difference',()=>{assert.equal(v.normalizeInput(id,req,ctx).input.limit,10);assert.equal(v.normalizeInput(id,{...req,attachmentId:a},ctx).input.limit,5000);assert.throws(()=>v.normalizeInput(id,{...req,query:''},ctx));assert.throws(()=>v.normalizeInput(id,{...req,limit:'1'},ctx));});
++test('attachment complete manifest does not establish content completeness',()=>{v.assertResult(id,manifest(),req,ctx);const p=manifest();p.coverage.contentComplete=true;assert.throws(()=>v.assertResult(id,p,req,ctx));});
++test('attachment source sections bind text, bytes receipt, locator and external trust',()=>{v.assertResult(id,section(),{...req,attachmentId:a},ctx);for(const mutate of [p=>p.source.attachmentId=u,p=>p.records[0].payload.text='xxxx',p=>p.coverage.complete=false,p=>p.records[0].provenance.trust='approved']){const p=section();mutate(p);assert.throws(()=>v.assertResult(id,p,{...req,attachmentId:a},ctx));}});
++test('attachment cursor is correlated but fake HMAC is expressly not authenticated',()=>{const c=cursor(payload()),n=v.normalizeInput(id,{...req,attachmentId:a,cursor:c},ctx);assert.equal(n.metadata.cursorAuthenticated,false);v.assertResult(id,section(),{...req,attachmentId:a,cursor:c},ctx);for(const key of ['userId','tenantId','conversationId','attachmentId']){const p=payload();p[key]='33333333-3333-3333-3333-333333333333';assert.throws(()=>v.normalizeInput(id,{...req,attachmentId:a,cursor:cursor(p)},ctx));}});
++test('attachment cursor stale version, noncanonical encoding and explicit locator conflict fail',()=>{const p=payload();p.conversationVersion='old';assert.throws(()=>v.normalizeInput(id,{...req,attachmentId:a,cursor:cursor(p)},ctx));assert.throws(()=>v.normalizeInput(id,{...req,attachmentId:a,cursor:cursor(payload())+'='},ctx));assert.throws(()=>v.normalizeInput(id,{...req,attachmentId:a,cursor:cursor(payload()),section:1},ctx));});
++test('attachment metadata permits signed stored page counts and absent original bytes',()=>{const p=manifest();p.records=[{attachmentId:a,filename:'named.bin',kind:'old-kind',sourceMessageId:u,uploadedAt:dt,extractionStatus:'old-status',extractionReason:null,byteSize:-1,pages:-1,originalBytesAvailable:false,originalBytesHash:null}];p.coverage.returned=1;p.coverage.scannedMessages=1;v.assertResult(id,p,req,ctx);p.records[0].originalBytesAvailable=true;assert.throws(()=>v.assertResult(id,p,req,ctx));});
++test('attachment partial/empty section is not complete even without next cursor',()=>{const p=section();p.records=[];p.coverage.characterStart=3;p.coverage.characterEnd=3;p.coverage.sectionComplete=false;p.coverage.contentComplete=false;p.coverage.complete=false;v.assertResult(id,p,{...req,attachmentId:a,characterOffset:3},ctx);});
++test('attachment detached return and hostile nested JSON',()=>{const p=section(),out=v.assertResult(id,p,{...req,attachmentId:a},ctx);assert.notEqual(out.records[0].payload,p.records[0].payload);let touched=0;assert.throws(()=>v.normalizeInput(id,{...req,get query(){touched++;return 'x';}},ctx));assert.equal(touched,0);});

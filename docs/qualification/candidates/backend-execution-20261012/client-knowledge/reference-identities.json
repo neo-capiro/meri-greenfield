@@ -1,0 +1,520 @@
+[
+  {
+    "path": "apps/api/src/meri/meri-tools.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+        "bytes": 415704
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+        "bytes": 415704
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/embeddings/client-kb.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "b1868f72facb2c6005b357a392e24c9018c71696",
+        "sha256": "37b3be16b4afaf3e5d0133451c5e61b2b1a1ce8bfbf4867ab4599d64b27801a4",
+        "bytes": 29407
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "b1868f72facb2c6005b357a392e24c9018c71696",
+        "sha256": "37b3be16b4afaf3e5d0133451c5e61b2b1a1ce8bfbf4867ab4599d64b27801a4",
+        "bytes": 29407
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/embeddings/client-kb.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "6e80a3946dec4f09b4b06b7cf1ef9a22f986426e",
+        "sha256": "cb5b40f787b50e0c457cf5512f3a1d4a4e1b6820185a28cb7be0ff0998db9fa4",
+        "bytes": 10559
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "6e80a3946dec4f09b4b06b7cf1ef9a22f986426e",
+        "sha256": "cb5b40f787b50e0c457cf5512f3a1d4a4e1b6820185a28cb7be0ff0998db9fa4",
+        "bytes": 10559
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/memory/memory-graph.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "c267592953209e2c333f679905bc00a98266033b",
+        "sha256": "5c9da72edac810d472684589ff7b6d2ee5d94000aca69955ba8f0063021b779e",
+        "bytes": 6676
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "c267592953209e2c333f679905bc00a98266033b",
+        "sha256": "5c9da72edac810d472684589ff7b6d2ee5d94000aca69955ba8f0063021b779e",
+        "bytes": 6676
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/memory/memory-wall.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+        "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+        "bytes": 7833
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "48b9bf4b9246baac7cd3188d012ea7638aeb8a68",
+        "sha256": "91961048fd944885b8a06d229009259cf4866a4d40338d09685b1608f29a9255",
+        "bytes": 7833
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/memory/memory-recall-policy.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "unavailable": true
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "unavailable": true
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-chat-attachment-read.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "91b93fde3957370613e067464d9b261ccc1da0d4",
+        "sha256": "8c62643bf0fba10b348639ead01ee9b0f0a0cfed2962471d4a4342ea7aa4524f",
+        "bytes": 33409
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "91b93fde3957370613e067464d9b261ccc1da0d4",
+        "sha256": "8c62643bf0fba10b348639ead01ee9b0f0a0cfed2962471d4a4342ea7aa4524f",
+        "bytes": 33409
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-chat-attachment-read-scope.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "e3d88cb0c943b33716db86a01c6cba98d7c2be25",
+        "sha256": "afe75c34dbc0f143618c853cf717695dddce3d0b4c9b2ab541111ad9554f02b1",
+        "bytes": 791
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "e3d88cb0c943b33716db86a01c6cba98d7c2be25",
+        "sha256": "afe75c34dbc0f143618c853cf717695dddce3d0b4c9b2ab541111ad9554f02b1",
+        "bytes": 791
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-client-context.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "b35e0d20396a4a2a8764ab2c8dab4db7d7df12e4",
+        "sha256": "fdc3c3ba9e1ad6d6a9ee8f4e861eb9690943361b1d3913c46cc5ae40afdff87c",
+        "bytes": 5877
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "b35e0d20396a4a2a8764ab2c8dab4db7d7df12e4",
+        "sha256": "fdc3c3ba9e1ad6d6a9ee8f4e861eb9690943361b1d3913c46cc5ae40afdff87c",
+        "bytes": 5877
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-memory-content.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "206af36d7bdd8211228a21cad1b53903aef9a301",
+        "sha256": "269859235ff3a5d1427f0448c366884b4b4d072e6c84f902059ed24edb567a2b",
+        "bytes": 5709
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "206af36d7bdd8211228a21cad1b53903aef9a301",
+        "sha256": "269859235ff3a5d1427f0448c366884b4b4d072e6c84f902059ed24edb567a2b",
+        "bytes": 5709
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-data-search.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "3194549806fa74147ab61d2ba40ef4182bee42f7",
+        "sha256": "54025ffcbf917f0ebbf154a313ed53821387877bda09a319fc26ca84b47a54f1",
+        "bytes": 5661
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "3194549806fa74147ab61d2ba40ef4182bee42f7",
+        "sha256": "54025ffcbf917f0ebbf154a313ed53821387877bda09a319fc26ca84b47a54f1",
+        "bytes": 5661
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/retrieval/retrieval-v2.types.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0",
+        "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8",
+        "bytes": 11082
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "71f80b0d94d78537ab6c5f150ab7960417d319d0",
+        "sha256": "95f388145594c5a9052318e4fa0f215de0b10fb92757bbcca8adb17120890fb8",
+        "bytes": 11082
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/meri/meri-context-plane.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1",
+        "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303",
+        "bytes": 52829
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "899c23f52350f0abe47c23f6d168c682fd5dddd1",
+        "sha256": "320b1e47694ba9d43737cde066c6987c48020c892503d2c37237522953165303",
+        "bytes": 52829
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/prisma/schema.prisma",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "bytes": 968034,
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/memory/memory-recall-suppression.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "d147034eaf5141e997a3b6011bc92df01e9dd84f",
+        "bytes": 2449,
+        "sha256": "f1a049bf5362c540098adea8ba885b25b579ab70f2a51b322abb3060eab647f2"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "d147034eaf5141e997a3b6011bc92df01e9dd84f",
+        "bytes": 2449,
+        "sha256": "f1a049bf5362c540098adea8ba885b25b579ab70f2a51b322abb3060eab647f2"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/memory/memory-recall-content.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "29b40eb55ce83d6042aef6de1190ae36665a6109",
+        "bytes": 3449,
+        "sha256": "73b42e9d9b0822112bae16a45e818bdb88a13e4b727b02489e7098794094e6ca"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "29b40eb55ce83d6042aef6de1190ae36665a6109",
+        "bytes": 3449,
+        "sha256": "73b42e9d9b0822112bae16a45e818bdb88a13e4b727b02489e7098794094e6ca"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "packages/meriv2-core/src/memory/governance.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "4173d82146a4aa29e61ac04d3409a9200a1512ca",
+        "bytes": 23789,
+        "sha256": "bc6ac38540d147dfd4dee1d3665c0f4396be3c5722f173c816546549d175aba3"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "4173d82146a4aa29e61ac04d3409a9200a1512ca",
+        "bytes": 23789,
+        "sha256": "bc6ac38540d147dfd4dee1d3665c0f4396be3c5722f173c816546549d175aba3"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/governed-memory-eligibility.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2ad396b550ea17963d01c795f13cb0da4277aff6",
+        "bytes": 2978,
+        "sha256": "3056dc2df5b4fab0cb8e95168f28cb00b55ec11c3755ee07c3b9e0b085330b6c"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2ad396b550ea17963d01c795f13cb0da4277aff6",
+        "bytes": 2978,
+        "sha256": "3056dc2df5b4fab0cb8e95168f28cb00b55ec11c3755ee07c3b9e0b085330b6c"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/institutional-knowledge-retrieval.adapter.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "34e2e9882d66ed4512b2e35c9ca86c99914967ae",
+        "bytes": 37900,
+        "sha256": "5a6b7422c08caf430dbe9f6aa5ef4f857f6166dde25f0115c7a1bdd36715509c"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "34e2e9882d66ed4512b2e35c9ca86c99914967ae",
+        "bytes": 37900,
+        "sha256": "5a6b7422c08caf430dbe9f6aa5ef4f857f6166dde25f0115c7a1bdd36715509c"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/monday-managed-mcp.adapter.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f17ab15e4d135916240628555fc622da7f2fe5fe",
+        "bytes": 30103,
+        "sha256": "441deb14b7ce287ae0bb2e2765f3ba007874edb61a36ec3c92ad489297286d7a"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f17ab15e4d135916240628555fc622da7f2fe5fe",
+        "bytes": 30103,
+        "sha256": "441deb14b7ce287ae0bb2e2765f3ba007874edb61a36ec3c92ad489297286d7a"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/retrieval/adapters/monday-board-scope.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ec7ebf1fb0256f128a67411ab3a3b54f44ae82be",
+        "bytes": 1371,
+        "sha256": "9c589e264c10b729255a1057c34cd0d3bbb4dfe6432d154d5a4ad9601b3c3d51"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ec7ebf1fb0256f128a67411ab3a3b54f44ae82be",
+        "bytes": 1371,
+        "sha256": "9c589e264c10b729255a1057c34cd0d3bbb4dfe6432d154d5a4ad9601b3c3d51"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/clients/client-capabilities.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "d1730435c988695664f67ad0015e45695b831cee",
+        "bytes": 14496,
+        "sha256": "3b8a60edffe191f31313e21d94e29ed48a1594757a38294245bb0e5bef0b32e9"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "d1730435c988695664f67ad0015e45695b831cee",
+        "bytes": 14496,
+        "sha256": "3b8a60edffe191f31313e21d94e29ed48a1594757a38294245bb0e5bef0b32e9"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/clients/client-people.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "898d935b54e2811c838f96a295570c8596021d8c",
+        "bytes": 14616,
+        "sha256": "f74ef4ca3a7d9e8604f4318e978348782a1d6b12fe91b38aaae3d51e2211d83f"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "898d935b54e2811c838f96a295570c8596021d8c",
+        "bytes": 14616,
+        "sha256": "f74ef4ca3a7d9e8604f4318e978348782a1d6b12fe91b38aaae3d51e2211d83f"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/clients/client-facilities.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "c9f2505d1f90f20a5c4a5bcdb5011be7a3e53938",
+        "bytes": 22795,
+        "sha256": "8ddad2b43621b72a1f125fe3ca3bf0249e00346a279ca6b40ce5f3d0656b0ed6"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "c9f2505d1f90f20a5c4a5bcdb5011be7a3e53938",
+        "bytes": 22795,
+        "sha256": "8ddad2b43621b72a1f125fe3ca3bf0249e00346a279ca6b40ce5f3d0656b0ed6"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/clients/client-advocacy-matter.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9467e4f684a1fb05fa0fbe1f5ad50e5010f3ced3",
+        "bytes": 88007,
+        "sha256": "2d15237e1bb14f9a39d3f3b5f945ca533a007c9247f94bc41ea599cffdd205c3"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9467e4f684a1fb05fa0fbe1f5ad50e5010f3ced3",
+        "bytes": 88007,
+        "sha256": "2d15237e1bb14f9a39d3f3b5f945ca533a007c9247f94bc41ea599cffdd205c3"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/engagement/engagement.service.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "bytes": 499454,
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "bytes": 499454,
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/engagement/engagement-access.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+        "bytes": 5101,
+        "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "c0a8cbd27b8a87ff02f8dd36577dcce2d6537992",
+        "bytes": 5101,
+        "sha256": "a7d28dcb3db441049d7f93a89b54cc21b097af3757a66f2934b0e5a2a560d0bf"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/clients/client-hierarchy.helpers.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "9834c6031f295963c04c8fbcb11aea347b92f779",
+        "bytes": 6177,
+        "sha256": "763506b502805759fdd365cc21c84ad2e48978688bc30af70191695d0e95f375"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "9834c6031f295963c04c8fbcb11aea347b92f779",
+        "bytes": 6177,
+        "sha256": "763506b502805759fdd365cc21c84ad2e48978688bc30af70191695d0e95f375"
+      }
+    ],
+    "drift": false
+  },
+  {
+    "path": "apps/api/src/knowledge/knowledge.types.ts",
+    "versions": [
+      {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "de4957b091de86a4f45ba585692f119b76bf167b",
+        "bytes": 5768,
+        "sha256": "af823f3ba72d84db1bd199896e8b9360f61b5489c79e31335d518d4802e498df"
+      },
+      {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "de4957b091de86a4f45ba585692f119b76bf167b",
+        "bytes": 5768,
+        "sha256": "af823f3ba72d84db1bd199896e8b9360f61b5489c79e31335d518d4802e498df"
+      }
+    ],
+    "drift": false
+  }
+]

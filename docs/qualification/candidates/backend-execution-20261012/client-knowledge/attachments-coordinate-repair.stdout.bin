@@ -1,0 +1,17 @@
+✔ attachment manifest defaults and empty query difference (13.049983ms)
+✔ attachment complete manifest does not establish content completeness (25.983851ms)
+✔ attachment source sections bind text, bytes receipt, locator and external trust (3.357556ms)
+✔ attachment cursor is correlated but fake HMAC is expressly not authenticated (6.422862ms)
+✔ attachment cursor stale version, noncanonical encoding and explicit locator conflict fail (0.472951ms)
+✔ attachment metadata permits signed stored page counts and absent original bytes (0.539651ms)
+✔ attachment partial/empty section is not complete even without next cursor (0.451799ms)
+✔ attachment detached return and hostile nested JSON (2.815116ms)
+✔ attachment coordinate kind and selected section stay bound (1.639414ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 372.741968
