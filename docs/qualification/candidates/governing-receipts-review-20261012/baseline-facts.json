@@ -1,0 +1,173 @@
+{
+  "governingCommit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+  "identities": [
+    {
+      "path": "AGENTS.md",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "fe8cefa588409d8562f0e6d939a6da7d120c0d87",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "7f680395e07d1114667a800f3f8ed77010a3eac2",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "c9849375e463e88a064b256f715db7858cd369df",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "docs/plans/Meri_Greenfield_Agent_Plan.docx",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "bda0a5741732b0b2a305f211818eb1f3f2890cff",
+      "bytes": 57656,
+      "sha256": "80a96320bde810214127919ddfe14659e3efd44d7ee7f6ae57d51527bc814ad7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/plan-reconciliation/normative-id-ledger.json",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "642845e74f716d5bf8377e84250b52dcccc4686a",
+      "bytes": 63609,
+      "sha256": "3b2f81a369f7b090538f1bace1f2969ebeac4cb8ab41334d45b1f62d72a1df1a"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PLAN-RECONCILIATION-INTEGRATION-20261012.md",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "d0c34856cb03d536addc6b3283463e511b20b1ba",
+      "bytes": 3582,
+      "sha256": "40d860b07f1ea6effc8f5758fcf3e32b22d870230f451054fc887e9a18c5e74b"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md",
+      "commit": "f7db1ae9557d14f227a32dcc891ce5cbaecc7ff4",
+      "blob": "141fd339cf03df73d6333f77461d671a66be7c6a",
+      "bytes": 11712,
+      "sha256": "d5395a245829d1834c38525597ca3ef4aef0c484eb8dcf3d00f6c2ed3e62ae2e"
+    }
+  ],
+  "exactIds": [
+    "W00",
+    "W01",
+    "W02",
+    "W03",
+    "W04",
+    "W05",
+    "W06",
+    "W07",
+    "W08",
+    "W09",
+    "W10",
+    "W11",
+    "R-01",
+    "R-02",
+    "R-03",
+    "R-04",
+    "R-05",
+    "R-06",
+    "R-07",
+    "R-08",
+    "R-09",
+    "R-10",
+    "R-11",
+    "R-12",
+    "REL-01",
+    "REL-02",
+    "REL-03",
+    "REL-04",
+    "REL-05",
+    "REL-06",
+    "REL-07",
+    "REL-08",
+    "REL-09",
+    "G0",
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G7",
+    "RG-01",
+    "RG-02",
+    "RG-03",
+    "RG-04",
+    "RG-05",
+    "RG-06",
+    "RG-07",
+    "RG-08",
+    "RG-09",
+    "RG-10",
+    "RG-11",
+    "RG-12"
+  ],
+  "all53ActualPlanLinesMatch": true,
+  "originalBenchmarkParagraphs": [
+    {
+      "xmlParagraph": 227,
+      "text": "These are proposed production acceptance targets. Build a benchmark of at least 60 real Capiro tasks with expected evidence, permissions, output formats, and success criteria. Require at least 90 percent task completion and 95 percent correctness for checked factual claims. Grade results and usable files, not conversational fluency. Add cases when pilot users expose a failure."
+    },
+    {
+      "xmlParagraph": 231,
+      "text": "Zero unauthorized rows, citations, transcripts, or files across at least 100 adversarial cases spanning multiple tenants. Include guessed IDs, object links, session keys, and forged tool arguments."
+    },
+    {
+      "xmlParagraph": 235,
+      "text": "100 percent of the agreed source inventory has an adapter and a passing authorized-read test. Counts and aggregates match fixtures; every result declares freshness and completeness limits. All citation targets must resolve to authorized evidence."
+    }
+  ],
+  "readOnlyMetadata": true,
+  "r2BenchmarkAnchors": [
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 286,
+      "text": "REL-01 starts with 75 representative real requests, including successful cases and the user's reported failures. Expand to at least 200 versioned cases spanning paraphrases, mixed domains, pronouns, ambiguous identities, selected skills, calendar/FY/version edges, denied grants, missing/stale sources, late-body evidence and source outages. Keep the original release task and policy suites; the reliability cases may overlap only where their labels and scoring fully satisfy both purposes."
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 407,
+      "text": "| Real work | Preserve the original at least 60 representative end-to-end tasks with at least 90% successful completion and at least 95% checked factual correctness. Start reliability work with 75 real requests and expand to at least 200 labelled cases; score the applicable frozen held-out RG gates separately |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 408,
+      "text": "| Cross-tenant isolation | Zero unauthorized rows, citations, transcripts, browser state or files across at least 100 adversarial cases |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 413,
+      "text": "| Native artifacts | 100% benchmark files open; supported formulas and reference totals correct; at least 95% meet the agreed human quality rubric; zero critical clipping/corruption; originals preserved |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 414,
+      "text": "| Recovery and side effects | 100% restart/retry suite passes; recovery within two minutes on healthy infrastructure; zero duplicate mutations after repeated delivery or worker termination |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 421,
+      "text": "| Performance and cost | At 10 concurrent runs, p95 UI acknowledgement at most two seconds and p95 fresh-task readiness at most 90 seconds; tenant budgets, concurrency and runtime limits enforced; 100% runs/attempts have measured usage, including failed/cancelled/retried work |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 440,
+      "text": "| RG-09 | Proposed warm simple-lookup answer p95 at most 15 seconds; optional-router incremental p95 at most 500 ms and total p95 regression at most 10% | Measure and freeze actual benchmark cohort/load before qualification; unsupported beta or exceeded optional budget uses the baseline. Retain all original performance targets; this does not relax a stricter overlapping ordinary-answer target |"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 445,
+      "text": "Latency definitions are distinct. UI acknowledgement (at most two seconds) is accepted-request feedback; fresh-task readiness (at most 90 seconds) includes a new isolated worker; RG-09 measures a warm simple lookup from accepted request to grounded final answer. If the companion original plan/workbook retains an ordinary-answer p95 at most eight seconds, keep that target for its frozen original cohort; RG-09's broader warm lookup ceiling does not replace it. Report both cohorts and avoid hiding discovery/retry/classifier latency outside the measurement. Do not call an unfinished streaming token a completed answer."
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "line": 447,
+      "text": "RG-11 intentionally has no invented universal JEV gain number: REL-06/REL-08 must pin a task-specific measurable adoption threshold, calibration/abstention rubric and latency ceiling before judging. Until that qualification exists, JEV is disabled/shadow and cannot veto mandatory evidence. RG-10 likewise requires sufficient labelled evidence for its claimed improvement; optional indecision cannot delay a qualified baseline release."
+    }
+  ],
+  "eightSecondProvenance": "PR34 narrative preserves a historical stricter ordinary-answer cohort. R2 line445 explicitly makes that retained cohort conditional; this review establishes no measured timing or new primary eight-second benchmark receipt."
+}

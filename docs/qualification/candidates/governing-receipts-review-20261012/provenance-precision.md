@@ -1,0 +1,3 @@
+# Baseline timing provenance precision
+
+The criteria at a47622ec preserve the prior reported ordinary-answer eight-second cohort. The independently read governing R2 line445 conditionally retains that cohort where the companion original plan/workbook establishes it, and expressly forbids replacing a stricter original target with RG-09's fifteen-second warm-lookup ceiling. This review does not turn PR34 narrative into a measured timing result or claim that the inspected original DOCX establishes an eight-second target. No target is waived; the exact original cohort/receipt remains a provenance obligation. Original DOCX227/231 and R2 lines286/407/408 directly establish the60/90%/95%/100 and75→200 requirements.
