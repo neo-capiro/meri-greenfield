@@ -1,0 +1,20 @@
+{
+  "source": "4dd6cc9938a9845b13cffa467e01ac3b438abc02",
+  "argv": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "evals/task-lookup/test/actual-control.test.mjs",
+    "evals/task-lookup/test/cli.test.mjs",
+    "evals/task-lookup/test/corpus.test.mjs",
+    "evals/task-lookup/test/score.test.mjs"
+  ],
+  "exitCode": 1,
+  "timeout": false,
+  "durationSeconds": 10.419,
+  "group": 416184,
+  "groupAbsent": true,
+  "stdoutSha256": "d3b45542ae1007899766f8021837cb19b6d81f89233fd35c6a02fa79e6a39f25",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiff": ""
+}

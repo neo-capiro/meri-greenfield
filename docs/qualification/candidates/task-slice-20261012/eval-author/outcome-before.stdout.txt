@@ -1,0 +1,122 @@
+✖ actual control-produced immutable refs, source envelope and two read receipts satisfy scorer (36.226273ms)
+✔ CLI help is handled without input files or network (2.282022ms)
+✔ CLI freezes, projects withheld runner and scores exact local input (20.556685ms)
+✔ CLI refuses overwritten output, external corpus pin mismatch and symlink input (6.091962ms)
+✔ CLI keeps missing cases as failure exit with report, not successful empty pass (5.123926ms)
+✔ CLI rejects duplicate/unknown flags before creating output (0.234382ms)
+✔ freeze binds entire approved input with real corpus still unqualified (6.719505ms)
+✔ separate approval pin cannot be changed inside dataset (0.989217ms)
+✔ gold/source/config changes invalidate approval coverage before freeze (2.098857ms)
+✔ unkeyed internal freeze tampering is detected and not called authentication (2.011826ms)
+✔ declared real provenance remains separate from qualified real count (0.685922ms)
+✔ empty supplied corpus is valid with zero real/synthetic counts (0.713864ms)
+✔ held-out runner preserves executable inputs but excludes gold and approval (1.295178ms)
+✔ related cases cannot cross split boundaries (0.980775ms)
+✔ same source request cannot escape group leakage through group renaming (0.773363ms)
+✔ duplicate cases/sources and unknown snapshot refs refuse (1.300676ms)
+✔ selected client scope only; no clientless or actor rebinding (1.40306ms)
+✔ missing semantic gold and unsupported absence/exhaustiveness are refused (1.138702ms)
+✔ hostile getters and extra authority cannot execute during input admission (0.367222ms)
+✔ actual canonical recommendation result and callback traces score without runtime qualification (27.181498ms)
+✔ fresh run/attempt/event/decision/time entropy preserves semantic gold with full byte audit (5.516546ms)
+✔ optional exact replay pin rejects changed transport even when semantics match (6.239313ms)
+✔ changed semantic source cannot pass frozen gold (3.786334ms)
+✔ changed semantic coverage cannot pass frozen gold (4.354729ms)
+✔ changed semantic record cannot pass frozen gold (4.04953ms)
+✔ changed semantic content cannot pass frozen gold (4.895893ms)
+✔ semantic projection retains source asOf/version/content/freshness and scopes (2.338186ms)
+✔ wrong route identity is a failed case (3.017388ms)
+✔ wrong arguments identity is a failed case (2.663886ms)
+✔ wrong source identity is a failed case (2.384105ms)
+✔ wrong config identity is a failed case (2.63367ms)
+✔ wrong case identity is a failed case (2.069232ms)
+✔ wrong hash identity is a failed case (2.817697ms)
+✔ invalid current expiry trace refuses local satisfaction (6.786646ms)
+✔ invalid current missing trace refuses local satisfaction (3.589899ms)
+✔ invalid current denied trace refuses local satisfaction (3.621686ms)
+✔ invalid current binding trace refuses local satisfaction (3.667395ms)
+✔ invalid current reference trace refuses local satisfaction (3.597191ms)
+✔ current reader may recover to a fresh attempt without rebinding original version (3.844681ms)
+✔ failed stays denominator and cannot hide unsupported claims (2.155672ms)
+✔ skipped stays denominator and cannot hide unsupported claims (1.830733ms)
+✔ ineligible stays denominator and cannot hide unsupported claims (1.681158ms)
+✔ missing, duplicate and foreign observations remain explicit (2.102132ms)
+✔ denied and clarify are meaningful frozen outcomes, not accepted tasks (3.554035ms)
+✔ empty score has null rates and no qualified real cases (0.482035ms)
+✔ fresh run binding requires all cases exactly once and stable principal (8.071328ms)
+✔ tool completed is never run completion and scopes/ref must match (7.604897ms)
+✖ bare expected-denied label without captured authority refusal cannot satisfy case (2.138546ms)
+✖ clarify label has no selected-lookup observation contract and remains ineligible (1.297962ms)
+ℹ tests 49
+ℹ suites 0
+ℹ pass 46
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10379.317443
+
+✖ failing tests:
+
+test at evals/task-lookup/test/actual-control.test.mjs:14:1
+✖ actual control-produced immutable refs, source envelope and two read receipts satisfy scorer (36.226273ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   'EVAL_RELEASE_INTENT'
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/actual-control.test.mjs:14:300)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'EVAL_RELEASE_INTENT' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/score.test.mjs:17:1
+✖ bare expected-denied label without captured authority refusal cannot satisfy case (2.138546ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:17:153)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evals/task-lookup/test/score.test.mjs:18:1
+✖ clarify label has no selected-lookup observation contract and remains ineligible (1.297962ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-task-lookup-eval-20261012/evals/task-lookup/test/score.test.mjs:18:256)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

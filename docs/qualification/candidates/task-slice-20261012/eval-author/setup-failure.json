@@ -1,0 +1,1 @@
+{"action":"git sparse-checkout add --no-cone","exitCode":129,"stderr":"error: unknown option `no-cone'","effect":"No files or dependencies changed by failed command.","correction":"add inherits existing non-cone mode; omit unsupported flag. Only allocated worktree sparse paths were expanded."}
