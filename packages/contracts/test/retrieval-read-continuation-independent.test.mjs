@@ -8,6 +8,8 @@ import {assertCatalog, resolveOperationContract, validateShape} from '../retriev
 import {CATALOG_OPERATION_BINDINGS} from '../retrieval-0.2/catalog-validation.mjs';
 import {createPublicDataValidators} from '../retrieval-0.2/public-data-validation.mjs';
 import {createStateLegislationValidators} from '../retrieval-0.2/state-legislation-validation.mjs';
+import {createSourceDisabledGateway} from '../../../apps/gateway/index.mjs';
+import {fixture as gatewayFixture,NOW as GATEWAY_NOW,limits as gatewayLimits,uuid} from '../../../apps/gateway/test/fixtures.mjs';
 
 // Independent pre-candidate baseline and literal synthetic projections. All
 // calls below use the real canonical resolver; no family compiler or adapter.
@@ -268,3 +270,15 @@ for(const [group,create,prefix,id] of [['public-data',createPublicDataValidators
     assert.equal(effects,0);
   });
 }
+
+test('independent real source-disabled gateway refuses all37 before any authority, budget or source effect',async()=>{
+  const fixture=gatewayFixture();
+  const gateway=createSourceDisabledGateway({authorityPorts:fixture.ports,budget:fixture.budget,
+    limits:gatewayLimits,now:()=>GATEWAY_NOW,newId:()=>uuid('7')});
+  assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
+  for(const {operation} of catalog.operations){
+    await assert.rejects(gateway.execute(JSON.stringify({operation,arguments:{}}),'synthetic-unqualified'),/UNAVAILABLE/);
+    assert.deepEqual(fixture.calls,[]);
+  }
+  assert.deepEqual(await gateway.discover(),[]);
+});
