@@ -1,0 +1,41 @@
+✔ one private operation exposes canonical definition names (1.625914ms)
+✔ normalization preserves clipping, null omission, casing and frozen detached values (2.064833ms)
+✔ two observed clocks are required outside model input, with no extra context (0.978451ms)
+✔ clock anchors must be canonical instants but need not be ordered (0.323636ms)
+✔ hostile operation and shape selectors are inert (0.351899ms)
+✔ accessors, proxies, cycles and nonfinite data refuse without side effects (0.242114ms)
+✔ missing query retains only its explicit found-false note (3.130834ms)
+✔ no-match notes bind normalized query/state and disclose no memory inference (0.540362ms)
+✔ ambiguity allows six state plus six federal candidates in source grouping (1.116728ms)
+✔ ambiguity is at least two, unique per namespace and exact returned count only (0.607593ms)
+✔ state hint suppresses federal ambiguity and enforces each projected state (0.904599ms)
+✔ found namespaces preserve different state/federal projections and hint restrictions (0.999292ms)
+✔ stored strings are not invented ID/URL/type enums and nullable state ruleType remains notice (0.434133ms)
+✔ federal publication is nonnull DateTime; state source dates retain SQLDate midnight (1.095346ms)
+✔ federal period has no start; state may retain a stored start (0.299681ms)
+✔ state single agency and optional single nonempty docket preserve projection (2.252585ms)
+✔ state coverage is exact and federal/state URL nullability differs (0.558169ms)
+✔ PROPOSED_RULE: stage deadline is strictly earlier, open deadline strictly later (0.768434ms)
+✔ proposed: stage deadline is strictly earlier, open deadline strictly later (0.304248ms)
+✔ RULE: inclusive effective boundary never opens lingering comment window (0.469976ms)
+✔ FINAL: inclusive effective boundary never opens lingering comment window (0.367993ms)
+✔ PRESIDENTIAL_DOCUMENT: inclusive effective boundary never opens lingering comment window (0.479201ms)
+✔ EXECUTIVE_ORDER: inclusive effective boundary never opens lingering comment window (0.422094ms)
+✔ EMERGENCY: inclusive effective boundary never opens lingering comment window (0.416496ms)
+✔ unknown and whitespace-surrounded document types stay notice, without trimming or guessing (0.604168ms)
+✔ stage labels correlate exactly and cannot be freely swapped (0.327502ms)
+✔ comment start is inclusive; future start prevents an otherwise open stage (0.617729ms)
+✔ no end means not open and exact missing-deadline note only at accepting stages (1.05177ms)
+✔ separate clocks retain stage-before-deadline and comment-after-deadline observations (0.33242ms)
+✔ a regressed comment clock does not override previously derived closed stage (0.147742ms)
+✔ generatedAt is independent metadata, never an implicit decision clock (0.5194ms)
+✔ hostile result values, extra fields and cross-operation envelopes refuse (0.41253ms)
+✔ output rows and periods are detached mutable data (0.164878ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 222.267144
