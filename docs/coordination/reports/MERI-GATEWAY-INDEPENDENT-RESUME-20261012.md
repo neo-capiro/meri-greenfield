@@ -10,6 +10,7 @@ Read repository AGENTS and implementation standards, adopted R2 gateway/authorit
 
 1. **Fresh inner authority deadlines do not bound pending work.** Thirteen independent controls fail: initial validated capability expiry followed by parked `currentRun`; and each before-reservation, before-effect, before-release and final authorization phase with shorter capability expiry then parked `currentRun`, or shorter observed run deadline then parked business/source policy. Each reports deadline `NOW+20`, still pending after 100 ms with the port signal un-aborted. Owned cancellation then rejects without output, releases synthetic pending work and records the expected uncertainty. Applying the deadline only after the complete `identify`/`check` returns is insufficient.
 2. **Late cancelled capability verification still invokes the next trusted port.** Five of eighteen cancellation controls fail: initial identity and all four refresh phases invoke `currentRun` when a parked `verifyCapability` resolves after dispatch has returned `CANCELLED`. No result escapes, but the new port call violates cancellation containment. Late completion must check cancellation before another trusted port starts.
+3. **Shape-valid leap-second issuance establishes unusable authority.** Parent flagged `Date.parse` returning NaN for a timestamp accepted by the public JSON format validator. Independent replay with `issuedAt: 2016-12-31T23:59:60Z` and valid future expiration releases the synthetic result. Three finite future/equal/unordered lifetime controls deny correctly. Leap-second expiration fails closed as `DEADLINE`, but only after `currentRun`; independent early malformed-claims refusal expects `ACCESS_DENIED` before that port. Runtime authority must use finite, safe-integer, ordered issuance/expiry values without changing public schema.
 
 Both defects are in `authorization/current-tool-authority.mjs` composition with `dispatch/tool-dispatch.mjs`. A separate author is repairing immediate validated-deadline propagation and post-await cancellation checks. The reviewer does not edit production source.
 
@@ -22,6 +23,7 @@ Both defects are in `authorization/current-tool-authority.mjs` composition with 
 | Same unmodified control against preserved narrow repair | PASS, exit 0; DEADLINE and one uncertainty call |
 | New inner deadline matrix | 0/13 PASS, exit 1; all thirteen fail the 100 ms bound |
 | New cancellation/late-completion matrix | 13/18 PASS, 5 FAIL, exit 1; each failing next call is `currentRun` |
+| Capability timestamp matrix | 3/5 PASS, 2 FAIL, exit 1; unusable issuance releases output; unusable expiration reaches currentRun before denial |
 
 Current catalog bytes equal accepted publication `5ee46446b5f60034916f00b2a665b3e2bef9cf60` exactly: 13 descriptors. The current contract facade also contains the preserved additive memory candidate; an additional exact accepted-contract composition will accompany repaired-source review. Production source remains hardwired unavailable with zero exposure/effects.
 

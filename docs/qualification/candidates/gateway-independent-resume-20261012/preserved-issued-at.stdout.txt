@@ -1,0 +1,56 @@
+{"scenario":"leap-second-issuedAt","released":true,"failure":null,"calls":["capability","fence","capability","fence","policy","source-policy","fence","reserve","capability","fence","policy","source-policy","fence","handler","capability","fence","policy","source-policy","fence","settle","capability","fence","policy","source-policy","fence"]}
+{"scenario":"future-issuedAt","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"issued-after-expiry","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"equal-issued-expiry","released":false,"failure":"ACCESS_DENIED","calls":["capability"]}
+{"scenario":"leap-second-expiry","released":false,"failure":"DEADLINE","calls":["capability","fence"]}
+✖ gateway refuses unusable capability lifetime: leap-second-issuedAt (9.961973ms)
+✔ gateway refuses unusable capability lifetime: future-issuedAt (0.626461ms)
+✔ gateway refuses unusable capability lifetime: issued-after-expiry (0.461815ms)
+✔ gateway refuses unusable capability lifetime: equal-issued-expiry (0.338228ms)
+✖ gateway refuses unusable capability lifetime: leap-second-expiry (1.319844ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 3
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1458.744767
+
+✖ failing tests:
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs:11:3
+✖ gateway refuses unusable capability lifetime: leap-second-issuedAt (9.961973ms)
+  AssertionError [ERR_ASSERTION]: shape-valid unusable issuance must never establish authority
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs:22:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs:11:3
+✖ gateway refuses unusable capability lifetime: leap-second-expiry (1.319844ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'DEADLINE'
+  - 'ACCESS_DENIED'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-gateway-review-20261012/docs/qualification/candidates/gateway-independent-resume-20261012/issued-at.test.mjs:23:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'DEADLINE',
+    expected: 'ACCESS_DENIED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
