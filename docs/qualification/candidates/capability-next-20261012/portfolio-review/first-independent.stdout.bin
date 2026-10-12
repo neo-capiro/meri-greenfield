@@ -1,0 +1,51 @@
+✔ independent nonempty projections preserve current detail and historical revisions (11.893429ms)
+✔ current conversation and portfolio derive only from exact trusted context (3.97539ms)
+✔ input default and exact numeric/cursor grammar without coercion (2.543245ms)
+✔ transport text bounds count Unicode code points and do not truncate source text (2.271326ms)
+✔ canonical context rejects cross-tenant actor scope and multiple portfolios (1.138363ms)
+✔ full returned task and authorization subject cannot be substituted (4.876795ms)
+✔ projected member and visible client counts match rows without global absence claim (5.226832ms)
+✔ actor role correlation is explicit and owner identity cannot create a grant (2.666771ms)
+✔ duplicate grant principal, link client and native row identities refuse (2.620762ms)
+✔ required nullable fields are not omitted or silently defaulted (4.415491ms)
+✔ all structural envelopes close fields, while opaque payload remains only reported data (3.089527ms)
+✔ member variants and nullable unresolved metadata preserve DTO scope (13.591785ms)
+✔ finite timestamps and safe revisions apply to every projected row type (3.542949ms)
+✔ changes recipient state belongs to exactly the event and current actor (1.087315ms)
+✔ event order is time then id descending and permits independent aggregate revisions (1.292734ms)
+✔ terminal empty/short pages and exactly full continuation remain admissible (0.88446ms)
+✖ non-null continuation requires the producer full-page relationship (0.61199ms)
+✔ cursor cannot name a foreign row, repeat input or advance an empty page (1.076379ms)
+✔ detail and changes do not interchange and unrelated Clio operation remains unsupported (0.787995ms)
+✔ hostile shape/context/payload admission has zero property effects (0.693634ms)
+✔ nested JSON rejects cycles, hidden and symbol fields, sparse arrays and exotic values (1.758024ms)
+✔ resource limits refuse rather than truncating and inputs remain unmodified (3.329939ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1135.144529
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-research-portfolio-independent.test.mjs:111:1
+✖ non-null continuation requires the producer full-page relationship (0.61199ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at reject (file:///workspace/meri-portfolio-next-review-20261012/packages/contracts/test/retrieval-research-portfolio-independent.test.mjs:33:41)
+      at TestContext.<anonymous> (file:///workspace/meri-portfolio-next-review-20261012/packages/contracts/test/retrieval-research-portfolio-independent.test.mjs:114:3)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

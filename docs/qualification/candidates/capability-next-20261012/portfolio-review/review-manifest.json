@@ -1,0 +1,104 @@
+{
+  "decision": "ACCEPT_SOURCE",
+  "acceptedAuthor": "088cfa10df8af518795a10590ce3e17c8b4fad8a",
+  "acceptedAuthorTree": "d84cd2e295d5f03f369ccad1a4ffccf2be78395c",
+  "initialSource": "deec763c57ba57cc4d7e7915d55b0f8719e13021",
+  "criteriaCommit": "544b57afa790c667107495ff8c4922919c88f0d6",
+  "controlsFailureCommit": "75025bd7ba069dcb36079371b29cfa733f3b55ef",
+  "checks": {
+    "initialIndependent": {
+      "passed": 21,
+      "failed": 1
+    },
+    "exactRepaired": {
+      "independentPassed": 22,
+      "authorPassed": 25,
+      "failed": 0
+    },
+    "sourceAudit": {
+      "passed": 80,
+      "failed": 0
+    }
+  },
+  "scope": "PRIVATE_FAMILY_ONLY",
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "manifestSelfExcluded": true,
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-research-portfolio-independent.test.mjs",
+      "bytes": 13321,
+      "sha256": "f88c86dcc5ecc00a6616c1b72e0ee0794a1e93e1924c93a9a51055a01c6e867f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-PORTFOLIO-REVIEW-20261012.md",
+      "bytes": 12062,
+      "sha256": "c247a8ea62335d2c1ccbbe668096cadd8379bdd86d46badef3905f65af52e991"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/audit-source.py",
+      "bytes": 7935,
+      "sha256": "2f0838631ea1f4e1e2efd7a30f16ec2e61691e0cce07df3c90e701dbca3daf97"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent-source.json",
+      "bytes": 1069,
+      "sha256": "877f8d1ff0f31803b315689ddb299908c77ebacb8601f0eaf83196282f6eaee9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.json",
+      "bytes": 1313,
+      "sha256": "0bccd811b47b930c117d556cc7b2c834daf019e29a3f2ca8767244b286d45395"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/first-independent.stdout.bin",
+      "bytes": 3259,
+      "sha256": "ea30b4ebfd6ccb754baab9cbfa334acf229312fed6db7d1f8da3aafac641e0c4"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.json",
+      "bytes": 1389,
+      "sha256": "8fa6b542f0381dc8fe660bad2b4f024f83268250bbfba8ca242712de58a25362"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/repaired-independent.stdout.bin",
+      "bytes": 4478,
+      "sha256": "8b68149ab455208c832c55a3779334854e5dda43af461865d7708821daae7dcd"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.json",
+      "bytes": 1365,
+      "sha256": "74f7d7001cd1005809107ad13acb3fa8c23831feb2f98f824ce44ed9ee837e38"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-review/source-audit.stdout.bin",
+      "bytes": 12039,
+      "sha256": "736523ca057c5dd490d92ee8d70e46de4cc3b80427220f79e3a7d40c14b41026"
+    }
+  ]
+}

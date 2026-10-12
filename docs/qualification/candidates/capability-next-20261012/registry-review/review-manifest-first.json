@@ -1,0 +1,260 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "unrepairedVerdict": "HOLD",
+  "originalSourceFreeze": "56a917f59e849630f50933e31703a2c7c262be1d",
+  "requiredAuthorRepair": "deba2c13c612845b4f65e38c263982c698bb4361",
+  "reviewedComposite": "8f44407cbd2f4529e89ebff8547efadb58847c2a",
+  "reviewedCompositeTree": "01b19b6a51f55bdd49878227940f15aade642876",
+  "criteriaCommit": "63bfb5dc9abe397c35704c98f211b0bf78866f2d",
+  "checks": {
+    "initialIndependent": {
+      "pass": 68,
+      "fail": 1
+    },
+    "unchangedRepaired": {
+      "pass": 69,
+      "fail": 0
+    },
+    "finalIndependentAndAuthor": {
+      "pass": 76,
+      "fail": 0,
+      "independent": 68,
+      "author": 8
+    },
+    "referenceAudit": {
+      "pass": 21,
+      "fail": 0
+    },
+    "preservationAudit": {
+      "pass": 47,
+      "fail": 0
+    }
+  },
+  "source": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry-validation.mjs",
+      "bytes": 2320,
+      "sha256": "0a563f5a91bb91d883e5dd354fddf11df788dc8ec449f9007cc9f9f00ad1b24e",
+      "blob": "6d2295a7e56a57ef8768d2e710c686f868177436"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-registry.schema.json",
+      "bytes": 4315,
+      "sha256": "6415f49f3b1edd20af3ba43b5d4e81b8b207bdf78b2326d871436a164c012833",
+      "blob": "3b501da917cd0105bba763ae6bb340897a6e5cef"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 17469,
+      "sha256": "11ba3bb8f0ac1309c1ea7b8cd9093d885053c9804036ed522c2ff92d75033d19",
+      "blob": "a90e04d6eee2ee09cac926f752076a08d82e98c0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-registry.test.mjs",
+      "bytes": 4893,
+      "sha256": "99019dee71a56fdb4abad274738abdcb163baf16be75f9595b34784876b3924e",
+      "blob": "cf06af4be9701a9cd6d819249ce69d1488e49795"
+    }
+  ],
+  "catalogBindingAccepted": false,
+  "runtimeAccepted": false,
+  "privateBodiesPublished": false,
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-REGISTRY-REVIEW-20261012.md",
+      "bytes": 4599,
+      "sha256": "dbfc47db136c763cbfe6017887a20413b288390610195eb3c565607e470275c6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/cleanup.json",
+      "bytes": 966,
+      "sha256": "fbaa0f652c5c2ecf1bf2bb9a08b00ead631de666e95d8bf4811a88bac79ded01"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/criteria.json",
+      "bytes": 1618,
+      "sha256": "3d2286d4a44109261a6fd6017baf82c9a22bd30fce59bff894d5f7bece641bcf"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-family.json",
+      "bytes": 1392,
+      "sha256": "547b3d7ac32942fb00a6ed35dc2d835b7c09cad95eba908acda7a1822df55114"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-family.stdout.bin",
+      "bytes": 6176,
+      "sha256": "a861637bfeb87b1cd9372052ac7c51a6bd0485e30255b6667e8a340de5f37278"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/final-test-before-whitespace.mjs.txt",
+      "bytes": 9150,
+      "sha256": "f4bc673f8f7251b6370af40f61771eb62eae4f76319e569dabc36614bc21b135"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.json",
+      "bytes": 1336,
+      "sha256": "3bb69277b5ebaea3cbe51aa5721b8d63ed1e5875a1ce15df87911fe0221d2c84"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.stdout.bin",
+      "bytes": 6642,
+      "sha256": "1deb540eef208f6b2997ad1a32f625a44b31659c2aba50a64e94ff693435bad1"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/first-independent.test.mjs.txt",
+      "bytes": 9403,
+      "sha256": "fcccd34843b8950b932bb95a2552a885f03731d8bfcb7d1aea5972f2714d75fb"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.json",
+      "bytes": 1321,
+      "sha256": "f2a54b8fef5013897881b3dde4bc0c1be4f818d2fae1358589f2959cb9dfc692"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.py",
+      "bytes": 5621,
+      "sha256": "3c8063202d1a144742ec445ece72f5d46d4866e2dfe0660717b95e256881bc77"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/preservation-audit.stdout.bin",
+      "bytes": 8760,
+      "sha256": "bf9c03e7073a5237b3f5353acc2e0a70ef093f8e53838ac4ceca0f0fe432d0ba"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.json",
+      "bytes": 1330,
+      "sha256": "2c2e6d42b85fccb9d5476b6fee16ee4628120d37f2b05a298cb17c7773a2e58f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-corrected.stdout.bin",
+      "bytes": 4223,
+      "sha256": "321c14f9763d28b9e28e504a256269d270891dc5e69ab1cb5cac5add6fedeba6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.json",
+      "bytes": 1322,
+      "sha256": "3af1a8e096e5c6bc4ee4848f3beaf71222be648cee439fb492103e1cd210f064"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-final.stdout.bin",
+      "bytes": 4258,
+      "sha256": "87b8ce9babe58c80fb0c9deba87f0c2a9e42464165dc803598860ff433d8224c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-first.mjs.txt",
+      "bytes": 8262,
+      "sha256": "c1c81eddec340f77337f5d2cc392c6e9aef012232103d72cb9e749435abc0e93"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit-second.mjs.txt",
+      "bytes": 8445,
+      "sha256": "435144b6acefea99dac4f824830bf12f93741922ce1c4e614918845a9497ded0"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.json",
+      "bytes": 1310,
+      "sha256": "069380e679f8f59282c1dfb1aef474d0d41a94490c31c55564fa3af97515d561"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.mjs",
+      "bytes": 8534,
+      "sha256": "f6c74dc0d6713f8ec891061a8ee07b1b02f0a0234dd9de421cf419590526df1e"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/reference-audit.stdout.bin",
+      "bytes": 4223,
+      "sha256": "321c14f9763d28b9e28e504a256269d270891dc5e69ab1cb5cac5add6fedeba6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.json",
+      "bytes": 1356,
+      "sha256": "ff04d0d293977764201f493a7d6a2af84f6305a4130c9c974d25b0121dabb58c"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/repaired-unchanged-controls.stdout.bin",
+      "bytes": 5510,
+      "sha256": "00bf6d52de52967df8f81fd79bd3f222e099d3e7fc5361202047940464823cff"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/review-chronology.json",
+      "bytes": 1878,
+      "sha256": "55e64a2de0c0ad6d5d67b4f2f02b39ac7560688a4fd27001a9670d742cbd16f6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.json",
+      "bytes": 1280,
+      "sha256": "4dd651ed9254b03743e263d46273a6185a91913232a85895610781c1a6c5c9f5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace-corrected.stdout.bin",
+      "bytes": 136,
+      "sha256": "20cb18e050955d8af9a91da6ff49c521ca56c9f2b2de83a0cc3bfaed11b824c7"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.json",
+      "bytes": 1259,
+      "sha256": "3feb83f8e334d77f228edec82c5d8f2d6383e90a7c1f3a7cd933fc8bab3a5db5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/registry-review/staged-whitespace.stdout.bin",
+      "bytes": 99,
+      "sha256": "dc4214901026eb8dcb2e40653e11fb8110822d6feb590f945b039bc52aa2eb68"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-registry-independent.test.mjs",
+      "bytes": 9149,
+      "sha256": "a92bfe3bb92f252062a872ef4e70ec0af6a80de9428bc31cd1375ce7e4218003"
+    }
+  ]
+}

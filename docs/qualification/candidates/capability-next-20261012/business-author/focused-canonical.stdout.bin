@@ -1,0 +1,41 @@
+✔ three distinct operation definitions and schema identity are explicit (3.448872ms)
+✔ get_business_development_context: accepted frozen projection preserves caller data and selector (3.695212ms)
+✔ get_business_development_context: missing/malformed/coerced conversation identifiers refuse (0.633412ms)
+✔ get_business_development_context: authority and unknown model fields refuse (0.520162ms)
+✔ get_business_development_context: wrong operation and unprojected result fields refuse (0.829586ms)
+✔ get_business_development_evidence: accepted frozen projection preserves caller data and selector (2.845686ms)
+✔ get_business_development_evidence: missing/malformed/coerced conversation identifiers refuse (0.536296ms)
+✔ get_business_development_evidence: authority and unknown model fields refuse (0.61891ms)
+✔ get_business_development_evidence: wrong operation and unprojected result fields refuse (1.14463ms)
+✔ get_business_development_recent_changes: accepted frozen projection preserves caller data and selector (1.598252ms)
+✔ get_business_development_recent_changes: missing/malformed/coerced conversation identifiers refuse (0.916707ms)
+✔ get_business_development_recent_changes: authority and unknown model fields refuse (0.46599ms)
+✔ get_business_development_recent_changes: wrong operation and unprojected result fields refuse (0.528174ms)
+✔ only recent changes accepts limit and supplies default10 without coercion (1.095837ms)
+✔ input accessors/proxies/coercion hooks are rejected without execution (0.30621ms)
+✔ context history cap/count/truncation and newest-first order are preserved (2.08325ms)
+✔ context keeps nullable projection fields but rejects hidden history/conflict/contact payloads (0.853252ms)
+✔ producer-generated timestamps reject NaN leap-second instants (1.092652ms)
+✔ evidence complete and partial remain independent at24-row boundary (4.076535ms)
+✔ evidence derived counts and every section limitation agree with coverage (1.940285ms)
+✔ evidence nullable identity and citation aliases preserve actual source identity (1.361486ms)
+✔ evidence preserves source date strings, relationship grades and stages without promotion (1.185491ms)
+✔ facts expose only allowlisted projection fields and normalized address keys (1.233363ms)
+✔ factual values are exact or omitted with markers, never substring-cut (1.035676ms)
+✔ descriptive string and array excerpts require honest markers and bounded retained values (1.213924ms)
+✔ invented omission/truncation markers and omitted-note substitutions refuse (1.288877ms)
+✔ recent changes use actual nullable alert DTO vocabulary, not internal diff enums (0.628775ms)
+✔ recent changes keep inference explicit and never expose raw baseline or delivery state (1.17094ms)
+✔ recent changes returned counts and effective request limit must match (2.451118ms)
+✔ canonical resolver owns immutable original request, normalized digest and output admission (4.18621ms)
+✔ canonical output boundary refuses accessors, proxies, cycles and oversized structure without hooks (0.766993ms)
+✔ standalone family validation reuses canonical inert admission before schema getters (0.362014ms)
+✔ declared projection permits inert nested changed-field JSON without claiming source authority (0.390988ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 505.581305

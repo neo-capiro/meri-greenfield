@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-research-portfolio.test.mjs"
+  ],
+  "cwd": "/workspace/meri-research-portfolio-20261012",
+  "sourceHead": "c8a23acc80bfdc199f198ac11b0c90f08fe519b1",
+  "sourceDiffSha256": "eea2f69ee53bce1344a294f094d083a538516d0226e4980b8140604726907e2f",
+  "sourceDiffBytes": 2056,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:36:33.876156+00:00",
+  "durationSeconds": 1.377,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 138263,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.stdout.bin",
+      "bytes": 2459,
+      "sha256": "2f3c766d47d5a017e75b012b6e25d4b2647c6de813d7628747f39deef08426b9"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/portfolio-author/portfolio-continuation-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Independent 21/22 review reproduced short-page continuation; add exact producer full-page correlation and regression",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

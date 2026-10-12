@@ -1,0 +1,344 @@
+{
+  "scope": "OFFLINE_SOURCE_EVIDENCE_ONLY",
+  "source": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "passed": 84,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "contained path docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/source-identities.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/failures/focused-first/source-identities.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-canonical.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-second.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/original-contracts.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/source-before-snapshot.patch",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/source-before-snapshot.patch",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/source-preservation.json",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/source-validated.patch",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/source-validated.patch",
+      "passed": true
+    },
+    {
+      "check": "contained path docs/qualification/candidates/capability-next-20261012/business-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "check": "manifest bytes docs/qualification/candidates/capability-next-20261012/business-author/verify-packet.py",
+      "passed": true
+    },
+    {
+      "check": "exact source/tree",
+      "passed": true
+    },
+    {
+      "check": "sole existing-file change belongs to root",
+      "passed": true
+    },
+    {
+      "check": "root dependency source exact",
+      "passed": true
+    },
+    {
+      "check": "frozen source packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "check": "frozen source packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "frozen source packages/contracts/test/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "working source packages/contracts/test/retrieval-business-development.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "no original tests changed",
+      "passed": true
+    },
+    {
+      "check": "focused-first exit",
+      "passed": true
+    },
+    {
+      "check": "focused-first group absent",
+      "passed": true
+    },
+    {
+      "check": "focused-first stream",
+      "passed": true
+    },
+    {
+      "check": "focused-first stream",
+      "passed": true
+    },
+    {
+      "check": "original strict compiler failure retained",
+      "passed": true
+    },
+    {
+      "check": "focused-second exit",
+      "passed": true
+    },
+    {
+      "check": "focused-second group absent",
+      "passed": true
+    },
+    {
+      "check": "focused-second stream",
+      "passed": true
+    },
+    {
+      "check": "focused-second stream",
+      "passed": true
+    },
+    {
+      "check": "focused-second count",
+      "passed": true
+    },
+    {
+      "check": "pre-helper exact patch retained",
+      "passed": true
+    },
+    {
+      "check": "focused-canonical exit",
+      "passed": true
+    },
+    {
+      "check": "focused-canonical group absent",
+      "passed": true
+    },
+    {
+      "check": "focused-canonical stream",
+      "passed": true
+    },
+    {
+      "check": "focused-canonical stream",
+      "passed": true
+    },
+    {
+      "check": "focused-canonical count",
+      "passed": true
+    },
+    {
+      "check": "validated source exact patch retained",
+      "passed": true
+    },
+    {
+      "check": "original-contracts exit",
+      "passed": true
+    },
+    {
+      "check": "original-contracts group absent",
+      "passed": true
+    },
+    {
+      "check": "original-contracts stream",
+      "passed": true
+    },
+    {
+      "check": "original-contracts stream",
+      "passed": true
+    },
+    {
+      "check": "original-contracts count",
+      "passed": true
+    },
+    {
+      "check": "root tests exact frozen source",
+      "passed": true
+    },
+    {
+      "check": "initial failure source packages/contracts/retrieval-0.2/business-development.schema.json",
+      "passed": true
+    },
+    {
+      "check": "initial failure source packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "initial failure source packages/contracts/test/retrieval-business-development.test.mjs",
+      "passed": true
+    }
+  ]
+}

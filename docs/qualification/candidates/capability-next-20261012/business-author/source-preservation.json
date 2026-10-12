@@ -1,0 +1,33 @@
+{
+  "base": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "source": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "sourceTree": "7385ddaee6665cb09219da9eca7bced31b480b28",
+  "rootDependencyOriginal": "685fe100233da10991485be49b2a1e8e31dd8308",
+  "rootDependencyCherryPick": "443814c519edacb88eeae215d6f0c41c57e51a96",
+  "originalPaths": 5055,
+  "unchangedOriginalPaths": 5054,
+  "changedOriginalPaths": [
+    "packages/contracts/retrieval-0.2/operation-contracts.mjs"
+  ],
+  "ownNewSourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development.schema.json",
+      "bytes": 26703,
+      "sha256": "fff7362e49e0d981b1aeaeec881ea2e72e2fa263d9f64dfad94456fd50b330f1",
+      "gitBlob": "9d964122cfa77e7a6232c51591cb0e53f8c439cb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/business-development-validation.mjs",
+      "bytes": 7517,
+      "sha256": "c6ede747a9ffce2acba96130bef2afd1fdaa0460b54dfd1603bde2b8911ffe5a",
+      "gitBlob": "eabe1a4316cb0ebed80c19351c53bd3e93901f9a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development.test.mjs",
+      "bytes": 21613,
+      "sha256": "ab1a5b01cbe69c1d04c96e1c5150395c9a9cecf54f34cf21a9068ede77c79adb",
+      "gitBlob": "d391b5d479a52eaae35e6375894003337f723230"
+    }
+  ],
+  "originalTestsChanged": []
+}

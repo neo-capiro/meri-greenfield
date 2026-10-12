@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-business-development.test.mjs"
+  ],
+  "cwd": "/workspace/meri-business-development-20261012",
+  "sourceHead": "e0163fb65a639a28d9423e929058b40b48cc556d",
+  "sourceDiffSha256": "30a20fccb660ac45612b82a5ecfcba79965d01b8ac7ac73e39f6eeb647c29280",
+  "sourceDiffBytes": 57648,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T15:25:52.555302+00:00",
+  "durationSeconds": 0.516,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 130222,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stdout.bin",
+      "bytes": 3220,
+      "sha256": "5d6512d08ef054f6d66a03ea1fdd28fb6cea306d8421cf614b46a220c02e1921"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-author/focused-second.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Correct strict-Ajv scalar union; compiler settings unchanged; initial failure and source bytes preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

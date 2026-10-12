@@ -1,0 +1,104 @@
+{
+  "frozenCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "frozenBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-bizdev-tools.service.ts",
+      "frozenBlob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "observedBlob": "25db80eb7a7e39db58662c5a144f410971f7bf38",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-bizdev-tools.service.spec.ts",
+      "frozenBlob": "022678284dd159f29620268bec89e0bc47eaf7b4",
+      "observedBlob": "022678284dd159f29620268bec89e0bc47eaf7b4",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-evidence.types.ts",
+      "frozenBlob": "1d90361d75000add6514c178389b69a7b363a760",
+      "observedBlob": "1d90361d75000add6514c178389b69a7b363a760",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-watch.types.ts",
+      "frozenBlob": "d8595d972fda8b52ac55c6229cfd604c9d28cbc4",
+      "observedBlob": "d8595d972fda8b52ac55c6229cfd604c9d28cbc4",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-watch.service.ts",
+      "frozenBlob": "29fbe4b770f2a3418f5d6f5ab7bc194f9710813f",
+      "observedBlob": "29fbe4b770f2a3418f5d6f5ab7bc194f9710813f",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-meri-scope.service.ts",
+      "frozenBlob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "observedBlob": "2cb7e71ff5929a6a78a97d60d27668409633572d",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-meri-scope.service.spec.ts",
+      "frozenBlob": "2d99109db0f60f03f8e1514cf68cea24606bba5e",
+      "observedBlob": "2d99109db0f60f03f8e1514cf68cea24606bba5e",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-dossier.service.ts",
+      "frozenBlob": "6b405a7ab8f4118133eba1877c95511e1a93d4a1",
+      "observedBlob": "6b405a7ab8f4118133eba1877c95511e1a93d4a1",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-dossier.service.spec.ts",
+      "frozenBlob": "e980be77c30d19265a398859958f15cf14170159",
+      "observedBlob": "e980be77c30d19265a398859958f15cf14170159",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-prospect-scope.helpers.spec.ts",
+      "frozenBlob": "dccdfdba2a3514bc750b12e86ebf37a5db98d307",
+      "observedBlob": "dccdfdba2a3514bc750b12e86ebf37a5db98d307",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "frozenBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.ts",
+      "frozenBlob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "observedBlob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "unchanged": true,
+      "locators": "SamPhysicalAddress 23-30; SamEntityRecord 32-49; string normalization 148-150; address projection 197-206"
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.spec.ts",
+      "frozenBlob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "observedBlob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "unchanged": true,
+      "locators": "full address contract 145-152; missing section nulls 161-165"
+    }
+  ],
+  "privateBodiesPublished": false,
+  "addressProvenanceFollowup": {
+    "evidenceBase": "9a8027c4f162447be4aa30d441bc8990ead3f4de",
+    "sourceUnchanged": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+    "reason": "Independent reviewer requested exact provenance for address leaf string/null types.",
+    "initialReadFailure": {
+      "exitCode": 1,
+      "cause": "Local display loop requested spec lines through169; exact source ends at167. Metadata and client type read completed before IndexError. No producer or test executed.",
+      "privateBodyRetained": false
+    },
+    "boundedFollowup": "Exact file lengths and metadata-only locators verified successfully."
+  }
+}

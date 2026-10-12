@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:client-registry:0.2.0",
+  "title": "Private selected client registry lookup contract",
+  "description": "Source-only contract derived from the immutable lookup projection, LdaPick and storage scalar declarations at capirov2 fd8765ec01d292013758606204f2c9d886cd31c1. No handler, source connection, client creation, authorization or qualification. Public 0.1 exports remain unchanged.",
+  "$defs": {
+    "ClientRegistryRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRegistryInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "description": "Frozen name normalization trims then takes the first 300 UTF-16 code units. Unknown request fields are refused in Meri. Names are selectors, never tenant or client authority."
+    },
+    "ClientRegistryExistingClient": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "website": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "website"
+      ],
+      "additionalProperties": false
+    },
+    "ClientRegistryLdaCandidate": {
+      "type": "object",
+      "properties": {
+        "ldaClientId": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "totalFilings": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "latestFilingYear": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "ldaClientId",
+        "name",
+        "state",
+        "description",
+        "totalFilings",
+        "latestFilingYear"
+      ],
+      "additionalProperties": false,
+      "description": "Frozen lookup-only LDA projection. Numeric storage fields and nullable values are reported data, not independently verified identity, year, count, freshness or authority."
+    },
+    "ClientRegistryResult": {
+      "type": "object",
+      "properties": {
+        "existingClient": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClientRegistryExistingClient"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ldaExactMatch": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClientRegistryLdaCandidate"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ldaCandidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ClientRegistryLdaCandidate"
+          },
+          "maxItems": 5
+        },
+        "guidance": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "existingClient",
+        "ldaExactMatch",
+        "ldaCandidates",
+        "guidance"
+      ],
+      "additionalProperties": false,
+      "description": "Frozen success projection only. Existing tenant-client lookup and global LDA lookup must each be authorized by a qualified producer. Guidance is untrusted compatibility data, never creation/approval authority. Nulls and an empty candidate list establish no authoritative absence, exhaustiveness, source health or freshness. Failures cannot be translated to this shape by the adapter. No snapshot or provenance envelope is declared by this legacy boundary."
+    }
+  }
+}

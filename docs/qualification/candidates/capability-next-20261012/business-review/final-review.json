@@ -1,0 +1,57 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "sourceTree": "7385ddaee6665cb09219da9eca7bced31b480b28",
+  "authorEvidenceCommit": "92d90eaee967d675724a3b8ce4079121e1961f9a",
+  "authorEvidenceTree": "e2b411ffd141f7448ae3fd7b0f14a2ef135a676b",
+  "authorManifestSha256": "29ee050d6de12c02f13783d69ea711171ee5a4a99859b5f457841e65f2bbe66a",
+  "reviewCriteriaCommit": "43f84069f8f6c081100b4cc91eef45feb094f6b8",
+  "independentControlsCommit": "748e68c3c804be913bb558254f74f664c0d50ce3",
+  "checks": {
+    "independent": {
+      "pass": 39,
+      "fail": 0
+    },
+    "fullSource": {
+      "pass": 334,
+      "fail": 0
+    },
+    "preservationAudit": {
+      "pass": 46,
+      "fail": 0
+    },
+    "whitespace": {
+      "exit": 0
+    },
+    "pinnedReferences": 18,
+    "referenceDrift": 0
+  },
+  "independentTest": {
+    "path": "packages/contracts/test/retrieval-business-development-independent.test.mjs",
+    "bytes": 15907,
+    "sha256": "b28eca2230789961abf4c5f43df168aab524128beda59e302f2c4a53d0dfa9c5"
+  },
+  "report": {
+    "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-REVIEW-20261012.md",
+    "bytes": 7572,
+    "sha256": "97f88c98b5514dde1f26a81af3479b56b55662507b66196669d07712166972ea"
+  },
+  "sourceRepairRequired": false,
+  "sourceFrozenThroughReview": true,
+  "canonicalRegistrationReviewed": false,
+  "privateProducerExecuted": false,
+  "runtimeAccepted": false,
+  "remaining": [
+    "Root canonical loader/catalog/resolver/gateway integration and public-distribution replay",
+    "Qualified current conversation/prospect/tenant/client authority and bound source lineage",
+    "Qualified producer/provider/cancellation/runtime gates; connectivity disabled"
+  ],
+  "cleanup": {
+    "allOwnedCheckGroupsAbsent": true,
+    "timedOutGroups": 0,
+    "groupsKilled": 0,
+    "fullSuiteExitedDescendantsReaped": 2,
+    "preparedDependencyCopiesUntouched": true
+  },
+  "initialUntrackedTestReceiptLimit": "First independent capture empty diff alone did not identify untracked test. Exact test committed immediately afterward; full-suite capture binds that commit."
+}

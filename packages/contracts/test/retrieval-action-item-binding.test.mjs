@@ -14,8 +14,8 @@ const context={actorId,nowMs:0};
 test('partial action binding does not declare full native parity or activate a handler',()=>{
  const c=catalog(),binding=CATALOG_OPERATION_BINDINGS.find(row=>row.id===reference.id),resolved=contract();
  assertCatalog(c);assert.equal(binding.nativeCoverage,'partial');assert.equal(resolved.binding,binding);
- assert.equal(c.operations.length,15);assert.equal(c.originals.filter(row=>row.state==='mapped').length,14);
- assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,82);
+ assert.equal(c.operations.length,21);assert.equal(c.originals.filter(row=>row.state==='mapped').length,20);
+ assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,76);
  const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'pending');assert.equal(original.replacement,null);
  assert.deepEqual(resolved.descriptor.aliases,[]);assert.equal(resolved.descriptor.handler,null);
  assert.equal(resolved.descriptor.availability,'unimplemented');assert.equal(resolved.descriptor.qualification,'pending');
@@ -30,11 +30,11 @@ test('partial binding refuses original mapping, aliases and executable/retry pro
  for(const mutate of [
   c=>Object.assign(c.originals.find(row=>row.id===reference.id),{state:'mapped',replacement:reference}),
   c=>c.originals.find(row=>row.id===reference.id).state='deferred',
-  c=>c.operations.at(-1).aliases.push('read_action_items'),
-  c=>c.operations.at(-1).aliases.push('query_action_items'),
-  c=>c.operations.at(-1).retry.maxRetries=1,
-  c=>c.operations.at(-1).retry.retryableCodes.push('timeout'),
-  c=>Object.assign(c.operations.at(-1),{availability:'enabled',qualification:'qualified',handler:{module:'synthetic/read.mjs',export:'read',sourceSha256:'a'.repeat(64)}}),
+  c=>c.operations.find(row=>row.operation.id===reference.id).aliases.push('read_action_items'),
+  c=>c.operations.find(row=>row.operation.id===reference.id).aliases.push('query_action_items'),
+  c=>c.operations.find(row=>row.operation.id===reference.id).retry.maxRetries=1,
+  c=>c.operations.find(row=>row.operation.id===reference.id).retry.retryableCodes.push('timeout'),
+  c=>Object.assign(c.operations.find(row=>row.operation.id===reference.id),{availability:'enabled',qualification:'qualified',handler:{module:'synthetic/read.mjs',export:'read',sourceSha256:'a'.repeat(64)}}),
  ]){const c=catalog();mutate(c);assert.throws(()=>assertCatalog(c));}
 });
 
@@ -77,6 +77,13 @@ test('family mode bounds and closed JSON admission retain strict behavior',()=>{
 test('all fourteen original descriptors and all139 native rows remain exact',()=>{
  const c=catalog();
  assert.equal(canonicalSha256(c.operations.slice(0,14)),'50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92');
- assert.equal(canonicalSha256(c.originals),'74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9');
+ const priorRows=structuredClone(c.originals);
+ for(const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
+  'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes']){
+  const row=priorRows.find(row=>row.id===id);
+  assert.equal(row.state,'mapped');assert.deepEqual(row.replacement,{id,version:'0.2.0'});
+  row.state='pending';row.replacement=null;
+ }
+ assert.equal(canonicalSha256(priorRows),'74208a71fccd5403609980a19a51505dc566826c4e56449451306d39db2f18e9');
  assert.deepEqual(CATALOG_OPERATION_BINDINGS.filter(row=>row.dispatchProfile==='mail-candidates/1').map(row=>row.id),['mail.list_messages','mail.search_messages']);
 });

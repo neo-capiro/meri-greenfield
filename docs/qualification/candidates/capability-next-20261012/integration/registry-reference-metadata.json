@@ -1,0 +1,26 @@
+{
+  "repository": "neo-capiro/capirov2",
+  "frozenCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "scope": "Metadata only; private bodies are not included or imported.",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "currentBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea"
+    },
+    {
+      "path": "apps/api/src/meri/meri-tools.create-client.spec.ts",
+      "blob": "2e69bb733da25a7864703f08aaead809d18396d9",
+      "sha256": "8532f76d6847f9bc61c63c0218f74cbf7e2833e879646888ba520627d43dbd2a",
+      "currentBlob": "2e69bb733da25a7864703f08aaead809d18396d9"
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "currentBlob": "cdf1923217edae6e7624993796a5671922b61ac0"
+    }
+  ]
+}

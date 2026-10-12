@@ -180,7 +180,7 @@ test('mail independent: budget-shortened lifetime bounds retained expiry',async(
 test('mail independent: source-disabled canonical catalog never reaches supplied ports',async()=>{
   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.authorityPorts,budget:f.budget,limits,now:()=>NOW,newId:()=>id('b')});
   const catalog=JSON.parse(readFileSync(new URL('packages/contracts/retrieval-0.2/catalog.json',root)));
-  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,14);
+  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,20);
   for(const row of catalog.operations){assert.equal(row.availability,'unimplemented');assert.equal(row.handler,null);await assert.rejects(gateway.execute(JSON.stringify({operation:row.operation,arguments:{}}),'synthetic'),/UNAVAILABLE/);}
   assert.deepEqual(await gateway.discover(),[]);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(f.events,[]);
 });

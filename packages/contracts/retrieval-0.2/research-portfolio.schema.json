@@ -1,0 +1,784 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:research-portfolio:0.2.0",
+  "$comment": "Private source-only DTO boundary. New Meri lineage wrappers do not prove grants, walls, source completeness or current authorization. Opaque JSON and explicit transport ceilings are Meri admission limits, not backend maximum-size claims.",
+  "$defs": {
+    "ResearchPortfolioJsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string",
+          "maxLength": 1048576
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioJsonValue"
+          },
+          "maxItems": 10000
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ResearchPortfolioJsonValue"
+          },
+          "maxProperties": 10000
+        }
+      ]
+    },
+    "ResearchPortfolioJsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/ResearchPortfolioJsonValue"
+      },
+      "maxProperties": 10000
+    },
+    "ResearchPortfolioDetailInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioChangesInput": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioDetailSelection": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "conversationId",
+        "portfolioId"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioChangesSelection": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "portfolioId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "conversationId",
+        "portfolioId",
+        "cursor",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioContext": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        }
+      },
+      "required": [
+        "binding",
+        "subject"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioGrant": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "principalType": {
+          "const": "user"
+        },
+        "principalUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "owner",
+            "editor",
+            "viewer"
+          ]
+        },
+        "grantedByUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "id",
+        "principalType",
+        "principalUserId",
+        "role",
+        "grantedByUserId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioClientLink": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "clientId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "clientName": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "linkedByUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "id",
+        "clientId",
+        "clientName",
+        "linkedByUserId",
+        "createdAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioMember": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "targetKind": {
+          "type": "string",
+          "enum": [
+            "program",
+            "program_element",
+            "project",
+            "budget_line",
+            "award"
+          ]
+        },
+        "targetId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 4096
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "included",
+            "candidate",
+            "withdrawn",
+            "excluded",
+            "unresolved"
+          ]
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "rule",
+            "import"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 16384
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unresolvedInput": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchPortfolioJsonObject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolvedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "createdByUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "updatedByUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "id",
+        "targetKind",
+        "targetId",
+        "label",
+        "disposition",
+        "reason",
+        "unresolvedInput",
+        "resolvedAt",
+        "revision",
+        "createdByUserId",
+        "updatedByUserId",
+        "createdAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "eventKind": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated",
+            "archived",
+            "restored",
+            "grant_upserted",
+            "grant_removed",
+            "client_linked",
+            "client_unlinked",
+            "member_added",
+            "member_decided",
+            "member_excluded",
+            "member_reinstated",
+            "member_resolved",
+            "rule_published",
+            "review_updated",
+            "annual_reopened",
+            "import_created",
+            "import_action",
+            "review_note_added"
+          ]
+        },
+        "aggregateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "actorUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "payload": {
+          "$ref": "#/$defs/ResearchPortfolioJsonObject"
+        }
+      },
+      "required": [
+        "id",
+        "eventKind",
+        "aggregateRevision",
+        "actorUserId",
+        "occurredAt",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioRecipientState": {
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "recipientUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "seenAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acknowledgedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dismissedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "eventId",
+        "recipientUserId",
+        "revision",
+        "seenAt",
+        "acknowledgedAt",
+        "dismissedAt",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioChange": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "eventKind": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated",
+            "archived",
+            "restored",
+            "grant_upserted",
+            "grant_removed",
+            "client_linked",
+            "client_unlinked",
+            "member_added",
+            "member_decided",
+            "member_excluded",
+            "member_reinstated",
+            "member_resolved",
+            "rule_published",
+            "review_updated",
+            "annual_reopened",
+            "import_created",
+            "import_action",
+            "review_note_added"
+          ]
+        },
+        "aggregateRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "actorUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "payload": {
+          "$ref": "#/$defs/ResearchPortfolioJsonObject"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ResearchPortfolioRecipientState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "eventKind",
+        "aggregateRevision",
+        "actorUserId",
+        "occurredAt",
+        "payload",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioDetailData": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "purpose": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 16384
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "rules",
+            "hybrid"
+          ]
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": [
+            "active",
+            "archived"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "ownerUserId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "memberCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "clientLinkCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "myRole": {
+          "type": "string",
+          "enum": [
+            "owner",
+            "editor",
+            "viewer"
+          ]
+        },
+        "archivedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "grants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioGrant"
+          },
+          "maxItems": 10000
+        },
+        "clientLinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioClientLink"
+          },
+          "maxItems": 10000
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioMember"
+          },
+          "maxItems": 10000
+        },
+        "recentEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioEvent"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "mode",
+        "lifecycle",
+        "revision",
+        "ownerUserId",
+        "memberCount",
+        "clientLinkCount",
+        "myRole",
+        "archivedAt",
+        "createdAt",
+        "updatedAt",
+        "grants",
+        "clientLinks",
+        "members",
+        "recentEvents"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioChangesData": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResearchPortfolioChange"
+          },
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioDetailResult": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "data": {
+          "$ref": "#/$defs/ResearchPortfolioDetailData"
+        }
+      },
+      "required": [
+        "binding",
+        "subject",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "ResearchPortfolioChangesResult": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"
+        },
+        "subject": {
+          "$ref": "urn:meri:retrieval:common:0.2.0#/$defs/ResolvedSubject"
+        },
+        "data": {
+          "$ref": "#/$defs/ResearchPortfolioChangesData"
+        }
+      },
+      "required": [
+        "binding",
+        "subject",
+        "data"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

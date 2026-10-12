@@ -1,0 +1,18 @@
+{
+  "sourceFreeze":"bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "reviewBase":"bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "sharedSnapshotDependency":"443814c519edacb88eeae215d6f0c41c57e51a96 (same root change as685fe100)",
+  "criteria":[
+    {"id":"B1","assertion":"Independently inspect/hash all three actual fd8765 pinned producer projections and imported DTO/type/policy/permission dependencies. Publish only metadata and derived semantics, never private bodies. Disclose source drift to observed head."},
+    {"id":"B2","assertion":"Three distinct closed input/output definitions, canonical conversation UUID selector, recent limit default10/range1..25, unknown fields/operations/coercion refused. Conversation/prospect authority remains server-owned, not established by input or schema validation."},
+    {"id":"B3","assertion":"Context prospect/preferences/history matches producer and types: exact nullable/required fields, cap20, returned/total/truncated relation, actual ordering. Do not invent source snapshot or provenance promises."},
+    {"id":"B4","assertion":"Evidence projection matches source allowlist/types/aliases and exact-or-omitted fact semantics; descriptive clipping markers/array caps, omission notes, nullable provenance, cap24 and actual section/identity/coverage relations. Complete and partial may coexist; no false absence/evidence promotion."},
+    {"id":"B5","assertion":"Recent alert projection preserves nullable string category/materiality/source rather than narrower internal enums, implication-as-inference disclaimer, request limit and returned relation, unread/truncated meaning. No read mutation or bid/win intent inference."},
+    {"id":"B6","assertion":"Standalone factory uses canonical inert JSON admission for all public normalization/validation entrypoints. Test getters/proxies/hidden fields/cycles/nonfinite values, caller snapshot and immutability, raw output shape/cross-operation substitution and honest limitations."},
+    {"id":"B7","assertion":"Preserve schema compiler strictness, old schemas/tests/public0.1/locks/catalog/handlers and separate canonical registration owner. No parallel producer/compiler/authority or private implementation copied. suppressJev does not rule out flag-gated SAM calls."},
+    {"id":"B8","assertion":"Meaningful independent positive and negative controls, exact source failures and original assertions retained; author repairs production. Report exact commits/checks and cleanup. Source acceptance is separate from integrated registry/gateway/runtime qualification; no live/native/provider/source execution."}
+  ],
+  "discoveryBeforeCriteria":"Read task, instructions and candidate public schema/validator interfaces; no author tests or results replayed",
+  "nativeExecution":false,
+  "privateSourceExecution":false
+}
