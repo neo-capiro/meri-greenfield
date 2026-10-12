@@ -1,0 +1,21 @@
+test_all_five_roles_and_output_slot_unread (__main__.Controls.test_all_five_roles_and_output_slot_unread) ... ok
+test_all_role_syntax_before_any_io (__main__.Controls.test_all_role_syntax_before_any_io) ... ok
+test_cli_errors_no_private_paths (__main__.Controls.test_cli_errors_no_private_paths) ... ok
+test_drive_type_metadata_only_and_fail_closed (__main__.Controls.test_drive_type_metadata_only_and_fail_closed) ... ok
+test_expired_before_drive_or_metadata (__main__.Controls.test_expired_before_drive_or_metadata) ... ok
+test_failure_retains_completed_roles_and_stops_later (__main__.Controls.test_failure_retains_completed_roles_and_stops_later) ... ok
+test_late_stat_completion_stops_next (__main__.Controls.test_late_stat_completion_stops_next) ... ok
+test_metadata_errors_safe_and_located (__main__.Controls.test_metadata_errors_safe_and_located) ... ok
+test_no_body_write_enumeration_subprocess_network_or_collector_source (__main__.Controls.test_no_body_write_enumeration_subprocess_network_or_collector_source) ... ok
+test_root_first_order (__main__.Controls.test_root_first_order) ... ok
+test_root_rejection_stops_descendants (__main__.Controls.test_root_rejection_stops_descendants) ... ok
+test_runtime_guard_precedes_io (__main__.Controls.test_runtime_guard_precedes_io) ... ok
+test_separate_and_combined_predicates (__main__.Controls.test_separate_and_combined_predicates) ... ok
+test_success_admission_false (__main__.Controls.test_success_admission_false) ... ok
+test_unexpected_exception_scrubbed (__main__.Controls.test_unexpected_exception_scrubbed) ... ok
+test_unsafe_syntax_no_native_metadata (__main__.Controls.test_unsafe_syntax_no_native_metadata) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.012s
+
+OK
