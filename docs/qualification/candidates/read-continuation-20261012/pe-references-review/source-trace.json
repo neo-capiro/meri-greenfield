@@ -1,0 +1,21 @@
+{
+  "scope": "STATIC_IMMUTABLE_METADATA_ONLY_NO_PRODUCER_EXECUTION",
+  "findings": [
+    "All three wrappers require peCode trimmed and UTF-16 sliced to32; only report wrapper echoes it.",
+    "Bills/contractors validate PE existence before stored lookup; report owner may return empty without an existence assertion.",
+    "Bill lookup ORs compatibility peCodes and versioned bill IDs; final cap100 and specificity/date order do not prove complete linkage.",
+    "BillBudgetLineLink excludes rejected only; confidence is stored Float; bill columns are independent, no ID-derived tuple claim.",
+    "Report provision query admits accepted/candidate and accepted program matches. Dedup chooses strongest matchBasis before later review-status sorting; a candidate stronger basis can survive accepted weaker basis.",
+    "pe_code/project_title basis is pe_specific; other basis is program_level. Any program-level item requires model caveat; empty loaded scope requires distinct absence warning.",
+    "Award SQL groups by contractor_name and bool_or of direct status; top10 grouped rows, plus top25 exhibit performers. Group direct status does not authenticate each constituent award.",
+    "24-month award aggregates and report-FY R-3 compatibility values are different provenance and units; no government budget inference.",
+    "Source missing federal_award table has a distinct data-empty/todo-only fallback; other storage absence paths must not be conflated.",
+    "Current authorization, money/source truth, completeness, clock and runtime owner remain unqualified."
+  ],
+  "lookupCorrection": {
+    "attempted": "apps/api/src/program-element/program-element.service.ts",
+    "outcome": "Git128 path absent; actual import points to program-element-read.service.ts",
+    "privateSourceDiagnostic": false
+  },
+  "noNativeActions": true
+}
