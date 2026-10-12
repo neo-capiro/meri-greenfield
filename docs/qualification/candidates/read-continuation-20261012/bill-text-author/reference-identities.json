@@ -1,0 +1,138 @@
+{
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observedCommit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "bytes": 415704,
+      "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBlob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+      "unchanged": true,
+      "frozenSha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "frozenBytes": 415704,
+      "observedSha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+      "observedBytes": 415704
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "bytes": 968034,
+      "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedBlob": "cdf1923217edae6e7624993796a5671922b61ac0",
+      "unchanged": true,
+      "frozenSha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "frozenBytes": 968034,
+      "observedSha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+      "observedBytes": 968034
+    },
+    {
+      "path": "apps/api/src/lda-intel/lda-intel.service.ts",
+      "bytes": 26016,
+      "blob": "aa3948d594a1d422994ee64381c7bd476637e364",
+      "sha256": "cd10b04fb04e3801438bb9d7327346eb4cd46137802a4103a587da3cab984969",
+      "observedBlob": "aa3948d594a1d422994ee64381c7bd476637e364",
+      "unchanged": true,
+      "frozenSha256": "cd10b04fb04e3801438bb9d7327346eb4cd46137802a4103a587da3cab984969",
+      "frozenBytes": 26016,
+      "observedSha256": "cd10b04fb04e3801438bb9d7327346eb4cd46137802a4103a587da3cab984969",
+      "observedBytes": 26016
+    },
+    {
+      "path": "apps/api/src/meri/meri-bill-text-search.ts",
+      "bytes": 13116,
+      "blob": "6697ba7dd86284602113ff3979a78211658ff348",
+      "sha256": "e8bbb52c50714cff87ab5ddd0dcd54c293a063e0410f95b0bf2cb6f840efec14",
+      "observedBlob": "6697ba7dd86284602113ff3979a78211658ff348",
+      "unchanged": true,
+      "frozenSha256": "e8bbb52c50714cff87ab5ddd0dcd54c293a063e0410f95b0bf2cb6f840efec14",
+      "frozenBytes": 13116,
+      "observedSha256": "e8bbb52c50714cff87ab5ddd0dcd54c293a063e0410f95b0bf2cb6f840efec14",
+      "observedBytes": 13116
+    },
+    {
+      "path": "apps/api/src/meri/meri-bill-text-search.spec.ts",
+      "bytes": 8266,
+      "blob": "031ec4b8cfcf267970a19023d4519c97596fbbfe",
+      "sha256": "75bd716b0fee0937694637664dd6f82a1a97c6b39b7cab2b6044aecf89a7a79d",
+      "observedBlob": "031ec4b8cfcf267970a19023d4519c97596fbbfe",
+      "unchanged": true,
+      "frozenSha256": "75bd716b0fee0937694637664dd6f82a1a97c6b39b7cab2b6044aecf89a7a79d",
+      "frozenBytes": 8266,
+      "observedSha256": "75bd716b0fee0937694637664dd6f82a1a97c6b39b7cab2b6044aecf89a7a79d",
+      "observedBytes": 8266
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "bytes": 273389,
+      "blob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "sha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "observedBlob": "62eb32931826f77abd985bc142f6a65adad6a23a",
+      "unchanged": true,
+      "frozenSha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "frozenBytes": 273389,
+      "observedSha256": "1a713331de044768f7bd8631db4762a08a3c3541a1bbc064c67bbff46fc9a75f",
+      "observedBytes": 273389
+    },
+    {
+      "path": "apps/api/src/meri/meri.controller.ts",
+      "bytes": 44992,
+      "blob": "598e9146e5568349f213cbd548de0213113dc924",
+      "sha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedBlob": "598e9146e5568349f213cbd548de0213113dc924",
+      "unchanged": true,
+      "frozenSha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "frozenBytes": 44992,
+      "observedSha256": "c9562a30e6a67ed75eaf74850d1e4d67c133f040035fb4df8ac80605a3123586",
+      "observedBytes": 44992
+    },
+    {
+      "path": "apps/api/src/auth/roles.guard.ts",
+      "bytes": 2703,
+      "blob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "sha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedBlob": "60fbbc8a1de21962a95af60842d25087f58a612d",
+      "unchanged": true,
+      "frozenSha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "frozenBytes": 2703,
+      "observedSha256": "18e23d68f96a565b1994131b9affe7e4463e47e4979f22d897c7beaf450e6aa9",
+      "observedBytes": 2703
+    },
+    {
+      "path": "apps/api/prisma/migrations/20280924030000_federal_legislative_evidence/migration.sql",
+      "bytes": 11790,
+      "blob": "8f447f71f862ab25f7f7dfc084c1e44526ec26f3",
+      "sha256": "f8a79d9eb19118f88e5497706986f3259a47c5f247c2c2adfa138a3a08f1efec",
+      "observedBlob": "8f447f71f862ab25f7f7dfc084c1e44526ec26f3",
+      "unchanged": true,
+      "frozenSha256": "f8a79d9eb19118f88e5497706986f3259a47c5f247c2c2adfa138a3a08f1efec",
+      "frozenBytes": 11790,
+      "observedSha256": "f8a79d9eb19118f88e5497706986f3259a47c5f247c2c2adfa138a3a08f1efec",
+      "observedBytes": 11790
+    },
+    {
+      "path": "apps/api/src/program-element/federal-evidence/persistence.ts",
+      "bytes": 27729,
+      "blob": "b7ac5de2f3481793c905986b6e4ae53c2ead1a26",
+      "sha256": "54ac4e5f052f8329645f0d951a9a97e6fe3ec7b05cdf8e9709aa721ffa945ad2",
+      "observedBlob": "b7ac5de2f3481793c905986b6e4ae53c2ead1a26",
+      "unchanged": true,
+      "frozenSha256": "54ac4e5f052f8329645f0d951a9a97e6fe3ec7b05cdf8e9709aa721ffa945ad2",
+      "frozenBytes": 27729,
+      "observedSha256": "54ac4e5f052f8329645f0d951a9a97e6fe3ec7b05cdf8e9709aa721ffa945ad2",
+      "observedBytes": 27729
+    }
+  ],
+  "privateBodiesPublished": false,
+  "sourceExecuted": false,
+  "scope": "Ten relevant immutable projection/model/helper/test/policy/hash-writer identities. Local source body inspection only; no private bodies retained or source imports/execution.",
+  "locators": {
+    "meri-tools.service.ts": "input1140-1170;row298-313;resolve3711-3717;search3777-3841;read3903-4029;locator4036-4093",
+    "meri-bill-text-search.ts": "query/passage/cursor wire facts;group245-274;bounds276-284;response297-360;no copied tokenizer/SQL/search algorithm",
+    "lda-intel.service.ts": "482-511;activeSince filters latestActionDate498, not updateDate ordering",
+    "schema.prisma": "CongressBill4136-4168 all scalar columns; FederalEvidenceRevision4421-4490 UUID identity and CHAR64 storage; ORM relations excluded",
+    "shared index.ts": "identity helper grammar delegated to canonical helper owner; actor/role vocabulary unchanged",
+    "migration.sql": "FederalEvidenceRevision UUID default and CHAR64 columns; no UUID-version or hexadecimal-format constraint",
+    "persistence.ts": "95-96 SHA256 hex helper;427-428 content/extraction hash input projections; writer convention only, not DB constraint or current-row provenance proof"
+  }
+}

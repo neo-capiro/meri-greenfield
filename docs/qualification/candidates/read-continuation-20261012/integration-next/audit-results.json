@@ -1,0 +1,1325 @@
+{
+  "base": "2aa0a33bdaf36af1224cfdb840bc493e53cea9f3",
+  "sourceHead": "4566cef6417428d46274a14f7937ca11df66ae9d",
+  "sourceTree": "bd830c104bc911d9aedd9a1059204b62b0f715a5",
+  "scope": "SOURCE_ONLY_NOT_RUNTIME",
+  "checks": [
+    {
+      "name": "Only16 allocated prior paths change",
+      "passed": true,
+      "paths": [
+        "apps/gateway/test/action-item-context-independent.test.mjs",
+        "apps/gateway/test/capability-next-independent.test.mjs",
+        "apps/gateway/test/mail-context-independent.test.mjs",
+        "apps/gateway/test/memory-context-independent.test.mjs",
+        "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+        "packages/contracts/retrieval-0.2/catalog.json",
+        "packages/contracts/retrieval-0.2/validate.mjs",
+        "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+        "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+        "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+        "packages/contracts/test/retrieval-mail.test.mjs",
+        "packages/contracts/test/retrieval-memory-binding.test.mjs",
+        "packages/contracts/test/retrieval-next-bindings.test.mjs",
+        "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+        "packages/contracts/test/retrieval-read-continuation-independent.test.mjs"
+      ]
+    },
+    {
+      "name": "Every other original file is exact",
+      "passed": true,
+      "originalFiles": 5730
+    },
+    {
+      "name": "No original file deleted",
+      "passed": true
+    },
+    {
+      "name": "Public exports source locks and native runtime untouched",
+      "passed": true
+    },
+    {
+      "name": "Exactly nine accepted additions",
+      "passed": true
+    },
+    {
+      "name": "All37 prior descriptors unchanged",
+      "passed": true
+    },
+    {
+      "name": "139originals96selected43deferred45mapped51pending46typed",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: manage_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_analytics",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_changes",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_research_portfolio_snapshot",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: request_research_portfolio_output",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_research_portfolio_output_to_client",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: watch_research_portfolio",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: update_research_portfolio_change_state",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_bookmarks",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_research_portfolio_bookmark",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_fit",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_reviews",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: add_research_portfolio_review_note",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_rules",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_imports",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_portfolio_operations",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: prepare_research_portfolio_brief",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: prepare_research_portfolio_meeting",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_research_evidence",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: read_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: read_monday_client_boards",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_capiro_data",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_client_context",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_research_sources",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: run_analysis",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_client_knowledge",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_intelligence",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_knowledge_graph",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: find_path_to",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_memory",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_memory_proposals",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_congress_bills",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: read_bill_text",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_certification_status",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_cbo_cost_estimates",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: resolve_entity",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_lda_filings",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_global_datasets",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_global_data",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_sec_filings",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_fara_registrations",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_federal_grants",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_federal_awards",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_gao_reports",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_state_bills",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_state_bill_status",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_state_floor_votes",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_state_legislator",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_committee_roster",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_representation",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_members",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_state_rule_status",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_intel_articles",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_committee_hearings",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_legiwatch_review",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_legiwatch_news",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_florida_budget_project",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: compare_florida_budget_amounts",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: prepare_legiwatch_briefing",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_legal_reference",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: compare_legislative_versions",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_legislative_research",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: preview_legiwatch_relevance",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_legiwatch_relevance",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: apply_legiwatch_suggestion",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_crs_reports",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_economic_data",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_district_nexus_context",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_district_nexus_changes",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_public_web",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: scrape_web_page",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_meeting_brief",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: draft_policy_memo",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_note",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_chat_attachments",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: send_email",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_emails",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_emails",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_email_thread",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_upcoming_meetings",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: reply_email",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_memory",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: confirm_memory",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: correct_memory",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: forget_memory",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_program_elements",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_program_element",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_pe_budget_timeline",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_pe_buyer_workspace",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_pe_contractors",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_pe_bills",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_pe_report_language",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_acquisition_personnel",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_acquisition_person",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_word",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_excel",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_powerpoint",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: schedule_task",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: list_scheduled_tasks",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: cancel_scheduled_task",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: update_scheduled_task",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_tasks",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_action_items",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_tracked_bills",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_regulatory_dockets",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_sam_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_debriefs",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: read_client_meetings",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: query_outreach",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: read_client_documents",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: lookup_client_registry",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_client",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: create_task",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: update_task",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: update_client_profile",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: find_contacts",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_funding_opportunity_requirements",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_funding_opportunity",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: explain_opportunity_match",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_opportunity_client_context",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_opportunity_government_landscape",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: compare_funding_opportunities",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: build_opportunity_action_plan",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_federal_contract_awards",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_federal_subawards",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_contract_vehicles",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: search_procurement_forecasts",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_business_development_context",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_business_development_evidence",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_business_development_brief",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: resolve_business_development_source",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: save_business_development_brief",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_business_development_recent_changes",
+      "passed": true
+    },
+    {
+      "name": "Original boundary: get_district_federal_market",
+      "passed": true
+    },
+    {
+      "name": "Every operation stays unavailable pending null-handler zero-retry",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source: disclosures.schema.json",
+      "passed": true,
+      "commit": "88c9257e10822396c30cc99fb277ab145aac7218",
+      "sha256": "80e6c104e75821e9cfe2861b19073b1e83ea17f87a3efd5e90b77edd4eba8c3f"
+    },
+    {
+      "name": "Exact reviewed source: disclosures-validation.mjs",
+      "passed": true,
+      "commit": "88c9257e10822396c30cc99fb277ab145aac7218",
+      "sha256": "bc3a2884e72ac84de87658e6b540398e7ba20e24ea512bdf9254acafe0b91da1"
+    },
+    {
+      "name": "Review member: packages/contracts/test/retrieval-disclosures-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/coordination/reports/CODEX-READ-CONTINUATION-DISCLOSURES-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/exact-source-tests.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/final-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/findings.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source/packages/contracts/retrieval-0.2/disclosures-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source/packages/contracts/retrieval-0.2/disclosures.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion-source.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/operation-coercion.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-source-after.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/prefreeze-source-before.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/disclosures-review/source-characterization.json",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source: acquisition-personnel.schema.json",
+      "passed": true,
+      "commit": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+      "sha256": "7407ecb11c145fca7c75a88360a118f1db2870dd45cf9d1c85756e5427b37fa2"
+    },
+    {
+      "name": "Exact reviewed source: acquisition-personnel-validation.mjs",
+      "passed": true,
+      "commit": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+      "sha256": "1076e18f7e0c53e8a95957a5555e555abb1212f45d3ecf3144f857d40e1ac41f"
+    },
+    {
+      "name": "Review member: docs/coordination/reports/CODEX-READ-CONTINUATION-ACQUISITION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/author-packet-verification.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/current-policy-criteria.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/current-reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-preservation.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/supplemental-controller-reference.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/verify-source.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source: federal-legislation.schema.json",
+      "passed": true,
+      "commit": "b6d446a488e81f838f41095028f714b215d070de",
+      "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+    },
+    {
+      "name": "Exact reviewed source: federal-legislation-validation.mjs",
+      "passed": true,
+      "commit": "b6d446a488e81f838f41095028f714b215d070de",
+      "sha256": "935b6a8054df8cb5f53a0eb6adce3b1564d22a552ef1f29e537d6f8855da76b9"
+    },
+    {
+      "name": "Exact reviewed source: congressional-identity.mjs",
+      "passed": true,
+      "commit": "b6d446a488e81f838f41095028f714b215d070de",
+      "sha256": "7253543c521a8ac2476e01bdbb34e100c99b2badba121ae5ba645a9b67534109"
+    },
+    {
+      "name": "Review member: docs/coordination/reports/CODEX-READ-CONTINUATION-FEDERAL-LEGISLATION-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/audit.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/corrected-prefreeze-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/exact-source-tests.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/final-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-independent.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-source-after.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prefreeze-source-before.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/federal-legislation-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source/packages/contracts/retrieval-0.2/federal-legislation.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label-source.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/prototype-label.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/reviewer-assumption-correction.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: packages/contracts/test/retrieval-federal-legislation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact reviewed source: bill-text.schema.json",
+      "passed": true,
+      "commit": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+      "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+    },
+    {
+      "name": "Exact reviewed source: bill-text-validation.mjs",
+      "passed": true,
+      "commit": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+      "sha256": "64837c116e1c72d28ddee800ced81af58d427d24999362b78dea485b210e8824"
+    },
+    {
+      "name": "Exact reviewed source: bill-text-cursor.mjs",
+      "passed": true,
+      "commit": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+      "sha256": "22c5e5eb699c50525bf34602a7eed159b569d62b63b43a20158922678bd274ba"
+    },
+    {
+      "name": "Review member: docs/coordination/reports/CODEX-READ-CONTINUATION-BILL-TEXT-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/author-receipt-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/count-correction.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/criteria.md",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/date-format-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/final-whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/fixture-corrections.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-expanded.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-first.test.mjs.txt",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/independent-fixtures-corrected.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/output-uuid-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.py",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/packet-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-findings.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/selector-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-correction.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-initial.cjs.txt",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.cjs",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/source-facts.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-hash-facts.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.json",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: docs/qualification/candidates/read-continuation-20261012/bill-text-review/uuid-repaired-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Review member: packages/contracts/test/retrieval-bill-text-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_sec_filings inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_sec_filings outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_fara_registrations inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_fara_registrations outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_lda_filings inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_lda_filings outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_acquisition_personnel inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_acquisition_personnel outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin get_acquisition_person inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin get_acquisition_person outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin get_bill_status inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin get_bill_status outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_floor_votes inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_floor_votes outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_congress_bills inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin search_congress_bills outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin read_bill_text inputSchema",
+      "passed": true
+    },
+    {
+      "name": "Schema pin read_bill_text outputSchema",
+      "passed": true
+    },
+    {
+      "name": "Source tracked diff clean",
+      "passed": true
+    }
+  ],
+  "passed": 319,
+  "failed": 0
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "family": "disclosures",
+    "commit": "88c9257e10822396c30cc99fb277ab145aac7218",
+    "review": "5025b27cefd0d0cb4df587dc97cc7b40e218ab59",
+    "files": [
+      "disclosures.schema.json",
+      "disclosures-validation.mjs"
+    ],
+    "manifest": "docs/qualification/candidates/read-continuation-20261012/disclosures-review/manifest.json"
+  },
+  {
+    "family": "acquisition-personnel",
+    "commit": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+    "review": "b859e4b5916b97bb29634d221243a32260958f29",
+    "files": [
+      "acquisition-personnel.schema.json",
+      "acquisition-personnel-validation.mjs"
+    ],
+    "manifest": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/manifest.json"
+  },
+  {
+    "family": "federal-legislation",
+    "commit": "b6d446a488e81f838f41095028f714b215d070de",
+    "review": "0caf5ffda11cde648790e2ef074233cd690eb2a4",
+    "files": [
+      "federal-legislation.schema.json",
+      "federal-legislation-validation.mjs",
+      "congressional-identity.mjs"
+    ],
+    "manifest": "docs/qualification/candidates/read-continuation-20261012/federal-legislation-review/review-manifest.json"
+  },
+  {
+    "family": "bill-text",
+    "commit": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+    "review": "698f545e0410bb5a9c72be8593375c70b76f796e",
+    "files": [
+      "bill-text.schema.json",
+      "bill-text-validation.mjs",
+      "bill-text-cursor.mjs"
+    ],
+    "manifest": "docs/qualification/candidates/read-continuation-20261012/bill-text-review/manifest.json"
+  }
+]

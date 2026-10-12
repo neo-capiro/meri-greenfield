@@ -1,0 +1,52 @@
+✔ distinct operations/schema and hostile operation references (3.273375ms)
+✔ trusted defaultCongress required; model arguments cannot inject authority (10.546209ms)
+✔ request normalization preserves query/search aliases and exact UTF16 caps (2.30578ms)
+✔ text and metadata limits/defaults differ; registered text limit is conservatively clamped (0.648956ms)
+✔ metadata returns all stored scalar/null fields and opaque committees without false total equality (4.79864ms)
+✔ metadata nullable dates, newer-first non-null order, unknown statuses stay distinct (0.974537ms)
+✔ direct designation has one exact bill, page1 and ignores metadata filters by original branch (0.689838ms)
+✔ designation miss can fall back to metadata page; no fabricated unavailable search envelope (0.417959ms)
+✔ text search scalar/null fields and same-bill cross-version passage cursor are preserved (1.833549ms)
+✔ search empty first versus later page retains different total availability (0.617249ms)
+✔ omitted bills count before trimming determines hasMore and required disclosure (0.508906ms)
+✔ text response ceiling measures JSON characters, not scalar-codepoint length (0.741506ms)
+✔ unavailable current text is explicit local coverage, including resumed stale pointer disappearance (2.974175ms)
+✔ sequential first/final/resumed-empty pages retain exact coverage booleans (1.347578ms)
+✔ valid nonfinal surrogate boundary can shorten sequential page by one UTF16 unit (0.762527ms)
+✔ sequential text length, cursor offset and coverage cannot substitute one another (1.307397ms)
+✔ cursor canonical base64url accepts whitespace JSON but rejects malformed scope/hash/offset (0.580314ms)
+✔ continuation output binds version, revision and text hash even without requested version (0.738261ms)
+✔ locator passes complete structural framing without treating excerpts as full content (1.513097ms)
+✔ locator six exact nonoverlapping windows and per-passage lineage (1.22924ms)
+✔ locator no-hit note prevents treating lack of exact wording as topic absence (0.652011ms)
+✔ locator rejects altered passage framing, unbound text and mixed cursor input (1.384082ms)
+✔ all branches preserve immutable input and deny accessors/cycles/proxy hooks (0.52542ms)
+✔ canonical resolver preserves original aliases/digest and exact trusted context (1.567218ms)
+✔ activeSince constrains metadata fallback dates but direct and text branches ignore it (1.530753ms)
+✔ text search congress filter binds the stored bill-ID prefix (0.445159ms)
+✔ successful metadata date selectors require ISO dates or explicit zones, without constraining ignored branches (0.800364ms)
+✖ stored revision UUIDs do not inherit the stricter input-cursor v4 restriction (0.622546ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 27
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 422.810513
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-bill-text.test.mjs:54:1
+✖ stored revision UUIDs do not inherit the stricter input-cursor v4 restriction (0.622546ms)
+  Error: BillTextReadOutput: data must have required property 'requestedVersionCode', data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data must NOT have additional properties, data/currentStatus must be equal to constant, data/found must be equal to constant, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/coverage must NOT have additional properties, data/revisionId must match pattern "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", data must have required property 'query', data must have required property 'queryParts', data must have required property 'totalHits', data must have required property 'passages', data/revisionId must match pattern "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", data/coverage/locator must have required property 'query', data/coverage/locator must NOT have additional properties, data/coverage/locator must NOT have additional properties, data must match exactly one schema in oneOf
+      at validateShape (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:13:122)
+      at validateBillTextShape (file:///workspace/meri-bill-text-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:19:120)
+      at Object.assertBillTextOutput (file:///workspace/meri-bill-text-20261012/packages/contracts/retrieval-0.2/bill-text-validation.mjs:124:97)
+      at check (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:22:34)
+      at TestContext.<anonymous> (file:///workspace/meri-bill-text-20261012/packages/contracts/test/retrieval-bill-text.test.mjs:54:237)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)

@@ -1,0 +1,49 @@
+{
+  "base": "01c75641b62bb586d130feda3468c0ddb4286e8f",
+  "initialSourceFreeze": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+  "sourceFreeze": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+  "sourceTree": "292208a5a5909a8be5713b8560673383ea635fcb",
+  "originalFiles": 5651,
+  "originalChangedOrDeleted": [],
+  "added": [
+    {
+      "path": "packages/contracts/retrieval-0.2/bill-text-cursor.mjs",
+      "gitBlob": "c67ed7270244bff4937eb0e867c23a791fe87b00",
+      "bytes": 1313,
+      "sha256": "22c5e5eb699c50525bf34602a7eed159b569d62b63b43a20158922678bd274ba"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/bill-text-validation.mjs",
+      "gitBlob": "cbe0ff527e847ab66a970adf550800e711b7c0d2",
+      "bytes": 12827,
+      "sha256": "64837c116e1c72d28ddee800ced81af58d427d24999362b78dea485b210e8824"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/bill-text.schema.json",
+      "gitBlob": "82836c8462cb0ff780e2a9e81bc2c1ff8f5aeabe",
+      "bytes": 22659,
+      "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "gitBlob": "94d8a9c8c413a3de59b4f43c5088dcccbe27c197",
+      "bytes": 1484,
+      "sha256": "7253543c521a8ac2476e01bdbb34e100c99b2badba121ae5ba645a9b67534109"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-bill-text.test.mjs",
+      "gitBlob": "0eb40fde99f08c081c2c91394b03d4194e9629dd",
+      "bytes": 17792,
+      "sha256": "82f03c8e5ea1d99b232c3bfe8b174e09d2823308cf7f885058e8d176562ab79a"
+    }
+  ],
+  "sharedDependency": {
+    "owner": "gateway_author",
+    "originalCommit": "621346846aeb7920bde674b6ce217df76942ced4",
+    "cherryPick": "03db5092332f61d4e9c509d14957be35ed122173",
+    "path": "packages/contracts/retrieval-0.2/congressional-identity.mjs",
+    "unchanged": true
+  },
+  "sourceOnly": true,
+  "dependencies": "Root-supplied physical exact copies; no installs/lock changes/lifecycle scripts; left untouched"
+}

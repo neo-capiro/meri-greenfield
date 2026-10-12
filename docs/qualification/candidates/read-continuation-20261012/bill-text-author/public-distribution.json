@@ -1,0 +1,47 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "check:contracts:distribution"
+  ],
+  "cwd": "/workspace/meri-bill-text-20261012",
+  "sourceHead": "0bdd1ce12b9263ad522e87e5f6f5105dee16dade",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T17:08:23.954065+00:00",
+  "durationSeconds": 6.813,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 172865,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 173087,
+      "status": 0
+    },
+    {
+      "pid": 173285,
+      "status": 0
+    },
+    {
+      "pid": 173316,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stdout.bin",
+      "bytes": 2046,
+      "sha256": "737cacb67e12860b4e7758827fce4cbf5c99574946d78a34dbaf6278d489a9fe"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

@@ -1,0 +1,1252 @@
+diff --git a/packages/contracts/retrieval-0.2/bill-text-cursor.mjs b/packages/contracts/retrieval-0.2/bill-text-cursor.mjs
+new file mode 100644
+index 0000000..c67ed72
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/bill-text-cursor.mjs
+@@ -0,0 +1,19 @@
++// One inert wire decoder. A cursor correlates text lineage, never authority.
++import {snapshotOperationData} from './operation-contracts.mjs';
++const fail=()=>{throw new Error('Invalid bill-text continuation');};
++export function decodeBillTextCursor(value){
++ if(typeof value!=='string'||value.length>1024||!value.length||!/^[A-Za-z0-9_-]+$/.test(value))fail();
++ const bytes=Buffer.from(value,'base64url');if(bytes.toString('base64url')!==value)fail();
++ let data;try{data=snapshotOperationData(JSON.parse(bytes.toString('utf8')));}catch{fail();}
++ if(!Array.isArray(data)||data.length!==5)fail();
++ const [billId,versionCode,revisionId,textHash,offset]=data;
++ if(typeof billId!=='string'||typeof versionCode!=='string'||typeof revisionId!=='string'||
++  !/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(revisionId)||
++  typeof textHash!=='string'||!/^[a-f0-9]{64}$/.test(textHash)||!Number.isSafeInteger(offset)||offset<1||offset>30000000)fail();
++ return Object.freeze({billId,versionCode,revisionId,textHash,offset});
++}
++export function assertBillTextCursor(value,expected){
++ const decoded=decodeBillTextCursor(value),binding=snapshotOperationData(expected);
++ for(const [key,entry] of Object.entries(binding))if(!Object.hasOwn(decoded,key)||decoded[key]!==entry)fail();
++ return decoded;
++}
+diff --git a/packages/contracts/retrieval-0.2/bill-text-validation.mjs b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+new file mode 100644
+index 0000000..a92b44d
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+@@ -0,0 +1,124 @@
++// Stored congressional metadata and current-evidence text projections only.
++import {snapshotOperationData} from './operation-contracts.mjs';
++import {resolveCongressionalBillId} from './congressional-identity.mjs';
++import {decodeBillTextCursor,assertBillTextCursor} from './bill-text-cursor.mjs';
++const fail=message=>{throw new Error(message);};
++export const BILL_TEXT_OPERATION_IDS=Object.freeze(['search_congress_bills','read_bill_text']);
++const [SEARCH,READ]=BILL_TEXT_OPERATION_IDS;
++const stems=new Map([[SEARCH,'CongressBillSearch'],[READ,'BillTextRead']]);
++const sequentialNote='This is exact bill-version text from the current federal evidence owner. It is not amendment text or bill status.';
++const locatorNotes=['No exact match for these words in this bill version. Try other wording or a shorter phrase before concluding the bill does not address the topic.','Excerpts of the exact bill-version text that match the query, best first by section order. Read on from a passage with read_bill_text and its readCursor before relying on surrounding context.'];
++function instant(value,date=false){if(value===null)return;const at=typeof value==='string'?Date.parse(value):NaN;if(!Number.isFinite(at)||new Date(at).toISOString()!==value||date&&!value.endsWith('T00:00:00.000Z'))fail('Bill-text canonical date required');return at;}
++const text=(value,cap)=>typeof value==='string'?(value.trim().slice(0,cap)||null):null;
++function unique(rows,key){if(new Set(rows.map(row=>row[key])).size!==rows.length)fail('Duplicate bill-text identity');}
++export function createBillTextValidators({validateShape,schema}){
++ if(typeof validateShape!=='function'||!schema?.$defs)fail('Bill-text validator configuration');
++ const definitions=new Set(Object.keys(schema.$defs));
++ function billTextInputDefinition(id){if(!stems.has(id))fail('Unknown bill-text operation');return stems.get(id)+'Input';}
++ function billTextOutputDefinition(id){billTextInputDefinition(id);return stems.get(id)+'Output';}
++ function validateBillTextShape(definition,value){if(!definitions.has(definition))fail('Unknown bill-text definition');validateShape(definition,snapshotOperationData(value));return value;}
++ function normalizeBillTextInput(id,request,context={}){
++  const input=snapshotOperationData(request),trusted=snapshotOperationData(context);validateBillTextShape('BillTextContext',trusted);validateBillTextShape(billTextInputDefinition(id),input);
++  let directBillId=null,continuation=null;
++  if(id===SEARCH){
++   const query=text(input.query,240)??text(input.search,240);delete input.query;delete input.search;if(query!==null)input.query=query;
++   for(const [key,cap] of [['policyArea',120],['activeSince',30],['textQuery',300]]){const value=text(input[key],cap);delete input[key];if(value!==null)input[key]=value;}
++   if(input.congress===0||input.congress===null)delete input.congress;
++   input.page??=1;input.limit=input.textQuery?Math.min(input.limit??8,10):input.limit??20;
++   if(!input.textQuery)directBillId=resolveCongressionalBillId(query,trusted.defaultCongress);
++  }else{
++   const billId=resolveCongressionalBillId(text(input.billId,60),trusted.defaultCongress);if(!billId)fail('Exact bill selector required');input.billId=billId;
++   for(const [key,cap] of [['versionCode',32],['query',300]]){const value=text(input[key],cap);delete input[key];if(value!==null)input[key]=value;}
++   if(input.query&&Object.hasOwn(input,'cursor'))fail('Bill locator and continuation conflict');
++   if(Object.hasOwn(input,'cursor'))continuation=assertBillTextCursor(input.cursor,{billId,...(input.versionCode?{versionCode:input.versionCode}:{})});
++  }
++  return Object.freeze({input:Object.freeze(input),metadata:Object.freeze({authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,currentPointerQualified:false,directBillId,continuation,
++   mode:id===SEARCH?(input.textQuery?'bill_text':'metadata'):(input.query?'locator':'sequential')})});
++ }
++ function assertSearch(data,input,metadata){
++  instant(data.generatedAt);
++  if(input.textQuery){
++   if(data.mode!=='bill_text'||data.textQuery!==input.textQuery||data.page!==input.page||data.perPage!==input.limit)fail('Bill text-search selection mismatch');
++   if(JSON.stringify(data).length>10500)fail('Bill text-search JSON-character ceiling');
++   const listed=data.results.length+(data.omittedBills??0);
++   if(data.total!==data.results.length||listed>input.limit||data.omittedBills&&data.results.length<1)fail('Bill text-search returned/omitted count');
++   if(data.results.length===0&&data.totalBills!==(input.page===1?0:null))fail('Empty bill text-search count scope');
++   const shown=(input.page-1)*input.limit+listed;
++   if(data.results.length&&data.totalBills!==null&&data.totalBills<shown)fail('Bill text-search total window mismatch');
++   const more=data.totalBills!==null&&shown<data.totalBills;
++   if(data.hasMore!==more||Object.hasOwn(data,'nextPage')!==more||more&&data.nextPage!==input.page+1)fail('Bill text-search paging claim');
++   const base=data.results.length?'Bills whose stored text matches, best first, with matching passages (« » marks the match). Read a passage in context with read_bill_text and its readCursor. Stored text covers 119th-Congress bills.':input.page>1?'No more matching bills on this page.':'No stored bill text matches. Stored text covers 119th-Congress bills; try other wording before concluding no bill addresses the topic.';
++   const count=data.totalBills!==null&&data.totalBills>0?`${data.totalBills} bill${data.totalBills===1?'':'s'} match in all.${more?` Ask for page ${input.page+1} for more.`:''}`:null;
++   const omitted=data.omittedBills?`${data.omittedBills} lower-ranked bill${data.omittedBills===1?' on this page was':'s on this page were'} left out to fit; narrow the query or ask with a smaller limit to see ${data.omittedBills===1?'it':'them'}.`:null;
++   const shortened='Only the best passage is shown for some bills; read_bill_text with the bill and query finds the rest.';
++   const notes=[false,true].filter(flag=>!flag||data.results.some(result=>result.passages.length===1)).map(flag=>[base,count,flag?shortened:null,omitted].filter(part=>part!==null).join(' '));
++   if(!notes.includes(data.note)||data.omittedBills&&data.results.some(result=>result.passages.length!==1))fail('Bill text-search omission disclosure');
++   unique(data.results,'billId');
++   for(const result of data.results)for(const passage of result.passages){
++    if(passage.snippet!==passage.snippet.replace(/\s+/g,' ').trim())fail('Bill text-search snippet whitespace');
++    if(passage.startOffset===0){if(passage.readCursor!==null)fail('Zero-offset passage cursor');}
++    else assertBillTextCursor(passage.readCursor,{billId:result.billId,offset:passage.startOffset});
++    // Group version is the first row's version. Another selected passage can
++    // legitimately refer to a different version of this same bill.
++   }
++  }else{
++   if(Object.hasOwn(data,'mode')||data.limit!==input.limit||data.data.length>input.limit)fail('Congress metadata selection mismatch');
++   unique(data.data,'id');
++   if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
++   else if(data.page!==input.page)fail('Congress metadata page substitution');
++   let prior=Infinity;
++   for(const row of data.data){
++    for(const key of ['introducedDate','latestActionDate'])instant(row[key],true);
++    for(const key of ['updateDateIncludingText','statusAt','lastSyncedAt'])instant(row[key]);
++    const at=instant(row.updateDate);if(!data.resolvedBy&&at!==undefined){if(at>prior)fail('Congress metadata ordering');prior=at;}
++    if(!data.resolvedBy&&input.congress!==undefined&&row.congress!==input.congress)fail('Congress metadata congress substitution');
++   }
++  }
++ }
++ function assertRead(data,input,metadata){
++  if(data.billId!==input.billId)fail('Bill read identity substitution');
++  if(!data.found){
++   if(data.requestedVersionCode!==(input.versionCode??null))fail('Unavailable bill version mismatch');
++   const expected=input.versionCode?`No current complete bill-text revision ${input.versionCode} is available for ${input.billId}.`:`No current complete bill-text revision is available for ${input.billId}.`;
++   if(data.note!==expected)fail('Unavailable bill disclosure mismatch');return;
++  }
++  for(const key of ['sourceModifiedAt','publishedAt','fetchedAt'])instant(data[key]);
++  if(input.versionCode!==undefined&&data.versionCode!==input.versionCode)fail('Bill read version substitution');
++  if(metadata.continuation)for(const key of ['billId','versionCode','revisionId','textHash'])if(data[key]!==metadata.continuation[key])fail('Bill continuation lineage changed');
++  const coverage=data.coverage,total=coverage.totalCharacters;
++  if(input.query){
++   if(data.query!==input.query||coverage.locator.query!==input.query||coverage.complete||coverage.contentComplete||coverage.paginationComplete||!coverage.truncated||coverage.nextCursor!==null)fail('Bill locator coverage substitution');
++   if(data.note!==locatorNotes[Number(data.passages.length>0)]||data.totalHits<data.passages.length||(data.totalHits===0)!==(data.passages.length===0)||data.queryParts.length===0&&data.totalHits!==0)fail('Bill locator no-match/count disclosure');
++   if(data.queryParts.some(part=>!part||part!==part.toLowerCase().replace(/\s+/g,' ').trim()))fail('Bill locator reported query parts');
++   let prior=0,renderOffset=0;
++   for(const passage of data.passages){
++    const {startOffset:start,endOffset:end}=passage;
++    if(start<prior||end>total||end-start!==Math.min(1000,total)||end<=start||passage.matchedTerms.some(term=>!data.queryParts.includes(term)))fail('Bill locator passage bounds');
++    prior=end;
++    if(start===0){if(passage.readCursor!==null)fail('Zero-offset locator cursor');}
++    else assertBillTextCursor(passage.readCursor,{billId:data.billId,versionCode:data.versionCode,revisionId:data.revisionId,textHash:data.textHash,offset:start});
++    const header=`[${passage.heading??'Text'} | characters ${start}-${end}]\n`;
++    if(!data.text.startsWith(header,renderOffset))fail('Bill locator text framing');renderOffset+=header.length+(end-start);
++    if(renderOffset>data.text.length)fail('Bill locator text length');
++    if(passage!==data.passages.at(-1)){const separator='\n\n…\n\n';if(!data.text.startsWith(separator,renderOffset))fail('Bill locator passage separator');renderOffset+=separator.length;}
++   }
++   if(renderOffset!==data.text.length)fail('Bill locator unbound text');
++  }else{
++   if(Object.hasOwn(data,'query'))fail('Unexpected bill locator result');
++   const offset=metadata.continuation?.offset??0,{endOffset:end}=coverage.locator;
++   if(coverage.locator.offset!==offset||end<offset||end>total||data.text.length!==end-offset||data.text.length>9000)fail('Bill sequential range substitution');
++   const maximum=Math.min(total,offset+9000),more=end<total;
++   if(end!==maximum&&!(maximum<total&&end===maximum-1))fail('Bill sequential page length');
++   if(more&&/[\uD800-\uDBFF]/.test(data.text.at(-1)??''))fail('Bill sequential surrogate boundary');
++   if(!coverage.complete||coverage.paginationComplete!==!more||coverage.contentComplete!==(!more&&offset===0)||coverage.truncated!==(more||offset>0)||data.note!==sequentialNote)fail('Bill sequential coverage substitution');
++   if(more)assertBillTextCursor(coverage.nextCursor,{billId:data.billId,versionCode:data.versionCode,revisionId:data.revisionId,textHash:data.textHash,offset:end});
++   else if(coverage.nextCursor!==null)fail('Completed bill text cursor');
++  }
++ }
++ function assertBillTextOutput(id,value,request,context={}){
++  const normalized=normalizeBillTextInput(id,request,context),data=snapshotOperationData(value);validateBillTextShape(billTextOutputDefinition(id),data);
++  if(id===SEARCH)assertSearch(data,normalized.input,normalized.metadata);else assertRead(data,normalized.input,normalized.metadata);
++  return value;
++ }
++ return Object.freeze({billTextSchemaId:schema.$id,BILL_TEXT_OPERATION_IDS,billTextInputDefinition,billTextOutputDefinition,normalizeBillTextInput,validateBillTextShape,assertBillTextOutput});
++}
+diff --git a/packages/contracts/retrieval-0.2/bill-text.schema.json b/packages/contracts/retrieval-0.2/bill-text.schema.json
+new file mode 100644
+index 0000000..760796b
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/bill-text.schema.json
+@@ -0,0 +1,1038 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:bill-text:0.2.0",
++  "$defs": {
++    "BillTextInstant": {
++      "type": "string",
++      "format": "date-time"
++    },
++    "BillTextRevisionId": {
++      "type": "string",
++      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
++    },
++    "BillTextHash": {
++      "type": "string",
++      "pattern": "^[a-f0-9]{64}$"
++    },
++    "BillTextCursor": {
++      "type": "string",
++      "minLength": 1,
++      "maxLength": 1024,
++      "pattern": "^[A-Za-z0-9_-]+$"
++    },
++    "BillTextContext": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "defaultCongress": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 2147483647
++        }
++      },
++      "required": [
++        "defaultCongress"
++      ]
++    },
++    "CongressBillSearchInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "query": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "search": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "policyArea": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "activeSince": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "congress": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": -2147483648,
++              "maximum": 2147483647
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 100
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 50
++        },
++        "textQuery": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": []
++    },
++    "BillTextReadInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "billId": {
++          "type": "string"
++        },
++        "versionCode": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "query": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "cursor": {
++          "$ref": "#/$defs/BillTextCursor"
++        }
++      },
++      "required": [
++        "billId"
++      ]
++    },
++    "CongressBillRaw": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "id": {
++          "type": "string"
++        },
++        "congress": {
++          "type": "integer",
++          "minimum": -2147483648,
++          "maximum": 2147483647
++        },
++        "billType": {
++          "type": "string"
++        },
++        "billNumber": {
++          "type": "string"
++        },
++        "title": {
++          "type": "string"
++        },
++        "introducedDate": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sponsorName": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sponsorState": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sponsorParty": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sponsorBioguideId": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "latestActionText": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "latestActionDate": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "policyArea": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "subjects": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "peCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "committees": {},
++        "cosponsorsCount": {
++          "type": "integer",
++          "minimum": -2147483648,
++          "maximum": 2147483647
++        },
++        "originChamber": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "updateDate": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "updateDateIncludingText": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "status": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "statusAt": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "url": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "lastSyncedAt": {
++          "$ref": "#/$defs/BillTextInstant"
++        }
++      },
++      "required": [
++        "id",
++        "congress",
++        "billType",
++        "billNumber",
++        "title",
++        "introducedDate",
++        "sponsorName",
++        "sponsorState",
++        "sponsorParty",
++        "sponsorBioguideId",
++        "latestActionText",
++        "latestActionDate",
++        "policyArea",
++        "subjects",
++        "peCodes",
++        "committees",
++        "cosponsorsCount",
++        "originChamber",
++        "updateDate",
++        "updateDateIncludingText",
++        "status",
++        "statusAt",
++        "url",
++        "lastSyncedAt"
++      ]
++    },
++    "CongressBillMetadataOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "search_congress_bills"
++        },
++        "generatedAt": {
++          "$ref": "#/$defs/BillTextInstant"
++        },
++        "data": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/CongressBillRaw"
++          },
++          "maxItems": 50
++        },
++        "total": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 100
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 50
++        },
++        "resolvedBy": {
++          "const": "bill-id"
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "data",
++        "total",
++        "page",
++        "limit"
++      ]
++    },
++    "BillTextSearchPassage": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "snippet": {
++          "type": "string"
++        },
++        "startOffset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "readCursor": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextCursor"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "snippet",
++        "startOffset",
++        "readCursor"
++      ]
++    },
++    "BillTextSearchResult": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "billId": {
++          "type": "string"
++        },
++        "title": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "versionCode": {
++          "type": "string"
++        },
++        "passages": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BillTextSearchPassage"
++          },
++          "minItems": 1,
++          "maxItems": 2
++        }
++      },
++      "required": [
++        "billId",
++        "title",
++        "versionCode",
++        "passages"
++      ]
++    },
++    "CongressBillTextSearchOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "search_congress_bills"
++        },
++        "generatedAt": {
++          "$ref": "#/$defs/BillTextInstant"
++        },
++        "mode": {
++          "const": "bill_text"
++        },
++        "textQuery": {
++          "type": "string"
++        },
++        "results": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BillTextSearchResult"
++          },
++          "maxItems": 10
++        },
++        "total": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "totalBills": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 100
++        },
++        "perPage": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 10
++        },
++        "hasMore": {
++          "type": "boolean"
++        },
++        "nextPage": {
++          "type": "integer",
++          "minimum": 2,
++          "maximum": 101
++        },
++        "omittedBills": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 9
++        },
++        "note": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "tool",
++        "generatedAt",
++        "mode",
++        "textQuery",
++        "results",
++        "total",
++        "totalBills",
++        "page",
++        "perPage",
++        "hasMore",
++        "note"
++      ]
++    },
++    "BillTextUnavailableOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "read_bill_text"
++        },
++        "authoritativeOwner": {
++          "const": "federal_evidence_current"
++        },
++        "billId": {
++          "type": "string"
++        },
++        "currentStatus": {
++          "const": "unavailable"
++        },
++        "found": {
++          "const": false
++        },
++        "requestedVersionCode": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "coverage": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "complete": {
++              "const": true
++            },
++            "truncated": {
++              "const": false
++            },
++            "nextCursor": {
++              "type": "null"
++            }
++          },
++          "required": [
++            "complete",
++            "truncated",
++            "nextCursor"
++          ]
++        },
++        "note": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "tool",
++        "authoritativeOwner",
++        "billId",
++        "currentStatus",
++        "found",
++        "requestedVersionCode",
++        "coverage",
++        "note"
++      ]
++    },
++    "BillTextSequentialOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "read_bill_text"
++        },
++        "authoritativeOwner": {
++          "const": "federal_evidence_current"
++        },
++        "billId": {
++          "type": "string"
++        },
++        "currentStatus": {
++          "const": "available"
++        },
++        "found": {
++          "const": true
++        },
++        "versionCode": {
++          "type": "string"
++        },
++        "revisionId": {
++          "$ref": "#/$defs/BillTextRevisionId"
++        },
++        "packageId": {
++          "type": "string"
++        },
++        "provider": {
++          "type": "string"
++        },
++        "lineageKey": {
++          "type": "string"
++        },
++        "versionHash": {
++          "$ref": "#/$defs/BillTextHash"
++        },
++        "textHash": {
++          "$ref": "#/$defs/BillTextHash"
++        },
++        "sourceLocator": {
++          "type": "string"
++        },
++        "sourceModifiedAt": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "publishedAt": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "fetchedAt": {
++          "$ref": "#/$defs/BillTextInstant"
++        },
++        "text": {
++          "type": "string"
++        },
++        "trust": {
++          "const": "external_untrusted"
++        },
++        "note": {
++          "type": "string"
++        },
++        "coverage": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "totalCharacters": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "pageComplete": {
++              "const": true
++            },
++            "contentComplete": {
++              "type": "boolean"
++            },
++            "paginationComplete": {
++              "type": "boolean"
++            },
++            "complete": {
++              "type": "boolean"
++            },
++            "truncated": {
++              "type": "boolean"
++            },
++            "nextCursor": {
++              "anyOf": [
++                {
++                  "$ref": "#/$defs/BillTextCursor"
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "locator": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "offset": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                "endOffset": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                }
++              },
++              "required": [
++                "offset",
++                "endOffset"
++              ]
++            }
++          },
++          "required": [
++            "totalCharacters",
++            "pageComplete",
++            "contentComplete",
++            "paginationComplete",
++            "complete",
++            "truncated",
++            "nextCursor",
++            "locator"
++          ]
++        }
++      },
++      "required": [
++        "tool",
++        "authoritativeOwner",
++        "billId",
++        "currentStatus",
++        "found",
++        "versionCode",
++        "revisionId",
++        "packageId",
++        "provider",
++        "lineageKey",
++        "versionHash",
++        "textHash",
++        "sourceLocator",
++        "sourceModifiedAt",
++        "publishedAt",
++        "fetchedAt",
++        "text",
++        "trust",
++        "note",
++        "coverage"
++      ]
++    },
++    "BillTextLocatedPassage": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "heading": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "startOffset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "endOffset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "matchedTerms": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          },
++          "minItems": 1,
++          "uniqueItems": true
++        },
++        "readCursor": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextCursor"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "heading",
++        "startOffset",
++        "endOffset",
++        "matchedTerms",
++        "readCursor"
++      ]
++    },
++    "BillTextLocatedOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "read_bill_text"
++        },
++        "authoritativeOwner": {
++          "const": "federal_evidence_current"
++        },
++        "billId": {
++          "type": "string"
++        },
++        "currentStatus": {
++          "const": "available"
++        },
++        "found": {
++          "const": true
++        },
++        "versionCode": {
++          "type": "string"
++        },
++        "revisionId": {
++          "$ref": "#/$defs/BillTextRevisionId"
++        },
++        "packageId": {
++          "type": "string"
++        },
++        "provider": {
++          "type": "string"
++        },
++        "lineageKey": {
++          "type": "string"
++        },
++        "versionHash": {
++          "$ref": "#/$defs/BillTextHash"
++        },
++        "textHash": {
++          "$ref": "#/$defs/BillTextHash"
++        },
++        "sourceLocator": {
++          "type": "string"
++        },
++        "sourceModifiedAt": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "publishedAt": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/BillTextInstant"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "fetchedAt": {
++          "$ref": "#/$defs/BillTextInstant"
++        },
++        "text": {
++          "type": "string"
++        },
++        "trust": {
++          "const": "external_untrusted"
++        },
++        "note": {
++          "type": "string"
++        },
++        "query": {
++          "type": "string"
++        },
++        "queryParts": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "totalHits": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "passages": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/BillTextLocatedPassage"
++          },
++          "maxItems": 6
++        },
++        "coverage": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "totalCharacters": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            "pageComplete": {
++              "const": true
++            },
++            "contentComplete": {
++              "type": "boolean"
++            },
++            "paginationComplete": {
++              "type": "boolean"
++            },
++            "complete": {
++              "type": "boolean"
++            },
++            "truncated": {
++              "type": "boolean"
++            },
++            "nextCursor": {
++              "anyOf": [
++                {
++                  "$ref": "#/$defs/BillTextCursor"
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "locator": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "query": {
++                  "type": "string"
++                }
++              },
++              "required": [
++                "query"
++              ]
++            }
++          },
++          "required": [
++            "totalCharacters",
++            "pageComplete",
++            "contentComplete",
++            "paginationComplete",
++            "complete",
++            "truncated",
++            "nextCursor",
++            "locator"
++          ]
++        }
++      },
++      "required": [
++        "tool",
++        "authoritativeOwner",
++        "billId",
++        "currentStatus",
++        "found",
++        "versionCode",
++        "revisionId",
++        "packageId",
++        "provider",
++        "lineageKey",
++        "versionHash",
++        "textHash",
++        "sourceLocator",
++        "sourceModifiedAt",
++        "publishedAt",
++        "fetchedAt",
++        "text",
++        "trust",
++        "note",
++        "query",
++        "queryParts",
++        "totalHits",
++        "passages",
++        "coverage"
++      ]
++    },
++    "CongressBillSearchOutput": {
++      "oneOf": [
++        {
++          "$ref": "#/$defs/CongressBillMetadataOutput"
++        },
++        {
++          "$ref": "#/$defs/CongressBillTextSearchOutput"
++        }
++      ]
++    },
++    "BillTextReadOutput": {
++      "oneOf": [
++        {
++          "$ref": "#/$defs/BillTextUnavailableOutput"
++        },
++        {
++          "$ref": "#/$defs/BillTextSequentialOutput"
++        },
++        {
++          "$ref": "#/$defs/BillTextLocatedOutput"
++        }
++      ]
++    }
++  }
++}
+diff --git a/packages/contracts/test/retrieval-bill-text.test.mjs b/packages/contracts/test/retrieval-bill-text.test.mjs
+new file mode 100644
+index 0000000..ae4ba95
+--- /dev/null
++++ b/packages/contracts/test/retrieval-bill-text.test.mjs
+@@ -0,0 +1,47 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import {createBillTextValidators,BILL_TEXT_OPERATION_IDS} from '../retrieval-0.2/bill-text-validation.mjs';
++import {decodeBillTextCursor} from '../retrieval-0.2/bill-text-cursor.mjs';
++import {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';
++import {canonicalSha256} from '../validate.mjs';
++const schema=JSON.parse(readFileSync(new URL('../retrieval-0.2/bill-text.schema.json',import.meta.url)));
++const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(schema);
++const checks=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));
++const v=createBillTextValidators({schema,validateShape(name,value){const check=checks.get(name);if(!check?.(value))throw new Error(`${name}: ${ajv.errorsText(check?.errors)}`);return value;}});
++const [SEARCH,READ]=BILL_TEXT_OPERATION_IDS,context={defaultCongress:119},billId='119-hr-1',revisionId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',textHash='a'.repeat(64),stamp='2026-10-12T12:00:00.000Z';
++const encode=(offset,change={})=>Buffer.from(JSON.stringify([change.billId??billId,change.versionCode??'ih',change.revisionId??revisionId,change.textHash??textHash,offset])).toString('base64url');
++function rawBill(){return{id:billId,congress:119,billType:'hr',billNumber:'1',title:'Synthetic bill',introducedDate:null,sponsorName:null,sponsorState:null,sponsorParty:null,sponsorBioguideId:null,latestActionText:null,latestActionDate:null,policyArea:null,subjects:[],peCodes:[],committees:{opaque:true},cosponsorsCount:0,originChamber:null,updateDate:null,updateDateIncludingText:null,status:null,statusAt:null,url:null,lastSyncedAt:stamp};}
++function metadata(){return{tool:SEARCH,generatedAt:stamp,data:[rawBill()],total:1,page:1,limit:20};}
++function sequential(total=12,offset=0){const end=Math.min(total,offset+9000),more=end<total;return{tool:READ,authoritativeOwner:'federal_evidence_current',currentStatus:'available',found:true,billId,versionCode:'ih',revisionId,packageId:'synthetic-package',provider:'synthetic-provider',lineageKey:'synthetic-lineage',versionHash:'b'.repeat(64),textHash,sourceLocator:'https://example.invalid/text',sourceModifiedAt:null,publishedAt:null,fetchedAt:stamp,text:'x'.repeat(end-offset),trust:'external_untrusted',coverage:{locator:{offset,endOffset:end},totalCharacters:total,pageComplete:true,contentComplete:!more&&offset===0,paginationComplete:!more,complete:true,truncated:more||offset>0,nextCursor:more?encode(end):null},note:'This is exact bill-version text from the current federal evidence owner. It is not amendment text or bill status.'};}
++function unavailable(version=null){return{tool:READ,authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',billId,requestedVersionCode:version,found:false,coverage:{complete:true,truncated:false,nextCursor:null},note:version?`No current complete bill-text revision ${version} is available for ${billId}.`:`No current complete bill-text revision is available for ${billId}.`};}
++function located(total=1000,start=0){const p=sequential(total);p.query='minerals';p.queryParts=['minerals'];p.totalHits=1;p.passages=[{heading:null,startOffset:start,endOffset:start+Math.min(total,1000),matchedTerms:['minerals'],readCursor:start?encode(start):null}];p.text=`[Text | characters ${start}-${p.passages[0].endOffset}]\n`+'x'.repeat(Math.min(total,1000));p.coverage={locator:{query:'minerals'},totalCharacters:total,pageComplete:true,contentComplete:false,paginationComplete:false,complete:false,truncated:true,nextCursor:null};p.note='Excerpts of the exact bill-version text that match the query, best first by section order. Read on from a passage with read_bill_text and its readCursor before relying on surrounding context.';return p;}
++function textPage(){return{tool:SEARCH,generatedAt:stamp,mode:'bill_text',textQuery:'minerals',results:[{billId,title:null,versionCode:'ih',passages:[{snippet:'synthetic «minerals»',startOffset:0,readCursor:null}]}],total:1,totalBills:1,page:1,perPage:8,hasMore:false,note:'Bills whose stored text matches, best first, with matching passages (« » marks the match). Read a passage in context with read_bill_text and its readCursor. Stored text covers 119th-Congress bills. 1 bill match in all.'};}
++const check=(op,p,request={})=>v.assertBillTextOutput(op,p,request,context);
++
++test('distinct operations/schema and hostile operation references',()=>{assert.equal(v.billTextSchemaId,'urn:meri:retrieval:bill-text:0.2.0');assert.equal(v.billTextInputDefinition(SEARCH),'CongressBillSearchInput');assert.equal(v.billTextOutputDefinition(READ),'BillTextReadOutput');for(const op of ['__proto__','constructor','read_amendment_text'])assert.throws(()=>v.normalizeBillTextInput(op,{},context));});
++test('trusted defaultCongress required; model arguments cannot inject authority',()=>{for(const ctx of [undefined,{},null,{defaultCongress:0},{defaultCongress:1.5},{defaultCongress:'119'},{defaultCongress:119,actorId:'x'}])assert.throws(()=>v.normalizeBillTextInput(SEARCH,{},ctx));for(const key of ['defaultCongress','tenantId','currentPointer','actorId','asOf'])assert.throws(()=>v.normalizeBillTextInput(SEARCH,{[key]:119},context));});
++test('request normalization preserves query/search aliases and exact UTF16 caps',()=>{for(const query of [undefined,null,'','  ']){const input={search:' Minerals ',...(query===undefined?{}:{query})};assert.equal(v.normalizeBillTextInput(SEARCH,input,context).input.query,'Minerals');}assert.equal(v.normalizeBillTextInput(SEARCH,{query:' First ',search:'Second'},context).input.query,'First');assert.equal(v.normalizeBillTextInput(SEARCH,{query:'x'.repeat(239)+'😀'},context).input.query,'x'.repeat(239)+'\ud83d');assert.deepEqual(v.normalizeBillTextInput(SEARCH,{search:null,congress:0},context).input,{page:1,limit:20});});
++test('text and metadata limits/defaults differ; registered text limit is conservatively clamped',()=>{assert.equal(v.normalizeBillTextInput(SEARCH,{textQuery:'x'},context).input.limit,8);assert.equal(v.normalizeBillTextInput(SEARCH,{textQuery:'x',limit:50},context).input.limit,10);for(const limit of [0,51,1.5,'10',null])assert.throws(()=>v.normalizeBillTextInput(SEARCH,{limit},context));for(const page of [0,101,'1',1.5])assert.throws(()=>v.normalizeBillTextInput(SEARCH,{page},context));});
++test('metadata returns all stored scalar/null fields and opaque committees without false total equality',()=>{const p=metadata();p.total=0;p.data[0].cosponsorsCount=-1;check(SEARCH,p);delete p.data[0].sponsorBioguideId;assert.throws(()=>check(SEARCH,p));});
++test('metadata nullable dates, newer-first non-null order, unknown statuses stay distinct',()=>{const p=metadata();p.data[0].status='Unrecognized stored label';p.data[0].introducedDate='2026-01-01T00:00:00.000Z';check(SEARCH,p);p.data[0].introducedDate='2026-01-01T12:00:00.000Z';assert.throws(()=>check(SEARCH,p));const ordered=metadata();ordered.data.push({...rawBill(),id:'119-s-2',updateDate:stamp});ordered.data[0].updateDate='2026-10-01T00:00:00.000Z';assert.throws(()=>check(SEARCH,ordered));});
++test('direct designation has one exact bill, page1 and ignores metadata filters by original branch',()=>{const p=metadata();p.resolvedBy='bill-id';check(SEARCH,p,{query:'H.R. 1',congress:118,page:4});const n=v.normalizeBillTextInput(SEARCH,{query:'H.R. 1'},context);assert.equal(n.metadata.directBillId,billId);p.data[0].id='119-hr-2';assert.throws(()=>check(SEARCH,p,{query:'H.R. 1'}));});
++test('designation miss can fall back to metadata page; no fabricated unavailable search envelope',()=>{const p=metadata();p.page=3;p.data=[];p.total=0;check(SEARCH,p,{query:'H.R. 1',page:3});p.found=false;assert.throws(()=>check(SEARCH,p,{query:'H.R. 1',page:3}));});
++test('text search scalar/null fields and same-bill cross-version passage cursor are preserved',()=>{const p=textPage();p.results[0].passages.push({snippet:'other version',startOffset:12,readCursor:encode(12,{versionCode:'eh',revisionId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',textHash:'c'.repeat(64)})});check(SEARCH,p,{textQuery:'minerals'});p.results[0].passages[1].readCursor=encode(12,{billId:'119-s-2'});assert.throws(()=>check(SEARCH,p,{textQuery:'minerals'}));});
++test('search empty first versus later page retains different total availability',()=>{for(const page of [1,3]){const p=textPage();Object.assign(p,{results:[],total:0,totalBills:page===1?0:null,page,note:page===1?'No stored bill text matches. Stored text covers 119th-Congress bills; try other wording before concluding no bill addresses the topic.':'No more matching bills on this page.'});check(SEARCH,p,{textQuery:'minerals',page});p.totalBills=page===1?null:0;assert.throws(()=>check(SEARCH,p,{textQuery:'minerals',page}));}});
++test('omitted bills count before trimming determines hasMore and required disclosure',()=>{const p=textPage();Object.assign(p,{totalBills:10,omittedBills:7,hasMore:true,nextPage:2});p.note=p.note.replace('1 bill match in all.','10 bills match in all. Ask for page 2 for more.')+' 7 lower-ranked bills on this page were left out to fit; narrow the query or ask with a smaller limit to see them.';check(SEARCH,p,{textQuery:'minerals'});p.hasMore=false;delete p.nextPage;assert.throws(()=>check(SEARCH,p,{textQuery:'minerals'}));});
++test('text response ceiling measures JSON characters, not scalar-codepoint length',()=>{const p=textPage();p.results[0].passages[0].snippet='x';const base=JSON.stringify(p).length-1;p.results[0].passages[0].snippet='x'.repeat(10500-base);assert.equal(JSON.stringify(p).length,10500);check(SEARCH,p,{textQuery:'minerals'});p.results[0].passages[0].snippet+='x';assert.throws(()=>check(SEARCH,p,{textQuery:'minerals'}),/ceiling/);});
++test('unavailable current text is explicit local coverage, including resumed stale pointer disappearance',()=>{check(READ,unavailable(),{billId:'H.R. 1'});check(READ,unavailable('eh'),{billId,versionCode:'eh'});check(READ,unavailable(),{billId,cursor:encode(10)});const p=unavailable();p.coverage.contentComplete=true;assert.throws(()=>check(READ,p,{billId}));});
++test('sequential first/final/resumed-empty pages retain exact coverage booleans',()=>{check(READ,sequential(),{billId});check(READ,sequential(9001),{billId});check(READ,sequential(9001,9000),{billId,cursor:encode(9000)});check(READ,sequential(9000,9000),{billId,cursor:encode(9000)});const final=sequential(9001,9000);final.coverage.truncated=false;assert.throws(()=>check(READ,final,{billId,cursor:encode(9000)}));});
++test('valid nonfinal surrogate boundary can shorten sequential page by one UTF16 unit',()=>{const p=sequential(10000);p.text='x'.repeat(8999);p.coverage.locator.endOffset=8999;p.coverage.nextCursor=encode(8999);check(READ,p,{billId});p.text='x'.repeat(8998);p.coverage.locator.endOffset=8998;p.coverage.nextCursor=encode(8998);assert.throws(()=>check(READ,p,{billId}));});
++test('sequential text length, cursor offset and coverage cannot substitute one another',()=>{for(const change of [p=>p.text+='x',p=>p.coverage.locator.offset=1,p=>p.coverage.nextCursor=encode(8999),p=>p.coverage.complete=false,p=>p.trust='trusted']){const p=sequential(10000);change(p);assert.throws(()=>check(READ,p,{billId}));}});
++test('cursor canonical base64url accepts whitespace JSON but rejects malformed scope/hash/offset',()=>{const spaced=Buffer.from(JSON.stringify([billId,'ih',revisionId,textHash,3],null,2)).toString('base64url');assert.equal(decodeBillTextCursor(spaced).offset,3);for(const cursor of [encode(0),encode(30000001),encode(1,{revisionId:'00000000-0000-0000-0000-000000000000'}),encode(1,{textHash:'A'.repeat(64)}),encode(1)+'=', 'a'.repeat(1025)])assert.throws(()=>v.normalizeBillTextInput(READ,{billId,cursor},context));assert.throws(()=>v.normalizeBillTextInput(READ,{billId,cursor:encode(1,{billId:'119-s-2'})},context));});
++test('continuation output binds version, revision and text hash even without requested version',()=>{for(const [key,value] of [['versionCode','eh'],['revisionId','bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'],['textHash','c'.repeat(64)]]){const p=sequential(20,10);p[key]=value;assert.throws(()=>check(READ,p,{billId,cursor:encode(10)}),/lineage changed/);}assert.throws(()=>v.normalizeBillTextInput(READ,{billId,versionCode:'eh',cursor:encode(10)},context));});
++test('locator passes complete structural framing without treating excerpts as full content',()=>{check(READ,located(),{billId,query:'minerals'});check(READ,located(500),{billId,query:'minerals'});check(READ,located(3000,1000),{billId,query:'minerals'});const p=located();p.coverage.complete=true;assert.throws(()=>check(READ,p,{billId,query:'minerals'}));});
++test('locator six exact nonoverlapping windows and per-passage lineage',()=>{const p=located(6000);p.passages=Array.from({length:6},(_,i)=>({heading:null,startOffset:i*1000,endOffset:(i+1)*1000,matchedTerms:['minerals'],readCursor:i?encode(i*1000):null}));p.totalHits=6;p.text=p.passages.map(x=>`[Text | characters ${x.startOffset}-${x.endOffset}]\n`+'x'.repeat(1000)).join('\n\n…\n\n');check(READ,p,{billId,query:'minerals'});p.passages.push({...p.passages[5]});assert.throws(()=>check(READ,p,{billId,query:'minerals'}));});
++test('locator no-hit note prevents treating lack of exact wording as topic absence',()=>{const p=located();p.passages=[];p.text='';p.totalHits=0;p.note='No exact match for these words in this bill version. Try other wording or a shorter phrase before concluding the bill does not address the topic.';check(READ,p,{billId,query:'minerals'});p.note='Topic absent.';assert.throws(()=>check(READ,p,{billId,query:'minerals'}));});
++test('locator rejects altered passage framing, unbound text and mixed cursor input',()=>{for(const change of [p=>p.text+='x',p=>p.passages[0].endOffset--,p=>p.passages[0].matchedTerms=['foreign'],p=>p.coverage.nextCursor=encode(1)]){const p=located();change(p);assert.throws(()=>check(READ,p,{billId,query:'minerals'}));}assert.throws(()=>v.normalizeBillTextInput(READ,{billId,query:'minerals',cursor:encode(10)},context));});
++test('all branches preserve immutable input and deny accessors/cycles/proxy hooks',()=>{let hooks=0;const request=Object.defineProperty({},'query',{enumerable:true,get(){hooks++;return'x';}});assert.throws(()=>v.normalizeBillTextInput(SEARCH,request,context));const trusted=new Proxy({},{get(){hooks++;},ownKeys(){hooks++;return[];}});assert.throws(()=>v.normalizeBillTextInput(SEARCH,{},trusted));const p=metadata();p.data[0].committees={toJSON(){hooks++;return[];}};assert.throws(()=>check(SEARCH,p));assert.equal(hooks,0);const input={search:' Minerals '},before=structuredClone(input),n=v.normalizeBillTextInput(SEARCH,input,context);assert.deepEqual(input,before);assert.ok(Object.isFrozen(n.input));assert.equal(n.metadata.currentPointerQualified,false);});
++test('canonical resolver preserves original aliases/digest and exact trusted context',()=>{const bindings=BILL_TEXT_OPERATION_IDS.map(id=>({id,version:'0.2.0',contextKeys:['defaultCongress'],normalize:(_,r,c)=>v.normalizeBillTextInput(id,r,c),outputAssert:(_,p,r,c)=>v.assertBillTextOutput(id,p,r,{defaultCongress:c.defaultCongress})}));const catalog={operations:bindings.map(b=>({operation:{id:b.id,version:b.version},handler:null,status:'unavailable'}))};const r=createOperationContracts({catalog,bindings,validators:v,canonicalSha256,assertCatalog(){}}).resolveOperationContract({id:SEARCH,version:'0.2.0'});const n=r.normalizeInput({search:' Synthetic '},context);assert.deepEqual(n.request,{search:' Synthetic '});assert.equal(n.argumentsSha256,canonicalSha256(n.input));r.assertOutput(metadata(),{...context,request:n.request});assert.throws(()=>r.normalizeInput({}, {...context,actorId:'foreign'}));});

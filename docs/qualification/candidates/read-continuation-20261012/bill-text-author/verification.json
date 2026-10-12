@@ -1,0 +1,589 @@
+{
+  "checks": 145,
+  "passed": 145,
+  "failed": 0,
+  "sourceFreeze": "079c9fd8c88375f55d6f3d5cadd16763c98e63c7",
+  "scope": "OFFLINE_PACKET_AND_SOURCE_ONLY",
+  "results": [
+    {
+      "check": "manifest:docs/coordination/reports/CODEX-READ-CONTINUATION-BILL-TEXT-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/build-schema.py",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repair-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/outline.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/results.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-source.patch",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/source-preservation-selector-freeze.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/source-preservation.json",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/verify.py",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/whitespace-all-evidence.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "manifest:docs/qualification/candidates/read-continuation-20261012/bill-text-author/whitespace.json",
+      "pass": true
+    },
+    {
+      "check": "complete packet membership",
+      "pass": true
+    },
+    {
+      "check": "source tree",
+      "pass": true
+    },
+    {
+      "check": "all original blobs preserved",
+      "pass": true
+    },
+    {
+      "check": "exactly five new source paths",
+      "pass": true
+    },
+    {
+      "check": "source identity:packages/contracts/retrieval-0.2/bill-text-cursor.mjs",
+      "pass": true
+    },
+    {
+      "check": "source identity:packages/contracts/retrieval-0.2/bill-text-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "source identity:packages/contracts/retrieval-0.2/bill-text.schema.json",
+      "pass": true
+    },
+    {
+      "check": "source identity:packages/contracts/retrieval-0.2/congressional-identity.mjs",
+      "pass": true
+    },
+    {
+      "check": "source identity:packages/contracts/test/retrieval-bill-text.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "shared helper identity",
+      "pass": true
+    },
+    {
+      "check": "original author tests retained as prefix",
+      "pass": true
+    },
+    {
+      "check": "all eleven captures represented",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:date-admission-negative",
+      "pass": true
+    },
+    {
+      "check": "capture helper:date-admission-negative",
+      "pass": true
+    },
+    {
+      "check": "capture test count:date-admission-negative",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:date-admission-negative",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:date-admission-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture helper:date-admission-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture test count:date-admission-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:date-admission-repaired",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/date-admission-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:final-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture helper:final-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture test count:final-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:final-root-check",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/final-root-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "capture helper:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "capture test count:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:focused-initial",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/focused-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "capture helper:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "capture test count:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:public-distribution",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/public-distribution.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:repaired-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture helper:repaired-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture test count:repaired-root-check",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:repaired-root-check",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/repaired-root-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:revision-uuid-negative",
+      "pass": true
+    },
+    {
+      "check": "capture helper:revision-uuid-negative",
+      "pass": true
+    },
+    {
+      "check": "capture test count:revision-uuid-negative",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:revision-uuid-negative",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:revision-uuid-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture helper:revision-uuid-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture test count:revision-uuid-repaired",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:revision-uuid-repaired",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/revision-uuid-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "capture helper:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "capture test count:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:root-source-check",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/root-source-check.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:selector-negative",
+      "pass": true
+    },
+    {
+      "check": "capture helper:selector-negative",
+      "pass": true
+    },
+    {
+      "check": "capture test count:selector-negative",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:selector-negative",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-negative.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "capture outcome:selector-repair-focused",
+      "pass": true
+    },
+    {
+      "check": "capture helper:selector-repair-focused",
+      "pass": true
+    },
+    {
+      "check": "capture test count:selector-repair-focused",
+      "pass": true
+    },
+    {
+      "check": "capture tracked diff:selector-repair-focused",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw bytes:docs/qualification/candidates/read-continuation-20261012/bill-text-author/selector-repair-focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "captured patch binds commit:focused-initial-source.patch",
+      "pass": true
+    },
+    {
+      "check": "captured patch binds commit:selector-repair-source.patch",
+      "pass": true
+    },
+    {
+      "check": "captured patch binds commit:date-admission-repair-source.patch",
+      "pass": true
+    },
+    {
+      "check": "captured patch binds commit:revision-uuid-repaired-source.patch",
+      "pass": true
+    },
+    {
+      "check": "ten immutable metadata references",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/meri/meri-tools.service.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/prisma/schema.prisma",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/lda-intel/lda-intel.service.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/meri/meri-bill-text-search.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/meri/meri-bill-text-search.spec.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:packages/shared/src/index.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/meri/meri.controller.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/auth/roles.guard.ts",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/prisma/migrations/20280924030000_federal_legislative_evidence/migration.sql",
+      "pass": true
+    },
+    {
+      "check": "no observed reference drift:apps/api/src/program-element/federal-evidence/persistence.ts",
+      "pass": true
+    },
+    {
+      "check": "independent source acceptance exact",
+      "pass": true
+    }
+  ]
+}

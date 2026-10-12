@@ -1,0 +1,36 @@
+diff --git a/packages/contracts/retrieval-0.2/bill-text-validation.mjs b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+index a92b44d..2a4c385 100644
+--- a/packages/contracts/retrieval-0.2/bill-text-validation.mjs
++++ b/packages/contracts/retrieval-0.2/bill-text-validation.mjs
+@@ -54,6 +54,7 @@ export function createBillTextValidators({validateShape,schema}){
+    const notes=[false,true].filter(flag=>!flag||data.results.some(result=>result.passages.length===1)).map(flag=>[base,count,flag?shortened:null,omitted].filter(part=>part!==null).join(' '));
+    if(!notes.includes(data.note)||data.omittedBills&&data.results.some(result=>result.passages.length!==1))fail('Bill text-search omission disclosure');
+    unique(data.results,'billId');
++   if(input.congress!==undefined&&data.results.some(result=>!result.billId.startsWith(`${input.congress}-`)))fail('Bill text-search congress substitution');
+    for(const result of data.results)for(const passage of result.passages){
+     if(passage.snippet!==passage.snippet.replace(/\s+/g,' ').trim())fail('Bill text-search snippet whitespace');
+     if(passage.startOffset===0){if(passage.readCursor!==null)fail('Zero-offset passage cursor');}
+@@ -66,9 +67,12 @@ export function createBillTextValidators({validateShape,schema}){
+    unique(data.data,'id');
+    if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
+    else if(data.page!==input.page)fail('Congress metadata page substitution');
++   const activeAfter=!data.resolvedBy&&input.activeSince!==undefined?Date.parse(input.activeSince):null;
++   if(activeAfter!==null&&!Number.isFinite(activeAfter))fail('Congress metadata action-date selector invalid');
+    let prior=Infinity;
+    for(const row of data.data){
+     for(const key of ['introducedDate','latestActionDate'])instant(row[key],true);
++    if(activeAfter!==null&&(row.latestActionDate===null||Date.parse(row.latestActionDate)<activeAfter))fail('Congress metadata action-date substitution');
+     for(const key of ['updateDateIncludingText','statusAt','lastSyncedAt'])instant(row[key]);
+     const at=instant(row.updateDate);if(!data.resolvedBy&&at!==undefined){if(at>prior)fail('Congress metadata ordering');prior=at;}
+     if(!data.resolvedBy&&input.congress!==undefined&&row.congress!==input.congress)fail('Congress metadata congress substitution');
+diff --git a/packages/contracts/test/retrieval-bill-text.test.mjs b/packages/contracts/test/retrieval-bill-text.test.mjs
+index ae4ba95..afc48eb 100644
+--- a/packages/contracts/test/retrieval-bill-text.test.mjs
++++ b/packages/contracts/test/retrieval-bill-text.test.mjs
+@@ -45,3 +45,6 @@ test('locator no-hit note prevents treating lack of exact wording as topic absen
+ test('locator rejects altered passage framing, unbound text and mixed cursor input',()=>{for(const change of [p=>p.text+='x',p=>p.passages[0].endOffset--,p=>p.passages[0].matchedTerms=['foreign'],p=>p.coverage.nextCursor=encode(1)]){const p=located();change(p);assert.throws(()=>check(READ,p,{billId,query:'minerals'}));}assert.throws(()=>v.normalizeBillTextInput(READ,{billId,query:'minerals',cursor:encode(10)},context));});
+ test('all branches preserve immutable input and deny accessors/cycles/proxy hooks',()=>{let hooks=0;const request=Object.defineProperty({},'query',{enumerable:true,get(){hooks++;return'x';}});assert.throws(()=>v.normalizeBillTextInput(SEARCH,request,context));const trusted=new Proxy({},{get(){hooks++;},ownKeys(){hooks++;return[];}});assert.throws(()=>v.normalizeBillTextInput(SEARCH,{},trusted));const p=metadata();p.data[0].committees={toJSON(){hooks++;return[];}};assert.throws(()=>check(SEARCH,p));assert.equal(hooks,0);const input={search:' Minerals '},before=structuredClone(input),n=v.normalizeBillTextInput(SEARCH,input,context);assert.deepEqual(input,before);assert.ok(Object.isFrozen(n.input));assert.equal(n.metadata.currentPointerQualified,false);});
+ test('canonical resolver preserves original aliases/digest and exact trusted context',()=>{const bindings=BILL_TEXT_OPERATION_IDS.map(id=>({id,version:'0.2.0',contextKeys:['defaultCongress'],normalize:(_,r,c)=>v.normalizeBillTextInput(id,r,c),outputAssert:(_,p,r,c)=>v.assertBillTextOutput(id,p,r,{defaultCongress:c.defaultCongress})}));const catalog={operations:bindings.map(b=>({operation:{id:b.id,version:b.version},handler:null,status:'unavailable'}))};const r=createOperationContracts({catalog,bindings,validators:v,canonicalSha256,assertCatalog(){}}).resolveOperationContract({id:SEARCH,version:'0.2.0'});const n=r.normalizeInput({search:' Synthetic '},context);assert.deepEqual(n.request,{search:' Synthetic '});assert.equal(n.argumentsSha256,canonicalSha256(n.input));r.assertOutput(metadata(),{...context,request:n.request});assert.throws(()=>r.normalizeInput({}, {...context,actorId:'foreign'}));});
++
++test('activeSince constrains metadata fallback dates but direct and text branches ignore it',()=>{const p=metadata();assert.throws(()=>check(SEARCH,p,{activeSince:'2026-01-01'}));p.data[0].latestActionDate='2026-01-01T00:00:00.000Z';check(SEARCH,p,{activeSince:'2026-01-01'});assert.throws(()=>check(SEARCH,p,{activeSince:'2026-01-02'}));assert.throws(()=>check(SEARCH,{...metadata(),data:[],total:0},{activeSince:'not-a-date'}));const direct=metadata();direct.resolvedBy='bill-id';check(SEARCH,direct,{query:'H.R. 1',activeSince:'not-a-date'});check(SEARCH,textPage(),{textQuery:'minerals',activeSince:'not-a-date'});});
++test('text search congress filter binds the stored bill-ID prefix',()=>{check(SEARCH,textPage(),{textQuery:'minerals',congress:119});assert.throws(()=>check(SEARCH,textPage(),{textQuery:'minerals',congress:118}));});
