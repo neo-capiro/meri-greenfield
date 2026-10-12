@@ -49,3 +49,12 @@ original bytes. It explicitly did not repeat the full1,538-file audit; its
 different42,321-byte audit reference and weaker tracked-status command cannot
 replace the required source verification, full preservation manifest or original
 untracked/submodule checks. No missing pin was populated.
+
+The repaired-clock draft then failed the added late-fstat boundary151PASS/1FAIL:
+it called named metadata after a returned expired fstat. The same saved actual
+draft, with the root-requested late directory-entry control, failed154PASS/2FAIL:
+its iterator was advanced before checking the expired context entry. Both source
+snapshots and raw receipts remain. The corrected writer passes156/156 unchanged
+controls. The unchanged historical placement test also retains its expected
+`exclusive-evidence-allocation` failure after delegation; no original assertion
+was removed or weakened.

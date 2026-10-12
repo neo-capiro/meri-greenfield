@@ -29,7 +29,10 @@
     "sizeProvided": false,
     "gitPinsExitCode": 0,
     "statusExitCode": 0,
-    "statusStdoutEmpty": true
+    "statusStdoutEmpty": true,
+    "reportedStatusOmitsUntracked": true,
+    "reportedStatusIgnoresAllSubmodules": true,
+    "requiredWrapperStrongerStatusUnchanged": true
   },
   "candidateMetadataReused": {
     "exactVersionMetadataVerified": true,

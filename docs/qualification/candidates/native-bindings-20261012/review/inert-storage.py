@@ -99,8 +99,16 @@ class Memory:
             paths.append(paths[0])
         if self.mode == 'foreign-child' and paths:
             paths.append(Path('/unrelated/member'))
+        values = iter(paths)
+        parent = self
+        class Entries:
+            def __iter__(self):
+                return self
+            def __next__(self):
+                parent.event('next')
+                return next(values)
         try:
-            yield iter(paths)
+            yield Entries()
         finally:
             self.event('children-close')
 

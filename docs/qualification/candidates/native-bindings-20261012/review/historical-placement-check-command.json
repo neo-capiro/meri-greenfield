@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "python",
+    "/workspace/meri-native-bindings-20261012/docs/qualification/candidates/native-supervisor-20261012/author/source-checks.py"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 0.04293889999826206,
+  "harnessCompleted": true,
+  "scope": "Unchanged historical source checks; expected raw exclusive-open placement mismatch after delegated writer composition",
+  "sourceSha256": "0de6b33e0d75600037133c2447ef084faa05478a993a2aa865f93096e3b8ba50",
+  "wrapperSha256": "380dfc349ac5283f49b7d8a8360a4dc9d7c2a43516361d1d1c387290620ec595",
+  "targetImports": 0,
+  "nativeOperations": 0
+}

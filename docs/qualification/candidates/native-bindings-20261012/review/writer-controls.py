@@ -42,12 +42,16 @@ for mode in ('valid', 'short-write'):
     r, m = run(mode, mode)
     check(mode + '-exact-data-and-complete-observation', r is not None and r['readbackAndMembershipMatched'] and bytes(m.files['command-receipt.json']) == b'{"synthetic":true}' and bytes(m.files['stdout.bin']) == b'abc' and bytes(m.files['stderr.bin']) == b'' and len(m.closed) == 3 and m.readbacks == 6)
 
-for mode in ('foreign-directory', 'symlink-member', 'hardlink-member', 'foreign-opened-file', 'zero-write', 'boolean-write', 'negative-write', 'oversized-write', 'error-open', 'error-write', 'error-fsync', 'error-fstat', 'error-close', 'error-readback', 'error-children-close', 'late-open', 'late-write', 'late-fsync', 'late-fstat', 'late-close', 'late-readback', 'late-final-membership', 'extra-member', 'duplicate-member', 'foreign-child', 'wrong-hash', 'wrong-size', 'substitute-after-readback'):
+for mode in ('foreign-directory', 'symlink-member', 'hardlink-member', 'foreign-opened-file', 'zero-write', 'boolean-write', 'negative-write', 'oversized-write', 'error-open', 'error-write', 'error-fsync', 'error-fstat', 'error-close', 'error-readback', 'error-children-close', 'late-open', 'late-write', 'late-fsync', 'late-fstat', 'late-close', 'late-readback', 'late-children', 'late-final-membership', 'extra-member', 'duplicate-member', 'foreign-child', 'wrong-hash', 'wrong-size', 'substitute-after-readback'):
     r, m = run(mode, mode)
     check(mode + '-refuses', r is not None and not r['readbackAndMembershipMatched'])
+    if mode == 'late-children':
+        check(mode + '-no-first-next-after-late-enter', 'next' not in m.calls)
     if mode in ('late-open', 'late-write', 'late-fsync', 'late-fstat', 'late-close', 'late-readback'):
         label = mode.removeprefix('late-'); index = m.calls.index(label)
         check(mode + '-no-further-material-ports', not any(x in ('open', 'write', 'fsync', 'readback') for x in m.calls[index + 1:]))
+        if mode == 'late-fstat':
+            check(mode + '-no-later-named-read', 'plain' not in m.calls[index + 1:])
     if mode in ('late-open', 'late-write', 'late-fsync', 'late-fstat', 'late-close', 'error-write', 'error-fsync', 'error-fstat', 'error-close'):
         check(mode + '-owned-partial-kept-and-close-attempted', bool(m.files) and len(m.closed) == 1)
 
