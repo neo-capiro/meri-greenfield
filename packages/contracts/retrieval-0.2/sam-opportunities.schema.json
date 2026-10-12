@@ -152,17 +152,15 @@
         },
         "notes": {
           "type": "array",
-          "prefixItems": [
-            {
-              "const": "Results cover Capiro’s synchronized SAM.gov catalog. No matching records does not establish that no current federal opportunity exists."
-            },
-            {
-              "const": "Source coverage is incomplete or unknown; inspect sourceFreshness before making current-opportunity or absence claims."
-            }
-          ],
-          "items": false,
-          "minItems": 1,
-          "maxItems": 2
+          "enum": [
+            [
+              "Results cover Capiro\u2019s synchronized SAM.gov catalog. No matching records does not establish that no current federal opportunity exists."
+            ],
+            [
+              "Results cover Capiro\u2019s synchronized SAM.gov catalog. No matching records does not establish that no current federal opportunity exists.",
+              "Source coverage is incomplete or unknown; inspect sourceFreshness before making current-opportunity or absence claims."
+            ]
+          ]
         },
         "results": {
           "type": "array",

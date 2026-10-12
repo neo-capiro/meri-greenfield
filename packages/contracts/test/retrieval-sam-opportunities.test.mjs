@@ -10,7 +10,7 @@ const shapes=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref
 const v=createSamOpportunitiesValidators({schema,validateShape(name,value){const f=shapes.get(name);if(!f?.(value))throw Error(ajv.errorsText(f?.errors));}});
 const id='search_sam_opportunities',stamp='2026-10-12T18:00:00.000Z';
 const clocks=(mode='off')=>({asOf:stamp,sourceStatusAsOf:stamp,sourceHealthAsOf:stamp,evidenceAccuracyMode:mode});
-const notes=schema.$defs.SamOpportunitiesOutput.properties.notes.prefixItems.map(item=>item.const);
+const notes=schema.$defs.SamOpportunitiesOutput.properties.notes.enum[1];
 const health=()=>({source:'sam_gov',state:'current',recordCount:0,activeRecordCount:null,lastSyncedAt:stamp,countsUnavailable:false,neverSynced:false,lastRunStatus:'current',lastRunDegraded:false,hoursSinceLastSuccess:0});
 const row=()=>({id:'00000000-0000-0000-0000-000000000001',noticeId:'synthetic-notice',solicitationNumber:null,title:'Unrelated title',noticeType:'synthetic',agency:null,office:null,pscCode:null,naicsCode:null,postedDate:null,responseDeadline:null,description:'',sourceUrl:null,active:true});
 const page=()=>({tool:id,generatedAt:stamp,total:0,sourceFreshness:[health()],sourceStatus:'healthy',sourceReason:null,notes:[notes[0]],results:[row()]});
