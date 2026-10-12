@@ -1,0 +1,32 @@
+[
+  {
+    "path": "packages/contracts/commands-0.2/task-create.schema.json",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create.schema.json",
+    "sha256": "c2e8a80f964c15844230f03488b33f69e7d548351a43319efab8b5ec91746528"
+  },
+  {
+    "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/task-create-validation.mjs",
+    "sha256": "f8eaf841a3dcc62a50cc5fdaaf680c4f07e5c7281530baeeebad9a6a63722d46"
+  },
+  {
+    "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file.schema.json",
+    "sha256": "a2dcb94285d008eede02defa2738101801401b4205fcc7bb622e3c7480d4f321"
+  },
+  {
+    "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/artifact-file-validation.mjs",
+    "sha256": "6e4a510e20dbbaf3412b483c16e9616e699a8e79e845da8aa4f89ccc1ab99da7"
+  },
+  {
+    "path": "packages/contracts/test/command-task-create.test.mjs",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-task-create.test.mjs",
+    "sha256": "5d29e6e1946be1d5dcac74d5afd7b795f2d0ec5d58ca832a7beda9219c57169b"
+  },
+  {
+    "path": "packages/contracts/test/command-artifact-file.test.mjs",
+    "retained": "docs/qualification/candidates/read-continuation-20261012/command-payloads-author/initial-source/command-artifact-file.test.mjs",
+    "sha256": "d7659db1df0898474c6119a3df634ebfc310154f058920a2546ce7b37cf3bce8"
+  }
+]

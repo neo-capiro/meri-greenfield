@@ -1,0 +1,103 @@
+{
+  "pinned": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "observed": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "references": [
+    {
+      "path": "apps/api/src/meri/meri-tools.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+        "bytes": 415704
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "753b425b3e6b8cf55a7d0863aa961a3c9a696dea",
+        "sha256": "53d9d5b7ed8ba55a1086062812b3aaaf3cc225db485e4542c4ffc5836ea8e194",
+        "bytes": 415704
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/engagement.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0",
+        "bytes": 499454
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "2f0fc56b2eff3526118df7a052d13e76daf020a4",
+        "sha256": "b0a12dbce2157701bafdba36bead922de2e274216de9c00a2b0c797dcbf93df0",
+        "bytes": 499454
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+        "bytes": 968034
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "cdf1923217edae6e7624993796a5671922b61ac0",
+        "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0",
+        "bytes": 968034
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-client-filing.service.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "f3e6bc9928bccf92100daf11ca7b27d67f998e59",
+        "sha256": "b10a55cff329516879f539eac1f6beefe42bfe18b7ff3250979533f74e1e9ad1",
+        "bytes": 11091
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "f3e6bc9928bccf92100daf11ca7b27d67f998e59",
+        "sha256": "b10a55cff329516879f539eac1f6beefe42bfe18b7ff3250979533f74e1e9ad1",
+        "bytes": 11091
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-client-filing.service.spec.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "48b7985a1795b1f743c74f1c3b57c37bae9d47d8",
+        "sha256": "76351f9bb8ef6b63f6bc97bff5576e3617bb35314e623bd3326ba076be8933a5",
+        "bytes": 10446
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "48b7985a1795b1f743c74f1c3b57c37bae9d47d8",
+        "sha256": "76351f9bb8ef6b63f6bc97bff5576e3617bb35314e623bd3326ba076be8933a5",
+        "bytes": 10446
+      },
+      "unchanged": true
+    },
+    {
+      "path": "apps/api/src/engagement/research-portfolio-task-access.ts",
+      "pinned": {
+        "commit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+        "blob": "ee57144c931a1abe741fb721c3c2c1abe43a6a42",
+        "sha256": "3d4db8050ca7b8581c65acfc5255d140f3d4a7c8cdb4d4937443842cba69daa5",
+        "bytes": 1052
+      },
+      "observed": {
+        "commit": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+        "blob": "ee57144c931a1abe741fb721c3c2c1abe43a6a42",
+        "sha256": "3d4db8050ca7b8581c65acfc5255d140f3d4a7c8cdb4d4937443842cba69daa5",
+        "bytes": 1052
+      },
+      "unchanged": true
+    }
+  ],
+  "privateBodiesIncluded": false
+}

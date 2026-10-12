@@ -1,0 +1,228 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "head": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "scope": "SOURCE_ONLY_NO_RUNTIME_ADMISSION",
+  "originalEntries": 6947,
+  "identities": [
+    {
+      "path": "packages/contracts/commands-0.2/task-create.schema.json",
+      "bytes": 3827,
+      "sha256": "94e9893173bcf450d8aaabeebe69dc0c3c2b60e8f1d2f2ad22fd60487ed87869",
+      "blob": "810e0bc6a6a902bee5d4426aeae12a3e0bb16467"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/task-create-validation.mjs",
+      "bytes": 3951,
+      "sha256": "5d90523200ed2d8589bd893075ff7ddb42a112b29b9c717bc81e72dd0370ada4",
+      "blob": "767dc95b99751ad83773f298572f04d75b5edf61"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file.schema.json",
+      "bytes": 3494,
+      "sha256": "9c51a6777683990384467ab1c62acb07500411e6c08d5b89a0e8182513d91537",
+      "blob": "0a207d8fed971a26b053551e36e05c965ebd5914"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/artifact-file-validation.mjs",
+      "bytes": 5641,
+      "sha256": "56d5bdfdfe4876d3a0e6157226516a193e6ad75a9bf0b7e258cb3b2d044c0c04",
+      "blob": "3b883350b3435a7a5b08ad458c2d32068c47a9c9"
+    },
+    {
+      "path": "packages/contracts/test/command-task-create.test.mjs",
+      "bytes": 9809,
+      "sha256": "bd633422dc010e15b63c3205d8d18e19885bcd34a10f6f5b488b46b4a53a3f17",
+      "blob": "bfef8c3c98a26d301eaea4a77746b50cd990727f"
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "bytes": 11370,
+      "sha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925",
+      "blob": "e97215ed99b4920ae8c0cce4017b739702312e59"
+    }
+  ],
+  "checks": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/engagement.service.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-client-filing.service.spec.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:pinned",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:observed",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/engagement/research-portfolio-task-access.ts:no-drift",
+      "passed": true
+    },
+    {
+      "name": "task status default todo",
+      "passed": true
+    },
+    {
+      "name": "task dueDate nullable SQL date",
+      "passed": true
+    },
+    {
+      "name": "task id UUID",
+      "passed": true
+    },
+    {
+      "name": "task owner default null",
+      "passed": true
+    },
+    {
+      "name": "task creator context actor",
+      "passed": true
+    },
+    {
+      "name": "missing bytes/type is prestorage failed (corrected source trace)",
+      "passed": true
+    },
+    {
+      "name": "quarantine is pending",
+      "passed": true
+    },
+    {
+      "name": "pending/failed not indexed",
+      "passed": true
+    },
+    {
+      "name": "reused exact boolean",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/task-create.schema.json:committed-current",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/task-create-validation.mjs:committed-current",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/artifact-file.schema.json:committed-current",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/commands-0.2/artifact-file-validation.mjs:committed-current",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/command-task-create.test.mjs:committed-current",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/command-artifact-file.test.mjs:committed-current",
+      "passed": true
+    },
+    {
+      "name": "task-create:URN",
+      "passed": true
+    },
+    {
+      "name": "task-create:canonical inert reuse",
+      "passed": true
+    },
+    {
+      "name": "task-create:no effect ports",
+      "passed": true
+    },
+    {
+      "name": "task-create:no private import",
+      "passed": true
+    },
+    {
+      "name": "artifact-file:URN",
+      "passed": true
+    },
+    {
+      "name": "artifact-file:canonical inert reuse",
+      "passed": true
+    },
+    {
+      "name": "artifact-file:no effect ports",
+      "passed": true
+    },
+    {
+      "name": "artifact-file:no private import",
+      "passed": true
+    },
+    {
+      "name": "all original Git entries unchanged",
+      "passed": true
+    },
+    {
+      "name": "no original working-tree modifications",
+      "passed": true
+    },
+    {
+      "name": "six allocated source additions only",
+      "passed": true
+    },
+    {
+      "name": "public vocabulary unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 45,
+  "failed": 0
+}
