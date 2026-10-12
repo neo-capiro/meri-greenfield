@@ -82,6 +82,12 @@ export function createClientKnowledgeAttachmentValidators({validateShape,schema}
       if(input.query&&c.matched===false&&page.records.length)fail('Unmatched attachment section contains a result');
       const expectedKind=source.sourceKind==='pdf'?'page':source.sourceKind==='pptx'?'slide_with_notes':source.sourceKind==='xlsx'?'sheet_rows':'text_section';
       if(['image','unsupported'].includes(source.sourceKind)||c.sectionKind!==expectedKind)fail('Attachment reader kind mismatch');
+      const coordinateKey={page:'page',slide_with_notes:'slide',sheet_rows:'sheet',text_section:'section'}[c.sectionKind];
+      if(c.locator.section>c.sectionCount||c.coordinates===null||c.coordinates[coordinateKey]!==c.locator.section)fail('Attachment section coordinate/count mismatch');
+      if(c.sectionKind==='page'&&(c.coordinates.selectedCharacterStart>c.coordinates.selectedCharacterEnd||c.coordinates.selectedCharacterEnd>c.coordinates.nativeCharacters||c.sectionCharacters!==c.coordinates.nativeCharacters||c.characterStart<c.coordinates.selectedCharacterStart||c.characterEnd>c.coordinates.selectedCharacterEnd))fail('Attachment PDF window coordinate mismatch');
+      const label=c.sectionKind==='page'?`PDF page ${c.locator.section}`:c.sectionKind==='slide_with_notes'?`PowerPoint slide ${c.locator.section} with speaker notes`:c.sectionKind==='sheet_rows'?`Worksheet ${c.coordinates.sheet}: ${c.coordinates.sheetName}, rows ${c.coordinates.rowStart}-${c.coordinates.rowEnd}`:`Text section ${c.locator.section}`;
+      if(c.sectionLabel!==label)fail('Attachment section label mismatch');
+
       for(const row of page.records){
         const p=row.payload,proof=row.provenance;
         const reference=`${source.attachmentId}:${source.originalBytesHash.slice(0,16)}:${c.sectionKind}:${c.locator.section}:${c.characterStart}-${c.characterEnd}`;
