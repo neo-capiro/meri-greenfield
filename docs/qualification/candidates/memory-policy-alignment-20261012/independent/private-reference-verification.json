@@ -128,6 +128,13 @@
       "bytes": 1371,
       "sha256": "4c1a9b85039b3a0d914481d0ac9df6daa1db2fa964a4b218c91cf59c2878fcfb",
       "privateBodyPublished": false
+    },
+    {
+      "path": "apps/api/src/memory/memory-access-grant.service.ts",
+      "gitBlob": "e1ed97f845553b6b9effafba3f8c88e469518eea",
+      "bytes": 7068,
+      "sha256": "9799f85bff928ae35db60e3c33c2c7b37ac32dc6adc90bb1f8ed5ae1194685e3",
+      "privateBodyPublished": false
     }
   ],
   "semanticScope": "Pure authorization/admin/candidate-rule helpers and exact isolated disposition guard fragments; service/SQL dependencies statically inspected only; not full-file/runtime audit."

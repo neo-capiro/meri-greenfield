@@ -1,0 +1,28 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-memory-review-policy.test.mjs",
+    "docs/qualification/candidates/memory-policy-alignment-20261012/independent/policy-contract.test.mjs",
+    "docs/qualification/candidates/memory-policy-alignment-20261012/independent/pinned-outcomes.test.mjs"
+  ],
+  "cwd": "/workspace/meri-memory-policy-review-20261012",
+  "startUnixSeconds": 1791772266.9027529,
+  "elapsedSeconds": 0.16434812545776367,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "frozen-policy25.stdout.txt",
+      "bytes": 2578,
+      "sha256": "0d2fb3b3185f60a7c84cc6b2f63e35c1ed39340fbcb0f7042e3d0c1e612e4e3b"
+    },
+    "stderr": {
+      "path": "frozen-policy25.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
