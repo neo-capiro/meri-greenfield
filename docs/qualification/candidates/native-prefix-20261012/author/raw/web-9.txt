@@ -1,0 +1,194 @@
+Internal Error ()
+citeturn96view0 [wordlim: 200] Source: open({"ref_id":"https://sources.debian.org/src/postgresql-common/278/server/","lineno":null}); Total lines: 1
+L0: URL https://sources.debian.org/src/postgresql-common/278/server/ is not accessible via this tool.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn96view1 [wordlim: 200] Source: open({"ref_id":"https://sources.debian.org/src/postgresql-common/278/server/postgresql.mk","lineno":480}); Total lines: 1
+L0: URL https://sources.debian.org/src/postgresql-common/278/server/postgresql.mk is not accessible via this tool.
+--------------------------------------------------------------------------------
+PostgreSQL: Documentation: 17: E.1. Release 17.11 (https://www.postgresql.org/docs/17/release-17-11.html)
+citeturn96view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://www.postgresql.org/docs/17/release-17-11.html","lineno":null}); Total lines: 429
+L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+L2: cite1†Documentation → cite2†PostgreSQL 17 L3: 
+L4: Supported Versions: cite3†17 L5: 
+L6: [Input]
+L7: 
+L8: [Input: Search the documentation for...]
+L9: 
+L10: E.1. Release 17.11
+L11: ---
+L12: cite4†Prev | cite4†Up | Appendix E. Release Notes  | cite2†Home |  cite5†Next L13: 
+L14: * * *
+L15: ## E.1. Release 17.11 cite6†# L16: 
+L17: cite7†E.1.1. Migration to Version 17.11 L18: cite8†E.1.2. Changes L19: 
+L20: Release date: 2026-08-13
+L21: 
+L22: This release contains a variety of fixes from 17.10. For information about new features in major release 17, see cite9†Section E.12 .
+L23: ### E.1.1. Migration to Version 17.11 cite7†# L24: 
+L25: A dump/restore is not required for those running 17.X.
+L26: 
+L27: However, the first three security entries below describe configuration adjustments and data cleanups that you may need to make after updating.
+L28: 
+L29: Also, if you use `contrib/btree_gist` or `contrib/ltree`, you may need to reindex indexes made with those extensions; see the relevant entries below.
+L30: 
+L31: Also, if you are upgrading from a version earlier than 17.6, see cite10†Section E.6 .
+L32: ### E.1.2. Changes cite8†# L33: 
+L34:   * Restrict logical decoding output plugins to the set specified by a new server parameter `output_plugin_libraries` (Jacob Champion) cite11†§†postgr.es cite12†§†postgr.es L35: 
+L36: Previously, a replication user could select any loadable library for logical decoding, allowing exploits of various sorts. To allow locking this down without breaking setups that worked before, introduce a whitelist of allowed output plugins.
+L37: By default, only the output plugins shipped as part of PostgreSQL (`pgoutput` and `test_decoding`) are included in `output_plugin_libraries`. Installations that rely on other output plugins must add them after updating the server, for example
+L38: 
+L39:     output_plugin_libraries = 'pgoutput, test_decoding, my_trusted_decoder'
+L40: Additionally, `pg_upgrade --check` will fail if the `output_plugin_libraries` parameter on the new cluster does not permit the plugins of logical replication slots on the old cluster, when migrating from versions 17 and later. Make necessary additions to the new cluster's setting before performing pg_upgrade.
+L41: 
+L42: The PostgreSQL Project thanks Vladimir Tokarev and Yu Kunpeng for reporting this problem. (CVE-2026-6471)
+L43:   * Fix `contrib/pgcrypto`'s PGP encryption to detect unsupported ciphers (Daniel Gustafsson) cite13†§†postgr.es cite14†§†postgr.es L44: Previously, if OpenSSL rejected the requested cipher (for example, because it is running in FIPS mode, or the legacy provider hasn't been loaded), pgcrypto failed to notice the failure and simply XOR'd the non-encrypted block with the plaintext, rendering the “encryption” trivially breakable. This will typically occur with deprecated or non-FIPS cipher algorithms (cipher-algo=blowfish/bf, twofish, cast5, or 3des).
+L45: By default, pgcrypto will now fail to decrypt any messages that were affected in this way. To allow retrieval of such data, a new option `ignore-cipher-failure` has been added to `pgp_pub_decrypt()` and `pgp_sym_decrypt()`. Setting `ignore-cipher-failure=1` will restore their previous behavior, allowing the faulty encryption wrapper to be stripped off:
+L46: 
+L47:     pgp_sym_decrypt(encrypted_column, `any key`, 'ignore-cipher-failure=1')
+L48: Once the affected messages are identified and stripped of their wrappers, they can then be re-encrypted with a modern algorithm. It is important however that the behavior of OpenSSL be the same as it was when the faulty messages were created: if the set of unsupported algorithms is not the same, this approach will not work. See the documentation for `ignore-cipher-failure`.
+L49: 
+L50: The PostgreSQL Project thanks Shishir Sharma for reporting this problem. (CVE-2026-14663)
+L51:   * Fix psql to skip in-line data following a scripted `COPY ... FROM STDIN` command, even if the `COPY` fails before sending `PGRES_COPY_IN` (Tom Lane) cite15†§†postgr.es cite16†§†postgr.es L52: Previously, if a `COPY` command failed at startup (for instance, because the target table doesn't exist) psql would not realize that and would proceed to read the following in-line data as SQL commands. In the best case that's wrong and in the worst case it's a SQL-injection hazard. Teach psql to recognize syntactically-valid `COPY ... FROM STDIN` commands and to skip data on its own authority if the server doesn't respond with `PGRES_COPY_IN`.
+L53: While this fix is unlikely to affect any production SQL scripts, test scripts might intentionally exercise failing `COPY ... FROM STDIN` commands. Those will need to gain a `\.` data terminator line after each such command.
+L54: 
+L55: The PostgreSQL Project thanks Alexander Lakhin for reporting this problem. (CVE-2026-6464)
+L56: 
+L57:   * Cross-check the output row type of a portal running `EXECUTE` or `FETCH` (Robert Haas) cite17†§†postgr.es L58: `EXECUTE` and `FETCH` use two portals: an outer one for the statement itself, and an inner one running the query being executed on its behalf. It was previously possible to make the declared row types of the two portals diverge, leading to server memory disclosure and arbitrary code execution.
+L59: 
+L60: The PostgreSQL Project thanks Ben Morris (in collaboration with Claude and Anthropic Research) and Peter Geoghegan for reporting this problem. (CVE-2026-16239)
+L61:   * Fix buffer overrun with long time zone abbreviation in `to_char()` (Tom Lane) cite18†§†postgr.es L62: 
+L63: This can easily crash the server, and exploits leading to arbitrary code execution have been reported.
+L64: 
+L65: The PostgreSQL Project thanks Hcamael, Amjad Shahzad, Tan Zhen of AntAISecurityLab, Tomer Fichman, Zheng Yu, Amy Burnett (OpenAI Codex Security), Rick de Jager, Heewon Song, Sylvie Mayer, Aleksander Alekseev, and Hillai Ben Sasson for reporting this problem. (CVE-2026-14669)
+L66:   * Fix buffer overrun in regexp match/split functions (Masahiko Sawada) cite19†§†postgr.es L67: 
+L68: If passed invalidly-encoded data, these functions could write past the end of their conversion buffer.
+L69: 
+L70: The PostgreSQL Project thanks Francesco Verardi for reporting this problem. (CVE-2026-14664)
+L71: 
+L72:   * Harden the `ascii()` function against invalid input (Michael Paquier) cite20†§†postgr.es L73: By supplying invalidly-encoded input, this function could be coaxed to read and return a few bytes of data that it shouldn't. In assert-enabled builds, its assertions could be triggered too.
+L74: 
+L75: The PostgreSQL Project thanks Hcamael for reporting this problem. (CVE-2026-18024)
+L76: 
+L77:   * Fix multirange type handling in `pg_restore_attribute_stats()` (OpenAI Security Research Team)
+L78: `pg_restore_attribute_stats()` treated multirange types just like their underlying range type. This works correctly for the bounds histogram, but it was wrong for all the other statistics kinds.
+L79: 
+L80: The PostgreSQL Project thanks Amy Burnett (OpenAI Codex Security) for reporting this problem. (CVE-2026-16238)
+L81: 
+L82:   * Make `scalarineqsel()` check that a constant it expects to be of type `tid` actually is (Tom Lane) cite21†§†postgr.es L83: This expectation will hold for all the built-in operators that use this estimator, but a maliciously-constructed operator could violate it, leading to a crash or server memory disclosure.
+L84: 
+L85: The PostgreSQL Project thanks Hcamael for reporting this problem. (CVE-2026-14668)
+L86: 
+L87:   * Harden `tsvector` and `tsquery` code against overly long values (both individual lexemes and total vector/query length) (Tom Lane) cite22†§†postgr.es cite23†§†postgr.es L88: 
+L89: The documented limits were not enforced in all code paths.
+L90: The PostgreSQL Project thanks Yuhang Wu, Zhenpeng Lin, Zheng Yu, and Hcamael for reporting these problems. (CVE-2026-14662)
+L91: 
+L92:   * Fix various places that mistakenly assumed they would not have to deal with more than `FUNC_MAX_ARGS` function arguments (Tom Lane) cite24†§†postgr.es cite25†§†postgr.es L93: 
+L94: Notably, the server's actual limit on the number of arguments to an aggregate function is `FUNC_MAX_ARGS - 1`, but the parser failed to enforce that, creating hazards downstream.
+L95: The PostgreSQL Project thanks Zheng Yu, ylwangtju, and Masahiko Sawada for reporting these problems. (CVE-2026-14679)
+L96: 
+L97:   * Reject calls from SQL to functions that take or return type `internal` (Tom Lane) cite26†§†postgr.es cite27†§†postgr.es L98: 
+L99: The existing defenses against doing this have been shown to be insufficient, so add more explicit checks.
+L100: 
+L101: The PostgreSQL Project thanks Amy Burnett (OpenAI Codex Security) for reporting this problem. (CVE-2026-14680)
+L102:   * Preserve the ownership of extended statistics objects when they are rebuilt by `ALTER TABLE` (Masahiko Sawada) cite28†§†postgr.es L103: 
+L104: Previously, the role running `ALTER TABLE` gained ownership of such objects, but that seems inappropriate.
+L105: 
+L106: The PostgreSQL Project thanks Noah Misch for reporting this problem. (CVE-2026-6469)
+L107: 
+L108:   * When deparsing an `EXTRACT()` function call, quote the field name if needed (Nathan Bossart) cite29†§†postgr.es L109: The parser accepts any string literal as a field name in `EXTRACT()`, deferring validation to execution. If the call is stored and deparsed (for example during pg_dump), the string body was regurgitated verbatim, allowing SQL injection.
+L110: 
+L111: The PostgreSQL Project thanks Ben Morris (in collaboration with Claude and Anthropic Research) for reporting this problem. (CVE-2026-15741)
+L112:   * Check for `USAGE` privilege on data types in places that formerly failed to check that (Nathan Bossart) cite30†§†postgr.es cite31†§†postgr.es cite32†§†postgr.es L113: 
+L114: `CREATE TYPE AS RANGE` did not check, nor did `ALTER TABLE OF`, nor did commands that create stored expressions. These omissions allowed roles without `USAGE` privilege to nonetheless create objects depending on the type, possibly blocking the type's owner from changing the type later.
+L115: The PostgreSQL Project thanks Jingzhou Fu for reporting this problem. (CVE-2026-6470)
+L116: 
+L117:   * Invalidate role-dependent cached plans after role changes (Ilya Staroverov, Shinya Kato, Nathan Bossart) cite33†§†postgr.es L118: 
+L119: Role membership, role attribute, and database ownership changes may impact the expected behavior of row-level security policies, but previously we'd continue to use cached plans that were made according to the old state of affairs.
+L120: The PostgreSQL Project thanks Ilya Staroverov and Shinya Kato for reporting this problem. (CVE-2026-14666)
+L121: 
+L122:   * Reject GSSEncRequest after direct SSL connection (Michael Paquier) cite34†§†postgr.es L123: After establishing a TLS-encrypted connection, the server would still accept a request for GSSAPI encryption. If that succeeded, the connection would proceed using TLS encryption, but it would look like a GSS connection to the `pg_hba` rules. Thus, a `pg_hba` policy intending to disallow TLS would not be enforced correctly.
+L124: 
+L125: The PostgreSQL Project thanks p4p3r for reporting this problem. (CVE-2026-14681)
+L126: 
+L127:   * Make mock SCRAM authentication secrets more plausible (Nathan Bossart) cite35†§†postgr.es L128: If a SCRAM login is attempted against a role that doesn't exist or doesn't have a SCRAM secret, we generate a mock secret and carry out the authentication handshake anyway, to avoid revealing these facts to an attacker. But the mock secret was made with a fixed iteration count, which in itself can be an observable response discrepancy. Use the configuration setting `scram_iterations` instead, to make the mock secret look more like the installation's real secrets.
+L129: The PostgreSQL Project thanks Radim Marek for reporting this problem. (CVE-2026-14672)
+L130: 
+L131:   * Fix out-of-bounds writes in ecpg applications caused by invalid `bytea` data received from the server (Michael Paquier) cite36†§†postgr.es L132: 
+L133: ecpg assumed without checking that any `bytea` value must begin with `\x`. A broken or malicious server might send a string shorter than 2 bytes, resulting in memory clobber in the application.
+L134: 
+L135: The PostgreSQL Project thanks ylwangtju for reporting this problem. (CVE-2026-16241)
+L136:   * Do not do backquote expansion on the argument of psql's `\unrestrict` command (Nathan Bossart) cite37†§†postgr.es L137: 
+L138: This oversight in the fix for CVE-2025-8714 allows a malicious server to inject shell commands into plain-text dump output that will be run at restore time on the machine running psql, the exact scenario that CVE-2025-8714 intended to prevent.
+L139: 
+L140: The PostgreSQL Project thanks Lucas Velgus, Filip Janus, and Daniel Bakker for reporting this problem. (CVE-2026-18408)
+L141:   * Remove pg_dump's assumption that `pg_proc`.`protrftypes` cannot have more than `FUNC_MAX_ARGS` entries (Tom Lane) cite38†§†postgr.es L142: 
+L143: Since there could be entries for both input and output arguments, it's feasible for this array's length to exceed `FUNC_MAX_ARGS` (which constrains only input arguments). Even if that were not so, pg_dump cannot assume that the server was built with the same value of `FUNC_MAX_ARGS` that it has. An overrun would lead to a memory clobber inside pg_dump.
+L144: The PostgreSQL Project thanks Masahiko Sawada for reporting this problem. (CVE-2026-19385)
+L145: 
+L146:   * Harden PL/Perl against “tied” Perl arrays and hashes (Tom Lane) cite39†§†postgr.es L147: 
+L148: A tied object that doesn't behave like a regular one could lead to memory overwrite, or to constructing a corrupt result array (which would likely cause problems later).
+L149: 
+L150: The PostgreSQL Project thanks Hcamael for reporting this problem. (CVE-2026-14670)
+L151:   * Fix integer overflows in memory-allocation calculations in PL/Perl and PL/Tcl (Heikki Linnakangas) cite40†§†postgr.es L152: 
+L153: This is the same type of problem as CVE-2026-6473, just in a different part of the code, and is fixed in the same way.
+L154: 
+L155: The PostgreSQL Project thanks the Tulya Project (Team Dhiutsa, Bitecope Technologies Private Ltd) for reporting this problem. (CVE-2026-14677)
+L156:   * Ensure that `contrib/amcheck` functions restrict `search_path` before executing index expressions (Noah Misch) cite41†§†postgr.es L157: Because amcheck will run such index expressions as the owner of their tables, a caller could potentially hijack `search_path`-dependent functions to run arbitrary code as the table owner. By default this is not a vulnerability because only superusers are allowed to call amcheck functions; but if that privilege was granted out, it created a larger hazard than the documentation suggests.
+L158: 
+L159: The PostgreSQL Project thanks Yuelin Wang and Jacob Brazeal for reporting this problem. (CVE-2026-14673)
+L160:   * Fix integer overflows in `contrib/fuzzystrmatch`'s `levenshtein()` and `levenshtein_less_equal()` functions (Nathan Bossart) cite42†§†postgr.es L161: 
+L162: Passing large cost values to these functions could cause integer overflows, thereby producing nonsensical results, and even causing out-of-bounds writes in some cases.
+L163: 
+L164: The PostgreSQL Project thanks Ben Morris (in collaboration with Claude and Anthropic Research) for reporting this problem. (CVE-2026-15742)
+L165:   * Fix buffer overrun in `contrib/pg_stat_statements` (Álvaro Herrera)
+L166: 
+L167: Query normalization didn't accurately account for the amount of space the normalized string would require.
+L168: 
+L169: The PostgreSQL Project thanks Sajeeb Lohani (with TrendAI Zero Day Initiative) and Yuelin Wang for reporting this problem. (CVE-2026-14676)
+L170: 
+L171:   * Fix datatype error in `contrib/pg_trgm`'s GiST picksplit function (Heikki Linnakangas) cite43†§†postgr.es L172: This mistake resulted in reading past the end of the buffer, typically causing bad split decisions; but a crash could ensue if you're very unlucky.
+L173: 
+L174: The PostgreSQL Project thanks Mehmet D. Ince for reporting this problem. (CVE-2026-14678)
+L175: 
+L176:   * Remove the plan cache in `contrib/refint` (Ayush Tiwari) cite44†§†postgr.es L177: This caching behavior has several serious bugs, notably that `check_foreign_key()` embeds the new key values in its cascade-UPDATE queries, so a cached plan reuses the originally-needed values rather than the key values that should be used. The simplest solution is to remove it.
+L178: 
+L179: The PostgreSQL Project thanks Hcamael for reporting this problem. (CVE-2026-14671)
+L180:   * Fix mis-handling of asynchronous reads when rescanning an asynchronous Append plan node (Alexander Korotkov, Gleb Kashkin, Etsuro Fujita) cite45†§†postgr.es L181: When an upper plan node rescans an Append before having read the entire Append output, we need to discard any in-flight requests sent to external servers (by `postgres_fdw` for example). This was not done correctly in cases where a subplan has parameter changes or is discarded by partition pruning in the next scan. The outcome could be incorrect query results, an infinite loop, or an assertion failure.
+L182: 
+L183:   * Fix error in partition pruning for RANGE-partitioned tables (David Rowley) cite46†§†postgr.es L184: In some cases the DEFAULT partition would be skipped when it should not be, which could lead to rows missing from query results.
+L185: 
+L186:   * Fix planner's nullability and strictness checks for ``value` IN (`array`)` expressions (Ayush Tiwari) cite47†§†postgr.es L187: 
+L188: These checks should only succeed if the array operand is known to be non-empty, but that consideration was missed, allowing optimizations to be applied that should not be. This could result in wrong query answers if the array actually was empty.
+L189:   * Fix incorrect join removal logic (Matheus Alcantara, Richard Guo) cite48†§†postgr.es cite49†§†postgr.es L190: 
+L191: In edge cases, it was possible for a constant output value coming from within the nullable side of an outer join to not be replaced by NULL when it should be.
+L192: 
+L193:   * Add missed checks for hashability of equality comparisons on container datatypes (arrays, composites, ranges) (Andrei Lepikhov, Tom Lane) cite50†§†postgr.es L194: The planner must verify hashability of the container's component type(s) before deciding it can use a hash-based plan type. This step was missed in some places, leading to “could not identify a hash function” failures at execution.
+L195: 
+L196:   * Fix mis-optimization of `COUNT` window functions that have an `EXCLUDE` clause or lack `ORDER BY` (Chengpeng Yan, David Rowley) cite51†§†postgr.es L197: 
+L198: These window functions were treated as monotonic when they should not be, allowing wrong answers to be computed.
+L199:   * Fix `ALTER COLUMN ... DROP EXPRESSION` to work when there are multiple levels of partitions (Alberto Piai) cite52†§†postgr.es L200: 
+L201:   * Fix attaching partitions of indexes that are exclusion constraints (Japin Li) cite53†§†postgr.es L202: 
+L203: Notably, this oversight broke dump/restore of partitioned exclusion constraints.
+L204: 
+L205:   * Disallow renaming a rule to `_RETURN` (Tom Lane) cite54†§†postgr.es L206: That name is reserved for a view's `ON SELECT` rule, but `ALTER RULE` allowed renaming other rules to `_RETURN`, causing trouble later.
+L207: 
+L208:   * Fix missing lock release for role membership grants in `DROP OWNED BY` (Jeff Davis) cite55†§†postgr.es L209: 
+L210: This oversight resulted in a warning message, followed by retaining a lock on the membership grant until the end of the transaction.
+L211: 
+L212:   * Fix failure of `EXPLAIN` when deparsing `SQL/JSON` aggregates (Richard Guo) cite56†§†postgr.es L213: Some plan structures resulted in “invalid JsonConstructorExpr underlying node type” errors.
+L214: 
+L215:   * Fix use of `REINDEX CONCURRENTLY` with a deferred uniqueness constraint (Nitin Motiani) cite57†§†postgr.es L216: 
+L217: The transient index copy created during `REINDEX CONCURRENTLY` was incorrectly marked as enforcing immediate uniqueness, causing spurious reports of constraint violation.
+L218: 
+L219:   * Fix matching of localized month/day names in `to_date()` (Heikki Linnakangas) cite58†§†postgr.es L220: The matching logic misbehaved in cases where case-folding changes the byte length of the string.
+L221: 
+L222:   * Fix incorrect NFC recomposition for Hangul U+11A7 (TBASE) (Diego Frias, Michael Paquier) cite59†§†postgr.es L223: 
+L224: This character was treated as a valid T syllable, which it is not, and hence silently swallowed during normalization.
+L225: 
+L226:   * Avoid possible truncation of output lexemes in case-insensitive `synonym` dictionaries (Jeff Davis) cite60†§†postgr.es L227: If folding to lower case increased the byte length of a lexeme, it was incorrectly truncated to its original byte length when emitted.
+L228: 
+L229:   * Defend against truncated UTF-8 characters in case-conversion logic (Jeff Davis) cite61†§†postgr.es L230: 
+L231:   * Fix typo in `hash_record_extended()` (Man Zeng) cite62†§†postgr.es L232: The code failed to initialize the second isnull argument passed to FunctionCallInvoke(). This is harmless for existing in-core extended hash support functions, which will not examine that value. However, extension-provided hash functions could be affected if they inspect `PG_ARGISNULL(1)`.
+L233: 
+L234:   * Fix `pg_get_publication_tables()` to not fail if a publishable table is dropped concurrently (Bharath Rupireddy) cite63†§†postgr.es L235:   * Prevent `satisfies_hash_partition()` from crashing with `VARIADIC NULL` (Robert Haas) cite64†§†postgr.es L236: 
+L237:   * Report invalid-weight errors more cleanly and consistently in `tsvector_filter()` and allied functions (Ewan Young) cite65†§†postgr.es 

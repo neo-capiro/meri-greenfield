@@ -1,0 +1,34 @@
+{
+  "createdAt": "2026-10-12T07:16:22.792875+00:00",
+  "rawHTTPFiles": "retrievals.json identifies exact stored response body or exact zero-body transport failure text, origins, byte/hash limits and date. No raw key/index bytes were obtained.",
+  "webSnapshots": "raw/web-*.txt and raw/web-package-attempts.txt, raw/web-pool-listing.txt are saved tool-rendered observations with source URLs, rendered lines and failures. Their file SHA256 covers saved tool text, not source HTTP body or signed bytes. Some search snapshots contain unused third-party results; no conclusion relies on them.",
+  "smallSourceStatus": "REL_17_11 and psycopg3.3.3 tagged raw source are static research evidence; signed tag/artifact mapping not verified. credativ/postgresql-common master is explicitly an unbound moving mirror, not exact PGDG packaging authority.",
+  "downloadCaps": "Initial11 requests<=2,000,000B each,20s socket timeout; subsequent individual metadata/source reads<=100,000B each,15s socket timeout; four concurrent requests maximum. Socket timeouts are not a hard total watchdog. No long-running target job.",
+  "notPerformed": [
+    "target payload acquisition",
+    "package header acquisition",
+    "target extraction/install/import/execute",
+    "database/server/service/native/namespace/container actions",
+    "signatures or attestations verification",
+    "customer/provider/cloud/model actions",
+    "private credential/policy retrieval"
+  ],
+  "installedMetadata": "One targeted dpkg-query, timeout10s; exit1 and missing packages retained. Output was small; no runtime/dependency program was executed.",
+  "licenseScope": "Upstream source files preserved only as read-only research evidence; PostgreSQL COPYRIGHT and psycopg LICENSE retained. Exact candidate package and transitive notices remain unresolved. No copied source enters production.",
+  "licenseTextCopies": [
+    {
+      "source": "/usr/share/common-licenses/GPL-2",
+      "path": "raw/GPL-2",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "reason": "License text for preserved research source; no executable or skill copied"
+    },
+    {
+      "source": "/usr/share/common-licenses/GPL-3",
+      "path": "raw/GPL-3",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "reason": "License text for preserved research source; no executable or skill copied"
+    }
+  ]
+}

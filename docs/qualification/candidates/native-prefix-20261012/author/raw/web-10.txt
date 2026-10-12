@@ -1,0 +1,333 @@
+ (https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease)
+citeturn97view0 [wordlim: 200] Crawled: today; Content type: text/plain; Source: find({"ref_id":"https://apt.postgresql.org/pub/repos/apt/dists/trixie-pgdg/InRelease","pattern":"17/binary-amd64/Packages.bz2"}); Total lines: 2493
+L224:  1ea7984698b8d0d4fd12fb68fbef0efb 1667 9.6/binary-ppc64el/Packages.gz
+L225:  f4c527a9d033f49842ca9da92e8201db 1850 9.6/binary-ppc64el/Packages.bz2
+L226:  697b7ffc191366123b33cc0c490667ba 132 9.6/binary-ppc64el/Release
+L227:  d41d8cd98f00b204e9800998ecf8427e 0 9.6/source/Sources
+L228:  7029066c27ac6f5ef18d660d5741979a 20 9.6/source/Sources.gz
+L229:  4059d198768f9f8dc9372dc1c54bc3c3 14 9.6/source/Sources.bz2
+L350:  6f3c0cd84df9ae9c1724180bd55ea643 130 15/source/Release
+L351:  08ab66c100c85a4e1d03b00047d910f9 30789 16/binary-amd64/Packages
+L352:  e618287778595b968bf8fddc60c5f808 7961 16/binary-amd64/Packages.gz
+L353:  cd529c03deafc6cc37a29bfe4318430d 7432 16/binary-amd64/Packages.bz2
+L354:  d4afaabe1dd049337950cd66f4fd40f6 129 16/binary-amd64/Release
+L355:  fda322694c3b8d3569228897c0d56040 30792 16/binary-arm64/Packages
+L356:  ee142efe47bfa87dd86e13de20e7e54d 7969 16/binary-arm64/Packages.gz
+L364:  926a5d6afd61e0fd755799ff34a799a4 7971 16/binary-ppc64el/Packages.gz
+L365:  a998a6a0c55de7ba3116ae2bfeb8a703 7391 16/binary-ppc64el/Packages.bz2
+L366:  a38715aea83dc5c5a82d6f2fb1f7280f 131 16/binary-ppc64el/Release
+L367:  d41d8cd98f00b204e9800998ecf8427e 0 16/source/Sources
+L368:  7029066c27ac6f5ef18d660d5741979a 20 16/source/Sources.gz
+L369:  4059d198768f9f8dc9372dc1c54bc3c3 14 16/source/Sources.bz2
+L370:  37431832c021eb240c6c2c353aa0b3c0 130 16/source/Release
+L371:  49b741b71a008d3002483523be9de3ca 29662 17/binary-amd64/Packages
+L372:  d2c800b52e464c183b3a942a3f27b239 7164 17/binary-amd64/Packages.gz
+L373:  8acc1b405d4dffc7887a9bb14002510a 6764 17/binary-amd64/Packages.bz2
+L374:  c4faecedfaf5dda088132066d4858ebf 129 17/binary-amd64/Release
+L375:  33dec91ffa766d6d2132493df1371687 29665 17/binary-arm64/Packages
+L376:  ca8718db3ac52f1cfbdba66305db9a5a 7176 17/binary-arm64/Packages.gz
+L377:  f7718a6f06b061aedfbe8f8edc567b8a 6762 17/binary-arm64/Packages.bz2
+L378:  31b86a581e067e031be068265dfd446c 129 17/binary-arm64/Release
+L379:  c049c8f47f37f38f2269d5a9eda3a89c 20892 17/binary-loong64/Packages
+L380:  7f4292d14217cad7a7267bff6e8d1fef 5754 17/binary-loong64/Packages.gz
+L381:  c88303c31ac99573b4b63d9ab746c727 5544 17/binary-loong64/Packages.bz2
+L382:  d06f2b0a8d626cf4143581020d4dba66 131 17/binary-loong64/Release
+L383:  fa8b8c50daad341e58905ce113988cb8 29797 17/binary-ppc64el/Packages
+L384:  a0d4cc8a029fe94d8715c731afa0b972 7176 17/binary-ppc64el/Packages.gz
+L385:  cc8c7ece342b41c3d498e8685867a936 6752 17/binary-ppc64el/Packages.bz2
+L386:  cf7c3997442472d789ca1882f30d82b5 131 17/binary-ppc64el/Release
+L387:  d41d8cd98f00b204e9800998ecf8427e 0 17/source/Sources
+L388:  7029066c27ac6f5ef18d660d5741979a 20 17/source/Sources.gz
+L389:  4059d198768f9f8dc9372dc1c54bc3c3 14 17/source/Sources.bz2
+L390:  f8acc606922c467c304434736c033e1c 130 17/source/Release
+L391:  d41d8cd98f00b204e9800998ecf8427e 0 18/binary-amd64/Packages
+L392:  7029066c27ac6f5ef18d660d5741979a 20 18/binary-amd64/Packages.gz
+L393:  4059d198768f9f8dc9372dc1c54bc3c3 14 18/binary-amd64/Packages.bz2
+L394:  47789ab862dde39bd266952863051d3a 129 18/binary-amd64/Release
+L395:  d41d8cd98f00b204e9800998ecf8427e 0 18/binary-arm64/Packages
+L396:  7029066c27ac6f5ef18d660d5741979a 20 18/binary-arm64/Packages.gz
+L397:  4059d198768f9f8dc9372dc1c54bc3c3 14 18/binary-arm64/Packages.bz2
+L398:  192ccc0927671aed514068507f4d0040 129 18/binary-arm64/Release
+L399:  d41d8cd98f00b204e9800998ecf8427e 0 18/binary-loong64/Packages
+L400:  7029066c27ac6f5ef18d660d5741979a 20 18/binary-loong64/Packages.gz
+L987:  3ec778a8e5df43a8f00e0917908c474054e0a261 130 16/source/Release
+L988:  58f5aebb5f60235d2da0f5111d98b3bdebc25fd2 29662 17/binary-amd64/Packages
+L989:  a13d85443231fb2c55ee46014d5aa1a52074ab95 7164 17/binary-amd64/Packages.gz
+L990:  1bd3424112e2c52c9ba67920befd8f80dec875a0 6764 17/binary-amd64/Packages.bz2
+L991:  d17c3204e7c2582bc411f8b594ac1912de685786 129 17/binary-amd64/Release
+L992:  178518a4ab685aa1e8966d600d63baed9955284f 29665 17/binary-arm64/Packages
+L993:  fe92ab7c9fabe79680d08903856f897ca17f570a 7176 17/binary-arm64/Packages.gz
+L1603:  d3dda84eb03b9738d118eb2be78e246106900493c0ae07819ad60815134a8058 14 16/source/Sources.bz2
+L1604:  8b42200523e57a4802f1e8dafc7934e065eb816c52c9f3f0fda9e28c6befc601 130 16/source/Release
+L1605:  3c3dcb163a1b8c2855c8f7ad1cf4302b3058e6a6d340fe25ec5272bde6f3f1fd 29662 17/binary-amd64/Packages
+L1606:  96cc182eeecbfaff9284c2a783febd9c06f55c054ddcc5077e7c550dafdb9c54 7164 17/binary-amd64/Packages.gz
+L1607:  e544778c0f5e0f3b3b0d9ddbadcb41c5df67b936217636093e91489cd7fd1132 6764 17/binary-amd64/Packages.bz2
+L1608:  a238eec76b543697bc62b5e2bb466889dbce4b71b9e950a33ad2b7ed4adb2040 129 17/binary-amd64/Release
+L1609:  54bd4d69439fab18bdfdca119427076107e492efcb715df92ece64d73015f50a 29665 17/binary-arm64/Packages
+L1610:  9d8992def722e7c446c3ac8893159a3cdd2208543fe5759d528c27da53f74892 7176 17/binary-arm64/Packages.gz
+L1611:  a6447a679e9a013517eb53db9eb022d61d07558a5073012e21e5eaecd2dee025 6762 17/binary-arm64/Packages.bz2
+L1612:  ffa99b728aa656748ee5287bfd5feed74db2dfa38f54fad7e52d897fdecb222c 129 17/binary-arm64/Release
+L1623:  d3dda84eb03b9738d118eb2be78e246106900493c0ae07819ad60815134a8058 14 17/source/Sources.bz2
+L1624:  07b37e59b24f6690436151d72b3169f6ad90df3fac8c5819d17fb01b5a01e475 130 17/source/Release
+L1625:  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 18/binary-amd64/Packages
+L1626:  59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 18/binary-amd64/Packages.gz
+L1627:  d3dda84eb03b9738d118eb2be78e246106900493c0ae07819ad60815134a8058 14 18/binary-amd64/Packages.bz2
+--------------------------------------------------------------------------------
+GitHub - credativ/postgresql-common: Debian's PostgreSQL cluster management wrapper (Mirror) · GitHub (https://github.com/credativ/postgresql-common)
+citeturn97view1 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://github.com/credativ/postgresql-common","pattern":"Mirror"}); Total lines: 335
+L138: ## About
+L139: 
+L140: Debian's PostgreSQL cluster management wrapper (Mirror)
+L141: 
+L142: cite71†salsa.debian.org/postgresql/postgresql-common†salsa.debian.org L143: 
+L144: ### Topics
+L145: 
+L146: cite72†cluster cite73†debian cite74†postgresql cite75†postgresql-common cite76†third-party L147: 
+L148: ### Resources
+L149: 
+L150: cite77†Readme L151: 
+L152: cite78†Activity L153: 
+L154: cite79†Custom properties L155: 
+L156: ### Stars
+L157: 
+L158: 24 stars
+L159: 
+L160: ### Watchers
+L161: 
+L162: 8 watching
+L163: 
+L164: ### Forks
+L165: 
+L166: cite80†3 forks L167: 
+L168: cite81†Report repository L169: 
+L170: master
+L171: 
+L172: cite82†Branches cite83†Tags L173: 
+L174: [Input: Go to file]
+L175: 
+L176: Go to file
+L177: 
+L178: Code
+L179: 
+L180: Open more actions menu
+L181: 
+L182: ## Latest commit
+L283: ### pg_upgradecluster
+L284: 
+L285: This program replaces postgresql-dump (a Debian specific program).
+L286: 
+L287: It is used to migrate a cluster from one major version to another.
+L288: 
+L289: Usage: `pg_upgradecluster [-v newversion] version name [data_dir]`
+L290: 
+L291: `-v`: specifies the version to upgrade to; defaults to the newest available version.
+L292: 
+L293: -- The Debian PostgreSQL maintainers
+L294: 
+L295: ## About
+L296: 
+L297: Debian's PostgreSQL cluster management wrapper (Mirror)
+L298: 
+L299: cite71†salsa.debian.org/postgresql/postgresql-common†salsa.debian.org --------------------------------------------------------------------------------
+Debian -- File list of package postgresql-17/trixie/amd64 (https://packages.debian.org/trixie/amd64/postgresql-17/filelist)
+citeturn97view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://packages.debian.org/trixie/amd64/postgresql-17/filelist","pattern":"pg_controldata"}); Total lines: 1596
+L1133:     /usr/share/locale/es/LC_MESSAGES/pg_walsummary-17.mo
+L1134:     /usr/share/locale/es/LC_MESSAGES/plpgsql-17.mo
+L1135:     /usr/share/locale/es/LC_MESSAGES/postgres-17.mo
+L1136:     /usr/share/locale/fr/LC_MESSAGES/initdb-17.mo
+L1137:     /usr/share/locale/fr/LC_MESSAGES/pg_archivecleanup-17.mo
+L1138:     /usr/share/locale/fr/LC_MESSAGES/pg_checksums-17.mo
+L1139:     /usr/share/locale/fr/LC_MESSAGES/pg_controldata-17.mo
+L1140:     /usr/share/locale/fr/LC_MESSAGES/pg_ctl-17.mo
+L1141:     /usr/share/locale/fr/LC_MESSAGES/pg_resetwal-17.mo
+L1151:     /usr/share/locale/he/LC_MESSAGES/pg_ctl-17.mo
+L1152:     /usr/share/locale/id/LC_MESSAGES/postgres-17.mo
+L1153:     /usr/share/locale/it/LC_MESSAGES/initdb-17.mo
+L1154:     /usr/share/locale/it/LC_MESSAGES/pg_archivecleanup-17.mo
+L1155:     /usr/share/locale/it/LC_MESSAGES/pg_checksums-17.mo
+L1156:     /usr/share/locale/it/LC_MESSAGES/pg_controldata-17.mo
+L1157:     /usr/share/locale/it/LC_MESSAGES/pg_ctl-17.mo
+L1158:     /usr/share/locale/it/LC_MESSAGES/pg_resetwal-17.mo
+L1159:     /usr/share/locale/it/LC_MESSAGES/pg_rewind-17.mo
+L1160:     /usr/share/locale/it/LC_MESSAGES/pg_test_fsync-17.mo
+L1161:     /usr/share/locale/it/LC_MESSAGES/pg_test_timing-17.mo
+L1162:     /usr/share/locale/it/LC_MESSAGES/pg_waldump-17.mo
+L1163:     /usr/share/locale/it/LC_MESSAGES/plpgsql-17.mo
+L1164:     /usr/share/locale/it/LC_MESSAGES/postgres-17.mo
+L1165:     /usr/share/locale/ja/LC_MESSAGES/initdb-17.mo
+L1166:     /usr/share/locale/ja/LC_MESSAGES/pg_archivecleanup-17.mo
+L1167:     /usr/share/locale/ja/LC_MESSAGES/pg_checksums-17.mo
+L1168:     /usr/share/locale/ja/LC_MESSAGES/pg_controldata-17.mo
+L1178:     /usr/share/locale/ja/LC_MESSAGES/postgres-17.mo
+L1179:     /usr/share/locale/ka/LC_MESSAGES/initdb-17.mo
+L1180:     /usr/share/locale/ka/LC_MESSAGES/pg_archivecleanup-17.mo
+L1181:     /usr/share/locale/ka/LC_MESSAGES/pg_checksums-17.mo
+L1182:     /usr/share/locale/ka/LC_MESSAGES/pg_controldata-17.mo
+L1183:     /usr/share/locale/ka/LC_MESSAGES/pg_ctl-17.mo
+L1184:     /usr/share/locale/ka/LC_MESSAGES/pg_resetwal-17.mo
+L1185:     /usr/share/locale/ka/LC_MESSAGES/pg_rewind-17.mo
+L1186:     /usr/share/locale/ka/LC_MESSAGES/pg_test_fsync-17.mo
+L1196:     /usr/share/locale/ko/LC_MESSAGES/pg_controldata-17.mo
+L1197:     /usr/share/locale/ko/LC_MESSAGES/pg_ctl-17.mo
+L1198:     /usr/share/locale/ko/LC_MESSAGES/pg_resetwal-17.mo
+L1199:     /usr/share/locale/ko/LC_MESSAGES/pg_rewind-17.mo
+L1200:     /usr/share/locale/ko/LC_MESSAGES/pg_test_fsync-17.mo
+L1201:     /usr/share/locale/ko/LC_MESSAGES/pg_test_timing-17.mo
+L1202:     /usr/share/locale/ko/LC_MESSAGES/pg_upgrade-17.mo
+L1203:     /usr/share/locale/ko/LC_MESSAGES/pg_waldump-17.mo
+L1204:     /usr/share/locale/ko/LC_MESSAGES/pg_walsummary-17.mo
+L1205:     /usr/share/locale/ko/LC_MESSAGES/plpgsql-17.mo
+L1206:     /usr/share/locale/ko/LC_MESSAGES/postgres-17.mo
+L1207:     /usr/share/locale/pl/LC_MESSAGES/initdb-17.mo
+L1208:     /usr/share/locale/pl/LC_MESSAGES/pg_archivecleanup-17.mo
+L1209:     /usr/share/locale/pl/LC_MESSAGES/pg_controldata-17.mo
+L1210:     /usr/share/locale/pl/LC_MESSAGES/pg_ctl-17.mo
+L1211:     /usr/share/locale/pl/LC_MESSAGES/pg_resetwal-17.mo
+L1212:     /usr/share/locale/pl/LC_MESSAGES/pg_rewind-17.mo
+L1213:     /usr/share/locale/pl/LC_MESSAGES/pg_test_fsync-17.mo
+L1214:     /usr/share/locale/pl/LC_MESSAGES/pg_test_timing-17.mo
+L1215:     /usr/share/locale/pl/LC_MESSAGES/plpgsql-17.mo
+L1216:     /usr/share/locale/pl/LC_MESSAGES/postgres-17.mo
+L1217:     /usr/share/locale/pt_BR/LC_MESSAGES/initdb-17.mo
+L1218:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_archivecleanup-17.mo
+L1219:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_checksums-17.mo
+L1220:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_controldata-17.mo
+L1221:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_ctl-17.mo
+L1222:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_resetwal-17.mo
+L1232:     /usr/share/locale/ru/LC_MESSAGES/pg_controldata-17.mo
+L1233:     /usr/share/locale/ru/LC_MESSAGES/pg_ctl-17.mo
+L1234:     /usr/share/locale/ru/LC_MESSAGES/pg_resetwal-17.mo
+L1235:     /usr/share/locale/ru/LC_MESSAGES/pg_rewind-17.mo
+L1236:     /usr/share/locale/ru/LC_MESSAGES/pg_test_fsync-17.mo
+L1237:     /usr/share/locale/ru/LC_MESSAGES/pg_test_timing-17.mo
+L1238:     /usr/share/locale/ru/LC_MESSAGES/pg_upgrade-17.mo
+L1239:     /usr/share/locale/ru/LC_MESSAGES/pg_waldump-17.mo
+L1240:     /usr/share/locale/ru/LC_MESSAGES/pg_walsummary-17.mo
+L1241:     /usr/share/locale/ru/LC_MESSAGES/plpgsql-17.mo
+L1242:     /usr/share/locale/ru/LC_MESSAGES/postgres-17.mo
+L1243:     /usr/share/locale/sv/LC_MESSAGES/initdb-17.mo
+L1244:     /usr/share/locale/sv/LC_MESSAGES/pg_archivecleanup-17.mo
+L1245:     /usr/share/locale/sv/LC_MESSAGES/pg_checksums-17.mo
+L1246:     /usr/share/locale/sv/LC_MESSAGES/pg_controldata-17.mo
+L1247:     /usr/share/locale/sv/LC_MESSAGES/pg_ctl-17.mo
+L1248:     /usr/share/locale/sv/LC_MESSAGES/pg_resetwal-17.mo
+L1249:     /usr/share/locale/sv/LC_MESSAGES/pg_rewind-17.mo
+L1259:     /usr/share/locale/tr/LC_MESSAGES/pg_checksums-17.mo
+L1260:     /usr/share/locale/tr/LC_MESSAGES/pg_controldata-17.mo
+L1261:     /usr/share/locale/tr/LC_MESSAGES/pg_ctl-17.mo
+L1262:     /usr/share/locale/tr/LC_MESSAGES/pg_resetwal-17.mo
+L1263:     /usr/share/locale/tr/LC_MESSAGES/pg_rewind-17.mo
+L1264:     /usr/share/locale/tr/LC_MESSAGES/pg_test_fsync-17.mo
+L1265:     /usr/share/locale/tr/LC_MESSAGES/pg_test_timing-17.mo
+L1266:     /usr/share/locale/tr/LC_MESSAGES/pg_upgrade-17.mo
+L1267:     /usr/share/locale/tr/LC_MESSAGES/pg_waldump-17.mo
+L1268:     /usr/share/locale/tr/LC_MESSAGES/plpgsql-17.mo
+L1269:     /usr/share/locale/tr/LC_MESSAGES/postgres-17.mo
+L1270:     /usr/share/locale/uk/LC_MESSAGES/initdb-17.mo
+L1271:     /usr/share/locale/uk/LC_MESSAGES/pg_archivecleanup-17.mo
+L1272:     /usr/share/locale/uk/LC_MESSAGES/pg_checksums-17.mo
+L1273:     /usr/share/locale/uk/LC_MESSAGES/pg_controldata-17.mo
+L1274:     /usr/share/locale/uk/LC_MESSAGES/pg_ctl-17.mo
+L1275:     /usr/share/locale/uk/LC_MESSAGES/pg_resetwal-17.mo
+L1276:     /usr/share/locale/uk/LC_MESSAGES/pg_rewind-17.mo
+L1286:     /usr/share/locale/vi/LC_MESSAGES/pg_controldata-17.mo
+L1287:     /usr/share/locale/vi/LC_MESSAGES/pg_test_fsync-17.mo
+L1288:     /usr/share/locale/vi/LC_MESSAGES/pg_test_timing-17.mo
+L1289:     /usr/share/locale/vi/LC_MESSAGES/pg_waldump-17.mo
+L1290:     /usr/share/locale/vi/LC_MESSAGES/plpgsql-17.mo
+L1291:     /usr/share/locale/zh_CN/LC_MESSAGES/initdb-17.mo
+L1292:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_archivecleanup-17.mo
+L1293:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_checksums-17.mo
+L1294:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_controldata-17.mo
+L1295:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_ctl-17.mo
+L1296:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_resetwal-17.mo
+L1297:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_rewind-17.mo
+L1298:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_test_fsync-17.mo
+L1299:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_test_timing-17.mo
+L1300:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_upgrade-17.mo
+L1301:     /usr/share/locale/zh_CN/LC_MESSAGES/pg_waldump-17.mo
+L1302:     /usr/share/locale/zh_CN/LC_MESSAGES/plpgsql-17.mo
+L1303:     /usr/share/locale/zh_CN/LC_MESSAGES/postgres-17.mo
+L1304:     /usr/share/locale/zh_TW/LC_MESSAGES/initdb-17.mo
+L1305:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_checksums-17.mo
+L1306:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_controldata-17.mo
+L1307:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_ctl-17.mo
+L1308:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_rewind-17.mo
+L1309:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_test_fsync-17.mo
+L1310:     /usr/share/locale/zh_TW/LC_MESSAGES/pg_test_timing-17.mo
+--------------------------------------------------------------------------------
+Debian -- File list of package postgresql-client-17/trixie/amd64 (https://packages.debian.org/trixie/amd64/postgresql-client-17/filelist)
+citeturn97view3 [wordlim: 200] Crawled: today; Content type: text/html; Source: find({"ref_id":"https://packages.debian.org/trixie/amd64/postgresql-client-17/filelist","pattern":"psql"}); Total lines: 395
+L84:     /usr/share/locale/fr/LC_MESSAGES/pg_verifybackup-17.mo
+L85:     /usr/share/locale/fr/LC_MESSAGES/pgscripts-17.mo
+L86:     /usr/share/locale/fr/LC_MESSAGES/psql-17.mo
+L87:     /usr/share/locale/he/LC_MESSAGES/pg_basebackup-17.mo
+L88:     /usr/share/locale/he/LC_MESSAGES/pg_config-17.mo
+L89:     /usr/share/locale/he/LC_MESSAGES/pg_dump-17.mo
+L90:     /usr/share/locale/he/LC_MESSAGES/pgscripts-17.mo
+L91:     /usr/share/locale/he/LC_MESSAGES/psql-17.mo
+L92:     /usr/share/locale/it/LC_MESSAGES/pg_amcheck-17.mo
+L102:     /usr/share/locale/ja/LC_MESSAGES/pg_config-17.mo
+L103:     /usr/share/locale/ja/LC_MESSAGES/pg_dump-17.mo
+L104:     /usr/share/locale/ja/LC_MESSAGES/pg_verifybackup-17.mo
+L105:     /usr/share/locale/ja/LC_MESSAGES/pgscripts-17.mo
+L106:     /usr/share/locale/ja/LC_MESSAGES/psql-17.mo
+L107:     /usr/share/locale/ka/LC_MESSAGES/pg_amcheck-17.mo
+L108:     /usr/share/locale/ka/LC_MESSAGES/pg_basebackup-17.mo
+L109:     /usr/share/locale/ka/LC_MESSAGES/pg_combinebackup-17.mo
+L110:     /usr/share/locale/ka/LC_MESSAGES/pg_config-17.mo
+L111:     /usr/share/locale/ka/LC_MESSAGES/pg_dump-17.mo
+L112:     /usr/share/locale/ka/LC_MESSAGES/pg_verifybackup-17.mo
+L113:     /usr/share/locale/ka/LC_MESSAGES/pgscripts-17.mo
+L114:     /usr/share/locale/ka/LC_MESSAGES/psql-17.mo
+L115:     /usr/share/locale/ko/LC_MESSAGES/pg_amcheck-17.mo
+L116:     /usr/share/locale/ko/LC_MESSAGES/pg_basebackup-17.mo
+L117:     /usr/share/locale/ko/LC_MESSAGES/pg_combinebackup-17.mo
+L118:     /usr/share/locale/ko/LC_MESSAGES/pg_config-17.mo
+L119:     /usr/share/locale/ko/LC_MESSAGES/pg_dump-17.mo
+L120:     /usr/share/locale/ko/LC_MESSAGES/pg_verifybackup-17.mo
+L121:     /usr/share/locale/ko/LC_MESSAGES/pgscripts-17.mo
+L122:     /usr/share/locale/ko/LC_MESSAGES/psql-17.mo
+L123:     /usr/share/locale/nb/LC_MESSAGES/pg_config-17.mo
+L124:     /usr/share/locale/pl/LC_MESSAGES/pg_basebackup-17.mo
+L125:     /usr/share/locale/pl/LC_MESSAGES/pg_config-17.mo
+L126:     /usr/share/locale/pl/LC_MESSAGES/pg_dump-17.mo
+L127:     /usr/share/locale/pl/LC_MESSAGES/pgscripts-17.mo
+L128:     /usr/share/locale/pl/LC_MESSAGES/psql-17.mo
+L129:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_basebackup-17.mo
+L130:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_config-17.mo
+L131:     /usr/share/locale/pt_BR/LC_MESSAGES/pg_dump-17.mo
+L132:     /usr/share/locale/pt_BR/LC_MESSAGES/pgscripts-17.mo
+L133:     /usr/share/locale/pt_BR/LC_MESSAGES/psql-17.mo
+L134:     /usr/share/locale/ro/LC_MESSAGES/pg_config-17.mo
+L135:     /usr/share/locale/ru/LC_MESSAGES/pg_amcheck-17.mo
+L136:     /usr/share/locale/ru/LC_MESSAGES/pg_basebackup-17.mo
+L137:     /usr/share/locale/ru/LC_MESSAGES/pg_combinebackup-17.mo
+L138:     /usr/share/locale/ru/LC_MESSAGES/pg_config-17.mo
+L139:     /usr/share/locale/ru/LC_MESSAGES/pg_dump-17.mo
+L140:     /usr/share/locale/ru/LC_MESSAGES/pg_verifybackup-17.mo
+L141:     /usr/share/locale/ru/LC_MESSAGES/pgscripts-17.mo
+L142:     /usr/share/locale/ru/LC_MESSAGES/psql-17.mo
+L143:     /usr/share/locale/sv/LC_MESSAGES/pg_amcheck-17.mo
+L144:     /usr/share/locale/sv/LC_MESSAGES/pg_basebackup-17.mo
+L145:     /usr/share/locale/sv/LC_MESSAGES/pg_combinebackup-17.mo
+L146:     /usr/share/locale/sv/LC_MESSAGES/pg_config-17.mo
+L147:     /usr/share/locale/sv/LC_MESSAGES/pg_dump-17.mo
+L148:     /usr/share/locale/sv/LC_MESSAGES/pg_verifybackup-17.mo
+L149:     /usr/share/locale/sv/LC_MESSAGES/pgscripts-17.mo
+L150:     /usr/share/locale/sv/LC_MESSAGES/psql-17.mo
+L151:     /usr/share/locale/ta/LC_MESSAGES/pg_config-17.mo
+L152:     /usr/share/locale/tr/LC_MESSAGES/pg_basebackup-17.mo
+L153:     /usr/share/locale/tr/LC_MESSAGES/pg_config-17.mo
+L154:     /usr/share/locale/tr/LC_MESSAGES/pg_dump-17.mo
+L155:     /usr/share/locale/tr/LC_MESSAGES/pgscripts-17.mo
+L156:     /usr/share/locale/tr/LC_MESSAGES/psql-17.mo
+L157:     /usr/share/locale/uk/LC_MESSAGES/pg_amcheck-17.mo
+L158:     /usr/share/locale/uk/LC_MESSAGES/pg_basebackup-17.mo
+L159:     /usr/share/locale/uk/LC_MESSAGES/pg_combinebackup-17.mo
+L160:     /usr/share/locale/uk/LC_MESSAGES/pg_config-17.mo
+L161:     /usr/share/locale/uk/LC_MESSAGES/pg_dump-17.mo
+L162:     /usr/share/locale/uk/LC_MESSAGES/pg_verifybackup-17.mo
+L163:     /usr/share/locale/uk/LC_MESSAGES/pgscripts-17.mo
+L164:     /usr/share/locale/uk/LC_MESSAGES/psql-17.mo
+

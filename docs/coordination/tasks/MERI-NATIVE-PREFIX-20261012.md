@@ -1,0 +1,11 @@
+# Exact native-prefix metadata preparation — 12 October 2026
+
+Base PR18 `6cfb1f9a4d8acd66c5bd8d38d892d656fa3cd89e`, tree `7072177eefc7a8b495625ab0c20c0e82b7c55dd8`; isolated branch `task/meri-native-prefix-20261012`. Read AGENTS, implementation standards, R2, components, frozen L1 host evidence and root invocation/setup outline `3cfdec5569aeeb15d63900621161f9a0825278ff`.
+
+Owner writes only this task, corresponding report and `docs/qualification/candidates/native-prefix-20261012/author/**`. Independent reviewer is `memory_author`; no recursive delegation. Existing branches, failures, source and all runtime holds remain unchanged.
+
+Proportionate outline: inspect official PGDG Debian13 amd64 release/package/signature metadata and small upstream packaging/source files; determine exact server/client/admin package identities, dependency and relocation semantics; inspect pinned psycopg3.3.3 and pg8.23.1 requirements; produce an evidence-bound setup decision or exact unresolved external prerequisite. Reuse frozen host observations. Verify hashes/signature/package bindings offline and retain raw transport failures. No production module, lock, migration, runtime entry or registry changes.
+
+Authorized external actions are bounded public official metadata reads only. No target `.deb`, wheel, source/runtime archive acquisition; no target extraction, install, import or execution; no service/database/container/cloud/provider/model actions, security/network/HBA/credential changes or spend. Metadata/index decompression and ordinary signature verification are not target-runtime execution. No executable setup launcher unless official artifact-only support and exact closure can be substantiated. Setup approval and later L1 execution remain separate.
+
+Initial findings due within10 minutes; bounded preparation with progress to parent/reviewer and no speculative launcher expansion. Verification covers exact source base, raw origin/bytes/hash, authenticated release→index→package metadata where possible, dependency/host differences, explicit unverified runtime/license/security/loader facts and owned-path diff. Existing Aurora selection, full139 capability scope, source disable and frozen L1 authority remain.

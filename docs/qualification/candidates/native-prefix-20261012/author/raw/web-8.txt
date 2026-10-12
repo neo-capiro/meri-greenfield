@@ -1,0 +1,347 @@
+Debian -- Details of package postgresql-17 in trixie (https://packages.debian.org/trixie/postgresql-17)
+citeturn94view0 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://packages.debian.org/trixie/postgresql-17","lineno":null}); Total lines: 152
+L0: cite0†skip the navigation L1: 
+L2: cite1†Packages L3: 
+L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+L9:  / cite1†Packages / cite6†trixie (stable) / cite7†database / postgresql-17
+L10: 
+L11: [Input] [Select] [Input] cite1†all options L12: 
+L13: [  trixie  ]
+L14: 
+L15: [ Source: cite8†postgresql-17 ]
+L16: 
+L17: # Package: postgresql-17 (17.11-0+deb13u1)
+L18: 
+L19: ## Links for postgresql-17
+L20: ### Debian Resources:
+L21: 
+L22:   * cite9†Bug Reports†bugs.debian.org L23:   * cite10†Developer Information†tracker.debian.org L24:   * cite11†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite12†Copyright File†metadata.ftp-master.debian.org L26:   * cite13†Debian Patch Tracker†sources.debian.org L27: 
+L28: ### Download Source Package cite8†postgresql-17 :
+L29: 
+L30:   * cite14†[postgresql-17_17.11-0+deb13u1.dsc]†deb.debian.org L31:   * cite15†[postgresql-17_17.11.orig.tar.bz2]†deb.debian.org L32:   * cite16†[postgresql-17_17.11-0+deb13u1.debian.tar.xz]†deb.debian.org L33: ### Maintainers:
+L34: 
+L35:   * Debian PostgreSQL Maintainers (team+postgresql@tracker.debian.org) (cite17†QA Page†qa.debian.org )
+L36:   * Martin Pitt (mpitt@debian.org) (cite18†QA Page†qa.debian.org )
+L37:   * Peter Eisentraut (petere@debian.org) (cite19†QA Page†qa.debian.org )
+L38:   * Christoph Berg (myon@debian.org) (cite20†QA Page†qa.debian.org )
+L39: 
+L40: ### External Resources:
+L41: 
+L42:   * cite21†Homepage†www.postgresql.org [www.postgresql.org]
+L43: ### Similar packages:
+L44: 
+L45:   * cite22†postgresql-19 L46:   * cite23†postgresql-13 L47:   * cite24†postgresql-18 L48:   * cite25†postgresql-16 L49:   * cite26†postgresql-15 L50:   * cite27†libh2-java L51:   * cite28†odoo-14 L52:   * cite29†odoo-19 L53:   * cite30†gpac-modules-base L54:   * cite31†gpac L55:   * cite32†libh2-java-doc L56: 
+L57: ## The World's Most Advanced Open Source Relational Database
+L58: ## Other Packages Related to postgresql-17
+L59: 
+L60:   * depends
+L61:  |
+L62: 
+L63:   * recommends
+L64:  |
+L65: 
+L66:   * suggests
+L67:  |
+L68: 
+L69:   * enhances
+L70: 
+L71:   * dep: cite33†debconf (>= 0.5)
+L72:     Debian configuration management system
+L73: or cite34†debconf-2.0 L74:     virtual package provided by cite35†cdebconf , cite36†cdebconf-udeb , cite33†debconf L75:   * dep: cite37†libc6 (>= 2.38)
+L76:     GNU C Library: Shared libraries
+L77: also a virtual package provided by cite38†libc6-udeb L78:   * dep: cite39†libgcc-s1 (>= 3.0) [amd64, arm64, ppc64el]
+L79:     GCC support library
+L80: dep: cite39†libgcc-s1 (>= 3.5) [armel, armhf]
+L81: dep: cite39†libgcc-s1 (>= 4.2) [i386, s390x]
+L82:   * dep: cite40†libgssapi-krb5-2 (>= 1.14+dfsg)
+L83:     MIT Kerberos runtime libraries - krb5 GSS-API Mechanism
+L84:   * dep: cite41†libicu76 (>= 76.1-1~)
+L85:     International Components for Unicode
+L86:   * dep: cite42†libldap2 (>= 2.6.2)
+L87:     OpenLDAP libraries
+L88:   * dep: cite43†libllvm19 (>= 1:19.1.0) [not riscv64]
+L89:     Modular compiler and toolchain technologies, runtime library
+L90:   * dep: cite44†liblz4-1 (>= 0.0~r130)
+L91:     Fast LZ compression algorithm library - runtime
+L92:   * dep: cite45†libpam0g (>= 0.99.7.1)
+L93:     Pluggable Authentication Modules library
+L94:   * dep: cite46†libpq5 (>= 17~~)
+L95:     PostgreSQL C client library
+L96:   * dep: cite47†libselinux1 (>= 3.1~)
+L97:     SELinux runtime shared libraries
+L98:   * dep: cite48†libssl3t64 (>= 3.4.0)
+L99:     Secure Sockets Layer toolkit - shared libraries
+L100:   * dep: cite49†libstdc++6 (>= 5.2) [not riscv64]
+L101:     GNU Standard C++ Library v3
+L102:   * dep: cite50†libsystemd0 L103:     systemd utility library
+L104:   * dep: cite51†libuuid1 (>= 2.16)
+L105:     Universally Unique ID library
+L106:   * dep: cite52†libxml2 (>= 2.7.4)
+L107:     GNOME XML library
+L108:   * dep: cite53†libxslt1.1 (>= 1.1.25)
+L109:     XSLT 1.0 processing library - runtime library
+L110:   * dep: cite54†libzstd1 (>= 1.5.5)
+L111:     fast lossless compression algorithm
+L112:   * dep: cite55†locales L113:     GNU C Library: National Language (locale) data [support]
+L114: or cite56†locales-all L115:     GNU C Library: Precompiled locale data
+L116:   * dep: cite57†postgresql-client-17 L117:     front-end programs for PostgreSQL 17
+L118:   * dep: cite58†postgresql-common (>= 252~)
+L119:     PostgreSQL database-cluster manager
+L120:   * dep: cite59†ssl-cert L121:     simple debconf wrapper for OpenSSL
+L122:   * dep: cite60†tzdata L123:     time zone and daylight-saving time data
+L124:   * dep: cite61†zlib1g (>= 1:1.1.4)
+L125:     compression library - runtime
+L126:   * rec: cite62†sysstat L127:     system performance tools for Linux
+L128: ## Download postgresql-17
+L129: Download for all available architectures
+L130: Architecture  | Package Size  | Installed Size  | Files
+L131: --- | --- | --- | ---
+L132: cite63†amd64 | 16,287.1 kB  | 57,512.0 kB  | [cite64†list of files ]
+L133: cite65†arm64 | 15,802.2 kB  | 60,927.0 kB  | [cite66†list of files ]
+L134: cite67†armel | 15,624.8 kB  | 60,709.0 kB  | [cite68†list of files ]
+L135: cite69†armhf | 15,625.6 kB  | 57,769.0 kB  | [cite70†list of files ]
+L136: cite71†i386 | 16,531.8 kB  | 58,604.0 kB  | [cite72†list of files ]
+L137: cite73†ppc64el | 16,512.5 kB  | 65,942.0 kB  | [cite74†list of files ]
+L138: cite75†riscv64 | 6,823.2 kB  | 32,170.0 kB  | [cite76†list of files ]
+L139: cite77†s390x | 16,941.6 kB  | 58,513.0 kB  | [cite78†list of files ]
+L140: * * *
+L141: 
+L142: This page is also available in the following languages (How to set cite79†the default document language†www.debian.org ):
+L143: 
+L144: cite80†Български (Bəlgarski) cite81†Deutsch cite82†suomi cite83†français cite84†magyar cite85†日本語 (Nihongo) cite86†Nederlands cite87†polski cite88†Português (br) cite89†Русский (Russkij) cite90†slovensky cite91†svenska cite92†Türkçe cite93†українська (ukrajins'ka) cite94†中文 (Zhongwen,简) cite95†中文 (Zhongwen,繁) L145: 
+L146: * * *
+L147: 
+L148: See our cite96†contact page†www.debian.org to get in touch.
+L149: Content Copyright © 1997 - 2026 cite97†SPI Inc.†www.spi-inc.org ; See cite98†license terms†www.debian.org . Debian is a cite99†trademark†www.debian.org of SPI Inc. cite100†Learn more about this site .
+L150: 
+L151: This service is sponsored by cite101†Hewlett-Packard†www.hp.com .
+--------------------------------------------------------------------------------
+Debian -- Details of package postgresql-client-17 in trixie (https://packages.debian.org/trixie/postgresql-client-17)
+citeturn94view1 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://packages.debian.org/trixie/postgresql-client-17","lineno":null}); Total lines: 119
+L0: cite0†skip the navigation L1: 
+L2: cite1†Packages L3: 
+L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+L9:  / cite1†Packages / cite6†trixie (stable) / cite7†database / postgresql-client-17
+L10: 
+L11: [Input] [Select] [Input] cite1†all options L12: 
+L13: [  trixie  ]
+L14: 
+L15: [ Source: cite8†postgresql-17 ]
+L16: 
+L17: # Package: postgresql-client-17 (17.11-0+deb13u1)
+L18: 
+L19: ## Links for postgresql-client-17
+L20: ### Debian Resources:
+L21: 
+L22:   * cite9†Bug Reports†bugs.debian.org L23:   * cite10†Developer Information†tracker.debian.org L24:   * cite11†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite12†Copyright File†metadata.ftp-master.debian.org L26:   * cite13†Debian Patch Tracker†sources.debian.org L27: 
+L28: ### Download Source Package cite8†postgresql-17 :
+L29: 
+L30:   * cite14†[postgresql-17_17.11-0+deb13u1.dsc]†deb.debian.org L31:   * cite15†[postgresql-17_17.11.orig.tar.bz2]†deb.debian.org L32:   * cite16†[postgresql-17_17.11-0+deb13u1.debian.tar.xz]†deb.debian.org L33: ### Maintainers:
+L34: 
+L35:   * Debian PostgreSQL Maintainers (team+postgresql@tracker.debian.org) (cite17†QA Page†qa.debian.org )
+L36:   * Martin Pitt (mpitt@debian.org) (cite18†QA Page†qa.debian.org )
+L37:   * Peter Eisentraut (petere@debian.org) (cite19†QA Page†qa.debian.org )
+L38:   * Christoph Berg (myon@debian.org) (cite20†QA Page†qa.debian.org )
+L39: 
+L40: ### External Resources:
+L41: 
+L42:   * cite21†Homepage†www.postgresql.org [www.postgresql.org]
+L43: ### Similar packages:
+L44: 
+L45:   * cite22†postgresql-client-19 L46:   * cite23†postgresql-client-13 L47:   * cite24†postgresql-client-18 L48:   * cite25†postgresql-client-16 L49:   * cite26†postgresql-client-15 L50:   * cite27†postgresql-client L51:   * cite28†libpqxx-8.0 L52:   * cite29†libpqxx-doc L53:   * cite30†libpqxx-7.10 L54:   * cite31†libpqxx-7.8t64 L55:   * cite32†libpqxx-6.4 L56: 
+L57: ## front-end programs for PostgreSQL 17
+L58: ## Other Packages Related to postgresql-client-17
+L59: 
+L60:   * depends
+L61:  |
+L62: 
+L63:   * recommends
+L64:  |
+L65: 
+L66:   * suggests
+L67:  |
+L68: 
+L69:   * enhances
+L70:   * dep: cite33†libc6 (>= 2.38)
+L71:     GNU C Library: Shared libraries
+L72: also a virtual package provided by cite34†libc6-udeb L73:   * dep: cite35†liblz4-1 (>= 0.0~r127)
+L74:     Fast LZ compression algorithm library - runtime
+L75:   * dep: cite36†libpq5 (>= 17.11)
+L76:     PostgreSQL C client library
+L77:   * dep: cite37†libreadline8t64 (>= 6.0)
+L78:     GNU readline and history libraries, run-time libraries
+L79:   * dep: cite38†libssl3t64 (>= 3.0.0)
+L80:     Secure Sockets Layer toolkit - shared libraries
+L81:   * dep: cite39†libzstd1 (>= 1.5.5)
+L82:     fast lossless compression algorithm
+L83:   * dep: cite40†postgresql-client-common (>= 182~)
+L84:     manager for multiple PostgreSQL client versions
+L85:   * dep: cite41†sensible-utils L86:     Utilities for sensible alternative selection
+L87:   * dep: cite42†zlib1g (>= 1:1.1.4) [not armel, armhf, i386]
+L88:     compression library - runtime
+L89: dep: cite42†zlib1g (>= 1:1.2.3.4) [armel, armhf, i386]
+L90: 
+L91:   * sug: cite43†postgresql-17 L92:     The World's Most Advanced Open Source Relational Database
+L93:   * sug: cite44†postgresql-doc-17 L94:     documentation for the PostgreSQL database management system
+L95: ## Download postgresql-client-17
+L96: Download for all available architectures
+L97: Architecture  | Package Size  | Installed Size  | Files
+L98: --- | --- | --- | ---
+L99: cite45†amd64 | 2,023.0 kB  | 10,520.0 kB  | [cite46†list of files ]
+L100: cite47†arm64 | 1,971.3 kB  | 11,144.0 kB  | [cite48†list of files ]
+L101: cite49†armel | 1,901.2 kB  | 10,863.0 kB  | [cite50†list of files ]
+L102: cite51†armhf | 1,917.5 kB  | 10,031.0 kB  | [cite52†list of files ]
+L103: cite53†i386 | 2,050.5 kB  | 10,702.0 kB  | [cite54†list of files ]
+L104: cite55†ppc64el | 2,047.6 kB  | 12,040.0 kB  | [cite56†list of files ]
+L105: cite57†riscv64 | 2,006.5 kB  | 10,067.0 kB  | [cite58†list of files ]
+L106: cite59†s390x | 1,988.2 kB  | 10,761.0 kB  | [cite60†list of files ]
+L107: * * *
+L108: 
+L109: This page is also available in the following languages (How to set cite61†the default document language†www.debian.org ):
+L110: 
+L111: cite62†Български (Bəlgarski) cite63†Deutsch cite64†suomi cite65†français cite66†magyar cite67†日本語 (Nihongo) cite68†Nederlands cite69†polski cite70†Português (br) cite71†Русский (Russkij) cite72†slovensky cite73†svenska cite74†Türkçe cite75†українська (ukrajins'ka) cite76†中文 (Zhongwen,简) cite77†中文 (Zhongwen,繁) L112: 
+L113: * * *
+L114: 
+L115: See our cite78†contact page†www.debian.org to get in touch.
+L116: Content Copyright © 1997 - 2026 cite79†SPI Inc.†www.spi-inc.org ; See cite80†license terms†www.debian.org . Debian is a cite81†trademark†www.debian.org of SPI Inc. cite82†Learn more about this site .
+L117: 
+L118: This service is sponsored by cite83†Hewlett-Packard†www.hp.com .
+--------------------------------------------------------------------------------
+Debian -- Details of package libpq5 in trixie (https://packages.debian.org/trixie/libpq5)
+citeturn94view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://packages.debian.org/trixie/libpq5","lineno":null}); Total lines: 112
+L0: cite0†skip the navigation L1: 
+L2: cite1†Packages L3: 
+L4:   * cite2†About Debian†www.debian.org L5:   * cite3†Getting Debian†www.debian.org L6:   * cite4†Support†www.debian.org L7:   * cite5†Developers' Corner†www.debian.org L8: 
+L9:  / cite1†Packages / cite6†trixie (stable) / cite7†libs / libpq5
+L10: 
+L11: [Input] [Select] [Input] cite1†all options L12: 
+L13: [  cite8†bullseye ] [  cite9†bookworm ] [  trixie  ] [  cite10†forky ] [  cite11†sid ] [  cite12†experimental ]
+L14: 
+L15: [ Source: cite13†postgresql-17 ]
+L16: 
+L17: # Package: libpq5 (17.11-0+deb13u1)
+L18: 
+L19: ## Links for libpq5
+L20: ### Debian Resources:
+L21: 
+L22:   * cite14†Bug Reports†bugs.debian.org L23:   * cite15†Developer Information†tracker.debian.org L24:   * cite16†Debian Changelog†metadata.ftp-master.debian.org L25:   * cite17†Copyright File†metadata.ftp-master.debian.org L26:   * cite18†Debian Patch Tracker†sources.debian.org L27: 
+L28: ### Download Source Package cite13†postgresql-17 :
+L29: 
+L30:   * cite19†[postgresql-17_17.11-0+deb13u1.dsc]†deb.debian.org L31:   * cite20†[postgresql-17_17.11.orig.tar.bz2]†deb.debian.org L32:   * cite21†[postgresql-17_17.11-0+deb13u1.debian.tar.xz]†deb.debian.org L33: ### Maintainers:
+L34: 
+L35:   * Debian PostgreSQL Maintainers (team+postgresql@tracker.debian.org) (cite22†QA Page†qa.debian.org )
+L36:   * Martin Pitt (mpitt@debian.org) (cite23†QA Page†qa.debian.org )
+L37:   * Peter Eisentraut (petere@debian.org) (cite24†QA Page†qa.debian.org )
+L38:   * Christoph Berg (myon@debian.org) (cite25†QA Page†qa.debian.org )
+L39: 
+L40: ### External Resources:
+L41: 
+L42:   * cite26†Homepage†www.postgresql.org [www.postgresql.org]
+L43: ### Similar packages:
+L44: 
+L45:   * cite27†libpq-dev L46:   * cite28†libpqxx-8.0 L47:   * cite29†libpqxx-7.10 L48:   * cite30†libpqxx-7.8t64 L49:   * cite31†libpqxx-6.4 L50:   * cite32†libpgtcl L51:   * cite33†libpgtcl-dev L52:   * cite34†postgresql-client-13 L53:   * cite35†postgresql-client-18 L54:   * cite36†postgresql-client-16 L55:   * cite37†postgresql-client-15 L56: ## PostgreSQL C client library
+L57: 
+L58: libpq is a C library that enables user programs to communicate with the PostgreSQL database server. The server can be on another machine and accessed through TCP/IP. This version of libpq is compatible with servers from PostgreSQL 8.2 or later.
+L59: 
+L60: This package contains the run-time library, needed by packages using libpq. SSL certificate validation (the sslrootcert=system connection option) requires the ca-certificates package.
+L61: PostgreSQL is an object-relational SQL database management system.
+L62: 
+L63: cite38†Tags†debtags.debian.org : Role: cite39†Shared Library L64: ## Other Packages Related to libpq5
+L65: 
+L66:   * depends
+L67:  |
+L68: 
+L69:   * recommends
+L70:  |
+L71: 
+L72:   * suggests
+L73:  |
+L74: 
+L75:   * enhances
+L76: 
+L77:   * dep: cite40†libc6 (>= 2.38)
+L78:     GNU C Library: Shared libraries
+L79: also a virtual package provided by cite41†libc6-udeb L80:   * dep: cite42†libgssapi-krb5-2 (>= 1.17)
+L81:     MIT Kerberos runtime libraries - krb5 GSS-API Mechanism
+L82:   * dep: cite43†libldap2 (>= 2.6.2)
+L83:     OpenLDAP libraries
+L84:   * dep: cite44†libssl3t64 (>= 3.0.0)
+L85:     Secure Sockets Layer toolkit - shared libraries
+L86:   * rec: cite45†ca-certificates L87:     Common CA certificates
+L88: ## Download libpq5
+L89: Download for all available architectures
+L90: Architecture  | Package Size  | Installed Size  | Files
+L91: --- | --- | --- | ---
+L92: cite46†amd64 | 231.8 kB  | 1,089.0 kB  | [cite47†list of files ]
+L93: cite48†arm64 | 224.2 kB  | 1,121.0 kB  | [cite49†list of files ]
+L94: cite50†armel | 213.7 kB  | 1,056.0 kB  | [cite51†list of files ]
+L95: cite52†armhf | 214.9 kB  | 992.0 kB  | [cite53†list of files ]
+L96: cite54†i386 | 241.2 kB  | 1,108.0 kB  | [cite55†list of files ]
+L97: cite56†ppc64el | 243.6 kB  | 1,185.0 kB  | [cite57†list of files ]
+L98: cite58†riscv64 | 231.2 kB  | 1,053.0 kB  | [cite59†list of files ]
+L99: cite60†s390x | 226.7 kB  | 1,105.0 kB  | [cite61†list of files ]
+L100: * * *
+L101: 
+L102: This page is also available in the following languages (How to set cite62†the default document language†www.debian.org ):
+L103: 
+L104: cite63†Български (Bəlgarski) cite64†dansk cite65†Deutsch cite66†suomi cite67†français cite68†magyar cite69†Italiano cite70†日本語 (Nihongo) cite71†Nederlands cite72†polski cite73†Português (br) cite74†Русский (Russkij) cite75†slovensky cite76†svenska cite77†Türkçe cite78†українська (ukrajins'ka) cite79†中文 (Zhongwen,简) cite80†中文 (Zhongwen,繁) L105: 
+L106: * * *
+L107: 
+L108: See our cite81†contact page†www.debian.org to get in touch.
+L109: Content Copyright © 1997 - 2026 cite82†SPI Inc.†www.spi-inc.org ; See cite83†license terms†www.debian.org . Debian is a cite84†trademark†www.debian.org of SPI Inc. cite85†Learn more about this site .
+L110: 
+L111: This service is sponsored by cite86†MIT Computer Science & Artificial Intelligence Lab†www.csail.mit.edu .
+--------------------------------------------------------------------------------
+GitHub - credativ/postgresql-common: Debian's PostgreSQL cluster management wrapper (Mirror) · GitHub (https://github.com/credativ/postgresql-common)
+citeturn94view3 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: open({"ref_id":"https://github.com/credativ/postgresql-common","lineno":null}); Total lines: 335
+L0: cite0†Skip to content L1: ## Navigation Menu
+L2: 
+L3: cite1†Sign in L4: 
+L5: Appearance settings
+L6: 
+L7:   * Platform
+L8: 
+L9:     * AI CODE CREATION
+L10:       * cite2†GitHub CopilotWrite better code with AI L11:       * cite3†GitHub Copilot appDirect agents from issue to merge L12:       * cite4†MCP RegistryIntegrate external tools L13: 
+L14:     * DEVELOPER WORKFLOWS
+L15:       * cite5†ActionsAutomate any workflow L16:       * cite6†CodespacesInstant dev environments L17:       * cite7†IssuesPlan and track work L18:       * cite8†Code ReviewManage code changes L19:       * cite9†Code QualityEnforce quality at merge L20:     * APPLICATION SECURITY
+L21:       * cite10†GitHub Advanced SecurityFind and fix vulnerabilities L22:       * cite11†Code securitySecure your code as you build L23:       * cite12†Secret protectionStop leaks before they start L24: 
+L25:     * EXPLORE
+L26:       * cite13†Why GitHub L27:       * cite14†Documentation†docs.github.com L28:       * cite15†Blog†github.blog L29:       * cite16†Changelog†github.blog L30:       * cite17†Marketplace L31: 
+L32: cite18†View all features L33: 
+L34:   * Solutions
+L35:     * BY COMPANY SIZE
+L36:       * cite19†Enterprises L37:       * cite20†Small and medium teams L38:       * cite21†Startups L39:       * cite22†Nonprofits L40: 
+L41:     * BY USE CASE
+L42:       * cite23†App Modernization L43:       * cite24†DevSecOps L44:       * cite25†DevOps L45:       * cite26†CI/CD L46:       * cite27†View all use cases L47: 
+L48:     * BY INDUSTRY
+L49:       * cite28†Healthcare L50:       * cite29†Financial services L51:       * cite30†Manufacturing L52:       * cite31†Government L53:       * cite32†View all industries L54: 
+L55: cite33†View all solutions L56: 
+L57:   * Resources
+L58:     * EXPLORE BY TOPIC
+L59:       * cite34†AI L60:       * cite35†Software Development L61:       * cite36†DevOps L62:       * cite37†Security L63:       * cite38†View all topics L64: 
+L65:     * EXPLORE BY TYPE
+L66:       * cite39†Customer stories L67:       * cite40†Events & webinars L68:       * cite41†Ebooks & reports L69:       * cite42†Business insights L70:       * cite43†GitHub Skills†skills.github.com L71:     * SUPPORT & SERVICES
+L72:       * cite14†Documentation†docs.github.com L73:       * cite44†Customer support†support.github.com L74:       * cite45†Community forum L75:       * cite46†Trust center L76:       * cite47†Partners L77: 
+L78: cite48†View all resources L79: 
+L80:   * Open Source
+L81: 
+L82:     * COMMUNITY
+L83:       * cite49†GitHub SponsorsFund open source developers L84:     * PROGRAMS
+L85:       * cite50†Security Lab†securitylab.github.com L86:       * cite51†Maintainer Community†maintainers.github.com L87:       * cite52†GitHub Stars†stars.github.com L88:       * cite53†Archive Program†archiveprogram.github.com L89: 
+L90:     * REPOSITORIES
+L91:       * cite54†Topics L92:       * cite55†Trending L93:       * cite56†Collections L94: 
+L95:   * Enterprise
+L96: 
+L97:     * ENTERPRISE SOLUTIONS
+L98:       * cite19†Enterprise platformAI-powered developer platform L99:     * AVAILABLE ADD-ONS
+L100:       * cite10†GitHub Advanced SecurityEnterprise-grade security features L101:       * cite57†Copilot for BusinessEnterprise-grade AI features L102:       * cite58†Premium SupportEnterprise-grade 24/7 support L103: 
+L104:   * cite59†Pricing L105: 
+L106: Search`/`
+L107: 
+L108: cite1†Sign in L109: 
+L110: cite60†Sign up L111: 
+L112: Appearance settings
+L113: You signed in with another tab or window. Reload to refresh your session. You signed out in another tab or window. Reload to refresh your session. You switched accounts on another tab or window. Reload to refresh your session. Dismiss alert
+L114: 
+L115:   1. cite61†credativ 

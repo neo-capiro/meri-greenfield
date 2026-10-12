@@ -1,0 +1,77 @@
+Internal Error ()
+citeturn88view0 [wordlim: 200] Source: open({"ref_id":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13+2.dsc","lineno":null}); Total lines: 1
+L0: URL https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-17/postgresql-17_17.11-1.pgdg13%2B2.dsc is not accessible via this tool.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn88view1 [wordlim: 200] Source: open({"ref_id":"https://sources.debian.org/data/main/p/postgresql-17/17.11-0%2Bdeb13u1/debian/rules","lineno":null}); Total lines: 1
+L0: URL https://sources.debian.org/data/main/p/postgresql-17/17.11-0%2Bdeb13u1/debian/rules is not accessible via this tool.
+--------------------------------------------------------------------------------
+Internal Error ()
+citeturn88view2 [wordlim: 200] Source: open({"ref_id":"https://sources.debian.org/data/main/p/postgresql-17/17.11-0%2Bdeb13u1/debian/control","lineno":null}); Total lines: 1
+L0: URL https://sources.debian.org/data/main/p/postgresql-17/17.11-0%2Bdeb13u1/debian/control is not accessible via this tool.
+--------------------------------------------------------------------------------
+PostgreSQL: Linux downloads (Debian) (https://www.postgresql.org/download/linux/debian/)
+citeturn88view3 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://www.postgresql.org/download/linux/debian/","lineno":null}); Total lines: 70
+L0: September 24, 2026: cite0†PostgreSQL 19 Beta 4 Released! L1: 
+L2: ## Quick Links
+L3: 
+L4:   * cite1†Downloads L5:     * cite1†Packages L6:     * cite2†Source L7:   * cite3†Software Catalogue L8:   * cite4†File Browser L9: # Linux downloads (Debian) cite5†Image: Debian Logo L10: 
+L11: PostgreSQL is available in all Debian versions by default. However, Debian "snapshots" a specific version of PostgreSQL that is then supported throughout the lifetime of that Debian version. The PostgreSQL project maintains an cite6†Apt repository with all supported of PostgreSQL available.
+L12: ## Included in Distribution
+L13: 
+L14: Debian includes PostgreSQL by default. To install PostgreSQL on Debian, use the `apt` (or other apt-driving) command:
+L15: 
+L16:     apt install postgresql
+L17: ## PostgreSQL Apt Repository
+L18: 
+L19: If the version included in your version of Debian is not the one you want, you can use the cite7†PostgreSQL Apt Repository†apt.postgresql.org . This repository will integrate with your normal systems and patch management, and provide automatic updates for all supported versions of PostgreSQL throughout the support cite8†lifetime of PostgreSQL.
+L20: 
+L21: The PostgreSQL Apt repository supports the current versions of Debian:
+L22:   * trixie (13.x)
+L23:   * bookworm (12.x)
+L24:   * forky (testing)
+L25:   * sid (unstable)
+L26: 
+L27: on the following architectures:
+L28: 
+L29:   * amd64
+L30:   * arm64
+L31:   * loong64 (trixie and newer)
+L32:   * ppc64el
+L33: ### Automated Repository Configuration
+L34: 
+L35:     sudo apt install -y postgresql-common
+L36:     sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+L37: ### Manual Repository Configuration
+L38: 
+L39: Import the cite9†repository key :
+L40: 
+L41:     sudo apt install curl ca-certificates
+L42:     sudo install -d /usr/share/postgresql-common/pgdg
+L43:     sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
+L44: Create /etc/apt/sources.list.d/pgdg.sources. The distributions are called codename-pgdg. In the example, replace trixie with the actual distribution you are using. File contents:
+L45: 
+L46:     Types: deb deb-src
+L47:     URIs: https://apt.postgresql.org/pub/repos/apt
+L48:     Suites: trixie-pgdg
+L49:     Architectures: amd64
+L50:     Components: main
+L51:     Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+L52: Install PostgreSQL: (replace "18" by the version you want)
+L53: 
+L54:     sudo apt update
+L55:     sudo apt install postgresql-18
+L56: 
+L57: For more information about the apt repository, including answers to frequent questions, please see the cite10†PostgreSQL Apt Repository wiki page†wiki.postgresql.org .
+L58: ## Packages
+L59: 
+L60: The repository contains many different packages including third party addons. The most common and important packages are (substitute the version number as required):
+L61: 
+L62: postgresql-client-18  | client libraries and client binaries
+L63: postgresql-18  | core database server
+L64: postgresql-doc-18  | documentation
+L65: libpq-dev  | libraries and headers for C language frontend development
+L66: postgresql-server-dev-18  | libraries and headers for C language backend development
+L67: cite11†Policies | cite12†Code of Conduct | cite13†About PostgreSQL | cite14†Contact L68: 
+L69: Copyright © 1996-2026 The PostgreSQL Global Development Group
+
