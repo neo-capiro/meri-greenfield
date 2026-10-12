@@ -1,0 +1,67 @@
+{
+  "candidate": "a511cc15adb737386e0a9fe51127d4d10805b1e2",
+  "tree": "d7631a7692528f9897de7e58de7d7ec5a376fe33",
+  "patch_base": "efd059cc2d1c6380507ffd85543fdb1711ae5e6a",
+  "review_intake": "d7e8b620a5d44a74341610a44afdfd01987552d4",
+  "modified_existing_paths": [
+    "scripts/qualification/worker_image_build.py"
+  ],
+  "inverse_reference_and_comment_reproduce_base": true,
+  "modified_file": {
+    "path": "scripts/qualification/worker_image_build.py",
+    "base": {
+      "bytes": 33018,
+      "sha256": "7a50f535486e343aa534f32d7359c8281021dbe4ee5f88bb654ebb45675464b9"
+    },
+    "candidate": {
+      "bytes": 33031,
+      "sha256": "4295ac8f34cc107ff8fda4ceb31e07661b0501c29cc89e637d557fc2e0eee927"
+    }
+  },
+  "all_original_test_assertions_preserved": true,
+  "protected_files": [
+    {
+      "path": "scripts/qualification/test_worker_image_build.py",
+      "bytes": 36538,
+      "sha256": "ad32728d8e661f90597b9e140bf47e1034289e4777b0b00db13923eb0c705313"
+    },
+    {
+      "path": "scripts/qualification/host_assets_source.py",
+      "bytes": 10081,
+      "sha256": "0465108f347442e8e06ebd04c23f9679197b2acf86bdfe8a1d892c0483aef4fd"
+    },
+    {
+      "path": "scripts/qualification/worker_image_collect.py",
+      "bytes": 29750,
+      "sha256": "8bb65ced3c9f9ab463936a2f2a3443c10c412c38cace5347a5eb5e6870695748"
+    },
+    {
+      "path": "scripts/qualification/worker_image_manifest.py",
+      "bytes": 1475,
+      "sha256": "9a080fa6a1fce15379e1f55e2fba1d3c6f7bff2c4c96743ae3794c8ae27da134"
+    },
+    {
+      "path": "scripts/qualification/worker_context.py",
+      "bytes": 11723,
+      "sha256": "48f065d0ad61f98ba571c89dcd62141e6f8c9b272f0d371331d74a0dabf87851"
+    },
+    {
+      "path": "scripts/qualification/worker_build_binding.py",
+      "bytes": 6869,
+      "sha256": "6daff67b434e78824ee211803139a417bd23c6a3bb02dc0429695d86f5e1af53"
+    },
+    {
+      "path": "scripts/qualification/host_assets_build.py",
+      "bytes": 21682,
+      "sha256": "eb00e22164ba4785b44d29a2a177e50b2621abca3681b27ad2a4671788dc2953"
+    },
+    {
+      "path": "scripts/qualification/worker_image_publish.py",
+      "bytes": 11611,
+      "sha256": "da1cb478d3048c7b102f90203f6bb3080d8002502d18c7a7711cd86dd2f795fa"
+    }
+  ],
+  "candidate_worktree_status": "?? docs/qualification/candidates/g1-next-behavior-20261012/integration/\n?? docs/qualification/candidates/worker-baseline-repair-20261012/author/.gitattributes\n",
+  "preserved_authority": "PACKAGING_CHANGES, membership, principal, Windows Git/Python identity, fresh authority and budget gates byte-identical after inverse pin/comment comparison",
+  "new_helper_binding_required": true
+}

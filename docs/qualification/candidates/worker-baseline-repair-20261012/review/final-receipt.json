@@ -1,0 +1,106 @@
+{
+  "disposition": "ACCEPT_SOURCE",
+  "candidate": "a511cc15adb737386e0a9fe51127d4d10805b1e2",
+  "tree": "d7631a7692528f9897de7e58de7d7ec5a376fe33",
+  "reviewer": "Codex /root/memory_reviewer",
+  "created_at_utc": "2026-10-12T04:06:24.704951+00:00",
+  "criteria_commit": "9f683d3dcc8e2d74922080c6d76fb5c4f2ed8ca4",
+  "original_failure_commit": "51ec0e3d23979e521d77448a82140781f8c913c6",
+  "checks": {
+    "stable_provenance": {
+      "passed": 44,
+      "total": 44
+    },
+    "historical_baseline": {
+      "missing": 9,
+      "changed": 8,
+      "actual_failure": "exact Git membership"
+    },
+    "independent_controls": {
+      "passed": 14,
+      "total": 14
+    },
+    "original_build_suite": {
+      "passed": 35,
+      "failed": 0,
+      "errors": 1,
+      "exit_code": 1
+    }
+  },
+  "native_windows_owner_execution": "UNRUN",
+  "runtime_image_g1": "HOLD/OPEN",
+  "owned_background_processes_started": 0,
+  "temporary_fixture_removed": true,
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-WORKER-BASELINE-REVIEW-20261012.md",
+      "bytes": 3919,
+      "sha256": "d91954736983e1020e98ebee97d58fd7c65934654348f22f556b573c27b8e0de"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/baseline-controls.py",
+      "bytes": 4438,
+      "sha256": "76347df411bac86b5ed88d09be3254a21b92ee086150057aa24d037c90fed450"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/baseline-original.json",
+      "bytes": 24530,
+      "sha256": "b47b4883b5cb3a9e42e0230111b9930cdcedeca961aaa4a1419892bed9183d7c"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/baseline-original.stderr.txt",
+      "bytes": 689,
+      "sha256": "57c25abb3364c4ae0afd29bd2ec6c71df80b2915f67cb6b333643160594cf028"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/candidate-build-suite-command.json",
+      "bytes": 238,
+      "sha256": "199a95d935f8919b84490b1d48d9e223e0146171422a2b703fd82ecb123daa06"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/candidate-build-suite.stderr.txt",
+      "bytes": 5868,
+      "sha256": "20206887271f8710c65dee340b69e902f104c0a35c3e921a2a15c087d6ab4df9"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/candidate-build-suite.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/frozen-criteria.json",
+      "bytes": 1330,
+      "sha256": "182043c4a8b8778a1ee6e3a129318d60bd5c9bba343c6bb84bd0012c3430ea4f"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/independent-controls-command.json",
+      "bytes": 487,
+      "sha256": "fdf9f8faea9c890024ea22bb74d6c2448e95812813c1ba51b275b344d41f359b"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/independent-controls.json",
+      "bytes": 2043,
+      "sha256": "021504f8eb5e69efc035f08d10e0e0902fa68f13fb1700fc2be0040c5910c70b"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/independent-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/independent-controls.stdout.txt",
+      "bytes": 28,
+      "sha256": "d803fe1e0117a925b539af3d02204c4c8ae237cb9855fc97f821c2cf8f46eed7"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-baseline-repair-20261012/review/source-preservation.json",
+      "bytes": 2657,
+      "sha256": "9a6e62377e9fdfe24cf8e2f6fa63c6a70c233d8ea0d2ffad2839416d03dab46f"
+    }
+  ]
+}
