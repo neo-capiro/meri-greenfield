@@ -1,0 +1,46 @@
+✔ independent actual control pipeline commits A, replaces B, loads and verifies exact bytes (72.137646ms)
+✔ independent owner exposes frozen content-free bound status without database work (2.613727ms)
+✔ independent owner stop before checkpoint consumes real revoke and denies subsequent ingress (3.527901ms)
+✔ independent repeated and concurrent stop reuses one attempt without timestamp rewrite (1.935568ms)
+✔ independent owner invalidates expired exact current grant without resetting original clock (1.947146ms)
+✔ independent owner cannot begin new durable stop after original cleanup deadline (1.507476ms)
+✔ independent current B stop leaves original immutable A commit intact (15.807122ms)
+✔ independent stale A stop refuses without closing B gate or changing B grant (24.11847ms)
+✔ independent wrong peer stop cannot close actual A gate (4.709276ms)
+✔ independent wrong actor stop cannot close actual A gate (4.14618ms)
+✔ independent wrong pin stop cannot close actual A gate (3.51375ms)
+✔ independent caller mutation across first database await cannot retarget stop (1.530199ms)
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (1.841257ms)
+✔ independent stop aborts parked evidence inspection before any object or commit effect (4.026731ms)
+✔ independent stop after parked object put prevents next object effect and publication (3.747331ms)
+✔ independent local stop gate catches request already parked in credential resolution before revocation completes (2.466176ms)
+✔ independent unknown revoke acknowledgement remains visible and repeated stop never retries (1.730591ms)
+✔ independent definite pre-update failure stays FAILED rather than unknown and does not retry (1.360845ms)
+✔ independent unknown publication survives bodyless ingress failure and settled handler tracking (14.645066ms)
+✔ independent ordinary checkpoint failure is not mislabelled as unknown publication (10.167258ms)
+✔ independent cleanup deadline bounds stop but never asserts parked work is physically stopped (37.038966ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 916.418627
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:116:1
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (1.841257ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:125:5
+      at async owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

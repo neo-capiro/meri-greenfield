@@ -7,11 +7,11 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { liveFixture, requestFor } from '../../../../../apps/control/qualification-sdk-fixture/service/test/fixture.mjs';
-import { fakeS3, bucket, kmsKeyArn } from '../../../../../apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs';
 import { encodeFixtureRequest, decodeFixtureResponse } from '../../../../../packages/contracts/qualification-sdk/wire.mjs';
 
 const root = process.env.G1_OWNER_SOURCE_ROOT ?? resolve('.');
 const source = path => import(pathToFileURL(resolve(root, path)));
+const { fakeS3, bucket, kmsKeyArn } = await source('apps/control/qualification-sdk-fixture/service/test/fake-s3.mjs');
 export const { PostgresStore } = await source('apps/control/qualification-sdk-fixture/state/store.mjs');
 export const { CommitUncertain } = await source('apps/control/qualification-sdk-fixture/state/errors.mjs');
 const { createFixtureControl } = await source('apps/control/qualification-sdk-fixture/service/control.mjs');

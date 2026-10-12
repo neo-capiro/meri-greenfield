@@ -1,0 +1,10 @@
+{
+  "apps/control/qualification-sdk-fixture/service/control.mjs": {
+    "bytes": 3738,
+    "sha256": "76f76b7f6231d91a25d09df787d1dc629d68d204c884a8c258d733fcbbadf74e"
+  },
+  "apps/control/qualification-sdk-fixture/service/run-stop.mjs": {
+    "bytes": 6210,
+    "sha256": "f9480de73f4b89219c90ff57d1af0dfe382fe896b7ea0b6b2639747e23c4a517"
+  }
+}

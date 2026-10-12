@@ -1,0 +1,6 @@
+{
+  "originalCommit": "de33c5107c43774c7cac28430bbea379898dde10",
+  "originalSha256": "86838bad629700a9276f3a6f44963e059b5d5d573bfb57b4841fc0a8aa75f4ab",
+  "correctedSha256": "572965536e4a5d3bfc27af5f453e1003f1f42606ee6c3332593fd79b7760d0bd",
+  "reason": "Existing fakeS3 helper uses instanceof AWS SDK command classes. Static helper import from reviewer root differs from candidate root module instances. Select candidate-root fakeS3 helper with the same root as candidate source; all behavior assertions and scripted transaction logic unchanged. Initial16PASS/5FAIL retained; accessor admission remains a candidate source defect."
+}
