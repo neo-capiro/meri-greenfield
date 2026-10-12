@@ -1,0 +1,12 @@
+# Independent PE references review criteria before source
+
+Base `2aa0a33bdaf36af1224cfdb840bc493e53cea9f3`; operations get_pe_contractors, get_pe_bills and get_pe_report_language. Reviewer owns only the new independent test, report and this evidence directory. Production repairs belong to author; canonical integration belongs to root. No private bodies copied/imported/executed; immutable schema/policy/projection data and hashes only.
+
+1. Trace exact source declaration, required PE selector normalization, output fields, nullable types, wrapper spread and missing-table behavior. Extra caller authority, coercive operation values, getters/proxies and hostile nested values must refuse without effects.
+2. Preserve accepted versus pending report linkage, review status and caveat. Deduplication and coverage are bounded producer claims; do not turn fallback/pending-only evidence into accepted or complete linkage. Preserve raw count races and source ordering only where established.
+3. Distinguish contractor direct awards, candidates and unmatched observations. Twenty-four-month award aggregates are not report-year monetary fields and neither is government budget. No fabricated precision, allocation, vendor identity or funding claims. Preserve source nullable/nonfinite conversion and actual aggregation bounds without recreating querying/scoring.
+4. PE bill projection must retain exact fields, null links/status and stored ordering; no fresh congress/status or completeness proof. Linkage type/identity correlation only where actually retained by producer/model.
+5. Preserve fallback versus success result shape and source caveats. No unsupported count equality or uniqueness inferred from names alone; derive relational constraints from pinned schema. Deliberate Meri transport bounds must be distinguished from source caps.
+6. Trace current actor/role/tenant/source entitlement and provider/mutation ownership. Pure DTO shape never supplies live authority or proves source truth. No runtime/source activation or alternative model/store.
+7. Freeze meaningful controls and preserve original assertions, failures and exact new-Meri source preimages before author repairs. Exact final replay, original-file preservation, immutable/current reference equality, privacy and owned process-group cleanup required.
+8. Return explicit ACCEPT_SOURCE/HOLD with exact author/review commits and manifest. No SQL/native/service/provider/model/cloud/dependency installation or frontend actions.
