@@ -1,0 +1,164 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "All six original mappings; source-family contracts only, no canonical registration/runtime/source activation.",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "sourceBundle": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+  "authorPacket": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+  "familyResults": [
+    {
+      "operations": "search_client_knowledge + query_knowledge_graph",
+      "sourceCommit": "9cc2d0cf62e0816f53cecd2b27a49cb5f450fe39",
+      "receipt": "first-pair-repaired.json",
+      "passed": 48,
+      "independent": 32
+    },
+    {
+      "operations": "read_monday_client_boards",
+      "sourceCommit": "5ee5446521caf47597b584166c435b5f1cde9804",
+      "receipt": "monday-repaired.json",
+      "passed": 24,
+      "independent": 15
+    },
+    {
+      "operations": "read_chat_attachments",
+      "sourceCommit": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+      "receipt": "attachments-case-repaired.json",
+      "passed": 45,
+      "independent": 33
+    },
+    {
+      "operations": "search_memory",
+      "sourceCommit": "b24d87c2ad2e13d9d9f83bf5328a1328fd03762f",
+      "receipt": "memory-repaired.json",
+      "passed": 39,
+      "independent": 29
+    },
+    {
+      "operations": "get_client_context",
+      "sourceCommit": "47e8eb3c942942fc0f1d017eb8211374cc713b9f",
+      "receipt": "profile-complete-models.json",
+      "passed": 47,
+      "independent": 37
+    }
+  ],
+  "focusedTotal": 203,
+  "independentTotal": 146,
+  "authorTotal": 57,
+  "note": "Sum of exact focused family replays; not a single broad/integration run.",
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search.schema.json",
+      "bytes": 7915,
+      "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs",
+      "bytes": 6371,
+      "sha256": "34e9bd94f39131c322c2d1cea9c2d3aa7a1d908b81073022ec40bdeec1f51362"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "bytes": 6512,
+      "sha256": "426ff026b53ae7bd8ecc2476ddc9970cdf44ec0d790aec27bbeab59db63e4ca1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json",
+      "bytes": 7862,
+      "sha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs",
+      "bytes": 3892,
+      "sha256": "5887b8194cd047715b88301ef0bf4abdcceb36936a139f84dbdb11d767112ec2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "bytes": 4748,
+      "sha256": "8200b40eefc110747fd739afec0dd80705d186a38e86431abbd0308b8a08a512"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json",
+      "bytes": 32699,
+      "sha256": "a1ae9025b43fed97bbef2eed217bef3f3d6c49e3d3799317decad58eeb5a375e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs",
+      "bytes": 9705,
+      "sha256": "5d66ad4c3ff18b22e1f43b7af09f18b60b4c376834d2601737dbd7801bd4330a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "bytes": 8383,
+      "sha256": "8d76286f0e266a94c39389de3a9fb92ba4cb8d90b0b33f992674d1064ce61a5f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-memory.schema.json",
+      "bytes": 18369,
+      "sha256": "589d07bbffa8923116071a3d6d2770e4feaa4180e9a1cf67f58ca1d0483d748d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-memory-validation.mjs",
+      "bytes": 7915,
+      "sha256": "453ed376a20b4e51909922a227052fe546c9a3416b83559b641356270d8c18df"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "bytes": 6955,
+      "sha256": "e276634179857da89c137f6d9e1f004ddd7dcb51f055f40418c82f30834247b7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-profile.schema.json",
+      "bytes": 56305,
+      "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-profile-validation.mjs",
+      "bytes": 8253,
+      "sha256": "20ce992009c9d515351cdac9d5a0aad311ed3a344422fbf31d6aae12d30309ef"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "bytes": 7299,
+      "sha256": "931cede8f6787d3df50572da8e9acfa2cf5ade5ca4ca4b013d4dff7aa2151824"
+    }
+  ],
+  "packetChecks": "175/175",
+  "sourceAudit": "241/241",
+  "projectionAstAudit": "10/10",
+  "originalTreeEntriesPreserved": 7677,
+  "referencePairs": 38,
+  "referenceDrift": 0,
+  "profileScalarFields": 150,
+  "ownedGroups": [
+    307247,
+    307729,
+    308310,
+    309933,
+    311205,
+    312327,
+    313404,
+    314272,
+    314668,
+    315509,
+    316537,
+    316689,
+    317810,
+    317837,
+    317975,
+    318536,
+    318649,
+    318686,
+    319788,
+    320287,
+    320655
+  ],
+  "remainingGates": [
+    "Root canonical Request-schema registration and combined integration review/tests.",
+    "Actual source adapters, current authority/walls/membership/client resolution and release authorization.",
+    "Attachment HMAC/current source/byte validation and native extractors; memory eligibility/provider/signed source authenticity.",
+    "Profile Decimal JSON serialization and original source services.",
+    "All native/runtime/service/provider/SQL/cloud qualification remains unrun."
+  ],
+  "paidCalls": 0,
+  "sourceHandlersAvailable": false
+}

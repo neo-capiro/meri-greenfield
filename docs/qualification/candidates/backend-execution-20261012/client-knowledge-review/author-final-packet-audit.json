@@ -1,0 +1,809 @@
+{
+  "verdict": "ACCEPT_SOURCE_PACKET",
+  "packet": "d0e317e8a2a996878c3c7f24577ef7f2d4c599e9",
+  "source": "dcb375c544de2dfcd4cdecc2692cc8ec9a83cb03",
+  "manifestSha256": "f985b827e23572f74aee5e49a2ff050ddce78d4421c6d9b315ec9df7f301e43c",
+  "manifestMembers": 84,
+  "authorGroups": [
+    305597,
+    307308,
+    307423,
+    308032,
+    309049,
+    309174,
+    310125,
+    310494,
+    311975,
+    313035,
+    315040,
+    315960,
+    317772,
+    317886,
+    318070,
+    319448,
+    319651,
+    319959
+  ],
+  "passed": 175,
+  "total": 175,
+  "sourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search.schema.json",
+      "bytes": 7915,
+      "sha256": "48d3da2ae76f17c6a88cce81e288ea91791491cd6287c5327c7dec8cbda0ed3c"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs",
+      "bytes": 6371,
+      "sha256": "34e9bd94f39131c322c2d1cea9c2d3aa7a1d908b81073022ec40bdeec1f51362"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "bytes": 6512,
+      "sha256": "426ff026b53ae7bd8ecc2476ddc9970cdf44ec0d790aec27bbeab59db63e4ca1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json",
+      "bytes": 7862,
+      "sha256": "20bb7df536c0ae285b609f974619a6c910e35748f2a51c3f552e82c4f260afb1"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs",
+      "bytes": 3892,
+      "sha256": "5887b8194cd047715b88301ef0bf4abdcceb36936a139f84dbdb11d767112ec2"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "bytes": 4748,
+      "sha256": "8200b40eefc110747fd739afec0dd80705d186a38e86431abbd0308b8a08a512"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json",
+      "bytes": 32699,
+      "sha256": "a1ae9025b43fed97bbef2eed217bef3f3d6c49e3d3799317decad58eeb5a375e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs",
+      "bytes": 9705,
+      "sha256": "5d66ad4c3ff18b22e1f43b7af09f18b60b4c376834d2601737dbd7801bd4330a"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "bytes": 8383,
+      "sha256": "8d76286f0e266a94c39389de3a9fb92ba4cb8d90b0b33f992674d1064ce61a5f"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-memory.schema.json",
+      "bytes": 18369,
+      "sha256": "589d07bbffa8923116071a3d6d2770e4feaa4180e9a1cf67f58ca1d0483d748d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-memory-validation.mjs",
+      "bytes": 7915,
+      "sha256": "453ed376a20b4e51909922a227052fe546c9a3416b83559b641356270d8c18df"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "bytes": 6955,
+      "sha256": "e276634179857da89c137f6d9e1f004ddd7dcb51f055f40418c82f30834247b7"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-profile.schema.json",
+      "bytes": 56305,
+      "sha256": "67ad0fd59fe7b995e5e9c73d60a82a12220c58d74a81672b485d9279458ba27d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/client-knowledge-profile-validation.mjs",
+      "bytes": 8253,
+      "sha256": "20ce992009c9d515351cdac9d5a0aad311ed3a344422fbf31d6aae12d30309ef"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "bytes": 7299,
+      "sha256": "931cede8f6787d3df50572da8e9acfa2cf5ade5ca4ca4b013d4dff7aa2151824"
+    }
+  ],
+  "checks": [
+    {
+      "check": "packet source freeze",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/coordination/reports/CODEX-CLIENT-KNOWLEDGE-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/coordination/tasks/CODEX-CLIENT-KNOWLEDGE-20261012.md",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/all-six-candidate.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-coordinate-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-fixture-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.patch",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.patch",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-span-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.patch",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-before.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-final.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/attachments-uuid-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/failure-notes.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/memory-limitation-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.patch",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-page-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/monday-strict-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/operation-ledger.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/profile-scalar-inventory.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/reference-identities.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-initial.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.json",
+      "pass": true
+    },
+    {
+      "check": "capture cleaned docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.json",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "raw stream docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stderr.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/search-scope-repair.stdout.bin",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit-4ecc4dfc.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit-b24d87c2.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/source-audit.json",
+      "pass": true
+    },
+    {
+      "check": "packet member docs/qualification/candidates/backend-execution-20261012/client-knowledge/verify-source.py",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-memory-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-memory.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-profile-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-profile.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/retrieval-0.2/client-knowledge-search.schema.json",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "packet member packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 305597",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 307308",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 307423",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 308032",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 309049",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 309174",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 310125",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 310494",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 311975",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 313035",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 315040",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 315960",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 317772",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 317886",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 318070",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 319448",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 319651",
+      "pass": true
+    },
+    {
+      "check": "author group physically absent 319959",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-search.schema.json",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-search-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "original author controls packages/contracts/test/retrieval-client-knowledge-search.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-monday.schema.json",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-monday-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "original author controls packages/contracts/test/retrieval-client-knowledge-monday.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-attachments.schema.json",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-attachments-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "original author controls packages/contracts/test/retrieval-client-knowledge-attachments.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-memory.schema.json",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-memory-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "original author controls packages/contracts/test/retrieval-client-knowledge-memory.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-profile.schema.json",
+      "pass": true
+    },
+    {
+      "check": "reviewed exact source packages/contracts/retrieval-0.2/client-knowledge-profile-validation.mjs",
+      "pass": true
+    },
+    {
+      "check": "original author controls packages/contracts/test/retrieval-client-knowledge-profile.test.mjs",
+      "pass": true
+    },
+    {
+      "check": "all original 7677 files unchanged in author packet",
+      "pass": true
+    },
+    {
+      "check": "author new paths exclusively allocated",
+      "pass": true
+    },
+    {
+      "check": "no reviewer test edited by author",
+      "pass": true
+    }
+  ],
+  "scope": "SOURCE_ONLY_NOT_RUNTIME"
+}
