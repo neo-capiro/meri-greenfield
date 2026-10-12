@@ -1,0 +1,26 @@
+file:///workspace/meri-certification-status-review-20261012/packages/contracts/test/retrieval-certification-status-independent.test.mjs:8
+const {createCertificationStatusValidators}=await import(new URL('retrieval-0.2/certification-status-validation.mjs',source));
+                                                             ^
+
+ReferenceError: Cannot access 'URL' before initialization
+    at file:///workspace/meri-certification-status-review-20261012/packages/contracts/test/retrieval-certification-status-independent.test.mjs:8:62
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-certification-status-independent.test.mjs (71.142537ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 78.23442
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-certification-status-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-certification-status-independent.test.mjs (71.142537ms)
+  'test failed'
