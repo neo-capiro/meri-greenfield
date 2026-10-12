@@ -1,0 +1,45 @@
+✔ search_acquisition_personnel: current role required, exact and model independent (176.141819ms)
+✔ search_acquisition_personnel: only exact current capiro_admin admits each contact field (6.679216ms)
+✔ search_acquisition_personnel: hostile request/context/result objects are inert (0.649946ms)
+✔ search_acquisition_personnel: immutable normalized snapshot and closed projections (7.717477ms)
+✔ search_acquisition_personnel: finite dates, unconstrained stored status/confidence and no invented first-last order (3.615482ms)
+✔ get_acquisition_person: current role required, exact and model independent (53.837876ms)
+✔ get_acquisition_person: only exact current capiro_admin admits each contact field (3.049342ms)
+✔ get_acquisition_person: hostile request/context/result objects are inert (0.360101ms)
+✔ get_acquisition_person: immutable normalized snapshot and closed projections (6.221759ms)
+✔ get_acquisition_person: finite dates, unconstrained stored status/confidence and no invented first-last order (1.340464ms)
+✔ list: defaults, strict page/limit and no owner-only model selectors (1.526494ms)
+✖ list: query precedence and UTF-16 normalization (0.486131ms)
+✔ list: fuzzy total is paged candidate count, no-query count can race (1.473605ms)
+✔ list: exact scalar and either-PE filter binding with independent role authority (1.147414ms)
+✔ list: headshot preserves untyped JSON values without URL or privacy fiction (2.665244ms)
+✔ list: uploaded contact fields are trimmed nonempty strings, email stays stored (2.766477ms)
+✔ detail: UUID normalization has no version/variant assumption and binds returned person (6.256081ms)
+✔ detail: non-admin object metadata must omit both protected keys regardless of value (7.990237ms)
+✔ detail: established redaction is shallow and preserves nonobject/source metadata (7.638126ms)
+✔ detail: admin uploaded contact projection corresponds exactly to raw metadata (28.768798ms)
+✔ detail: no invented source cap, chronology/identity stays meaningful (8.361934ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 803.777305
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs:80:1
+✖ list: query precedence and UTF-16 normalization (0.486131ms)
+  Error: data must NOT have additional properties
+      at validateShape (file:///workspace/meri-acquisition-personnel-review-20261012/packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs:14:25)
+      at validateAcquisitionPersonnelShape (file:///workspace/meri-acquisition-personnel-review-20261012/packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs:18:43)
+      at Object.normalizeAcquisitionPersonnelInput (file:///workspace/meri-acquisition-personnel-review-20261012/packages/contracts/retrieval-0.2/acquisition-personnel-validation.mjs:37:3)
+      at normalize (file:///workspace/meri-acquisition-personnel-review-20261012/packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs:21:70)
+      at TestContext.<anonymous> (file:///workspace/meri-acquisition-personnel-review-20261012/packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs:81:21)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
