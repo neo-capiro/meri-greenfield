@@ -1,0 +1,53 @@
+{
+  "authorMetadata": "076c4a437eb717cbc1dd8541f76f141c0a6d1b2d",
+  "authorManifestSha256": "88f1b1cb8d817daaa1b7fd3c35ccd23b5606ee924c2a2d0c1bcf6f1a3432e276",
+  "verifiedMembers": 33,
+  "allPassed": true,
+  "rawWhitespace": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/alias-regression-before-repair.stdout.bin",
+      "unchangedFromInitialPacket": true,
+      "sha256": "9469b2acbccbc4c9e20f0809c147d6f19990e65f09508f17f7ebf1e2dc05a8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stdout.bin",
+      "sha256": "e7bc64752923974d3bf105cd04822db6d9ab6ffc55a4a6dc5669672296ebd40b",
+      "note": "New captured whitespace failure; not present in original packet. Original check bytes retained."
+    }
+  ],
+  "members": [
+    "docs/coordination/reports/CODEX-TRACKED-BILLS-AUTHOR-20261012.md",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/.gitattributes",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/alias-regression-before-repair.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/alias-regression-before-repair.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/alias-regression-before-repair.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/capture-reaped.py",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/initial-focused.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/initial-focused.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/initial-focused.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/metadata-audit.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/metadata-audit.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/metadata-audit.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/metadata-checks.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-identities.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/alias-regression.test.snapshot.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/retrieval-tracked-bills.test.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/tracked-bills-validation.mjs",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/pre-repair-source/tracked-bills.schema.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/projection-metadata.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/reference-identities.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/repair-record.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/repaired-focused.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/repaired-focused.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/repaired-focused.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/repaired-tested-source.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/source-freeze.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/verify-metadata.py",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-after.stdout.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.json",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stderr.bin",
+    "docs/qualification/candidates/read-continuation-20261012/tracked-bills-author/whitespace-before.stdout.bin"
+  ]
+}
