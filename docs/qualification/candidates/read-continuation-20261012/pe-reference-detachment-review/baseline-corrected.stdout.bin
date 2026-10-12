@@ -1,0 +1,348 @@
+✖ bills: validated value preserved and every container detached (17.310071ms)
+✖ report: validated value preserved and every container detached (8.626061ms)
+✖ contractors full: validated value preserved and every container detached (19.287461ms)
+✖ contractors fallback: validated value preserved and every container detached (0.3659ms)
+✖ bill nested mutation is isolated in both directions (0.654623ms)
+✖ report row mutation is isolated in both directions (0.326571ms)
+✖ contractor amount, named prime and provenance mutations are isolated (0.421202ms)
+✖ frozen caller tree is admitted without mutation and returned detached (1.189287ms)
+✔ empty report preserves exact no-coverage note (0.571779ms)
+✔ fallback cannot smuggle available evidence or rows (0.961355ms)
+✔ contractor grouped totals, attribution and provenance remain checked (1.223619ms)
+✔ bill rejected link, duplicate identity and SQL-date semantics remain checked (0.680062ms)
+✔ report selector, scope and coverage claims remain checked (0.482785ms)
+✔ generated observation time cannot be malformed or noncanonical (0.195233ms)
+✔ getter and proxy output are rejected without reading supplied code (0.27281ms)
+✔ normalization, closed context and operation ownership remain unchanged (0.507573ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 8
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 199.077506
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:22:3
+✖ bills: validated value preserved and every container detached (17.310071ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    bills: [
+      {
+        billNumber: '14',
+        billType: 'hr',
+        budgetPackage: {
+          fiscalYear: 2026,
+          name: 'Synthetic budget',
+          stage: 'report',
+          track: 'authorization'
+        },
+        committee: null,
+        congress: 119,
+        id: 'bill-a',
+        latestActionDate: null,
+        latestActionText: null,
+        link: {
+          confidence: 0.4,
+          evidence: 'Synthetic evidence',
+          status: 'candidate',
+          type: 'review'
+        },
+        peCodeCount: 1,
+        policyArea: null,
+        sponsor: null,
+        title: 'Synthetic review bill',
+        url: null
+      }
+    ],
+    generatedAt: '2026-10-12T00:00:00.000Z',
+    tool: 'get_pe_bills'
+  }
+  
+      at walk (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:65)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_bills', generatedAt: '2026-10-12T00:00:00.000Z', bills: [ [Object] ] },
+    expected: { tool: 'get_pe_bills', generatedAt: '2026-10-12T00:00:00.000Z', bills: [ [Object] ] },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:22:3
+✖ report: validated value preserved and every container detached (8.626061ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    generatedAt: '2026-10-12T00:00:00.000Z',
+    peCode: '0601234A',
+    provisions: [
+      {
+        actionType: null,
+        attributionCaveat: null,
+        committee: 'HASC',
+        confidence: 0.5,
+        fy: 2026,
+        heading: 'Synthetic',
+        id: 'provision-a',
+        matchBasis: 'pe_code',
+        matchScope: 'pe_specific',
+        pageEnd: null,
+        pageStart: null,
+        reviewStatus: 'accepted',
+        sourceUrl: null,
+        text: 'No instruction authority'
+      }
+    ],
+    tool: 'get_pe_report_language'
+  }
+  
+      at walk (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:65)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_report_language', generatedAt: '2026-10-12T00:00:00.000Z', peCode: '0601234A', provisions: [ [Object] ] },
+    expected: { tool: 'get_pe_report_language', generatedAt: '2026-10-12T00:00:00.000Z', peCode: '0601234A', provisions: [ [Object] ] },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:22:3
+✖ contractors full: validated value preserved and every container detached (19.287461ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    data: [
+      {
+        amount: 3,
+        attribution: 'Award attributed to this program element',
+        awards: 2,
+        contractorName: 'Synthetic direct',
+        source: 'direct'
+      },
+      {
+        amount: -1,
+        attribution: 'Linked via DoD Acquisition Program (USAspending)',
+        awards: 1,
+        contractorName: 'Synthetic program',
+        source: 'program'
+      }
+    ],
+    evidence: {
+      federalAwards: {
+        amountM: 2,
+        buckets: [
+          {
+            amountM: 3,
+            count: 2,
+            evidenceClass: 'accepted_direct',
+            label: 'Accepted / direct evidence (named prime or PE-coded award)'
+          },
+          {
+            amountM: -1,
+            count: 1,
+            evidenceClass: 'candidate',
+            label: 'Candidate evidence (program-linked or unreviewed match)'
+          },
+          {
+            amountM: 0,
+            count: 0,
+            evidenceClass: 'unmatched_dollars',
+            label: 'Unmatched dollars (not attributed to this PE)'
+          }
+        ],
+        count: 3,
+        label: 'Recent federal award obligations (USAspending)',
+        provenance: {
+          asOf: '2026-10-12T00:00:00.000Z',
+          kind: 'live_external',
+          source: 'USAspending',
+  ...
+  
+      at walk (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:65)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', todo: null, namedPrimes: [ [Object] ], data: [ [Object], [Object] ], evidence: { governmentExhibit: [Object], federalAwards: [Object] }, evidenceNote: 'accepted_direct = PE-coded awards + R-3 named primes; candidate = MDAP-program-linked awards; unmatched_dollars not inventoried here (fail closed / listed as 0).' },
+    expected: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', todo: null, namedPrimes: [ [Object] ], data: [ [Object], [Object] ], evidence: { governmentExhibit: [Object], federalAwards: [Object] }, evidenceNote: 'accepted_direct = PE-coded awards + R-3 named primes; candidate = MDAP-program-linked awards; unmatched_dollars not inventoried here (fail closed / listed as 0).' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:22:3
+✖ contractors fallback: validated value preserved and every container detached (0.3659ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    data: [],
+    generatedAt: '2026-10-12T00:00:00.000Z',
+    todo: 'federal_award table not yet created (Step 28)',
+    tool: 'get_pe_contractors'
+  }
+  
+      at walk (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:65)
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:24:134)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', data: [], todo: 'federal_award table not yet created (Step 28)' },
+    expected: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', data: [], todo: 'federal_award table not yet created (Step 28)' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:27:1
+✖ bill nested mutation is isolated in both directions (0.654623ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:27:186)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:28:1
+✖ report row mutation is isolated in both directions (0.326571ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'program_level'
+  - 'pe_specific'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:28:150)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'program_level',
+    expected: 'pe_specific',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:29:1
+✖ contractor amount, named prime and provenance mutations are isolated (0.421202ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  999 !== 3
+  
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:29:253)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 999,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:30:1
+✖ frozen caller tree is admitted without mutation and returned detached (1.189287ms)
+  AssertionError [ERR_ASSERTION]: Expected "actual" not to be reference-equal to "expected":
+  
+  {
+    data: [
+      {
+        amount: 3,
+        attribution: 'Award attributed to this program element',
+        awards: 2,
+        contractorName: 'Synthetic direct',
+        source: 'direct'
+      },
+      {
+        amount: -1,
+        attribution: 'Linked via DoD Acquisition Program (USAspending)',
+        awards: 1,
+        contractorName: 'Synthetic program',
+        source: 'program'
+      }
+    ],
+    evidence: {
+      federalAwards: {
+        amountM: 2,
+        buckets: [
+          {
+            amountM: 3,
+            count: 2,
+            evidenceClass: 'accepted_direct',
+            label: 'Accepted / direct evidence (named prime or PE-coded award)'
+          },
+          {
+            amountM: -1,
+            count: 1,
+            evidenceClass: 'candidate',
+            label: 'Candidate evidence (program-linked or unreviewed match)'
+          },
+          {
+            amountM: 0,
+            count: 0,
+            evidenceClass: 'unmatched_dollars',
+            label: 'Unmatched dollars (not attributed to this PE)'
+          }
+        ],
+        count: 3,
+        label: 'Recent federal award obligations (USAspending)',
+        provenance: {
+          asOf: '2026-10-12T00:00:00.000Z',
+          kind: 'live_external',
+          source: 'USAspending',
+  ...
+  
+      at TestContext.<anonymous> (file:///workspace/meri-pe-reference-detachment-review-20261012/packages/contracts/test/retrieval-pe-reference-detachment-independent.test.mjs:30:256)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', todo: null, namedPrimes: [ [Object] ], data: [ [Object], [Object] ], evidence: { governmentExhibit: [Object], federalAwards: [Object] }, evidenceNote: 'accepted_direct = PE-coded awards + R-3 named primes; candidate = MDAP-program-linked awards; unmatched_dollars not inventoried here (fail closed / listed as 0).' },
+    expected: { tool: 'get_pe_contractors', generatedAt: '2026-10-12T00:00:00.000Z', todo: null, namedPrimes: [ [Object] ], data: [ [Object], [Object] ], evidence: { governmentExhibit: [Object], federalAwards: [Object] }, evidenceNote: 'accepted_direct = PE-coded awards + R-3 named primes; candidate = MDAP-program-linked awards; unmatched_dollars not inventoried here (fail closed / listed as 0).' },
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
