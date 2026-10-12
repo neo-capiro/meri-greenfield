@@ -1,0 +1,139 @@
+{
+  "sourceCommit": "d0433f7c7e52e6dbc606a9937f92705a42ac863a",
+  "baseCommit": "5a8d11399d8a4b65a5b04d73f9f22e5de54a157f",
+  "rootContractsCommit": "1625c95d89593f07ec072ad71f9756a41e0c0db1",
+  "scope": "SOURCE_ONLY_NOT_RUNTIME_ADMISSION",
+  "selfExcluded": true,
+  "members": [
+    {
+      "path": "apps/control/commands/tool-interface.mjs",
+      "bytes": 6139,
+      "sha256": "68cb594a9d3869a0194210d056409e509b5fe0719e35e5feced222235b0a3481"
+    },
+    {
+      "path": "apps/control/test/commands-tool-interface.test.mjs",
+      "bytes": 12844,
+      "sha256": "51f27a8a2d18aee56e124106b140a7d52d14e7e5399365d50b0f82933c36bab6"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/tool-interface-validation.mjs",
+      "bytes": 3816,
+      "sha256": "52ad4e9f8887b5231648f21ba08a7a02cd1ce390b241a1868a2ffd384112e4a3"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/tool-interface.schema.json",
+      "bytes": 7362,
+      "sha256": "7c394fc336eeb91435d38b57e45180af838fd898e33f0e0f8e34fe8dcf4e8842"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-COMMAND-TOOL-INTERFACE-20261012.md",
+      "bytes": 5352,
+      "sha256": "a74c0b53fdd081e62fde14179532e43308b5cdabe4bb4ed5b736f1c33c8db477"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-COMMAND-TOOL-INTERFACE-20261012.md",
+      "bytes": 7496,
+      "sha256": "0221aec68ed0270ceeb49f101f5784d2fd925f99f0ced391989b3bf82c160d8f"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/canonical-output.json",
+      "bytes": 1415,
+      "sha256": "9a21f2c99f1bb7ff6a0b5e1398ce5291b6bc969c7a8c823b00f3412889ab4a6e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/canonical-output.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/canonical-output.stdout.bin",
+      "bytes": 2169,
+      "sha256": "c9e2b0e1a80d3ff12790a3ea267c338e0f621c2d73fab0eb564dcb9f53eaa9df"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/cleanup.json",
+      "bytes": 863,
+      "sha256": "9faabf584e19261f406f1e44444a2d5ca38353257aef84bc676329457839238a"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/frozen-connected.json",
+      "bytes": 1342,
+      "sha256": "81a964f7ca09bbbbb9d6f86738855515515eaed3bde93e2a33ee36ffbba1185e"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/frozen-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/frozen-connected.stdout.bin",
+      "bytes": 2369,
+      "sha256": "1dfe9b183491729bfc77f1c33f69113fbac612221d5b4593253cb4621451f334"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/initial-connected.json",
+      "bytes": 1383,
+      "sha256": "4c561eabcc762aa95f37b3b7b07301f1d0b6e4cc8d09ddad4005ad43a65afca1"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/initial-connected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/initial-connected.stdout.bin",
+      "bytes": 1956,
+      "sha256": "c8017163b0ca0d8d7cc49d26a9ec1f9c5cc1870ce1b7487b7bd126265ea43057"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.json",
+      "bytes": 1417,
+      "sha256": "d5a156f2281cfd39eedb6ba415420405b005bb04ad38524faa90899f4c5077bf"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/late-release-repair.stdout.bin",
+      "bytes": 2365,
+      "sha256": "b9088d42262b187a0725554a7699a2efd9d59ebaf640df1c179d67bb2f7bc0db"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/setup-diagnostic.json",
+      "bytes": 467,
+      "sha256": "1904f4f313b154e7febf89c27c1ba87ed0f4b6e49907a935533a12fa769fa9bc"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/source-audit.py",
+      "bytes": 2568,
+      "sha256": "213be10aa22b663072548d9f64ee0415d89789f8f681fe09c19618e78251f67d"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/source-preservation.json",
+      "bytes": 1367,
+      "sha256": "9e8b06bdfa80fecdac3d6880fcba3ed582ccafbeba033b841ed6345da91dc380"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/source-preservation.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/vertical-source-20261012/command-tool-interface/source-preservation.stdout.bin",
+      "bytes": 1645,
+      "sha256": "7dbb7fb5209e74a1bd280ec4ee316c3ebcd3de552749804785553a0ae38dedbe"
+    }
+  ]
+}

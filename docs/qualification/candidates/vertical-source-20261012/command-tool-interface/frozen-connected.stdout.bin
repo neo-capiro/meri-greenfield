@@ -1,0 +1,30 @@
+✔ task.create: raw normalization creates exact pending proposal with no source/journal effect (81.094294ms)
+✔ task.update: raw normalization creates exact pending proposal with no source/journal effect (34.597013ms)
+✔ memory.propose: raw normalization creates exact pending proposal with no source/journal effect (23.649679ms)
+✔ artifact.file: raw normalization creates exact pending proposal with no source/journal effect (35.640611ms)
+✔ raw request cannot supply any server-owned metadata or unknown action (2.519547ms)
+✔ metadata operation/action/binding/raw/input digest mismatch refuses before proposal/executor (8.405685ms)
+✔ unsafe/future/stale receipt clocks and expired/future proposal metadata refuse (5.978236ms)
+✔ non-inert metadata and caller options are rejected without executing getters (1.385372ms)
+✔ preaborted preparation starts no metadata or source port (1.012211ms)
+✔ late preparation ACK is not returned and does not pretend persisted metadata rolled back (8.465264ms)
+✔ late read ACK after cancellation cannot start the existing executor (3.854254ms)
+✔ read must reconstruct exact immutable original command/proposal, not caller substitutions (19.621864ms)
+✔ current metadata policy refusal prevents delegation; current approval remains actual executor responsibility (6.77911ms)
+✔ personal proposal preparation never claims committed memory and actual execution retains pending-producer HOLD (5.928481ms)
+✔ same-actor reviewer is not silently forbidden; current approval policy still external (2.169511ms)
+✔ old producer binding stays immutable while a fresh executor must satisfy actual current authority (4.90931ms)
+✔ final clock-triggered abort cannot release a pending proposal (1.411822ms)
+✔ unknown metadata-owner output fields and oversized receipts refuse (1.88921ms)
+✔ executor result uses exact canonical output schema; absent/extra success are not execution outputs (9.712389ms)
+✔ actual durable journal/source output cannot be substituted before facade release (13.365846ms)
+✔ caller cancellation after actual executor outcome suppresses release without rollback claim (7.750459ms)
+✔ cancellation during final canonical output validation suppresses release (9.780221ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2948.449721
