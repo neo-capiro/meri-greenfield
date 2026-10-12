@@ -1,0 +1,120 @@
+✖ independent actual control pipeline commits A, replaces B, loads and verifies exact bytes (25.34663ms)
+✔ independent owner exposes frozen content-free bound status without database work (2.310612ms)
+✔ independent owner stop before checkpoint consumes real revoke and denies subsequent ingress (4.231659ms)
+✔ independent repeated and concurrent stop reuses one attempt without timestamp rewrite (6.850063ms)
+✔ independent owner invalidates expired exact current grant without resetting original clock (3.624141ms)
+✔ independent owner cannot begin new durable stop after original cleanup deadline (2.066245ms)
+✖ independent current B stop leaves original immutable A commit intact (8.14505ms)
+✖ independent stale A stop refuses without closing B gate or changing B grant (4.775957ms)
+✔ independent wrong peer stop cannot close actual A gate (5.780386ms)
+✔ independent wrong actor stop cannot close actual A gate (4.708095ms)
+✔ independent wrong pin stop cannot close actual A gate (5.015548ms)
+✔ independent caller mutation across first database await cannot retarget stop (2.151323ms)
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (1.939184ms)
+✔ independent stop aborts parked evidence inspection before any object or commit effect (5.425082ms)
+✔ independent stop after parked object put prevents next object effect and publication (6.205244ms)
+✔ independent local stop gate catches request already parked in credential resolution before revocation completes (3.594652ms)
+✔ independent unknown revoke acknowledgement remains visible and repeated stop never retries (2.028268ms)
+✔ independent definite pre-update failure stays FAILED rather than unknown and does not retry (2.036831ms)
+✖ independent unknown publication survives bodyless ingress failure and settled handler tracking (12.78341ms)
+✔ independent ordinary checkpoint failure is not mislabelled as unknown publication (11.862696ms)
+✔ independent cleanup deadline bounds stop but never asserts parked work is physically stopped (41.732863ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 16
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 976.279692
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:16:1
+✖ independent actual control pipeline commits A, replaces B, loads and verifies exact bytes (25.34663ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  500 !== 200
+  
+      at Object.committed (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/control-harness.mjs:137:12)
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:19:19)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:76:1
+✖ independent current B stop leaves original immutable A commit intact (8.14505ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  500 !== 200
+  
+      at Object.committed (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/control-harness.mjs:137:12)
+      at async file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:77:3
+      at async owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:85:1
+✖ independent stale A stop refuses without closing B gate or changing B grant (4.775957ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  500 !== 200
+  
+      at Object.committed (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/control-harness.mjs:137:12)
+      at async file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:86:3
+      at async owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 500,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:116:1
+✖ independent accessor and proxy stop targets cause no getter trap or durable dispatch (1.939184ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:125:5
+      at async owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:201:1
+✖ independent unknown publication survives bodyless ingress failure and settled handler tracking (12.78341ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:213:10
+      at async owned (file:///workspace/meri-g1-runtime-owner-review-20261012/docs/qualification/candidates/g1-runtime-owner-20261012/review/owner-independent.test.mjs:12:23)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

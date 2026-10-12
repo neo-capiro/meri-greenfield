@@ -242,3 +242,72 @@ test('independent cleanup deadline bounds stop but never asserts parked work is 
   release.resolve(); assert.notEqual((await pending).status, 200); await pause();
   assert.equal(h.control.runStatus(target(h)).activeOperations, 0);
 }));
+
+for (const method of ['stopRun', 'runStatus']) test(`supplemental ${method} admits only closed inert own-data target`, async () => owned(async h => {
+  for (const kind of ['extra', 'symbol', 'hidden', 'prototype', 'accessor', 'proxy']) {
+    let effects = 0;
+    let input = { ...target(h) };
+    if (kind === 'extra') input.allow = true;
+    if (kind === 'symbol') input[Symbol('allow')] = true;
+    if (kind === 'hidden') Object.defineProperty(input, 'context', { value: h.f.producer, enumerable: false });
+    if (kind === 'prototype') Object.setPrototypeOf(input, { inherited: true });
+    if (kind === 'accessor') Object.defineProperty(input, 'context', { enumerable: true,
+      get() { effects++; return h.f.producer; } });
+    if (kind === 'proxy') input = new Proxy(input, {
+      get() { effects++; throw new Error('trap'); },
+      ownKeys() { effects++; throw new Error('trap'); },
+      getPrototypeOf() { effects++; throw new Error('trap'); }
+    });
+    const calls = h.store.calls.length;
+    await assert.rejects(async () => h.control[method](input), undefined, `${method}/${kind}`);
+    assert.equal(effects, 0, `${method}/${kind}`);
+    assert.equal(h.store.calls.length, calls, `${method}/${kind}`);
+  }
+}));
+
+test('supplemental close bars request already resolving without implicit grant revocation', async () => owned(async h => {
+  const entered = deferred(), release = deferred(); let paused = false;
+  h.store.beforeQuery = async call => {
+    if (!paused && call.sql.startsWith('SELECT run_uuid FROM')) { paused = true; entered.resolve(); await release.promise; }
+  };
+  const pending = h.send('authorizeFixturePhase').promise;
+  await entered.promise;
+  await h.control.close();
+  release.resolve();
+  assert.notEqual((await pending).status, 200);
+  assert.equal(h.store.grants.get(h.f.producer.identity.grantId).state, 'ACTIVE');
+  assert.equal(h.store.calls.filter(c => c.sql === 'SELECT clock_timestamp() AS now').length, 1);
+}));
+
+test('supplemental reentrant real handler abort receives the same reserved stop promise', async () => owned(async h => {
+  const entered = deferred(), release = deferred(); let second;
+  h.inspector.verify = async ({ signal }) => {
+    signal.addEventListener('abort', () => { second = h.control.stopRun(target(h)); }, { once: true });
+    entered.resolve(); await release.promise; return true;
+  };
+  const pending = h.send('commitFixtureCheckpoint').promise; await entered.promise;
+  const first = h.control.stopRun(target(h));
+  assert.equal(second, first);
+  release.resolve(); await first;
+  assert.notEqual((await pending).status, 200);
+  assert.equal(revokeWrites(h).length, 1);
+}));
+
+test('supplemental stop during issued publication preserves its late unknown acknowledgement', async () => owned(async h => {
+  const entered = deferred(), release = deferred(); const unknown = new CommitUncertain();
+  h.store.afterTransaction = async ({ queries }) => {
+    if (queries.some(c => c.sql.startsWith('INSERT INTO meri_qualification_sdk_fixture.commits'))) {
+      entered.resolve(); await release.promise; throw unknown;
+    }
+  };
+  const pending = h.send('commitFixtureCheckpoint').promise; await entered.promise;
+  const stop = h.control.stopRun(target(h));
+  release.resolve();
+  await assert.rejects(stop, error => error instanceof CommitUncertain);
+  assert.notEqual((await pending).status, 200);
+  assert.equal(h.store.commits.size, 1);
+  assert.equal(h.store.grants.get(h.f.producer.identity.grantId).state, 'REVOKED');
+  assert.equal(h.control.runStatus(target(h)).publicationUncertain, true);
+  assert.equal(h.control.runStatus(target(h)).activeOperations, 0);
+  await assert.rejects(h.control.close(), error => error instanceof CommitUncertain);
+}));
