@@ -1,0 +1,166 @@
+{
+  "at": "2026-10-12T17:02:15.308226+00:00",
+  "within_cleanup_deadline": true,
+  "original_and_prior_schemas_unchanged": true,
+  "sdk_unchanged": true,
+  "roles_hba_database_catalog_unchanged": true,
+  "archive_name": "meri_qualification_invocation_20261012",
+  "archive": {
+    "oid": 25727,
+    "relations": [
+      [
+        25728,
+        "budget",
+        "r"
+      ],
+      [
+        25847,
+        "budget_liabilities",
+        "v"
+      ],
+      [
+        25736,
+        "budget_pkey",
+        "i"
+      ],
+      [
+        25748,
+        "grants",
+        "r"
+      ],
+      [
+        25759,
+        "grants_capability_sha256_key",
+        "i"
+      ],
+      [
+        25757,
+        "grants_pkey",
+        "i"
+      ],
+      [
+        25785,
+        "one_unknown_per_grant",
+        "i"
+      ],
+      [
+        25846,
+        "one_unknown_tool_per_grant",
+        "i"
+      ],
+      [
+        25766,
+        "requests",
+        "r"
+      ],
+      [
+        25778,
+        "requests_pkey",
+        "i"
+      ],
+      [
+        25738,
+        "runs",
+        "r"
+      ],
+      [
+        25746,
+        "runs_pkey",
+        "i"
+      ],
+      [
+        25802,
+        "tool_grant_bindings",
+        "r"
+      ],
+      [
+        25807,
+        "tool_grant_bindings_pkey",
+        "i"
+      ],
+      [
+        25852,
+        "tool_invocations",
+        "r"
+      ],
+      [
+        25864,
+        "tool_invocations_pkey",
+        "i"
+      ],
+      [
+        25866,
+        "tool_invocations_reservation_id_key",
+        "i"
+      ],
+      [
+        25868,
+        "tool_invocations_run_id_producer_key_sha256_key",
+        "i"
+      ],
+      [
+        25819,
+        "tool_reservations",
+        "r"
+      ],
+      [
+        25832,
+        "tool_reservations_pkey",
+        "i"
+      ],
+      [
+        25834,
+        "tool_reservations_reservation_id_key",
+        "i"
+      ],
+      [
+        25786,
+        "tool_run_allocations",
+        "r"
+      ],
+      [
+        25795,
+        "tool_run_allocations_pkey",
+        "i"
+      ]
+    ],
+    "tables": {
+      "budget": {
+        "rows": 1,
+        "sha256": "fa997221d781c50e4d8f835de53f1cc0c6054061895677edd1b1b2e3bf205eba"
+      },
+      "grants": {
+        "rows": 12,
+        "sha256": "0be4be8770e49882c69d37b5e144898c2d11a174f59ee59523bf4df30238aad4"
+      },
+      "requests": {
+        "rows": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "runs": {
+        "rows": 12,
+        "sha256": "ed43de4f33228d78ed660ed05814c4533674fcec5ac3975e69cede016107a2d7"
+      },
+      "tool_grant_bindings": {
+        "rows": 12,
+        "sha256": "6d64f3d1ad645ea155a60e632256e1a6341d070a180de00decdd531202ab9372"
+      },
+      "tool_invocations": {
+        "rows": 12,
+        "sha256": "a4eb0824f192959b0caabe6f2331634eaab3d399ab01a642c6a94eec5fcbe75e"
+      },
+      "tool_reservations": {
+        "rows": 10,
+        "sha256": "9b9ffd11266def857674fa7bb9310b0ad8c8b111513052c29be4745e8eca4abc"
+      },
+      "tool_run_allocations": {
+        "rows": 12,
+        "sha256": "d00c46a03196ad04d5ca7791fc95cb46b1bb615d917f5c87ba4359e6fc6a93f5"
+      }
+    }
+  },
+  "no_other_test_backends": true,
+  "new_credentials_or_security_changes": false,
+  "container_kept_running": true,
+  "host5432_untouched": true
+}

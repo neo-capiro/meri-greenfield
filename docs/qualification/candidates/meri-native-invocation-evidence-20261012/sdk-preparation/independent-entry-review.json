@@ -1,0 +1,13 @@
+{
+  "schema": "meri-sdk-offline-independent-entry-review/1",
+  "reviewer": "root native runtime owner",
+  "received_at": "2026-10-12T16:53:50.287904+00:00",
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "selected_entries": [
+    "apps/worker/qualification/probes/sdk-capture.test.mjs",
+    "apps/worker/qualification/probes/native-stream-observer.test.mjs"
+  ],
+  "decision": "ACCEPT_OFFLINE_ENTRIES_AFTER_PINNED_PACKAGE_VERIFICATION",
+  "proof": "Root independently inspected selected entries/imports/all runCapture/main/spawn paths. SDK capture test uses fake hosts throughout; only actual imported main call is win32 refusal; Linux main extraction injects fake buildRealHost/runCapture. Direct SDK accesses are declaration-file reads. realPrepareWorkspace controls touch only mkdtemp-owned paths, no fixed real workspace. Native stream observer tests use PassThrough/fake child streams only. No proc/Docker/server/provider/native child path found.",
+  "native_start_admitted": false
+}

@@ -1,0 +1,17 @@
+{
+  "platform_session_id": 40525,
+  "terminal": {
+    "chunk_id": "2725a3",
+    "wall_time_seconds": 0.00001995,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "source_commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+  "source_tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+  "tests": 12,
+  "pass": 12,
+  "fail": 0,
+  "skipped": 0,
+  "attempts": 1
+}

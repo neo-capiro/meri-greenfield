@@ -1,0 +1,264 @@
+(node:134660) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ normal three-owner completion records distinct PIDs and closes all owned pools (18.876497ms)
+✔ initialization failure still waits for every owned close attempt (3.325972ms)
+✔ verification failure still waits for every owned close attempt (17.128541ms)
+✔ observation failure still waits for every owned close attempt (16.35134ms)
+✔ rollback failure still waits for every owned close attempt (17.218383ms)
+✔ blocker release failure still waits for every owned close attempt (17.04704ms)
+✔ owner close failure still waits for every owned close attempt (17.073522ms)
+✔ commit failure still waits for every owned close attempt (16.931132ms)
+✔ synchronous action rejection is registered before execution and other owners still settle (16.990517ms)
+✖ late three-waiter stats response cannot pass the original observation cutoff (16.736717ms)
+✔ prepare acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (2.416998ms)
+✔ claim acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (1.075349ms)
+✔ marker acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (0.948442ms)
+✔ settle acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (0.970805ms)
+✔ unrelated phase and driver COMMIT rejection cannot be relabeled as the target acknowledgement loss (1.249373ms)
+✔ historical comparison removes only volatile observedAtMs and retains every accounting outcome (5.285088ms)
+✔ missing native mode refuses before any application or native resource stub (2.003651ms)
+✖ migration binding undefined refuses before application/native resource stubs (1.527562ms)
+✖ migration binding not-a-hash refuses before application/native resource stubs (1.119473ms)
+✖ migration binding ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff refuses before application/native resource stubs (1.035269ms)
+✖ missing table admission closes owner before any native case can execute (1.443729ms)
+✖ dirty table admission closes owner before any native case can execute (1.069099ms)
+✖ dirty budget admission closes owner before any native case can execute (1.006017ms)
+✖ valid migration admits exactly twelve registrations, runs no cases, and closes pool via after hook (1.1854ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 16
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 243.117318
+
+✖ failing tests:
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:73:1
+✖ late three-waiter stats response cannot pass the original observation cutoff (16.736717ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: NATIVE_LOCK_OBSERVATION_DEADLINE
+      at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:75:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: NATIVE_LOCK_OBSERVATION_DEADLINE
+        at Module.concurrentOwners (vm:module(0):87:37)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:75:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:140:60
+✖ migration binding undefined refuses before application/native resource stubs (1.527562ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED'
+  - 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:141:60)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED',
+    expected: 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:140:60
+✖ migration binding not-a-hash refuses before application/native resource stubs (1.119473ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED'
+  - 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:141:60)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED',
+    expected: 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:140:60
+✖ migration binding ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff refuses before application/native resource stubs (1.035269ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED'
+  - 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:141:60)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'BUDGET_NATIVE_TEST_ADMISSION_REQUIRED',
+    expected: 'INVOCATION_NATIVE_MIGRATION_BINDING_REQUIRED',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:144:139
+✖ missing table admission closes owner before any native case can execute (1.443729ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+  +     at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+  +     at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+  +     at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+  +     at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+  +     at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+  +     at async Test.run (node:internal/test_runner/test:1389:7)
+  +     at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:81)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+        at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+        at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+        at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+        at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+        at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:144:139
+✖ dirty table admission closes owner before any native case can execute (1.069099ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+  +     at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+  +     at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+  +     at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+  +     at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+  +     at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+  +     at async Test.run (node:internal/test_runner/test:1389:7)
+  +     at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:81)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+        at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+        at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+        at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+        at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+        at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:144:139
+✖ dirty budget admission closes owner before any native case can execute (1.006017ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+  +     at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+  +     at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+  +     at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+  +     at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+  +     at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+  +     at async Test.run (node:internal/test_runner/test:1389:7)
+  +     at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:81)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+        at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+        at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+        at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+        at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+        at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:145:11)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:149:1
+✖ valid migration admits exactly twelve registrations, runs no cases, and closes pool via after hook (1.1854ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+  +     at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+  +     at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+  +     at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+  +     at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+  +     at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+  +     at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:150:11)
+  +     at async Test.run (node:internal/test_runner/test:1389:7)
+  +     at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  - undefined
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:150:70)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: BUDGET_NATIVE_TEST_ADMISSION_REQUIRED
+        at fail (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:9:28)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-budget-native-fixture.mjs:15:86)
+        at parseNativeAdmission (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:123:69)
+        at file:///workspace/scratch/meri-native-invocation-20261012/apps/gateway/test/postgres-invocation.integration.mjs:6:17
+        at SourceTextModule.evaluate (node:internal/vm/module:233:26)
+        at loadEntry (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:134:20)
+        at async TestContext.<anonymous> (file:///workspace/scratch/meri-native-invocation-review-20261012/independent-source.test.mjs:150:11)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

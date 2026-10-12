@@ -1,0 +1,34 @@
+(node:135643) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ normal three-owner completion records distinct PIDs and closes all owned pools (18.95346ms)
+✔ initialization failure still waits for every owned close attempt (3.218043ms)
+✔ verification failure still waits for every owned close attempt (16.884503ms)
+✔ observation failure still waits for every owned close attempt (17.104396ms)
+✔ rollback failure still waits for every owned close attempt (16.208872ms)
+✔ blocker release failure still waits for every owned close attempt (15.97663ms)
+✔ owner close failure still waits for every owned close attempt (16.065161ms)
+✔ commit failure still waits for every owned close attempt (17.403324ms)
+✔ synchronous action rejection is registered before execution and other owners still settle (17.258901ms)
+✔ late three-waiter stats response cannot pass the original observation cutoff (17.211784ms)
+✔ prepare acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (1.652545ms)
+✔ claim acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (0.964636ms)
+✔ marker acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (1.013478ms)
+✔ settle acknowledgement fault forwards identical arguments and only follows real COMMIT resolution (1.244697ms)
+✔ unrelated phase and driver COMMIT rejection cannot be relabeled as the target acknowledgement loss (0.952288ms)
+✔ historical comparison removes only volatile observedAtMs and retains every accounting outcome (5.747516ms)
+✔ missing native mode refuses before any application or native resource stub (1.990842ms)
+✔ migration binding undefined refuses before application/native resource stubs (1.517968ms)
+✔ migration binding not-a-hash refuses before application/native resource stubs (1.258437ms)
+✔ migration binding ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff refuses before application/native resource stubs (1.111262ms)
+✔ missing table admission closes owner before any native case can execute (2.123957ms)
+✔ dirty table admission closes owner before any native case can execute (1.735677ms)
+✔ dirty budget admission closes owner before any native case can execute (1.484489ms)
+✔ valid migration admits exactly twelve registrations, runs no cases, and closes pool via after hook (1.282692ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 247.240981

@@ -1,0 +1,192 @@
+{
+  "schema": "meri-sdk-local-next-security-scope/1",
+  "recorded_at": "2026-10-12T17:07:01.898814+00:00",
+  "status": "PROPOSED_SINGLE_WORKER_ACTION_DATA_ONLY; IMAGE_BUILD_ACQUISITION_AND_ADMISSION_PREREQUISITE_OPEN",
+  "approval_required_reason": "User explicitly requires a concrete new security scope before creating the disposable worker. Prior official-registry dependency-install authority covers completed npm preparation only. No real credential approval is needed; SDK token is synthetic.",
+  "approval_sentence": "Approve one bounded local SDK loopback worker action using the exact frozen project worker recipe/image, including its explicitly reviewed image acquisition/build prerequisite if no admitted image is supplied. Create one fresh nonroot credential-free worker with contained loopback networking, one60s SDK capture/two requests, external90s platform timeout plus5s grace, and positive owned-group/container cleanup within the common720s work/900s cleanup window. No AWS/provider calls, database/port5432 action, deployment, host system changes or real credential creation.",
+  "candidate_image": {
+    "registry": "docker.io/library/node",
+    "reference": "docker.io/library/node@sha256:c83040f7e24bacea68e58a0b96a484ba430bf24abb2973eab7ba4701144b7b63",
+    "platform": "linux/amd64",
+    "expected_image_config_id": "sha256:04f59b17d8d39a8fdeb138fecb8fcbaa6e208ed7b6db929c7e98ad9005e0a52f",
+    "upstream_index_digest": "sha256:173f125896c3b47ddf056734c7ea789d04595a6a08769a8f78e0df642781fb66",
+    "node_version": "24.21.0",
+    "already_local": false,
+    "selected_by_existing_source_component_pin": true,
+    "acquisition": "Anonymous official-registry pull under a fresh task-owned empty Docker config; no credentials/login/mirror/host config. Acquisition itself remains unperformed.",
+    "pre_start_readback": "Exact pulled digest/config/imageID/source closure and required ELF loader/glibc libraries must match. Root must disposition the source/image security prerequisites before real SDK launch; this packet grants no waiver or full worker/image acceptance.",
+    "role": "Base artifact inside the complete frozen worker recipe; this official Node base alone is not the selected SDK worker or an admitted image.",
+    "base_alone_admitted_as_worker": false
+  },
+  "current_local_runtime": {
+    "node_version": "24.19.0",
+    "node_binary_sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+    "offline_source_controls_pass_on_this_runtime": true,
+    "project_engine_range_satisfied": true,
+    "does_not_establish_frozen_N1_Node24_21_image": true
+  },
+  "local_images_observed": [
+    {
+      "Containers": "2",
+      "CreatedAt": "2026-10-01 17:34:13 +0000 UTC",
+      "CreatedSince": "10 days ago",
+      "Digest": "sha256:7b822b0aac60967beb1ea5e576b8602c94c300a157d187f385ae3e0da199b90a",
+      "ID": "sha256:f1447071e6c8449dcf4056aa0994c81d3566ce5ee232de36b04dc25696a116dd",
+      "Repository": "pgvector/pgvector",
+      "SharedSize": "N/A",
+      "Size": "445MB",
+      "Tag": "pg16",
+      "UniqueSize": "N/A",
+      "VirtualSize": "445.4MB"
+    }
+  ],
+  "worker": {
+    "count": 1,
+    "name": "meri-sdk-loopback-<fresh canonical run UUID>",
+    "labels": {
+      "meri.qualification": "sdk-loopback",
+      "meri.owner.run": "<fresh canonical run UUID>",
+      "meri.source.commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0"
+    },
+    "unique_name_prior_absence_required": true,
+    "network": "none; own loopback only, no published port, no host networking, no connections to host55432/5432/metadata/provider/DNS",
+    "user": "10001:10001",
+    "read_only_root": true,
+    "capabilities": "drop ALL; add none",
+    "security_option": "no-new-privileges=true; existing Docker seccomp defaults retained; no privileged mode/unconfined setting",
+    "host_namespaces": "Default private pid/ipc/network namespaces; no host pid/ipc/network modes",
+    "resources": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "memory_swap_bytes": 1073741824,
+      "pids_limit": 64,
+      "workspace_tmpfs_bytes": 67108864,
+      "tmp_tmpfs_bytes": 67108864
+    },
+    "mounts_readonly": [
+      {
+        "source": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification/probes/sdk-capture.mjs",
+        "target": "/opt/meri-worker/probes/sdk-capture.mjs",
+        "sha256": "027117958a878cce722650c57bd0fe6132c5be69a440a3b3b9cd6f83213e6083"
+      },
+      {
+        "source": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification/probes/sdk-capture-options.mjs",
+        "target": "/opt/meri-worker/probes/sdk-capture-options.mjs",
+        "sha256": "964f4f1958dd0707198fcd21611018b9a9337e90e5f434ed24ce47beb3986b0e"
+      },
+      {
+        "source": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification/probes/native-stream-observer.mjs",
+        "target": "/opt/meri-worker/probes/native-stream-observer.mjs",
+        "sha256": "66fa0dec53eb9cc3d98a79d45a0cc8290281efc46dce7baa05e1f0721771beba"
+      },
+      {
+        "source": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree/apps/worker/qualification/node_modules",
+        "target": "/opt/meri-worker/node_modules",
+        "binding_receipt_sha256": "731bf2fba9bb20b7206c90debc462a33b72029e8b0f7f47948dfae0d601565c3",
+        "contents": "Only the isolated locked public/project dependency install; no npm configuration/cache, credential file, source checkout or DB mount."
+      }
+    ],
+    "mounts_writable": [
+      {
+        "target": "/workspace",
+        "type": "fresh tmpfs",
+        "options": "rw,nosuid,nodev,size=64m,mode=0700,uid=10001,gid=10001"
+      },
+      {
+        "target": "/tmp",
+        "type": "fresh tmpfs",
+        "options": "rw,nosuid,nodev,size=64m,mode=1777"
+      }
+    ],
+    "forbidden_mounts": [
+      "Docker socket",
+      "host home/.aws/.codex/provider/npm config",
+      "database/data/volumes",
+      "other source checkouts/evidence/private files"
+    ],
+    "credential_requirements": "None. Only existing synthetic source constant to owned loopback endpoint; parent environment sanitized before SDK import. No bearer/master/salt/privateTLS key/provider credential.",
+    "source_disabled": true,
+    "existing_capture_entry_argv": [
+      "/usr/local/bin/node",
+      "/opt/meri-worker/probes/sdk-capture.mjs"
+    ],
+    "pre_child_admission": "Require exact Docker identity/profile before start and actual UID/private-network-only-loopback/empty fixed paths/credential-free environment proof before importing real SDK or its child. A small fixed source-reviewed preflight is still required; no general supervisor or runtime architecture change. Do not use credential/environment assertions alone as egress proof.",
+    "image_selection": "Exact admitted immutable worker image from frozen complete recipe/source/context above, not the database image or a base-only Node substitution."
+  },
+  "bounds": {
+    "original_work_seconds": 720,
+    "original_cleanup_seconds": 900,
+    "whole_capture_platform_timeout_seconds": 90,
+    "termination_grace_seconds": 5,
+    "source_runCapture_work_seconds": 60,
+    "attempts": 1,
+    "native_queries": 1,
+    "native_cli_spawns": 1,
+    "loopback_messages_requests": 2,
+    "tool_echo_effects": 1,
+    "max_turns": 3,
+    "max_output_tokens": 256,
+    "parent_stdout_limit_bytes": 33554432,
+    "parent_stderr_limit_bytes": 1048576,
+    "deadline_note": "Original common clocks start once before owned image/worker effects. SDK admission uses remaining original work cutoff; platform90s plus5s is clipped to original cleanup cutoff, with no clock reset/retry."
+  },
+  "cleanup": {
+    "owner_ids": "Fresh name/labels plus exact Docker ID/cidfile and before/after lifecycle receipts; do not target by generic port/name pattern.",
+    "deadline": "Stop/kill/remove only exact positively owned SDK container by original900s; preserve all other containers, PID1, DBs and source worktrees.",
+    "positive_required": "Docker terminal state and exact container absence; own namespace/listener/descendants retire with that container. Direct SDK child exit alone is insufficient. Record platform terminal/EOF, hash/byte counts and resource absence. Historical workspace zombies stay separately recorded and are not claimed reaped.",
+    "retain": "Install/cache/licenses, immutable source binding, package/CLI hashes, complete failed/successful runtime streams/decoder artifacts and lifecycle receipts. Fresh tmpfs disappears with owned worker.",
+    "unknown": "Unknown identity/cleanup/digest/security/egress/credential/deadline refuses SDK admission or keeps HOLD; no automatic retry."
+  },
+  "cost": {
+    "provider_calls": 0,
+    "provider_usd": 0,
+    "new_cloud_resources": 0,
+    "cloud_api_calls": 0,
+    "additional_provider_cloud_cost_usd": 0,
+    "existing_host_cost": "Unchanged/unpriced; local host resource time is not claimed free.",
+    "registry": "Anonymous public artifact acquisition only; no AWS/ECR/provider endpoint or paid-model call."
+  },
+  "open_admission_items": [
+    "No frozen worker image is present locally; exact canonical image acquisition/build/source-security admission is still needed. An action request cannot treat the Node base or PostgreSQL image as this worker.",
+    "Fixed pre-child containment/admission and owned-group/container lifecycle must be independently reviewed before native start; SDK settings alone do not prove OS confinement."
+  ],
+  "no_permission_changes_made": true,
+  "frozen_worker_image_prerequisite": {
+    "recipe_source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+    "recipe_path": "apps/worker/qualification/Dockerfile",
+    "recipe_sha256": "3f86ae7ca55e8bbfb2814f1b335b7df8159daf9b5008df60f1165ba879c40f36",
+    "component_pins_sha256": "2f2c5d52fbee23bbdb206456235664b9dbbdf5c3526ccc065d499ed0a61f5aed",
+    "worker_lock_sha256": "d3d4c5362e0c7dc1392ef9cad2048d00c564f1ff70d98c3e10108e50aa56147a",
+    "canonical_context_builder_path": "scripts/qualification/worker_context.py",
+    "canonical_context_builder_sha256": "e5ea8c06607f15c6c0c2dfde527f20d9dfa509e6c59268ffaa03cbfa6b97d765",
+    "intended_canonical_context_argv": [
+      "<ADMITTED_PYTHON>",
+      "scripts/qualification/worker_context.py",
+      "--output",
+      "<FRESH_OWNED_ABSOLUTE_CONTEXT>"
+    ],
+    "intended_build_argv": [
+      "docker",
+      "--config",
+      "<OWNED_EMPTY_CONFIG>",
+      "--host",
+      "unix:///var/run/docker.sock",
+      "build",
+      "--pull",
+      "--platform",
+      "linux/amd64",
+      "-f",
+      "<FRESH_CONTEXT>/context/Dockerfile",
+      "-t",
+      "meri-sdk-loopback:<FRESH_RUN_UUID>",
+      "<FRESH_CONTEXT>/context"
+    ],
+    "image_digest_available": false,
+    "assembled_image_digest_in_source": null,
+    "acquisition_build_performed": false,
+    "gates": "Root must review exact finite canonical context, public acquisition/build actions and limits, output image digest/source/package closure and source/image security disposition before native start. No historical image admission transfers and the rejected worker image remains forbidden. If image preparation cannot finish inside the originally admitted bounded window, stop without SDK; never reset the clock or claim this packet supplies a ready image.",
+    "host_system_install": false,
+    "cloud_build_push_launch": false
+  },
+  "one_scope_boundary": "One original bounded SDK worker operation; image acquisition/build prerequisite is explicit and must be made executable/reviewed before action. No native auth, Temporal, browser/Office probe, paid model, cloud service or database scope included."
+}

@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: actual trusted control normalizes, produces one durable identity, completes and charges once
+ok 1 - actual trusted control normalizes, produces one durable identity, completes and charges once
+  ---
+  duration_ms: 126.714444
+  type: 'test'
+  ...
+# Subtest: lost real prepare COMMIT acknowledgement retains identity and conserved accounting
+ok 2 - lost real prepare COMMIT acknowledgement retains identity and conserved accounting
+  ---
+  duration_ms: 63.832361
+  type: 'test'
+  ...
+# Subtest: lost real claim COMMIT acknowledgement retains identity and conserved accounting
+ok 3 - lost real claim COMMIT acknowledgement retains identity and conserved accounting
+  ---
+  duration_ms: 48.191981
+  type: 'test'
+  ...
+# Subtest: lost real marker COMMIT acknowledgement retains identity and conserved accounting
+ok 4 - lost real marker COMMIT acknowledgement retains identity and conserved accounting
+  ---
+  duration_ms: 53.106733
+  type: 'test'
+  ...
+# Subtest: lost real settle COMMIT acknowledgement retains identity and conserved accounting
+ok 5 - lost real settle COMMIT acknowledgement retains identity and conserved accounting
+  ---
+  duration_ms: 57.172492
+  type: 'test'
+  ...
+# Subtest: simultaneous real trusted deliveries issue one identity, one reservation and one handler
+ok 6 - simultaneous real trusted deliveries issue one identity, one reservation and one handler
+  ---
+  duration_ms: 111.595977
+  type: 'test'
+  ...
+# Subtest: three native preparations converge to the retained producer identity without duplicate issuance
+ok 7 - three native preparations converge to the retained producer identity without duplicate issuance
+  ---
+  duration_ms: 133.473793
+  type: 'test'
+  ...
+# Subtest: concurrent fresh owners reconcile the real completion marker and charge exactly once
+ok 8 - concurrent fresh owners reconcile the real completion marker and charge exactly once
+  ---
+  duration_ms: 148.903002
+  type: 'test'
+  ...
+# Subtest: same delivery rejects request/context substitution and cannot bypass canonical owned dispatch
+ok 9 - same delivery rejects request/context substitution and cannot bypass canonical owned dispatch
+  ---
+  duration_ms: 34.654941
+  type: 'test'
+  ...
+# Subtest: production control stays source-disabled while actual producer provenance remains recoverable
+ok 10 - production control stays source-disabled while actual producer provenance remains recoverable
+  ---
+  duration_ms: 21.015234
+  type: 'test'
+  ...
+# Subtest: foreign completion facts cannot release or charge a real UNKNOWN hold
+ok 11 - foreign completion facts cannot release or charge a real UNKNOWN hold
+  ---
+  duration_ms: 46.962122
+  type: 'test'
+  ...
+# Subtest: three historical reconciliations conserve UNKNOWN after revocation expiry replacement and quarantine
+ok 12 - three historical reconciliations conserve UNKNOWN after revocation expiry replacement and quarantine
+  ---
+  duration_ms: 157.432091
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1878.054345

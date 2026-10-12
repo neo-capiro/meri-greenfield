@@ -1,0 +1,48 @@
+{
+  "schema": "meri-sdk-safe-preparation-terminal/1",
+  "completed_at": "2026-10-12T17:07:01.899455+00:00",
+  "source_commit": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "branch": "task/native-sdk-preparation-20261012",
+  "worktree": "/workspace/scratch/meri-native-sdk-preparation-20261012/worktree",
+  "status": "PASS_SAFE_DEPENDENCY_AND_OFFLINE_PREPARATION; NATIVE_START_HOLD",
+  "installed_locked_packages": 130,
+  "required104_all_present": true,
+  "versions_and_tarball_integrity_all_match": true,
+  "license_file_hashes": 127,
+  "cli_version": "2.1.295",
+  "cli_bytes": 256113848,
+  "cli_sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+  "cli_elf_inspected_not_executed": true,
+  "offline_counts": {
+    "tests": 81,
+    "pass": 81,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "offline_duration_ms": 10628.288825,
+  "offline_terminal_exit": 0,
+  "source_tracked_clean": true,
+  "prior33_9_receipt_comparisons_pass": true,
+  "new_sdk_query_binary_listener": false,
+  "new_container_security_database_action": false,
+  "package_network": "Only approved official registry acquisition through unchanged credential-free proxy/public CA with strictSSL; no hooks/audit/funding/login.",
+  "native_provider_aws_calls": 0,
+  "evidence": {
+    "install-receipt.json": "61b3845f0e265439e7791b6bc02e6231fb449300edcd96988b77408a40693aa8",
+    "package-verification.json": "731bf2fba9bb20b7206c90debc462a33b72029e8b0f7f47948dfae0d601565c3",
+    "independent-entry-review.json": "71887d14cf40dd454ad422a06ee1e10aaf40e96a50199d54cc71b30eb2125a89",
+    "offline-tests-receipt.json": "7e3df086da0db90e93ee4a5823305fdc5697f839ffd7e0458e042dd3ef16c193",
+    "offline-tests-summary.json": "e668e0f9cf1b6815025925131c03e9997b6ede7e25bccf4f761c0bc5841b1a84",
+    "source-receipt.json": "63505b4ee4541dbafaad5a8cf2c0309092a8b49e9c9ca60bffac444c828c92d6",
+    "preservation.json": "30551f8d3b30e0738e7d44be8b49e234cc3d9617a77d1ee63b81d8ca03d52170",
+    "docker-images.receipt.json": "14722006cba19b5967674b9b2a10131b86979bc79d1ca263224810b41393e7c7",
+    "next-security-scope.json": "5510c79ad4604829d42ca4ab6db0c21d2efac1e168ee61d08eb6b9958e1bfa20"
+  },
+  "retained_reader_corrections": [
+    "package-verification-initial-failure.json: corrected missing _cacache path; not an install/runtime failure.",
+    "offline-tests-receipt.json original null TAP counters retained; offline-tests-summary.json parses unchanged Node spec output. No test rerun."
+  ],
+  "next_scope": "Single frozen-worker action; complete image acquisition/build/admission prerequisite remains explicit and open. No Node-base-only or PostgreSQL container substitution."
+}

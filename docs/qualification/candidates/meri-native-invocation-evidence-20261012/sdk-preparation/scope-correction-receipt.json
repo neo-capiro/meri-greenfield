@@ -1,0 +1,33 @@
+{
+  "schema": "meri-sdk-scope-data-correction/1",
+  "recorded_at": "2026-10-12T17:12:50.680004+00:00",
+  "status": "PROPOSED_SCOPE_DATA_CORRECTED; SOURCE_REVIEW_ONLY_NO_RUNTIME_ADMISSION",
+  "previous_scope": {
+    "path": "/workspace/scratch/meri-native-sdk-preparation-20261012/next-security-scope.json",
+    "sha256": "5510c79ad4604829d42ca4ab6db0c21d2efac1e168ee61d08eb6b9958e1bfa20",
+    "bytes": 11702,
+    "preserved_unchanged": true
+  },
+  "previous_sdk_terminal_receipt": {
+    "path": "/workspace/scratch/meri-native-sdk-preparation-20261012/terminal-receipt.json",
+    "sha256": "d6fa9831012d9d9c1db048c16d12a8be197416353bd21cc2198dd7ccd4923ed2",
+    "bytes": 2688,
+    "preserved_unchanged": true
+  },
+  "new_proposed_scope": {
+    "path": "/workspace/scratch/meri-native-sdk-preparation-20261012/next-security-scope.v2.json",
+    "sha256": "626f8efd13e9b7faa180cbfdbe36b360f7ad4363959dbb0112c8579ace737535",
+    "bytes": 12772
+  },
+  "changed_fields": [
+    "recorded_at",
+    "proposal_version",
+    "lineage",
+    "bounds.deadline_note"
+  ],
+  "fixed_admission_rule": "Before each image/build/security/capture operation the fixed bound+grace must fit remaining original720s work and900s cleanup windows; capture90+5 must fit before start. Otherwise HOLD+bounded cleanup, no shrinking/reset/extension/automatic retry.",
+  "full_frozen_worker_recipe_image_required": true,
+  "conditional_pre_child_os_image_source_admission_required": true,
+  "new_runtime_install_security_container_database_network_actions": false,
+  "existing_terminal_evidence_hash_bindings_left_unchanged": true
+}

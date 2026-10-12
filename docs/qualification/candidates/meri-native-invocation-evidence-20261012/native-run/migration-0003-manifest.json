@@ -1,0 +1,8 @@
+{
+  "status": "OWNERSHIP_MANIFEST_BEFORE_COMMIT",
+  "migration_sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+  "table_oid": 25852,
+  "rows": 0,
+  "qualification_result": false,
+  "fresh_schema_oid": 25727
+}

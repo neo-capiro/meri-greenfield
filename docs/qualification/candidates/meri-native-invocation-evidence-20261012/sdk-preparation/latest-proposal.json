@@ -1,0 +1,10 @@
+{
+  "schema": "meri-sdk-latest-proposed-scope/1",
+  "latest_proposed_scope_path": "/workspace/scratch/meri-native-sdk-preparation-20261012/next-security-scope.v2.json",
+  "latest_proposed_scope_sha256": "626f8efd13e9b7faa180cbfdbe36b360f7ad4363959dbb0112c8579ace737535",
+  "scope_correction_receipt_path": "/workspace/scratch/meri-native-sdk-preparation-20261012/scope-correction-receipt.json",
+  "scope_correction_receipt_sha256": "97af70d0200924fc69f7355396b0d457cadcbf32216f6cd9751412e3b041d6ca",
+  "retained_sdk_terminal_receipt_path": "/workspace/scratch/meri-native-sdk-preparation-20261012/terminal-receipt.json",
+  "retained_sdk_terminal_receipt_sha256": "d6fa9831012d9d9c1db048c16d12a8be197416353bd21cc2198dd7ccd4923ed2",
+  "status": "LATEST_PROPOSED_DATA_ONLY; NOT_RUNTIME_AUTHORITY"
+}

@@ -1,0 +1,214 @@
+{
+  "status": "PASS_12_NATIVE_INVOCATION_CASES_AND_CLEANUP",
+  "at": "2026-10-12T17:03:24.387644+00:00",
+  "source_commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+  "source_tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+  "parent_qualified_source": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+  "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+  "source_tests": 117,
+  "independent_source_tests": 24,
+  "native_tests": 12,
+  "native_pass": 12,
+  "native_fail": 0,
+  "native_skipped": 0,
+  "attempts": 1,
+  "platform_session_id": 40525,
+  "platform_exit_code": 0,
+  "t0": "2026-10-12T17:00:46.476000+00:00",
+  "work_deadline": "2026-10-12T17:12:46.476000+00:00",
+  "cleanup_deadline": "2026-10-12T17:15:46.476000+00:00",
+  "restored_at": "2026-10-12T17:02:15.308226+00:00",
+  "elapsed_to_restoration_seconds": 88.832226,
+  "within_work_and_cleanup_deadlines": true,
+  "native_tap_duration_ms": 1878.054345,
+  "migration_0003_is_separate_prerequisite_not_qualification": true,
+  "migration_0003_sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+  "archive_name": "meri_qualification_invocation_20261012",
+  "archive_oid": 25727,
+  "archive_final_accounting": {
+    "consumed_micro_usd": 70,
+    "unknown_held_micro_usd": 30,
+    "settled_ledger_micro_usd": 70,
+    "quarantined": true,
+    "counts": {
+      "tool_invocations": 12,
+      "tool_reservations": 10,
+      "tool_run_allocations": 12
+    }
+  },
+  "contention_evidence": "Four contention cases each required three distinct independently pooled pg_backend_pid values observed as Lock waiters before releasing the native budget-row lock; parent and all pools closed.",
+  "preserved_schema_oids": [
+    16389,
+    24577,
+    24814,
+    25602
+  ],
+  "preserved_sdk_oid": 25502,
+  "all_original_prior_sdk_data_preserved": true,
+  "roles_hba_database_catalog_unchanged": true,
+  "no_new_credentials_security_changes_database_container_service": true,
+  "host5432_untouched": true,
+  "live_owned_processes": 0,
+  "new_unreaped_records": 0,
+  "test_backends": 0,
+  "historical_zombies_claimed_reaped": false,
+  "provider_cloud_calls": 0,
+  "provider_cloud_call_basis": "Exact source cases invoke synthetic trusted ports/catalog handler and canonical real pg owner only; source-disabled production composition remains disabled; cleanenv has no provider/production credentials and no SDK/AWS/provider path is invoked. LocalDocker identity inspect only.",
+  "prior33_and9_preserved_artifacts": [
+    {
+      "group": "prior33",
+      "path": "rc1-python-state.receipt.json",
+      "sha256": "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd"
+    },
+    {
+      "group": "prior33",
+      "path": "rc1-python-state.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "group": "prior33",
+      "path": "rc1-python-state.stderr.log",
+      "sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry-ingress.receipt.json",
+      "sha256": "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry-ingress.stdout.log",
+      "sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry-ingress.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry.receipt.json",
+      "sha256": "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry.stdout.log",
+      "sha256": "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-registry.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-revocation-postgres.receipt.json",
+      "sha256": "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-revocation-postgres.stdout.log",
+      "sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e"
+    },
+    {
+      "group": "prior33",
+      "path": "sdk-revocation-postgres.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "group": "prior33",
+      "path": "terminal-receipt.json",
+      "sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db"
+    },
+    {
+      "group": "prior33",
+      "path": "cleanup-receipt.json",
+      "sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de"
+    },
+    {
+      "group": "prior9",
+      "path": "terminal-receipt.json",
+      "sha256": "b2403b1a5fe1f03d4b47dd866027de4ebc1e9191ba79496840ef0f8e888d31d0"
+    },
+    {
+      "group": "prior9",
+      "path": "source-receipt.json",
+      "sha256": "c0aedf9131a8c6bc2852608e41c3cb10c07aa7329456c785206cc524bc7bfae9"
+    },
+    {
+      "group": "prior9",
+      "path": "operations.py",
+      "sha256": "92e29266c1004a90b35ddd346a652d2dd0642f6e61734331a81f4d4eb8698ec7"
+    },
+    {
+      "group": "prior9",
+      "path": "admission.json",
+      "sha256": "c36fb84207b2a5bde359af80aa907a68a94c2744e97420a866055187c9e6c088"
+    },
+    {
+      "group": "prior9",
+      "path": "native-command.json",
+      "sha256": "04856efb7cb5472ad988cc2fb1b034aaa264c62ced224c044ba513b9966b5c43"
+    },
+    {
+      "group": "prior9",
+      "path": "native-env.json",
+      "sha256": "f86bbc48d1ad4204aedf63c8c1918e4265f74eaaea72d745492e33ad060add90"
+    },
+    {
+      "group": "prior9",
+      "path": "native-budget.receipt.json",
+      "sha256": "69105b0135e1b2a6821f2d74c6e2d0e9be6767e3b0aeb40435142054a9261c97"
+    },
+    {
+      "group": "prior9",
+      "path": "native-budget.stdout.log",
+      "sha256": "a5e43a9b1ff8898d03082c24b61ba8cebf7b4d635e0966ed26fd0274ea53b3cc"
+    },
+    {
+      "group": "prior9",
+      "path": "native-budget.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "group": "prior9",
+      "path": "native-budget.parent.pid",
+      "sha256": "8f77429cbbe11e215f2c3cf6a1314dd9613f1319d0209c369000b5b6add9e19a"
+    },
+    {
+      "group": "prior9",
+      "path": "setup-receipt.json",
+      "sha256": "09ea2b063650f78759ca4257e4930d97d5bf6b2d690827819b7434942be176e9"
+    },
+    {
+      "group": "prior9",
+      "path": "setup-terminal.json",
+      "sha256": "eacd77cb343e0f7acc674ab81d21c4c5c600dfed759fc2096e1fc3cbbf25411b"
+    },
+    {
+      "group": "prior9",
+      "path": "process-cleanup.json",
+      "sha256": "63ae5c0a099a1ebf2fbfc9c5d50c87e5ea5773d18a718440621ad25ac3f4371b"
+    },
+    {
+      "group": "prior9",
+      "path": "restoration-receipt.json",
+      "sha256": "ef61f91eb5ec4b4fae8375f087553db992e499318dba83f62cbfa3c3c6ca1af6"
+    },
+    {
+      "group": "prior9",
+      "path": "preflight.json",
+      "sha256": "87c96a11514c4bf49f01dcf2e6e87962405f7d570a7c5f787a23074a33b9fe4f"
+    }
+  ],
+  "producer_setup_log_preserved": true,
+  "source_receipt_sha256": "6fb6d60250139cc86de27f4e783fb397e61e27faa8b2aa734d6a4edd8d06c148",
+  "source_review_sha256": "0b7053317b0bd7ee54437f302560635c3237da704c6a4df75d73187edfb1df23",
+  "operations_sha256": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776",
+  "native_stdout_sha256": "1eddf297593d6860e554c20d7b3bd8d05be21f89c8ffc4d79a66d8744ffff23c",
+  "native_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "restoration_sha256": "681a00311a4fa48e1cc8632b4640b5ab3f8d44aea2665c0f2264931fe575c33d",
+  "process_cleanup_sha256": "ddb52556b4ea77996b2584b041e24695b92919b0a94a0b44bc972a37dca51f74",
+  "scope_limit": "Synthetic trust/superuser local PG functional provenance/accounting; no production auth/networkisolation, actual SDK/provider/browser/Temporal/fullG1 acceptance.",
+  "next_sdk_status": "Lockeddependencies and81offlinecontrols advanced independently; actualnativechild requires new disposable loopback-only worker and credentialfilecontainment; no start admitted."
+}

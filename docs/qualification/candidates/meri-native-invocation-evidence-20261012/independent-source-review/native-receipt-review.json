@@ -1,0 +1,252 @@
+{
+  "verdict": "ACCEPT_RECORDED_NATIVE_INVOCATION_QUALIFICATION",
+  "reviewed_at": "2026-10-12 17:10:34 UTC",
+  "started_at": "2026-10-12T17:04:35Z",
+  "deadline": "2026-10-12T17:12:35Z",
+  "result": {
+    "native_tests": 12,
+    "pass": 12,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "attempts": 1,
+    "tap_duration_ms": 1878.054345,
+    "recorded_platform_session_id": 40525,
+    "recorded_platform_exit_code": 0
+  },
+  "source": {
+    "commit": "5a7db3f470a4df3f51e47fc8b2d41e6502f5430e",
+    "tree": "7566cad50cf320285ab373dff786a4ca13ddbecf",
+    "parent_qualified_source": "3f5302a96309ff4b615dedc3f6ba196b0eb5aeb0",
+    "base_rc1": "2f06feccca731d6cd388612cd568185ecc29668f",
+    "actual_local_git_binding_verified": true,
+    "file_hashes_and_lengths_verified": 16,
+    "installed_locked_versions_verified": 14,
+    "accepted_source_review_preserved_sha256": "0b7053317b0bd7ee54437f302560635c3237da704c6a4df75d73187edfb1df23",
+    "operations_sha256": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776"
+  },
+  "exact_verified_artifact_hashes": {
+    "terminal-receipt.json": "5295a5f1632192015d6579a9e59c618f2b40dc19e6789c234108ad8cfa46a6be",
+    "source-receipt.json": "6fb6d60250139cc86de27f4e783fb397e61e27faa8b2aa734d6a4edd8d06c148",
+    "operations.py": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776",
+    "admission.json": "54976383c28e5fca749c3018e1af3b494dae1d24fa94e45494e9223df25875ae",
+    "native-command.json": "229733198b0744ce26569aeebddd933eedf8d34d3503b039d26f6a1c1383e73f",
+    "native-base-env.json": "97452a4f2a824ed747a0348785e6b8ea2ab8cc964cf2a2bcc4f8aa505df3b233",
+    "native-env.json": "b65aef1b2e097120dc90b81345e938ac0183cdca47502eb034dfa76008e677e1",
+    "native-invocation.receipt.json": "aa2d799ed0440780b16d94372270218e50908798d9c668d8ef3835ec129eb093",
+    "native-invocation.stdout.log": "1eddf297593d6860e554c20d7b3bd8d05be21f89c8ffc4d79a66d8744ffff23c",
+    "native-invocation.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-invocation.parent.pid": "d03bedff5e85845c81d745fc8ee634edc9c9e4a3fbb6626c811dc92791e5685b",
+    "setup-receipt.json": "698bf024141f89a3744cf4c1c6b82e67b8882d3a5919efa3bffa96d0deaeb971",
+    "setup-terminal.json": "7ee18bd0bdd801d00fc9354fa835b3e537b92a33aa1ebdb7e7c1bc6289235d7e",
+    "migration-0003-manifest.json": "fd9b76fbd59ccf7d8f9c82b7129000a6bc41f527507679336ea2ec7ef4b02570",
+    "migration-0003-terminal.json": "3e7dd91256be4a2b8196ccdb822ec5d8070c5358c9293c93128f36a048ee5d6c",
+    "process-cleanup.json": "ddb52556b4ea77996b2584b041e24695b92919b0a94a0b44bc972a37dca51f74",
+    "restoration-receipt.json": "681a00311a4fa48e1cc8632b4640b5ab3f8d44aea2665c0f2264931fe575c33d",
+    "preflight.json": "d17fc757bb6815b16c021d53df21aaba7a8980fa38d5ea45edd73af69b490475",
+    "executor-availability-20261012T164731Z.json": "1e3bece7c49d0909cf6a62175852c8e3c11ad563d28dfdff1e557c0ba9f5c24f"
+  },
+  "exact_test_identities": [
+    "actual trusted control normalizes, produces one durable identity, completes and charges once",
+    "lost real prepare COMMIT acknowledgement retains identity and conserved accounting",
+    "lost real claim COMMIT acknowledgement retains identity and conserved accounting",
+    "lost real marker COMMIT acknowledgement retains identity and conserved accounting",
+    "lost real settle COMMIT acknowledgement retains identity and conserved accounting",
+    "simultaneous real trusted deliveries issue one identity, one reservation and one handler",
+    "three native preparations converge to the retained producer identity without duplicate issuance",
+    "concurrent fresh owners reconcile the real completion marker and charge exactly once",
+    "same delivery rejects request/context substitution and cannot bypass canonical owned dispatch",
+    "production control stays source-disabled while actual producer provenance remains recoverable",
+    "foreign completion facts cannot release or charge a real UNKNOWN hold",
+    "three historical reconciliations conserve UNKNOWN after revocation expiry replacement and quarantine"
+  ],
+  "native_evidence": {
+    "canonical_trusted_control_and_normalization": "Passing first case asserts one durable owned identity, canonical normalized arguments, exact completion payload hash/bytes, handler count1, charge10 and replay refusal.",
+    "real_commit_fault_boundaries": [
+      "prepare",
+      "claim",
+      "marker",
+      "settle"
+    ],
+    "contention": "Four passing cases require three distinct independently pooled backendPIDs actually observed as Lock waiters before unlocking canonical budget row; source fixes enforce original1200ms cutoff and close all pools.",
+    "authority_and_history": "Passing cases cover request/context/legacy-owned-dispatch refusal, source-disabled production control, marker-backed historical charge once after revocation, foreign marker hold conservation, and combined revocation/expiry/fence replacement/quarantine UNKNOWN conservation.",
+    "scope": "Synthetic ports/handler with canonical production control/owner and actual pg SQL; no genuine provider/SDK business-source effect."
+  },
+  "command_review": {
+    "exact_argv_verified": true,
+    "entry": "apps/gateway/test/postgres-invocation.integration.mjs",
+    "timeout_seconds": 90,
+    "kill_grace_seconds": 5,
+    "node_test_timeout_ms": 60000,
+    "concurrency": 1,
+    "clean_env_i": true,
+    "no_PG_provider_credentials": true,
+    "admitted_password_is_null": true,
+    "mapped_endpoint": "127.0.0.1:55432",
+    "existing_role": "qualification_owner",
+    "actual_server": "172.17.0.2:5432",
+    "login": false,
+    "exclusive_raw_files_and_checked_public_pid_stamp": true,
+    "public_parent_pid": 142504,
+    "no_rerun_to_collect_session_completion": true
+  },
+  "timing": {
+    "frozen_T0": "2026-10-12T17:00:46.476000+00:00",
+    "migration0003_committed_at": "2026-10-12T17:01:02.442814+00:00",
+    "native_admitted_at": "2026-10-12 17:01:18 UTC",
+    "work_deadline": "2026-10-12T17:12:46.476000+00:00",
+    "cleanup_deadline": "2026-10-12T17:15:46.476000+00:00",
+    "restoration_at": "2026-10-12T17:02:15.308226+00:00",
+    "restoration_elapsed_seconds": 88.832226,
+    "fixed_command_plus_grace_fits_original_work_window": true,
+    "restoration_within_both_deadlines": true
+  },
+  "migration_and_restoration": {
+    "setup_migrations": [
+      "0001_qualification_state.sql",
+      "0002_tool_budget.sql"
+    ],
+    "migration0003_sha256": "8d0c6ab5e3027b637f7905bd19ac1d830095f1565f745d4e2954294b115137e5",
+    "migration_is_separate_prerequisite_not_qualification": true,
+    "explicit_manifest_rows": 0,
+    "separate_manifest_and_commit_terminal_confirmed": true,
+    "migration_table_oid": 25852,
+    "new_schema_and_retained_archive_oid": 25727,
+    "archive_name": "meri_qualification_invocation_20261012",
+    "original_and_prior_schema_oids": [
+      16389,
+      24577,
+      24814,
+      25602
+    ],
+    "SDK_schema_oid": 25502,
+    "preserved_original_prior_SDK_row_and_relationOID_assertions": "Runtime-owner operations/restoration receipt; reviewer did not query database",
+    "security_comparison": "Runtime-owner unchanged roles/HBA/database catalog assertions",
+    "fresh_setup_relationOIDs_retained_in_archive": true,
+    "archive_final_counts": {
+      "tool_invocations": 12,
+      "tool_reservations": 10,
+      "tool_run_allocations": 12
+    },
+    "reported_archive_accounting": {
+      "consumed_micro_usd": 70,
+      "settled_ledger_micro_usd": 70,
+      "unknown_held_micro_usd": 30,
+      "quarantined": true
+    },
+    "accounting_consistency": "Seven settled ten-microUSD slots and three retained UNKNOWN ten-microUSD holds agree with source cases and reported totals; no duplicate issuance/charge/refund claim exceeds tested scope."
+  },
+  "cleanup": {
+    "recorded_new_owned_process_metadata": [],
+    "recorded_live_owned_processes": 0,
+    "recorded_new_unreaped_records": 0,
+    "recorded_other_test_backends": 0,
+    "historical_PIDs": [
+      37280,
+      37281,
+      37282
+    ],
+    "historical_state": "Z/PPid1; explicitly unreaped",
+    "historical_reaping_claim": false,
+    "no_shared_parent_or_protected_proc_action_reported": true,
+    "source_pool_closure_and_case_passes_consistent": true
+  },
+  "preservation": {
+    "prior33_and9_artifact_hashes_verified": 29,
+    "producer_tests_log_sha256": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "initial_source_review_and_logs_preserved": true
+  },
+  "disconnect_evidence": {
+    "notification_time": "2026-10-12T16:45Z",
+    "owner_readonly_availability_at": "2026-10-12T16:47:31.021432+00:00",
+    "observation_predates_current_admission": true,
+    "owner_recorded_no_current_native_or_mutation_markers": true,
+    "owner_recorded_no_interrupted_mutation_retry": true
+  },
+  "limits": [
+    "Independent review verifies local source/artifact hashes, command/config/timing consistency and raw TAP; database/process snapshots and platform terminal are runtime-owner recorded observations, not reviewer live requery.",
+    "Synthetic PG16.15 trust/superuser functional provenance/accounting evidence; no production authentication, network tenant isolation or full G1 acceptance.",
+    "Actual SDK/provider/browser/Temporal/native-auth gates remain outside these cases.",
+    "SDK locked preparation/offline controls are outside this evidence review; native SDK child remains held for separately established OS/credential containment."
+  ],
+  "consistency_check": {
+    "verdict": "CONSISTENT",
+    "verified_hashes": {
+      "terminal-receipt.json": "5295a5f1632192015d6579a9e59c618f2b40dc19e6789c234108ad8cfa46a6be",
+      "source-receipt.json": "6fb6d60250139cc86de27f4e783fb397e61e27faa8b2aa734d6a4edd8d06c148",
+      "operations.py": "5f04058835316975f87e982e12c71a1ad06c1d457a84e3f6d946ddb2c36ef776",
+      "admission.json": "54976383c28e5fca749c3018e1af3b494dae1d24fa94e45494e9223df25875ae",
+      "native-command.json": "229733198b0744ce26569aeebddd933eedf8d34d3503b039d26f6a1c1383e73f",
+      "native-base-env.json": "97452a4f2a824ed747a0348785e6b8ea2ab8cc964cf2a2bcc4f8aa505df3b233",
+      "native-env.json": "b65aef1b2e097120dc90b81345e938ac0183cdca47502eb034dfa76008e677e1",
+      "native-invocation.receipt.json": "aa2d799ed0440780b16d94372270218e50908798d9c668d8ef3835ec129eb093",
+      "native-invocation.stdout.log": "1eddf297593d6860e554c20d7b3bd8d05be21f89c8ffc4d79a66d8744ffff23c",
+      "native-invocation.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "native-invocation.parent.pid": "d03bedff5e85845c81d745fc8ee634edc9c9e4a3fbb6626c811dc92791e5685b",
+      "setup-receipt.json": "698bf024141f89a3744cf4c1c6b82e67b8882d3a5919efa3bffa96d0deaeb971",
+      "setup-terminal.json": "7ee18bd0bdd801d00fc9354fa835b3e537b92a33aa1ebdb7e7c1bc6289235d7e",
+      "migration-0003-manifest.json": "fd9b76fbd59ccf7d8f9c82b7129000a6bc41f527507679336ea2ec7ef4b02570",
+      "migration-0003-terminal.json": "3e7dd91256be4a2b8196ccdb822ec5d8070c5358c9293c93128f36a048ee5d6c",
+      "process-cleanup.json": "ddb52556b4ea77996b2584b041e24695b92919b0a94a0b44bc972a37dca51f74",
+      "restoration-receipt.json": "681a00311a4fa48e1cc8632b4640b5ab3f8d44aea2665c0f2264931fe575c33d",
+      "preflight.json": "d17fc757bb6815b16c021d53df21aaba7a8980fa38d5ea45edd73af69b490475",
+      "executor-availability-20261012T164731Z.json": "1e3bece7c49d0909cf6a62175852c8e3c11ad563d28dfdff1e557c0ba9f5c24f"
+    },
+    "source_files_verified": 16,
+    "installed_locked_versions_verified": 14,
+    "exact_native_test_identities": [
+      "actual trusted control normalizes, produces one durable identity, completes and charges once",
+      "lost real prepare COMMIT acknowledgement retains identity and conserved accounting",
+      "lost real claim COMMIT acknowledgement retains identity and conserved accounting",
+      "lost real marker COMMIT acknowledgement retains identity and conserved accounting",
+      "lost real settle COMMIT acknowledgement retains identity and conserved accounting",
+      "simultaneous real trusted deliveries issue one identity, one reservation and one handler",
+      "three native preparations converge to the retained producer identity without duplicate issuance",
+      "concurrent fresh owners reconcile the real completion marker and charge exactly once",
+      "same delivery rejects request/context substitution and cannot bypass canonical owned dispatch",
+      "production control stays source-disabled while actual producer provenance remains recoverable",
+      "foreign completion facts cannot release or charge a real UNKNOWN hold",
+      "three historical reconciliations conserve UNKNOWN after revocation expiry replacement and quarantine"
+    ],
+    "native_tests": 12,
+    "native_pass": 12,
+    "native_fail": 0,
+    "native_skipped": 0,
+    "attempts": 1,
+    "platform_session_id": 40525,
+    "platform_exit": 0,
+    "migration_prerequisite_not_qualification": true,
+    "migration_table_oid": 25852,
+    "fresh_archive_oid": 25727,
+    "preserved_oids": [
+      16389,
+      24577,
+      24814,
+      25602,
+      25502
+    ],
+    "elapsed_to_restoration_seconds": 88.832226,
+    "within_original_deadlines": true,
+    "archive_accounting": {
+      "consumed_micro_usd": 70,
+      "unknown_held_micro_usd": 30,
+      "settled_ledger_micro_usd": 70,
+      "quarantined": true,
+      "counts": {
+        "tool_invocations": 12,
+        "tool_reservations": 10,
+        "tool_run_allocations": 12
+      }
+    },
+    "prior33_and9_artifacts_hashes_verified": 29,
+    "producer_tests_log_sha256": "b9e23b71e60e7261bf64754400e5feb806306d93895382ca31a80196a9a66585",
+    "prior_source_review_sha256": "0b7053317b0bd7ee54437f302560635c3237da704c6a4df75d73187edfb1df23",
+    "availability_observation_precedes_any_current_admission": true,
+    "limits": "SQL/process snapshots and platform terminal result are runtime-owner recorded evidence; reviewer used file/hash/source inspection only."
+  },
+  "reviewer_reran_tests": false,
+  "reviewer_database_Docker_network_proc_actions": [],
+  "reviewer_mutated_prior_source_or_evidence": false,
+  "remaining_findings": []
+}

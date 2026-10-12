@@ -1,0 +1,107 @@
+{
+  "all_comparisons_pass": true,
+  "records": [
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.receipt.json",
+      "sha256": "ebcc5791280d3cd6be084031738a7487f2202bad2dfd3d9ddff3eacb7e46a3bd",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/rc1-python-state.stderr.log",
+      "sha256": "7c39a97e2beb0ac99f0c9777d1341ecc0ab3e77efcdebfe013c060973e5d8c03",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.receipt.json",
+      "sha256": "7b08c10be293f76880ee724080cb2abf17a7a82b53ef4c47a90c61c73c32c45a",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.stdout.log",
+      "sha256": "322c82a92a4dd4cb46a2c75bca5303ad48b256b3cfef203e6d5ab595d09547ec",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry-ingress.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.receipt.json",
+      "sha256": "7d9634f566fac64b4907310895cac7255a1465260610eb35f5f84848ac44bb64",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.stdout.log",
+      "sha256": "891aef8fc4250c4ff0fd9a4af9fe6ee33b30a7953e788fc29c13d1f2f0f98c28",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-registry.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.receipt.json",
+      "sha256": "6db83671ab87ff339ab09c857e87328071ea33d0dee3a7a4771593fd04f5472a",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.stdout.log",
+      "sha256": "cc60175592b65f9f0aa26afa561529e103c91ae3d15cad5160f8663c1b182a0e",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/sdk-revocation-postgres.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/terminal-receipt.json",
+      "sha256": "afa5e7159d077ea1c77f71640f482b8bced83312bee2128ed2756587d454e3db",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-repeat-rc1-20261012/cleanup-receipt.json",
+      "sha256": "1520d93bd801fe315eb296c8aac9ef405c5dc41357ca1e61683c5205baef68de",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/source-receipt.json",
+      "sha256": "c0aedf9131a8c6bc2852608e41c3cb10c07aa7329456c785206cc524bc7bfae9",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/native-budget.stdout.log",
+      "sha256": "a5e43a9b1ff8898d03082c24b61ba8cebf7b4d635e0966ed26fd0274ea53b3cc",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/native-budget.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/restoration-receipt.json",
+      "sha256": "ef61f91eb5ec4b4fae8375f087553db992e499318dba83f62cbfa3c3c6ca1af6",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/process-cleanup.json",
+      "sha256": "63ae5c0a099a1ebf2fbfc9c5d50c87e5ea5773d18a718440621ad25ac3f4371b",
+      "matches_existing_receipt": true
+    },
+    {
+      "path": "/workspace/scratch/meri-native-budget-run-20261012/terminal-receipt.json",
+      "sha256": "b2403b1a5fe1f03d4b47dd866027de4ebc1e9191ba79496840ef0f8e888d31d0",
+      "snapshot_only": true
+    }
+  ],
+  "databases_not_accessed": true,
+  "fixed_workspace_not_created": true
+}
