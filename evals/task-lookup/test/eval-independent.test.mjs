@@ -1,6 +1,9 @@
 import test from 'node:test';
 import {createTaskLookupDelivery} from '../../../apps/control/task-lookup/delivery.mjs';
 import {createHash} from 'node:crypto';
+import {createRequire,syncBuiltinESMExports} from 'node:module';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
@@ -127,3 +130,14 @@ test('actual control lookup/read callback observations score without invented DT
 test('denied label without captured denied callback cannot satisfy expected denial',()=>{const f=evaluation('denied');f.o.authorization=[];assert.equal(scored(f).counts.failed,1);});
 test('all-authorized callback cannot establish a read denial',()=>{const f=evaluation('denied');f.o.authorization[0].receipt.authorized=true;assert.equal(scored(f).counts.failed,1);});
 test('clarify label alone stays ineligible until actual clarification contract exists',()=>{const r=scored(evaluation('clarify'));assert.equal(r.counts.ineligible,1);assert.equal(r.counts.passed,0);assert.equal(r.counts.total,1);assert.equal(r.allCasePassRate,0);});
+
+test('CLI reads bounded descriptor chunks instead of unbounded readFile after stat',async()=>{
+ const fs=createRequire(import.meta.url)('node:fs/promises'),dir=await fs.mkdtemp(join(tmpdir(),'meri-eval-independent-')),input=join(dir,'input.json'),output=join(dir,'output.json');
+ const c=corpus();await fs.writeFile(input,JSON.stringify(c));const original=fs.open;let unbounded=0;const lengths=[];
+ try{
+  fs.open=async function(path,...args){const handle=await original.call(this,path,...args);if(path!==input)return handle;return {stat:handle.stat.bind(handle),close:handle.close.bind(handle),read:async(...a)=>{lengths.push(typeof a[0]==='object'&&!Buffer.isBuffer(a[0])?a[0].length:a[2]);return handle.read(...a);},readFile:async(...a)=>{unbounded++;return handle.readFile(...a);}};};syncBuiltinESMExports();
+  const {main}=await import('../cli.mjs');const sink={write(){}};
+  assert.equal(await main(['freeze','--input',input,'--approval-sha256',hash(c.approval),'--output',output],{stdout:sink,stderr:sink}),0);
+  assert.equal(unbounded,0,'pre-stat size is not an allocation bound against subsequent growth');assert.ok(lengths.length>0);assert.ok(lengths.every(n=>Number.isSafeInteger(n)&&n>0&&n<=16*1024*1024+1));
+ }finally{fs.open=original;syncBuiltinESMExports();await fs.rm(dir,{recursive:true,force:true});}
+});
