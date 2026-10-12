@@ -1,0 +1,63 @@
+{
+  "rootFreeze": "e9a4e913a168d08d2804055dc24b24c779b34856",
+  "criteriaCommit": "1cba35a0f7d44ec3bed44f6385b03ea35a0966d9",
+  "verdict": "ACCEPT_SOURCE_INTEGRATION_DOCUMENT_SCOPE",
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-HELPER-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 10657,
+      "sha256": "f69bacba61a4a775e62c6f70f4e39dac3879aa3d8ce0bc387a588814fafe0814"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/audit-first-53.py",
+      "bytes": 11313,
+      "sha256": "42ab552400cc088d83c59908d0966c930d68d7ba1526e1ab157a981247caca9b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/audit-integration.py",
+      "bytes": 11337,
+      "sha256": "6511a7cfe4463947d5962a459a64316de33deef871f0c01f95501fa1cf710979"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/complete-audit.json",
+      "bytes": 1007,
+      "sha256": "ba56e210c3577f7a812b5e311cb9252816c957f55726b76d2ac9e5a05570467c"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/complete-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/complete-audit.stdout.txt",
+      "bytes": 7102,
+      "sha256": "34d707283a9156f5b194f2cca9dece623a8dfb8cc372e346fed6c52aae1d1866"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/exact-audit.json",
+      "bytes": 999,
+      "sha256": "fb5314056ec5999a365c0d91e3c24733a77d4d09ad57eb263d0cedd31689467f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/exact-audit.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/exact-audit.stdout.txt",
+      "bytes": 6888,
+      "sha256": "138585d8856ebcb6aa6aee9530d6c27c3effda5fa02d94257d292616cbd5359b"
+    },
+    {
+      "path": "docs/qualification/candidates/native-helper-integration-20261012/review/run-check.py",
+      "bytes": 2114,
+      "sha256": "f3f0f3d6592696ccac9ed44bd904c492f61c95a73a941b45b8da27618ddf174a"
+    }
+  ],
+  "excluded": [
+    "review-manifest.json (self)"
+  ],
+  "privateInputsAccessed": false,
+  "nativeTargetExecuted": false,
+  "retrievalPerformed": false
+}
