@@ -4,7 +4,7 @@ import hashlib,json,subprocess,sys
 R=Path(__file__).resolve().parents[5];O=Path(__file__).resolve().parent
 candidate=sys.argv[1]; general=sys.argv[2] if len(sys.argv)>2 else None
 packets=[('d19f73649bec835da360265f603c87ef170efb92','test-continuation-review'),('7f29b527','artifact-budget-review'),('64f5a56c50c048a700481d28914db9d2c219cb8d','command-tool-review')]
-if general:packets.append((general,'general-analysis-budget-review'))
+if general:packets.append((general,sys.argv[3]))
 def git(*args):return subprocess.check_output(['git','-C',str(R),*args])
 def blob(ref,p):return git('show',ref+':'+p)
 checks=[];records=[]
