@@ -1,0 +1,8 @@
+{
+  "operation": "initial worktree creation",
+  "cwd": "/workspace",
+  "exitCode": 2,
+  "failure": "git worktree command used non-repository cwd; subsequent Git/sed commands refused. Only newly owned criteria/report directory was created by Python.",
+  "recovery": "Moved only that newly owned directory to /tmp/meri-plan-reconciliation-review-initial-20261012, created worktree from known repository cwd, restored exact criteria/report files. No original or other-owner source changed.",
+  "nativeActions": false
+}
