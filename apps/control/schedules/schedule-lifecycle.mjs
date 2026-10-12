@@ -5,6 +5,7 @@ import {createTemporalScheduleInspector} from './temporal-inspection.mjs';
 import {mutateTemporalSchedule,sdkMethod} from './temporal-schedule-mutations.mjs';
 import {inspectOriginalRuns} from './temporal-run-history.mjs';
 import {createPostgresScheduleOwner} from './postgres-schedule-owner.mjs';
+import {snapshotScheduleInspectionBinding} from '../../../packages/contracts/schedules-0.2/inspection-validation.mjs';
 
 function optionsData(options,allowed) {
   if(!options||types.isProxy(options)||Object.getPrototypeOf(options)!==Object.prototype)denySchedule('SCHEDULE_OPTIONS');
@@ -68,12 +69,14 @@ export function createScheduleLifecycle(options) {
     const c=callLifetime('List',request),{binding,lifetime,current}=c,s=binding.selection;
     try {
       await current('before_list');const page=frozenScheduleData(await lifetime.run(()=>owner.list(s,lifetime.check)));
-      if(Object.keys(page).length!==2||!Array.isArray(page.rows)||page.rows.length>s.limit||typeof page.hasMore!=='boolean')denySchedule('SCHEDULE_LIST');
-      const rows=[],refs=[],seen=new Set();let previous=s.afterScheduleId;
+      if(Object.keys(page).length!==2||!Array.isArray(page.rows)||page.rows.length>s.limit||typeof page.hasMore!=='boolean'||(page.hasMore&&page.rows.length!==s.limit))denySchedule('SCHEDULE_LIST');
+      const rows=[],refs=[],seen=new Set();let previous=s.afterScheduleId?.toLowerCase()??null;
       for(const row of page.rows) {
         const p=row.projection;
-        if(Object.keys(row).length!==3||!Number.isSafeInteger(row.generation)||row.generation<0||typeof row.unresolved!=='boolean'||canonicalSha256(p.owner)!==canonicalSha256(s.owner)||(previous!==null&&p.scheduleId<=previous)||seen.has(p.scheduleId))denySchedule('SCHEDULE_LIST');
-        previous=p.scheduleId;seen.add(p.scheduleId);
+        snapshotScheduleInspectionBinding({projection:p,callerIdentity:binding.callerIdentity,deadlineMs:c.deadline()},clock());
+        const key=p.scheduleId.toLowerCase();
+        if(Object.keys(row).length!==3||!Number.isSafeInteger(row.generation)||row.generation<0||typeof row.unresolved!=='boolean'||canonicalSha256(p.owner)!==canonicalSha256(s.owner)||(previous!==null&&key<=previous)||seen.has(key))denySchedule('SCHEDULE_LIST');
+        previous=key;seen.add(key);
         const inspector=createTemporalScheduleInspector({scheduleClient,clock,authorize:async args=>{
           args.limitDeadline(c.deadline());const a=await current(args.phase,p);args.limitDeadline(a.expiresAtMs);
           return {authorized:true,projectionSha256:args.projectionSha256,callerIdentity:binding.callerIdentity,expiresAtMs:a.expiresAtMs};
