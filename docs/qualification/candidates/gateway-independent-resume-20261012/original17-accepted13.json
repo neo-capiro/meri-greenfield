@@ -1,0 +1,26 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "/tmp/meri-gateway-original-review-20261012/apps/gateway/test/gateway.test.mjs"
+  ],
+  "cwd": "/workspace/meri-gateway-review-20261012",
+  "startUnixSeconds": 1791769753.3708599,
+  "elapsedSeconds": 1.9487159252166748,
+  "exitCode": 0,
+  "externalTimeout": false,
+  "ownedProcessGroupAbsent": true,
+  "fixtureRoot": null,
+  "streams": {
+    "stdout": {
+      "path": "original17-accepted13.stdout.txt",
+      "bytes": 1681,
+      "sha256": "0d51f2d458ddd10f7d840d719b9bad975d107240f53429f3753734a2fed37cbd"
+    },
+    "stderr": {
+      "path": "original17-accepted13.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

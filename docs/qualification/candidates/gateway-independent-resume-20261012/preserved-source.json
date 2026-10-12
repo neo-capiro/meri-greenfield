@@ -1,0 +1,72 @@
+{
+  "sourceCommit": "c57b7d26df7de2acbd8c7d8edc7098f7d495053a",
+  "files": [
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "sha256": "cd090d987e5603d93c111b8ea36e6933fe108bfdeeb8d77ce03f66a4e85f0217",
+      "bytes": 5718
+    },
+    {
+      "path": "apps/gateway/catalog/runtime-catalog.mjs",
+      "sha256": "092ed325693df95c3c5a41d20d3fdb56e19cce3fc9b47dafd8d42d76b9325dff",
+      "bytes": 2396
+    },
+    {
+      "path": "apps/gateway/dispatch/dispatch-lifetime.mjs",
+      "sha256": "37219130a9a895125fa594bb8266b724c08a58f1af54f1353ff3b9f2fc5d6248",
+      "bytes": 2994
+    },
+    {
+      "path": "apps/gateway/dispatch/operation-result.mjs",
+      "sha256": "26e44f72ec13011a8c0960842d6a8abd53b8f67e9082f888f4bc2458b5c42468",
+      "bytes": 2818
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "sha256": "ef5547a20c60bbe08adbcac3c75f9caff28ad34b3aef9afecd17bb0f99737d79",
+      "bytes": 6507
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9",
+      "bytes": 1319
+    },
+    {
+      "path": "apps/gateway/test/fixtures.mjs",
+      "sha256": "53915bd72e3e7eb9a7a70219c06aa4359948a9c9abab91469fcfaaf1322f8a2c",
+      "bytes": 5042
+    },
+    {
+      "path": "apps/gateway/test/gateway.test.mjs",
+      "sha256": "6f71caf19539fca672c1217df079e58a6ed772f91648536bfe3f45e8a2d5d0e4",
+      "bytes": 11834
+    },
+    {
+      "path": "package.json",
+      "sha256": "42f84c0309a87d043a4023f657a6b1932ac5c1ca9e51eca8874e33085cb64d98",
+      "bytes": 1936
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "b2293773bf4ddc6d23425b7d718b79575384679999b86fd3caad78e6eda4a42d",
+      "bytes": 12067
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "sha256": "731ed180fb4070eee4da92a9b7e7dfe3014f1524c83bf2c3c28732bd961707f5",
+      "bytes": 76401
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "sha256": "43c537f453720eb6691ee3ca82636c85eeff3e6b0c9598088ada0a631838e523",
+      "bytes": 17098
+    }
+  ],
+  "dependencies": {
+    "initialNpmCiExit": 254,
+    "localCacheRerunExit": 0,
+    "ignoreScripts": true,
+    "nodeVersion": "v24.19.0"
+  },
+  "preservedHistoricalEvidenceChanged": false
+}
