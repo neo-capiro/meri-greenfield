@@ -1,0 +1,57 @@
+{
+  "criteriaCommit": "1b602f94dfdaaf7811e1b7a9d6505a0fc3876b85",
+  "reviewedAuthorCommit": "76355bfe516260ba758dee44f9fcf454e317cd71",
+  "reviewedAuthorTree": "2aeb20aea7159a0ccc373a2b30dc6dc534a85c00",
+  "sourceDisposition": "ACCEPT_SOURCE_EVIDENCE",
+  "setupDisposition": "HOLD_EXTERNAL_INPUT_NOT_EXECUTABLE",
+  "excludes": [
+    "docs/qualification/candidates/pgdg-metadata-20261012/review/manifest.json"
+  ],
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-REVIEW-20261012.md",
+      "bytes": 5511,
+      "sha256": "ba7e39fb5126131c2aec9fc5c42d73742fd9edaee2cf621a4471beb9196e65d0"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author-result.json",
+      "bytes": 16075,
+      "sha256": "5883b16fcbec93fe701381e428cc31ed4e5660619521ba189ccb5ae32226ecb9"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.py",
+      "bytes": 9033,
+      "sha256": "ffee7b824ab990edb132537100f04e37760a3e427847e046ab07bc09b51b00ef"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.stdout.json",
+      "bytes": 186,
+      "sha256": "91f5fec0db643a8593753e87eda96ad284f5d213542811c37c843cacd4b74d0c"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/author-verifier.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/author-verifier.stdout.json",
+      "bytes": 6963,
+      "sha256": "8b831ee3877c1208015323c36e929e03fad0d140bb7fb8621049336ea6abaadb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/check-receipts.json",
+      "bytes": 1818,
+      "sha256": "25cb2e9fcfa7acb243402fa35f1daf93ba3514bec1dd9f5017d3c185eb7a0e69"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/review/frozen-criteria.json",
+      "bytes": 3133,
+      "sha256": "207eb0a703a3aa99f8585ffb9e9035cbf4353d665bb87bc5c7b9453531d56319"
+    }
+  ]
+}

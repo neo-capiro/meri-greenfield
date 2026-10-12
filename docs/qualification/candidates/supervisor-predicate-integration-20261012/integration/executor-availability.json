@@ -1,0 +1,15 @@
+{
+  "requestedReason": "Parent received an environment disconnect notification at 08:16 UTC",
+  "observedAtUtc": "2026-10-12T08:17:07Z",
+  "minimalCommand": "date -u '+%Y-%m-%dT%H:%M:%SZ'",
+  "exitCode": 0,
+  "stdout": "2026-10-12T08:17:07Z\n",
+  "followupGitReadExitCode": 0,
+  "branch": "task/meri-supervisor-predicate-20261012",
+  "headAtObservation": "74ba4b2eb6c2709c883bde57ef380d9a9c7c2538",
+  "basePr19": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "workingChanges": "Only new root-owned sanitized integration evidence",
+  "executorAvailable": true,
+  "runtimeQualificationClaimed": false,
+  "recoveryActionNeeded": false
+}

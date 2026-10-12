@@ -1,0 +1,38 @@
+{
+  "command": [
+    "python",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/pgdg-metadata-20261012/review/audit-author.py",
+    "/workspace/meri-supervisor-predicate-20261012",
+    "76355bfe516260ba758dee44f9fcf454e317cd71"
+  ],
+  "cwd": "/workspace/meri-supervisor-predicate-20261012",
+  "sourceHead": "ed0fb1fee6363952b0798e406862f963f9bc70b4",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T08:20:47.725153+00:00",
+  "durationSeconds": 0.165,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 109783,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review.stdout.bin",
+      "bytes": 278,
+      "sha256": "cb1e4f67f7995a33cbb34a718348e25b0df9577b186e347d8b1d0a9821398ed8"
+    },
+    {
+      "path": "docs/qualification/candidates/supervisor-predicate-integration-20261012/integration/pgdg-review.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

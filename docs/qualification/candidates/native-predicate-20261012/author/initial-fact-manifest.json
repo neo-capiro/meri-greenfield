@@ -1,0 +1,52 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "scope": "Intermediate complete-member facts and visible conjunction; helper review pending",
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "docs/coordination/tasks/MERI-NATIVE-PREDICATE-20261012.md",
+      "bytes": 1136,
+      "sha256": "0ab2229c964bfe36c978460bc2a13e7aecdb22bfcaff0f0cfe6a57b7a79586e6"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-NATIVE-PREDICATE-20261012.md",
+      "bytes": 5728,
+      "sha256": "c14ade698c0e147c0f106a7abf73fc28e9033ee171404d1a026a076e80015072"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/data-observation.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/data-observation.stdout.json",
+      "bytes": 7374,
+      "sha256": "80148ce3091645eea2ba795d901c1f22c896b5f2e2c581ec2313d96ee555196a"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/outline.json",
+      "bytes": 893,
+      "sha256": "acd0630ab8da0f48ee14cd3bcb48e2db104fbf058c6527389ddafee9bb66c51e"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/predicate-data.py",
+      "bytes": 6663,
+      "sha256": "cb6f4ac269ba5446988a0c7133b685b54658d3c3aee4cf25041cb74d464ef569"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/predicate-map.json",
+      "bytes": 4668,
+      "sha256": "da24f22b56a431ec913657d1c2056cff53fc21b84c5a3797a37e6704f9664aed"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/tool-transport-failure.json",
+      "bytes": 394,
+      "sha256": "97f4f0fa002d3c172455647b2271353a0b1e710a1af55e95652e1834a978012f"
+    },
+    {
+      "path": "docs/qualification/candidates/native-predicate-20261012/author/verification-receipt.json",
+      "bytes": 423,
+      "sha256": "35175338c2237ac20305310c2a85fc3f12e590bf600d2bee45bf6904e2eb01f2"
+    }
+  ]
+}

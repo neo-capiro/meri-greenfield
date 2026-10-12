@@ -1,0 +1,522 @@
+{
+  "baseCommit": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "authorCommit": "76355bfe516260ba758dee44f9fcf454e317cd71",
+  "authorTree": "2aeb20aea7159a0ccc373a2b30dc6dc534a85c00",
+  "authorManifestSha256": "02dad919bd6b0f81f86597cc1c6a425792973dc79c6fa908b87a8b17ca4d1641",
+  "checks": [
+    {
+      "name": "exact clean author freeze",
+      "passed": true
+    },
+    {
+      "name": "only allocated author additions",
+      "passed": true
+    },
+    {
+      "name": "all original files preserved",
+      "passed": true
+    },
+    {
+      "name": "accepted prior author is in ancestry",
+      "passed": true
+    },
+    {
+      "name": "accepted prior reviewer is in ancestry",
+      "passed": true
+    },
+    {
+      "name": "exact eight distinct official metadata locations",
+      "passed": true
+    },
+    {
+      "name": "bounded recorded concurrency",
+      "passed": true
+    },
+    {
+      "name": "socket timeout not misrepresented as total watchdog",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: InRelease",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: InRelease",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: InRelease",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: InRelease",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: InRelease",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: Release",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: Release",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: Release",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: Release",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: Release",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: 17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "retained bytes/hash: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "proxy failure retained: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "finite recorded metadata limits: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "ordered completed observation: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "no target payload endpoint: postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "web text explicitly not exact origin bytes",
+      "passed": true
+    },
+    {
+      "name": "web fallback retains key/source failures",
+      "passed": true
+    },
+    {
+      "name": "archival collector transcription hash preserved",
+      "passed": true
+    },
+    {
+      "name": "archival script not represented as pre-execution pin",
+      "passed": true
+    },
+    {
+      "name": "packet uses exact base",
+      "passed": true
+    },
+    {
+      "name": "setup remains non-executable external-input hold",
+      "passed": true
+    },
+    {
+      "name": "selected package leads unchanged and unauthenticated",
+      "passed": true
+    },
+    {
+      "name": "new raw observations accurately totalled",
+      "passed": true
+    },
+    {
+      "name": "signature and support gaps remain explicit",
+      "passed": true
+    },
+    {
+      "name": "no setup approval or command",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: targetPayloadAcquired",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: targetPayloadHeadersAcquired",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: targetMaterializedInstalledImportedExecuted",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: hostChanged",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: databaseOrNativeActions",
+      "passed": true
+    },
+    {
+      "name": "no authority advancement: cloudProviderPaidActions",
+      "passed": true
+    },
+    {
+      "name": "proposed transfer metadata locations match narrow scope",
+      "passed": true
+    },
+    {
+      "name": "finite proposed handoff ceilings",
+      "passed": true
+    },
+    {
+      "name": "bounds not promoted to granted transfer authority",
+      "passed": true
+    },
+    {
+      "name": "release alternative and coherent fresh snapshot explicit",
+      "passed": true
+    },
+    {
+      "name": "key signature alone not trusted",
+      "passed": true
+    },
+    {
+      "name": "dsc location not invented as existing artifact",
+      "passed": true
+    },
+    {
+      "name": "support independent of generic extraction or approval",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/qualification/candidates/native-prefix-20261012/author/assessment.json",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/qualification/candidates/native-prefix-20261012/author/manifest.json",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/coordination/reports/MERI-NATIVE-PREFIX-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/coordination/reports/MERI-NATIVE-PREFIX-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/qualification/candidates/native-prefix-20261012/review/audit-author-result.json",
+      "passed": true
+    },
+    {
+      "name": "bound original source: AGENTS.md",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/IMPLEMENTATION-STANDARDS.md",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/plans/MERI-DEPLOYMENT.md",
+      "passed": true
+    },
+    {
+      "name": "bound original source: docs/plans/MERI-G1-SOURCE-TO-NATIVE.md",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/collection-notes.json",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/collection-source.py.txt",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/decision-package.json",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/17-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/ACCC4CF8.asc",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/InRelease",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release.gpg",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Packages.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Sources.bz2",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/raw/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/retrievals.json",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/qualification/candidates/pgdg-metadata-20261012/author/web-fallback.json",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/coordination/tasks/MERI-PGDG-METADATA-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest member: docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "manifest members unique",
+      "passed": true
+    },
+    {
+      "name": "complete author manifest coverage with declared exclusions",
+      "passed": true
+    }
+  ],
+  "passed": 98,
+  "failed": [],
+  "sourceFiles": [
+    {
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 4602,
+      "sha256": "9528d1504fba3d977347f6494cbd8f313571494abcd601a6fb05b832acee5c26",
+      "gitBlob": "c046372b3f091e73511812f3e16a4991a6f47120"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 1906,
+      "sha256": "0121197499eefacc45702da821ae9a9eb30c454098ecd81ae174b6a70bebb255",
+      "gitBlob": "67687161be93785ee2ab998faf2f2489dc65bf11"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-notes.json",
+      "bytes": 1045,
+      "sha256": "150186549c314ae3f380979e1636146f116202c58bdf352b106d21859fd577bb",
+      "gitBlob": "cfcdcab918168e31d4806214adf3045d3076626b"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-source.py.txt",
+      "bytes": 2442,
+      "sha256": "71d963812643c3bbce19a8921891b92a354ed578283e0d66bbf6c27f554d22aa",
+      "gitBlob": "45e72e7d5b78dddacf3764188d9481a4b7a139bb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/decision-package.json",
+      "bytes": 9733,
+      "sha256": "7196182c33be71f7e1f6eef08a551177836a7d2db1cf0397aaddaa410f8c41fc",
+      "gitBlob": "91e40d9135acd5f7de427c1a77cf8c6f643bd25f"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/manifest.json",
+      "bytes": 3579,
+      "sha256": "02dad919bd6b0f81f86597cc1c6a425792973dc79c6fa908b87a8b17ca4d1641",
+      "gitBlob": "5d0f70770b85461877b97bf8dd7faa0b41b3f0da"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/17-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/ACCC4CF8.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release.gpg",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Sources.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/retrievals.json",
+      "bytes": 4851,
+      "sha256": "0fb01242de8fe5454aed8a64e8949dc5ceba2beac6b311905f8b6f14e8732a93",
+      "gitBlob": "7e5ec58da9fe97c4762c4b7b3194bd696ded05ad"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verification.json",
+      "bytes": 6963,
+      "sha256": "8b831ee3877c1208015323c36e929e03fad0d140bb7fb8621049336ea6abaadb",
+      "gitBlob": "b6844f3d9b814a46fbeb7dc16d214aee65f62230"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verification.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verify.py",
+      "bytes": 3853,
+      "sha256": "5801eea31e8a7dd272f80533e3506bdc1822ce8f9efb6230e768708cffefac19",
+      "gitBlob": "7d51bbb9d90fa7ffa1f8d5472ff51e7cf1601bae"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/web-fallback.json",
+      "bytes": 16371,
+      "sha256": "247670effcb7f57706b583d4a6a8baf65d9332ddcc786021f9e5f8e5b25f0dfc",
+      "gitBlob": "ed8afa1a5caf18f2bc0addef9cf5f730147531ee"
+    }
+  ],
+  "originalTrackedFilesPreserved": 4696,
+  "targetActions": 0,
+  "authentication": "UNRUN_MISSING_RAW_BYTES_AND_TRUST",
+  "scope": "Offline integrity/preservation only. Setup/support disposition is in the independent review report."
+}

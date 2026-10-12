@@ -1,0 +1,91 @@
+{
+  "baseCommit": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "scope": "METADATA_EVIDENCE_NOT_PACKAGE_AUTHENTICATION",
+  "excludes": [
+    "manifest.json",
+    "verification.json",
+    "verification.stderr"
+  ],
+  "files": [
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-notes.json",
+      "bytes": 1045,
+      "sha256": "150186549c314ae3f380979e1636146f116202c58bdf352b106d21859fd577bb"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/collection-source.py.txt",
+      "bytes": 2442,
+      "sha256": "71d963812643c3bbce19a8921891b92a354ed578283e0d66bbf6c27f554d22aa"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/decision-package.json",
+      "bytes": 9733,
+      "sha256": "7196182c33be71f7e1f6eef08a551177836a7d2db1cf0397aaddaa410f8c41fc"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/17-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/ACCC4CF8.asc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/InRelease",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/Release.gpg",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Packages.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/main-Sources.bz2",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/raw/postgresql-17_17.11-1.pgdg13+2.dsc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/retrievals.json",
+      "bytes": 4851,
+      "sha256": "0fb01242de8fe5454aed8a64e8949dc5ceba2beac6b311905f8b6f14e8732a93"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/verify.py",
+      "bytes": 3853,
+      "sha256": "5801eea31e8a7dd272f80533e3506bdc1822ce8f9efb6230e768708cffefac19"
+    },
+    {
+      "path": "docs/qualification/candidates/pgdg-metadata-20261012/author/web-fallback.json",
+      "bytes": 16371,
+      "sha256": "247670effcb7f57706b583d4a6a8baf65d9332ddcc786021f9e5f8e5b25f0dfc"
+    },
+    {
+      "path": "docs/coordination/tasks/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 1906,
+      "sha256": "0121197499eefacc45702da821ae9a9eb30c454098ecd81ae174b6a70bebb255"
+    },
+    {
+      "path": "docs/coordination/reports/MERI-PGDG-METADATA-20261012.md",
+      "bytes": 4602,
+      "sha256": "9528d1504fba3d977347f6494cbd8f313571494abcd601a6fb05b832acee5c26"
+    }
+  ]
+}
