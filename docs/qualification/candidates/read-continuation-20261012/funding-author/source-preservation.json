@@ -1,0 +1,49 @@
+{
+  "base": "e94865529c5a1e97c79893527895f0b4b73be35f",
+  "source": "256248fee5be45e5f203bbc74cc5b0c0e2f738f7",
+  "sourceTree": "53800b1b138121dcc39971bad722c8da94cbfc30",
+  "originalPathCount": 5267,
+  "unchangedOriginalPathCount": 5267,
+  "changedOriginalPaths": [],
+  "ownNewSourceFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-envelope-validation.mjs",
+      "gitBlob": "43a2600c32d582a554d8893522a15e92bc19ed90",
+      "bytes": 10887,
+      "sha256": "8606b31647d1ff627cf5a7ba8b41e1cfc236a23d38028d2e210b21e15f0b51f5"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs",
+      "gitBlob": "a49899b87655dd973944f83aa76120aa1c0bca2b",
+      "bytes": 5097,
+      "sha256": "ec4e6124c3587b772a901a788282c3275e81e429b7af1e3199d2b0532313808b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-opportunities.schema.json",
+      "gitBlob": "2cb164ff49979a1e5c4c4ed4db44f3faa523c605",
+      "bytes": 62966,
+      "sha256": "0d31594c3aaecd707da722cfb8cd951e7f42802c13c86805aaedb9397dc9d56b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/funding-requirements-validation.mjs",
+      "gitBlob": "82a6fc262f9b9eb691fc2a13f3fb578371de9b69",
+      "bytes": 2331,
+      "sha256": "7ac1c0f69ec55f30004ff125f6eddc2f9c8dae1d007e405f425bdd1898e73491"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-funding-opportunities.test.mjs",
+      "gitBlob": "882b394236541eab5a6aa3d4c07dcc3d45dafdff",
+      "bytes": 22082,
+      "sha256": "fc76f013f242ab4342252ac4043f533af5667f14053d085d9dbcb67c1d1ecba3"
+    }
+  ],
+  "allOriginalTestsPreserved": true,
+  "dependencies": "Root physically copied existing locked dependencies; this author did not install or alter any dependency tree",
+  "ownedChecks": "All capture groups absent, no timeout/kill; exited descendants reaped in broader checks",
+  "initialSource": "c7e6b15ecd99f5a185cb3826f9b471d2438854c8",
+  "initialSourceTree": "31a015193fe1b03dd0a9767658c846f6a2ca00fd",
+  "repairs": [
+    "19bfb022a40e635215c182b5f6d754682cd1d2f6",
+    "256248fee5be45e5f203bbc74cc5b0c0e2f738f7"
+  ]
+}

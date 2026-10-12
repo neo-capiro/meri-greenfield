@@ -1,0 +1,3293 @@
+diff --git a/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs b/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs
+new file mode 100644
+index 0000000..43a2600
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/funding-envelope-validation.mjs
+@@ -0,0 +1,158 @@
++/** Domain relationships for frozen funding read envelopes, never source truth. */
++const fail = message => { throw new Error(message); };
++export const FUNDING_ENVELOPE_MAX_CHARACTERS = 24_000;
++export function fundingInstant(value) {
++  const stamp = typeof value === 'string' ? Date.parse(value) : NaN;
++  if (!Number.isFinite(stamp) || new Date(stamp).toISOString() !== value)
++    fail('Funding requires a canonical comparable ISO instant');
++  return stamp;
++}
++export function assertFundingEnvelope(value) {
++  fundingInstant(value.asOf);
++  // The frozen protocol measures JS JSON characters (UTF-16), not UTF-8 bytes.
++  if (JSON.stringify(value).length > FUNDING_ENVELOPE_MAX_CHARACTERS)
++    fail('Funding envelope exceeds 24000 JSON characters; producer must return a refusal');
++  if (value.state === 'denied' && value.explanation !== 'Not available for this client.')
++    fail('Funding denial must not disclose client existence');
++  if (value.state !== 'available') return;
++  const seen = new Set();
++  for (const row of value.truncated ?? []) {
++    if (seen.has(row.collection) || row.total <= row.kept) fail('Funding truncation must describe actual unique loss');
++    seen.add(row.collection);
++  }
++}
++function deadline(value, asOf) {
++  if (value.basis === 'unknown') {
++    if ([value.at, value.dateOnly, value.timeZone, value.daysRemaining].some(v => v !== null) || value.status !== 'unknown')
++      fail('Unknown deadline cannot assert a cutoff');
++    return;
++  }
++  const at = fundingInstant(value.at), now = fundingInstant(asOf);
++  if (value.dateOnly === null || !/^\d{4}-\d{2}-\d{2}$/.test(value.dateOnly) ||
++      (value.basis === 'date_only_end_of_day' && !value.timeZone) ||
++      value.daysRemaining !== Math.ceil((at - now) / 86_400_000) ||
++      value.status !== (at >= now ? 'open' : 'closed')) fail('Funding deadline arithmetic/basis mismatch');
++}
++export function assertFundingBrief(row, asOf) {
++  if (row.deadline) deadline(row.deadline, asOf);
++}
++export function assertFundingFacts(row, asOf, page = { summaryOffset: 0, summaryLimit: 1200 }) {
++  assertFundingBrief(row, asOf);
++  if (row.ref.source === 'grants_gov' && row.contractValue !== null ||
++      row.ref.source === 'sam_gov' && row.grantFunding !== null) fail('Grant funding and contract value have distinct source meanings');
++  if (row.contractValue && ((row.contractValue.estimatedValue === null) !== (row.contractValue.basis === 'not_stated_by_source')))
++    fail('Contract value basis cannot convert unknown to zero');
++  const read = row.summaryRead, end = read.offset + read.returnedCharacters;
++  if (read.offset !== Math.min(page.summaryOffset, read.totalCharacters) ||
++      read.returnedCharacters !== Math.min(page.summaryLimit, read.totalCharacters - read.offset) ||
++      (row.summary?.length ?? 0) !== read.returnedCharacters ||
++      read.truncated !== (read.offset > 0 || end < read.totalCharacters) ||
++      read.nextOffset !== (end < read.totalCharacters ? end : null) ||
++      read.sourceUpdatedAt !== row.sourceUpdatedAt ||
++      read.state !== (row.summaryIsLink ? 'link_only' : read.totalCharacters > 0 ? 'available' : 'missing'))
++    fail('Funding summary range/UTF-16 continuation mismatch');
++  const evidence = row.evidence;
++  if (evidence.recordRef !== `${row.ref.source}:${row.ref.sourceRecordId}` ||
++      evidence.recommendationConfidence !== (row.recommendation?.recommendationConfidence ?? null))
++    fail('Funding evidence identity/confidence substitution');
++  const rejected = row.eligibility.state === 'ineligible';
++  if (evidence.disqualifiers.length !== (rejected ? 1 : 0) ||
++      rejected && evidence.disqualifiers[0].reason !== row.eligibility.reason)
++    fail('Relevance and unassessed eligibility do not establish disqualification');
++  const sam = row.ref.source === 'sam_gov';
++  if (evidence.requirements.state !== (sam ? 'not_requested' : 'notice_body') ||
++      evidence.requirements.tool !== (sam ? 'get_funding_opportunity_requirements' : 'get_funding_opportunity'))
++    fail('Funding requirements source handoff mismatch');
++  const expected = [
++    ...(!row.sourceUrl ? ['sourceUrl'] : []), ...(!row.sourceUpdatedAt ? ['sourceUpdatedAt'] : []),
++    ...(!row.responseDeadline && !row.responseDeadlineNote ? ['responseDeadline'] : []),
++    ...(!row.placeOfPerformance ? ['placeOfPerformance'] : []),
++    ...(!sam && row.eligibleApplicantTypes.length === 0 ? ['eligibleApplicantTypes'] : []),
++    ...(read.totalCharacters === 0 || row.summaryIsLink ? ['noticeText'] : []),
++  ];
++  if (JSON.stringify(evidence.missingFields) !== JSON.stringify(expected)) fail('Funding missing-fact disclosure mismatch');
++}
++function scopedDeadlineCounts(rows, counts, asOf) {
++  for (const row of rows) assertFundingBrief(row, asOf);
++  const withDeadline = rows.filter(row => row.deadline);
++  if (withDeadline.length && withDeadline.length !== rows.length) fail('Mixed funding deadline projection mode');
++  if (counts.deadlinesIn30Days !== null) {
++    if (withDeadline.length !== rows.length || counts.deadlinesIn30Days !== rows.filter(row =>
++      row.deadline.status === 'open' && row.deadline.daysRemaining !== null && row.deadline.daysRemaining <= 30).length)
++      fail('Funding deadline count describes only returned rows');
++  } else if (withDeadline.length) fail('Deadline facts require the matching scoped count');
++}
++export function assertFundingSearch(data, envelope, input) {
++  if (envelope.truncated) fail('Search pagination is not a collection truncation envelope');
++  fundingInstant(data.generatedAt);
++  const sources = input.source === undefined ? ['grants_gov', 'sam_gov'] : [input.source];
++  const lifecycle = input.activeState === 'all' ? ['active', 'closed', 'post_award'] : [input.activeState];
++  const criteria = data.criteria;
++  for (const [key, value] of Object.entries({clientId: input.clientId, query: input.query, page: input.page, pageSize: input.pageSize, sources, lifecycle}))
++    if (JSON.stringify(criteria[key]) !== JSON.stringify(value)) fail('Funding search criteria substitution');
++  for (const key of ['types', 'agencies', 'sectors', 'naicsCodes', 'pscCodes', 'setAsideCodes', 'eligibility', 'posted', 'geography', 'applicantTypes', 'funding', 'costShare', 'methods', 'disbursement', 'grantPrerequisites', 'codes', 'keywordTerms'])
++    if ((criteria[key]?.length ?? 0) !== 0) fail('Funding search cannot add an unrequested filter');
++  if (Object.hasOwn(criteria, 'queryMatch')) fail('Funding search cannot add an unrequested match mode');
++  if (data.clientId !== input.clientId || data.page !== input.page || data.pageSize !== input.pageSize ||
++      data.opportunities.length > data.pageSize || JSON.stringify(data.coverage.sources) !== JSON.stringify(sources))
++    fail('Funding search identity/page mismatch');
++  const hasMore = data.total === null ? data.opportunities.length === data.pageSize : data.page * data.pageSize < data.total;
++  if (data.hasMore !== hasMore || data.nextPage !== (hasMore ? data.page + 1 : null) || data.coverage.totalIsCapped !== data.totalIsCapped)
++    fail('Funding search continuation mismatch');
++  if (data.coverage.pageCoversMatchedResults && (data.totalIsCapped || hasMore || data.page !== 1 || data.total === null))
++    fail('Funding search cannot claim full matched-page coverage');
++  for (const row of data.opportunities) {
++    if (!sources.includes(row.ref.source) || row.clientId !== input.clientId) fail('Funding search row scope substitution');
++    assertFundingFacts(row, envelope.asOf);
++  }
++  scopedDeadlineCounts(data.opportunities, data.counts, envelope.asOf);
++}
++export function assertFundingClientContext(data, envelope, input) {
++  if (data.clientId !== input.clientId) fail('Funding client substitution');
++  for (const [key, source] of [['topGrants', 'grants_gov'], ['topContracts', 'sam_gov']])
++    for (const row of data[key]) if (row.ref.source !== source) fail('Funding top rows source substitution');
++  const rows = [...data.topGrants, ...data.topContracts];
++  scopedDeadlineCounts(rows, data.counts, envelope.asOf);
++  if (data.nextDeadline !== null) {
++    deadline(data.nextDeadline, envelope.asOf);
++    const earliest = rows.filter(row => row.deadline?.status === 'open' && row.deadline.at !== null)
++      .sort((a, b) => a.deadline.at.localeCompare(b.deadline.at))[0]?.deadline;
++    if (!earliest || Object.keys(data.nextDeadline).length !== Object.keys(earliest).length ||
++        Object.entries(earliest).some(([key, value]) => data.nextDeadline[key] !== value))
++      fail('Next deadline must come from the sampled top rows');
++  } else if (rows.some(row => row.deadline?.status === 'open' && row.deadline.at !== null))
++    fail('Next sampled deadline omitted');
++  for (const row of envelope.truncated ?? []) {
++    if (!['topGrants', 'topContracts'].includes(row.collection) || row.kept !== 5 || row.kept !== data[row.collection].length)
++      fail('Funding top-row truncation mismatch');
++  }
++}
++export function assertFundingLandscape(data, envelope, sources) {
++  const reports = new Map(data.sources.map(row => [row.source, row]));
++  if (reports.size !== sources.length || data.sources.length !== sources.length || sources.some(source => !reports.has(source)))
++    fail('Funding landscape needs every declared source once');
++  if (data.sources.every(row => row.state === 'denied')) fail('Denied landscape must be a refusal envelope');
++  const wired = new Set(['program_element', 'client_facility', 'congressional_district']);
++  for (const row of data.sources) {
++    if (row.state === 'denied' || (!wired.has(row.source) && row.state !== 'not_wired') ||
++        (row.state === 'available') !== (row.itemCount > 0) ||
++        (wired.has(row.source) && !['available', 'empty'].includes(row.state)))
++      fail('Funding landscape source state/count mismatch');
++  }
++  if (data.coverage.available !== data.sources.filter(row => row.state === 'available').length)
++    fail('Funding landscape coverage mismatch');
++  const total = data.sources.reduce((sum, row) => sum + row.itemCount, 0);
++  if (!Number.isSafeInteger(total)) fail('Funding landscape count overflow');
++  if (data.items.length !== Math.min(total, 40)) fail('Funding landscape retained item count mismatch');
++  const loss = envelope.truncated;
++  if (total > 40) {
++    if (loss?.length !== 1 || loss[0].collection !== 'items' || loss[0].kept !== 40 || loss[0].total !== total)
++      fail('Landscape truncation must preserve pre-truncation counts');
++  } else if (loss) fail('Unshortened landscape cannot claim truncation');
++  for (const report of data.sources) {
++    const kept = data.items.filter(item => item.source === report.source).length;
++    if (kept > report.itemCount || total <= 40 && kept !== report.itemCount) fail('Landscape source counts do not cover retained rows');
++  }
++  // fingerprint names the full ordered packet. No recomputation from the slice
++  // can authenticate it, and no producer/current-policy proof is claimed here.
++}
+diff --git a/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs b/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs
+new file mode 100644
+index 0000000..f5ceeef
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/funding-opportunities-validation.mjs
+@@ -0,0 +1,76 @@
++/** Private funding projections. Importing this module performs no source I/O. */
++import { snapshotOperationData } from './operation-contracts.mjs';
++import { fundingInstant, assertFundingEnvelope, assertFundingFacts, assertFundingSearch,
++  assertFundingClientContext, assertFundingLandscape } from './funding-envelope-validation.mjs';
++import { assertFundingRequirements } from './funding-requirements-validation.mjs';
++const fail = message => { throw new Error(message); };
++export const FUNDING_OPPORTUNITY_OPERATION_IDS = Object.freeze([
++  'search_funding_opportunities', 'get_funding_opportunity_requirements',
++  'get_funding_opportunity', 'get_opportunity_client_context', 'get_opportunity_government_landscape',
++]);
++export function createFundingOpportunitiesValidators({ validateShape, schema }) {
++  if (typeof validateShape !== 'function' || !schema?.$defs) fail('Funding validator configuration');
++  const definitions = new Set(Object.keys(schema.$defs));
++  const outputs = new Map(Object.entries(schema.$defs)
++    .filter(([, value]) => FUNDING_OPPORTUNITY_OPERATION_IDS.includes(value.properties?.tool?.const))
++    .map(([name, value]) => [value.properties.tool.const, name]));
++  if (outputs.size !== 5) fail('Funding schema operation mismatch');
++  function fundingOpportunitiesOutputDefinition(id) {
++    if (!outputs.has(id)) fail('Unknown funding operation');
++    return outputs.get(id);
++  }
++  function fundingOpportunitiesInputDefinition(id) { return fundingOpportunitiesOutputDefinition(id).replace(/Output$/, 'Input'); }
++  function validateFundingOpportunitiesShape(definition, value) {
++    if (!definitions.has(definition)) fail('Unknown funding definition');
++    const data = snapshotOperationData(value);
++    validateShape(definition, data);
++    if (outputs.get(data?.tool) === definition) assertFundingEnvelope(data);
++    return value;
++  }
++  function normalizeFundingOpportunitiesInput(id, request, options) {
++    const input = snapshotOperationData(request), context = snapshotOperationData(options);
++    if (!context || Array.isArray(context) || typeof context !== 'object' ||
++        Object.keys(context).length !== 1 || !Object.hasOwn(context, 'asOf')) fail('Explicit trusted funding asOf required');
++    fundingInstant(context.asOf);
++    validateFundingOpportunitiesShape(fundingOpportunitiesInputDefinition(id), input);
++    if (id === 'search_funding_opportunities') {
++      if ((input.query?.length ?? 0) > 500) fail('Funding query exceeds 500 UTF-16 characters');
++      input.query = (input.query ?? '').trim();
++      input.page = Math.min(input.page ?? 1, 10000);
++      input.pageSize ??= 5;
++      input.activeState ??= 'active';
++    } else if (id === 'get_funding_opportunity_requirements') {
++      input.offset ??= 0; input.limit ??= 10;
++    } else if (id === 'get_funding_opportunity') {
++      input.summaryOffset ??= 0; input.summaryLimit ??= 1200;
++    }
++    return Object.freeze({ input: Object.freeze(input), metadata: Object.freeze({
++      asOf: context.asOf, authoritative: false, sourceConnected: false,
++      producerQualified: false, absenceEvidence: false,
++    }) });
++  }
++  function assertFundingOpportunitiesOutput(id, value, request, options) {
++    const { input, metadata } = normalizeFundingOpportunitiesInput(id, request, options);
++    const data = snapshotOperationData(value);
++    validateFundingOpportunitiesShape(fundingOpportunitiesOutputDefinition(id), data);
++    if (data.asOf !== metadata.asOf) fail('Funding result asOf substitution');
++    if (data.state !== 'available') return value;
++    const source = input.source;
++    if (source !== undefined && !['grants_gov', 'sam_gov'].includes(source)) fail('Unsupported funding source cannot release available data');
++    if (id === 'get_funding_opportunity') {
++      if (data.truncated || data.data.ref.source !== source || data.data.ref.sourceRecordId !== input.sourceRecordId ||
++          data.data.clientId !== input.clientId) fail('Funding opportunity identity substitution');
++      assertFundingFacts(data.data, data.asOf, input);
++    } else if (id === 'search_funding_opportunities') assertFundingSearch(data.data, data, input);
++    else if (id === 'get_funding_opportunity_requirements') assertFundingRequirements(data.data, data, input);
++    else if (id === 'get_opportunity_client_context') assertFundingClientContext(data.data, data, input);
++    else {
++      if (source !== 'sam_gov') fail('Government landscape is SAM-only');
++      assertFundingLandscape(data.data, data, schema.$defs.FundingLandscapeSource.enum);
++    }
++    return value;
++  }
++  return Object.freeze({ fundingOpportunitiesSchemaId: schema.$id, FUNDING_OPPORTUNITY_OPERATION_IDS,
++    fundingOpportunitiesInputDefinition, fundingOpportunitiesOutputDefinition,
++    normalizeFundingOpportunitiesInput, validateFundingOpportunitiesShape, assertFundingOpportunitiesOutput });
++}
+diff --git a/packages/contracts/retrieval-0.2/funding-opportunities.schema.json b/packages/contracts/retrieval-0.2/funding-opportunities.schema.json
+new file mode 100644
+index 0000000..ed1bd1d
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/funding-opportunities.schema.json
+@@ -0,0 +1,2939 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "urn:meri:retrieval:funding-opportunities:0.2.0",
++  "title": "Private unavailable funding read projections",
++  "$defs": {
++    "FundingSource": {
++      "enum": [
++        "grants_gov",
++        "sam_gov"
++      ]
++    },
++    "FundingSourceV2": {
++      "enum": [
++        "grants_gov",
++        "sam_gov",
++        "agency_forecast",
++        "dibbs",
++        "sbir_sttr",
++        "ca_portal"
++      ]
++    },
++    "FundingKind": {
++      "enum": [
++        "grant",
++        "cooperative_agreement",
++        "sources_sought",
++        "presolicitation",
++        "solicitation",
++        "combined_synopsis_solicitation",
++        "special_notice",
++        "amendment",
++        "award_notice",
++        "other"
++      ]
++    },
++    "FundingReference": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "source": {
++          "$ref": "#/$defs/FundingSource"
++        },
++        "sourceRecordId": {
++          "type": "string",
++          "minLength": 1
++        }
++      },
++      "required": [
++        "source",
++        "sourceRecordId"
++      ]
++    },
++    "FundingEligibility": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "state": {
++          "enum": [
++            "eligible",
++            "ineligible",
++            "needs_review",
++            "unknown"
++          ]
++        },
++        "reason": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "state",
++        "reason"
++      ]
++    },
++    "FundingRecommendation": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "machineRecommendation": {
++          "enum": [
++            "pursue",
++            "monitor",
++            "pass",
++            "needs_review"
++          ]
++        },
++        "recommendationConfidence": {
++          "enum": [
++            "high",
++            "medium",
++            "low"
++          ]
++        },
++        "primaryReason": {
++          "type": "string"
++        },
++        "primaryRisk": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "recommendedNextAction": {
++          "type": "string"
++        },
++        "reasonCodes": {
++          "type": "array",
++          "items": {
++            "enum": [
++              "source_closed",
++              "informational_notice",
++              "not_eligible",
++              "client_profile_too_thin",
++              "eligibility_needs_review",
++              "eligibility_unknown",
++              "below_evidence_floor",
++              "strong_capability_match",
++              "moderate_capability_match",
++              "prior_agency_award_history",
++              "deadline_imminent",
++              "deadline_not_stated",
++              "no_award_history_evidence",
++              "vehicle_access_unresolved"
++            ]
++          }
++        }
++      },
++      "required": [
++        "machineRecommendation",
++        "recommendationConfidence",
++        "primaryReason",
++        "primaryRisk",
++        "recommendedNextAction",
++        "reasonCodes"
++      ]
++    },
++    "FundingDecision": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "decision": {
++          "enum": [
++            "pursue",
++            "monitor",
++            "pass"
++          ]
++        },
++        "reason": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "decidedAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "decidedByUserId": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "nextAction": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "nextActionDueAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "decision",
++        "reason",
++        "decidedAt",
++        "decidedByUserId",
++        "nextAction",
++        "nextActionDueAt"
++      ]
++    },
++    "FundingDeadline": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "at": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "dateOnly": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "timeZone": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "basis": {
++          "enum": [
++            "explicit_datetime",
++            "date_only_end_of_day",
++            "unknown"
++          ]
++        },
++        "daysRemaining": {
++          "anyOf": [
++            {
++              "type": "integer"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "status": {
++          "enum": [
++            "open",
++            "closed",
++            "unknown"
++          ]
++        },
++        "rawText": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "at",
++        "dateOnly",
++        "timeZone",
++        "basis",
++        "daysRemaining",
++        "status"
++      ]
++    },
++    "FundingBrief": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "ref": {
++          "$ref": "#/$defs/FundingReference"
++        },
++        "title": {
++          "type": "string"
++        },
++        "agency": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "kind": {
++          "$ref": "#/$defs/FundingKind"
++        },
++        "isActive": {
++          "type": "boolean"
++        },
++        "isPursuable": {
++          "type": "boolean"
++        },
++        "responseDeadline": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "responseDeadlineNote": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "relevanceScore": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "eligibility": {
++          "$ref": "#/$defs/FundingEligibility"
++        },
++        "recommendation": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingRecommendation"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "humanDecision": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingDecision"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "workflowStatus": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceUrl": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceUpdatedAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "deadline": {
++          "$ref": "#/$defs/FundingDeadline"
++        }
++      },
++      "required": [
++        "ref",
++        "title",
++        "agency",
++        "kind",
++        "isActive",
++        "isPursuable",
++        "responseDeadline",
++        "responseDeadlineNote",
++        "relevanceScore",
++        "eligibility",
++        "recommendation",
++        "humanDecision",
++        "workflowStatus",
++        "sourceUrl",
++        "sourceUpdatedAt"
++      ]
++    },
++    "FundingGrantMoney": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "estimatedProgramFunding": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "awardFloor": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "awardCeiling": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "expectedAwardCount": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "costSharingRequired": {
++          "anyOf": [
++            {
++              "type": "boolean"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "estimatedProgramFunding",
++        "awardFloor",
++        "awardCeiling",
++        "expectedAwardCount",
++        "costSharingRequired"
++      ]
++    },
++    "FundingContractValue": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "estimatedValue": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "basis": {
++          "enum": [
++            "not_stated_by_source",
++            "source_backed"
++          ]
++        }
++      },
++      "required": [
++        "estimatedValue",
++        "basis"
++      ]
++    },
++    "FundingPlace": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "city": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "state": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "zip": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "country": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "city",
++        "state",
++        "zip",
++        "country"
++      ]
++    },
++    "FundingMissingField": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "field": {
++          "type": "string"
++        },
++        "label": {
++          "type": "string"
++        },
++        "impact": {
++          "type": "string"
++        },
++        "href": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "field",
++        "label",
++        "impact",
++        "href"
++      ]
++    },
++    "FundingProfileGap": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "title": {
++          "type": "string"
++        },
++        "tag": {
++          "type": "string"
++        },
++        "tone": {
++          "enum": [
++            "warn",
++            "muted"
++          ]
++        },
++        "body": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "title",
++        "tag",
++        "tone",
++        "body"
++      ]
++    },
++    "FundingMatchedSignal": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "signal": {
++          "type": "string"
++        },
++        "source": {
++          "enum": [
++            "capability",
++            "funding_priority"
++          ]
++        },
++        "strength": {
++          "enum": [
++            "strong",
++            "moderate",
++            "weak"
++          ]
++        },
++        "weight": {
++          "type": "number"
++        },
++        "matchedOn": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "signal",
++        "strength",
++        "matchedOn"
++      ]
++    },
++    "FundingAcquisitionEvidence": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tangoVehicleId": {
++          "type": "string"
++        },
++        "vehicleName": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "vehicleType": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "relationship": {
++          "enum": [
++            "self",
++            "parent",
++            "teaming"
++          ]
++        },
++        "recipientUei": {
++          "type": "string"
++        },
++        "orderCount": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "idvObligations": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "idvContractsValue": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "lastDateToOrder": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "expired": {
++          "anyOf": [
++            {
++              "type": "boolean"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "lastSyncedAt": {
++          "type": "string"
++        }
++      },
++      "required": [
++        "tangoVehicleId",
++        "vehicleName",
++        "vehicleType",
++        "relationship",
++        "recipientUei",
++        "orderCount",
++        "idvObligations",
++        "idvContractsValue",
++        "lastDateToOrder",
++        "expired",
++        "lastSyncedAt"
++      ]
++    },
++    "FundingAcquisitionPosition": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "state": {
++          "enum": [
++            "direct_prime_access",
++            "related_entity_access",
++            "known_teaming_route",
++            "vehicle_not_identified",
++            "no_direct_access_evidence",
++            "unknown"
++          ]
++        },
++        "evidence": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingAcquisitionEvidence"
++          }
++        },
++        "summary": {
++          "type": "string"
++        },
++        "recommendedRoute": {
++          "type": "string"
++        },
++        "source": {
++          "const": "tango"
++        },
++        "freshness": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "lastSyncedAt": {
++              "anyOf": [
++                {
++                  "type": "string"
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "neverSynced": {
++              "type": "boolean"
++            }
++          },
++          "required": [
++            "lastSyncedAt",
++            "neverSynced"
++          ]
++        }
++      },
++      "required": [
++        "state",
++        "evidence",
++        "summary",
++        "recommendedRoute",
++        "source",
++        "freshness"
++      ]
++    },
++    "FundingSummaryRead": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "state": {
++          "enum": [
++            "available",
++            "missing",
++            "link_only"
++          ]
++        },
++        "offset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "totalCharacters": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "returnedCharacters": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "truncated": {
++          "type": "boolean"
++        },
++        "nextOffset": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceUpdatedAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "state",
++        "offset",
++        "totalCharacters",
++        "returnedCharacters",
++        "truncated",
++        "nextOffset",
++        "sourceUpdatedAt"
++      ]
++    },
++    "FundingEvidence": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "recordRef": {
++          "type": "string"
++        },
++        "recommendationConfidence": {
++          "anyOf": [
++            {
++              "enum": [
++                "high",
++                "medium",
++                "low"
++              ]
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "confidenceMeaning": {
++          "const": "Canonical recommendation evidence quality, not likelihood of winning or verified eligibility."
++        },
++        "disqualifiers": {
++          "type": "array",
++          "items": {
++            "type": "object",
++            "additionalProperties": false,
++            "properties": {
++              "basis": {
++                "const": "canonical_eligibility"
++              },
++              "reason": {
++                "type": "string"
++              }
++            },
++            "required": [
++              "basis",
++              "reason"
++            ]
++          },
++          "maxItems": 1
++        },
++        "missingFields": {
++          "type": "array",
++          "items": {
++            "enum": [
++              "sourceUrl",
++              "sourceUpdatedAt",
++              "responseDeadline",
++              "placeOfPerformance",
++              "eligibleApplicantTypes",
++              "noticeText"
++            ]
++          }
++        },
++        "requirements": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "state": {
++              "enum": [
++                "not_requested",
++                "notice_body"
++              ]
++            },
++            "tool": {
++              "enum": [
++                "get_funding_opportunity_requirements",
++                "get_funding_opportunity"
++              ]
++            }
++          },
++          "required": [
++            "state",
++            "tool"
++          ]
++        }
++      },
++      "required": [
++        "recordRef",
++        "recommendationConfidence",
++        "confidenceMeaning",
++        "disqualifiers",
++        "missingFields",
++        "requirements"
++      ]
++    },
++    "FundingFacts": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "ref": {
++          "$ref": "#/$defs/FundingReference"
++        },
++        "title": {
++          "type": "string"
++        },
++        "agency": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "kind": {
++          "$ref": "#/$defs/FundingKind"
++        },
++        "isActive": {
++          "type": "boolean"
++        },
++        "isPursuable": {
++          "type": "boolean"
++        },
++        "responseDeadline": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "responseDeadlineNote": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "relevanceScore": {
++          "anyOf": [
++            {
++              "type": "number"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "eligibility": {
++          "$ref": "#/$defs/FundingEligibility"
++        },
++        "recommendation": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingRecommendation"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "humanDecision": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingDecision"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "workflowStatus": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceUrl": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceUpdatedAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "deadline": {
++          "$ref": "#/$defs/FundingDeadline"
++        },
++        "clientId": {
++          "anyOf": [
++            {
++              "type": "string",
++              "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "sourceReference": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "subAgency": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "office": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "status": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "kindRaw": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "baseKind": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingKind"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "closeOrArchiveDate": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "postedDate": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "summary": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "summaryIsLink": {
++          "type": "boolean"
++        },
++        "naicsCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "pscCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "setAside": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "setAsideCode": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "setAsideDescription": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "eligibleApplicantTypes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "fundingInstrument": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "category": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "assistanceListings": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "grantFunding": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingGrantMoney"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "contractValue": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingContractValue"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "placeOfPerformance": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingPlace"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "acquisitionPosition": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingAcquisitionPosition"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "missingProfileFields": {
++          "anyOf": [
++            {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/FundingMissingField"
++              }
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "matchedSignals": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingMatchedSignal"
++          }
++        },
++        "districtKey": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "districtBasis": {
++          "anyOf": [
++            {
++              "enum": [
++                "source_place_of_performance",
++                "linked_project_site"
++              ]
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "evidence": {
++          "$ref": "#/$defs/FundingEvidence"
++        },
++        "summaryRead": {
++          "$ref": "#/$defs/FundingSummaryRead"
++        }
++      },
++      "required": [
++        "ref",
++        "title",
++        "agency",
++        "kind",
++        "isActive",
++        "isPursuable",
++        "responseDeadline",
++        "responseDeadlineNote",
++        "relevanceScore",
++        "eligibility",
++        "recommendation",
++        "humanDecision",
++        "workflowStatus",
++        "sourceUrl",
++        "sourceUpdatedAt",
++        "clientId",
++        "sourceReference",
++        "subAgency",
++        "office",
++        "status",
++        "kindRaw",
++        "baseKind",
++        "closeOrArchiveDate",
++        "postedDate",
++        "summary",
++        "summaryIsLink",
++        "naicsCodes",
++        "pscCodes",
++        "setAside",
++        "setAsideCode",
++        "setAsideDescription",
++        "eligibleApplicantTypes",
++        "fundingInstrument",
++        "category",
++        "assistanceListings",
++        "grantFunding",
++        "contractValue",
++        "placeOfPerformance",
++        "acquisitionPosition",
++        "missingProfileFields",
++        "matchedSignals",
++        "districtKey",
++        "districtBasis",
++        "evidence",
++        "summaryRead"
++      ]
++    },
++    "FundingCounts": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "activeGrants": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "activeContracts": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "saved": {
++          "type": "null"
++        },
++        "pursuing": {
++          "type": "null"
++        },
++        "dismissed": {
++          "type": "null"
++        },
++        "deadlinesIn30Days": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "activeGrants",
++        "activeContracts",
++        "saved",
++        "pursuing",
++        "dismissed",
++        "deadlinesIn30Days"
++      ]
++    },
++    "FundingFreshness": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "source": {
++          "$ref": "#/$defs/FundingSourceV2"
++        },
++        "state": {
++          "enum": [
++            "current",
++            "degraded",
++            "stale",
++            "never_synced",
++            "initial_partial",
++            "error_cached",
++            "unavailable",
++            "not_enabled",
++            "unknown"
++          ]
++        },
++        "recordCount": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "activeRecordCount": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "lastSyncedAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "latestAttemptAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "lastSuccessAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "source",
++        "state",
++        "recordCount",
++        "activeRecordCount",
++        "lastSyncedAt"
++      ]
++    },
++    "FundingSearchCriteria": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "schemaVersion": {
++          "const": 2
++        },
++        "mode": {
++          "const": "matched"
++        },
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "query": {
++          "type": "string"
++        },
++        "queryMatch": {
++          "enum": [
++            "keywords",
++            "phrase"
++          ]
++        },
++        "keywordTerms": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "sources": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingSource"
++          },
++          "maxItems": 2
++        },
++        "types": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "lifecycle": {
++          "type": "array",
++          "items": {
++            "enum": [
++              "active",
++              "closed",
++              "post_award"
++            ]
++          },
++          "maxItems": 3
++        },
++        "deadlineWindow": {
++          "const": "any"
++        },
++        "deadlineFrom": {
++          "type": "null"
++        },
++        "deadlineTo": {
++          "type": "null"
++        },
++        "sort": {
++          "const": "deadline"
++        },
++        "direction": {
++          "const": "asc"
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 10000
++        },
++        "pageSize": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 5
++        },
++        "agencies": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "sectors": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "naicsCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "pscCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "setAsideCodes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "eligibility": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "posted": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "geography": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "applicantTypes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "funding": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "costShare": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "methods": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "disbursement": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "grantPrerequisites": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "codes": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      },
++      "required": [
++        "schemaVersion",
++        "mode",
++        "clientId",
++        "query",
++        "sources",
++        "types",
++        "lifecycle",
++        "deadlineWindow",
++        "deadlineFrom",
++        "deadlineTo",
++        "sort",
++        "direction",
++        "page",
++        "pageSize",
++        "agencies",
++        "sectors",
++        "naicsCodes",
++        "pscCodes",
++        "setAsideCodes",
++        "eligibility",
++        "posted",
++        "geography",
++        "applicantTypes",
++        "funding",
++        "costShare",
++        "methods",
++        "disbursement",
++        "grantPrerequisites",
++        "codes"
++      ]
++    },
++    "FundingSearchData": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "counts": {
++          "$ref": "#/$defs/FundingCounts"
++        },
++        "freshness": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingFreshness"
++          }
++        },
++        "emptyReason": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "emptyExplanation": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "missingProfileFields": {
++          "anyOf": [
++            {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/FundingProfileGap"
++              }
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "criteria": {
++          "$ref": "#/$defs/FundingSearchCriteria"
++        },
++        "total": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "totalIsCapped": {
++          "type": "boolean"
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 10000
++        },
++        "pageSize": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 5
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "opportunities": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingFacts"
++          },
++          "maxItems": 5
++        },
++        "hasMore": {
++          "type": "boolean"
++        },
++        "nextPage": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 2,
++              "maximum": 10001
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "coverage": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "sources": {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/FundingSource"
++              },
++              "maxItems": 2
++            },
++            "pageCoversMatchedResults": {
++              "type": "boolean"
++            },
++            "totalIsCapped": {
++              "type": "boolean"
++            },
++            "explanation": {
++              "type": "string"
++            },
++            "procurementForecasts": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "state": {
++                  "const": "separate_tool"
++                },
++                "tool": {
++                  "const": "search_procurement_forecasts"
++                }
++              },
++              "required": [
++                "state",
++                "tool"
++              ]
++            }
++          },
++          "required": [
++            "sources",
++            "pageCoversMatchedResults",
++            "totalIsCapped",
++            "explanation",
++            "procurementForecasts"
++          ]
++        }
++      },
++      "required": [
++        "clientId",
++        "counts",
++        "freshness",
++        "emptyReason",
++        "emptyExplanation",
++        "missingProfileFields",
++        "criteria",
++        "total",
++        "totalIsCapped",
++        "page",
++        "pageSize",
++        "generatedAt",
++        "opportunities",
++        "hasMore",
++        "nextPage",
++        "coverage"
++      ]
++    },
++    "FundingClientContextData": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "counts": {
++          "$ref": "#/$defs/FundingCounts"
++        },
++        "freshness": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingFreshness"
++          }
++        },
++        "emptyReason": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "emptyExplanation": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "missingProfileFields": {
++          "anyOf": [
++            {
++              "type": "array",
++              "items": {
++                "$ref": "#/$defs/FundingProfileGap"
++              }
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "nextDeadline": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingDeadline"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "topGrants": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingBrief"
++          },
++          "maxItems": 5
++        },
++        "topContracts": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingBrief"
++          },
++          "maxItems": 5
++        }
++      },
++      "required": [
++        "clientId",
++        "counts",
++        "freshness",
++        "emptyReason",
++        "emptyExplanation",
++        "missingProfileFields",
++        "nextDeadline",
++        "topGrants",
++        "topContracts"
++      ]
++    },
++    "FundingRequirement": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "id": {
++          "type": "string"
++        },
++        "attachmentId": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "requirementType": {
++          "type": "string"
++        },
++        "statement": {
++          "type": "string"
++        },
++        "sourceExcerpt": {
++          "type": "string"
++        },
++        "excerptStart": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "excerptEnd": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "sourcePage": {
++          "anyOf": [
++            {
++              "type": "integer",
++              "minimum": 1,
++              "maximum": 9007199254740991
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "fileName": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "extractionMethod": {
++          "type": "string"
++        },
++        "extractionModel": {
++          "type": "string"
++        },
++        "confidence": {
++          "type": "string"
++        },
++        "reviewStatus": {
++          "enum": [
++            "pending",
++            "accepted",
++            "rejected"
++          ]
++        },
++        "supersededAt": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "id",
++        "attachmentId",
++        "requirementType",
++        "statement",
++        "sourceExcerpt",
++        "excerptStart",
++        "excerptEnd",
++        "sourcePage",
++        "fileName",
++        "extractionMethod",
++        "extractionModel",
++        "confidence",
++        "reviewStatus",
++        "supersededAt"
++      ]
++    },
++    "FundingRequirementsData": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "source": {
++          "const": "sam_gov"
++        },
++        "sourceRecordId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "requirements": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingRequirement"
++          },
++          "maxItems": 25
++        },
++        "coverage": {
++          "enum": [
++            "available",
++            "no_documents",
++            "no_text",
++            "read_none_found"
++          ]
++        },
++        "coverageExplanation": {
++          "type": "string"
++        },
++        "documentTextStatus": {
++          "type": "array",
++          "items": {
++            "type": "object",
++            "additionalProperties": false,
++            "properties": {
++              "fileName": {
++                "anyOf": [
++                  {
++                    "type": "string"
++                  },
++                  {
++                    "type": "null"
++                  }
++                ]
++              },
++              "status": {
++                "type": "string"
++              },
++              "explanation": {
++                "type": "string"
++              }
++            },
++            "required": [
++              "fileName",
++              "status",
++              "explanation"
++            ]
++          }
++        },
++        "generatedAt": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "pagination": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "offset": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 1000000
++            },
++            "limit": {
++              "type": "integer",
++              "minimum": 1,
++              "maximum": 25
++            },
++            "total": {
++              "anyOf": [
++                {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "hasMore": {
++              "type": "boolean"
++            },
++            "nextOffset": {
++              "anyOf": [
++                {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 9007199254740991
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            }
++          },
++          "required": [
++            "offset",
++            "limit",
++            "total",
++            "hasMore",
++            "nextOffset"
++          ]
++        }
++      },
++      "required": [
++        "source",
++        "sourceRecordId",
++        "requirements",
++        "coverage",
++        "coverageExplanation",
++        "documentTextStatus",
++        "generatedAt",
++        "pagination"
++      ]
++    },
++    "FundingLandscapeSource": {
++      "enum": [
++        "program_element",
++        "budget_movement",
++        "client_facility",
++        "congressional_district",
++        "legislation",
++        "hearing",
++        "regulation",
++        "committee",
++        "acquisition_personnel",
++        "reviewed_relationship",
++        "client_priority"
++      ]
++    },
++    "FundingLandscapeItem": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "source": {
++          "$ref": "#/$defs/FundingLandscapeSource"
++        },
++        "sourceId": {
++          "type": "string"
++        },
++        "label": {
++          "type": "string"
++        },
++        "basis": {
++          "enum": [
++            "source_backed",
++            "inferred"
++          ]
++        },
++        "matchedOn": {
++          "type": "string"
++        },
++        "evidenceRef": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "asOf": {
++          "anyOf": [
++            {
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        }
++      },
++      "required": [
++        "source",
++        "sourceId",
++        "label",
++        "basis",
++        "matchedOn",
++        "evidenceRef",
++        "asOf"
++      ]
++    },
++    "FundingLandscapeData": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "fingerprint": {
++          "type": "string",
++          "pattern": "^[0-9a-f]{64}$"
++        },
++        "coverage": {
++          "type": "object",
++          "additionalProperties": false,
++          "properties": {
++            "available": {
++              "type": "integer",
++              "minimum": 0,
++              "maximum": 11
++            },
++            "wired": {
++              "const": 3
++            },
++            "declared": {
++              "const": 11
++            }
++          },
++          "required": [
++            "available",
++            "wired",
++            "declared"
++          ]
++        },
++        "sources": {
++          "type": "array",
++          "items": {
++            "type": "object",
++            "additionalProperties": false,
++            "properties": {
++              "source": {
++                "$ref": "#/$defs/FundingLandscapeSource"
++              },
++              "state": {
++                "enum": [
++                  "available",
++                  "empty",
++                  "not_wired",
++                  "denied"
++                ]
++              },
++              "itemCount": {
++                "type": "integer",
++                "minimum": 0,
++                "maximum": 9007199254740991
++              },
++              "explanation": {
++                "type": "string"
++              }
++            },
++            "required": [
++              "source",
++              "state",
++              "itemCount",
++              "explanation"
++            ]
++          },
++          "maxItems": 11
++        },
++        "items": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingLandscapeItem"
++          },
++          "maxItems": 40
++        }
++      },
++      "required": [
++        "fingerprint",
++        "coverage",
++        "sources",
++        "items"
++      ]
++    },
++    "FundingTruncation": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "collection": {
++          "enum": [
++            "topGrants",
++            "topContracts",
++            "items"
++          ]
++        },
++        "kept": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        },
++        "total": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 9007199254740991
++        }
++      },
++      "required": [
++        "collection",
++        "kept",
++        "total"
++      ]
++    },
++    "FundingSearchInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "source": {
++          "type": "string"
++        },
++        "query": {
++          "type": "string"
++        },
++        "page": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 100000
++        },
++        "pageSize": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 5
++        },
++        "activeState": {
++          "enum": [
++            "active",
++            "closed",
++            "all"
++          ]
++        }
++      },
++      "required": [
++        "clientId"
++      ]
++    },
++    "FundingSearchOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "search_funding_opportunities"
++        },
++        "state": {
++          "enum": [
++            "available",
++            "disabled",
++            "denied",
++            "not_found",
++            "unsupported_source",
++            "invalid_request"
++          ]
++        },
++        "explanation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "data": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingSearchData"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "truncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingTruncation"
++          },
++          "maxItems": 2,
++          "minItems": 1
++        }
++      },
++      "required": [
++        "tool",
++        "state",
++        "explanation",
++        "asOf",
++        "data"
++      ],
++      "allOf": [
++        {
++          "if": {
++            "properties": {
++              "state": {
++                "const": "available"
++              }
++            },
++            "required": [
++              "state"
++            ]
++          },
++          "then": {
++            "properties": {
++              "data": {
++                "$ref": "#/$defs/FundingSearchData"
++              }
++            }
++          },
++          "else": {
++            "properties": {
++              "data": {
++                "type": "null"
++              },
++              "truncated": false
++            }
++          }
++        }
++      ]
++    },
++    "FundingRequirementsInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "source": {
++          "type": "string"
++        },
++        "sourceRecordId": {
++          "type": "string",
++          "minLength": 1
++        },
++        "offset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 1000000
++        },
++        "limit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 25
++        }
++      },
++      "required": [
++        "clientId",
++        "source",
++        "sourceRecordId"
++      ]
++    },
++    "FundingRequirementsOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "get_funding_opportunity_requirements"
++        },
++        "state": {
++          "enum": [
++            "available",
++            "disabled",
++            "denied",
++            "not_found",
++            "unsupported_source",
++            "invalid_request"
++          ]
++        },
++        "explanation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "data": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingRequirementsData"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "truncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingTruncation"
++          },
++          "maxItems": 2,
++          "minItems": 1
++        }
++      },
++      "required": [
++        "tool",
++        "state",
++        "explanation",
++        "asOf",
++        "data"
++      ],
++      "allOf": [
++        {
++          "if": {
++            "properties": {
++              "state": {
++                "const": "available"
++              }
++            },
++            "required": [
++              "state"
++            ]
++          },
++          "then": {
++            "properties": {
++              "data": {
++                "$ref": "#/$defs/FundingRequirementsData"
++              }
++            }
++          },
++          "else": {
++            "properties": {
++              "data": {
++                "type": "null"
++              },
++              "truncated": false
++            }
++          }
++        }
++      ]
++    },
++    "FundingOpportunityInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "source": {
++          "type": "string"
++        },
++        "sourceRecordId": {
++          "type": "string",
++          "minLength": 1
++        },
++        "summaryOffset": {
++          "type": "integer",
++          "minimum": 0,
++          "maximum": 100000000
++        },
++        "summaryLimit": {
++          "type": "integer",
++          "minimum": 1,
++          "maximum": 12000
++        }
++      },
++      "required": [
++        "clientId",
++        "source",
++        "sourceRecordId"
++      ]
++    },
++    "FundingOpportunityOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "get_funding_opportunity"
++        },
++        "state": {
++          "enum": [
++            "available",
++            "disabled",
++            "denied",
++            "not_found",
++            "unsupported_source",
++            "invalid_request"
++          ]
++        },
++        "explanation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "data": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingFacts"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "truncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingTruncation"
++          },
++          "maxItems": 2,
++          "minItems": 1
++        }
++      },
++      "required": [
++        "tool",
++        "state",
++        "explanation",
++        "asOf",
++        "data"
++      ],
++      "allOf": [
++        {
++          "if": {
++            "properties": {
++              "state": {
++                "const": "available"
++              }
++            },
++            "required": [
++              "state"
++            ]
++          },
++          "then": {
++            "properties": {
++              "data": {
++                "$ref": "#/$defs/FundingFacts"
++              }
++            }
++          },
++          "else": {
++            "properties": {
++              "data": {
++                "type": "null"
++              },
++              "truncated": false
++            }
++          }
++        }
++      ]
++    },
++    "FundingClientContextInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        }
++      },
++      "required": [
++        "clientId"
++      ]
++    },
++    "FundingClientContextOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "get_opportunity_client_context"
++        },
++        "state": {
++          "enum": [
++            "available",
++            "disabled",
++            "denied",
++            "not_found",
++            "unsupported_source",
++            "invalid_request"
++          ]
++        },
++        "explanation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "data": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingClientContextData"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "truncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingTruncation"
++          },
++          "maxItems": 2,
++          "minItems": 1
++        }
++      },
++      "required": [
++        "tool",
++        "state",
++        "explanation",
++        "asOf",
++        "data"
++      ],
++      "allOf": [
++        {
++          "if": {
++            "properties": {
++              "state": {
++                "const": "available"
++              }
++            },
++            "required": [
++              "state"
++            ]
++          },
++          "then": {
++            "properties": {
++              "data": {
++                "$ref": "#/$defs/FundingClientContextData"
++              }
++            }
++          },
++          "else": {
++            "properties": {
++              "data": {
++                "type": "null"
++              },
++              "truncated": false
++            }
++          }
++        }
++      ]
++    },
++    "FundingGovernmentLandscapeInput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "clientId": {
++          "type": "string",
++          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
++        },
++        "source": {
++          "type": "string"
++        },
++        "sourceRecordId": {
++          "type": "string",
++          "minLength": 1
++        }
++      },
++      "required": [
++        "clientId",
++        "source",
++        "sourceRecordId"
++      ]
++    },
++    "FundingGovernmentLandscapeOutput": {
++      "type": "object",
++      "additionalProperties": false,
++      "properties": {
++        "tool": {
++          "const": "get_opportunity_government_landscape"
++        },
++        "state": {
++          "enum": [
++            "available",
++            "disabled",
++            "denied",
++            "not_found",
++            "unsupported_source",
++            "invalid_request"
++          ]
++        },
++        "explanation": {
++          "type": "string",
++          "minLength": 1
++        },
++        "asOf": {
++          "type": "string",
++          "format": "date-time"
++        },
++        "data": {
++          "anyOf": [
++            {
++              "$ref": "#/$defs/FundingLandscapeData"
++            },
++            {
++              "type": "null"
++            }
++          ]
++        },
++        "truncated": {
++          "type": "array",
++          "items": {
++            "$ref": "#/$defs/FundingTruncation"
++          },
++          "maxItems": 2,
++          "minItems": 1
++        }
++      },
++      "required": [
++        "tool",
++        "state",
++        "explanation",
++        "asOf",
++        "data"
++      ],
++      "allOf": [
++        {
++          "if": {
++            "properties": {
++              "state": {
++                "const": "available"
++              }
++            },
++            "required": [
++              "state"
++            ]
++          },
++          "then": {
++            "properties": {
++              "data": {
++                "$ref": "#/$defs/FundingLandscapeData"
++              }
++            }
++          },
++          "else": {
++            "properties": {
++              "data": {
++                "type": "null"
++              },
++              "truncated": false
++            }
++          }
++        }
++      ]
++    }
++  }
++}
+diff --git a/packages/contracts/retrieval-0.2/funding-requirements-validation.mjs b/packages/contracts/retrieval-0.2/funding-requirements-validation.mjs
+new file mode 100644
+index 0000000..37a8031
+--- /dev/null
++++ b/packages/contracts/retrieval-0.2/funding-requirements-validation.mjs
+@@ -0,0 +1,28 @@
++/** Requirement reads preserve extraction and tenant review as separate facts. */
++import { fundingInstant } from './funding-envelope-validation.mjs';
++const fail = message => { throw new Error(message); };
++export function assertFundingRequirements(data, envelope, input) {
++  if (envelope.truncated) fail('Requirement pagination is not envelope truncation');
++  if (data.source !== input.source || data.sourceRecordId !== input.sourceRecordId || data.generatedAt !== envelope.asOf)
++    fail('Requirement source/clock substitution');
++  fundingInstant(data.generatedAt);
++  const page = data.pagination, count = data.requirements.length;
++  if (page.offset !== input.offset || page.limit !== input.limit || count > page.limit ||
++      page.nextOffset !== (page.hasMore ? page.offset + count : null) || page.hasMore && count === 0)
++    fail('Requirement page substitution or non-progressing continuation');
++  if (page.total !== null && count > 0 && page.offset + count < page.total && !page.hasMore)
++    fail('Requirement page hides known continuation');
++  if ((count > 0 || (page.total !== null && page.total > 0)) !== (data.coverage === 'available'))
++    fail('Requirement coverage cannot turn an exhausted page into no conditions');
++  for (const row of data.requirements) {
++    if (!row.id.trim() || !row.statement.trim() || !row.extractionModel.trim() ||
++        row.sourceExcerpt.length === 0 || row.sourceExcerpt.length > 2000 ||
++        row.excerptEnd <= row.excerptStart || row.excerptEnd - row.excerptStart !== row.sourceExcerpt.length)
++      fail('Requirement quoted UTF-16 span is malformed');
++    if (row.supersededAt !== null) fundingInstant(row.supersededAt);
++  }
++  // No document text or content hash appears in this read projection. Shape and
++  // span checks cannot verify the quote, establish a current mandatory condition,
++  // elevate pending/rejected reviews, or undo supersession. Count reads and page
++  // reads may race; do not invent snapshot consistency from total alone.
++}
+diff --git a/packages/contracts/test/retrieval-funding-opportunities.test.mjs b/packages/contracts/test/retrieval-funding-opportunities.test.mjs
+new file mode 100644
+index 0000000..b326219
+--- /dev/null
++++ b/packages/contracts/test/retrieval-funding-opportunities.test.mjs
+@@ -0,0 +1,62 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {createHash} from 'node:crypto';
++import Ajv from 'ajv/dist/2020.js';
++import addFormats from 'ajv-formats';
++import {createFundingOpportunitiesValidators, FUNDING_OPPORTUNITY_OPERATION_IDS as IDS} from '../retrieval-0.2/funding-opportunities-validation.mjs';
++import {createOperationContracts} from '../retrieval-0.2/operation-contracts.mjs';
++import {canonicalSha256} from '../validate.mjs';
++const raw=readFileSync(new URL('../retrieval-0.2/funding-opportunities.schema.json',import.meta.url)), schema=JSON.parse(raw);
++const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(schema);
++const checks=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));
++const v=createFundingOpportunitiesValidators({schema,validateShape(name,value){const check=checks.get(name);if(!check?.(value))throw Error(ajv.errorsText(check?.errors));return value;}});
++const [searchId,requirementsId,detailId,contextId,landscapeId]=IDS;
++const clientId='11111111-1111-4111-8111-111111111111', recordId='22222222-2222-4222-8222-222222222222';
++const stamp='2026-10-12T12:00:00.000Z', options={asOf:stamp};
++const req=id=>[searchId,contextId].includes(id)?{clientId}:{clientId,source:'sam_gov',sourceRecordId:recordId};
++const envelope=(tool,data)=>({tool,state:'available',explanation:'Synthetic reported projection; no current source authority.',asOf:stamp,data});
++function brief(source='sam_gov') {return {ref:{source,sourceRecordId:recordId},title:'Synthetic notice',agency:null,kind:'solicitation',isActive:true,isPursuable:true,responseDeadline:null,responseDeadlineNote:null,relevanceScore:null,eligibility:{state:'unknown',reason:'Not assessed'},recommendation:null,humanDecision:null,workflowStatus:null,sourceUrl:null,sourceUpdatedAt:null};}
++function fact(source='sam_gov',text='synthetic text'){return {...brief(source),clientId,sourceReference:null,subAgency:null,office:null,status:null,kindRaw:null,baseKind:null,closeOrArchiveDate:null,postedDate:null,summary:text,summaryIsLink:false,naicsCodes:[],pscCodes:[],setAside:null,setAsideCode:null,setAsideDescription:null,eligibleApplicantTypes:[],fundingInstrument:null,category:null,assistanceListings:[],grantFunding:source==='grants_gov'?{estimatedProgramFunding:null,awardFloor:null,awardCeiling:null,expectedAwardCount:null,costSharingRequired:null}:null,contractValue:source==='sam_gov'?{estimatedValue:null,basis:'not_stated_by_source'}:null,placeOfPerformance:null,acquisitionPosition:null,missingProfileFields:null,matchedSignals:[],districtKey:null,districtBasis:null,evidence:{recordRef:`${source}:${recordId}`,recommendationConfidence:null,confidenceMeaning:'Canonical recommendation evidence quality, not likelihood of winning or verified eligibility.',disqualifiers:[],missingFields:['sourceUrl','sourceUpdatedAt','responseDeadline','placeOfPerformance',...(source==='grants_gov'?['eligibleApplicantTypes']:[]),...(!text?['noticeText']:[])],requirements:source==='sam_gov'?{state:'not_requested',tool:requirementsId}:{state:'notice_body',tool:detailId}},summaryRead:{state:text?'available':'missing',offset:0,totalCharacters:text?.length??0,returnedCharacters:text?.length??0,truncated:false,nextOffset:null,sourceUpdatedAt:null}};}
++const counts=()=>({activeGrants:null,activeContracts:null,saved:null,pursuing:null,dismissed:null,deadlinesIn30Days:null});
++function criteria(){const result={schemaVersion:2,mode:'matched',clientId,query:'',keywordTerms:[],sources:['grants_gov','sam_gov'],lifecycle:['active'],deadlineWindow:'any',deadlineFrom:null,deadlineTo:null,sort:'deadline',direction:'asc',page:1,pageSize:5};for(const key of ['types','agencies','sectors','naicsCodes','pscCodes','setAsideCodes','eligibility','posted','geography','applicantTypes','funding','costShare','methods','disbursement','grantPrerequisites','codes'])result[key]=[];return result;}
++function search(){return envelope(searchId,{clientId,counts:counts(),freshness:[],emptyReason:null,emptyExplanation:null,missingProfileFields:null,criteria:criteria(),total:1,totalIsCapped:false,page:1,pageSize:5,generatedAt:stamp,opportunities:[fact()],hasMore:false,nextPage:null,coverage:{sources:['grants_gov','sam_gov'],pageCoversMatchedResults:true,totalIsCapped:false,explanation:'Synthetic matched page only; not absence evidence.',procurementForecasts:{state:'separate_tool',tool:'search_procurement_forecasts'}}});}
++function context(){return envelope(contextId,{clientId,counts:counts(),freshness:[],emptyReason:null,emptyExplanation:null,missingProfileFields:null,nextDeadline:null,topGrants:[],topContracts:[brief()]});}
++function requirement(){return {id:'synthetic-requirement',attachmentId:null,requirementType:'submission',statement:'Synthetic reported condition',sourceExcerpt:'A😀B',excerptStart:10,excerptEnd:14,sourcePage:null,fileName:null,extractionMethod:'model',extractionModel:'synthetic-extractor',confidence:'low',reviewStatus:'pending',supersededAt:null};}
++function requirements(){return envelope(requirementsId,{source:'sam_gov',sourceRecordId:recordId,requirements:[requirement()],coverage:'available',coverageExplanation:'Read projection is not verified mandatory conditions.',documentTextStatus:[{fileName:null,status:'available',explanation:'Synthetic text'}],generatedAt:stamp,pagination:{offset:0,limit:10,total:1,hasMore:false,nextOffset:null}});}
++const landscapeSources=['program_element','budget_movement','client_facility','congressional_district','legislation','hearing','regulation','committee','acquisition_personnel','reviewed_relationship','client_priority'];
++function landscape(total=1){const out=envelope(landscapeId,{fingerprint:'a'.repeat(64),coverage:{available:total?1:0,wired:3,declared:11},sources:landscapeSources.map(source=>({source,state:source==='program_element'&&total?'available':['program_element','client_facility','congressional_district'].includes(source)?'empty':'not_wired',itemCount:source==='program_element'?total:0,explanation:'Synthetic coverage only'})),items:Array.from({length:Math.min(total,40)},(_,i)=>({source:'program_element',sourceId:`row-${i}`,label:'Unreviewed synthetic link',basis:'inferred',matchedOn:'synthetic PE',evidenceRef:null,asOf:null}))});if(total>40)out.truncated=[{collection:'items',kept:40,total}];return out;}
++const fixtures=new Map([[searchId,search],[requirementsId,requirements],[detailId,()=>envelope(detailId,fact())],[contextId,context],[landscapeId,landscape]]);
++const check=(id,value=fixtures.get(id)(),request=req(id),clock=options)=>v.assertFundingOpportunitiesOutput(id,value,request,clock);
++function mutation(id,fn,request){const output=fixtures.get(id)();fn(output);assert.throws(()=>check(id,output,request));}
++
++test('five distinct operation definitions and exact schema bytes',()=>{assert.equal(IDS.length,5);assert.equal(v.fundingOpportunitiesSchemaId,'urn:meri:retrieval:funding-opportunities:0.2.0');assert.equal(createHash('sha256').update(raw).digest('hex'),'10695bd750e188fa0897d29da594482cfa13325cc81a2f9f23e323c73bc545b4');for(const id of IDS){assert.match(v.fundingOpportunitiesInputDefinition(id),/Input$/);assert.match(v.fundingOpportunitiesOutputDefinition(id),/Output$/);}for(const id of ['__proto__','compare_funding_opportunities','build_opportunity_action_plan'])assert.throws(()=>v.fundingOpportunitiesInputDefinition(id));});
++for(const id of IDS){
++ test(`${id}: valid bounded projection`,()=>check(id));
++ test(`${id}: six states preserve null refusal and exact asOf`,()=>{for(const state of ['disabled','denied','not_found','unsupported_source','invalid_request']){const out={tool:id,state,asOf:stamp,explanation:state==='denied'?'Not available for this client.':'Synthetic refusal; no absence claim.',data:null};check(id,out);assert.throws(()=>check(id,{...out,data:{}}));assert.throws(()=>check(id,{...out,truncated:[]}));}mutation(id,out=>out.state='unavailable');mutation(id,out=>out.asOf='2026-10-12T12:00:00.001Z');});
++ test(`${id}: closed selector and output cannot add authority or raw fields`,()=>{for(const extra of ['asOf','actorId','tenantId','authorized','sql'])assert.throws(()=>v.normalizeFundingOpportunitiesInput(id,{...req(id),[extra]:stamp},options));mutation(id,out=>out.approved=true);mutation(id,out=>out.tool=IDS.find(other=>other!==id));});
++}
++test('trusted asOf is required, exact canonical and never current authorization',()=>{for(const bad of [undefined,{}, {asOf:stamp,actorId:'actor'}, {asOf:'2026-06-30T23:59:60Z'}, {asOf:'2026-10-12T12:00:00Z'}, {asOf:0}])assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,{clientId},bad));const out=v.normalizeFundingOpportunitiesInput(searchId,{clientId},options);assert.deepEqual(out.metadata,{asOf:stamp,authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false});assert.ok(Object.isFrozen(out)&&Object.isFrozen(out.input)&&Object.isFrozen(out.metadata));});
++test('search effective defaults preserve trimmed query and actual 10000 page clamp',()=>{const input={clientId,query:'  alpha beta  ',page:100000};const out=v.normalizeFundingOpportunitiesInput(searchId,input,options);assert.deepEqual(out.input,{clientId,query:'alpha beta',page:10000,pageSize:5,activeState:'active'});assert.equal(input.query,'  alpha beta  ');const page=search();Object.assign(page.data,{page:10000,total:null,hasMore:false});Object.assign(page.data.criteria,{page:10000,query:'alpha beta'});page.data.coverage.pageCoversMatchedResults=false;check(searchId,page,input);});
++test('input bounds refuse coercion and enforce UTF-16 query before trimming',()=>{for(const bad of [0,100001,1.5,'2',null])assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,{clientId,page:bad},options));for(const bad of [0,6,NaN,Infinity])assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,{clientId,pageSize:bad},options));assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,{clientId,query:' '.repeat(501)},options));assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,{clientId,query:'😀'.repeat(251)},options));v.normalizeFundingOpportunitiesInput(searchId,{clientId,query:'😀'.repeat(250)},options);for(const [id,key,values] of [[requirementsId,'limit',[0,26]],[requirementsId,'offset',[-1,1000001]],[detailId,'summaryOffset',[-1,100000001]],[detailId,'summaryLimit',[0,12001]]])for(const value of values)assert.throws(()=>v.normalizeFundingOpportunitiesInput(id,{...req(id),[key]:value},options));});
++test('original refusal remains possible for unsupported source but cannot release available payload',()=>{const request={...req(detailId),source:'agency_forecast'};check(detailId,{tool:detailId,state:'unsupported_source',asOf:stamp,explanation:'Synthetic unsupported source.',data:null},request);assert.throws(()=>check(detailId,envelope(detailId,fact()),request));mutation(detailId,out=>{out.state='denied';out.data=null;out.explanation='Client exists but hidden';});});
++test('inert admission refuses proxies, getters, symbols, cycles, non-finite and hidden fields before hooks',()=>{let hits=0;const getter={clientId};Object.defineProperty(getter,'query',{enumerable:true,get(){hits++;return '';}});const proxy=new Proxy({clientId},{ownKeys(){hits++;return ['clientId'];}});const hidden={clientId};Object.defineProperty(hidden,'secret',{value:'x'});const cycle={clientId};cycle.self=cycle;for(const value of [getter,proxy,hidden,cycle,{clientId,[Symbol('hidden')]:true},{clientId,page:Infinity}])assert.throws(()=>v.normalizeFundingOpportunitiesInput(searchId,value,options));const output=search();Object.defineProperty(output,'data',{enumerable:true,get(){hits++;return {};}});assert.throws(()=>check(searchId,output));assert.equal(hits,0);});
++test('24000 JSON characters admits exact ceiling and refuses one more; UTF-8 bytes differ',()=>{const out={tool:detailId,state:'invalid_request',asOf:stamp,explanation:'😀',data:null};const overhead=JSON.stringify(out).length-2;out.explanation='😀'.repeat(Math.floor((24000-overhead)/2))+'x'.repeat((24000-overhead)%2);assert.equal(JSON.stringify(out).length,24000);assert.ok(Buffer.byteLength(JSON.stringify(out))>24000);check(detailId,out);out.explanation+='x';assert.throws(()=>check(detailId,out));});
++test('search count pagination and unknown capped coverage remain distinct',()=>{const out=search();out.data.total=null;out.data.totalIsCapped=true;out.data.coverage.totalIsCapped=true;out.data.coverage.pageCoversMatchedResults=false;out.data.opportunities=Array.from({length:5},()=>fact());out.data.hasMore=true;out.data.nextPage=2;check(searchId,out);out.data.coverage.pageCoversMatchedResults=true;assert.throws(()=>check(searchId,out));mutation(searchId,out=>out.data.nextPage=2);mutation(searchId,out=>out.data.criteria.agencies=['unrequested']);mutation(searchId,out=>out.data.opportunities[0].clientId=recordId);});
++test('summary exact UTF-16 continuation clamps requested offset to held text length',()=>{const out=envelope(detailId,fact('sam_gov','😀B'));Object.assign(out.data.summaryRead,{offset:1,totalCharacters:4,returnedCharacters:3,truncated:true,nextOffset:null});check(detailId,out,{...req(detailId),summaryOffset:1,summaryLimit:3});out.data.summaryRead.returnedCharacters=2;assert.throws(()=>check(detailId,out,{...req(detailId),summaryOffset:1,summaryLimit:3}));const exhausted=envelope(detailId,fact('sam_gov',''));Object.assign(exhausted.data.summaryRead,{state:'available',offset:4,totalCharacters:4,returnedCharacters:0,truncated:true,nextOffset:null});exhausted.data.evidence.missingFields=exhausted.data.evidence.missingFields.filter(key=>key!=='noticeText');check(detailId,exhausted,{...req(detailId),summaryOffset:100,summaryLimit:1});});
++test('missing/link-only summaries and source requirements handoff retain limits',()=>{const out=envelope(detailId,fact('sam_gov',null));check(detailId,out);const link=envelope(detailId,fact('sam_gov','https://synthetic.invalid'));link.data.summaryIsLink=true;link.data.summaryRead.state='link_only';link.data.evidence.missingFields.push('noticeText');check(detailId,link);mutation(detailId,out=>out.data.evidence.requirements.state='notice_body');mutation(detailId,out=>out.data.summaryRead.sourceUpdatedAt=stamp);});
++test('money channels, missing values and eligibility cannot be blended',()=>{const grant=envelope(detailId,fact('grants_gov'));check(detailId,grant,{clientId,source:'grants_gov',sourceRecordId:recordId});assert.equal(grant.data.grantFunding.awardCeiling,null);grant.data.contractValue={estimatedValue:null,basis:'not_stated_by_source'};assert.throws(()=>check(detailId,grant,{clientId,source:'grants_gov',sourceRecordId:recordId}));mutation(detailId,out=>out.data.totalAmount=0);mutation(detailId,out=>out.data.contractValue.estimatedValue=0);mutation(detailId,out=>out.data.evidence.disqualifiers=[{basis:'canonical_eligibility',reason:'Unknown'}]);mutation(detailId,out=>out.data.evidence.recordRef='sam_gov:foreign');});
++test('human decision retains nullable audit fields independent of machine recommendation',()=>{const out=envelope(detailId,fact());out.data.humanDecision={decision:'pass',reason:null,decidedAt:null,decidedByUserId:null,nextAction:null,nextActionDueAt:null};check(detailId,out);assert.equal(out.data.eligibility.state,'unknown');assert.equal(out.data.recommendation,null);});
++test('client context five-row caps remain separate from broad counts',()=>{const out=context();out.data.counts.activeContracts=200;out.data.topContracts=Array.from({length:5},()=>brief());check(contextId,out);out.data.topContracts.push(brief());assert.throws(()=>check(contextId,out));mutation(contextId,out=>out.data.topGrants=[brief()]);mutation(contextId,out=>out.data.counts.saved=0);});
++test('next deadline and thirty-day count apply to sampled top rows only',()=>{const out=context();const d={at:'2026-10-13T12:00:00.000Z',dateOnly:'2026-10-13',timeZone:null,basis:'explicit_datetime',daysRemaining:1,status:'open'};out.data.topContracts[0].deadline=d;out.data.nextDeadline={...d};out.data.counts.deadlinesIn30Days=1;check(contextId,out);out.data.nextDeadline={...d,at:'2026-10-12T13:00:00.000Z'};assert.throws(()=>check(contextId,out));mutation(contextId,out=>out.data.counts.deadlinesIn30Days=1);});
++test('requirements retain rejected and superseded rows; acceptance is not quote verification',()=>{const out=requirements();out.data.requirements[0].reviewStatus='rejected';out.data.requirements[0].supersededAt=stamp;check(requirementsId,out);out.data.requirements[0].reviewStatus='accepted';check(requirementsId,out);assert.equal(out.data.requirements[0].attachmentId,null);mutation(requirementsId,out=>out.data.requirements[0].approved=true);});
++test('requirements preserve unknown/stale totals and positive continuation',()=>{const out=requirements();Object.assign(out.data.pagination,{offset:20,total:0,hasMore:true,nextOffset:21});check(requirementsId,out,{...req(requirementsId),offset:20});out.data.pagination.total=null;check(requirementsId,out,{...req(requirementsId),offset:20});out.data.pagination.nextOffset=20;assert.throws(()=>check(requirementsId,out,{...req(requirementsId),offset:20}));});
++test('requirements exhausted pages retain available coverage when known total is positive',()=>{const out=requirements();out.data.requirements=[];Object.assign(out.data.pagination,{offset:20,total:12});check(requirementsId,out,{...req(requirementsId),offset:20});out.data.coverage='read_none_found';assert.throws(()=>check(requirementsId,out,{...req(requirementsId),offset:20}));});
++test('requirements no documents/no text/read none found remain distinct reports',()=>{for(const coverage of ['no_documents','no_text','read_none_found']){const out=requirements();out.data.requirements=[];out.data.coverage=coverage;out.data.pagination.total=0;check(requirementsId,out);}});
++test('requirements quote spans/count/clock/identity cannot be substituted',()=>{for(const fn of [out=>out.data.requirements[0].excerptEnd=13,out=>out.data.requirements[0].sourceExcerpt='',out=>out.data.requirements[0].sourceExcerpt='x'.repeat(2001),out=>out.data.pagination.limit=25,out=>out.data.sourceRecordId=clientId,out=>out.data.generatedAt='2026-06-30T23:59:60Z',out=>{out.data.pagination.total=2;out.data.pagination.hasMore=false;}])mutation(requirementsId,fn);});
++test('landscape 40 rows retain original fingerprint and pre-truncation counts',()=>{const out=landscape(45);check(landscapeId,out);assert.equal(out.data.sources[0].itemCount,45);assert.equal(out.data.fingerprint,'a'.repeat(64));assert.equal(out.data.items.length,40);out.data.sources[0].itemCount=40;assert.throws(()=>check(landscapeId,out));});
++test('landscape source coverage, empty reports and losses cannot collapse denial',()=>{check(landscapeId,landscape(0));for(const fn of [out=>out.data.sources.pop(),out=>out.data.sources.push(out.data.sources[0]),out=>out.data.sources.forEach(row=>row.state='denied'),out=>out.data.coverage.available=0,out=>out.truncated=[],out=>out.truncated=[{collection:'items',kept:1,total:1}],out=>out.data.items[0].source='legislation'])mutation(landscapeId,fn);});
++test('landscape inference remains inference and raw provider fields cannot widen it',()=>{const out=landscape();assert.equal(out.data.items[0].basis,'inferred');check(landscapeId,out);out.data.items[0].authorized=true;assert.throws(()=>check(landscapeId,out));assert.throws(()=>check(landscapeId,landscape(),{...req(landscapeId),source:'grants_gov'}));});
++test('canonical resolver retains original request and excludes model clock/foreign context',()=>{const bindings=IDS.map(id=>({id,version:'0.2.0',contextKeys:['asOf'],normalize:(validators,request,ctx)=>validators.normalizeFundingOpportunitiesInput(id,request,ctx),outputAssert:(validators,page,request,ctx)=>validators.assertFundingOpportunitiesOutput(id,page,request,{asOf:ctx.asOf})}));const catalog={operations:IDS.map(id=>({operation:{id,version:'0.2.0'},handler:null}))};const resolver=createOperationContracts({catalog,bindings,validators:v,assertCatalog(){},canonicalSha256});const operation=resolver.resolveOperationContract({id:searchId,version:'0.2.0'});const rawRequest={clientId,query:'   '};const normalized=operation.normalizeInput(rawRequest,options);rawRequest.query='changed';assert.equal(normalized.request.query,'   ');assert.equal(normalized.input.query,'');assert.equal(normalized.argumentsSha256,canonicalSha256(normalized.input));assert.ok(Object.isFrozen(normalized.request));operation.assertOutput(search(),{...options,request:normalized.request});assert.throws(()=>operation.normalizeInput(req(searchId),{...options,actorId:'foreign'}));assert.throws(()=>operation.assertOutput(search(),options));});
++
++test('deadline object property order does not change the typed sampled fact',()=>{const out=context();const d={at:'2026-10-13T12:00:00.000Z',dateOnly:'2026-10-13',timeZone:null,basis:'explicit_datetime',daysRemaining:1,status:'open'};out.data.topContracts[0].deadline=d;out.data.nextDeadline=Object.fromEntries(Object.entries(d).reverse());out.data.counts.deadlinesIn30Days=1;check(contextId,out);});
