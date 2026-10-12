@@ -1,0 +1,151 @@
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (88.943342ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (4.765539ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (2.995736ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (11.445979ms)
+✔ same delivery rejects changed immutable program without a second dispatch (14.712102ms)
+✔ changed admission manifest conflicts with same owned delivery identity (10.8753ms)
+✔ foreign program scope and changed trusted binding refuse before pool (2.966693ms)
+✔ credential mismatch and revoked first authority execute no native port (6.398535ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (5.626544ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (6.717185ms)
+✔ shorter persisted allocation window is detected during preparation without native dispatch or reservation (8.809493ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (7.171098ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (6.251765ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (6.618136ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (8.891957ms)
+✔ invalid produced hash retains uncertainty and never publishes (6.382311ms)
+✔ invalid produced output retains uncertainty and never publishes (5.728538ms)
+✔ invalid produced scope retains uncertainty and never publishes (6.042259ms)
+✔ invalid produced bytes retains uncertainty and never publishes (7.201324ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (12.919645ms)
+✔ authority refusal at check2 retains known immutable outputs and pending state (6.722633ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (8.373587ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (6.011203ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (9.719642ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (12.128455ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (13.812875ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (10.287887ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (16.86452ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (16.349946ms)
+✖ outer cancellation during sandbox dispatch retains explicit output uncertainty (7.977741ms)
+✖ outer cancellation during reserve preserves known output/accounting state (6.44799ms)
+✖ outer cancellation during marker preserves known output/accounting state (7.334163ms)
+✖ outer cancellation during settle preserves known output/accounting state (7.494164ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 29
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2666.882325
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:54:1
+✖ outer cancellation during sandbox dispatch retains explicit output uncertainty (7.977741ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: CANCELLED
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:54:388)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: CANCELLED
+        at errorFactory (file:///workspace/meri-artifact-analysis-budget-20261012/apps/gateway/dispatch/dispatch-lifetime.mjs:6:69)
+        at cancel (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:10:40)
+        at AbortSignal.abort (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:11:23)
+        at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+        at AbortSignal.dispatchEvent (node:internal/event_target:789:26)
+        at runAbort (node:internal/abort_controller:547:10)
+        at abortSignal (node:internal/abort_controller:518:3)
+        at AbortController.abort (node:internal/abort_controller:566:5)
+        at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:54:376)
+        at async Test.run (node:internal/test_runner/test:1389:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:50
+✖ outer cancellation during reserve preserves known output/accounting state (6.44799ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: CANCELLED
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:322)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: CANCELLED
+        at errorFactory (file:///workspace/meri-artifact-analysis-budget-20261012/apps/gateway/dispatch/dispatch-lifetime.mjs:6:69)
+        at cancel (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:10:40)
+        at AbortSignal.abort (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:11:23)
+        at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+        at AbortSignal.dispatchEvent (node:internal/event_target:789:26)
+        at runAbort (node:internal/abort_controller:547:10)
+        at abortSignal (node:internal/abort_controller:518:3)
+        at AbortController.abort (node:internal/abort_controller:566:5)
+        at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:310)
+        at async Test.run (node:internal/test_runner/test:1389:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:50
+✖ outer cancellation during marker preserves known output/accounting state (7.334163ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: CANCELLED
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:322)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: CANCELLED
+        at errorFactory (file:///workspace/meri-artifact-analysis-budget-20261012/apps/gateway/dispatch/dispatch-lifetime.mjs:6:69)
+        at cancel (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:10:40)
+        at AbortSignal.abort (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:11:23)
+        at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+        at AbortSignal.dispatchEvent (node:internal/event_target:789:26)
+        at runAbort (node:internal/abort_controller:547:10)
+        at abortSignal (node:internal/abort_controller:518:3)
+        at AbortController.abort (node:internal/abort_controller:566:5)
+        at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:310)
+        at async Test.run (node:internal/test_runner/test:1389:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:50
+✖ outer cancellation during settle preserves known output/accounting state (7.494164ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  GatewayDenied: CANCELLED
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:322)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: GatewayDenied: CANCELLED
+        at errorFactory (file:///workspace/meri-artifact-analysis-budget-20261012/apps/gateway/dispatch/dispatch-lifetime.mjs:6:69)
+        at cancel (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:10:40)
+        at AbortSignal.abort (file:///workspace/meri-artifact-analysis-budget-20261012/packages/runtime/operation-lifetime.mjs:11:23)
+        at [nodejs.internal.kHybridDispatch] (node:internal/event_target:856:20)
+        at AbortSignal.dispatchEvent (node:internal/event_target:789:26)
+        at runAbort (node:internal/abort_controller:547:10)
+        at abortSignal (node:internal/abort_controller:518:3)
+        at AbortController.abort (node:internal/abort_controller:566:5)
+        at TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:55:310)
+        at async Test.run (node:internal/test_runner/test:1389:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
