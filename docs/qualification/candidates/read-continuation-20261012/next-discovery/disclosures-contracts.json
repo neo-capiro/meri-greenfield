@@ -1,0 +1,57 @@
+{
+  "status": "CONTRACT_REFERENCE_READY_NOT_IMPLEMENTATION_ACCEPTANCE",
+  "sourceCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "family": "stored-disclosures",
+  "sharedNormalization": {
+    "optionalString": "Non-string or trim-empty becomes absent; trim then slice by JavaScript UTF-16 units.",
+    "clampInt": "Number or numeric string, finite check, Math.trunc then min/max clamp; otherwise fallback. Stricter new typed admission must be disclosed.",
+    "summary": "Non-string becomes empty string; whitespace normalized and trimmed; descriptions exceed300 units are slice(0,297) plus a three-character suffix, remaining <=300 UTF-16 units.",
+    "counts": "Separate data/count reads; no atomic snapshot, total>=data.length invariant or authoritative absence.",
+    "wireDates": "JSON serialization of Prisma DateTime; @db.Date records retain UTC midnight. Date nullability remains exact. No current source freshness inferred."
+  },
+  "authority": {
+    "httpEntry": "MeriController class at310 declares RolesGuard and Roles(standard_user); executeTool512 has CurrentTenant-bound TenantContext and ToolServiceSecretGuard (configuration-dependent admission, not assumed runtime proof).",
+    "toolEntry": "executeFromAuthenticatedUser2466 checks active request and receives TenantContext; executeScoped2577 checks active request. Cases2665/2671/2673 pass input alone to LDA/SEC/FARA wrappers.",
+    "roleBoundary": "These producer methods do not consume ctx.role or impose a separate administrator/client-wall check. Controller role admission must not be represented as a fresh Meri gateway decision. RolesGuard uses shared ROLE_RANK; no new role list inferred.",
+    "ldaScope": "LdaIntelService.getFilings accepts FilingFilters only, calls global ldaFiling delegates, and has no tenantId/client-visibility predicate. LdaFiling has no tenantId field. Its clientId is nullable numeric disclosure-source identity, not a Capiro tenant-client UUID. Separate LdaIntelController also declares standard_user and RolesGuard.",
+    "secFaraScope": "Explicit withSystem global stored-model reads; tenant actor context establishes entry admission, not tenant-private result scope.",
+    "qualifiedAdapterRequired": "Current actor/tenant authority, source entitlement, cancellation/budget and release remain trusted gateway/adapter responsibilities. All future handlers unavailable; no source activation."
+  },
+  "operations": [
+    {
+      "id": "search_sec_filings",
+      "producer": {"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchSecFilings","line":4864,"endLine":4901},
+      "input": {"query":"optional string240; wins over companyName alias","companyName":"optional string240 fallback","formType":"optional string20, exact filter","cik":"optional string20, exact filter","limit":"clamp1..50/default20"},
+      "querySemantics": "companyName contains query case-insensitively; formType and cik exact; filingDate descending; no offset/continuation.",
+      "output": {"envelope":["tool","generatedAt","total","data"],"row":{"id":"string","cik":"string","companyName":"string","formType":"string","accessionNumber":"string","filingDate":"serialized DateTime @db.Date, required","description":"string summary<=300 UTF-16, null source becomes empty","url":"string|null"}},
+      "model":"SecFiling",
+      "effects":"Two withSystem stored reads (findMany/count), no provider or ingestion call in this producer.",
+      "prerequisites":"Independent DTO/normalization/output review; qualified source adapter/current authority; runtime unavailable. No missing result DTO."
+    },
+    {
+      "id": "search_fara_registrations",
+      "producer": {"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchFaraRegistrations","line":4903,"endLine":4952},
+      "input": {"query":"optional string240","registrantName":"optional string240, wins over registrant alias","registrant":"optional string240 fallback","foreignPrincipal":"optional string240","country":"optional string120","status":"optional string20","limit":"clamp1..50/default20"},
+      "querySemantics":"query is case-insensitive OR over registrantName/foreignPrincipal/description; named registrant, foreignPrincipal and country are case-insensitive contains filters; status exact; registrationDate descending; no offset/continuation.",
+      "output":{"envelope":["tool","generatedAt","total","data"],"row":{"id":"string","registrationNumber":"string","registrantName":"string","foreignPrincipal":"string","country":"string|null","status":"string|null","registrationDate":"serialized DateTime @db.Date|null","description":"string summary<=300 UTF-16, null source becomes empty"}},
+      "model":"FaraRegistration",
+      "effects":"Two withSystem stored reads (findMany/count), no provider or ingestion call in this producer.",
+      "prerequisites":"Independent DTO/normalization/output review; qualified source adapter/current authority; runtime unavailable. Do not invent status enum, numeric registration identity or exact-match country semantics."
+    },
+    {
+      "id":"search_lda_filings",
+      "producer":{"path":"apps/api/src/meri/meri-tools.service.ts","symbol":"searchLdaFilings","line":4737,"endLine":4762},
+      "owner":{"path":"apps/api/src/lda-intel/lda-intel.service.ts","symbol":"getFilings","line":152,"endLine":200,"interface":"FilingFilters30..37","numericHelper":"toNum64..68"},
+      "input":{"clientName":"optional string200, wins over query alias","query":"optional string200 fallback","issueCode":"optional string120, wins over issue alias","issue":"optional string120 fallback","registrantName":"optional string200, wins over registrant alias","registrant":"optional string200 fallback","year":"truthy raw value Number-converted; owner applies only truthy year","page":"clamp1..100/default1","limit":"clamp1..50/default15"},
+      "querySemantics":"clientName/registrantName case-insensitive contains; issueCodes array has exact issueCode; year exact when truthy; dtPosted descending with skip(page-1)*limit. No explicit nextPage/hasMore envelope fields.",
+      "output":{"envelope":["tool","generatedAt","data","total","page","limit"],"row":{"filingUuid":"string, not internal UUID column","filingType":"string","filingYear":"Prisma Int","filingPeriod":"string|null","income":"finite JavaScript number|null","expenses":"finite JavaScript number|null","dtPosted":"serialized DateTime|null","registrantId":"Prisma Int|null","registrantName":"string","clientId":"Prisma Int|null, source disclosure identity","clientName":"string","clientState":"string|null","issueCodes":"string[]"}},
+      "model":"LdaFiling",
+      "decimalGuarantee":"Stored income/expenses are Decimal(18,2)?; toNum returns null for nullish input, otherwise Number(value), returning finite result or null. Wire values are not decimal strings; exact decimal precision, nonnegative values and currency/unit conversion are not guaranteed.",
+      "effects":"findMany/count reads only in getFilings. No provider call, ingestion, tenant mutation or audit write in this owner path.",
+      "prerequisites":"Independent DTO/normalization/output review; current gateway authority and qualified adapter; explicitly disclose stricter typed year/page admission if chosen. Existing source role/tenant entry is not a current global-data entitlement proof."
+    }
+  ],
+  "catalogChanged": false,
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}
