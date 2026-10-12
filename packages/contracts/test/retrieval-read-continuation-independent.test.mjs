@@ -86,7 +86,8 @@ test('independent original139 boundaries and prior21 descriptors survive the16 p
     const old=baseline.originals.find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);
     assert.equal(old.state,'pending');assert.equal(old.replacement,null);
   }
-  for(const id of ['get_research_evidence','get_state_bill_status','search_state_floor_votes','search_sam_opportunities'])assert.throws(()=>resolve(id));
+  for(const id of ['get_research_evidence','search_sam_opportunities'])assert.throws(()=>resolve(id));
+  for(const id of ['get_state_bill_status','search_state_floor_votes']){const d=resolve(id).descriptor;assert.deepEqual(d.operation,{id,version:'0.2.0'});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');}
 });
 
 test('independent registry exact raw schema pins, explicit context sets and unavailable state',()=>{
