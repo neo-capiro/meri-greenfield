@@ -1,0 +1,136 @@
+{
+  "status": "DISCOVERY_SCOPE_SELECTION_PENDING",
+  "base": "690bac4cd44112b161d8e02818aeae7639ce237a",
+  "sourceRefs": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    {
+      "path": "docs/IMPLEMENTATION-STANDARDS.md",
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    {
+      "path": "docs/plans/MERI-DEPLOYMENT.md",
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/registry.mjs",
+      "bytes": 17304,
+      "sha256": "2d0e13d68cc8d095a3a9f686662edc4b7178ea3f82de35021382ab00658fbdbe"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/binding.mjs",
+      "bytes": 14534,
+      "sha256": "1cc5c10b31335cc46a6c5285f72ae8d71bd392efc7b633e94df225539fd0dec4"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/credential-resolution.mjs",
+      "bytes": 4485,
+      "sha256": "a60222f0f862251e5be2c3d9189dd87b1ac5ead79e01fa6bc912509326a6c90a"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/migrations/0001_qualification_sdk_fixture_state.sql",
+      "bytes": 10051,
+      "sha256": "1fac190528f3fdd96c910acea5cc3cd15403470b5bacd6f93e7139114d788cbb"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/state/test/registry.test.mjs",
+      "bytes": 14935,
+      "sha256": "0835d0845e4d8f5e8e6a6dbd197fc4abd5b008d93a36463838bccfd4fcf4d4ad"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/control.mjs",
+      "bytes": 4060,
+      "sha256": "dc56b528d8f5b111b8372084e898881827469c57de79b082e90fe56eb4656481"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/handlers.mjs",
+      "bytes": 7400,
+      "sha256": "fd0fe3058782b9c673bcb4e5e03dde7d744499aa2f2a8a8509417e63e3b362b8"
+    },
+    {
+      "path": "apps/control/qualification-sdk-fixture/service/test/handlers.test.mjs",
+      "bytes": 6203,
+      "sha256": "bc1c51077dd5a47c9da0557d655e651a726f868654fb0051114246f9907584a9"
+    },
+    {
+      "path": "apps/gateway/index.mjs",
+      "bytes": 1319,
+      "sha256": "594f8f1dc780b5dc41e1738e6e484c8e20d365ed6b46137091c3644c4e2266c9"
+    },
+    {
+      "path": "apps/gateway/dispatch/tool-dispatch.mjs",
+      "bytes": 7174,
+      "sha256": "1ba9d1d2afa22bbff9008fb1de13853e25ec98684d7e0bbc87904e979e7b9cfb"
+    },
+    {
+      "path": "apps/gateway/authorization/current-tool-authority.mjs",
+      "bytes": 6506,
+      "sha256": "182b5372a07968e64608454b259cd19e5603b4ff4b96e1750a336de5bf4b87a6"
+    },
+    {
+      "path": "apps/proxy/qualification/state/ledger.py",
+      "bytes": 8478,
+      "sha256": "cf5627d63cf3d27f7288c54aa1d08863a9aa5c1d0c7c62da7fa3618f1b9dcfde"
+    },
+    {
+      "path": "apps/proxy/qualification/state/admission.py",
+      "bytes": 1504,
+      "sha256": "7936012c2f723da75362f87652635e87cb700fb5d9ce020c7263c7ea89412b4a"
+    },
+    {
+      "path": "apps/proxy/qualification/state/grants.py",
+      "bytes": 4650,
+      "sha256": "7d1a3b313ca984f8cd5f4a3c2eeb31bc6075805b4b7843bcb84081390b98f50c"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/lifetime.py",
+      "bytes": 6346,
+      "sha256": "b72f0fbef2b25d96c56ea94545edbe09997bb79cab24772d2ea0e8c32a1d939a"
+    },
+    {
+      "path": "apps/proxy/qualification/runtime/bedrock_transport.py",
+      "bytes": 7595,
+      "sha256": "0a07f8c47d88aaacaebb6016a81e57af2a926f20b29085798224b07c7aa01884"
+    },
+    {
+      "path": "apps/control/qualification-temporal/workflow.ts",
+      "bytes": 7703,
+      "sha256": "31ed39577ef3c60f83fcb6bbea23a5c627a217adb48052d205517cd984528650"
+    },
+    {
+      "path": "apps/control/qualification-temporal/activities.ts",
+      "bytes": 1837,
+      "sha256": "952015320fa259c2afd510eada5e1426fe1f1daad04bf1bfec80c3e5f5b35fd5"
+    },
+    {
+      "path": "apps/worker/qualification/checkpoint/resume-admission.mjs",
+      "bytes": 5948,
+      "sha256": "81b15faafc9f27b4e4107d7034708fd0f83a18caf09cbb367f03b7ef77701c9d"
+    }
+  ],
+  "registryPublicAsyncMethods": [
+    "resolveCertificate",
+    "admitRun",
+    "replaceRun",
+    "authorize",
+    "publishCommit",
+    "readPublication",
+    "loadCheckpoint",
+    "verifyCheckpoint"
+  ],
+  "standaloneCurrentGrantRevocationPresent": false,
+  "revocationMutationOwner": "replaceRun; requires committed checkpoint",
+  "gatewayBudgetImplementationPresent": false,
+  "modelSendLedgerIsDifferentInterface": true,
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "databaseOperations": 0,
+  "nativeOrCloudOperations": 0,
+  "testsRun": [],
+  "discoveryCorrection": "Registry test direct SQL mutates peer_id as a negative control; no directSQL revocation test was found."
+}

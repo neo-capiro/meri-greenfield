@@ -1,0 +1,38 @@
+# Independent next G1 source behavior discovery
+
+Status: discovery complete; implementation scope selection pending. Base `690bac4cd44112b161d8e02818aeae7639ce237a`. Dedicated review branch/worktree `review/meri-g1-next-behavior-20261012`, `/workspace/meri-g1-next-behavior-review-20261012`. Ownership is limited to this report and `docs/qualification/candidates/g1-next-behavior-20261012/review/**`. No production edits, delegation, native/database/cloud/model/customer operations.
+
+Read AGENTS, implementation standards, adopted R2 production boundaries and the existing gateway, model-proxy, fixture registry/service and worker checkpoint surfaces. The selected model loop remains Claude Agent SDK; Temporal owns durable orchestration and the eventual state target remains the existing Aurora. This discovery does not enable any source, change public0.1/private0.2 contracts or treat partial qualification fixtures as the full product.
+
+## First recommendation: standalone trusted revocation of the current fixture grant
+
+`FixtureRegistry` in `apps/control/qualification-sdk-fixture/state/registry.mjs` exposes admission, replacement, authorization, immutable publication/readback, checkpoint load/verification and certificate resolution. It has no owner API to revoke a current grant without replacement. Its sole `state = 'REVOKED'` mutation is inside `replaceRun`, which requires a previously committed checkpoint and admits a distinct task B. Consequently the trusted owner cannot use this API to cancel A before its first checkpoint or terminate B without manufacturing a replacement. This is a concrete missing source lifecycle operation, separate from native revocation propagation.
+
+The existing schema already allows an append-only grant history with one-way ACTIVE→REVOKED transition and a required revocation timestamp. `decideAuthorization`, `assertCommitBinding` and credential resolution already fail closed for a revoked current grant. Existing tests prove replacement/stale-A behavior and mock a B revocation during object read; they do not supply a standalone current-grant revoke path. An early reviewer message incorrectly suggested a raw SQL revocation test; subsequent inspection corrected it. The direct grant UPDATE in the registry test attempts forbidden peer rebinding, not revocation.
+
+A narrow implementation can add a trusted internal revocation operation using the current run/grant lock order and database time, bound to the exact intended current identity/fence. It needs no worker HTTP route, additional actor grant, new migration, credential issuance or checkpoint mutation. Existing `createFixtureControl` already exposes its registry to the trusted owner; ingress continues to expose only its four fixed worker operations. Root should allocate method/input/receipt semantics before implementation, including whether already-expired matching current grants can be marked revoked and how repeated requests acknowledge the original revocation. A stale A cancellation must never revoke replacement B.
+
+Acceptance/negative-control candidates, to refine after the scope is selected:
+
+- Admit A with no checkpoint, revoke A, then deny authorization and late checkpoint publication without creating a replacement or modifying immutable lineage.
+- Revoke current B after an accepted replacement and deny load, verify, publication/authorization and certificate resolution; retain A's original receipt and both grant records.
+- Replay the identical revoke without changing timestamps/history or reviving authority; mismatch run/session/task/grant/attempt/fence/policy/peer must cause no mutation.
+- Race replacement/publication against revoke under the existing lock order; no fresh B may be canceled by an A-bound request and no late A publication may be accepted after revocation commits.
+- Database outage/unknown commit acknowledgment cannot return successful revocation or auto-retry; any reconciliation must retain exact binding and expose uncertainty honestly.
+- Preserve all existing original source tests, schema, guards, source-disabled flags and private/public contract boundaries. Local transaction doubles prove source control flow only; actual PostgreSQL serialization, current Aurora state and native cancellation remain unrun without separate authorization.
+
+## Second recommendation: durable gateway tool-budget implementation
+
+`apps/gateway/dispatch/tool-dispatch.mjs` correctly requests a reservation before effects, rechecks authority and lifetime, settles after validation, and marks uncertain work without a refund. However the repository supplies no concrete gateway budget implementation: `reserve`, `settle` and `markUncertain` are trusted injected methods whose actual examples in gateway tests return receipts. `apps/gateway/index.mjs` remains explicitly `SOURCE_ONLY_NO_PRODUCTION_ADAPTERS` and always disables source connectivity. Those tests establish caller behavior, not durable aggregate turn/cost/output enforcement across process death or two workers.
+
+The Python proxy `PostgresLedger` is actual transaction source for a different obligation: one native model-send slot and an UNKNOWN monetary hold, including pricing/request/body identity and trusted reconciliation. It does not implement the gateway interface or account for gateway operation/version and normalized argument digest. Reusing its semantics by merely renaming receipts would conflate model spend with tool-call budgets.
+
+A next trusted gateway budget adapter needs an explicitly allocated private persistence contract and schema ownership, exact full RunBinding/operation/argument identity, authoritative current budget/clock checks, immutable reservation identity, idempotent settlement and durable uncertainty without timeout-based refunds. Root must decide how tool turns and model spend share a run-level aggregate and which source owns each counter. This is larger than the first recommendation and is not ready for unallocated schema edits or an in-memory fallback. No new RDS/database or network change is proposed; native durability evidence remains separate.
+
+## Other inspected boundaries
+
+Live capability issuance and task ownership still require real trusted adapters. Gateway `current-tool-authority.mjs` verifies fresh fact shape/currentness but injects signature/current-run/business/source ports; it does not attest the producer. The fixture mTLS resolver binds a verified socket fingerprint to recorded grant history but does not issue certificates or prove observed ECS possession. Existing peer-lease/request-lifetime source and model-send guards are valuable cancellation checks; they are not a native admission result.
+
+The Temporal qualification workflow remains explicitly inert, and its activity implementations heartbeat/echo or return a fixed approval. That is an honest architecture fixture, not a production approval/durability implementation. S3 exact-version source and the fixture registry preserve a partial checkpoint, while actual native task-A/task-B recovery, full workspace/session coverage and physical teardown remain open. No source-only change in this discovery can close those runtime gates.
+
+Discovery used bounded read-only commands. No long-lived process or job was started. Exact file hashes and the registry/budget inventory are retained in `review/discovery.json`. No ACCEPT_SOURCE decision for new implementation is issued at this stage.
