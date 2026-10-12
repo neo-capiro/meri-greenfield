@@ -65,7 +65,7 @@ test('total is finite nonnegative safe integer without deriving completeness or 
   for(const op of ops)mutate(op,[p=>p.total=-1,p=>p.total=1.5,p=>p.total=Number.MAX_SAFE_INTEGER+1,p=>p.complete=true,p=>p.hasMore=true,p=>p.nextCursor='next']);
 });
 test('request row bound and LDA page/window cannot be substituted',()=>{
-  for(const op of ops){const p=page(op);p.data.push({...row(op),id:'other',accessionNumber:'other'});reject(op,p,{limit:1});}
+  for(const op of ops){const p=page(op);const r=row(op);if(op===LDA)r.filingUuid='other';else{r.id='other';if(op===SEC)r.accessionNumber='other';else r.registrationNumber='other';}p.data.push(r);if(op===LDA)p.limit=1;reject(op,p,{limit:1});}
   mutate(LDA,[p=>p.page=2,p=>p.limit=16]);const p=page(LDA);p.page=2;p.limit=4;check(LDA,p,{page:2,limit:4});
 });
 test('unique source identities reject duplicates even if other projected fields differ',()=>{
@@ -75,7 +75,7 @@ test('SEC exact cik and formType filtering refuses cross-request results',()=>{
   check(SEC,page(SEC),{cik:'0000000099',formType:'10-K'});reject(SEC,page(SEC),{cik:'99'});reject(SEC,page(SEC),{formType:'10-k'});
 });
 test('FARA exact status filtering does not invent a status enum',()=>{
-  const p=page(FARA);p.data[0].status='arbitrary-stored-status';check(FARA,p,{status:'arbitrary-stored-status'});reject(FARA,p,{status:'active'});reject(FARA,page(FARA),{status:'active'});
+  const p=page(FARA);p.data[0].status='custom-status';check(FARA,p,{status:'custom-status'});reject(FARA,p,{status:'active'});reject(FARA,page(FARA),{status:'active'});
 });
 test('FARA nonempty country filter cannot return a null storage country',()=>{
   reject(FARA,page(FARA),{country:'France'});
