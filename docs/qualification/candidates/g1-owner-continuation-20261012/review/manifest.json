@@ -3,13 +3,13 @@
   "files": [
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/REPORT.md",
-      "bytes": 6565,
-      "sha256": "381de88d7c0a4ff7be27f3c2fde0975a821b7b3b0f378bf45038a9391023dd5a"
+      "bytes": 6981,
+      "sha256": "cf16f2ecb2b85edb8030ae4e6ce1be96542af3806e60f34deda9731e096347a4"
     },
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/acceptance-receipt.json",
-      "bytes": 922,
-      "sha256": "879c2e61bc358a3f07ba53503d686b46f489d02da14064bb02cd6a91726f8694"
+      "bytes": 1272,
+      "sha256": "5c4dc75cf35c59a6422df1a97ba37c9f3acca5baf7fed4a044b6401a80ef3084"
     },
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/audit-plan.py",
@@ -60,6 +60,16 @@
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/initial-audit.stdout.json",
       "bytes": 307,
       "sha256": "97b81cb34ab4d00698c0e734a08194af30c358f74225dddb1e5a7761e3110090"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/raw-diff-whitespace.stdout.txt",
+      "bytes": 2758,
+      "sha256": "2fe7af71c9a6e1b01b2a960efb0ce074c818acfaf325e008d75da8d2019e0ba1"
     },
     {
       "path": "docs/qualification/candidates/g1-owner-continuation-20261012/review/reviewed-plan.diff",
