@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-public-domain-independent.test.mjs",
+    "packages/contracts/test/retrieval-public-domain-hearings.test.mjs"
+  ],
+  "cwd": "/workspace/meri-public-legal-review-20261012",
+  "sourceHead": "4fafd09b1033296b1781c6cec227ed0189bf2d20",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:21:06.517660+00:00",
+  "durationSeconds": 0.942,
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedPidAndPgid": 329454,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stdout.bin",
+      "bytes": 34345,
+      "sha256": "6b2c3ec59d7f3159daaa4582230499f28c024ff614c87f4e1212c291dc76f68f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/public-legal-review/hearing-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
