@@ -24,11 +24,12 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
     if(!Buffer.isBuffer(bytes)||bytes.length!==object.bytes||bytes.length>maxBytes||sha(bytes)!==object.sha256)fail('ARTIFACT_OBJECT_MISMATCH');return Buffer.from(bytes);
   }
   async function generate(baseVersionId,requestValue,contextValue,{signal}={}){
-    const request=v.request(requestValue),context=v.context(contextValue),life=operation(context,signal);
+    const request=v.request(requestValue),context=v.context(contextValue);
     const intent={request,context,baseVersionId},requestSha256=v.hash(intent),allocation=v.snapshot(ids());
     closed(allocation,['artifactId','versionId','objectId']);
     for(const id of Object.values(allocation))if(typeof id!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))fail('ARTIFACT_ID');
-    let ticket,writeStarted=false,versionCommitted=false,settlementStarted=false,readBase=null,receipt;
+    const life=operation(context,signal);
+    let ticket,writeStarted=false,versionCommitted=false,settlementStarted=false,settlementUnknown=false,readBase=null,baseBytes=null,receipt;
     const action=baseVersionId===null?'artifact.generate':'artifact.revise';
     let resource={versionId:baseVersionId,object:null,assetObjects:context.assets.map(a=>a.object)};
     async function settle(outcome,bytes){
@@ -43,7 +44,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
         readBase=scopeVersion(await life.run(signal=>versions.read(baseVersionId,signal)),baseVersionId,context);
         if(readBase.spec.operation!==request.operation||readBase.spec.format!==request.format)fail('ARTIFACT_REVISION_FORMAT');
         // Revision consumes the exact original bytes as well as retained spec.
-        await bytesFor(life,readBase.version.object,context.maxBytes);
+        baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);
         resource={...resource,object:readBase.version.object};receipt=await authority(life,action,resource,requestSha256,context);
       }
       ticket=v.snapshot(await life.run(signal=>budget.reserve({binding:v.snapshot(context.binding),requestSha256,maxBytes:context.maxBytes,deadlineMs:context.deadlineMs,signal})));
@@ -52,7 +53,7 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       life.limitDeadline(ticket.deadlineMs);
       const assets=[];for(const asset of context.assets){const bytes=await bytesFor(life,asset.object,2097152);assets.push({id:asset.id,bytes});}
       receipt=await authority(life,action,resource,requestSha256,context);
-      const result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,deadlineMs:Math.min(context.deadlineMs,ticket.deadlineMs,receipt.expiresAtMs),maxBytes:ticket.maxBytes,signal}));
+      const result=await life.run(signal=>executor.execute({request:v.snapshot(request),assets,base:readBase?{request:v.snapshot(readBase.spec),bytes:Buffer.from(baseBytes)}:null,deadlineMs:Math.min(context.deadlineMs,ticket.deadlineMs,receipt.expiresAtMs),maxBytes:ticket.maxBytes,signal}));
       if(!Buffer.isBuffer(result.bytes)||result.bytes.length>ticket.maxBytes)fail('ARTIFACT_OUTPUT_LIMIT');
       const bytes=Buffer.from(result.bytes),inspection=v.snapshot(result.inspection);
       closed(inspection,['sha256','bytes','format','nativeOpened','rendered','recalculated','members','details']);
@@ -71,9 +72,9 @@ export function createArtifactService({validators:v,authorize,budget,versions,ob
       await settle('completed',bytes.length);receipt=await authority(life,action,{...resource,object},requestSha256,context);
       return {version,inspection,execution:{requestSha256,authorizationReceiptId:receipt.receiptId,budgetTicketId:ticket.ticketId,objectCommitted:true,versionCommitted:true,nativeQualified:false}};
     }catch(cause){
-      if(ticket&&!writeStarted&&!settlementStarted)try{await settle('failed',0);}catch{}
+      if(ticket&&!writeStarted&&!settlementStarted)try{await settle('failed',0);}catch{settlementUnknown=true;}
       const error=writeStarted?Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:allocation.versionId,versionCommitted}):cause;
-      error.lifetime=life.close();throw error;
+      error.lifetime=life.close();error.budgetSettlementUnknown=settlementUnknown||Boolean(ticket&&settlementStarted&&writeStarted);throw error;
     }finally{life.close();}
   }
   async function read(versionId,contextValue,options={},download=false){

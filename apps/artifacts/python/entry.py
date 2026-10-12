@@ -27,7 +27,10 @@ def main():
     if path.exists():raise ValueError('Output already exists')
     if form=='txt':path.write_bytes(request['content']['text'].encode('utf8'));details={'encoding':'UTF-8','whitespace':'unchanged'}
     elif form=='docx':details=load('office').word(request['content'],assets,path)
-    elif form=='xlsx':details=load('office').excel(request['content'],assets,path)
+    elif form=='xlsx':
+        base=data.get('base')
+        if base:base={'request':base['request'],'bytes':base64.b64decode(base['base64'],validate=True)}
+        details=load('office').excel(request['content'],assets,path,base)
     else:details=load('analysis').analyze(request['content'],path)
     result=path.read_bytes()
     if len(result)>data['maxBytes']:raise ValueError('Output byte limit')
