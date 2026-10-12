@@ -1,0 +1,208 @@
+{
+  "candidate": "c91f1716a476243abf9df2b9080041841d967f13",
+  "changedOriginalPaths": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "reviewedExistingPatches": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "patchSha256": "7ca2b3bba058107f16d5373ca9b0d5b962564b639b78e10a4298c6d9d65f4671"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "patchSha256": "20e8203448066cb8a82ebe1b57c199a1b7d48b5595e39b9324b8ab426ec951b9"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "patchSha256": "b4ab8a8a6bf5d286d57c8654d80dbff7e56d6318f570f5b6c2e6666303f7feb5"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "patchSha256": "e77bebc7d5330da2b6e22b98c2e9a5228432fffc00161a7f54211499512cf22e"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "patchSha256": "d77dd61b2f2c17b6e5869962e6e295215172c2ab910a78cfa021167e1a3c3c8d"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "patchSha256": "be664c9eec5aba618b85dc5957b9fd28a90008ae780faaa5e581c0c4106916f4"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "patchSha256": "d0682ef0a09dcae6a714780cfafd315873760fb0f29e8bbb241214a39fa775d0"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "patchSha256": "8aee17ef14fe86e51f23ae3d926aaeb80ac612f85cf48f4f792465763cb6ed36"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "patchSha256": "90b8b41b2a8b50b63e9937c354236df10998c3e6e9dcf15b43904876d9ce5dd6"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "patchSha256": "91c7edbb164927a4c89250b019766e74cc9744887938d4cda7dcb39e0a0311dd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "patchSha256": "d002b107351e031b3d3910fb16a3bce7fead3b55d81a1cbe56d847ffa2a10dc3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "patchSha256": "27aee78287e534e77ff4baf1a0c15cae9a6262d0b70978e899850fec4a11c6ae"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "patchSha256": "52d0988ffce90847c8d449a0386a49a1d133badf3d02783f2bb4de63eae565ff"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "patchSha256": "9e194178258e9a768e90b71c9577ea2c96a037f15b2c5da6a4f5166999e92135"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "patchSha256": "77e86e0518603bda2a1e92a3d92535f89310c762e05c7aba16ab21fc56e8252b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "patchSha256": "b7b33647aed18304a7eb3cbfc4b068f0e2d071c2891832a30dd953c0885900be"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "patchSha256": "8abc0a0be126abd88ec9a79bdac23a0c639ab14b5d645ae838f48c623cc64ccd"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "patchSha256": "49aaeefb032db31f7739c5b43f2aa4c3f3e4130056a88847dc3bcdcb8dcc8c49"
+    }
+  ],
+  "familyIdentityChanges": [
+    {
+      "path": "packages/contracts/retrieval-0.2/legislative-directory.schema.json",
+      "oldId": "https://meri.capiro.app/private/retrieval/0.2/legislative-directory.schema.json",
+      "newId": "urn:meri:retrieval:legislative-directory:0.2.0",
+      "sha256": "e40a8462d8c061eb5c42b18f7ec61948c930b278a4d24617d6b9198dbbcc3812"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/rule-status.schema.json",
+      "oldId": "https://meri.capiro.app/private/retrieval/0.2/rule-status.schema.json",
+      "newId": "urn:meri:retrieval:rule-status:0.2.0",
+      "sha256": "770d91d6894c81151d4853691530ed00daa5da21d904a7a84f44217a43aa0eb3"
+    }
+  ],
+  "rootReceipts": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-initial.json",
+      "sourceHead": "0e579078b71146d12a1783b9b3cfde6e4ea06800",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 1,
+      "counts": {
+        "tests": 2,
+        "pass": 0,
+        "fail": 2
+      },
+      "requireCurrentSource": false
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-namespace-repaired.json",
+      "sourceHead": "82906d4ce48eae2029e50fb44009d43bbfedc92a",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 1,
+      "counts": {
+        "tests": 46,
+        "pass": 43,
+        "fail": 3
+      },
+      "requireCurrentSource": false
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/focused-counts-repaired.json",
+      "sourceHead": "2d04a9891211e1516cf987a341081e26e9d0b80f",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 0,
+      "counts": {
+        "tests": 46,
+        "pass": 46,
+        "fail": 0
+      },
+      "requireCurrentSource": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-first.json",
+      "sourceHead": "67d12c93ff8bd6fb6e2a180a01b37d6d7463fed5",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 1,
+      "counts": {
+        "tests": 2158,
+        "pass": 2156,
+        "fail": 2
+      },
+      "requireCurrentSource": false
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution.json",
+      "sourceHead": "67d12c93ff8bd6fb6e2a180a01b37d6d7463fed5",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 1,
+      "counts": null,
+      "requireCurrentSource": false
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/combined-final.json",
+      "sourceHead": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 0,
+      "counts": {
+        "tests": 2158,
+        "pass": 2158,
+        "fail": 0
+      },
+      "requireCurrentSource": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/public-distribution-local.json",
+      "sourceHead": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 0,
+      "counts": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0
+      },
+      "requireCurrentSource": true
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/reference-integration/source-audit.json",
+      "sourceHead": "290ab5cee2ea0e7aef5019343f07555b6b404d37",
+      "capturePath": "docs/qualification/candidates/read-continuation-20261012/reference-integration/capture-reaped.py",
+      "expectedExit": 0,
+      "counts": null,
+      "requireCurrentSource": true
+    }
+  ],
+  "scope": "Final exact source290ab5c and immutable receipt packetc91f171. Original tests independently inverse-verified15/15.",
+  "allowedRuntimeTestChanges": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs"
+  ]
+}

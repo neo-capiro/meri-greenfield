@@ -63,7 +63,7 @@ for row in expectations['reviewedExistingPatches']:
 for entry in expectations.get('rootReceipts',[]):
     receipt=json.loads(blob(candidate,entry['path']))
     check('root receipt exact outcome and bounded cleanup: '+entry['path'],receipt['exitCode']==entry.get('expectedExit',0) and receipt['ownedProcessGroupAbsent'] and not receipt['timedOut'] and not receipt['ownedGroupKillRequired'])
-    check('root capture and zero source diff bound: '+entry['path'],receipt['sourceDiffBytes']==0 and receipt['sourceDiffSha256']==digest(b'') and receipt['captureSha256']==digest(blob(candidate,entry['capturePath'])))
+    check('root capture and zero source diff bound: '+entry['path'],receipt['sourceDiffBytes']==0 and receipt['sourceDiffSha256']==digest(b'') and receipt['captureSha256']==digest(blob(receipt['sourceHead'],entry['capturePath'])))
     for stream in receipt['streams']:
         data=blob(candidate,stream['path'])
         check('root stream exact: '+stream['path'],len(data)==stream['bytes'] and digest(data)==stream['sha256'])
