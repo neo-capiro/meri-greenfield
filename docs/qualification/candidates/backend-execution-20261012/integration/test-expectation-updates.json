@@ -1315,6 +1315,38 @@
           "wholeFileStep": true
         }
       ]
+    },
+    {
+      "path": "packages/contracts/test/retrieval-operational-reads.test.mjs",
+      "beforeSha256": "5a9dde9741b011eda749813af06c0398aad160b7675bd6cce5f4a93c7019196c",
+      "afterSha256": "eeaab623b9b23760a51e5550f8c116f6fd629d9e3771810b141f9b2f98b27034",
+      "inverseExact": true,
+      "replacements": [
+        {
+          "old": "private task and partial action registration keep native action items unmapped and expose no live handler or skill",
+          "new": "private task and partial action registration preserve the full native successor without a live handler or skill",
+          "count": 1,
+          "positionsBefore": [
+            28789
+          ]
+        },
+        {
+          "old": "  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES,",
+          "new": "  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES, resolveOperationContract,",
+          "count": 1,
+          "positionsBefore": [
+            292
+          ]
+        },
+        {
+          "old": "  assert.equal(actionItems.state, 'pending'); assert.equal(actionItems.replacement, null);",
+          "new": "  assert.equal(actionItems.state, 'mapped');\n  assert.deepEqual(actionItems.replacement, { id: 'actions.query', version: '0.2.0' });\n  const partial = resolveOperationContract({ id: 'query_action_items', version: '0.2.0' });\n  const successor = resolveOperationContract(actionItems.replacement);\n  assert.equal(partial.binding.nativeCoverage, 'partial');\n  assert.equal(partial.binding.nativeId, 'query_action_items');\n  assert.equal(partial.binding.supersededBy, successor.binding.id);\n  assert.equal(successor.binding.nativeId, partial.binding.nativeId);\n  assert.notEqual(successor.binding.nativeCoverage, 'partial');\n  assert.deepEqual(partial.descriptor.replacement, successor.descriptor.operation);\n  for (const operation of [partial.descriptor, successor.descriptor]) {\n    assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented');\n    assert.equal(operation.qualification, 'pending'); assert.equal(operation.retry.maxRetries, 0);\n  }\n  assert.throws(() => partial.normalizeInput({}, { actorId, nowMs }), /Unscoped/);",
+          "count": 1,
+          "positionsBefore": [
+            29574
+          ]
+        }
+      ]
     }
   ],
   "note": "Original behavior assertions remain; exact field/count/compatibility expectations change explicitly."

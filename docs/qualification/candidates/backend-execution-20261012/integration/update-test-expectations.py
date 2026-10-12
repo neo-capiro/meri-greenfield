@@ -22,7 +22,7 @@ assert (typed, mapped, pending) == (84,83,13)
 raw = json.loads((packet / 'raw-request-admission-before.json').read_text())['rows']
 assert len(raw) == 31 and sum(not row['previousAdvertisementAdmittedRequest'] for row in raw) == 22
 prior = json.loads(subprocess.check_output(['git', 'show', base + ':docs/qualification/candidates/read-continuation-20261012/backend-next-integration/test-expectation-updates.json'], cwd=root))
-paths = [row['path'] for row in prior['changes']] + ['packages/contracts/test/retrieval-backend-next-independent.test.mjs']
+paths = [row['path'] for row in prior['changes']] + ['packages/contracts/test/retrieval-backend-next-independent.test.mjs', 'packages/contracts/test/retrieval-operational-reads.test.mjs']
 helper = root / 'packages/contracts/test/backend-execution-expectations.mjs'
 helper.write_text('''// Exact declared expected deltas to immutable historical snapshots.
 import assert from 'node:assert/strict';
@@ -77,12 +77,15 @@ export function expectedExistingOriginal(row) {
   return row;
 }
 ''')
+previous_path = packet / 'test-expectation-updates.json'
+previous = {row['path']:row for row in json.loads(previous_path.read_text())['changes']} if previous_path.exists() else {}
 changes = []
 planned = []
 for name in paths:
     before = subprocess.check_output(['git', 'show', base + ':' + name], cwd=root)
     path = root / name
-    assert path.read_bytes() == before, name
+    current = path.read_bytes()
+    assert current == before or (name in previous and hashlib.sha256(current).hexdigest() == previous[name]['afterSha256']), name
     text = before.decode()
     edits = []
     def edit(old, new, required=False):
@@ -158,6 +161,24 @@ for name in paths:
         edit("[reference.id,'query_action_items',", "[reference.id,'query_action_items','actions.query',")
     if name.endswith('retrieval-next-bindings.test.mjs'):
         edit("catalog.operations.filter(row => !additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id))", "catalog.operations.filter(row => !additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id)&&row.operation.id!=='actions.query').map(priorExistingDescriptor)", True)
+    if name.endswith('retrieval-operational-reads.test.mjs'):
+        edit('private task and partial action registration keep native action items unmapped and expose no live handler or skill', 'private task and partial action registration preserve the full native successor without a live handler or skill', True)
+        edit('  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES,', '  assertActionItemReadInput, assertActionItemClientScopedPage, OPERATIONAL_READ_PENDING_MODES, resolveOperationContract,', True)
+        edit("  assert.equal(actionItems.state, 'pending'); assert.equal(actionItems.replacement, null);", """  assert.equal(actionItems.state, 'mapped');
+  assert.deepEqual(actionItems.replacement, { id: 'actions.query', version: '0.2.0' });
+  const partial = resolveOperationContract({ id: 'query_action_items', version: '0.2.0' });
+  const successor = resolveOperationContract(actionItems.replacement);
+  assert.equal(partial.binding.nativeCoverage, 'partial');
+  assert.equal(partial.binding.nativeId, 'query_action_items');
+  assert.equal(partial.binding.supersededBy, successor.binding.id);
+  assert.equal(successor.binding.nativeId, partial.binding.nativeId);
+  assert.notEqual(successor.binding.nativeCoverage, 'partial');
+  assert.deepEqual(partial.descriptor.replacement, successor.descriptor.operation);
+  for (const operation of [partial.descriptor, successor.descriptor]) {
+    assert.equal(operation.handler, null); assert.equal(operation.availability, 'unimplemented');
+    assert.equal(operation.qualification, 'pending'); assert.equal(operation.retry.maxRetries, 0);
+  }
+  assert.throws(() => partial.normalizeInput({}, { actorId, nowMs }), /Unscoped/);""", True)
     used = [fn for fn in ['addedOperations', 'fullActionReference', 'expectedExistingDescriptor', 'expectedExistingBinding', 'expectedExistingOriginal', 'priorExistingDescriptor'] if fn in text]
     if used:
         relative = './backend-execution-expectations.mjs' if name.startswith('packages/contracts/') else '../../../packages/contracts/test/backend-execution-expectations.mjs'
