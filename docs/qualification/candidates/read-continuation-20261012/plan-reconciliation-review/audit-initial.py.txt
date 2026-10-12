@@ -1,0 +1,119 @@
+"""Independent immutable-object metadata audit; no application imports or runtime probes."""
+import hashlib
+import io
+import json
+import pathlib
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+import zipfile
+
+ROOT = pathlib.Path(__file__).resolve().parents[5]
+BASE = 'cff71e1ba8ca8dea8970ad0c778b580a73f84815'
+SCOPE = '79efba457f41ce436b91f76741dac783ba82010b'
+PREFIX = 'docs/qualification/candidates/read-continuation-20261012/'
+checks = []
+
+
+def git(*args):
+    return subprocess.check_output(['git', *args], cwd=ROOT, timeout=20)
+
+
+def blob(ref, path):
+    return git('show', f'{ref}:{path}')
+
+
+def obj(ref, path):
+    return json.loads(blob(ref, path))
+
+
+def check(name, condition):
+    checks.append({'check': name, 'pass': bool(condition)})
+
+
+def worksheets(raw):
+    ns = {'s': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+    relns = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id'
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
+        shared = []
+        if 'xl/sharedStrings.xml' in z.namelist():
+            shared = [''.join(e.itertext()) for e in ET.fromstring(z.read('xl/sharedStrings.xml'))]
+        rels = {e.attrib['Id']: e.attrib['Target'].lstrip('/') for e in ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))}
+        out = {}
+        for sheet in ET.fromstring(z.read('xl/workbook.xml')).findall('s:sheets/s:sheet', ns):
+            target = rels[sheet.attrib[relns]]
+            target = target if target.startswith('xl/') else 'xl/' + target
+            rows = {}
+            for row in ET.fromstring(z.read(target)).findall('s:sheetData/s:row', ns):
+                cells = {}
+                for c in row.findall('s:c', ns):
+                    kind = c.attrib.get('t')
+                    v = c.find('s:v', ns)
+                    value = v.text if v is not None else ''
+                    if kind == 's':
+                        value = shared[int(value)]
+                    elif kind == 'inlineStr':
+                        value = ''.join(c.find('s:is', ns).itertext())
+                    cells[c.attrib['r']] = value
+                if any(v for v in cells.values()):
+                    rows[int(row.attrib['r'])] = cells
+            out[sheet.attrib['name']] = rows
+        return out
+
+
+def audit_scope():
+    path = PREFIX + 'scope-authority/'
+    data = obj(SCOPE, path + 'deferred-ledger.json')
+    catalog = obj(data['catalogCommit'], 'packages/contracts/retrieval-0.2/catalog.json')
+    originals = catalog['originals']
+    deferred = {v['id']: v for v in originals if v['disposition'] == 'deferred'}
+    base_originals = obj(BASE, 'packages/contracts/retrieval-0.2/catalog.json')['originals']
+    check('139 original,96 selected,43 deferred', len(originals) == 139 and len(deferred) == 43 and sum(v['disposition'] == 'selected' for v in originals) == 96)
+    entries = data['entries']
+    check('all43 IDs exactly once', len(entries) == 43 and len({e['id'] for e in entries}) == 43 and {e['id'] for e in entries} == set(deferred))
+    check('43 unchanged against PR31 base', deferred == {v['id']: v for v in base_originals if v['disposition'] == 'deferred'})
+    flags = {v['name']: v['readOnly'] for v in obj(BASE, 'docs/CAPABILITIES.json')['capabilities']}
+    check('18read/25write provenance', sum(flags[k] for k in deferred) == 18 and sum(e['registryReadOnly'] for e in entries) == 18)
+    wbref = entries[0]['r2Workbook']['citation']['reference']
+    sheets = worksheets(git('show', wbref))
+    dimensions = {}
+    for e in entries:
+        name = e['id']
+        original = deferred[name]
+        check(name + ': catalog state/reason/replacement/flag', e['reason'] == original['boundary'] and e['replacement'] is None and e['sourceState'] == original['state'] == 'deferred' and e['disposition'] == 'deferred' and e['registryReadOnly'] == flags[name])
+        pointer = int(e['catalogCitation']['locator']['jsonPointer'].split('/')[-1])
+        check(name + ': exact catalog pointer', originals[pointer] == original)
+        citation = e['reasonOrigin']['citation']
+        line = git('show', citation['reference']).decode().splitlines()[citation['locator']['line'] - 1]
+        check(name + ': original proposal line/rationale', name in line and e['reason'] in line and e['reasonOrigin']['humanAuthorshipOfReasonProven'] is False)
+        accepted = e['acceptedLedgerCitation']
+        text = git('show', accepted['reference']).decode().splitlines()
+        line = text[accepted['locator']['line'] - 1]
+        check(name + ': accepted ledger preserves reason', name in line and e['reason'] in line and 'accepted' in text[2].lower())
+        authority = e['authority']
+        evidence = git('show', authority['citation']['reference']).decode().splitlines()
+        excerpt = ' '.join(evidence[n-1] for n in authority['citation']['locator']['lines'])
+        check(name + ': batch authority not invented individual proof', authority['decision'] == 'D011' and authority['classification'] == 'recorded_human_batch_approval' and authority['independentPrimaryHumanTranscriptLocated'] is False and authority['individualHumanReasonOrApprovalLocated'] is False and 'human owner' in excerpt and '96' in excerpt and '43' in excerpt)
+        w = e['r2Workbook']; loc = w['citation']['locator']; n = loc['row']; cells = sheets[loc['sheet']][n]
+        check(name + ': actual workbook cells', cells['A'+str(n)] == name and cells['B'+str(n)] == w['category'] and cells['E'+str(n)] == w['coverageStatus'] and cells['F'+str(n)] == w['scopeText'] and cells['G'+str(n)] == w['parityAction'])
+        dimensions[name] = w['coverageStatus']
+        check(name + ': no audit reclassification', e['dispositionChangedByThisAudit'] is False)
+    check('four covered-family differences explicit', {k for k,v in dimensions.items() if v == 'Covered family; exact contract qualification pending'} == {'find_path_to','confirm_memory','correct_memory','forget_memory'})
+    refs = obj(SCOPE, path + 'reference-identities.json')['references']
+    for ref in refs:
+        raw = blob(ref['commit'], ref['path'])
+        check('scope reference ' + ref['commit'][:8] + ':' + ref['path'], len(raw) == ref['bytes'] and hashlib.sha256(raw).hexdigest() == ref['sha256'] and git('rev-parse', f"{ref['commit']}:{ref['path']}").decode().strip() == ref['blob'])
+    manifest = obj(SCOPE, path + 'manifest.json')
+    for member in manifest['members']:
+        raw = blob(SCOPE, member['path'])
+        check('scope packet ' + member['path'], len(raw) == member['bytes'] and hashlib.sha256(raw).hexdigest() == member['sha256'])
+    changed = git('diff', '--name-status', BASE, SCOPE).decode().splitlines()
+    check('scope only allocated additions', all(line.startswith('A\t') and (line[2:].startswith(path) or line[2:] == 'docs/coordination/reports/CODEX-SCOPE-AUTHORITY-20261012.md') for line in changed))
+    return {'scope': SCOPE, 'scopeTree': git('rev-parse', SCOPE+'^{tree}').decode().strip(), 'scopeReferences': len(refs), 'scopeManifestMembers': len(manifest['members']), 'baseTrackedFiles': len(git('ls-tree', '-r', '--name-only', BASE).splitlines())}
+
+
+if __name__ == '__main__':
+    summary = audit_scope()
+    summary.update(passed=sum(c['pass'] for c in checks), failed=sum(not c['pass'] for c in checks), checks=checks, limits='Read-only Git object and ZIP/XML metadata validation; no runtime, private producer import, native/SQL/provider execution, workbook formulas or package installs.')
+    print(json.dumps(summary, indent=2))
+    sys.exit(bool(summary['failed']))
