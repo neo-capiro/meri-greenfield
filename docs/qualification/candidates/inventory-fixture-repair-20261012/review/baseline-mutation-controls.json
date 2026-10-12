@@ -1,0 +1,88 @@
+{
+  "probe_sha256": "c7d682e67b5b3064947c92bebdce785aa04c3e00238fc8fb769d4a828479de58",
+  "facts": [
+    {
+      "check": "baseline-first-complete",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "baseline-output-creation-root-size-drift",
+      "passed": true,
+      "detail": {
+        "first": {
+          "path": "/tmp/meri-inventory-review-kznb31c6/root",
+          "type": "dir",
+          "mode": "0700",
+          "uid": 1000,
+          "gid": 1000,
+          "size": 60
+        },
+        "second": {
+          "path": "/tmp/meri-inventory-review-kznb31c6/root",
+          "type": "dir",
+          "mode": "0700",
+          "uid": 1000,
+          "gid": 1000,
+          "size": 80
+        }
+      }
+    },
+    {
+      "check": "preexisting-output-repeated-records-stable",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "root-size-not-redacted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "only-dedicated-output-excluded",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "same-length-input-mutation-changes-hash",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "extra-membership-visible",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "removed-membership-visible",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "symlink-no-descent",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "symlink-target-swap-visible",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "real-directory-mutation-during-scan-fails-closed",
+      "passed": true,
+      "detail": [
+        {
+          "path": "/tmp/meri-inventory-review-kznb31c6/root",
+          "error": "OSError:directory/ancestor identity changed:/tmp/meri-inventory-review-kznb31c6/root"
+        }
+      ]
+    },
+    {
+      "check": "owned-fixture-removed",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "no_image_native_network_or_provider": true
+}

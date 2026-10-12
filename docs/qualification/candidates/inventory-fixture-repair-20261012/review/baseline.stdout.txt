@@ -1,0 +1,70 @@
+✔ the probe is stdlib-only and has no process/network/dynamic execution call (44.497683ms)
+✔ refuses a non-Linux platform without opening any root; CLI cannot override (120.47698ms)
+✔ rejects mismatched expectation counts before scanning (95.150647ms)
+✖ enumerates fabricated roots deterministically and retains candidate byte hashes (191.459554ms)
+✔ records a directory symlink/junction and never descends into it (88.746468ms)
+✔ rejects exclusions that weaken declared static coverage (91.004993ms)
+✔ a file root is a traversal error, never empty coverage (92.148796ms)
+✔ a missing root is inaccessible, never an absence claim (90.316316ms)
+✔ entry caps and deadline zero fail closed, including a zero fake clock (234.328721ms)
+✔ oversized candidates/errors stay bounded and explicitly incomplete (203.369747ms)
+✔ expectation mismatch and missing exact paths fail closed (195.62907ms)
+✔ a matching root-owned mode4755 helper needs its exact hash-bound allowlist (189.809344ms)
+✔ rejects empty, duplicate, relative and incomplete declared roots (371.435862ms)
+✔ SUID prefix collisions, owner/mode/hash drift and SGID helpers remain unreviewed (560.823959ms)
+✔ records privilege directories and fails on traversal/read errors or event caps (396.85805ms)
+✔ rejects a declared root reached through a link/junction ancestor (92.830675ms)
+✔ known root aliases are recorded without walking; unexpected or missing targets fail (191.149579ms)
+✔ file hashing refuses replaced paths, changed FDs, short reads and late EOF (104.749197ms)
+✔ compiled production roots cover usr aliases, scripts and private packages; binary pins stay exact (82.313682ms)
+✔ production output is mandatory and cannot exclude an arbitrary scanned file (93.10401ms)
+✔ reviewed root alias identity and target remain bound through validation and final coverage (95.785544ms)
+✔ recorded child directory mode, inode and ownership are checked again before descent (100.254728ms)
+✔ full ancestors above the declared root stay bound before, during and after traversal (101.777121ms)
+✔ file hashing rechecks the captured full ancestor chain after reading its FD (93.642749ms)
+✔ Linux main admits only the literal output and actually requests mandatory emission (94.423377ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4087.35495
+
+✖ failing tests:
+
+test at apps/worker/qualification/probes/image-inventory.test.mjs:77:1
+✖ enumerates fabricated roots deterministically and retains candidate byte hashes (191.459554ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      {
+        gid: 1000,
+        mode: '0700',
+        path: '/tmp/meri-inventory-owner-W0MShn',
+  +     size: 80,
+  -     size: 100,
+        type: 'dir',
+        uid: 1000
+      },
+      {
+        gid: 1000,
+  
+      at file:///workspace/meri-inventory-fixture-review-20261012/apps/worker/qualification/probes/image-inventory.test.mjs:84:10
+      at fixture (file:///workspace/meri-inventory-fixture-review-20261012/apps/worker/qualification/probes/image-inventory.test.mjs:43:16)
+      at TestContext.<anonymous> (file:///workspace/meri-inventory-fixture-review-20261012/apps/worker/qualification/probes/image-inventory.test.mjs:77:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn', size: 80, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/opt', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/opt/libdigestmd5.so.2', sha256: 'f131bd1195914d38eecea70b3ee5245c02e276750360b6d5fcc0a33af1b58e65', size: 13, type: 'file', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr', size: 80, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/bin', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/usr/bin/tiffcrop', sha256: 'fd8d3aabb83c1372fa4c76822c2a5232e2ec41459b66e0883eb02bb00c804fc4', size: 14, type: 'file', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm/bin', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm/bin/java', sha256: '38a0963a6364b09ad867aa9a66c6d009673c21e182015461da236ec361877f77', size: 4, type: 'file', uid: 1000 } ],
+    expected: [ { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn', size: 100, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/opt', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/opt/libdigestmd5.so.2', sha256: 'f131bd1195914d38eecea70b3ee5245c02e276750360b6d5fcc0a33af1b58e65', size: 13, type: 'file', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr', size: 80, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/bin', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/usr/bin/tiffcrop', sha256: 'fd8d3aabb83c1372fa4c76822c2a5232e2ec41459b66e0883eb02bb00c804fc4', size: 14, type: 'file', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0700', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm/bin', size: 60, type: 'dir', uid: 1000 }, { gid: 1000, mode: '0600', path: '/tmp/meri-inventory-owner-W0MShn/usr/lib/jvm/bin/java', sha256: '38a0963a6364b09ad867aa9a66c6d009673c21e182015461da236ec361877f77', size: 4, type: 'file', uid: 1000 } ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

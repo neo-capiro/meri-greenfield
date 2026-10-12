@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "apps/worker/qualification/probes/image-inventory.test.mjs"
+  ],
+  "exit_code": 1,
+  "duration_seconds": 4.126,
+  "node": "v24.19.0",
+  "python": "Python 3.12.14"
+}
