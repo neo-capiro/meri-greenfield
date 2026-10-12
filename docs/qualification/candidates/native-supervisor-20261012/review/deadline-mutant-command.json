@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/lifecycle-controls.py",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/deadline-removal-mutant.py.txt",
+    "/workspace/meri-native-supervisor-review-20261012/docs/qualification/candidates/native-supervisor-20261012/review/deadline-mutant.json"
+  ],
+  "exitCode": 1,
+  "expectedFailure": true,
+  "processReaped": true,
+  "nativeExecuted": false
+}
