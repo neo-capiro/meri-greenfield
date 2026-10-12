@@ -1,0 +1,10 @@
+{
+  "firstRun": "independent-first",
+  "passed": 33,
+  "failed": 1,
+  "classification": "reviewer fixture error, not source defect",
+  "sourceReference": "packages/shared/src/us-states.ts at fd8765ec01d292013758606204f2c9d886cd31c1",
+  "incorrectExpectedVI": "U.S. Virgin Islands",
+  "exactSourceExpectedVI": "Virgin Islands",
+  "change": "One expected string corrected after exact pinned data inspection; every other assertion unchanged."
+}
