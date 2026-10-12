@@ -1,0 +1,41 @@
+{
+  "status": "BLOCKED_NO_LOCAL_BYTES",
+  "libraryFileId": "libfile_1b8681bc826c8191840be9607beb82c5",
+  "resolvedFileId": "file_000000008ca481fb975692915dd8edf8",
+  "fileName": "aws-readiness-20261012-r1.zip",
+  "reportedBytes": 247272,
+  "reportedZipMembers": 117,
+  "expectedSha256": "44ff0a58cd5f6b34279d3844a84952bb498d5973c116127e4a8295cc9f5a9c65",
+  "expectedDigestSource": "Parent handoff; not locally verified",
+  "protocol": "Current Library skill resolved-reference prepare_materialize and unchanged freshly retrieved library_file_transfer.py materialize helper",
+  "resolvedReference": "Both supported prepare responses resolved the exact Library/file IDs and expected name/size; neither provided a workspace_path.",
+  "attempts": [
+    {
+      "kind": "initial",
+      "destination": "/workspace/meri-native-evidence-20261012/aws-readiness-20261012-r1.zip",
+      "helperExitCode": 1,
+      "observedError": "library file transfer failed: download failed",
+      "exists": false,
+      "readable": false
+    },
+    {
+      "kind": "one permitted explicit consumer-local retry",
+      "destination": "/workspace/meri-native-evidence-20261012/retry/aws-readiness-20261012-r1.zip",
+      "helperExitCode": 1,
+      "observedError": "library file transfer failed: download failed",
+      "exists": false,
+      "readable": false
+    }
+  ],
+  "observedAt": "2026-10-12T02:49:50Z",
+  "localDigestVerified": false,
+  "zipMembersInspected": false,
+  "nativeEvidenceAccepted": false,
+  "nativeCollectorRerun": false,
+  "signedTransfersPublished": false,
+  "nextAction": "Parent/platform must provide a working supported materialization of this exact Library object before raw native evidence review. No third download attempt, guessed URL, generic API or native collector rerun was made.",
+  "continuesIndependently": "Source-only trusted memory gateway prerequisite and pinned collector static diagnosis",
+  "verifiedLocalAbsenceAt": "2026-10-12T02:53:12.847302+00:00",
+  "helperSha256": "5e1557817be17db06e2375f8c34ed83e948d520242e5ee4cb50a30c7a4c83378",
+  "helperBytes": 11084
+}
