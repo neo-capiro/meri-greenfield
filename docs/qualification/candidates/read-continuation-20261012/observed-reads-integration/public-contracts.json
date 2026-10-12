@@ -1,0 +1,49 @@
+{
+  "command": [
+    "npm",
+    "--prefix",
+    "packages/contracts",
+    "run",
+    "check"
+  ],
+  "cwd": "/workspace/meri-observed-reads-20261012",
+  "sourceHead": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9",
+  "startedAt": "2026-10-12T19:14:08.729589+00:00",
+  "durationSeconds": 3.595,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 268682,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [
+    {
+      "pid": 268719,
+      "status": 0
+    },
+    {
+      "pid": 268834,
+      "status": 0
+    },
+    {
+      "pid": 268853,
+      "status": 0
+    }
+  ],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/public-contracts.stdout.bin",
+      "bytes": 1945,
+      "sha256": "2ffbbd3502a6ac0a6a770ed5a02860c81e4cfcd464d1f0d8715fa3c33ff473ac"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/public-contracts.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

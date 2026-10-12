@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.8",
+  "catalogVersion": "0.2.9",
   "sourceRegistryCommit": "fd8765ec01d292013758606204f2c9d886cd31c1",
   "originals": [
     {
@@ -505,8 +505,11 @@
       "id": "get_florida_budget_project",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "get_florida_budget_project",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "compare_florida_budget_amounts",
@@ -615,15 +618,21 @@
       "id": "search_public_web",
       "disposition": "selected",
       "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_public_web",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "scrape_web_page",
       "disposition": "selected",
       "boundary": "Public search/browsing intent through supported tools and one qualified Playwright integration; enforce egress, conversation state and artifact provenance.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "scrape_web_page",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "create_meeting_brief",
@@ -903,8 +912,11 @@
       "id": "search_sam_opportunities",
       "disposition": "selected",
       "boundary": "Authorized source lookup/search/history intent within agreed inventory; implement a new connector with current policy, evidence, coverage and operation-specific fixtures.",
-      "replacement": null,
-      "state": "pending"
+      "replacement": {
+        "id": "search_sam_opportunities",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
     },
     {
       "id": "query_debriefs",
@@ -5575,6 +5587,278 @@
       ],
       "fixtureIds": [
         "catalog.binding.query_intelligence"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_public_web",
+        "version": "0.2.0"
+      },
+      "displayName": "Search public web",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Public search discoveries preserve provider-specific fields and raw DuckDuckGo URL text; neither discovery nor absence of rows establishes source truth or absence. Page content remains external_untrusted.",
+        "URL scheme and credential syntax checks do not qualify DNS, redirects, SSRF, private-address blocking, egress or fetch authorization. No fetch, provider, parser, browser or renderer implementation is included.",
+        "HTML/PDF prefix coverage, raw-byte hash text and reported totals are correlated assertions only. Redirected final URLs may differ; truncated PDF prefixes need not end in an ellipsis. Actual bytes, parsing, hash provenance and completeness remain unqualified."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "public_web",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchInput",
+        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchOutput",
+        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_public_web"
+      ]
+    },
+    {
+      "operation": {
+        "id": "scrape_web_page",
+        "version": "0.2.0"
+      },
+      "displayName": "Scrape web page",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Public search discoveries preserve provider-specific fields and raw DuckDuckGo URL text; neither discovery nor absence of rows establishes source truth or absence. Page content remains external_untrusted.",
+        "URL scheme and credential syntax checks do not qualify DNS, redirects, SSRF, private-address blocking, egress or fetch authorization. No fetch, provider, parser, browser or renderer implementation is included.",
+        "HTML/PDF prefix coverage, raw-byte hash text and reported totals are correlated assertions only. Redirected final URLs may differ; truncated PDF prefixes need not end in an ellipsis. Actual bytes, parsing, hash provenance and completeness remain unqualified."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "public_web",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageInput",
+        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageOutput",
+        "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.scrape_web_page"
+      ]
+    },
+    {
+      "operation": {
+        "id": "search_sam_opportunities",
+        "version": "0.2.0"
+      },
+      "displayName": "Search sam opportunities",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Stored SAM opportunities retain fourteen projected fields, independent observed counts and hidden-query matches. This is not live SAM discovery, exhaustive coverage or an absence proof.",
+        "Nine source-health states use declared status precedence and a forty-eight-hour threshold. Raw health timestamp text preserves producer interpretation, including invalid and future values; it does not establish a canonical or current clock.",
+        "Three trusted observation clocks are independent and need not increase. Enforce-only structured deadline facts correlate with stored timestamps; actual clock capture, source enablement, current authority and producer qualification remain unverified."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "sam_opportunities",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:sam-opportunities:0.2.0#/$defs/SamOpportunitiesInput",
+        "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:sam-opportunities:0.2.0#/$defs/SamOpportunitiesOutput",
+        "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.search_sam_opportunities"
+      ]
+    },
+    {
+      "operation": {
+        "id": "get_florida_budget_project",
+        "version": "0.2.0"
+      },
+      "displayName": "Get florida budget project",
+      "whenToUse": "Inspect the declared source projection through a qualified source owner under current authorization.",
+      "limitations": [
+        "Pending private contract only; null handler, no enabled source or executable skill.",
+        "Source requirements are design declarations; current grants, feature flags, availability and producer authority remain unqualified.",
+        "Local source validation does not qualify current identity, source access, result release or runtime.",
+        "Trusted effective scope and client resolution are projection assertions only; names and case-insensitive UUID references retain declared resolution semantics. Current tenant, client, folder, membership, wall, feature and internal-guard enforcement remain execution prerequisites.",
+        "Projects, recent amounts, documents, amount observations and events preserve their distinct caps and nullable projections. Raw JSON is inert opaque stored data; it is not guaranteed to conform to a BudgetAmount DTO.",
+        "Requests, chamber alternatives, offers, allocations and vetoes do not establish awarded amounts. Exact monetary meanings and fiscal stages remain distinct; no aggregation, currentness or completeness claim is implemented."
+      ],
+      "positiveExamples": [
+        "Inspect the declared stored projection within the current authorized source scope."
+      ],
+      "negativeExamples": [
+        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "florida_budget",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetInput",
+        "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:florida-budget:0.2.0#/$defs/FloridaBudgetOutput",
+        "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.get_florida_budget_project"
       ]
     }
   ]

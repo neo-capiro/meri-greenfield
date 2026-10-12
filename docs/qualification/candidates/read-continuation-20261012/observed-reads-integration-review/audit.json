@@ -1,0 +1,1386 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "head": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceTree": "660f21c0ccc165ba8741d477c6126e4e7e479be5",
+  "headTree": "660f21c0ccc165ba8741d477c6126e4e7e479be5",
+  "originalCount": 6947,
+  "unchangedOriginalCount": 6927,
+  "changedOriginalPaths": [
+    "apps/gateway/test/action-item-context-independent.test.mjs",
+    "apps/gateway/test/capability-next-independent.test.mjs",
+    "apps/gateway/test/mail-context-independent.test.mjs",
+    "apps/gateway/test/memory-context-independent.test.mjs",
+    "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+    "packages/contracts/retrieval-0.2/catalog.json",
+    "packages/contracts/retrieval-0.2/validate.mjs",
+    "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+    "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+    "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+    "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-mail.test.mjs",
+    "packages/contracts/test/retrieval-memory-binding.test.mjs",
+    "packages/contracts/test/retrieval-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+    "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+    "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+    "packages/contracts/test/retrieval-selected-next-independent.test.mjs"
+  ],
+  "familyFiles": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596",
+      "bytes": 6904
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+      "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+      "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a",
+      "bytes": 14083
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web.test.mjs",
+      "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+      "sha256": "deddab0e9c6e13b639e856cd8c89e53809d8c8f9267bca4d21943e66ead154f6",
+      "bytes": 14822
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a",
+      "bytes": 6786
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+      "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222",
+      "bytes": 8649
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+      "sha256": "5d64926f9474ebcc7ab19610acbdc75a52056301ab7ff1e21467db9e156363b5",
+      "bytes": 13461
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb",
+      "bytes": 7290
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db",
+      "bytes": 10656
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "source": "dabe2b50d94f0b12ef983292a1c18e1ef35d4675",
+      "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e",
+      "bytes": 18156
+    }
+  ],
+  "packets": [
+    {
+      "family": "public-web",
+      "role": "author",
+      "ref": "8edcfe8673072bcc925bc332e5a584b800ca5042",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/public-web-author/manifest.json",
+      "sha256": "138a3421d6cb03a8f78aec81f3e18b427ed0298f8a8a6a17c6692f47e2ccbc94",
+      "members": 20
+    },
+    {
+      "family": "public-web",
+      "role": "review",
+      "ref": "4e6733e7eb971bd71afb9a50817f0993ee02c228",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/public-web-review/review-manifest.json",
+      "sha256": "b26a47773942b35a76420a495ca7f64b5436a04055780a7258ea63145bb151f8",
+      "members": 23
+    },
+    {
+      "family": "sam-opportunities",
+      "role": "author",
+      "ref": "6414cdae5324b43e612b1176e7096cbeb8b50636",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/manifest.json",
+      "sha256": "6c68639043c921db30280a74ec81cc5734a43b1004ae9943d03cfcddf1a60de6",
+      "members": 25
+    },
+    {
+      "family": "sam-opportunities",
+      "role": "review",
+      "ref": "ae179ffc40e15a893cfaaa58d07caa6b0c5b2953",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/MANIFEST.json",
+      "sha256": "f7e1f0596b19b2d0c8ed018c2f19190345f2e1f5fcc3b08f061005a4d752c5c3",
+      "members": 20
+    },
+    {
+      "family": "florida-budget",
+      "role": "author",
+      "ref": "e37a72402f8b4b7167e7efac9c4845caf5acef07",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/manifest.json",
+      "sha256": "3b873a6273fc774ac67d83d4562159621c399a4befb79d4ef94474f921b4fc14",
+      "members": 37
+    },
+    {
+      "family": "florida-budget",
+      "role": "review",
+      "ref": "495cf95f842023c856716698a7effc62e98d30ac",
+      "manifest": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/manifest.json",
+      "sha256": "e0ea9eae506e0d30940153600ddeef299c2763df96ab330fd6b39512f5b7447b",
+      "members": 28
+    }
+  ],
+  "checks": [
+    {
+      "check": "exact20 prior paths changed:3 canonical and17 tests",
+      "passed": true
+    },
+    {
+      "check": "all other original files byte-preserved",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-bindings.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-bindings.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-bindings.test.mjs '0.2.8'",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs .size,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-integration-independent.test.mjs all 63",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-bindings.test.mjs '0.2.8'",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-mail.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-mail.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-mail.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-bindings.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-bindings.test.mjs .length, 34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-bindings.test.mjs .length, 62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-next-bindings.test.mjs .length, 63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-independent.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-binding.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-binding.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-binding.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-action-item-binding.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs .size,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs '0.2.8'",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs all63",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs ['get_research_evidence','sear",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-read-continuation-independent.test.mjs ['get_state_bill_status','sear",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-catalog-bindings.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-independent.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-selected-next-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-memory-binding.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-memory-binding.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-memory-binding.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/mail-context-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions apps/gateway/test/mail-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/capability-next-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/capability-next-independent.test.mjs all63",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions apps/gateway/test/capability-next-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/action-item-context-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/action-item-context-independent.test.mjs all63",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions apps/gateway/test/action-item-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence apps/gateway/test/memory-context-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions apps/gateway/test/memory-context-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs \"query_intelligence\"",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs .size,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-reference-integration-independent.test.mjs all63",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original test hash packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs const ids=['get_state_bill_sta",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs !ids.includes(d.operation.id)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs !ids.includes(x.id)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs ids.includes(old.id)?",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs .length,34)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs .length,62)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs .length,63)",
+      "passed": true
+    },
+    {
+      "check": "replacement original occurrence packages/contracts/test/retrieval-civic-integration-independent.test.mjs all63",
+      "passed": true
+    },
+    {
+      "check": "exact forward patch packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "exact inverse original assertions packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical source freeze packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "canonical source freeze packages/contracts/retrieval-0.2/catalog.json",
+      "passed": true
+    },
+    {
+      "check": "canonical source freeze packages/contracts/retrieval-0.2/validate.mjs",
+      "passed": true
+    },
+    {
+      "check": "three accepted exact family refs",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/public-web.schema.json",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/test/retrieval-public-web.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "single manifest public-webauthor",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths public-webauthor",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-PUBLIC-WEB-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/closeout.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/dependencies.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-author-test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-readback.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-repair.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/verification.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-author/verify.py",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved public-webauthor",
+      "passed": true
+    },
+    {
+      "check": "single manifest public-webreview",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths public-webreview",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-PUBLIC-WEB-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/count-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/criteria.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/dependency-and-fixture-correction.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/exact-original-test-prefix.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/inspection-corrections.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/public-web-review/source-findings.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved public-webreview",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "single manifest sam-opportunitiesauthor",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths sam-opportunitiesauthor",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/audit-packet.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/health-metadata.jsonl",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/inspect-source.cjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/note-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/outline.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/read-metadata.jsonl",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/selected-model-fields.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verify-manifest.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/wrapper-metadata.jsonl",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved sam-opportunitiesauthor",
+      "passed": true
+    },
+    {
+      "check": "single manifest sam-opportunitiesreview",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths sam-opportunitiesreview",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/audit.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/closeout.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/criteria.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/dependencies.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/interface-before-replay.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verdict.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verify-author-packet.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved sam-opportunitiesreview",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "accepted family exact packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "single manifest florida-budgetauthor",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths florida-budgetauthor",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-FLORIDA-BUDGET-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/audit.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/authored-whitespace-check.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/dependency-provenance.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/failure-notes.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/outline.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit-bbc823e.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved florida-budgetauthor",
+      "passed": true
+    },
+    {
+      "check": "single manifest florida-budgetreview",
+      "passed": true
+    },
+    {
+      "check": "unique packet member paths florida-budgetreview",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/coordination/reports/CODEX-FLORIDA-BUDGET-REVIEW-20261012.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/.gitattributes",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/criteria.md",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/dependencies.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-control-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-controls.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget-validation.mjs",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget.schema.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.py",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/reference-identities.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.json",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stderr.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stdout.bin",
+      "passed": true
+    },
+    {
+      "check": "original and integrated packet member docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-findings.json",
+      "passed": true
+    },
+    {
+      "check": "complete packet folder preserved florida-budgetreview",
+      "passed": true
+    },
+    {
+      "check": "accepted independent family test packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "accepted independent family test packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "accepted independent family test packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "passed": true
+    },
+    {
+      "check": "only reviewer key-order assumption amended",
+      "passed": true
+    },
+    {
+      "check": "actual final focused27 passed",
+      "passed": true
+    }
+  ],
+  "passed": 311,
+  "failed": 0,
+  "scope": "SOURCE_ONLY_NO_RUNTIME_ACCEPTANCE"
+}

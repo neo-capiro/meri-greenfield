@@ -1,0 +1,123 @@
+{
+  "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+  "authorPacket": "8edcfe8673072bcc925bc332e5a584b800ca5042",
+  "verdict": "ACCEPT_SOURCE",
+  "scope": "standalone private DTO family only; runtime HOLD",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-WEB-REVIEW-20261012.md",
+      "bytes": 6648,
+      "sha256": "965ed8315957ce356517b5c89a5476e4df0cf84406ec7aa8f9a2759eb535f369"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.json",
+      "bytes": 1320,
+      "sha256": "2fca7f9d5a62ed0e4b50783e13d39eab266393b3aece64d6098b9b378798567d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.py",
+      "bytes": 5160,
+      "sha256": "d83bfddced093a49118d59dcccf9811da94e7e95dc357ff54eefcedc0f1df777"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stdout.bin",
+      "bytes": 10689,
+      "sha256": "b044bc12d106abf9d79a78bf69c0804b5209660ab6963908ae42f416a3e0832b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/count-fixture-correction.json",
+      "bytes": 340,
+      "sha256": "99de145a3246e6262be3f157c5758a6cb4cd0f13d5d011edc9b97d50a3e69de2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/criteria.json",
+      "bytes": 2351,
+      "sha256": "dbb9d4db25142a22cd1e0c1bc2682a284a00cd45536e2830ec8060088a838fcd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/dependency-and-fixture-correction.json",
+      "bytes": 1563,
+      "sha256": "0bce66c230d4e4b266bc7340a4f3830cd32eb452815ee85bf25560ff4f70034d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/exact-original-test-prefix.json",
+      "bytes": 289,
+      "sha256": "6a07fecf85675d8d05bc12a6c9d5baab905235c21360407af99a97ee96fabcce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.json",
+      "bytes": 1371,
+      "sha256": "ad9f37b8b7a3e296cc4a940fd92040be7ad457088b2a06414947cca6e1161263"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stdout.bin",
+      "bytes": 5573,
+      "sha256": "4585967213f4f16cb71ab9d8b7a627dba7592972ca21dccc2a2b4e9a9b79d38d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.json",
+      "bytes": 1371,
+      "sha256": "4904c44c150513c71d38f4e9092e13dee78fbb757bb12aa6d8b70f819b7d44bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stdout.bin",
+      "bytes": 3088,
+      "sha256": "bb7257abf3513e8fe58fefa8faa149cf43c1ea92b0bc52a19a5c859536680716"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.json",
+      "bytes": 1393,
+      "sha256": "bf496902aca8ee775a4597c4e459e20b8fd29e53c21204f602eca0f20d3ee885"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stdout.bin",
+      "bytes": 6905,
+      "sha256": "61df9a72ca74918da9d9c3533ad35f36598e84eb8d58a0ae70fe2090c883d29c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/inspection-corrections.json",
+      "bytes": 793,
+      "sha256": "a6a3eff5e14399dc7130a6a8bc4099aae82541cbdfc523d29dc0ae0285c8935a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/reference-identities.json",
+      "bytes": 6515,
+      "sha256": "e58ee55b0c9b3aff621784e1d32c885dac8ddf9c6767c99d9ec2fc85ffe1920a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/source-findings.json",
+      "bytes": 3948,
+      "sha256": "bfb5806b85aa681b2fc8b930b874998d8bb14a476c29acc106da1355593e3b98"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "bytes": 14465,
+      "sha256": "7e2755715132e90e245b692900403632b439edf787b99dbdefd6f6552a65b791"
+    }
+  ]
+}

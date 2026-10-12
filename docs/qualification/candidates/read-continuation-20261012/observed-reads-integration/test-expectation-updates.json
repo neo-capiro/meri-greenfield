@@ -1,0 +1,509 @@
+{
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "explicitNewOperationIds": [
+    "search_public_web",
+    "scrape_web_page",
+    "search_sam_opportunities",
+    "get_florida_budget_project"
+  ],
+  "changes": [
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "f24bf56a62ef651f606c45a170fd5e4d467c97a666667abc79ec4718352fbd26",
+      "afterSha256": "33a9423c8f820ba65f53f2d6576b6b2499a815cb7fcfefe190953438c4c5b4d8",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.8'",
+          "new": "'0.2.9'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "beforeSha256": "06c303281600a86c12cc3ad3a41a9247ec73e62a98b35153f3f840c06c64b3c3",
+      "afterSha256": "3fdfbc8d8f92802ad7c2cc6146bbbcd253f655b58f2eeb3fe5d3a13782b0a48b",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        },
+        {
+          "old": ".size,63)",
+          "new": ".size,67)",
+          "count": 1
+        },
+        {
+          "old": "all 63",
+          "new": "all 67",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "beforeSha256": "e5b73821b6bd50f8e6cd69eb626abea79b66a2bd63111ac2feecf17f30330896",
+      "afterSha256": "3e086ed7efab5d7b439ed0c1c8dc373172f33ee52336b5dc106ab814bca27e88",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.8'",
+          "new": "'0.2.9'",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "beforeSha256": "0ee0bd974a50cd1eb7ac1e62f8620fc0a8eaf18a56931927e4144e8702ee486f",
+      "afterSha256": "6d2321887da012a0186e369ead82e583f212447e3560d844611dab3cf4a8f2e7",
+      "replacements": [
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "beforeSha256": "bfb259fa2a1f71ec8b8755e11532ef279729fdac08fc6e82937e3d7d72df678f",
+      "afterSha256": "d7d782996aa94ed195d24b4678dacc22d5761b2ada6aa6c79c5873ece42099c3",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length, 34)",
+          "new": ".length, 30)",
+          "count": 1
+        },
+        {
+          "old": ".length, 62)",
+          "new": ".length, 66)",
+          "count": 1
+        },
+        {
+          "old": ".length, 63)",
+          "new": ".length, 67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "beforeSha256": "09c95b8ee81d201eb5373693a30f060fde18bb83e2f8ed071598286d45bfa07a",
+      "afterSha256": "ef76794af9d7ba09edb7f8d6f4d835c9e4d72b00f1b71ff845b55db1e48f2a1c",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "beforeSha256": "1e76e4bd8c6cc36ad680000315f2171a72619ca4284f6cda4b70c9d966981b8c",
+      "afterSha256": "9e72adaa95c005e0060de090f9922ffe55cc57d8d72551afe1f2faab076599d7",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "beforeSha256": "9f1c3a23d6d2aeb5e62949e2cdfcaade08bd05691aad43e58b483009bed8f501",
+      "afterSha256": "ab94f35cfaf86ff02f34348126726b8d2cce57ccd594a16a7dc050a6d2ceb077",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 2
+        },
+        {
+          "old": ".size,63)",
+          "new": ".size,67)",
+          "count": 1
+        },
+        {
+          "old": "'0.2.8'",
+          "new": "'0.2.9'",
+          "count": 1
+        },
+        {
+          "old": "all63",
+          "new": "all67",
+          "count": 1
+        },
+        {
+          "old": "['get_research_evidence','search_sam_opportunities']",
+          "new": "['get_research_evidence']",
+          "count": 1
+        },
+        {
+          "old": "['get_state_bill_status','search_state_floor_votes']){const d=resolve(id).descriptor;",
+          "new": "['get_state_bill_status','search_state_floor_votes','search_sam_opportunities']){const d=resolve(id).descriptor;",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "97919bd10739e3081bfe08a8c56b304fbbdde392c09d009361c234576bfa8854",
+      "afterSha256": "131d1e0c46f6ffc9cd2034478d6018fb2926c7f02089ed043ebc5c019845385e",
+      "replacements": [
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "7e411d26344c0323478b56c8999f02c0dfbdf6847824438ef8ba0aecbabac723",
+      "afterSha256": "4b98394068c8f7dbb1a0ff10edc711ccfa870014ec894be51ba2949e5a49d197",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "34742593d3a273a96e6c0644d27f3619187d76b0e96397f3b53e8432c817edd4",
+      "afterSha256": "c91a08dda0e815c5b9705b152d72105becdcc69b62fc0b47ead90225369e4f46",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "bde80f33b56da0d09f3af0201ababda1b113e8ff37b36156c86c63fa835dade9",
+      "afterSha256": "ff966cf859854ea6a5b727a3295dd6d9a951db0c429de4eb5b665d6607e1cbae",
+      "replacements": [
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "bd4fa17f9c217f0da94f92818ee9e44270076f85e1393e41d27937101ecc16f2",
+      "afterSha256": "c1b0ced669523bd7adf72219cf694e44a83b12f18f7635d3eac026858d15491b",
+      "replacements": [
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        },
+        {
+          "old": "all63",
+          "new": "all67",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "a6b680f58fff69206218a240cb964accbf1a58bc7a59278272d1136bf718e7ab",
+      "afterSha256": "0e7b98c43609682b2065318ca55f75ad8444dae0df0cff0e7f7694585afb9dee",
+      "replacements": [
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        },
+        {
+          "old": "all63",
+          "new": "all67",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "5350464c5fa208bf9883a5290dd780dbd6226031b4b613f4c7da9c596b57ce5b",
+      "afterSha256": "611fd8a20699942c1293d11429df50ccbc96bbbecd07c992576ecd718e21174f",
+      "replacements": [
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "bed345c2189a15cc41ad94184580c7fb8e7ba52e0552e524f3f183bbe5a683c9",
+      "afterSha256": "493593d57ea65dd710455fbf67f78eeeb86203579cd9e62039de4985d0476e7d",
+      "replacements": [
+        {
+          "old": "\"query_intelligence\"",
+          "new": "\"query_intelligence\", \"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 2
+        },
+        {
+          "old": ".size,63)",
+          "new": ".size,67)",
+          "count": 1
+        },
+        {
+          "old": "all63",
+          "new": "all67",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "beforeSha256": "91c6c14a901b76444cf85328e8de35d0579beaef3128eb0dcab5b77e02267e9c",
+      "afterSha256": "bb522a416c7fff228d94629d0de05022d0f8e6dbd0753adaa20698e4bb72d05c",
+      "replacements": [
+        {
+          "old": "const ids=['get_state_bill_status'",
+          "new": "const observedIds=[\"search_public_web\", \"scrape_web_page\", \"search_sam_opportunities\", \"get_florida_budget_project\"];\nconst ids=['get_state_bill_status'",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(d.operation.id)",
+          "new": "!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)",
+          "count": 1
+        },
+        {
+          "old": "!ids.includes(x.id)",
+          "new": "!ids.includes(x.id)&&!observedIds.includes(x.id)",
+          "count": 1
+        },
+        {
+          "old": "ids.includes(old.id)?",
+          "new": "(ids.includes(old.id)||observedIds.includes(old.id))?",
+          "count": 1
+        },
+        {
+          "old": ".length,34)",
+          "new": ".length,30)",
+          "count": 1
+        },
+        {
+          "old": ".length,62)",
+          "new": ".length,66)",
+          "count": 1
+        },
+        {
+          "old": ".length,63)",
+          "new": ".length,67)",
+          "count": 2
+        },
+        {
+          "old": "all63",
+          "new": "all67",
+          "count": 1
+        }
+      ],
+      "inverseExact": true,
+      "change": "Explicit four-ID mapping allowlist and canonical count/version expectations; prior behavioral controls retained. SAM pending-resolution refusal becomes exact-version/unavailable/null-handler positive assertion; research refusal preserved."
+    }
+  ]
+}

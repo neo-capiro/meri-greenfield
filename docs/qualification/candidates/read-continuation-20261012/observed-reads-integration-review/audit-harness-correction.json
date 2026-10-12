@@ -1,0 +1,5 @@
+{
+  "sourceDefect": false,
+  "initialFailure": "IndexError during manifest lookup before audit completed",
+  "reason": "SAM independent reviewer manifest is MANIFEST.json; exact filename matching wrongly assumed lowercase. Case-insensitive known basename lookup preserves original case in subsequent Git reads and exact hash validation."
+}

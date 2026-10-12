@@ -1,0 +1,33 @@
+{
+  "command": [
+    "node",
+    "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-binding-check.mjs"
+  ],
+  "cwd": "/workspace/meri-observed-reads-review-20261012",
+  "sourceHead": "a5a424ccf6d1db6c085cd2957cf7a91625bad8da",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:13:42.963123+00:00",
+  "durationSeconds": 1.871,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 268233,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-unresolved.stdout.bin",
+      "bytes": 179,
+      "sha256": "b9126df29ecce8aeb122ef5db3067120f66109226b3176084d7360a0b4976ce2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-unresolved.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

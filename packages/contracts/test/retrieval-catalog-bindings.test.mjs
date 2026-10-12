@@ -18,8 +18,8 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
   const ledger = JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json', import.meta.url)));
   assert.deepEqual(c.originals.map(({id,disposition,boundary}) => ({id,disposition,boundary})),
     ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:row.acceptedScope.boundary})));
-  assert.equal(c.operations.length,63); assert.equal(c.originals.filter(row => row.state==='mapped').length,62);
-  assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,34);
+  assert.equal(c.operations.length,67); assert.equal(c.originals.filter(row => row.state==='mapped').length,66);
+  assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,30);
   assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43);
   for (const native of added) {
     const mapping = c.originals.find(row => row.id===native);

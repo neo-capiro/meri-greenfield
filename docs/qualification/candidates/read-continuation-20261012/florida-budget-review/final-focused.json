@@ -1,0 +1,35 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+    "packages/contracts/test/retrieval-florida-budget.test.mjs"
+  ],
+  "cwd": "/workspace/meri-florida-budget-review-20261012",
+  "sourceHead": "583e43fe7b8a2b32572e8fa0940857bb31cd7dcf",
+  "sourceDiffSha256": "af4d159f5cd5df25d91ce3f28671dd3af8147da1a3f2969e8a2d041239b23195",
+  "sourceDiffBytes": 2160,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:07:55.709466+00:00",
+  "durationSeconds": 0.366,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 264833,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stdout.bin",
+      "bytes": 5162,
+      "sha256": "ecda800a240d898225894e8b8982c80179f51e155cfa1d5fe71c8408e3936ed3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

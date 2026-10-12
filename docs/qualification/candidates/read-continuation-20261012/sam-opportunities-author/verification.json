@@ -1,0 +1,151 @@
+{
+  "checks": 36,
+  "passed": 36,
+  "failed": 0,
+  "results": [
+    {
+      "name": "unique safe relative members",
+      "pass": true
+    },
+    {
+      "name": "member:docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/audit-packet.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/capture-reaped.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/cleanup.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/health-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/inspect-source.cjs",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/note-identities.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/outline.md",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/read-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/reference-identities.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/selected-model-fields.json",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verify-manifest.py",
+      "pass": true
+    },
+    {
+      "name": "member:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/wrapper-metadata.jsonl",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "pass": true
+    },
+    {
+      "name": "member:packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "pass": true
+    },
+    {
+      "name": "complete packet membership",
+      "pass": true
+    },
+    {
+      "name": "owned exit:focused",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned exit:focused-notes-repaired",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "pass": true
+    },
+    {
+      "name": "owned exit:metadata-audit",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "pass": true
+    },
+    {
+      "name": "raw:docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "pass": true
+    }
+  ]
+}

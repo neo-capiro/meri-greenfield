@@ -1,0 +1,28 @@
+{
+  "ownedReviewGroups": [
+    {
+      "pgid": 261120,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false,
+      "receipt": "independent-first.json"
+    },
+    {
+      "pgid": 261216,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false,
+      "receipt": "source-audit.json"
+    },
+    {
+      "pgid": 262304,
+      "absent": true,
+      "killRequired": false,
+      "timedOut": false,
+      "receipt": "author-packet-audit.json"
+    }
+  ],
+  "allAbsent": true,
+  "sourceRuntimeExecuted": false,
+  "broadPublic": "UNRUN"
+}

@@ -1,0 +1,55 @@
+✔ exact two-operation API and private definitions (2.085654ms)
+✔ normalization preserves source clamps and mode-specific defaults (2.65514ms)
+✔ strict JSON scalar admission and required selectors (0.923037ms)
+✔ UTF16 slicing and no second trim or mode case folding (0.710047ms)
+✔ page URL syntax rejects schemes and credentials without certifying network admission (0.434824ms)
+✔ tavily: exact provider row nullability and returned count (3.441781ms)
+✔ serper: exact provider row nullability and returned count (0.79871ms)
+✔ duckduckgo: exact provider row nullability and returned count (0.959792ms)
+✔ publication text is opaque required provider text, omitted in DuckDuckGo (0.849296ms)
+✔ DuckDuckGo raw nonempty URL is not strengthened into normalized provider URL (0.608404ms)
+✔ search retains duplicate rows and empty discovery without absence proof (0.731789ms)
+✔ search field caps are UTF16 normalized excerpts without fabricated date parsing (1.626914ms)
+✔ HTML exact untrusted owner, raw-byte hash syntax and coverage (3.624626ms)
+✔ HTML truncated unknown totals and complete empty text remain distinct (0.480362ms)
+✔ HTML title is nullable unbounded source text, no invented title length limit (0.593702ms)
+✔ HTML link cap, URL uniqueness and nullable 120-unit labels (2.110852ms)
+✔ HTML and PDF content classification differs including suffix fallback (1.040875ms)
+✔ PDF exact fields preserve zero pages and differ from HTML (1.409117ms)
+✔ PDF totalChars is full normalized extraction count, not displayed length when truncated (0.974795ms)
+✔ maxChars context bounds UTF16 output and exact PDF truncation threshold (0.561864ms)
+✔ redirect final URL differs; generatedAt and hash do not attest request bytes or freshness (0.67205ms)
+✔ canonical instant narrowing does not use an ambient clock (0.643928ms)
+✔ input/output are detached and normalized input metadata frozen (0.545099ms)
+✔ model authority and unknown context/properties are refused (0.756236ms)
+✔ hostile selectors and JSON hooks are rejected without effects (1.852363ms)
+✔ canonical resolver binds immutable normalized hash and zero context keys without activation (2.374418ms)
+✖ truncated HTML/PDF cannot return a shorter-than-requested prefix window (0.746251ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 26
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 375.932879
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-web.test.mjs:140:1
+✖ truncated HTML/PDF cannot return a shorter-than-requested prefix window (0.746251ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/meri-public-web-contracts-20261012/packages/contracts/test/retrieval-public-web.test.mjs:141:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

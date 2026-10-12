@@ -1,0 +1,24 @@
+{
+  "ownedProcessGroups": [
+    {
+      "pgid": 249268,
+      "absent": true,
+      "receipt": "focused-initial.json"
+    },
+    {
+      "pgid": 249881,
+      "absent": true,
+      "receipt": "truncation-before.json"
+    },
+    {
+      "pgid": 250224,
+      "absent": true,
+      "receipt": "focused-truncation-repaired.json"
+    }
+  ],
+  "allAbsent": true,
+  "independentAcceptance": "PENDING",
+  "runtimeAcceptance": false,
+  "sourceConnectivity": false,
+  "performed": "pure local DTO tests and metadata/Git inspection only"
+}

@@ -1,0 +1,259 @@
+{
+  "rootHead": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+  "rootTree": "4673eaef2e094d36cdb999f821ca12371488e24d",
+  "productionSource": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "fullTestSource": "005cb30d7e8c1be28792e4c722c62005e728862f",
+  "rootReceipts": [
+    {
+      "label": "focused",
+      "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "group": 268355,
+      "absent": true,
+      "reapedDescendants": [],
+      "durationSeconds": 37.27
+    },
+    {
+      "label": "source-audit",
+      "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "group": 268354,
+      "absent": true,
+      "reapedDescendants": [],
+      "durationSeconds": 0.265
+    },
+    {
+      "label": "family-packets",
+      "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "group": 268370,
+      "absent": true,
+      "reapedDescendants": [],
+      "durationSeconds": 0.47
+    },
+    {
+      "label": "public-contracts",
+      "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+      "group": 268682,
+      "absent": true,
+      "reapedDescendants": [
+        {
+          "pid": 268719,
+          "status": 0
+        },
+        {
+          "pid": 268834,
+          "status": 0
+        },
+        {
+          "pid": 268853,
+          "status": 0
+        }
+      ],
+      "durationSeconds": 3.595
+    },
+    {
+      "label": "expanded",
+      "source": "005cb30d7e8c1be28792e4c722c62005e728862f",
+      "group": 269735,
+      "absent": true,
+      "reapedDescendants": [
+        {
+          "pid": 269982,
+          "status": 0
+        },
+        {
+          "pid": 270001,
+          "status": 0
+        }
+      ],
+      "durationSeconds": 104.039
+    }
+  ],
+  "checks": [
+    {
+      "check": "final root production unchanged; only exact independent test added",
+      "passed": true
+    },
+    {
+      "check": "root includes exact frozen independent assertions",
+      "passed": true
+    },
+    {
+      "check": "root focused exact source clean",
+      "passed": true
+    },
+    {
+      "check": "root focused exit and owned cleanup",
+      "passed": true
+    },
+    {
+      "check": "root focused raw stdout",
+      "passed": true
+    },
+    {
+      "check": "root focused raw stderr",
+      "passed": true
+    },
+    {
+      "check": "root source-audit exact source clean",
+      "passed": true
+    },
+    {
+      "check": "root source-audit exit and owned cleanup",
+      "passed": true
+    },
+    {
+      "check": "root source-audit raw stdout",
+      "passed": true
+    },
+    {
+      "check": "root source-audit raw stderr",
+      "passed": true
+    },
+    {
+      "check": "root family-packets exact source clean",
+      "passed": true
+    },
+    {
+      "check": "root family-packets exit and owned cleanup",
+      "passed": true
+    },
+    {
+      "check": "root family-packets raw stdout",
+      "passed": true
+    },
+    {
+      "check": "root family-packets raw stderr",
+      "passed": true
+    },
+    {
+      "check": "root public-contracts exact source clean",
+      "passed": true
+    },
+    {
+      "check": "root public-contracts exit and owned cleanup",
+      "passed": true
+    },
+    {
+      "check": "root public-contracts raw stdout",
+      "passed": true
+    },
+    {
+      "check": "root public-contracts raw stderr",
+      "passed": true
+    },
+    {
+      "check": "root expanded exact source clean",
+      "passed": true
+    },
+    {
+      "check": "root expanded exit and owned cleanup",
+      "passed": true
+    },
+    {
+      "check": "root expanded raw stdout",
+      "passed": true
+    },
+    {
+      "check": "root expanded raw stderr",
+      "passed": true
+    },
+    {
+      "check": "root focused exact passed/skipped count",
+      "passed": true
+    },
+    {
+      "check": "root public-contracts exact passed/skipped count",
+      "passed": true
+    },
+    {
+      "check": "root expanded exact passed/skipped count",
+      "passed": true
+    },
+    {
+      "check": "public generated and type steps included",
+      "passed": true
+    },
+    {
+      "check": "root exact audit-results.json",
+      "passed": true
+    },
+    {
+      "check": "root exact family-packet-integrity.json",
+      "passed": true
+    },
+    {
+      "check": "review baseline-unresolved cleanup",
+      "passed": true
+    },
+    {
+      "check": "review baseline-unresolved raw hash",
+      "passed": true
+    },
+    {
+      "check": "review baseline-unresolved raw hash",
+      "passed": true
+    },
+    {
+      "check": "review independent-candidate cleanup",
+      "passed": true
+    },
+    {
+      "check": "review independent-candidate raw hash",
+      "passed": true
+    },
+    {
+      "check": "review independent-candidate raw hash",
+      "passed": true
+    },
+    {
+      "check": "review independent-corrected cleanup",
+      "passed": true
+    },
+    {
+      "check": "review independent-corrected raw hash",
+      "passed": true
+    },
+    {
+      "check": "review independent-corrected raw hash",
+      "passed": true
+    },
+    {
+      "check": "review receipt-verification cleanup",
+      "passed": true
+    },
+    {
+      "check": "review receipt-verification raw hash",
+      "passed": true
+    },
+    {
+      "check": "review receipt-verification raw hash",
+      "passed": true
+    },
+    {
+      "check": "review source-audit-corrected cleanup",
+      "passed": true
+    },
+    {
+      "check": "review source-audit-corrected raw hash",
+      "passed": true
+    },
+    {
+      "check": "review source-audit-corrected raw hash",
+      "passed": true
+    },
+    {
+      "check": "review source-audit cleanup",
+      "passed": true
+    },
+    {
+      "check": "review source-audit raw hash",
+      "passed": true
+    },
+    {
+      "check": "review source-audit raw hash",
+      "passed": true
+    }
+  ],
+  "passed": 46,
+  "failed": 0,
+  "scope": "READ_ONLY_EXISTING_ROOT_RECEIPTS_NOT_RUNTIME_ACCEPTANCE"
+}

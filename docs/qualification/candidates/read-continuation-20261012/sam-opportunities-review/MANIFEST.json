@@ -1,0 +1,109 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "02bac2139b13dec288b5ca2c19edc3be85e2c6b2",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-REVIEW-20261012.md",
+      "bytes": 6652,
+      "sha256": "f8ed7973d395a14fe27bd35959864723e53a1dcf93aabfd513f60783f10448af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/audit.py",
+      "bytes": 3904,
+      "sha256": "040cd5d382e9ec1122c2ead18ee79ddd1e30a0f8b5ba096bd18ca6c6a2483646"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.json",
+      "bytes": 1373,
+      "sha256": "3dcd58cddd87609df665b52c2562e1526520c3f9324f03657c31ef1f738e3bcd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stdout.bin",
+      "bytes": 12686,
+      "sha256": "c255fad086f1e01f9be470ffaa56ac8231d27ba1a269855e012550da460776fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/closeout.json",
+      "bytes": 569,
+      "sha256": "98cc80c836ae3b10bcab584bdaa4d10daabf7d6f577fb4a9836293b5fa39fdde"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/criteria.md",
+      "bytes": 5311,
+      "sha256": "f1cfa599c8a0bb99d582fd27363d6c2a2de658b2c6868189a3b3ae2cc4036fea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/dependencies.json",
+      "bytes": 1257,
+      "sha256": "4aac810b29ed424d5f748a0b7e45b3b836f64e0a5d32d9e28e100de6c139631e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.json",
+      "bytes": 1404,
+      "sha256": "94a003a7f433aedecfe1255cb1ea8bb51d632f63771feb01c97cf51060e631f8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stdout.bin",
+      "bytes": 6366,
+      "sha256": "7552e514380fdf68ffc632257842d4c56668f7442d2b33e1074848a4225433de"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/interface-before-replay.md",
+      "bytes": 1215,
+      "sha256": "440c452c0db7211200cf485b4fff7aed043d4bea62e4f39f524355e80b75ec1c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/reference-identities.json",
+      "bytes": 5985,
+      "sha256": "7045a89f63069d0afff0aa2c0f9e92522f5b9337239d4da3c102ed062462dbe8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.json",
+      "bytes": 1391,
+      "sha256": "f81032f5c83ba42a5a476d79c4e9433aa213208268283069abd9fa4f7c179e35"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stdout.bin",
+      "bytes": 7167,
+      "sha256": "95e9683d8d3aaffa7f97bf7af2e770c9a6244d585f4b7269133876abe08ae821"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verdict.json",
+      "bytes": 1048,
+      "sha256": "1fc5fc34c2b3c8cf4333fe3bcffa97158acc0506bebbd318c30170cfd3a81377"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verify-author-packet.py",
+      "bytes": 5711,
+      "sha256": "163b7317fbdda403189f620861b3a8b8f5c2c51f0cd75eadc0b57e6888dda64b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "bytes": 16517,
+      "sha256": "a7b9cf9c9a4c2ea6a3494afdd6606671b0fc876c0e6a00b43f3b110e4cef9b8f"
+    }
+  ],
+  "excluded": [
+    "MANIFEST.json (self-reference)"
+  ]
+}

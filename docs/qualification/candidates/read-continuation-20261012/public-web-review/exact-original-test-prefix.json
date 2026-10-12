@@ -1,0 +1,6 @@
+{
+  "exactBytesRecovered": true,
+  "bytes": 14504,
+  "sha256": "3b20475d417e71646d2763c78ad406a3139675a4d75acfa7f0f613561aed96ee",
+  "inverse": "Only the two documented positive-fixture expressions reversed; appended negative test removed at its delimiter. No whitespace normalization."
+}

@@ -1,0 +1,24 @@
+{
+  "candidate": "bbc823e7c176194128901542d9c56d7c2cd3104e",
+  "checks": 30,
+  "passed": 29,
+  "failed": 1,
+  "finding": "Root-discovered output alias independently reproduced; original nested mutation control retained.",
+  "files": [
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "bytes": 12321,
+      "sha256": "3eb05f90ef8b71f9c12e0e44223a7e39cf1a0768597484851e50677fcaed7ad6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget-validation.mjs",
+      "bytes": 7112,
+      "sha256": "5d4722a7c45ea59aa78335d738db3b2c641d173537f0c9702e89cc9f5c653980"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    }
+  ]
+}

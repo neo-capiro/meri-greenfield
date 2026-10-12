@@ -1,0 +1,327 @@
+{
+  "base": "c1c9bfde7dd466a0474589a224a99b44277adbc9",
+  "source": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+  "packet": "8edcfe8673072bcc925bc332e5a584b800ca5042",
+  "head": "5cb230a80ad76f79a59ac9eac1ead1ea8fb0f289",
+  "originalCount": 6528,
+  "originalChanged": [],
+  "sourceIdentities": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+      "bytes": 14083,
+      "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "bytes": 6904,
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web.test.mjs",
+      "bytes": 14822,
+      "sha256": "deddab0e9c6e13b639e856cd8c89e53809d8c8f9267bca4d21943e66ead154f6"
+    }
+  ],
+  "authorManifestSha256": "138a3421d6cb03a8f78aec81f3e18b427ed0298f8a8a6a17c6692f47e2ccbc94",
+  "checks": [
+    {
+      "name": "All original blobs and modes unchanged",
+      "passed": true
+    },
+    {
+      "name": "Exact source and packet packages/contracts/retrieval-0.2/public-web.schema.json",
+      "passed": true
+    },
+    {
+      "name": "Exact source and packet packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "Exact source and packet packages/contracts/test/retrieval-public-web.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Schema unchanged by narrow author repair",
+      "passed": true
+    },
+    {
+      "name": "Only exact truncated-window source guard added",
+      "passed": true
+    },
+    {
+      "name": "Original test exactly recovers after two declared fixture corrections",
+      "passed": true
+    },
+    {
+      "name": "Original committed negative assertions unchanged",
+      "passed": true
+    },
+    {
+      "name": "Canonical inert JSON dependency only",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-tools.service.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/common/web-search.helpers.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/common/web-search.helpers.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/common/web-search.helpers.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/common/web-search.helpers.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/hardenedWebTransport.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/hardenedWebTransport.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/hardenedWebTransport.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/meri-web-pdf-worker.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/meri-web-pdf-worker.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-web-pdf-worker.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-web-pdf-worker.spec.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri.controller.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/auth/roles.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/meri-tool-request-control.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference fd8765e:apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact reference 4be13b0:apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "No observed drift apps/api/src/meri/tool-service-secret.guard.ts",
+      "passed": true
+    },
+    {
+      "name": "Exact20 safe unique author manifest members",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/coordination/reports/CODEX-PUBLIC-WEB-AUTHOR-20261012.md",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/closeout.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/dependencies.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-author-test.mjs",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-readback.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/outline.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-repair.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/verification.json",
+      "passed": true
+    },
+    {
+      "name": "Author member docs/qualification/candidates/read-continuation-20261012/public-web-author/verify.py",
+      "passed": true
+    },
+    {
+      "name": "Author78-pass source evidence retained",
+      "passed": true
+    },
+    {
+      "name": "Original source check retained focused-initial",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Original test count focused-initial",
+      "passed": true
+    },
+    {
+      "name": "Original source check retained truncation-before",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Original test count truncation-before",
+      "passed": true
+    },
+    {
+      "name": "Original source check retained focused-truncation-repaired",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "Exact source raw stream docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "Original test count focused-truncation-repaired",
+      "passed": true
+    },
+    {
+      "name": "Full inventory/public/dependencies/app source unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 74,
+  "failed": 0,
+  "runtimeAccepted": false
+}

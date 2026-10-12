@@ -1,0 +1,110 @@
+{
+  "sourceCommit": "c7d2bb344d56552d271c3f8d508b99cb8e2bb970",
+  "sourceTree": "b7e8366162a549f0c4a567a1f43698bb97f9c9a8",
+  "scope": "AUTHOR_SOURCE_EVIDENCE_ONLY; independent review pending",
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-WEB-AUTHOR-20261012.md",
+      "bytes": 8960,
+      "sha256": "371323dfed3a9d7694dafa0d9f0ff138ec245a5d68f4eab855b2a264d9b20fb1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/closeout.json",
+      "bytes": 530,
+      "sha256": "da0d9c47eeb99c18ac615cbb045a725ab6f41d027c64a3eb4ff496db72e49e08"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/dependencies.json",
+      "bytes": 1254,
+      "sha256": "a988d10c3f70333ebca36a200462a6caf4ded2ef5681467df82848f26944ba91"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.json",
+      "bytes": 1295,
+      "sha256": "0caedaac113391512e23995bc75f69284c4385675dbc5c2f237290ed45acd125"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "bytes": 2322,
+      "sha256": "2497a3364d4fdd0cb5e58ec63a97f191833322ce0df74d3776df373846bf0044"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.json",
+      "bytes": 1319,
+      "sha256": "7ac15698ad20a7bf6b844f76558550426bee8edf5ddf42fcdac7b02a55299895"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "bytes": 2408,
+      "sha256": "81ede8b04fb812164698f3b431621d048a17939de1abe9d28b43798886539a45"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-author-test.mjs",
+      "bytes": 14504,
+      "sha256": "3b20475d417e71646d2763c78ad406a3139675a4d75acfa7f0f613561aed96ee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-readback.json",
+      "bytes": 375,
+      "sha256": "a6b984574a51157fcfb16abd621a4fe746c163000c8a05e6ff4a07bc3aa39058"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/outline.json",
+      "bytes": 2411,
+      "sha256": "8656f70e3f6d1ae179c2fc3f53613d6254beb13177e6a394e7c410505065ea9f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/reference-identities.json",
+      "bytes": 6508,
+      "sha256": "217b51e50b4034f86d6672f18f396640403d3d6dfaa910a486daec7660c61cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.json",
+      "bytes": 1299,
+      "sha256": "8dd35d744a8dda836591f3847c751e9651b5661d7b86ab490168c0c7c2cddf7f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "bytes": 3346,
+      "sha256": "9c5c997eb1f6121c8291fd2e5947c122da1c9f97c697064ee8d8ac5e3439b0c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-repair.json",
+      "bytes": 1175,
+      "sha256": "85bddcfaeb5924a9d4af33c3cb57a1e436a6d66b8d688d2db8de399f78f2a63e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/verification.json",
+      "bytes": 10178,
+      "sha256": "4d1fb484f96d63fb2619c4253f119befc07a82fab66d8f5a6b1420e1046d709d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/verify.py",
+      "bytes": 6206,
+      "sha256": "fee0d13607a4458b8ec89b371db519163efebde9fd28879399ed5787a6e851fa"
+    }
+  ],
+  "excluded": [
+    "manifest.json (self-reference)"
+  ]
+}

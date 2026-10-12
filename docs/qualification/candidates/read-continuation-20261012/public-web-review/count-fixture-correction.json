@@ -1,0 +1,7 @@
+{
+  "receipt": "focused-fixture-repaired.json",
+  "passed": 61,
+  "failed": 1,
+  "reason": "Positive synthetic instruction-like prose has51 UTF16 units but fixture declared49. Canonical validator correctly rejected inconsistent totalChars.",
+  "change": "Only fixture totalChars49\u219251; all assertions retained; no production change."
+}

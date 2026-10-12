@@ -1,0 +1,56 @@
+file:///workspace/meri-public-web-contracts-review-20261012/packages/contracts/test/retrieval-public-web-independent.test.mjs:48
+test('web independent: PDF total and pages are exact projection relations',()=>{assert.throws(()=>checkPage(pdf({text:'x',totalChars:2000}),{url,maxChars:500})));assert.throws(()=>checkPage(pdf({text:'x'.repeat(500),totalChars:500,truncated:true}),{url,maxChars:500})));const out=pdf();out.coverage.pages++;assert.throws(()=>checkPage(out));});
+                                                                                                                                                                ^
+
+SyntaxError: Unexpected token ')'
+    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)
+    at #translate (node:internal/modules/esm/loader:434:20)
+    at afterLoad (node:internal/modules/esm/loader:502:29)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)
+    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)
+    at afterResolve (node:internal/modules/esm/loader:607:52)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)
+    at node:internal/modules/esm/loader:632:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-public-web-independent.test.mjs (41.022028ms)
+node:internal/modules/package_json_reader:301
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'ajv' imported from /workspace/meri-public-web-contracts-review-20261012/packages/contracts/test/retrieval-public-web.test.mjs
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:859:18)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v24.19.0
+✖ packages/contracts/test/retrieval-public-web.test.mjs (41.350192ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 56.248825
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-public-web-independent.test.mjs:1:1
+✖ packages/contracts/test/retrieval-public-web-independent.test.mjs (41.022028ms)
+  'test failed'
+
+test at packages/contracts/test/retrieval-public-web.test.mjs:1:1
+✖ packages/contracts/test/retrieval-public-web.test.mjs (41.350192ms)
+  'test failed'

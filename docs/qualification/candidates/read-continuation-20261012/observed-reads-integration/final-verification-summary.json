@@ -1,0 +1,29 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "canonicalSource": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "completeTestSource": "005cb30d7e8c1be28792e4c722c62005e728862f",
+  "rootReceiptFreeze": "4c40fb4c35d716dcd1e3b09ec29647ccca5a1326",
+  "independentReview": "ab637c786bb344719bb096630314949b4b99e657",
+  "passed": {
+    "focused": 755,
+    "expanded": 2817,
+    "rootSourceAudit": 7415,
+    "familyPackets": 171,
+    "publicTests": 7,
+    "independentControls": 27,
+    "independentSourcePacketAudit": 311,
+    "independentRootReceiptAudit": 46
+  },
+  "publicGenerationAndTypes": "PASS",
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "scope": {
+    "original": 139,
+    "selected": 96,
+    "deferred": 43,
+    "mappedUnavailable": 66,
+    "pending": 30,
+    "typedUnavailable": 67
+  },
+  "historicalReceiptPreserved": "initial-verification-summary.json"
+}

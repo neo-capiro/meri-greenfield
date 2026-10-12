@@ -1,0 +1,1301 @@
+{
+  "source": "753566baf2d230ed241941dcdeca41625277cb1d",
+  "sourceTree": "660f21c0ccc165ba8741d477c6126e4e7e479be5",
+  "independentReview": "ab637c786bb344719bb096630314949b4b99e657",
+  "contentFreeze": "5a6145688baec588d1d60fab902ea8b3af600e44",
+  "base": "cff71e1ba8ca8dea8970ad0c778b580a73f84815",
+  "verdict": "ACCEPT_SOURCE",
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "excludes": [
+    "packet-manifest.json (self-reference)",
+    "later publication receipts"
+  ],
+  "members": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "bytes": 9572,
+      "sha256": "0e7b98c43609682b2065318ca55f75ad8444dae0df0cff0e7f7694585afb9dee"
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "bytes": 940,
+      "sha256": "c1b0ced669523bd7adf72219cf694e44a83b12f18f7635d3eac026858d15491b"
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "bytes": 22299,
+      "sha256": "ff966cf859854ea6a5b727a3295dd6d9a951db0c429de4eb5b665d6607e1cbae"
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "bytes": 18682,
+      "sha256": "611fd8a20699942c1293d11429df50ccbc96bbbecd07c992576ecd718e21174f"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FLORIDA-BUDGET-AUTHOR-20261012.md",
+      "bytes": 9214,
+      "sha256": "138c5f59b6d6c120a7e0f2e3b78f6303d88716b9e968cf4a6f140a66382ba030"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-FLORIDA-BUDGET-REVIEW-20261012.md",
+      "bytes": 6349,
+      "sha256": "9f4aa21194428870a70e0a89cd1620d7e5bafc44b8cb8839974f5808455f6aa1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-20261012.md",
+      "bytes": 7159,
+      "sha256": "ae4900fe98da0153ff39d038186025d1428ad7b7db543e8fb5d98e7de88ab544"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-OBSERVED-READS-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 6726,
+      "sha256": "daa8c7fece2343c9338cc2b1cdee53b70fd3c689c697f14eb9000adcafb9a695"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-WEB-AUTHOR-20261012.md",
+      "bytes": 8960,
+      "sha256": "371323dfed3a9d7694dafa0d9f0ff138ec245a5d68f4eab855b2a264d9b20fb1"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-PUBLIC-WEB-REVIEW-20261012.md",
+      "bytes": 6648,
+      "sha256": "965ed8315957ce356517b5c89a5476e4df0cf84406ec7aa8f9a2759eb535f369"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-AUTHOR-20261012.md",
+      "bytes": 5726,
+      "sha256": "9be6d2ef066583821e19eaf4e9f6946baa50da6c28f02095de74643c5b2f8266"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SAM-OPPORTUNITIES-REVIEW-20261012.md",
+      "bytes": 6652,
+      "sha256": "f8ed7973d395a14fe27bd35959864723e53a1dcf93aabfd513f60783f10448af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/audit.py",
+      "bytes": 5477,
+      "sha256": "585d12b7dd1a61efdf59c14f85c6264d5b76e294f7ac0260538d9277becc601b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/authored-whitespace-check.json",
+      "bytes": 270,
+      "sha256": "ab5f016568e9ab582415d5031a1ac9224947eaff6a82077781fb01082627a863"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.json",
+      "bytes": 1417,
+      "sha256": "fef26bf61b5cfa2f580967284c1b7342e01a56693552782a3692aa5ad9c9aa0e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/client-cutoff-before.stdout.bin",
+      "bytes": 1013,
+      "sha256": "f7e6b82902f960f14a276f7d8cda00304540b63755d3fbdcb6b74a2d4ebadbed"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/dependency-provenance.json",
+      "bytes": 305,
+      "sha256": "748fa53704ad3145bf301d3ed99185f6e2c8166bc752295d2c827beb3f4f4224"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/failure-notes.json",
+      "bytes": 3696,
+      "sha256": "f43b03e2bf6de1bf0cfd487ff5f294220de31e1ca20acfc34d90aa26e2d09f14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.json",
+      "bytes": 1364,
+      "sha256": "b9bd17f5d741d98a136c617704f89e755041ead9cc9493c47e81b29a7c26418f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-binding-repair.stdout.bin",
+      "bytes": 2584,
+      "sha256": "b4f868f0f5e47db2aaef832d94241280c1164a1f3a19302b9207d4ffc2df1d05"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.json",
+      "bytes": 1362,
+      "sha256": "b31bff44d88c9240e801feeef2615f1874317958d40e5a3eaa4be78da909c38f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-client-repair.stdout.bin",
+      "bytes": 2676,
+      "sha256": "133627d98245bae17185536255047583571084c48736b1d802bfe52c3efa6760"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.json",
+      "bytes": 1376,
+      "sha256": "834e5f26cd4e401cc155a3d884b4dbc7439a8d29863eec0be504e2b622ef3c83"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-definition-alignment.stdout.bin",
+      "bytes": 2854,
+      "sha256": "6a80b36735bc54f085fd1e85b4cdd213fb19375075df2dd3c42d70a78c910e9d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.json",
+      "bytes": 1350,
+      "sha256": "9e63933b2b5abe5a2b125281f291fb97438e93709cb591dfa6bb00d568c8d08a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-initial.stdout.bin",
+      "bytes": 4823,
+      "sha256": "d570b5f10ccafc0d2dd15bfe1b09dea1679251359e10a80cc138d1a1d1a4b2a6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.json",
+      "bytes": 1362,
+      "sha256": "a4cfb35f9e4d3096831b79d7dc73355277886b8d6f88f87ab02f1b30a8d47dee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/focused-output-repair.stdout.bin",
+      "bytes": 2764,
+      "sha256": "0d82ad115e98b019ddae805fb177db09abdf125fb66abd9b00e1cbc9d7d905ea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/manifest.json",
+      "bytes": 9005,
+      "sha256": "3b873a6273fc774ac67d83d4562159621c399a4befb79d4ef94474f921b4fc14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/outline.json",
+      "bytes": 3172,
+      "sha256": "66b6ea656aa437a022b118aa79cb23eac49ad5a21f87457038bdd68ac7f1ef14"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.json",
+      "bytes": 1422,
+      "sha256": "f637b7737aab0ac126f25309fd48ac7b71b54319cdaee3ee90aa60944d28bd4c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/output-alias-before.stdout.bin",
+      "bytes": 3072,
+      "sha256": "41fa931d567c9c99b68c7ef2baf8876ae222a9505fec841949e600e7f4172212"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/packet-audit.json",
+      "bytes": 19017,
+      "sha256": "3e4d25bec14e50881c44f681386fb337a478a57f6b742bb14219c44bbbccc996"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/reference-identities.json",
+      "bytes": 7343,
+      "sha256": "137532d53e331d852639d4c583f4194918e683c853a7b59392de2f056216a3b6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit-bbc823e.json",
+      "bytes": 11363,
+      "sha256": "853b27ffda65cb0a067d739a078835f06b05fc5c7b2f7ce5a9b3f33610cecf79"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/source-audit.json",
+      "bytes": 13141,
+      "sha256": "090fea091c04866a4978b1d9a33c19f1392aea758b938650a43c8e7d38d17760"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.json",
+      "bytes": 435,
+      "sha256": "7a0045378c27fa9039b0bab575bdcd40fcd9341aee8d98cc846ca41b624019da"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-author/whitespace-check.stdout.bin",
+      "bytes": 278,
+      "sha256": "6640705b04b991e204166a03dca97b0d61e4b2f68a78a7f5d6039ed23a14f038"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.json",
+      "bytes": 7571,
+      "sha256": "08056f19c729b52de38ab15615d471eed11f8bf2f1c5b2ab56d8d7e848ec7c2a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/audit.py",
+      "bytes": 4002,
+      "sha256": "c41f9ab5ba42f6222b4747b885b8a5537d00eb411db8071a9ff6daa2bd5298a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/criteria.md",
+      "bytes": 4056,
+      "sha256": "7981859189e62c7cdafebaf3ef1d296bace7728e50809cb3fff9d9395548c356"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/dependencies.json",
+      "bytes": 1615,
+      "sha256": "f2fbbb5f1ea6ca83aa2a56e2cef1d0e93090927da179c5daaee2aa58efcf2e08"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.json",
+      "bytes": 1384,
+      "sha256": "c5e1faba0c8e4184695d3a3f8fbcbe00c923d9ff05287f4c07ddb932657c068c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/final-focused.stdout.bin",
+      "bytes": 5162,
+      "sha256": "ecda800a240d898225894e8b8982c80179f51e155cfa1d5fe71c8408e3936ed3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.json",
+      "bytes": 1340,
+      "sha256": "e4c39b6665fd7bbecc7fbb1a9771225351e9f50e128af7d51bff0f999b5b99eb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/independent-before-repair.stdout.bin",
+      "bytes": 5422,
+      "sha256": "ed265ffdb9b2b7380e5284d73e09a6332549e03a6d6dd5ab68a137593af67924"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-control-identities.json",
+      "bytes": 959,
+      "sha256": "55460ada697acbff0a33798637d8f6c343d3088941da7a2da154f521526eebb1"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-controls.test.mjs",
+      "bytes": 12321,
+      "sha256": "3eb05f90ef8b71f9c12e0e44223a7e39cf1a0768597484851e50677fcaed7ad6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget-validation.mjs",
+      "bytes": 7112,
+      "sha256": "5d4722a7c45ea59aa78335d738db3b2c641d173537f0c9702e89cc9f5c653980"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/initial-source/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/manifest.json",
+      "bytes": 6847,
+      "sha256": "e0ea9eae506e0d30940153600ddeef299c2763df96ab330fd6b39512f5b7447b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.json",
+      "bytes": 10520,
+      "sha256": "8953aea0d9bd190604c34b4ae13c06ad333ff39259f02fd6857a708ba5fd98ab"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-audit.py",
+      "bytes": 3791,
+      "sha256": "d69ede6ebefc6d89ba28cfaadc373e230706706387797817132b531170e70d44"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.json",
+      "bytes": 1341,
+      "sha256": "9605d84c69403b8295d67e9a9fea0e1f9dd0919f0a5743825da181025502164a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/packet-verification.stdout.bin",
+      "bytes": 115,
+      "sha256": "480de2951b2443a313f9c484d618aa707c21ed918ac0d7edb335f6009b355b5b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/reference-identities.json",
+      "bytes": 8444,
+      "sha256": "e813f6100fca22ef0b4f9550b863b66f4f5401fdcf9ae32a59432f66793621b9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.json",
+      "bytes": 1371,
+      "sha256": "3a591a106cc6561d8115b8e2747985524c7d400e4a5908e351fc4281d006e1f7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-audit.stdout.bin",
+      "bytes": 154,
+      "sha256": "a3bfd04b26d89062a8e52f8aa5edb39753a2deabd675ef95ab366b0b0a33eba0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/florida-budget-review/source-findings.json",
+      "bytes": 2943,
+      "sha256": "2a709ebf6011a8535f1ff6f1b070bce7337016980304bf9fc89f8f06b329eb63"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/audit-harness-correction.json",
+      "bytes": 340,
+      "sha256": "1f3dd478716f5960604572b4b6d7757095de5e73206144da25e4d21c66464c86"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/audit.json",
+      "bytes": 58007,
+      "sha256": "e471773c9c9d19d431eddc39946742f80aa4dc78140186b41ea91c776100f242"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/audit.py",
+      "bytes": 6153,
+      "sha256": "fcd250aac5e2089fdbc0869b4753aaa40d0d25fc5455ac2145106d15a2762231"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-binding-check.mjs",
+      "bytes": 459,
+      "sha256": "e78cc55c297e2290373a782b1d2dc0206e11ac863699757942d26ba3cb7a7d4e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-bindings.json",
+      "bytes": 36915,
+      "sha256": "ef1c53925ab682904a64e74018503ddc7a7964cc4a1639183f48a6350cea2dce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-catalog.json",
+      "bytes": 230127,
+      "sha256": "b40aa7b795083ab4e4a13e7df36ea9cc7e1356c12f7fd11a57594bf2b4d5133a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-unresolved.json",
+      "bytes": 1385,
+      "sha256": "c7662bc5dfc8f81b764364a35a0b9907f02943ea1708a0473fb9b13d08372357"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-unresolved.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/baseline-unresolved.stdout.bin",
+      "bytes": 179,
+      "sha256": "b9126df29ecce8aeb122ef5db3067120f66109226b3176084d7360a0b4976ce2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/criteria.md",
+      "bytes": 2298,
+      "sha256": "91c74e04320f432bb21fa15f9f65ba1208e866473ff1e086aed9d0b1b398fc79"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/dependencies.json",
+      "bytes": 96249,
+      "sha256": "ac0d2288217e2678c5540f678c8d46cb0b7733c347b4c8445447669c165c042d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/fixture-correction.json",
+      "bytes": 423,
+      "sha256": "a03325597617edaf3a7880c915f27c84419a1309b5fc596009e9894b8f8262b3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-candidate.json",
+      "bytes": 1362,
+      "sha256": "bf9c1d856093cadc18032b95c84816dbaf4dfaf34175b8853897f3dca64f9063"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-candidate.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-candidate.stdout.bin",
+      "bytes": 4169,
+      "sha256": "e64c6e2d69ed58e7ab5a01ed9a2b9570b9c064de2942f18f40806dcdbfd3a41c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-corrected.json",
+      "bytes": 1365,
+      "sha256": "d50fb85a71d9ccafa941678aab979e54b14414281d0484dbf18db527711b6bd2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/independent-corrected.stdout.bin",
+      "bytes": 2845,
+      "sha256": "319edf4aa3ce6a24cdeb63e4a0fe3c6b20a08f7782067d300cfe0d488634cf48"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/initial-audit.py",
+      "bytes": 6145,
+      "sha256": "4362b3af7f7c2d33dc30d90d6ee484aaef8718564f5b088fdac2cbbda1474f98"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/initial-controls.test.mjs",
+      "bytes": 13887,
+      "sha256": "8ac228b9433f0daf0a4e93d9db3b30977dcb964ac115d693299242495d4f5d49"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/initial-receipt-audit.json",
+      "bytes": 5595,
+      "sha256": "b35be6e673334f15da1bede5b8cdae790e50577a63877e81645fd7a83135380c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/initial-receipt-audit.py",
+      "bytes": 3786,
+      "sha256": "fd921fe1e782da9d268e74d4f78c7017880572bbedcfc69762dcaf3da11502de"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/manifest.json",
+      "bytes": 10484,
+      "sha256": "c4291752cf084b87e848acbd1e8a45864387cb2c50986bfb00904b700a61fd09"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-audit.json",
+      "bytes": 5860,
+      "sha256": "4d1669a5a6c1e90646041d8daa9abd274d176cbe136a5f9923a54260ad725ced"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-audit.py",
+      "bytes": 3823,
+      "sha256": "78b90a7588d0b1fc9e006424a584569bc9d7bda7b41432617b098053d8c2456a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-harness-correction.json",
+      "bytes": 341,
+      "sha256": "2c74ef49c2972c85a2529cd223032bdbfe49b2647cb1a2a7bbb01b124cda313a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification-corrected.json",
+      "bytes": 1399,
+      "sha256": "765e85676b81054c15b8bd8eaa78135b2b76e8d36266fd9d744604d7d1826d87"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification-corrected.stdout.bin",
+      "bytes": 84,
+      "sha256": "12568526cea32defb6daff4eb6f9588b1c291852f0d7117b5a2d3681539cb21f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification.json",
+      "bytes": 1379,
+      "sha256": "ef095381c23839f61c9dd6a29d73604db39938893a0e1999e617ee5cf22a26ba"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/receipt-verification.stdout.bin",
+      "bytes": 84,
+      "sha256": "875911c93f4e3b4b584b4b70939ae31cf2fd807ea397562aad7084774ac83845"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit-corrected.json",
+      "bytes": 1424,
+      "sha256": "2c390055db618952092f62b4d4d160f0004a8b06461d7a51124645b4f743a1d4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit-corrected.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit-corrected.stdout.bin",
+      "bytes": 136,
+      "sha256": "92dbc0ac18b978c2236f9a091b6dd131bdfef8cec3d38e5bf5794f0f93881292"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit.json",
+      "bytes": 1404,
+      "sha256": "5a9a3910290686590334e4a72c1b897cc0398ed92b2384dfa60c72d23a72c2df"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit.stderr.bin",
+      "bytes": 365,
+      "sha256": "2c3f6dd88d0b160d0331a3536aa70e2074283228df1e6decb8bd55d26afc7862"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/source-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/accepted-source-files.json",
+      "bytes": 2676,
+      "sha256": "89c4a39562d7947720ff20f460013cdca4d7bc42e7449e37fb377afb7786484d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/audit-results.json",
+      "bytes": 846921,
+      "sha256": "052e84787eaa8c50c8f525e6ffd66be42258ef940ef1962514345988f9dd3622"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/audit.py",
+      "bytes": 6626,
+      "sha256": "8dcdf1331cb9193bfcc948447c36918b116b77fa9e24618e305c1e32104adbac"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/candidate-freezes.json",
+      "bytes": 1381,
+      "sha256": "aa8c4c3d87a23eb383c13a30e4ffba873e399891f4d4bd5c31f4fdc4486c1e5c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/capability-ledger.json",
+      "bytes": 47834,
+      "sha256": "30a123e1fae9b005c0ab7910e61771ce4225509ea5376af38bf3958e65803877"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "3b1da5158d685ec7b700d30b7ddf8eac4a9e2a85771df6b2fedfcc351d52fbb9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/compose.py",
+      "bytes": 8181,
+      "sha256": "04aafd0807910a8c49007708435725546a0463029cecc1dd4d4f2bed5c8373a6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/dependencies.json",
+      "bytes": 1132,
+      "sha256": "efd2333d15202ba4809d02ff18fdbb2321244d1bf2d5dcf231a5334f5f94fbca"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/expanded.json",
+      "bytes": 8265,
+      "sha256": "32284753760f2425b048b93f8a7f43b75491c3dfcc7a418be3b6928e3af5a0fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/expanded.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/expanded.stdout.bin",
+      "bytes": 259973,
+      "sha256": "f31e8c85ba8921a6b0d70e9a163fcf747a15a1c99d25ff06bd007502f10dc33d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/family-packet-integrity.json",
+      "bytes": 2281,
+      "sha256": "3bc468acdcdc86b3260141d69766c2871c82f158ffbeddf5f71b3df50a6ec2af"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/family-packets.json",
+      "bytes": 1348,
+      "sha256": "6ab6f02fcce69f4e1d31a06f1a31bb0e397eb849cfbdcb8b880c527b9ec883cb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/family-packets.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/family-packets.stdout.bin",
+      "bytes": 1991,
+      "sha256": "19470582779d7d7f51ad9935ed5606f5610400f7363849dd6b3beb0fef025b06"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/final-verification-summary.json",
+      "bytes": 863,
+      "sha256": "8900a3d34fa8d701f51a7da6bb083548bc5744d332efa6d3197463cde82294e3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/focused.json",
+      "bytes": 2875,
+      "sha256": "79e158f38f2cab4a7fcaac88729c3564360af189d96da565b3000bc7eda6af41"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/focused.stdout.bin",
+      "bytes": 72074,
+      "sha256": "af95a3eea4cf017b957390568c0d22e4de2e2255fef913fc2a27afb505912ed0"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/initial-verification-summary.json",
+      "bytes": 644,
+      "sha256": "8421c6224ee94b616d94f7e6d5febb57e068a200987f535933d9ae0072138516"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/preserved-family-branch-publication.json",
+      "bytes": 1921,
+      "sha256": "afd7a63472ffb0c96aca8811f63d05c37c4a73cc677e1caa6b270e0f981cbb6e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/public-contracts.json",
+      "bytes": 1459,
+      "sha256": "a81834605e11b64b879bd9be04005509f5fc1e1a293b4efc725d5320219ed572"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/public-contracts.stderr.bin",
+      "bytes": 832,
+      "sha256": "a5bed74e8271b4bed502d2d779b1766e28a92b798d5f5560230b37ebdcc9e5a2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/public-contracts.stdout.bin",
+      "bytes": 1945,
+      "sha256": "2ffbbd3502a6ac0a6a770ed5a02860c81e4cfcd464d1f0d8715fa3c33ff473ac"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/source-audit.json",
+      "bytes": 1329,
+      "sha256": "57407ea300018838a68463e384d094cc1c8cbdedf0d0600aa9dd3ad4c2effb1e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/source-audit.stdout.bin",
+      "bytes": 1589,
+      "sha256": "c21aba590afea48362fac278a6f365325c760f2987b7bc79e26f4bd6657a9b42"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/test-expectation-updates.json",
+      "bytes": 19309,
+      "sha256": "e1d58545060caee26a1c546be9e1731a1b42faa91d5ca982addd2fb59b5ce782"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/update-test-expectations.py",
+      "bytes": 3270,
+      "sha256": "05a99ae118e5eeb8f16cf74562a97a3787c35b053ff53c7b6643c689bce6c02b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/observed-reads-integration/verify-family-packets.py",
+      "bytes": 2452,
+      "sha256": "cc34e0f6a784a5e1918680f3037b8c6b45f19a321fce17d7dd6edfbfd22315cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/closeout.json",
+      "bytes": 530,
+      "sha256": "da0d9c47eeb99c18ac615cbb045a725ab6f41d027c64a3eb4ff496db72e49e08"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/dependencies.json",
+      "bytes": 1254,
+      "sha256": "a988d10c3f70333ebca36a200462a6caf4ded2ef5681467df82848f26944ba91"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.json",
+      "bytes": 1295,
+      "sha256": "0caedaac113391512e23995bc75f69284c4385675dbc5c2f237290ed45acd125"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-initial.stdout.bin",
+      "bytes": 2322,
+      "sha256": "2497a3364d4fdd0cb5e58ec63a97f191833322ce0df74d3776df373846bf0044"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.json",
+      "bytes": 1319,
+      "sha256": "7ac15698ad20a7bf6b844f76558550426bee8edf5ddf42fcdac7b02a55299895"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/focused-truncation-repaired.stdout.bin",
+      "bytes": 2408,
+      "sha256": "81ede8b04fb812164698f3b431621d048a17939de1abe9d28b43798886539a45"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-author-test.mjs",
+      "bytes": 14504,
+      "sha256": "3b20475d417e71646d2763c78ad406a3139675a4d75acfa7f0f613561aed96ee"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/initial-readback.json",
+      "bytes": 375,
+      "sha256": "a6b984574a51157fcfb16abd621a4fe746c163000c8a05e6ff4a07bc3aa39058"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/manifest.json",
+      "bytes": 4883,
+      "sha256": "138a3421d6cb03a8f78aec81f3e18b427ed0298f8a8a6a17c6692f47e2ccbc94"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/outline.json",
+      "bytes": 2411,
+      "sha256": "8656f70e3f6d1ae179c2fc3f53613d6254beb13177e6a394e7c410505065ea9f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/reference-identities.json",
+      "bytes": 6508,
+      "sha256": "217b51e50b4034f86d6672f18f396640403d3d6dfaa910a486daec7660c61cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.json",
+      "bytes": 1299,
+      "sha256": "8dd35d744a8dda836591f3847c751e9651b5661d7b86ab490168c0c7c2cddf7f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-before.stdout.bin",
+      "bytes": 3346,
+      "sha256": "9c5c997eb1f6121c8291fd2e5947c122da1c9f97c697064ee8d8ac5e3439b0c5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/truncation-repair.json",
+      "bytes": 1175,
+      "sha256": "85bddcfaeb5924a9d4af33c3cb57a1e436a6d66b8d688d2db8de399f78f2a63e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/verification.json",
+      "bytes": 10178,
+      "sha256": "4d1fb484f96d63fb2619c4253f119befc07a82fab66d8f5a6b1420e1046d709d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-author/verify.py",
+      "bytes": 6206,
+      "sha256": "fee0d13607a4458b8ec89b371db519163efebde9fd28879399ed5787a6e851fa"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.json",
+      "bytes": 1320,
+      "sha256": "2fca7f9d5a62ed0e4b50783e13d39eab266393b3aece64d6098b9b378798567d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.py",
+      "bytes": 5160,
+      "sha256": "d83bfddced093a49118d59dcccf9811da94e7e95dc357ff54eefcedc0f1df777"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/audit-final.stdout.bin",
+      "bytes": 10689,
+      "sha256": "b044bc12d106abf9d79a78bf69c0804b5209660ab6963908ae42f416a3e0832b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/count-fixture-correction.json",
+      "bytes": 340,
+      "sha256": "99de145a3246e6262be3f157c5758a6cb4cd0f13d5d011edc9b97d50a3e69de2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/criteria.json",
+      "bytes": 2351,
+      "sha256": "dbb9d4db25142a22cd1e0c1bc2682a284a00cd45536e2830ec8060088a838fcd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/dependency-and-fixture-correction.json",
+      "bytes": 1563,
+      "sha256": "0bce66c230d4e4b266bc7340a4f3830cd32eb452815ee85bf25560ff4f70034d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/exact-original-test-prefix.json",
+      "bytes": 289,
+      "sha256": "6a07fecf85675d8d05bc12a6c9d5baab905235c21360407af99a97ee96fabcce"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.json",
+      "bytes": 1371,
+      "sha256": "ad9f37b8b7a3e296cc4a940fd92040be7ad457088b2a06414947cca6e1161263"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-final.stdout.bin",
+      "bytes": 5573,
+      "sha256": "4585967213f4f16cb71ab9d8b7a627dba7592972ca21dccc2a2b4e9a9b79d38d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.json",
+      "bytes": 1371,
+      "sha256": "4904c44c150513c71d38f4e9092e13dee78fbb757bb12aa6d8b70f819b7d44bf"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-first.stdout.bin",
+      "bytes": 3088,
+      "sha256": "bb7257abf3513e8fe58fefa8faa149cf43c1ea92b0bc52a19a5c859536680716"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.json",
+      "bytes": 1393,
+      "sha256": "bf496902aca8ee775a4597c4e459e20b8fd29e53c21204f602eca0f20d3ee885"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/focused-fixture-repaired.stdout.bin",
+      "bytes": 6905,
+      "sha256": "61df9a72ca74918da9d9c3533ad35f36598e84eb8d58a0ae70fe2090c883d29c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/inspection-corrections.json",
+      "bytes": 793,
+      "sha256": "a6a3eff5e14399dc7130a6a8bc4099aae82541cbdfc523d29dc0ae0285c8935a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/reference-identities.json",
+      "bytes": 6515,
+      "sha256": "e58ee55b0c9b3aff621784e1d32c885dac8ddf9c6767c99d9ec2fc85ffe1920a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/review-manifest.json",
+      "bytes": 5531,
+      "sha256": "b26a47773942b35a76420a495ca7f64b5436a04055780a7258ea63145bb151f8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/public-web-review/source-findings.json",
+      "bytes": 3948,
+      "sha256": "bfb5806b85aa681b2fc8b930b874998d8bb14a476c29acc106da1355593e3b98"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/audit-packet.py",
+      "bytes": 6165,
+      "sha256": "29ac0b732de5f2d760e10bee6e5011dadba32812a32a092aedecfb27e30554bc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/cleanup.json",
+      "bytes": 189,
+      "sha256": "88e50cbe947a00505c853752a8eea003e4fcd3be4f182351f94ee54b68a21cbb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.json",
+      "bytes": 1421,
+      "sha256": "b553b5f6bb222989cfff95a87c8a18b2ee5d2df79559c9880e44b011c224b783"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused-notes-repaired.stdout.bin",
+      "bytes": 2850,
+      "sha256": "207ff92a7ec2fb82829eb5d4ad6c02753fb5211bc56dc497538e748045adf50f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.json",
+      "bytes": 1297,
+      "sha256": "16c45c36806e6ddfc2066e942e9542439074ffac08427ea2aebbf92462459133"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/focused.stdout.bin",
+      "bytes": 2086,
+      "sha256": "12073f15d5d6c8e826eefae4b5d3fbbaf0e64eea7e54cf1225b24bbc51ef756d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/health-metadata.jsonl",
+      "bytes": 1080,
+      "sha256": "1b70f4ac9daa2ea1b78c967177082a0c443b17efdd75c3fc4048caca744211c8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/inspect-source.cjs",
+      "bytes": 2459,
+      "sha256": "2d726f45c1badb4ca74cfd65e3e22c8cc9afd40988ac6eee9335c069ad83d5a4"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/manifest.json",
+      "bytes": 6447,
+      "sha256": "6c68639043c921db30280a74ec81cc5734a43b1004ae9943d03cfcddf1a60de6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.json",
+      "bytes": 1336,
+      "sha256": "aa85032d9f84c36e1eaaac0d040363c800b23b238ded3cff4b5df9dc3bee3798"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/metadata-audit.stdout.bin",
+      "bytes": 7746,
+      "sha256": "d3c41a7695625fa9daaa011b02ac37372675ca2ea7527e366ff670d78ee7de4d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/note-identities.json",
+      "bytes": 455,
+      "sha256": "06b9a5e4020a86ebf45ccfb88c8bb8ec7807ca045731aca36e9ed41360cb7824"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/outline.md",
+      "bytes": 2896,
+      "sha256": "b68761f2de50d031c0e5b9cdab3e8d13212ec58ca98991470310a31a9b9a2110"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/read-metadata.jsonl",
+      "bytes": 3283,
+      "sha256": "13a94f378cb7fa324748e76693f9be3cb6a9d8e36962d59eb001a471350b5acb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/reference-identities.json",
+      "bytes": 5989,
+      "sha256": "b95121ad3e77b53d44d84684ff287397d07ff148b1aa0b11af32d6fd6d886638"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/selected-model-fields.json",
+      "bytes": 1969,
+      "sha256": "61ccef464a79182377c6962f617d47774b4cb98e2f838fce0c45dcd984502450"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verification.json",
+      "bytes": 5252,
+      "sha256": "81ed9473f0c6ae19e583701c38b60e323cb3b8bc4bb7446dd50e22276ff705a5"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/verify-manifest.py",
+      "bytes": 1447,
+      "sha256": "0c5120396547ebe36b0a050b29553f4fbb89bae46f4628ce03922d73807d6446"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-author/wrapper-metadata.jsonl",
+      "bytes": 4167,
+      "sha256": "250f3038953c8b5e7f1bcf0250e4130c3a98ec542c7848e1245c888104d0f732"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/MANIFEST.json",
+      "bytes": 4851,
+      "sha256": "f7e1f0596b19b2d0c8ed018c2f19190345f2e1f5fcc3b08f061005a4d752c5c3"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/audit.py",
+      "bytes": 3904,
+      "sha256": "040cd5d382e9ec1122c2ead18ee79ddd1e30a0f8b5ba096bd18ca6c6a2483646"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.json",
+      "bytes": 1373,
+      "sha256": "3dcd58cddd87609df665b52c2562e1526520c3f9324f03657c31ef1f738e3bcd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/author-packet-audit.stdout.bin",
+      "bytes": 12686,
+      "sha256": "c255fad086f1e01f9be470ffaa56ac8231d27ba1a269855e012550da460776fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/closeout.json",
+      "bytes": 569,
+      "sha256": "98cc80c836ae3b10bcab584bdaa4d10daabf7d6f577fb4a9836293b5fa39fdde"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/criteria.md",
+      "bytes": 5311,
+      "sha256": "f1cfa599c8a0bb99d582fd27363d6c2a2de658b2c6868189a3b3ae2cc4036fea"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/dependencies.json",
+      "bytes": 1257,
+      "sha256": "4aac810b29ed424d5f748a0b7e45b3b836f64e0a5d32d9e28e100de6c139631e"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.json",
+      "bytes": 1404,
+      "sha256": "94a003a7f433aedecfe1255cb1ea8bb51d632f63771feb01c97cf51060e631f8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/independent-first.stdout.bin",
+      "bytes": 6366,
+      "sha256": "7552e514380fdf68ffc632257842d4c56668f7442d2b33e1074848a4225433de"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/interface-before-replay.md",
+      "bytes": 1215,
+      "sha256": "440c452c0db7211200cf485b4fff7aed043d4bea62e4f39f524355e80b75ec1c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/reference-identities.json",
+      "bytes": 5985,
+      "sha256": "7045a89f63069d0afff0aa2c0f9e92522f5b9337239d4da3c102ed062462dbe8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.json",
+      "bytes": 1391,
+      "sha256": "f81032f5c83ba42a5a476d79c4e9433aa213208268283069abd9fa4f7c179e35"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/source-audit.stdout.bin",
+      "bytes": 7167,
+      "sha256": "95e9683d8d3aaffa7f97bf7af2e770c9a6244d585f4b7269133876abe08ae821"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verdict.json",
+      "bytes": 1048,
+      "sha256": "1fc5fc34c2b3c8cf4333fe3bcffa97158acc0506bebbd318c30170cfd3a81377"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/sam-opportunities-review/verify-author-packet.py",
+      "bytes": 5711,
+      "sha256": "163b7317fbdda403189f620861b3a8b8f5c2c51f0cd75eadc0b57e6888dda64b"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 40297,
+      "sha256": "0af30ce3b6e5b078f1ae400873131276e19e2776950dc25e7d15ef7a16155500"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog.json",
+      "bytes": 242133,
+      "sha256": "5c8a6ad710a9a48156dfabd0954d7d5c6150cd0720af014449a63d954838e218"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget-validation.mjs",
+      "bytes": 7290,
+      "sha256": "386e8ccde7b2cdbba9743e2f6d0218ff8ef3d8b54d2364b5b7d4861ae387b9eb"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/florida-budget.schema.json",
+      "bytes": 10656,
+      "sha256": "338f182a21716ec38778d8728509f87ed9fbaaf82c70d29ee7d3297e1673f8db"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web-validation.mjs",
+      "bytes": 6904,
+      "sha256": "52dbdc869bdfa02dde58aea07bdc2f4e28b8cb7a1de47a17967310641b766596"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-web.schema.json",
+      "bytes": 14083,
+      "sha256": "6371852e951a3bf5110a309173e35da4ca7cc33b38425d43a98936c8b0aac65a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities-validation.mjs",
+      "bytes": 6786,
+      "sha256": "048e15c68213ca83ad4f3ca0b42ba2dc1a9c24fd71a7c893c42cdd700c0b809a"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/sam-opportunities.schema.json",
+      "bytes": 8649,
+      "sha256": "6777e85fa0966fe62be54e7467943e5b88ccca0f5df9a8ca6a6bd5f99e598222"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 25397,
+      "sha256": "f8d15b6b431ec0581d3a2d18bdc170a1b55c32c90039ea2610ad22456de956df"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-binding.test.mjs",
+      "bytes": 8334,
+      "sha256": "9e72adaa95c005e0060de090f9922ffe55cc57d8d72551afe1f2faab076599d7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-action-item-independent.test.mjs",
+      "bytes": 10094,
+      "sha256": "ef76794af9d7ba09edb7f8d6f4d835c9e4d72b00f1b71ff845b55db1e48f2a1c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "bytes": 13615,
+      "sha256": "131d1e0c46f6ffc9cd2034478d6018fb2926c7f02089ed043ebc5c019845385e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-civic-integration-independent.test.mjs",
+      "bytes": 14112,
+      "sha256": "bb522a416c7fff228d94629d0de05022d0f8e6dbd0753adaa20698e4bb72d05c"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget-independent.test.mjs",
+      "bytes": 12326,
+      "sha256": "c65de8cb9815b1198cabf952b350333d0caccc6fa8c6f739f2b08c8d5bbb83db"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-florida-budget.test.mjs",
+      "bytes": 18156,
+      "sha256": "fce74bf830de78ea0e42e76aa2e090b8060742c4eb9d63c59dda5fe208ed086e"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-mail.test.mjs",
+      "bytes": 30019,
+      "sha256": "6d2321887da012a0186e369ead82e583f212447e3560d844611dab3cf4a8f2e7"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "bytes": 14994,
+      "sha256": "c91a08dda0e815c5b9705b152d72105becdcc69b62fc0b47ead90225369e4f46"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-bindings.test.mjs",
+      "bytes": 9308,
+      "sha256": "d7d782996aa94ed195d24b4678dacc22d5761b2ada6aa6c79c5873ece42099c3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-next-integration-independent.test.mjs",
+      "bytes": 16273,
+      "sha256": "3fdfbc8d8f92802ad7c2cc6146bbbcd253f655b58f2eeb3fe5d3a13782b0a48b"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-observed-integration-independent.test.mjs",
+      "bytes": 13911,
+      "sha256": "957defe028c5a18b284dbd9bc98d40fbe5c4d6e392529f247f357adcb7ab5fb3"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web-independent.test.mjs",
+      "bytes": 14465,
+      "sha256": "7e2755715132e90e245b692900403632b439edf787b99dbdefd6f6552a65b791"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-web.test.mjs",
+      "bytes": 14822,
+      "sha256": "deddab0e9c6e13b639e856cd8c89e53809d8c8f9267bca4d21943e66ead154f6"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-bindings.test.mjs",
+      "bytes": 9365,
+      "sha256": "3e086ed7efab5d7b439ed0c1c8dc373172f33ee52336b5dc106ab814bca27e88"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-read-continuation-independent.test.mjs",
+      "bytes": 23916,
+      "sha256": "ab94f35cfaf86ff02f34348126726b8d2cce57ccd594a16a7dc050a6d2ceb077"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "bytes": 15732,
+      "sha256": "493593d57ea65dd710455fbf67f78eeeb86203579cd9e62039de4985d0476e7d"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities-independent.test.mjs",
+      "bytes": 16517,
+      "sha256": "a7b9cf9c9a4c2ea6a3494afdd6606671b0fc876c0e6a00b43f3b110e4cef9b8f"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-sam-opportunities.test.mjs",
+      "bytes": 13461,
+      "sha256": "5d64926f9474ebcc7ab19610acbdc75a52056301ab7ff1e21467db9e156363b5"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "bytes": 8116,
+      "sha256": "33a9423c8f820ba65f53f2d6576b6b2499a815cb7fcfefe190953438c4c5b4d8"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "bytes": 8995,
+      "sha256": "4b98394068c8f7dbb1a0ff10edc711ccfa870014ec894be51ba2949e5a49d197"
+    }
+  ]
+}
