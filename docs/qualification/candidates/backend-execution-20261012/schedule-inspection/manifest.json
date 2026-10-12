@@ -1,0 +1,96 @@
+{
+  "sourceFreeze": "87ee0f35edb510c981eb816fcccb70d27d2de875",
+  "scope": "SOURCE_ONLY_NO_SERVICE",
+  "members": [
+    {
+      "path": "apps/control/schedules/temporal-inspection.mjs",
+      "bytes": 4033,
+      "sha256": "18645ac87bd35cc63f800e23609987efd18481f502045fc7d1bf6ad1b2febb30"
+    },
+    {
+      "path": "apps/control/test/temporal-inspection.test.mjs",
+      "bytes": 10789,
+      "sha256": "d02237d84e105369b8c3e69b36a6038bdb7a6436b4137df33d366fe8fd224d93"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "bytes": 5435,
+      "sha256": "d944eafc38e68a8258d324cc64f6d2fb4913a4e33f3e4057410392d4806e2b89"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-SCHEDULE-INSPECTION-20261012.md",
+      "bytes": 4398,
+      "sha256": "9e20fd00211500e2536c9849fbd97a46187e784badd573e68850c3e190b3eacd"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/capture-reaped.py",
+      "bytes": 3388,
+      "sha256": "e0eda6c30be9041846623c04ea10e0392677bfa0fd9c340b19559f35c69de8e3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.json",
+      "bytes": 1342,
+      "sha256": "6e99bc1a66354e6bf422ef9541a54aa6fe22018b0be458d15b24a91b98412826"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-exact.stdout.bin",
+      "bytes": 1913,
+      "sha256": "3b0633e7f34dbfe407b97ee08e0f1e0e8d60bad9d56bfb58e09d38012435c3fc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.json",
+      "bytes": 1349,
+      "sha256": "ea11437a3b47f29cddb5a438d38237849710cc9e02722d3ef7ab57a770e31186"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.patch",
+      "bytes": 28258,
+      "sha256": "a68ce4f6e05d2c2857e5a32bbd63ec5bb3c79591902e5a174f5455752a463a43"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/inspection-initial.stdout.bin",
+      "bytes": 1914,
+      "sha256": "81e291e6ab8a9c0c64bafe676ce72e9455ae8f56cb451d0d54a077b9d4ff08ac"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/sdk-metadata.json",
+      "bytes": 2837,
+      "sha256": "800ecc20024892e3a8d20cafd66e70f61ea19222776d6a8657b768e4aae02cc4"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/setup-observations.json",
+      "bytes": 649,
+      "sha256": "a724013237a8575e9d246e18c22463da050a58874140dd81692b243355fc1c15"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/schedule-inspection/source-audit.json",
+      "bytes": 1955,
+      "sha256": "cc678ce74b3e637cdcc661c5ceac249398d6f4b0b88bb41f46fb5bbfe9cc97c9"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection-validation.mjs",
+      "bytes": 5177,
+      "sha256": "bb96d966fc4fe83efffc4cafafed26f7337c7ad74ee13ed189ac7d5462731c81"
+    },
+    {
+      "path": "packages/contracts/schedules-0.2/inspection.schema.json",
+      "bytes": 6806,
+      "sha256": "2e6a140a555984f6de88c4d1bded03bb2aebec9bd2e9bc34709130d0ee22fa85"
+    },
+    {
+      "path": "packages/runtime/operation-lifetime.mjs",
+      "bytes": 2596,
+      "sha256": "cee9966de6b7317eded1ed8a588e41a17324ac1eb98cfed70a70cf434dc0a72e"
+    }
+  ]
+}

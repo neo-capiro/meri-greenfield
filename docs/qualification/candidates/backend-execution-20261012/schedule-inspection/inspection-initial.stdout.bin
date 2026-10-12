@@ -1,0 +1,30 @@
+✔ exact schedule describe returns only bounded public fields and original run references (7.938444ms)
+✔ delegated same-tenant inspection relies on current callback, not owner equality (1.144585ms)
+✔ cancelled app projection is described and never inferred absent (1.059326ms)
+✔ request projection and caller are detached before first await (1.210635ms)
+✔ cross-tenant caller or scope refuses before authority and SDK (0.897924ms)
+✔ authority denial, substitution and expiry refuse before describe (2.258664ms)
+✔ revocation at release refuses result without retry (1.066988ms)
+✔ known authority expiry is installed in actual SDK scope (0.741377ms)
+✔ larger authority expiry cannot extend original deadline (0.824693ms)
+✔ published authority expiry bounds parked before_describe (11.011594ms)
+✔ published authority expiry bounds parked before_release (10.246922ms)
+✔ parked SDK describe observes deadline and no late result release (10.130177ms)
+✔ pre-abort invokes no authority or SDK (0.414765ms)
+✔ abort of parked read cancels scoped signal and removes owned listener (0.57082ms)
+✔ local call bound refuses invalid or more than60 second deadlines before effects (0.496138ms)
+✔ private fields are neither accessed nor projected (0.708188ms)
+✔ hostile included fields and invalid Date fail closed (1.482755ms)
+✔ changed SDK schedule identity refuses even under valid authority (0.334534ms)
+✔ each returned window is capped with exact observed omissions, recent keeps newest suffix (2.413527ms)
+✔ empty recent window is still partial history independent of action counter (0.431019ms)
+✔ SDK rejection is sanitized without evaluating hostile error code getter (0.440764ms)
+✔ request accessors and context extras are rejected without execution (0.198479ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 467.282719
