@@ -1,0 +1,11 @@
+{
+  "mergedRoot": "9fbeefcd221fbbd3b3f94004d249062709ae0880",
+  "reviewVerdictBeforeMerge": "57c896f2a041a90e4add3a542290dad26d1e09e0",
+  "conflicts": [
+    "docs/coordination/reports/CODEX-BACKEND-EXECUTION-INTEGRATION-REVIEW-20261012.md",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets.py"
+  ],
+  "reason": "Root had cherry-picked earlier versions of these newly added reviewer files. Git reported add/add rather than shared ancestry.",
+  "resolution": "Keep the exact final reviewer versions from57c896f2 for these two exclusively owned paths; all root source and tests merge unchanged.",
+  "scope": "Routine reviewer-evidence merge only; no production conflict or source repair."
+}

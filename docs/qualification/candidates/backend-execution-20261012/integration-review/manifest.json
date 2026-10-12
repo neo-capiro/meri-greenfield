@@ -1,0 +1,335 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "rootReceiptFreeze": "9fbeefcd221fbbd3b3f94004d249062709ae0880",
+  "productionSource": "ea94aff840424843b4b6efbfc21fb9d195f7ff54",
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "runtimeAccepted": false,
+  "members": [
+    {
+      "path": "packages/contracts/test/backend-execution-integration-independent.test.mjs",
+      "bytes": 13353,
+      "sha256": "2929e27e5fe78d3d2989b3d1770dd253f94b4d9659cce26e5078043cdea6fbc8"
+    },
+    {
+      "path": "docs/coordination/tasks/CODEX-BACKEND-EXECUTION-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 1032,
+      "sha256": "25f297f3598713fddc83fec55b6ef2591c1ce1f61340a42d14184e699ceef8f5"
+    },
+    {
+      "path": "docs/coordination/reports/CODEX-BACKEND-EXECUTION-INTEGRATION-REVIEW-20261012.md",
+      "bytes": 8539,
+      "sha256": "5739dbadbef6d764fd7e09f91a157f0bc225d250172d47a7c653dd58a7bdfb04"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/.gitattributes",
+      "bytes": 50,
+      "sha256": "1bee6826ab8565b1a50079d470700a548e73e2363ea12450cf37ea13454b9eba"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-final-receipts.py",
+      "bytes": 4248,
+      "sha256": "eabf559b6bde2448d630e2c8574db6205486eeb84786fcebda700996739bf67c"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets-before-manifest-shape.py",
+      "bytes": 4330,
+      "sha256": "ea7a50c3facf64a710ee7ea268d9325f939295bb31cea0e8489dac1ffdd07455"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets-before-schedule-packet-pin.py",
+      "bytes": 4644,
+      "sha256": "2e298a4292635efc8f8914c609577d1382c1521aa246f4693d7ce7328655ea7e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets-nineteen.py",
+      "bytes": 4716,
+      "sha256": "2e08903067db37cdd2bb4d5fac2d97e6d98227d9573a512fb9cb73f12e744fca"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-packets.py",
+      "bytes": 5218,
+      "sha256": "8ab15f233a5dc06d8fc8d4a888255753e0cec6938fc736a28409c367bcc0cebe"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-preservation-nineteen.py",
+      "bytes": 5427,
+      "sha256": "7026cbce372e31c5844d8dc0bf69f1bd70e8063199b2c44f6a116dd8eefef9b5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-preservation.py",
+      "bytes": 5533,
+      "sha256": "df7c8368f12c856ef3ab6403ae99ae9cff7d74c51004b142cb78ea73dcb6af6d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-source.mjs",
+      "bytes": 8438,
+      "sha256": "6197e5bf5bb5fee9c0384680a529005c7b45f26d292dbcd502dba8a31eefaf4d"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/baseline-catalog.json",
+      "bytes": 253882,
+      "sha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/baseline-identities.json",
+      "bytes": 1396,
+      "sha256": "2e3b21ad0acc391818bba6f1a4468c6c5184b6eb3166bdf2f922bcb7f5b34f35"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/controls-before-monday-fixture-fix.mjs",
+      "bytes": 13265,
+      "sha256": "a4cbdab95d487846ebdd42119e4dee1b0bb1d34d7ed97b702b26bb0624f044c1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.json",
+      "bytes": 1356,
+      "sha256": "42c05015b0eef65f92765b13233396cb4f0cac17296f4696528630a4e9ad2570"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.stdout.bin",
+      "bytes": 2722,
+      "sha256": "9de73dc97c178535ba3adc87ad875bda37d886fd14428ff3fbe468b279a97fff"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-family-packet-audit.json",
+      "bytes": 1446,
+      "sha256": "08e325f5fb384e7628cae74a03f975686039fe36eafb1f0776efc828c90b2b1f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-family-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-family-packet-audit.stdout.bin",
+      "bytes": 4855,
+      "sha256": "b75981b689651f655bc6c9bd4f06e9fc4d784b929410c8ec7ad3e6bd9de94f1e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/criteria.json",
+      "bytes": 4168,
+      "sha256": "b0031a03681b7b899067b71783f7754db9f027fd54dd65a22276acae6e27e71e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/dependencies.json",
+      "bytes": 1171,
+      "sha256": "c06142e9460cc6a2b3de034561ea05e3dc06f19992da28de784b885377a14fa5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/family-packet-audit.json",
+      "bytes": 1394,
+      "sha256": "d210327cb31670b035ae54830f88ea69a272b0db42a86837bb4c583fa2f1231e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/family-packet-audit.stderr.bin",
+      "bytes": 309,
+      "sha256": "26596cf231dc630cbddc14ca4e1e4aeb4bb0b0f208ce85e6e95fa0d2727c8563"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/family-packet-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-family-packet-audit.json",
+      "bytes": 1439,
+      "sha256": "f6b5a7da5463aa6044ba38221295b8ffc1be700329f02a559971623928559952"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-family-packet-audit.stderr.bin",
+      "bytes": 1373,
+      "sha256": "0daccba0e38942e9c0f11b7a57878b2bb008dbedeaafdc04e084bedc9925b937"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-family-packet-audit.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-integration-merge.json",
+      "bytes": 734,
+      "sha256": "b40ed3c108c19ae2d9179e262e27370541b3370b25a5e3e8d1ff4b5d0af4f6db"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-owned-cleanup.json",
+      "bytes": 3332,
+      "sha256": "b39703cb4189ce2ffb469cf0c6e3ee5d5d4a77679ca374293358091ee0805610"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.json",
+      "bytes": 1514,
+      "sha256": "e3d844b532631351ffa357ebcbe7eeaee74ca3c13c5aac3fb9dd14307d8c1d2f"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.stdout.bin",
+      "bytes": 8772,
+      "sha256": "ad9d6617eb44a533c5aa3d84bfc8811517a76201a29228b1c416462449f047a5"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/first-canonical-freeze.json",
+      "bytes": 1348,
+      "sha256": "b3ea569c0722d5fca0f612b01314fe5fcae7be25669072101bc151796ca29b16"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/first-canonical-freeze.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/first-canonical-freeze.stdout.bin",
+      "bytes": 4155,
+      "sha256": "7307c3ac6fc828fd29fae603b3113115c003a06bac69bc633c1819085a0ccbe9"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/monday-fixture-correction.json",
+      "bytes": 594,
+      "sha256": "3d2f490b30edb9f9a6e4c48abb9ea1253dc0088a34e9f4953bf681b362986fb2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/packet-checker-corrections.json",
+      "bytes": 1156,
+      "sha256": "dee25cacd54cf713aef9800a4f65b619b27da13e5b7a1b1b02c4230cd2ce130a"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema-repro.mjs",
+      "bytes": 902,
+      "sha256": "234375541d3aba120c9a043fb10b3d8ee6f593106629fb62327d8f7cc4afac05"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.json",
+      "bytes": 1373,
+      "sha256": "95ad362619c28cdd54daffac347ff0bf14b4bd1b3c053cd8d43bd52af65d88d1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.stdout.bin",
+      "bytes": 373,
+      "sha256": "ed45c5fd8eaf09c9e85121dc0bad734c44369c6f9ce510613fedc13699e65262"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-integration-baseline.json",
+      "bytes": 1357,
+      "sha256": "8fff820fdd2b1dd28695e7e1272907c8427b1a7c0bcfcac7c44e351024c96ce3"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-integration-baseline.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-integration-baseline.stdout.bin",
+      "bytes": 31418,
+      "sha256": "1d9ff5d145d281dbdb049323724e139e2f5c9d56d38cc5505bc733bed12c503b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/read-inspection-correction.json",
+      "bytes": 421,
+      "sha256": "7d9ca4b19952200971f7f9570b10f9e4fa2e41f7c3609e16fcfdbe0bcdecce12"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.json",
+      "bytes": 1674,
+      "sha256": "f1e9bfbace20cd38535ce36a527cf7867a71fa08ea497dcbf1f5f68249fc6c39"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/source-audit.json",
+      "bytes": 1395,
+      "sha256": "399268c02a6dde59fdf879bc6f1ce52887f0670f0e23df4133cbec1a787caa36"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/source-audit.stdout.bin",
+      "bytes": 652,
+      "sha256": "3412274796e5cc7fa346d4609eb0214c844197cc92c93c31dda7c9d5e834c0ee"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/sparse-setup-correction.json",
+      "bytes": 442,
+      "sha256": "f64a8c46f31f3aa742ebeaed93dd5ea67e84b15abab8727aa4e04062068e83ac"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.json",
+      "bytes": 1430,
+      "sha256": "d7ef1c671d2c00bd63b5a071f28f11cbcc95cc4dee842bd8f1124b20600453c2"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.stdout.bin",
+      "bytes": 2229,
+      "sha256": "7205da97cf144b783351d49688c83ff6fa4b30e60fe323ce72da6be6f6e808f1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-expectation-criterion.json",
+      "bytes": 863,
+      "sha256": "1cf4b1bfa70717ccdedc209b9a195d413429d33c7fd3d19ecfd7b4a478346b39"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-family-packet-audit.json",
+      "bytes": 1447,
+      "sha256": "049544eb9857b4b45267be3680b1e02a51ff209acb24713885efbe1fd5fc298e"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-family-packet-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-family-packet-audit.stdout.bin",
+      "bytes": 5157,
+      "sha256": "a58329ced09e660e4da78e45cc57f2d60cad47a38d1526592bc77d4645f1452b"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-test-inverse-audit.json",
+      "bytes": 1508,
+      "sha256": "cf5affb08cee60c3c9f4127f62c70c5ac80157ef3e873e69e8e16ecfcdb9c570"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-test-inverse-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-test-inverse-audit.stdout.bin",
+      "bytes": 2297,
+      "sha256": "6ccecccecf29ce93270d37d71f9fed9eadc5f45d327534b30d66e0ac2b914565"
+    }
+  ],
+  "selfExcluded": true
+}

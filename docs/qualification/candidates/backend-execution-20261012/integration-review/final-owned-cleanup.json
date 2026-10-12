@@ -1,0 +1,99 @@
+{
+  "scope": "OWNED_REVIEW_PROCESS_GROUPS_ONLY_NO_NATIVE_TEARDOWN_CLAIM",
+  "sourceAndTestDiffFromFinalRootBytes": 0,
+  "groups": [
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-canonical-freeze.json",
+      "pidAndPgid": 333583,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/corrected-family-packet-audit.json",
+      "pidAndPgid": 341472,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/family-packet-audit.json",
+      "pidAndPgid": 338191,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-family-packet-audit.json",
+      "pidAndPgid": 339813,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/final-root-receipt-audit.json",
+      "pidAndPgid": 350135,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/first-canonical-freeze.json",
+      "pidAndPgid": 333182,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-florida-raw-schema.json",
+      "pidAndPgid": 324385,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/prior-integration-baseline.json",
+      "pidAndPgid": 331852,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 1
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/review-whitespace.json",
+      "pidAndPgid": 344487,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/source-audit.json",
+      "pidAndPgid": 336855,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.json",
+      "pidAndPgid": 337603,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-family-packet-audit.json",
+      "pidAndPgid": 347724,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    },
+    {
+      "receipt": "docs/qualification/candidates/backend-execution-20261012/integration-review/twentieth-test-inverse-audit.json",
+      "pidAndPgid": 345443,
+      "recordedAbsent": true,
+      "freshAbsent": true,
+      "exitCode": 0
+    }
+  ],
+  "count": 13,
+  "allAbsent": true
+}
