@@ -38,7 +38,7 @@ for r in references:
  for v in r['versions']:
   raw=subprocess.check_output(['git','-C','/workspace/capirov2','show',v['commit']+':'+r['path']])
   check('private_reference_identity:'+v['commit'][:8]+':'+r['path'],len(raw)==v['bytes'] and hashlib.sha256(raw).hexdigest()==v['sha256'])
-for label in ['independent-first','independent-corrected','compatibility-negative','independent-repaired']:
+for label in ['independent-first','independent-corrected','compatibility-negative','repaired-unchanged','independent-repaired']:
  p=evidence/(label+'.json')
  if not p.exists():continue
  receipt=json.loads(p.read_text());check('owned_group_absent:'+label,receipt['ownedProcessGroupAbsent'] and not receipt['timedOut'] and not receipt['ownedGroupKillRequired'])
