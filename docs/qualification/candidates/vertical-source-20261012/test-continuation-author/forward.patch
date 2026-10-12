@@ -1,0 +1,485 @@
+diff --git a/packages/contracts/test/backend-execution-connected.test.mjs b/packages/contracts/test/backend-execution-connected.test.mjs
+index 22bb2c28..de42b309 100644
+--- a/packages/contracts/test/backend-execution-connected.test.mjs
++++ b/packages/contracts/test/backend-execution-connected.test.mjs
+@@ -1,3 +1,4 @@
++import {schemaRelativePath} from './vertical-source-expectations.mjs';
+ // Canonical composition controls. Synthetic projected data; no source or service IO.
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -13,7 +14,7 @@ import {addedOperations,fullActionReference} from './backend-execution-expectati
+ 
+ const T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',V='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+ const copy=structuredClone,sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+-const load=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
++const load=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
+ const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+ const rawAudit=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/backend-execution-20261012/integration/raw-request-admission-before.json',import.meta.url))).rows;
+ const expectedIds=['read_chat_attachments','read_monday_client_boards','get_client_context','search_client_knowledge','query_knowledge_graph','search_memory','search_research_sources','search_legislative_research','get_legal_reference','query_global_data','search_committee_hearings','search_legiwatch_news','actions.query'];
+@@ -63,10 +64,10 @@ function output(id){
+ }
+ 
+ test('exact13 accepted mappings preserve139 original identities and84 unavailable descriptors',()=>{
+- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
++ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
+  assert.deepEqual([...addedOperations].sort(),[...expectedIds].sort());assert.equal(catalog.originals.length,139);
+  assert.equal(catalog.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='deferred').length,43);
+- assert.equal(catalog.originals.filter(r=>r.state==='mapped').length,83);assert.equal(catalog.originals.filter(r=>r.disposition==='selected'&&r.state==='pending').length,13);
++ assert.equal(catalog.originals.filter(r=>r.state==='mapped').length,96);assert.equal(catalog.originals.filter(r=>r.disposition==='selected'&&r.state==='pending').length,0);
+  for(const id of expectedIds){const nativeId=id==='actions.query'?'query_action_items':id;assert.deepEqual(catalog.originals.find(r=>r.id===nativeId).replacement,{id,version:'0.2.0'});}
+ });
+ for(const id of expectedIds){
+@@ -95,7 +96,7 @@ test('all31 corrected advertised caller definitions retain exact normalized outc
+  assert.equal(formerlyRefused,22);
+ });
+ test('13 new and31 repaired bindings pin exact unchanged family schema bytes and output definitions',()=>{
+- for(const id of [...expectedIds,...rawAudit.map(r=>r.id)]){const c=resolve(id),bytes=readFileSync(new URL(`../retrieval-0.2/${c.binding.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);
++ for(const id of [...expectedIds,...rawAudit.map(r=>r.id)]){const c=resolve(id),bytes=readFileSync(new URL(schemaRelativePath(c.binding.group),import.meta.url)),s=JSON.parse(bytes);
+   for(const [field,def]of[['inputSchema',c.binding.input],['outputSchema',c.binding.output]])assert.deepEqual(c.descriptor[field],{id:`${s.$id}#/$defs/${def}`,sha256:sha(bytes)});
+  }
+ });
+diff --git a/packages/contracts/test/backend-execution-integration-independent.test.mjs b/packages/contracts/test/backend-execution-integration-independent.test.mjs
+index c754cc18..47d0603a 100644
+--- a/packages/contracts/test/backend-execution-integration-independent.test.mjs
++++ b/packages/contracts/test/backend-execution-integration-independent.test.mjs
+@@ -82,8 +82,8 @@ test('supersession mutations cannot broaden the concrete same-native replacement
+ });
+ test('all original139/96selected/43deferred remain tracked with84typed/83mapped/13pending',()=>{
+  const originals=catalog.originals;assert.equal(originals.length,139);assert.equal(new Set(originals.map(x=>x.id)).size,139);
+- assert.equal(originals.filter(x=>x.state==='deferred').length,43);assert.equal(originals.filter(x=>x.state==='mapped').length,83);assert.equal(originals.filter(x=>x.state==='pending').length,13);assert.equal(catalog.operations.length,84);
+- assert.equal(CATALOG_OPERATION_BINDINGS.length,84);retrieval.assertCatalog(catalog);
++ assert.equal(originals.filter(x=>x.state==='deferred').length,43);assert.equal(originals.filter(x=>x.state==='mapped').length,96);assert.equal(originals.filter(x=>x.state==='pending').length,0);assert.equal(catalog.operations.length,97);
++ assert.equal(CATALOG_OPERATION_BINDINGS.length,97);retrieval.assertCatalog(catalog);
+  for(const d of catalog.operations){assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.deepEqual(d.retry.retryableCodes,[]);}
+ });
+ test('all84 actual production operations reject before authority source or budget ports',async()=>{
+diff --git a/packages/contracts/test/command-contracts-integration-independent.test.mjs b/packages/contracts/test/command-contracts-integration-independent.test.mjs
+index 8165ef2f..a6d669aa 100644
+--- a/packages/contracts/test/command-contracts-integration-independent.test.mjs
++++ b/packages/contracts/test/command-contracts-integration-independent.test.mjs
+@@ -17,9 +17,11 @@ const version=cmd=>({contractVersion:'0.1.0',artifactId:uuid(50),versionId:uuid(
+ 
+ test('connected namespace is private0.2 with only deliberately named validators',()=>{
+  assert.equal(commands.contractVersion,'0.2.0');
+- const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult'];
+- assert.deepEqual(Object.keys(commands).sort(),['contractVersion',...functions].sort());
++ const functions=['validateCommandShape','normalizeTaskCreateInput','assertTaskCreateCommand','assertTaskCreateResult','normalizeArtifactFileInput','assertArtifactFileCommand','assertArtifactFileResult','assertArtifactFileReceipt','assertArtifactFileVersion','normalizeMemoryProposeInput','assertMemoryProposeCommand','assertMemoryProposeResult','normalizeTaskUpdateInput','assertTaskUpdateCommand','assertTaskUpdateProposal','assertTaskUpdateExecution','assertTaskUpdateResult'];
++ assert.deepEqual(Object.keys(commands).sort(),['contractVersion','taskUpdateValidators',...functions].sort());
+  for(const name of functions)assert.equal(typeof commands[name],'function');
++ assert.deepEqual(Object.keys(commands.taskUpdateValidators).sort(),['normalizeTaskUpdateInput','assertTaskUpdateCommand','assertTaskUpdateProposal','assertTaskUpdateExecution','assertTaskUpdateResult'].sort());
++ for(const name of Object.keys(commands.taskUpdateValidators))assert.equal(commands.taskUpdateValidators[name],commands[name]);
+ });
+ test('unknown private definition names refuse',()=>{for(const name of ['Unknown','__proto__','constructor','Command','ApprovalDecision'])assert.throws(()=>commands.validateCommandShape(name,{}));});
+ test('connected shape validation detaches data without claiming correlation',()=>{const raw={title:'Review task',clientId:null,dueDate:null};const out=commands.validateCommandShape('TaskCreateArguments',raw);assert.deepEqual(out,raw);assert.notEqual(out,raw);raw.title='changed';assert.equal(out.title,'Review task');});
+diff --git a/packages/contracts/test/command-payloads-independent.test.mjs b/packages/contracts/test/command-payloads-independent.test.mjs
+index ba0a050e..12297858 100644
+--- a/packages/contracts/test/command-payloads-independent.test.mjs
++++ b/packages/contracts/test/command-payloads-independent.test.mjs
+@@ -56,7 +56,8 @@ test('command independent: filing result correlates exact digest and complete se
+ test('command independent: each exact object field including scopes contributes to result binding',()=>{const c=filing();for(const mutate of [o=>o.objectId=uuid(99),o=>o.versionId='different',o=>o.sha256='b'.repeat(64),o=>o.bytes++,o=>o.scopes[0].policyRevision='different']){const out=fileResult(c);mutate(out.files[0].object);assert.throws(()=>f.assertArtifactFileResult(out,c,fc()));}});
+ test('command independent: pre-storage failed preserves reason-only observations',()=>{const c=filing();for(const fileName of ['synthetic.txt',null])f.assertArtifactFileResult(fileResult(c,[{object:object(),status:'failed',fileName,reason:'Synthetic unavailable upload'}]),c,fc());});
+ test('command independent: persisted quarantine and rejected observations stay non-indexed',()=>{const c=filing();for(const status of ['pending','failed']){f.assertArtifactFileResult(fileResult(c,[observation(object(),status)]),c,fc());for(const indexingStatus of ['pending','indexed'])assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[observation(object(),status,{indexingStatus})]),c,fc()));}});
+-test('command independent: saved permits pending indexing but never reason or not_indexed',()=>{const c=filing();for(const indexingStatus of ['pending','indexed'])f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',{indexingStatus})]),c,fc());for(const extra of [{indexingStatus:'not_indexed'},{reason:'Claimed success with failure'}])assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',extra)]),c,fc()));});
++// Historical declaration retained; accepted filing source now preserves saved extraction warning text.
++test('command independent: saved permits pending indexing but never reason or not_indexed',()=>{const c=filing();for(const indexingStatus of ['pending','indexed'])f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',{indexingStatus})]),c,fc());for(const extra of [{indexingStatus:'not_indexed'}])assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',extra)]),c,fc()));assert.equal(f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',{reason:'Claimed success with failure'})]),c,fc()).files[0].reason,'Claimed success with failure');});
+ test('command independent: persisted tuple is all-or-none and saved cannot be pre-storage',()=>{const c=filing();for(const key of ['documentId','location','indexingStatus','reused']){const o=observation();delete o[key];assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[o]),c,fc()));}assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[{object:object(),status:'saved',fileName:'x'}]),c,fc()));});
+ test('command independent: pending failed reason and boolean reuse cannot be forged',()=>{const c=filing();for(const status of ['pending','failed']){const o=observation(object(),status);delete o.reason;assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[o]),c,fc()));}assert.throws(()=>f.assertArtifactFileResult(fileResult(c,[observation(object(),'saved',{reused:1})]),c,fc()));});
+ test('command independent: partial siblings do not produce an aggregate receipt',()=>{const c=filing([object(10),object(11),object(12)]);const out=fileResult(c,[observation(object(10)),observation(object(11),'pending'),observation(object(12),'failed')]);assert.deepEqual(f.assertArtifactFileResult(out,c,fc()),out);for(const extra of [{outcome:'succeeded'},{readable:true},{approved:true},{savedCount:1},{retry:true}])assert.throws(()=>f.assertArtifactFileResult({...out,...extra},c,fc()));});
+diff --git a/packages/contracts/test/retrieval-action-item-binding.test.mjs b/packages/contracts/test/retrieval-action-item-binding.test.mjs
+index 6a15a30a..2e785b1e 100644
+--- a/packages/contracts/test/retrieval-action-item-binding.test.mjs
++++ b/packages/contracts/test/retrieval-action-item-binding.test.mjs
+@@ -1,3 +1,4 @@
++import {priorVerticalOriginal} from './vertical-continuation-expectations.mjs';
+ import {fullActionReference} from './backend-execution-expectations.mjs';
+ // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+ const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -17,8 +18,8 @@ const context={actorId,nowMs:0};
+ test('partial action binding does not declare full native parity or activate a handler',()=>{
+  const c=catalog(),binding=CATALOG_OPERATION_BINDINGS.find(row=>row.id===reference.id),resolved=contract();
+  assertCatalog(c);assert.equal(binding.nativeCoverage,'partial');assert.equal(resolved.binding,binding);
+- assert.equal(c.operations.length,84);assert.equal(c.originals.filter(row=>row.state==='mapped').length,83);
+- assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,13);
++ assert.equal(c.operations.length,97);assert.equal(c.originals.filter(row=>row.state==='mapped').length,96);
++ assert.equal(c.originals.filter(row=>row.disposition==='selected'&&row.state==='pending').length,0);
+  const original=c.originals.find(row=>row.id===reference.id);assert.equal(original.state,'mapped');assert.deepEqual(original.replacement,fullActionReference);
+  assert.deepEqual(resolved.descriptor.aliases,[]);assert.equal(resolved.descriptor.handler,null);
+  assert.equal(resolved.descriptor.availability,'unimplemented');assert.equal(resolved.descriptor.qualification,'pending');
+@@ -80,7 +81,7 @@ test('family mode bounds and closed JSON admission retain strict behavior',()=>{
+ test('all fourteen original descriptors and all139 native rows remain exact',()=>{
+  const c=catalog();
+  assert.equal(canonicalSha256(c.operations.slice(0,14)),'50d5baa13482e07e7e65bfcf88212aef7e1e41169719b9caf83a96246a000b92');
+- const priorRows=structuredClone(c.originals);
++ const priorRows=structuredClone(c.originals).map(priorVerticalOriginal);
+  for(const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
+   'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]){
+   const row=priorRows.find(row=>row.id===id);
+diff --git a/packages/contracts/test/retrieval-action-item-independent.test.mjs b/packages/contracts/test/retrieval-action-item-independent.test.mjs
+index 6e69e8ce..95db541d 100644
+--- a/packages/contracts/test/retrieval-action-item-independent.test.mjs
++++ b/packages/contracts/test/retrieval-action-item-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {priorVerticalOriginal} from './vertical-continuation-expectations.mjs';
+ import {fullActionReference} from './backend-execution-expectations.mjs';
+ // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+ const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -16,8 +17,8 @@ test('independent literal recommendation and outcome source proofs satisfy uncha
+   assert.equal(assertActionItemReadInput({}).mode,'unscoped_legacy_pending');
+ });
+ test('partial binding preserves every original row and fourteen descriptors',()=>{
+-  assertCatalog(catalog);assert.equal(catalog.operations.length,84);
+-  const priorRows = structuredClone(catalog.originals);
++  assertCatalog(catalog);assert.equal(catalog.operations.length,97);
++  const priorRows = structuredClone(catalog.originals).map(priorVerticalOriginal);
+   for (const id of ['lookup_client_registry','get_business_development_context','get_business_development_evidence',
+     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds]) {
+     const row = priorRows.find(row => row.id === id);
+@@ -29,8 +30,8 @@ test('partial binding preserves every original row and fourteen descriptors',()=
+   assert.deepEqual(fullAction.replacement,fullActionReference);fullAction.state='pending';fullAction.replacement=null;
+   assert.equal(sha(priorRows),baseline.originalsSha256);
+   assert.equal(sha(catalog.operations.filter(x=>baseline.originalIds.includes(x.operation.id))),baseline.originalOperationsSha256);
+-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
++  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
+   const c=contract();assert.equal(c.binding.nativeCoverage,'partial');assert.deepEqual(c.descriptor.aliases,[]);
+   assert.deepEqual(catalog.originals.find(x=>x.id===operation.id).replacement,fullActionReference);
+ });
+diff --git a/packages/contracts/test/retrieval-backend-next-independent.test.mjs b/packages/contracts/test/retrieval-backend-next-independent.test.mjs
+index 184da5b1..285a262d 100644
+--- a/packages/contracts/test/retrieval-backend-next-independent.test.mjs
++++ b/packages/contracts/test/retrieval-backend-next-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {addedOperations,fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -15,7 +16,7 @@ const [OUTREACH,SEARCH,DETAIL,TIMELINE]=ids,T='2026-10-12T12:00:00.000Z',U='aaaa
+ const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/backend-next-review/',import.meta.url);
+ const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
+ const copy=structuredClone,resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+-const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
++const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
+ const context=id=>id===OUTREACH?{clientResolution:null}:{evidenceAccuracyMode:'off'};
+ const request=id=>[DETAIL,TIMELINE].includes(id)?{peCode:'review-pe'}:{};
+ const campaign=()=>({id:U,clientId:null,name:'Stored campaign',type:'stored',status:'draft',subject:null,sentAt:null,createdAt:T,clientName:null,recipientCount:0,createdBy:null});
+@@ -30,17 +31,17 @@ function output(id){
+ const check=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
+ 
+ test('all139 originals and67 prior descriptors/callbacks survive exactly four new mappings',()=>{
+- assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+- assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
++ assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
++ assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!addedOperations.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
++ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!addedOperations.includes(x.id)),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));
+  assert.deepEqual(catalog.originals.map(x=>x.id),oldCatalog.originals.map(expectedExistingOriginal).map(x=>x.id));
+- assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
++ assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
+  for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),ids.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+  assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+- for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])assert.throws(()=>resolve(id));
++ for(const id of ['create_task','save_memory','get_pe_buyer_workspace'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
+ });
+ test('all84 exact schema byte pins preserve pending closed handlers',()=>{
+- for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(raw);
++ for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw);
+   for(const [name,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[name],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(raw).digest('hex')});
+   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);
+  }
+diff --git a/packages/contracts/test/retrieval-civic-integration-independent.test.mjs b/packages/contracts/test/retrieval-civic-integration-independent.test.mjs
+index 14c2493e..04bef815 100644
+--- a/packages/contracts/test/retrieval-civic-integration-independent.test.mjs
++++ b/packages/contracts/test/retrieval-civic-integration-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -19,7 +20,7 @@ const oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)))
+ const T='2026-10-12T12:00:00.000Z',U='ab123456-1234-4234-8234-123456789abc',V='cd123456-1234-4234-8234-123456789abc';
+ const copy=structuredClone;
+ const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+-const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
++const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
+ function trackedContext(){return {binding:{tenantId:'review-tenant',actorId:'review-actor',conversationId:U,runId:V,attemptId:U,workerId:V,writerFence:8},subject:{kind:'client',entityType:'client',entityIds:[U],tenantId:'review-tenant',actorId:'review-actor',authorizationDecisionId:V,policyRevision:'review-policy',rosterVersionId:null,scopes:[{kind:'client',tenantId:'review-tenant',resourceId:U,policyRevision:'review-policy'}]},clientReference:'Synthetic client'};}
+ const context=id=>id===ENTITY?{defaultCongress:119}:id===TRACKED?trackedContext():{};
+ const request=id=>id===TRACKED?{clientId:' Synthetic client '}:id===SUMMARY?{clientName:' Example client '}:{};
+@@ -35,18 +36,18 @@ function output(id){const common={tool:id,generatedAt:T};switch(id){
+ const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:req});
+ 
+ test('all original139 rows,56 descriptors and callback implementations survive seven exact additions',()=>{
+- assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+- assert.deepEqual(catalog.operations.filter(d=>!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)&&d.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
++ assertCatalog(catalog);assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
++ assert.deepEqual(catalog.operations.filter(d=>!verticalOperationIds.includes(d.operation.id)&&!ids.includes(d.operation.id)&&!observedIds.includes(d.operation.id)&&d.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+- assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
++ assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
+  for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||observedIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+- const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!observedIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings.map(expectedExistingBinding));
++ const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!observedIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings.map(expectedExistingBinding));
+  assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+- for(const id of ['save_memory','create_task','create_word','schedule_task','run_analysis'])assert.throws(()=>resolve(id));
++ for(const id of ['save_memory','create_task','create_word','schedule_task','run_analysis'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
+ });
+ 
+ test('every schema pin resolves exact bytes while every descriptor remains unavailable',()=>{
+- for(const binding of bindings){const d=resolve(binding.id).descriptor,raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url)),s=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
++ for(const binding of bindings){const d=resolve(binding.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url)),s=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
+   for(const [field,def]of [['inputSchema',binding.input],['outputSchema',binding.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256});
+   assert.match(s.$id,/^urn:meri:/);assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.ok(Object.isFrozen(d));
+  }
+diff --git a/packages/contracts/test/retrieval-mail.test.mjs b/packages/contracts/test/retrieval-mail.test.mjs
+index 417dc792..e937ca28 100644
+--- a/packages/contracts/test/retrieval-mail.test.mjs
++++ b/packages/contracts/test/retrieval-mail.test.mjs
+@@ -1,3 +1,4 @@
++import {expectedVerticalBoundary} from './vertical-source-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import { readFileSync } from 'node:fs';
+@@ -131,9 +132,9 @@ test('empty stored thread page never certifies absence',()=>{
+ test('concrete catalog preserves every ledger ID/boundary and fourteen unavailable mappings and a partial typed operation',()=>{
+   const c=catalog();assertCatalog(c);
+   const ledger=JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json',import.meta.url)));
+-  assert.deepEqual(c.originals.map(({id,disposition,boundary})=>({id,disposition,boundary})),ledger.records.map(r=>({id:r.fields.ID,disposition:r.acceptedScope.disposition,boundary:r.acceptedScope.boundary})));
++  assert.deepEqual(c.originals.map(({id,disposition,boundary})=>({id,disposition,boundary})),ledger.records.map(r=>({id:r.fields.ID,disposition:r.acceptedScope.disposition,boundary:expectedVerticalBoundary(r.fields.ID,r.acceptedScope.boundary)})));
+   assert.equal(c.originals.length,139);assert.equal(c.originals.filter(r=>r.disposition==='selected').length,96);assert.equal(c.originals.filter(r=>r.disposition==='deferred').length,43);
+-  assert.equal(c.operations.length,84);assert.equal(c.originals.filter(r=>r.state==='mapped').length,83);
++  assert.equal(c.operations.length,97);assert.equal(c.originals.filter(r=>r.state==='mapped').length,96);
+   assert.deepEqual(c.originals.filter(r=>r.state==='mapped' && ['list_emails','search_emails','get_email_thread'].includes(r.id)).map(r=>r.id),['list_emails','search_emails','get_email_thread']);
+   assert.equal(c.operations[0].availability,'unimplemented');assert.equal(c.operations[0].qualification,'pending');assert.equal(c.operations[0].handler,null);
+ });
+diff --git a/packages/contracts/test/retrieval-next-bindings.test.mjs b/packages/contracts/test/retrieval-next-bindings.test.mjs
+index e473351d..9f8941e7 100644
+--- a/packages/contracts/test/retrieval-next-bindings.test.mjs
++++ b/packages/contracts/test/retrieval-next-bindings.test.mjs
+@@ -1,3 +1,5 @@
++import {verticalOperationIds} from './vertical-source-expectations.mjs';
++import {priorVerticalBoundary} from './vertical-continuation-expectations.mjs';
+ import {priorExistingDescriptor} from './backend-execution-expectations.mjs';
+ // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+ const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -16,9 +18,9 @@ const additions = ['lookup_client_registry', 'get_business_development_context',
+ test('selected read additions preserve every prior descriptor and original accepted boundary', () => {
+   // Literal hashes of accepted PR22 catalog content, computed independently of
+   // the new registry. Adding descriptors must not silently rewrite old contracts.
+-  assert.equal(canonicalSha256(catalog.operations.filter(row => !additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id)&&row.operation.id!=='actions.query').map(priorExistingDescriptor)),
++  assert.equal(canonicalSha256(catalog.operations.filter(row=>!verticalOperationIds.includes(row.operation.id)&&!additions.includes(row.operation.id)&&!continuationIds.includes(row.operation.id)&&row.operation.id!=='actions.query').map(priorExistingDescriptor)),
+     '7302157d3d1059774b198b48f47591db55b85fa63a1bf025d2741ec4b1187b2b');
+-  assert.equal(canonicalSha256(catalog.originals.map(({id, disposition, boundary}) => ({id, disposition, boundary}))),
++  assert.equal(canonicalSha256(catalog.originals.map(({id, disposition, boundary}) => ({id, disposition, boundary:priorVerticalBoundary(id,boundary)}))),
+     '3cdea92ff8d789f30b540af232f92cca5d239412278cb4a1f78374f4a29fe392');
+   for (const id of additions) {
+     const original = catalog.originals.find(row => row.id === id);
+@@ -28,12 +30,12 @@ test('selected read additions preserve every prior descriptor and original accep
+     assert.equal(descriptor.handler, null); assert.equal(descriptor.availability, 'unimplemented');
+     assert.equal(descriptor.qualification, 'pending'); assert.equal(descriptor.sideEffect, 'none');
+   }
+-  assert.equal(catalog.operations.length, 84);
+-  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 83);
+-  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 13);
++  assert.equal(catalog.operations.length, 97);
++  assert.equal(catalog.originals.filter(row => row.state === 'mapped').length, 96);
++  assert.equal(catalog.originals.filter(row => row.disposition === 'selected' && row.state === 'pending').length, 0);
+   for (const id of ['get_research_evidence']) {
+-    assert.equal(catalog.originals.find(row => row.id === id).state, 'pending');
+-    assert.equal(catalog.originals.find(row => row.id === id).replacement, null);
++    assert.equal(catalog.originals.find(row => row.id === id).state, 'mapped');
++    assert.deepEqual(catalog.originals.find(row => row.id === id).replacement, {id,version:'0.2.0'});
+   }
+ });
+ 
+diff --git a/packages/contracts/test/retrieval-next-integration-independent.test.mjs b/packages/contracts/test/retrieval-next-integration-independent.test.mjs
+index 61580259..154fba46 100644
+--- a/packages/contracts/test/retrieval-next-integration-independent.test.mjs
++++ b/packages/contracts/test/retrieval-next-integration-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ // Explicit reviewed continuation allowlist; historical baseline hashes stay unchanged.
+ const continuationIds = ["search_cbo_cost_estimates", "search_federal_grants", "search_federal_awards", "search_gao_reports", "search_state_bills", "get_state_legislator", "search_crs_reports", "query_economic_data", "get_district_nexus_context", "get_district_nexus_changes", "read_client_documents", "search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -68,24 +69,24 @@ test('independent exact baseline: only the six prior and16 reviewed continuation
+   assert.equal(catalog.originals.length,139);
+   assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
+   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
+-  assert.equal(catalog.operations.length,84);
+-  assert.deepEqual(catalog.operations.filter(x=>!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
++  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
++  assert.equal(catalog.operations.length,97);
++  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!names.includes(x.operation.id)&&!continuationIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
+   for(const old of baseline.originals.map(expectedExistingOriginal)){
+     const current=catalog.originals.find(x=>x.id===old.id);assert.ok(current);
+     assert.deepEqual(current,(names.includes(old.id)||continuationIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+   }
+   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
+   for(const id of ['get_research_evidence','get_business_development_brief','create_client'])
+-    assert.throws(()=>resolve(id));
++    if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
+ });
+ 
+ test('all 84 canonical descriptors resolve exact raw schema definitions without collisions',()=>{
+-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,84);
++  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,97);
+   for(const binding of CATALOG_OPERATION_BINDINGS){
+     const {descriptor}=resolve(binding.id);
+-    const raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
++    const raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+     const schema=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
+     for(const [field,definition] of [['inputSchema',binding.input],['outputSchema',binding.output]]){
+       assert.ok(Object.hasOwn(schema.$defs,definition));
+diff --git a/packages/contracts/test/retrieval-observed-integration-independent.test.mjs b/packages/contracts/test/retrieval-observed-integration-independent.test.mjs
+index 5876b3e1..85e5a6c3 100644
+--- a/packages/contracts/test/retrieval-observed-integration-independent.test.mjs
++++ b/packages/contracts/test/retrieval-observed-integration-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {fullActionReference,expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -15,7 +16,7 @@ const [SEARCH,PAGE,SAM,FLORIDA]=ids,T='2026-10-12T12:00:00.000Z',U='aaaaaaaa-aaa
+ const ev=new URL('../../../docs/qualification/candidates/read-continuation-20261012/observed-reads-integration-review/',import.meta.url);
+ const oldCatalog=JSON.parse(readFileSync(new URL('baseline-catalog.json',ev))),oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',ev)));
+ const copy=structuredClone, resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+-const schema=group=>JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
++const schema=group=>JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
+ function context(id){return id===SAM?{asOf:T,sourceStatusAsOf:T,sourceHealthAsOf:T,evidenceAccuracyMode:'off'}:id===FLORIDA?{asOf:T,effectiveScope:{jurisdiction:'FL',sessionKey:'',folderId:null,clientId:null},clientResolution:null}:{};}
+ const request=id=>id===SEARCH?{query:' synthetic evidence '}:id===PAGE?{url:'https://example.test/original'}:{};
+ function output(id){switch(id){
+@@ -28,14 +29,14 @@ const check=(id,page=output(id),req=request(id),ctx=context(id))=>resolve(id).as
+ const samRow=()=>({id:U,noticeId:'notice',solicitationNumber:null,title:'Synthetic notice',noticeType:'stored',agency:null,office:null,pscCode:null,naicsCode:'541100',postedDate:null,responseDeadline:null,description:'Synthetic description.',sourceUrl:null,active:true});
+ 
+ test('original139 rows and63 descriptors/callbacks survive exactly four full mappings',()=>{
+- assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
+- assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
++ assertCatalog(catalog);assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!ids.includes(x.operation.id)&&!backendIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),oldCatalog.operations.map(expectedExistingDescriptor));
++ assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
+  for(const old of oldCatalog.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||backendIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+- assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
+- for(const id of ['save_memory','create_task','run_analysis'])assert.throws(()=>resolve(id));
++ assert.deepEqual(JSON.parse(JSON.stringify(bindings.filter(x=>!verticalOperationIds.includes(x.id)&&!ids.includes(x.id)&&!backendIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v)),oldBindings.map(expectedExistingBinding));assert.deepEqual(catalog.originals.find(x=>x.id==='query_action_items').replacement,fullActionReference);
++ for(const id of ['save_memory','create_task','run_analysis'])if(verticalOperationIds.includes(id))assert.doesNotThrow(()=>resolve(id));else assert.throws(()=>resolve(id));
+ });
+ test('all84 descriptors have exact schema byte pins and no implementation admission',()=>{
+- for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
++ for(const b of bindings){const d=resolve(b.id).descriptor,bytes=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(bytes);for(const [field,def]of[['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:createHash('sha256').update(bytes).digest('hex')});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);}
+ });
+ for(const id of ids){
+  test(`${id}: actual canonical normalizer/output callbacks preserve detached request and digest`,()=>{
+diff --git a/packages/contracts/test/retrieval-read-continuation-bindings.test.mjs b/packages/contracts/test/retrieval-read-continuation-bindings.test.mjs
+index 57aca3c4..83b27d22 100644
+--- a/packages/contracts/test/retrieval-read-continuation-bindings.test.mjs
++++ b/packages/contracts/test/retrieval-read-continuation-bindings.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ // Explicit next reviewed additions; prior descriptor values and hashes remain unchanged.
+ const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -47,13 +48,13 @@ function output(id) {
+ }
+ 
+ test('reviewed continuation preserves139 originals and the exact prior21 descriptors',()=>{
+-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');
++  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');
+   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
+   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
++  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
+   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration/pr24-catalog-baseline.json',import.meta.url)));
+-  assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
++  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
+   for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),
+     (additions.includes(old.id)||nextIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+ });
+@@ -70,7 +71,7 @@ for(const id of additions) {
+     assert.throws(()=>contract.assertOutput({...page,authority:'verified'},{...ctx,request:raw}));
+   });
+   test(`canonical continuation pins unavailable schemas and rejects promotion: ${id}`,()=>{
+-    const {descriptor,binding}=resolve(id),raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
++    const {descriptor,binding}=resolve(id),raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+     const schema=JSON.parse(raw),sha256=createHash('sha256').update(raw).digest('hex');
+     for(const [field,name] of [['inputSchema',binding.input],['outputSchema',binding.output]])
+       assert.deepEqual(descriptor[field],{id:`${schema.$id}#/$defs/${name}`,sha256});
+diff --git a/packages/contracts/test/retrieval-read-continuation-independent.test.mjs b/packages/contracts/test/retrieval-read-continuation-independent.test.mjs
+index 70f126de..88d6215b 100644
+--- a/packages/contracts/test/retrieval-read-continuation-independent.test.mjs
++++ b/packages/contracts/test/retrieval-read-continuation-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ // Explicit next reviewed additions; prior descriptor values and hashes remain unchanged.
+ const nextIds = ["search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+@@ -73,29 +74,29 @@ function output(id){
+ const verify=(id,page=output(id),raw=request(id),ctx=context(id))=>resolve(id).assertOutput(page,{...ctx,request:raw});
+ 
+ test('independent original139 boundaries and prior21 descriptors survive the16 prior and9 next explicit mappings',()=>{
+-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');
++  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');
+   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
+   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
+-  assert.deepEqual(catalog.operations.filter(x=>!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
++  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
++  assert.deepEqual(catalog.operations.filter(x=>!verticalOperationIds.includes(x.operation.id)&&!additions.includes(x.operation.id)&&!nextIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.descriptors.map(expectedExistingDescriptor));
+   for(const before of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===before.id),
+     (additions.includes(before.id)||nextIds.includes(before.id))?{...before,state:'mapped',replacement:{id:before.id,version:'0.2.0'}}:before);
+   assert.equal(resolve('query_action_items').binding.nativeCoverage,'partial');
+   assert.deepEqual(resolve('query_action_items').descriptor.aliases,[]);
+   for(const id of ['get_research_evidence']){
+     const old=baseline.originals.map(expectedExistingOriginal).find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);
+-    assert.equal(old.state,'pending');assert.equal(old.replacement,null);
++    assert.equal(old.state,'mapped');assert.deepEqual(old.replacement,{id,version:'0.2.0'});
+   }
+-  for(const id of ['get_research_evidence'])assert.throws(()=>resolve(id));
++  for(const id of ['get_research_evidence'])assert.doesNotThrow(()=>resolve(id));
+   for(const id of ['get_state_bill_status','search_state_floor_votes','search_sam_opportunities']){const d=resolve(id).descriptor;assert.deepEqual(d.operation,{id,version:'0.2.0'});assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');}
+ });
+ 
+ test('independent registry exact raw schema pins, explicit context sets and unavailable state',()=>{
+-  assert.equal(CATALOG_OPERATION_BINDINGS.length,84);
+-  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,84);
++  assert.equal(CATALOG_OPERATION_BINDINGS.length,97);
++  assert.equal(new Set(CATALOG_OPERATION_BINDINGS.map(x=>x.id)).size,97);
+   for(const binding of CATALOG_OPERATION_BINDINGS){
+-    const c=resolve(binding.id),raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
++    const c=resolve(binding.id),raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+     const schema=JSON.parse(raw);
+     for(const [field,key]of[['inputSchema','input'],['outputSchema','output']]){
+       assert.ok(Object.hasOwn(schema.$defs,binding[key]));
+@@ -249,7 +250,7 @@ test('state and reports preserve domain repairs via canonical output, without ca
+ 
+ for(const [group,create,prefix,id] of [['public-data',createPublicDataValidators,'PublicData',ECON],
+   ['state-legislation',createStateLegislationValidators,'StateLegislation',BILL]]){
+-  const schema=JSON.parse(readFileSync(new URL(`../retrieval-0.2/${group}.schema.json`,import.meta.url)));
++  const schema=JSON.parse(readFileSync(new URL(schemaRelativePath(group),import.meta.url)));
+   const family=create({schema,validateShape});
+   test(`independent hostile operation selector refusal before coercion: ${group}`,()=>{
+     let effects=0;
+diff --git a/packages/contracts/test/vertical-execution-integration-independent.test.mjs b/packages/contracts/test/vertical-execution-integration-independent.test.mjs
+index bb16c170..9b540e82 100644
+--- a/packages/contracts/test/vertical-execution-integration-independent.test.mjs
++++ b/packages/contracts/test/vertical-execution-integration-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds} from './vertical-source-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {readFileSync} from 'node:fs';
+@@ -16,8 +17,8 @@ const resolve=id=>resolveOperationContract({id,version:'0.2.0'});
+ const mime={txt:'text/plain; charset=utf-8',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',zip:'application/zip'};
+ const details={txt:{encoding:'UTF-8',whitespace:'unchanged'},xlsx:{sheets:['Data'],formulas:1,formulaCache:'unverified-zero-placeholder; recalculation required'},pptx:{slides:2,editable:true,visualInspection:'pending'},zip:{rows:2,columns:['value'],chart:false}};
+ function created(request,c){const sha='a'.repeat(64);return {version:{contractVersion:'0.1.0',artifactId:id(20),versionId:id(21),parentVersionId:null,binding:structuredClone(c.binding),object:{objectId:id(22),versionId:'immutable',sha256:sha,bytes:10,scopes:structuredClone(c.scopes)},filename:'Example.'+request.format,mimeType:mime[request.format],scopes:structuredClone(c.scopes),evidence:[],generationStatus:'draft',previewStatus:'pending',createdAt:'2026-10-12T00:00:00.000Z'},inspection:{sha256:sha,bytes:10,format:request.format,nativeOpened:false,rendered:false,recalculated:false,members:[],details:structuredClone(details[request.format])},execution:{requestSha256:hash({request,context:c,baseVersionId:null}),authorizationReceiptId:'authority',budgetTicketId:'budget',objectCommitted:true,versionCommitted:true,nativeQualified:false}};}
+-test('independent staged artifact catalog retains139/96/43 and89typed88mapped8pending',()=>{assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,88);assert.equal(catalog.originals.filter(x=>x.state==='pending').length,8);assert.equal(catalog.operations.length,89);});
+-test('independent all85 prior descriptors and original boundaries remain exact',()=>{for(const old of prior.operations)assert.equal(hash(catalog.operations.find(x=>x.operation.id===old.id)),old.sha256,old.id);for(const old of prior.originals){const row=catalog.originals.find(x=>x.id===old.id);assert.equal(row.disposition,old.disposition);assert.equal(row.boundary,old.boundary);if(!Object.hasOwn(requests,row.id))assert.deepEqual(row,old);}});
++test('independent staged artifact catalog retains139/96/43 and89typed88mapped8pending',()=>{assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.state==='pending').length,0);assert.equal(catalog.operations.length,97);});
++test('independent all85 prior descriptors and original boundaries remain exact',()=>{for(const old of prior.operations)assert.equal(hash(catalog.operations.find(x=>x.operation.id===old.id)),old.sha256,old.id);for(const old of prior.originals){const row=catalog.originals.find(x=>x.id===old.id);assert.equal(row.disposition,old.disposition);assert.equal(row.boundary,old.boundary);if(!Object.hasOwn(requests,row.id))assert.deepEqual(row,verticalOperationIds.includes(old.id)?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);}});
+ test('independent every descriptor stays unavailable and effect-free at catalog boundary',()=>{for(const row of catalog.operations){assert.equal(row.handler,null);assert.equal(row.availability,'unimplemented');assert.equal(row.qualification,'pending');assert.equal(row.retry.maxRetries,0);}});
+ for(const [operation,template] of Object.entries(requests)){
+  test(`independent ${operation} exact binding uses caller schema and current schema digest`,()=>{const r=resolve(operation),b=CATALOG_OPERATION_BINDINGS.find(x=>x.id===operation);assert.equal(b.nativeId,operation);assert.deepEqual(b.contextKeys,contextKeys);assert.match(r.descriptor.inputSchema.id,new RegExp('#/\\$defs/'+inputNames[operation]+'$'));assert.equal(r.descriptor.inputSchema.sha256,createHash('sha256').update(readFileSync(new URL('../artifacts-0.2/artifact.schema.json',import.meta.url))).digest('hex'));assert.ok(r.descriptor.sourceRequirements.length);assert.notEqual(r.descriptor.sideEffect,'none');});
