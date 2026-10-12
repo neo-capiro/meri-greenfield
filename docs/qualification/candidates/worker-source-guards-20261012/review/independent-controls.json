@@ -1,0 +1,84 @@
+{
+  "candidate": "9ee511d0db08ade12650b9c0e0679a0a2842de08",
+  "facts": [
+    {
+      "check": "exact-current-context",
+      "passed": true,
+      "detail": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903"
+    },
+    {
+      "check": "exact-unchanged-assembler",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "context-remains-source-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current-input-preflight-only",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "historical-context-refused",
+      "passed": true,
+      "detail": "worker input schema"
+    },
+    {
+      "check": "pre-fixture-context-refused",
+      "passed": true,
+      "detail": "worker input schema"
+    },
+    {
+      "check": "missing-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "extra-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "duplicate-source-member-refused",
+      "passed": true,
+      "detail": "canonical worker membership"
+    },
+    {
+      "check": "changed-current-bytes-refused",
+      "passed": true,
+      "detail": "source drift"
+    },
+    {
+      "check": "rehashed-changed-context-refused-before-build",
+      "passed": true,
+      "detail": "accepted context manifest"
+    },
+    {
+      "check": "native-build-port-not-called",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "rehashed-assembler-change-refused",
+      "passed": true,
+      "detail": "canonical assembler"
+    },
+    {
+      "check": "source-symlink-refused",
+      "passed": true,
+      "detail": "link/reparse"
+    },
+    {
+      "check": "owned-fixture-cleanup",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "context_sha256": "0f9cc23fb20d3d292fc5f2759a570ec5b022a5b9068d17ac545251803f73e903",
+  "sourceOnly": true,
+  "external_commands": 0,
+  "native_build_calls": 0
+}

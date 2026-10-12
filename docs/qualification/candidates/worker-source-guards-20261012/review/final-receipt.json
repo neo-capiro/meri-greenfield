@@ -1,0 +1,134 @@
+{
+  "reviewer": "Codex /root/memory_reviewer",
+  "disposition": "ACCEPT_SOURCE",
+  "candidate": "9ee511d0db08ade12650b9c0e0679a0a2842de08",
+  "tree": "e76151378d9ddfa6d82a93d19cfe9295acb9eeee",
+  "criteria_commit": "b8a47c9f5ead84ebb9a7525cad9ff1a798d252cc",
+  "created_at_utc": "2026-10-12T03:56:44.021551+00:00",
+  "scope": "Source-guard repair only; runtime/image/G1 remain HOLD/OPEN",
+  "checks": {
+    "baseline": {
+      "passed": 34,
+      "failed": 1,
+      "errors": 1,
+      "exit_code": 1
+    },
+    "candidate_build": {
+      "passed": 35,
+      "failed": 0,
+      "errors": 1,
+      "exit_code": 1,
+      "error": "test_real_owner_execution_closure_pins: ValueError: fixed owner Python runtime"
+    },
+    "publication": {
+      "passed": 9,
+      "failed": 0
+    },
+    "context": {
+      "passed": 17,
+      "failed": 0
+    },
+    "independent_controls": {
+      "passed": 15,
+      "failed": 0
+    }
+  },
+  "cleanup": {
+    "temporary_fixture_removed": true,
+    "synchronous_commands_completed": true,
+    "background_processes_started": 0,
+    "external_or_native_build_calls": 0
+  },
+  "files": [
+    {
+      "path": "docs/coordination/reports/MERI-WORKER-SOURCE-GUARDS-REVIEW-20261012.md",
+      "bytes": 5174,
+      "sha256": "2fc0317bb9a8610b4cf49710e555df560667b65b9a90406fbeba172922ebaea5"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/.gitattributes",
+      "bytes": 50,
+      "sha256": "c6f6dd8f4ac51495ea461a4feb6857c7a1ecbc4ab64841ab2f62ef4d6daf1778"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/baseline-build-suite-command.json",
+      "bytes": 192,
+      "sha256": "67188980e96617e0f774c8d1becd47bed9aff5e020599bd0c37d4bcda09fd398"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/baseline-build-suite.stderr.txt",
+      "bytes": 6751,
+      "sha256": "287a0633c082770c1f0c65ddc858f2048810b53f71d48db54de5f297ebbb199f"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/baseline-build-suite.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-build-suite.stderr.txt",
+      "bytes": 5868,
+      "sha256": "4af7bf50d4140a2f22a75bc903753649dab333692ce352375104a42817bc56dc"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-build-suite.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-context-suite.stderr.txt",
+      "bytes": 2657,
+      "sha256": "edaa082276856206fbb186cc1808b9534d664629d2b45a7c436d3b312cc3c1f1"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-context-suite.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-publication-suite.stderr.txt",
+      "bytes": 1493,
+      "sha256": "fa3b2b514f7b2f26bb73795de7bf4e60821b1cd9492e4440b3071aa379f6f184"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-publication-suite.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/candidate-suite-commands.json",
+      "bytes": 1044,
+      "sha256": "8d76d42e6a61e2c92b26b3777649adc502ed1ec9eee16672956b6742359d2953"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/frozen-criteria.json",
+      "bytes": 2601,
+      "sha256": "5f1a4cf5c320a7ad29009dc6682a60bf735ad8de9819e5d40656d961c3316880"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/guard-controls.py",
+      "bytes": 5458,
+      "sha256": "b249443368537cd5aed0039af18d179fd62ffbae3d8f82ed355221b1dcce5cb0"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/independent-controls.json",
+      "bytes": 2017,
+      "sha256": "4a424adf170de8271989c8d621507095341fb9770a4c2517432296f93ee4e6c7"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/independent-controls.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/independent-controls.stdout.txt",
+      "bytes": 28,
+      "sha256": "7385fb73cf31d057c8e4dce59f08f16b07d6892f9bd0be30d179e1c55eb5c639"
+    },
+    {
+      "path": "docs/qualification/candidates/worker-source-guards-20261012/review/source-preservation.json",
+      "bytes": 3771,
+      "sha256": "3c4041f6b15b8c0481eb6a05f908537e14eaf6daf92eaa561cefe3b288f094a2"
+    }
+  ]
+}
