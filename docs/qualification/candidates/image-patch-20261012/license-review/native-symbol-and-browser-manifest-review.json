@@ -1,0 +1,108 @@
+{
+  "glibc_symbol_records": [
+    {
+      "member": "lxml/_elementpath.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/builder.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/etree.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.17",
+        "GLIBC_2.2.5",
+        "GLIBC_2.25",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.7"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/objectify.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5",
+        "GLIBC_2.25",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.7"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/sax.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/html/_difflib.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ],
+      "passed": true
+    },
+    {
+      "member": "lxml/html/diff.cpython-313-x86_64-linux-gnu.so",
+      "version_symbols": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5"
+      ],
+      "passed": true
+    },
+    {
+      "member": "package/skia.linux-x64-gnu.node",
+      "version_symbols": [
+        "GLIBC_2.12",
+        "GLIBC_2.14",
+        "GLIBC_2.16",
+        "GLIBC_2.2.5",
+        "GLIBC_2.3",
+        "GLIBC_2.3.2",
+        "GLIBC_2.3.3",
+        "GLIBC_2.3.4",
+        "GLIBC_2.4",
+        "GLIBC_2.7",
+        "GLIBC_2.8"
+      ],
+      "passed": true
+    }
+  ],
+  "selected_browser_manifest": [
+    {
+      "name": "chromium",
+      "revision": "1247",
+      "installByDefault": true,
+      "browserVersion": "155.0.8059.12",
+      "title": "Chrome for Testing"
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1247",
+      "installByDefault": true,
+      "browserVersion": "155.0.8059.12",
+      "title": "Chrome Headless Shell"
+    },
+    {
+      "name": "ffmpeg",
+      "revision": "1011",
+      "installByDefault": true
+    }
+  ],
+  "limits": "Static binary symbol strings and package manifest only; no native/browser execution."
+}

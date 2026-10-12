@@ -1,0 +1,10 @@
+{
+  "initial_script": "verify-packet.initial.py",
+  "initial_result": "draft-independent.json",
+  "failure": "header-defines:lxml/includes/libxml/xmlversion.h",
+  "cause": "Reviewer version-definition extractor omitted LIBXML_TEST_VERSION despite author accurately recording this macro.",
+  "correction": "Include TEST_VERSION in reviewer extractor. Expected producer definitions, byte comparisons, platform selection and frozen acceptance criteria remain unchanged.",
+  "rerun_result": "draft-corrected.json",
+  "rerun_checks": 1141,
+  "rerun_failures": 0
+}

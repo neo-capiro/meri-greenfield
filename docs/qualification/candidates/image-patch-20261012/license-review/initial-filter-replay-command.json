@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "docs/qualification/candidates/image-patch-20261012/license-review/verify-packet.initial.py",
+    "/workspace/meri-image-license-evidence-20261012",
+    "docs/qualification/candidates/image-patch-20261012/license-review/initial-filter-replay.json"
+  ],
+  "exit_code": 1,
+  "classification": "Preserved reviewer extractor defect; TEST_VERSION omitted by initial filter. This check remains failing as a negative control, without changing producer evidence or frozen acceptance criteria.",
+  "script_sha256": "bfd9552024053ddeabf86fa608116f64728ad297d2632197a98d0995b1b3e448"
+}
