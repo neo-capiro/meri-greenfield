@@ -1,0 +1,17 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "source": "5fca98580c5d93c9f9aa4a3ed518e926e087846c",
+  "independentReview": "97de9c3fb44284dffc5ac88c8265057bfdf967fc",
+  "acceptedFamilySource": "bdbb14603cfab0d52d483956f7f1a7e373abb3cb",
+  "passed": {
+    "rootFocused": 107,
+    "rootSourceAudit": 7243,
+    "independentConnected": 143,
+    "independentSourceEvidence": 172,
+    "independentFinalPacket": 26
+  },
+  "baselineUnchangedPaths": 6947,
+  "runtimeAccepted": false,
+  "sourceEnabled": false,
+  "sourceMappingsChanged": false
+}
