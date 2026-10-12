@@ -1,0 +1,51 @@
+{
+  "provenance": "Parent message,2026-10-12. Private ZIP not materialized or independently decoded here; scalar report retained as reported.",
+  "script": {
+    "bytes": 6297,
+    "sha256": "9514b8e8ad0aff24e1eea7e782dd32178d856011fafcb750ce2c0f9a715c6efd"
+  },
+  "zip": {
+    "bytes": 12089,
+    "members": 7,
+    "sha256": "71444507f24c7f9e2e4a8977951a9d3d3ae38a66ab3d2c55ca2c75bdf2f1ad81",
+    "libraryFileId": "libfile_62634288a7e88191b295667548a20cc6",
+    "backingFileId": "file_0000000057bc82308e43d1dcf7f18806",
+    "materializedHere": false,
+    "libraryRetried": false
+  },
+  "runReported": {
+    "attempts": 1,
+    "exitCode": 2,
+    "elapsedSeconds": 0.172,
+    "stdoutBytes": 730,
+    "stderrBytes": 0,
+    "externalSupervisorSeconds": 15,
+    "timedOut": false,
+    "overflow": false,
+    "killRequired": false
+  },
+  "observationReported": {
+    "completedRoles": [
+      "repository",
+      "output-parent"
+    ],
+    "rejectedRole": "basePrefix",
+    "ancestorOrdinal": 8,
+    "ancestorCount": 8,
+    "reparsePoint": true,
+    "symbolicLink": false,
+    "nonDirectory": false,
+    "mode": 16895,
+    "fileAttributes": 1040,
+    "reparseTag": 2684354563
+  },
+  "limitations": [
+    "Current metadata observation, not original collector first cause.",
+    "Lib/DLLs roles were not reached after first refusal.",
+    "No target/executable identity, file content hash, complete closure or runner admission established."
+  ],
+  "localNativeExecutionPerformed": false,
+  "runnerQualified": false,
+  "buildAuthorized": false,
+  "g1Accepted": false
+}
