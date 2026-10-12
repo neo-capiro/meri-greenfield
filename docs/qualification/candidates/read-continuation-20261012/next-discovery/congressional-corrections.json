@@ -1,0 +1,6 @@
+{
+  "originalPacket": "347e0ccf73e9b742702b89daf54d8ee5a6a8b3a8",
+  "correction": "Member vote model is MemberVote, not the guessed RollCallVoteMember label in the first metadata packet. Exact Prisma model names rechecked before lane handoff.",
+  "privateSourceExecuted": false,
+  "implementationChanged": false
+}
