@@ -1,0 +1,442 @@
+{
+  "packet": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "source": "b5d0f55108a375ce15eed97d3a7a6926558221af",
+  "manifestSha256": "9209f6e9c1591a23681bc80aad0a21dfe6493edd8c5dddee698245bd7cad19f6",
+  "passed": 108,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "manifest exact reported digest",
+      "passed": true
+    },
+    {
+      "name": "member count53",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/audit-result.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/audit.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/authored-whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/capture-reaped.py",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/cleanup.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/coverage.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/sdk-reference-identities.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/setup-observations.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.json",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "manifest docs/qualification/candidates/vertical-source-20261012/schedule-author/whitespace.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/schedules/migrations/0001_schedule_owner.sql",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/schedules/postgres-schedule-owner.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/schedules/schedule-lifecycle.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/schedules/temporal-run-history.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/schedules/temporal-schedule-mutations.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/test/schedule-lifecycle-postgres.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged apps/control/test/schedule-lifecycle.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged packages/contracts/schedules-0.2/lifecycle-validation.mjs",
+      "passed": true
+    },
+    {
+      "name": "source unchanged packages/contracts/schedules-0.2/lifecycle.schema.json",
+      "passed": true
+    },
+    {
+      "name": "source unchanged packages/contracts/test/schedule-lifecycle.test.mjs",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/contracts-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/cursor-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/final-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/initial-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/list-errors-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/missing-temporal-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/owner-page-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-page-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-proxy-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/repaired-unavailable-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/sanitized-list-author.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/status-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author process cleanup docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.json",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author raw stream docs/qualification/candidates/vertical-source-20261012/schedule-author/update-proxy-negative.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author report does not claim runtime admission",
+      "passed": true
+    }
+  ],
+  "runtimeAccepted": false
+}

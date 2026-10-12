@@ -8,5 +8,6 @@
   "sourceAuditPassed": 74,
   "originalMembersPreserved": 8678,
   "runtimeAccepted": false,
-  "authorPacket": "pending separate immutable packet audit"
+  "authorPacket": "d7bd22361f232211a6c1ec6b8d67115cfe36ebbd",
+  "authorPacketChecksPassed": 108
 }
