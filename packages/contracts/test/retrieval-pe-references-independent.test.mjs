@@ -44,7 +44,7 @@ test('report echo is exact while original bill contractor envelopes cannot prove
 test('bill nullable fields are required and unselected fields cannot leak',()=>{mutate(B,bills,[p=>delete p.bills[0].sponsor,p=>delete p.bills[0].link,p=>p.bills[0].peCodes=[P],p=>p.bills[0].status='fresh',p=>p.total=1]);});
 test('bill stored columns and signed values are not manufactured from canonical identity',()=>{const p=bills();Object.assign(p.bills[0],{id:'119-hr-1',congress:-1,billType:'different',billNumber:'opaque'});check(B,p,raw,{});p.bills[0].congress=2147483648;reject(B,p);});
 test('bill nullable links and packages retain nonrejected stored semantics',()=>{
- const p=bills();p.bills[0].link={type:'opaque',confidence:-2,evidence:null,status:'candidate'};p.bills[0].budgetPackage={name:'Synthetic package',fiscalYear:-2,track:'opaque-track',stage:'opaque-stage'};check(B,p,raw,{});
+ const p=bills();p.bills[0].link={type:'opaque',confidence:-2,evidence:'Synthetic link evidence',status:'candidate'};p.bills[0].budgetPackage={name:'Synthetic package',fiscalYear:-2,track:'opaque-track',stage:'opaque-stage'};check(B,p,raw,{});
  p.bills[0].link.status='rejected';reject(B,p);p.bills[0].link.status='accepted';p.bills[0].link.confidence=5;check(B,p,raw,{});
 });
 test('bill specificity then date order is checked without global freshness claim',()=>{
@@ -105,3 +105,7 @@ test('nested output getters symbols and cycles refuse without observable effects
  let effects=0;const p=reports();Object.defineProperty(p.provisions[0],'text',{enumerable:true,get(){effects++;return 'x';}});reject(R,p);assert.equal(effects,0);
  const q=bills();q.bills[0][Symbol('hidden')]=1;reject(B,q);const c=contractors();c.data[0].cycle=c;reject(C,c);
 });
+
+test('bill link itself may be null but both retained evidence sources require String evidence',()=>{const p=bills();p.bills[0].link={type:'opaque',confidence:1,evidence:null,status:'candidate'};reject(B,p);});
+test('aggregate award count may exceed one stored Int32 row without becoming an unsafe number',()=>{const p=contractors();p.data[0].awards=2147483647;p.data.push({...award('direct',1,'Second'),awards:2147483647});p.evidence.federalAwards.amountM=3;p.evidence.federalAwards.count=4294967294;p.evidence.federalAwards.buckets[0].amountM=3;p.evidence.federalAwards.buckets[0].count=4294967294;check(C,p,raw,{});p.data[0].awards=2147483648;reject(C,p);});
+test('contractor source windows stop at ten groups and twentyfive exhibit rows',()=>{const p=contractors();p.data=Array.from({length:11},(_,i)=>award('direct',2,'Award'+i));p.evidence.federalAwards.amountM=22;p.evidence.federalAwards.count=11;p.evidence.federalAwards.buckets[0].amountM=22;p.evidence.federalAwards.buckets[0].count=11;reject(C,p);const q=contractors();q.namedPrimes=Array.from({length:26},prime);q.evidence.governmentExhibit.amountM=26*17;q.evidence.governmentExhibit.count=26;reject(C,q);});
