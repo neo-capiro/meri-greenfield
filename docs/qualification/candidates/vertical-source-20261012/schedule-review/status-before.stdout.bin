@@ -1,0 +1,69 @@
+✔ independent lifecycle: construction is inert and create retains explicit SDK policy choices (45.954931ms)
+✔ independent lifecycle: update_scheduled_task uses exact borrowed handle (2.156912ms)
+✔ independent lifecycle: cancel_scheduled_task uses exact borrowed handle (1.928838ms)
+✔ independent lifecycle: invalid approval commandSha256 has no owner or SDK effect (0.731229ms)
+✔ independent lifecycle: invalid approval proposalId has no owner or SDK effect (0.376676ms)
+✔ independent lifecycle: invalid approval decision has no owner or SDK effect (0.362375ms)
+✔ independent lifecycle: invalid approval expiresAt has no owner or SDK effect (0.599651ms)
+✔ independent lifecycle: invalid approval approver has no owner or SDK effect (0.414854ms)
+✔ independent lifecycle: caller substitution is rejected before effects (0.47223ms)
+✔ independent lifecycle: scope substitution is rejected before effects (0.358188ms)
+✔ independent lifecycle: generation substitution is rejected before effects (0.28599ms)
+✔ independent lifecycle: task substitution is rejected before effects (0.35897ms)
+✔ independent lifecycle: unknown substitution is rejected before effects (0.296275ms)
+✔ independent lifecycle: approved bytes cannot be mutated while authorization is parked (5.602179ms)
+✔ independent lifecycle: hostile getter is inertly denied (0.318428ms)
+✔ independent lifecycle: hostile proxy is inertly denied (0.203095ms)
+✔ independent lifecycle: authority authorized mismatch denies before claim (0.842406ms)
+✔ independent lifecycle: authority bindingSha256 mismatch denies before claim (0.815396ms)
+✔ independent lifecycle: authority callerIdentity mismatch denies before claim (0.620262ms)
+✔ independent lifecycle: authority expiresAtMs mismatch denies before claim (0.571118ms)
+✔ independent lifecycle: authority extra mismatch denies before claim (0.628254ms)
+✔ independent lifecycle: pre-abort performs no authorization, claim or mutation (0.626402ms)
+✔ independent lifecycle: claim denial never reaches SDK (0.561413ms)
+✔ independent lifecycle: markDispatching denial never reaches SDK (0.689406ms)
+✔ independent lifecycle: cancelled parked claim cannot cause later mutation (2.422631ms)
+✔ independent lifecycle: cancelled parked markDispatching cannot cause later mutation (0.826903ms)
+✔ independent lifecycle: cancelled parked create cannot cause later mutation (0.985051ms)
+✔ independent lifecycle: cancelled parked commitKnown cannot cause later mutation (1.093163ms)
+✔ independent lifecycle: schedule handle returned after deadline cannot update (0.886763ms)
+✔ independent lifecycle: SDK update callback invoked after expiry refuses replacement (0.727394ms)
+✔ independent lifecycle: explicit cancellation targets exact runs and never terminates (1.600646ms)
+✔ independent lifecycle: list uses application-owned page and exact original history IDs (8.223718ms)
+✔ independent lifecycle: history run substitution rejects instead of relabeling latest run (1.423139ms)
+✔ independent lifecycle: no-history request causes no workflow lookup (1.261226ms)
+✔ independent lifecycle: update current-description Proxy is refused without traps (0.7986ms)
+✔ independent lifecycle: native UUID page order accepts equivalent mixed-case projections (2.544694ms)
+✔ independent lifecycle: lost SDK ACK retains unknown and never releases projection (0.937929ms)
+✔ independent lifecycle: authority expiry published before parked callback suppresses mutation (71.01239ms)
+✔ independent lifecycle: released authority after committed mutation cannot release success (1.375977ms)
+✔ independent lifecycle: deleted or missing Temporal schedule remains an explicitly unavailable authorized row (1.344281ms)
+✔ independent lifecycle: revoked missing-row release cannot become partial authorized data (1.089196ms)
+✔ independent lifecycle: current read authority failure never becomes unavailable row (0.850207ms)
+✔ independent lifecycle: invalid description identity does not become a missing-record assertion (0.97849ms)
+✖ independent lifecycle: contradictory SDK status label cannot relabel completed execution as running (2.173866ms)
+✔ independent lifecycle: SDK future status fallback remains UNKNOWN rather than invented named status (1.47088ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 44
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 491.097597
+
+✖ failing tests:
+
+test at apps/control/schedules/test/lifecycle-independent.test.mjs:310:1
+✖ independent lifecycle: contradictory SDK status label cannot relabel completed execution as running (2.173866ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///workspace/meri-schedule-lifecycle-review-20261012/apps/control/schedules/test/lifecycle-independent.test.mjs:314:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

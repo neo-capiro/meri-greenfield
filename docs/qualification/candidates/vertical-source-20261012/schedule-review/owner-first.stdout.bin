@@ -1,0 +1,41 @@
+✔ independent owner: construction is inert; create claims exact tenant and intent under transaction lock (3.520931ms)
+✔ independent owner: replay cannot create a second dispatch claim (0.730528ms)
+✔ independent owner: exists cannot create a second dispatch claim (0.35904ms)
+✔ independent owner: stale generation denies update before any write (0.435294ms)
+✔ independent owner: stale active_intent denies update before any write (0.330476ms)
+✔ independent owner: stale projection_sha256 denies update before any write (0.429456ms)
+✔ independent owner: stale temporal_schedule_id denies update before any write (0.344448ms)
+✔ independent owner: stale owner_actor_id denies update before any write (0.289195ms)
+✔ independent owner: stale createdAt denies update before any write (0.401403ms)
+✔ independent owner: stale missing denies update before any write (0.380161ms)
+✔ independent owner: altered binding_sha256 cannot dispatch retained claim (0.58544ms)
+✔ independent owner: altered intent_sha256 cannot dispatch retained claim (0.726622ms)
+✔ independent owner: altered state cannot dispatch retained claim (0.72547ms)
+✔ independent owner: altered missing cannot dispatch retained claim (0.204437ms)
+✔ independent owner: UNKNOWN cannot be redispatched or recommitted (0.684068ms)
+✔ independent owner: ACKNOWLEDGED cannot be redispatched or recommitted (0.5987ms)
+✔ independent owner: acknowledged commit compares active intent and expected generation atomically (0.684459ms)
+✔ independent owner: failed final projection CAS rolls back acknowledgement (0.309665ms)
+✔ independent owner: unknown transition retains unresolved projection barrier (0.361884ms)
+✔ independent owner: lost BEGIN acknowledgement evicts connection without retry (0.555265ms)
+✔ independent owner: lost COMMIT acknowledgement evicts connection without retry (0.22623ms)
+✔ independent owner: failed rollback evicts unhealthy connection (0.301233ms)
+✔ independent owner: release failure after commit never returns acknowledgement (0.32588ms)
+✔ independent owner: late pool acquisition closes owned lease without BEGIN (0.27311ms)
+✔ independent owner: expiry after BEGIN allows only rollback cleanup (0.371488ms)
+✔ independent owner: expiry after SET LOCAL statement_timeout = '5s' allows only rollback cleanup (0.220972ms)
+✔ independent owner: expiry after SET LOCAL lock_timeout = '2s' allows only rollback cleanup (0.198999ms)
+✔ independent owner: expiry after SELECT pg_advisory_xact_lock allows only rollback cleanup (0.175694ms)
+✔ independent owner: expiry after SELECT intent_id allows only rollback cleanup (0.190897ms)
+✔ independent owner: expiry after INSERT INTO meri_schedules.projections allows only rollback cleanup (0.281453ms)
+✔ independent owner: expiry after INSERT INTO meri_schedules.intents allows only rollback cleanup (0.281683ms)
+✔ independent owner: late successful commit stays uncertain with no rollback or replay (0.347352ms)
+✔ independent owner: tenant and owner list filtering are SQL-bound and output detached (0.460051ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 390.981991

@@ -1,0 +1,42 @@
+✔ independent lifecycle: construction is inert and create retains explicit SDK policy choices (45.555916ms)
+✔ independent lifecycle: update_scheduled_task uses exact borrowed handle (2.371545ms)
+✔ independent lifecycle: cancel_scheduled_task uses exact borrowed handle (1.90902ms)
+✔ independent lifecycle: invalid approval commandSha256 has no owner or SDK effect (0.734164ms)
+✔ independent lifecycle: invalid approval proposalId has no owner or SDK effect (0.383106ms)
+✔ independent lifecycle: invalid approval decision has no owner or SDK effect (0.404358ms)
+✔ independent lifecycle: invalid approval expiresAt has no owner or SDK effect (0.651289ms)
+✔ independent lifecycle: invalid approval approver has no owner or SDK effect (0.523377ms)
+✔ independent lifecycle: caller substitution is rejected before effects (0.50548ms)
+✔ independent lifecycle: scope substitution is rejected before effects (0.470387ms)
+✔ independent lifecycle: generation substitution is rejected before effects (0.43895ms)
+✔ independent lifecycle: task substitution is rejected before effects (0.492651ms)
+✔ independent lifecycle: unknown substitution is rejected before effects (0.442455ms)
+✔ independent lifecycle: approved bytes cannot be mutated while authorization is parked (6.484077ms)
+✔ independent lifecycle: hostile getter is inertly denied (0.426371ms)
+✔ independent lifecycle: hostile proxy is inertly denied (0.213681ms)
+✔ independent lifecycle: authority authorized mismatch denies before claim (0.774074ms)
+✔ independent lifecycle: authority bindingSha256 mismatch denies before claim (0.6448ms)
+✔ independent lifecycle: authority callerIdentity mismatch denies before claim (0.883358ms)
+✔ independent lifecycle: authority expiresAtMs mismatch denies before claim (0.938341ms)
+✔ independent lifecycle: authority extra mismatch denies before claim (0.685621ms)
+✔ independent lifecycle: pre-abort performs no authorization, claim or mutation (0.668505ms)
+✔ independent lifecycle: claim denial never reaches SDK (0.576356ms)
+✔ independent lifecycle: markDispatching denial never reaches SDK (0.789007ms)
+✔ independent lifecycle: cancelled parked claim cannot cause later mutation (3.138779ms)
+✔ independent lifecycle: cancelled parked markDispatching cannot cause later mutation (0.967174ms)
+✔ independent lifecycle: cancelled parked create cannot cause later mutation (1.15124ms)
+✔ independent lifecycle: cancelled parked commitKnown cannot cause later mutation (1.282629ms)
+✔ independent lifecycle: schedule handle returned after deadline cannot update (0.874144ms)
+✔ independent lifecycle: SDK update callback invoked after expiry refuses replacement (0.807584ms)
+✔ independent lifecycle: explicit cancellation targets exact runs and never terminates (1.566294ms)
+✔ independent lifecycle: list uses application-owned page and exact original history IDs (8.564856ms)
+✔ independent lifecycle: history run substitution rejects instead of relabeling latest run (1.479865ms)
+✔ independent lifecycle: no-history request causes no workflow lookup (1.37696ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 423.696897

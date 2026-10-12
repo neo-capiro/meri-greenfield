@@ -1,0 +1,83 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "rootOutline": "7754f1d4",
+  "status": "FROZEN_BEFORE_CANDIDATE_INSPECTION",
+  "scope": "Four new source-only schedule capabilities; exact IDs/API pending author/root proposal; no implementation read yet",
+  "preserve": [
+    "public0.1",
+    "PR37 temporal-inspection adapter/schema/validator/tests",
+    "shared operation-lifetime bytes",
+    "canonical catalog/loader ownership",
+    "139 total /96 selected /43 deferred; existing83 mapped13 pending84 unavailable until reviewed integration"
+  ],
+  "criteria": [
+    {
+      "id": "C01",
+      "check": "Concrete injected borrowed SDK client call paths for each allocated capability; no service/module import or client construction; no borrowed close/disconnect; inert construction."
+    },
+    {
+      "id": "C02",
+      "check": "Closed inert JSON caller admission/detached results; accessors/proxies/prototypes/symbols refuse without callbacks; trusted identity, policy, scope, budget, schedule generation and approval never model-owned."
+    },
+    {
+      "id": "C03",
+      "check": "Immutable complete intent digest binds action, exact schedule/application identity, original provenance, owner/scopes, generation, policy and explicit timing/overlap/catchup/timezone/immediate/cancel choices. Omitted SDK defaults cannot silently become product policy."
+    },
+    {
+      "id": "C04",
+      "check": "Canonical approval/current authority dependency must bind digest/version and current actor/tenant/scopes; stale/expired/revoked/wrong identity or changed intent refuse before effect. Delegate policy remains external, not owner-equality inference."
+    },
+    {
+      "id": "C05",
+      "check": "Durable application generation/idempotency/budget reservation must authorize exact mutation and reject stale generation/replay/concurrent ownership; state adapter semantics must be concrete or explicitly unqualified. SDK update is not CAS."
+    },
+    {
+      "id": "C06",
+      "check": "Every possible-effect failure, cancelled/expired wait, lost ACK or invalid receipt preserves uncertainty; no automatic retry/refund/replacement/new authority/exactly-once assertion. Accounting/history after authority expiry cannot execute a new action."
+    },
+    {
+      "id": "C07",
+      "check": "Shared absolute lifetime and synchronous monotone deadline publication at each known expiry; challenge parked authorization/reserve/handle/describe/update callback/mutation/settlement/release, clock crossing and abort; late output never released and no late subsequent mutation."
+    },
+    {
+      "id": "C08",
+      "check": "SDK getHandle is non-validating; exact data method/identifier receiver and generation/current descriptor correlation required. Describe\u2192update has no SDK conflict token, so external writers/concurrency remain explicit runtime limits."
+    },
+    {
+      "id": "C09",
+      "check": "Create run-now ALLOW_ALL shortcut must not violate bound overlap; pause/delete do not imply cancellation of existing runs. Explicit running cancellation binds exact workflow/firstExecutionRunId chain; cancellation ACK is not physical termination."
+    },
+    {
+      "id": "C10",
+      "check": "Inspection/list/history uses authorized exact IDs/scopes, bounded traversal/output and explicit incomplete coverage. No fetchHistory-all-then-truncate pretending bounded acquisition; firstExecutionRunId is not current run. No credentials/memo/arguments/raw service errors leaked."
+    },
+    {
+      "id": "C11",
+      "check": "Codec/interceptor/externalStorage work before/after SDK RPC is retained as upstream effects/uncertainty, not prevented by output omission. SDK retry policy and downstream cancellation are not physical-stop evidence."
+    },
+    {
+      "id": "C12",
+      "check": "Full capability mapping only after all approved actions/variants connected; no DTO-only completion, broad namespace list as tenant authorization, or new approval engine. Exact old source/tests retained; all negative/raw evidence, mutants and owned process cleanup recorded."
+    }
+  ],
+  "sdkObservations": {
+    "update": "describe + callback + replacement; no conflictToken sent",
+    "requestId": "create/update/patch randomUUID per call; not application replay token",
+    "createRunNow": "triggerImmediately sends ALLOW_ALL",
+    "pauseDelete": "schedule operations do not themselves cancel workflows",
+    "list": "async iterator traverses pages, externalStorage and memo decode before yield",
+    "history": "fetchHistory collects all events across all pages",
+    "workflowIdentity": "explicit runId targets run; firstExecutionRunId targets chain; omission can target latest",
+    "defaultDiscrepancy": "catchup type comments say minute and @default1year; descriptor fallback60000; choose explicit operator policy",
+    "deadline": "cooperative SDK context only; no hard remote cancellation"
+  },
+  "unrun": [
+    "Temporal service",
+    "SQL/durable store",
+    "SDK module execution",
+    "native child/browser",
+    "provider/model/cloud",
+    "real approval/current issuer",
+    "physical remote cancellation"
+  ]
+}

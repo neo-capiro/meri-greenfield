@@ -1,0 +1,52 @@
+{
+  "proposal": "facb6470bb96a59a2fc281c3eb0f48d6880e55fb",
+  "productionInspected": false,
+  "operationIds": [
+    "schedule_task",
+    "list_scheduled_tasks",
+    "cancel_scheduled_task",
+    "update_scheduled_task"
+  ],
+  "ownedPersistence": "Schedule-specific source-only PostgreSQL owner approved by root, separate from command journal; actual durability unrun",
+  "additionalControls": [
+    {
+      "id": "P01",
+      "expected": "Concurrent identical generation cannot yield two dispatch grants; same intent digest replay refuses dispatch and changed digest under reused ID refuses."
+    },
+    {
+      "id": "P02",
+      "expected": "Application schedule key includes tenant; equal external schedule IDs across tenants cannot authorize cross-tenant target; changed owner/scopes/projection/task identity stays digest-bound."
+    },
+    {
+      "id": "P03",
+      "expected": "Late admission commit may retain claim but cannot dispatch; failed BEGIN/COMMIT/ROLLBACK/release is conservative; uncertain connection is evicted and no transaction is retried automatically."
+    },
+    {
+      "id": "P04",
+      "expected": "Acknowledged pre-effect refusal versus possible-effect unknown is distinct; persisted unknown prevents retry even when authorization later returns true."
+    },
+    {
+      "id": "P05",
+      "expected": "Partial create-plus-trigger or pause/delete-plus-running-cancel records each attempted phase and retains unknown after any unresolved phase, without aggregate all-stopped claim."
+    },
+    {
+      "id": "P06",
+      "expected": "History raw service uses exact explicit current run ID as authorized; firstExecutionRunId chain provenance retained separately. Bounded pages/events/token bytes and repeated tokens cannot cause unbounded traversal."
+    },
+    {
+      "id": "P07",
+      "expected": "History event projection cannot expose raw payloads/attributes/memo/args; mismatched workflow/run ID from description, unsafe counters/dates or hostile properties refuse."
+    },
+    {
+      "id": "P08",
+      "expected": "List consumes authorized application projections, not namespace-wide tenant inference; each schedule current authority rechecked and page/aggregate output bounded."
+    }
+  ],
+  "discoveryCorrection": {
+    "attemptedTaskName": "CODEX-SCHEDULE-LIFECYCLE-AUTHOR-20261012.md",
+    "readExit": 128,
+    "actualTaskName": "CODEX-SCHEDULE-LIFECYCLE-20261012.md",
+    "correctedRead": "exact facb6470 git object",
+    "productionImpact": "none"
+  }
+}
