@@ -23,7 +23,7 @@ async function replay(){
     route:{operation:{id:'actions.query',version:'0.2.0'},request:c.request},delivery:delivered,read,
     authorization:f.trace.slice(-2).map(row=>({...row,error:null})),startedAt:at,completedAt:at});
   o.traceSha256=hash(o.authorization);
-  return {f,frozen,observed,expected};
+  return {f,frozen,observed:structuredClone(observed),expected};
 }
 test('actual full owner chain produces a fresh control capture consumed by the evaluator',async()=>{
   const {f,frozen,observed,expected}=await replay(),report=scoreObservations(frozen,observed);
