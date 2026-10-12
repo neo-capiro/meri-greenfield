@@ -1,0 +1,67 @@
+{
+  "base": "1e6d430cf9c239caca4198aea42a762f13021cd5",
+  "status": "DISCOVERY_AND_SEMANTIC_CRITERIA_FROZEN",
+  "execution": "read-only local source inspection; no runtime/database/native execution",
+  "files": {
+    "AGENTS.md": {
+      "bytes": 6582,
+      "sha256": "a0650949b74e5aee709bd8b3c9d480f95f5b898778ac8f7b3927eb54b141437a"
+    },
+    "docs/IMPLEMENTATION-STANDARDS.md": {
+      "bytes": 11082,
+      "sha256": "d4f10f964ee207187abacd967649a1cfc9bdd468072dc01f859268f08b719959"
+    },
+    "docs/plans/MERI-DEPLOYMENT.md": {
+      "bytes": 86848,
+      "sha256": "43f9be7c385a1e321dbc9721bd7ff97752031a62e661f7691b78e0a20fd7c388"
+    },
+    "scripts/qualification/sdk-native-evidence-owner.mjs": {
+      "bytes": 7065,
+      "sha256": "e3dc2b73e5b5bee2f2464a57da6a4397b5f44083c6585dd27dc32730244c597f"
+    },
+    "scripts/qualification/sdk-native-evidence-owner.test.mjs": {
+      "bytes": 18349,
+      "sha256": "4915dbfd39a90cf8081645e333d55e8064049678893e181af56a318d18b0fb75"
+    },
+    "apps/control/qualification-sdk-fixture/service/control.mjs": {
+      "bytes": 4060,
+      "sha256": "dc56b528d8f5b111b8372084e898881827469c57de79b082e90fe56eb4656481"
+    },
+    "apps/control/qualification-sdk-fixture/service/handlers.mjs": {
+      "bytes": 8840,
+      "sha256": "da2790cf10c93209df670997cfc0666f102d9afad3ca3cca181eab37234b6510"
+    },
+    "apps/control/qualification-sdk-fixture/state/registry.mjs": {
+      "bytes": 18644,
+      "sha256": "59f302b9e0f3760b28ffe9a2ff59a68438ec7e731d71ce88a61b48d3fffc2720"
+    },
+    "apps/control/qualification-sdk-fixture/state/revocation.mjs": {
+      "bytes": 2623,
+      "sha256": "cd020d2874f14db039dc84cd299762246697ad153c5da6d45d47ce6acd145154"
+    },
+    "apps/control/qualification-sdk-fixture/state/store.mjs": {
+      "bytes": 5512,
+      "sha256": "6285aa361434f63060801446ebbea16868fbe59344a56c24e27c57403d2796a1"
+    },
+    "apps/control/qualification-sdk-fixture/state/errors.mjs": {
+      "bytes": 982,
+      "sha256": "4bc40e78cb615881b5e396a3967944150d0a1fd0a3298f34494782af27c7041d"
+    },
+    "apps/control/qualification-sdk-fixture/ingress/index.mjs": {
+      "bytes": 6291,
+      "sha256": "e621a4008c83153160c4d2a776b1e736b2bfb786174dc0250a3f7b25cc12b2e9"
+    },
+    "apps/control/qualification-sdk-fixture/ingress/dispatch.mjs": {
+      "bytes": 3788,
+      "sha256": "b869c670748e13e963265a3ab2df512040c1c9c3fa5336266e7cc2f653965078"
+    },
+    "apps/control/qualification-temporal/workflow.ts": {
+      "bytes": 7703,
+      "sha256": "31ed39577ef3c60f83fcb6bbea23a5c627a217adb48052d205517cd984528650"
+    },
+    "apps/control/qualification-temporal/activities.ts": {
+      "bytes": 1837,
+      "sha256": "952015320fa259c2afd510eada5e1426fe1f1daad04bf1bfec80c3e5f5b35fd5"
+    }
+  }
+}
