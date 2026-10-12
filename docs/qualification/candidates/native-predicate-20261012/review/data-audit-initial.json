@@ -1,0 +1,263 @@
+{
+  "base": "15f671a65365e3401f0ce07b46deb4cf63538346",
+  "scope": "Complete record and caller-predicate facts only; helper implementation remains unavailable",
+  "memberIdentities": [
+    {
+      "name": "candidate-hash-and-paths.json",
+      "bytes": 60160,
+      "sha256": "1817c1d72c2bbfafba943d0cbff4314ac210694a481565b5036a986087659d84"
+    },
+    {
+      "name": "collect.ps1",
+      "bytes": 23776,
+      "sha256": "729298afadd57a97fe8325ff862d0e208befd9392b4befa5f91053dddfcd25e1"
+    }
+  ],
+  "roles": [
+    {
+      "role": "executable",
+      "entries": 9,
+      "inlineIdentityRecomputed": true,
+      "strictRecordEquality": false,
+      "reportedSameAggregate": false
+    },
+    {
+      "role": "root",
+      "entries": 8,
+      "inlineIdentityRecomputed": true,
+      "strictRecordEquality": false,
+      "reportedSameAggregate": false
+    },
+    {
+      "role": "Lib",
+      "entries": 9,
+      "inlineIdentityRecomputed": true,
+      "strictRecordEquality": false,
+      "reportedSameAggregate": false
+    },
+    {
+      "role": "DLLs",
+      "entries": 9,
+      "inlineIdentityRecomputed": true,
+      "strictRecordEquality": false,
+      "reportedSameAggregate": false
+    }
+  ],
+  "differences": [
+    {
+      "role": "executable",
+      "entryIndex": 0,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "executable",
+      "entryIndex": 1,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "executable",
+      "entryIndex": 2,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 0,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 1,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "root",
+      "entryIndex": 2,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 0,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 1,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "Lib",
+      "entryIndex": 2,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 0,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 1,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    },
+    {
+      "role": "DLLs",
+      "entryIndex": 2,
+      "changedFields": [
+        "LastAccessTime"
+      ]
+    }
+  ],
+  "inlineIdentityFields": [
+    "VolumeSerialHex",
+    "FileId128Hex",
+    "Attributes",
+    "ReparseTag",
+    "Directory",
+    "DeletePending"
+  ],
+  "privateNativeDependency": {
+    "member": "NativeMetadata.cs",
+    "bytes": 6163,
+    "sha256": "f551d7287611b982a93eebf02e93719bfdce355609bd7ca4f9cd546ae9bf0a4c",
+    "methods": [
+      "Same",
+      "Hash",
+      "Named"
+    ]
+  },
+  "limitations": [
+    "Strict JSON equality is independently recomputed; it is not execution or an inferred implementation of SourceReviewNative1.Same.",
+    "No cause of LastAccessTime change is established.",
+    "Hash open/read/close/share/cancellation implementation requires the exact helper.",
+    "Reported bounds and flags are historical observations, not native requalification."
+  ],
+  "checks": [
+    {
+      "name": "exact-member:candidate-hash-and-paths.json",
+      "passed": true
+    },
+    {
+      "name": "exact-member:collect.ps1",
+      "passed": true
+    },
+    {
+      "name": "one-inline-six-field-comparison",
+      "passed": false
+    },
+    {
+      "name": "native-helper-loading-reference",
+      "passed": true
+    },
+    {
+      "name": "no-local-helper-substitute",
+      "passed": true
+    },
+    {
+      "name": "Same-delegated-three-call-sites",
+      "passed": true
+    },
+    {
+      "name": "hash-bounds-delegated",
+      "passed": true
+    },
+    {
+      "name": "inline-identity:executable",
+      "passed": true
+    },
+    {
+      "name": "strict-record-differences:executable",
+      "passed": true
+    },
+    {
+      "name": "inline-identity:root",
+      "passed": true
+    },
+    {
+      "name": "strict-record-differences:root",
+      "passed": true
+    },
+    {
+      "name": "inline-identity:Lib",
+      "passed": true
+    },
+    {
+      "name": "strict-record-differences:Lib",
+      "passed": true
+    },
+    {
+      "name": "inline-identity:DLLs",
+      "passed": true
+    },
+    {
+      "name": "strict-record-differences:DLLs",
+      "passed": true
+    },
+    {
+      "name": "thirty-five-pairs-twelve-differences",
+      "passed": true
+    },
+    {
+      "name": "complete-executable-record-equality:named-before/opened-before",
+      "passed": true
+    },
+    {
+      "name": "complete-executable-record-equality:opened-before/named-during",
+      "passed": true
+    },
+    {
+      "name": "complete-executable-record-equality:opened-before/opened-after",
+      "passed": true
+    },
+    {
+      "name": "complete-executable-record-equality:opened-after/named-after",
+      "passed": true
+    },
+    {
+      "name": "known-selected-size-hash",
+      "passed": true
+    },
+    {
+      "name": "reported-hash-flags-no-error",
+      "passed": true
+    },
+    {
+      "name": "exact-four-term-acceptance-conjunction",
+      "passed": true
+    },
+    {
+      "name": "recorded-rejection-preserved",
+      "passed": true
+    },
+    {
+      "name": "canonical-modification-change-timestamps-retained",
+      "passed": true
+    }
+  ],
+  "passed": 24,
+  "failed": 1,
+  "privateSourceExecuted": false,
+  "nativeExecution": false,
+  "admissionChanged": false
+}

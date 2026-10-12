@@ -1,0 +1,7 @@
+{
+  "exitCode": 1,
+  "checkerSha256": "c14935755799769aebf8e6f87beb764a299626a5f18e2c39cba7e021537bc3ae",
+  "cause": "Reviewer lexical identifier regex excluded digits, truncating FileId128Hex; private source and predicates unchanged.",
+  "nativeExecution": false,
+  "ownedJobsRemaining": 0
+}
