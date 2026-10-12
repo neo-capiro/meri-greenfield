@@ -109,6 +109,63 @@
       "drift": false,
       "bytes": 968034,
       "sha256": "81e68311f7e48540561d1b42ae0146b99f8ecbb4e459c797706594950757c6b0"
+    },
+    {
+      "path": "apps/api/src/business-development/business-development.service.ts",
+      "blob": "bc4b6ba052bdcfcaa1780a166585e30ab550c701",
+      "observedBlob": "bc4b6ba052bdcfcaa1780a166585e30ab550c701",
+      "drift": false,
+      "bytes": 56595,
+      "sha256": "40ed9816f134c43f6ce2abb1c0525bfd87228a669aad86ffdcd397693efa36ba",
+      "addedByIndependentReview": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-prospect-scope.helpers.ts",
+      "blob": "89d87e7f83760ef04db46dd31a69796674f5dacf",
+      "observedBlob": "89d87e7f83760ef04db46dd31a69796674f5dacf",
+      "drift": false,
+      "bytes": 4140,
+      "sha256": "3a3089721a795836a4d4714e7f3fdc33869c0c1a26b1fa9a3726881170aee0ea",
+      "addedByIndependentReview": true
+    },
+    {
+      "path": "apps/api/src/business-development/bizdev-watch.flag.guard.ts",
+      "blob": "aee4bd9c6b7db1e2935f939858280f526beb9fc4",
+      "observedBlob": "aee4bd9c6b7db1e2935f939858280f526beb9fc4",
+      "drift": false,
+      "bytes": 3327,
+      "sha256": "f80dc563955ca771d50e47e0164016b494fe8c79f33ae3a5e1204ac7860c75c8",
+      "addedByIndependentReview": true
+    },
+    {
+      "path": "apps/api/src/meri/meri-tool-request-control.ts",
+      "blob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+      "observedBlob": "e0cd084e488b50feadabfd8e325f86edc1611b41",
+      "drift": false,
+      "bytes": 2198,
+      "sha256": "e0808b351f92eb2a5d1b609fcfeafd08f2ed4388e2c26e9cdcf4b991af0a4287",
+      "addedByIndependentReview": true
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.ts",
+      "blob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "observedBlob": "fe586e9c425af353a4b1fb9312258bdeddf0c816",
+      "drift": false,
+      "bytes": 8141,
+      "sha256": "3223d37dd469883037d811165a05e470556e55514147d7891b9c021b41cb1ad5",
+      "addedByIndependentReview": true
+    },
+    {
+      "path": "apps/api/src/vendor-reference/vendor-reference-sam.client.spec.ts",
+      "blob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "observedBlob": "0fcf56e628df3123e40f5089baa21345fe8559de",
+      "drift": false,
+      "bytes": 6618,
+      "sha256": "ca122c14bda757ed1b0411835082ac2dfd4537cc28045ff094352c32e2c4528c",
+      "addedByIndependentReview": true
     }
-  ]
+  ],
+  "bodyPublication": false,
+  "sourceExecution": false,
+  "method": "Git blob/byte identities plus read-only TypeScript AST and relevant projection/type/policy inspection. Supporting source tests are metadata/context references, not executed."
 }

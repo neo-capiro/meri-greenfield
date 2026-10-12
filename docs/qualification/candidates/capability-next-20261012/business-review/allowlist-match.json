@@ -1,0 +1,10 @@
+{
+  "reference": "apps/api/src/meri/meri-bizdev-tools.service.ts:71",
+  "predicate": "exact fact allowlist matches schema enum and object keys",
+  "producerCount": 45,
+  "schemaEnumCount": 45,
+  "schemaPropertyCount": 45,
+  "matched": true,
+  "privateBodiesPublished": false,
+  "sourceExecuted": false
+}

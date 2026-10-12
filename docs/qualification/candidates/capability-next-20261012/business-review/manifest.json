@@ -1,0 +1,110 @@
+{
+  "sourceCommit": "bf9a06cfba22c5c3bac87949689348b16febcbc5",
+  "authorEvidenceCommit": "92d90eaee967d675724a3b8ce4079121e1961f9a",
+  "verdict": "ACCEPT_SOURCE",
+  "exclusions": [
+    "manifest.json (self)"
+  ],
+  "entries": [
+    {
+      "path": "docs/coordination/reports/CODEX-CAPABILITY-NEXT-BUSINESS-REVIEW-20261012.md",
+      "bytes": 7572,
+      "sha256": "97f88c98b5514dde1f26a81af3479b56b55662507b66196669d07712166972ea"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-business-development-independent.test.mjs",
+      "bytes": 15907,
+      "sha256": "b28eca2230789961abf4c5f43df168aab524128beda59e302f2c4a53d0dfa9c5"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/allowlist-match.json",
+      "bytes": 304,
+      "sha256": "2800e497f8ae40a1a3bb63fedc6593fdf33d4b0d39f9e14e0d0d53d15d3b530f"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/final-review.json",
+      "bytes": 2138,
+      "sha256": "ea1c4b76ad1535ec65863ad0f9ed6e7a18fb4549f93861de51b1d1a0ba819793"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.json",
+      "bytes": 1253,
+      "sha256": "c1a0c07fca676dbcd71872133ec9acdcdb6d7047620682d4b0ad16e42d0a65bf"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/final-whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/frozen-criteria.json",
+      "bytes": 2807,
+      "sha256": "f479afed1aaa13b92eb288b4174f5b03bcc081586c9dba8100e7ab6d5141d025"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/full-source.json",
+      "bytes": 1335,
+      "sha256": "58277e82a77d7fd3f67988068c9714f1ec36c314a89217a615e801e4e7d68346"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/full-source.stdout.bin",
+      "bytes": 32056,
+      "sha256": "d065a1ed60f9683c7867784529d8d5ea9702a8ee56cc3fa43d1b84ba0b516d2e"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.json",
+      "bytes": 1313,
+      "sha256": "27a948c910d6c4de897fd68dbc173543e70496be68115de18dfbc3b3db4b94e6"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/independent-first.stdout.bin",
+      "bytes": 4172,
+      "sha256": "e97bf3c3e105504effaea373423f358fe86750ebfa2981569a303c471915a1ef"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/pinned-reference-identities.json",
+      "bytes": 7062,
+      "sha256": "bac0e423ee30bc17413654fd9bdf68f719a74bb25c4a5528e0e8a4aae49c6d1d"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.json",
+      "bytes": 1315,
+      "sha256": "f4e190a8264206f92c7f9c005c5bf648e247df18264d2e4d4cf25aca0f5a34ae"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/preservation-audit.stdout.bin",
+      "bytes": 7365,
+      "sha256": "61a70faf8a3a4302c0d873ed4ece6f0cc8231c1b9a5e6561ce4315bc92d80fb0"
+    },
+    {
+      "path": "docs/qualification/candidates/capability-next-20261012/business-review/verify-source.py",
+      "bytes": 5081,
+      "sha256": "2a036f3c3b84ac1797579385ba68c757823dffac9895a1d7dbd2a082e3e2b0f0"
+    }
+  ]
+}
