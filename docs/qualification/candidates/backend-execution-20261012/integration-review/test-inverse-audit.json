@@ -1,0 +1,37 @@
+{
+  "command": [
+    "python3",
+    "-I",
+    "-B",
+    "-S",
+    "docs/qualification/candidates/backend-execution-20261012/integration-review/audit-preservation.py",
+    "60ef3f099107886565d2f20723ce0a01fcb9ca82"
+  ],
+  "cwd": "/workspace/meri-backend-execution-integration-review-20261012",
+  "sourceHead": "c65022e728d66853514530cdc1cb3e025057d652",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T21:37:25.196329+00:00",
+  "durationSeconds": 0.215,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 337603,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.stdout.bin",
+      "bytes": 2229,
+      "sha256": "7205da97cf144b783351d49688c83ff6fa4b30e60fe323ce72da6be6f6e808f1"
+    },
+    {
+      "path": "docs/qualification/candidates/backend-execution-20261012/integration-review/test-inverse-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
