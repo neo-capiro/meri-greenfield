@@ -1,0 +1,4 @@
+{"head": "5f336882ba60cc47b441160fadb387cd63fd9089", "originalEntries": 7186, "passed": 125, "failed": 3}
+FAILED: ProgramElement:all-and-only-scalars-plus-projection
+FAILED: ProgramElementYear:all-and-only-scalars-plus-projection
+FAILED: ProgramElementMilestone:all-and-only-scalars-plus-projection

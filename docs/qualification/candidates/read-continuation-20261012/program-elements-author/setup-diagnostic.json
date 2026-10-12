@@ -1,0 +1,7 @@
+{
+  "sparseWorktree": true,
+  "missingMaterializedDiscovery": "4b836850 read from immutable Git instead",
+  "agentsSkillsDirectory": "No tracked .agents directory at base; direct rg returned exit2",
+  "dependencyCopy": "Seven existing small pure JS packages only; no install",
+  "sourceEffects": false
+}

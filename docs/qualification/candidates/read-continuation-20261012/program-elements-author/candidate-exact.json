@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-program-elements.test.mjs"
+  ],
+  "cwd": "/workspace/meri-program-elements-20261012",
+  "sourceHead": "8854d1c0bb47d8b8b002643ee00e8edebe49ef41",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:52:52.027435+00:00",
+  "durationSeconds": 0.57,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 292047,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stdout.bin",
+      "bytes": 3335,
+      "sha256": "bbe2220d07911287d8bb400b527b09635ef4afc6bba77fa9188642d999e82ff8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/candidate-exact.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}

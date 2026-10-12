@@ -1,0 +1,2073 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:program-elements:0.2.0",
+  "title": "Private program-element finder, detail and timeline projections",
+  "$defs": {
+    "ProgramElementJson": {
+      "anyOf": [
+        {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementJson"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/ProgramElementJson"
+          }
+        }
+      ]
+    },
+    "ProgramElementInstant": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+    },
+    "ProgramElementDecimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9]\\d{0,11})(?:\\.\\d{1,2})?$",
+      "description": "Meri normalized lossless Decimal(14,2) wire; adapter prerequisite, not legacy serialization proof."
+    },
+    "ProgramElementContext": {
+      "type": "object",
+      "properties": {
+        "evidenceAccuracyMode": {
+          "enum": [
+            "off",
+            "shadow",
+            "enforce"
+          ]
+        }
+      },
+      "required": [
+        "evidenceAccuracyMode"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementSearchRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "q": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "service": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "budgetActivity": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "hasData": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "page": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        },
+        "limit": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ProgramElementSearchInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetActivity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hasData": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "query",
+        "service",
+        "budgetActivity",
+        "hasData",
+        "page",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementDetailRequest": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementDetailInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementTimelineRequest": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementTimelineInput": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "peCode"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementClaimSource": {
+      "type": "object",
+      "properties": {
+        "sourceDocumentId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documentType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetCycle": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "publisher": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pageNumber": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "sourceDocumentId",
+        "documentType",
+        "budgetCycle",
+        "publisher",
+        "sourceUrl",
+        "pageNumber",
+        "observedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementClaim": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fiscalYear": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stage": {
+          "enum": [
+            "request",
+            "hasc",
+            "sasc",
+            "ndaa_conference",
+            "hacd",
+            "sacd",
+            "appropriations_conference",
+            "enacted",
+            "none"
+          ]
+        },
+        "stageLabel": {
+          "type": "string"
+        },
+        "legislativeVehicle": {
+          "enum": [
+            "request",
+            "authorization",
+            "authorization_conference",
+            "appropriations",
+            "appropriations_conference",
+            "enacted",
+            "none"
+          ]
+        },
+        "cycleClass": {
+          "enum": [
+            "historical",
+            "current",
+            "outyear",
+            "unknown"
+          ]
+        },
+        "isProjection": {
+          "type": "boolean"
+        },
+        "unit": {
+          "const": "USD millions"
+        },
+        "enactmentStatus": {
+          "enum": [
+            "enacted",
+            "not_enacted",
+            "unknown"
+          ]
+        },
+        "vehicleType": {
+          "enum": [
+            "budget_request",
+            "authorization",
+            "appropriation",
+            "unknown"
+          ]
+        },
+        "originalUnit": {
+          "anyOf": [
+            {
+              "enum": [
+                "dollars",
+                "thousands",
+                "millions"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "originalValue": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/ProgramElementClaimSource"
+        },
+        "semantics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value",
+        "fiscalYear",
+        "stage",
+        "stageLabel",
+        "legislativeVehicle",
+        "cycleClass",
+        "isProjection",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementStage": {
+      "enum": [
+        "request",
+        "hasc",
+        "sasc",
+        "hacd",
+        "sacd",
+        "conference",
+        "enacted",
+        "none"
+      ]
+    },
+    "ProgramElementVehicle": {
+      "enum": [
+        "authorization",
+        "appropriation",
+        "request",
+        "none"
+      ]
+    },
+    "ProgramElementSearchFunding": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "const": "USD millions"
+        },
+        "current": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "fy": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "stage": {
+                  "$ref": "#/$defs/ProgramElementStage"
+                },
+                "stageLabel": {
+                  "type": "string"
+                },
+                "vehicle": {
+                  "$ref": "#/$defs/ProgramElementVehicle"
+                }
+              },
+              "required": [
+                "value",
+                "fy",
+                "stage",
+                "stageLabel",
+                "vehicle"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "request": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "fy": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "fy"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enacted": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "fy": {
+                  "anyOf": [
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "fy"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enactedVsRequestPct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentVsRequest": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "current",
+        "request",
+        "enacted",
+        "enactedVsRequestPct",
+        "currentVsRequest",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementFinderRow": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetActivity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "appropriationType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "hasData": {
+          "type": "boolean"
+        },
+        "watched": {
+          "type": "boolean"
+        },
+        "billCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestAtEnactedFy": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "peCurrentCycleFy": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signalType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signalScore": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "signalDeltaPct": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maturity": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "appropTier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "appropScore": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actionSignalType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actionSignalTone": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valleyOfDeath": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentClaim": {
+          "$ref": "#/$defs/ProgramElementClaim"
+        },
+        "requestClaim": {
+          "$ref": "#/$defs/ProgramElementClaim"
+        },
+        "enactedClaim": {
+          "$ref": "#/$defs/ProgramElementClaim"
+        },
+        "requestAtEnactedClaim": {
+          "$ref": "#/$defs/ProgramElementClaim"
+        },
+        "comparableEnactedVsRequest": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "fiscalYear": {
+                  "type": "integer"
+                },
+                "enacted": {
+                  "type": "number"
+                },
+                "request": {
+                  "type": "number"
+                },
+                "deltaPct": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "fiscalYear",
+                "enacted",
+                "request",
+                "deltaPct"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "identifierKind": {
+          "enum": [
+            "pe",
+            "procurement_line_item",
+            "other"
+          ]
+        },
+        "budgetExhibitType": {
+          "enum": [
+            "R-1/R-2 RDT&E Program Element",
+            "P-1/P-40 procurement line item (NOT a Program Element)",
+            "budget line (exhibit type not classified)"
+          ]
+        },
+        "currentFundingClaim": {
+          "$ref": "#/$defs/ProgramElementClaim"
+        },
+        "funding": {
+          "$ref": "#/$defs/ProgramElementSearchFunding"
+        }
+      },
+      "required": [
+        "peCode",
+        "title",
+        "service",
+        "budgetActivity",
+        "appropriationType",
+        "status",
+        "lastSyncedAt",
+        "hasData",
+        "watched",
+        "billCount",
+        "requestAtEnactedFy",
+        "peCurrentCycleFy",
+        "signalType",
+        "signalScore",
+        "signalDeltaPct",
+        "lineType",
+        "maturity",
+        "appropTier",
+        "appropScore",
+        "actionSignalType",
+        "actionSignalTone",
+        "valleyOfDeath",
+        "currentClaim",
+        "requestClaim",
+        "enactedClaim",
+        "requestAtEnactedClaim",
+        "comparableEnactedVsRequest",
+        "identifierKind",
+        "budgetExhibitType",
+        "currentFundingClaim",
+        "funding"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementSearchOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "search_program_elements"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementFinderRow"
+          },
+          "maxItems": 50
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "data",
+        "total",
+        "page",
+        "limit"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementYear": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "peCode": {
+          "type": "string"
+        },
+        "fy": {
+          "type": "integer"
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hascMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sascMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hacDMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sacDMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ndaaConference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enacted": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reprogrammed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rDocSection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw": {
+          "$ref": "#/$defs/ProgramElementJson"
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "fundingClaim": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "peCode",
+        "fy",
+        "request",
+        "hascMark",
+        "sascMark",
+        "hacDMark",
+        "sacDMark",
+        "conference",
+        "ndaaConference",
+        "enacted",
+        "reprogrammed",
+        "executed",
+        "notes",
+        "rDocSection",
+        "raw",
+        "lastSyncedAt",
+        "fundingClaim"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementStored": {
+      "type": "object",
+      "properties": {
+        "peCode": {
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "serviceCode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "appropriationType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetActivity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetActivityName": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineNumber": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acatLevel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "programOfRecord": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rDocUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pDocUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "oDocUrl": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw": {
+          "$ref": "#/$defs/ProgramElementJson"
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceConfidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "firstSeenFy": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "retiredAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "retiredReason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "years": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementYear"
+          }
+        },
+        "fundingSummary": {
+          "type": "string"
+        },
+        "billCount": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projectCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sourceCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "currentCycleFy": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentUserIsWatching": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "peCode",
+        "service",
+        "serviceCode",
+        "appropriationType",
+        "budgetActivity",
+        "budgetActivityName",
+        "lineNumber",
+        "title",
+        "description",
+        "acatLevel",
+        "programOfRecord",
+        "status",
+        "rDocUrl",
+        "pDocUrl",
+        "oDocUrl",
+        "raw",
+        "source",
+        "sourceConfidence",
+        "firstSeenFy",
+        "lastSyncedAt",
+        "retiredAt",
+        "retiredReason",
+        "years",
+        "fundingSummary",
+        "billCount",
+        "projectCount",
+        "sourceCount",
+        "currentCycleFy",
+        "currentUserIsWatching"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementLineageRow": {
+      "type": "object",
+      "properties": {
+        "relType": {
+          "enum": [
+            "predecessor_successor",
+            "same_program"
+          ]
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "candidate"
+          ]
+        },
+        "fromCode": {
+          "type": "string"
+        },
+        "toCode": {
+          "type": "string"
+        },
+        "transitionFyFrom": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transitionFyTo": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence": {
+          "$ref": "#/$defs/ProgramElementJson"
+        }
+      },
+      "required": [
+        "relType",
+        "status",
+        "fromCode",
+        "toCode",
+        "transitionFyFrom",
+        "transitionFyTo",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementLineage": {
+      "type": "object",
+      "properties": {
+        "accepted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementLineageRow"
+          }
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementLineageRow"
+          }
+        }
+      },
+      "required": [
+        "accepted",
+        "candidates"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementDetailOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_program_element"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "identifierKind": {
+          "enum": [
+            "pe",
+            "procurement_line_item",
+            "other"
+          ]
+        },
+        "budgetExhibitType": {
+          "enum": [
+            "R-1/R-2 RDT&E Program Element",
+            "P-1/P-40 procurement line item (NOT a Program Element)",
+            "budget line (exhibit type not classified)"
+          ]
+        },
+        "currentCycleFy": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentFundingClaim": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineage": {
+          "$ref": "#/$defs/ProgramElementLineage"
+        },
+        "programElement": {
+          "$ref": "#/$defs/ProgramElementStored"
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "identifierKind",
+        "budgetExhibitType",
+        "currentCycleFy",
+        "currentFundingClaim",
+        "programElement"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementMissingMarks": {
+      "type": "object",
+      "properties": {
+        "request": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "hascMark": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "sascMark": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "ndaaConference": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "hacDMark": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "sacDMark": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "conference": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        },
+        "enacted": {
+          "enum": [
+            "present",
+            "not_applicable",
+            "not_started",
+            "candidate_gap",
+            "unknown_coverage"
+          ]
+        }
+      },
+      "required": [
+        "request",
+        "hascMark",
+        "sascMark",
+        "ndaaConference",
+        "hacDMark",
+        "sacDMark",
+        "conference",
+        "enacted"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementTimelineYear": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "peCode": {
+          "type": "string"
+        },
+        "fy": {
+          "type": "integer"
+        },
+        "request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hascMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sascMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hacDMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sacDMark": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "conference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ndaaConference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "enacted": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reprogrammed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "executed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementDecimal"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rDocSection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw": {
+          "$ref": "#/$defs/ProgramElementJson"
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "cycle": {
+          "enum": [
+            "historical",
+            "current",
+            "outyear"
+          ]
+        },
+        "current": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentStage": {
+          "$ref": "#/$defs/ProgramElementStage"
+        },
+        "currentStageLabel": {
+          "type": "string"
+        },
+        "currentVehicle": {
+          "$ref": "#/$defs/ProgramElementVehicle"
+        },
+        "currentDeltaVsRequestM": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requestConflictValuesM": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "fundingClaim": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "missingMarks": {
+          "$ref": "#/$defs/ProgramElementMissingMarks"
+        },
+        "predictedConferenceAmount": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predictedConferenceAmountCiLow": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predictedConferenceAmountCiHigh": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "predictedConferenceConfidence": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "peCode",
+        "fy",
+        "request",
+        "hascMark",
+        "sascMark",
+        "hacDMark",
+        "sacDMark",
+        "conference",
+        "ndaaConference",
+        "enacted",
+        "reprogrammed",
+        "executed",
+        "notes",
+        "rDocSection",
+        "raw",
+        "lastSyncedAt",
+        "cycle",
+        "current",
+        "currentStage",
+        "currentStageLabel",
+        "currentVehicle",
+        "currentDeltaVsRequestM",
+        "requestConflictValuesM",
+        "fundingClaim",
+        "missingMarks",
+        "predictedConferenceAmount",
+        "predictedConferenceAmountCiLow",
+        "predictedConferenceAmountCiHigh",
+        "predictedConferenceConfidence"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementMilestone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "peCode": {
+          "type": "string"
+        },
+        "milestoneType": {
+          "type": "string"
+        },
+        "plannedDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actualDate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementInstant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        }
+      },
+      "required": [
+        "id",
+        "peCode",
+        "milestoneType",
+        "plannedDate",
+        "actualDate",
+        "status",
+        "source",
+        "notes",
+        "lastSyncedAt"
+      ],
+      "additionalProperties": false
+    },
+    "ProgramElementTimelineOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "get_pe_budget_timeline"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/ProgramElementInstant"
+        },
+        "identifierKind": {
+          "enum": [
+            "pe",
+            "procurement_line_item",
+            "other"
+          ]
+        },
+        "budgetExhibitType": {
+          "enum": [
+            "R-1/R-2 RDT&E Program Element",
+            "P-1/P-40 procurement line item (NOT a Program Element)",
+            "budget line (exhibit type not classified)"
+          ]
+        },
+        "currentCycleFy": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "currentFundingClaim": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ProgramElementClaim"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineage": {
+          "$ref": "#/$defs/ProgramElementLineage"
+        },
+        "peCode": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "appropriationType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "budgetActivity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lineNumber": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fundingSummary": {
+          "type": "string"
+        },
+        "years": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementTimelineYear"
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProgramElementMilestone"
+          }
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "identifierKind",
+        "budgetExhibitType",
+        "currentCycleFy",
+        "currentFundingClaim",
+        "peCode",
+        "title",
+        "service",
+        "appropriationType",
+        "budgetActivity",
+        "lineNumber",
+        "fundingSummary",
+        "years",
+        "milestones"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

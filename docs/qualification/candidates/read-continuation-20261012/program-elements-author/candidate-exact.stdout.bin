@@ -1,0 +1,46 @@
+✔ three complete projections validate under private URN (12.982846ms)
+✔ search defaults aliases trimmed UTF16 bounds and scalar clamps (0.827835ms)
+✔ optional nonstring scalar selectors do not manufacture filters (0.202294ms)
+✔ required PE selector preserves32 not stored16 bound (1.018241ms)
+✔ closed context refuses model authority and mode in raw (0.368765ms)
+✔ operation admission never coerces hostile selectors (0.189264ms)
+✔ inert admission refuses getters proxies cycles and hidden fields (0.349705ms)
+✔ returned validated result is detached from every nested caller object (0.519732ms)
+✔ search removes exactly unlabelled fields while retaining residual claims (2.999359ms)
+✔ finder current model claim keeps unknown cycle unlike residual currentClaim (0.516516ms)
+✔ empty later finder page total0 does not claim corpus absence (0.540612ms)
+✔ finder page/limit bounds and identity uniqueness are enforced (1.340004ms)
+✔ hasData false does not invent a negative filter; true requires stored data (0.597278ms)
+✔ no cross-fiscal-year numeric comparison is inferred (0.461854ms)
+✔ stored decimal strings preserve14,2 precision; numeric helper mocks are not wire (2.54136ms)
+✔ detail cache selector permits case only while timeline direct selector remains exact (0.735706ms)
+✔ complete stored scalar projection has no unspecific escape fields (5.644205ms)
+✔ complete stored year fields remain independently required and nullable (3.433782ms)
+✔ years ordered ascending and uniquely bind IDs/fiscal years/PE (0.532921ms)
+✔ outer claim cycle and source fundingSummary are distinct from stored catalog cycle (0.385249ms)
+✔ off/shadow omit enforced provenance while enforce carries semantics and lineage (1.342779ms)
+✔ accepted and candidate lineage are separate opaque-evidence observations (0.833283ms)
+✔ funding stage/vehicle/unit/projection distinctions cannot be upgraded (0.719492ms)
+✔ NDAA conference claim remains distinct from appropriations conference (0.864209ms)
+✔ outyear projection label and null versus zero money survive (0.37245ms)
+✔ forecast amount and confidence remain separate and uncapped cached numbers (0.559121ms)
+✔ zero marks are present and conflicting request zero cannot support delta (1.193364ms)
+✔ milestones preserve nullable SQL dates and full stored keys without chronology claim (1.015937ms)
+✔ no artificial years/milestones list cap (3.586521ms)
+✔ watch/cache/source-count assertions never become current visibility proof (0.564679ms)
+✔ negative source lookup cannot masquerade as successful empty detail (0.281493ms)
+✔ enforced lineage preserves required source caution note (0.341874ms)
+✔ timeline unknown cycle is preserved when no current cycle is known (0.348564ms)
+✔ timeline absent conflicting observations remain null rather than fabricated array (0.295995ms)
+✔ finder absent money/FY can omit current model claim through explicit null (0.279661ms)
+✔ matched enacted comparison uses its own signed fiscal-year denominator (0.567443ms)
+✔ raw marks bound derived claims and emitted current summary (0.640713ms)
+✔ native floating subtraction remains distinct from exact stored decimal wire (0.700583ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 486.35485

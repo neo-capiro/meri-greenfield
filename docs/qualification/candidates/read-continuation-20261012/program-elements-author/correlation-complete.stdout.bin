@@ -1,0 +1,59 @@
+✔ three complete projections validate under private URN (21.113935ms)
+✔ search defaults aliases trimmed UTF16 bounds and scalar clamps (0.908225ms)
+✔ optional nonstring scalar selectors do not manufacture filters (0.201903ms)
+✔ required PE selector preserves32 not stored16 bound (0.968607ms)
+✔ closed context refuses model authority and mode in raw (0.39894ms)
+✔ operation admission never coerces hostile selectors (0.17262ms)
+✔ inert admission refuses getters proxies cycles and hidden fields (0.354242ms)
+✔ returned validated result is detached from every nested caller object (0.581004ms)
+✔ search removes exactly unlabelled fields while retaining residual claims (3.185269ms)
+✔ finder current model claim keeps unknown cycle unlike residual currentClaim (0.637949ms)
+✔ empty later finder page total0 does not claim corpus absence (0.304688ms)
+✔ finder page/limit bounds and identity uniqueness are enforced (0.703969ms)
+✔ hasData false does not invent a negative filter; true requires stored data (0.616227ms)
+✔ no cross-fiscal-year numeric comparison is inferred (0.342245ms)
+✔ stored decimal strings preserve14,2 precision; numeric helper mocks are not wire (2.822213ms)
+✔ detail cache selector permits case only while timeline direct selector remains exact (0.721004ms)
+✔ complete stored scalar projection has no unspecific escape fields (5.275411ms)
+✔ complete stored year fields remain independently required and nullable (3.03263ms)
+✔ years ordered ascending and uniquely bind IDs/fiscal years/PE (0.562546ms)
+✔ outer claim cycle and source fundingSummary are distinct from stored catalog cycle (0.239781ms)
+✔ off/shadow omit enforced provenance while enforce carries semantics and lineage (1.275487ms)
+✔ accepted and candidate lineage are separate opaque-evidence observations (0.799422ms)
+✔ funding stage/vehicle/unit/projection distinctions cannot be upgraded (0.712081ms)
+✔ NDAA conference claim remains distinct from appropriations conference (0.805ms)
+✔ outyear projection label and null versus zero money survive (0.370567ms)
+✔ forecast amount and confidence remain separate and uncapped cached numbers (0.449746ms)
+✔ zero marks are present and conflicting request zero cannot support delta (1.006904ms)
+✔ milestones preserve nullable SQL dates and full stored keys without chronology claim (0.963799ms)
+✔ no artificial years/milestones list cap (3.523878ms)
+✔ watch/cache/source-count assertions never become current visibility proof (0.577999ms)
+✔ negative source lookup cannot masquerade as successful empty detail (0.295745ms)
+✔ enforced lineage preserves required source caution note (0.323376ms)
+✔ timeline unknown cycle is preserved when no current cycle is known (0.301393ms)
+✔ timeline absent conflicting observations remain null rather than fabricated array (0.385209ms)
+✖ finder absent money/FY can omit current model claim through explicit null (0.416086ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 34
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 483.035715
+
+✖ failing tests:
+
+test at packages/contracts/test/retrieval-program-elements.test.mjs:61:1
+✖ finder absent money/FY can omit current model claim through explicit null (0.416086ms)
+  Error: Unavailable amount/FY cannot assert a funding claim
+      at fail (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:3:28)
+      at observeClaim (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:73:32)
+      at searchClaims (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:83:3)
+      at search (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:118:7)
+      at Object.assertProgramElementOutput (file:///workspace/meri-program-elements-20261012/packages/contracts/retrieval-0.2/program-elements-validation.mjs:153:46)
+      at check (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:23:91)
+      at TestContext.<anonymous> (file:///workspace/meri-program-elements-20261012/packages/contracts/test/retrieval-program-elements.test.mjs:61:222)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)

@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "packages/contracts/test/retrieval-program-elements.test.mjs"
+  ],
+  "cwd": "/workspace/meri-program-elements-20261012",
+  "sourceHead": "ede7b56845816d38d0bbffab5a657aaa4f978739",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceDiffBytes": 0,
+  "captureSha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc",
+  "startedAt": "2026-10-12T19:41:49.458269+00:00",
+  "durationSeconds": 0.424,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedPidAndPgid": 287702,
+  "ownedProcessGroupAbsent": true,
+  "ownedGroupKillRequired": false,
+  "reapedDescendants": [],
+  "streams": [
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stdout.bin",
+      "bytes": 2732,
+      "sha256": "2b6e267b272e6075dfb7051249b69a81a024f2ee744fc81e9fc9f3741a96c551"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/program-elements-author/focused-schema-repair.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "rerunReason": "Baseline or newly changed source check; raw result preserved.",
+  "scope": "LOCAL_SOURCE_ONLY_NOT_RUNTIME_ADMISSION"
+}
