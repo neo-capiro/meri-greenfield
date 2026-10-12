@@ -1,0 +1,378 @@
+{
+  "sourceCommit": "31093cd5b6aaaf246a870eb4f473a6639cc2a7df",
+  "sourceTree": "d3e75ff6046a0e1b51aeb4c3644c7670b94f1d22",
+  "sourceBindings": [
+    {
+      "path": "packages/contracts/retrieval-0.2/public-data.schema.json",
+      "bytes": 21799,
+      "sha256": "f6795b5b9e14bca87e068b561f6a7bdeb6e7dffc775a738b9bac6f9e6b0e1ea2",
+      "blob": "bd3fbabc7a8abbb997901b3f66bfbfeb62fcd7e6"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-data-validation.mjs",
+      "bytes": 6458,
+      "sha256": "6b1e2714392c8905ed9de89c5df0c18798bd8ea363247521eec6124a08f1c856",
+      "blob": "a417f0309a870a7d95f378d30eaf4a738110e8e0"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/public-data-deadlines.mjs",
+      "bytes": 3613,
+      "sha256": "6ab0d995ce678b0b627fdc05f298fdc558b809725c11b75b4a48f77ec2bcf6cd",
+      "blob": "6b1264721edfe7fa12b2d775d29b20da5d69d8bb"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-public-data.test.mjs",
+      "bytes": 16003,
+      "sha256": "f2642e73e667f297eb4b6dfca90372228269dc87d03a88cb2dba76035330a067",
+      "blob": "5300e8741bea477a147ae62950d5932490a0bb74"
+    }
+  ],
+  "storageAnnotations": [
+    {
+      "model": "FederalGrant",
+      "field": "openDate",
+      "annotation": "@db.Date"
+    },
+    {
+      "model": "FederalGrant",
+      "field": "closeDate",
+      "annotation": "@db.Date"
+    },
+    {
+      "model": "FederalAward",
+      "field": "id",
+      "annotation": "@db.Uuid"
+    },
+    {
+      "model": "FederalAward",
+      "field": "peCode",
+      "annotation": "@db.VarChar(16)"
+    }
+  ],
+  "authorReceiptSha256": "ccce0a26f124fcbfc5f5dc293b17b960da3c950fc7bd72ed75c288a5251a7b64",
+  "checks": [
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.service.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/prisma/schema.prisma observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.service.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.service.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.service.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.service.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.types.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.types.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.types.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/federal-spending/federal-market.types.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/federal-award-date-serialization.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/federal-award-date-serialization.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/federal-award-date-serialization.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/federal-award-date-serialization.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/meri-evidence-accuracy-flags.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/meri-evidence-accuracy-flags.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/meri-evidence-accuracy-flags.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/common/meri-evidence-accuracy-flags.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/evidence-accuracy.ts size",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/evidence-accuracy.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/evidence-accuracy.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/evidence-accuracy.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/capability-rollout.ts size",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/capability-rollout.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/capability-rollout.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "packages/meriv2-core/src/rollout/capability-rollout.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/deadline.ts size",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/deadline.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/deadline.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/deadline.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/time-zone.ts size",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/time-zone.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/time-zone.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "packages/shared/src/schedule/time-zone.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/time-bounds.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/time-bounds.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/time-bounds.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/intelligence/time-bounds.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.federal-grants-deadline.spec.ts size",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.federal-grants-deadline.spec.ts SHA256",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.federal-grants-deadline.spec.ts pinned blob",
+      "passed": true
+    },
+    {
+      "name": "apps/api/src/meri/meri-tools.federal-grants-deadline.spec.ts observed unchanged",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/public-data.schema.json matches candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/public-data-validation.mjs matches candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/retrieval-0.2/public-data-deadlines.mjs matches candidate",
+      "passed": true
+    },
+    {
+      "name": "packages/contracts/test/retrieval-public-data.test.mjs matches candidate",
+      "passed": true
+    },
+    {
+      "name": "production changes are exactly four allocated additions",
+      "passed": true
+    },
+    {
+      "name": "original tracked source preserved",
+      "passed": true
+    },
+    {
+      "name": "private candidate tree exact",
+      "passed": true
+    },
+    {
+      "name": "FederalGrant.openDate storage annotation",
+      "passed": true
+    },
+    {
+      "name": "FederalGrant.closeDate storage annotation",
+      "passed": true
+    },
+    {
+      "name": "FederalAward.id storage annotation",
+      "passed": true
+    },
+    {
+      "name": "FederalAward.peCode storage annotation",
+      "passed": true
+    },
+    {
+      "name": "Census state has no db length annotation",
+      "passed": true
+    },
+    {
+      "name": "schema private id",
+      "passed": true
+    },
+    {
+      "name": "economic policy not model key",
+      "passed": true
+    },
+    {
+      "name": "PublicGrant policy not model key",
+      "passed": true
+    },
+    {
+      "name": "PublicAward policy not model key",
+      "passed": true
+    },
+    {
+      "name": "trusted policy exact modes",
+      "passed": true
+    },
+    {
+      "name": "no source output runtime claims",
+      "passed": true
+    },
+    {
+      "name": "author receipt source freeze",
+      "passed": true
+    },
+    {
+      "name": "author receipt source clean",
+      "passed": true
+    },
+    {
+      "name": "author receipt normal completion",
+      "passed": true
+    },
+    {
+      "name": "author owned process group absent",
+      "passed": true
+    },
+    {
+      "name": "author stream focused-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "author stream focused-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "author 27 tests pass",
+      "passed": true
+    },
+    {
+      "name": "independent-first preserved result",
+      "passed": true
+    },
+    {
+      "name": "independent-first raw independent-first.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "independent-first raw independent-first.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "independent-admission preserved result",
+      "passed": true
+    },
+    {
+      "name": "independent-admission raw independent-admission.stdout.bin",
+      "passed": true
+    },
+    {
+      "name": "independent-admission raw independent-admission.stderr.bin",
+      "passed": true
+    },
+    {
+      "name": "first failing test unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 80,
+  "failed": 0,
+  "scope": "READ_ONLY_SOURCE_AND_DATA_NOT_NATIVE_OR_RUNTIME"
+}
