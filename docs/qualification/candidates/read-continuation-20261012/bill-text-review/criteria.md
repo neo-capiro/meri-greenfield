@@ -1,0 +1,16 @@
+# Independent bill-text source review criteria
+
+Base: `01c75641b62bb586d130feda3468c0ddb4286e8f`. Frozen before candidate receipt. Reviewer owns this evidence directory, `packages/contracts/test/retrieval-bill-text-independent.test.mjs` and the BILL-TEXT-REVIEW report only; production repair belongs to author/root.
+
+1. Pin immutable source/schema/policy references and observed drift, publishing metadata only. No source import/execution/copy or database/provider calls.
+2. Two operations use one canonical congressional resolver with explicit trusted default Congress; model fields cannot establish authority or select clock context. Preserve query/search precedence, normalization and branch-specific page/limit defaults. Document deliberate stricter typed admission.
+3. Metadata and direct-designation search preserve raw CongressBill scalar/null/date/JSON projection, count windows and resolved identity. Text search remains a distinct shape; total is returned groups, totalBills nullable, no invented complete absence. Preserve grouped passages even when tuple version differs from group version.
+4. Text-search UTF-16 strings and serialized JSON ceiling are tested separately from Unicode code-point length and UTF-8 bytes. Preserve omitted results, next-page and unknown count semantics; explicitly disclose any admitted bound stronger than the producer.
+5. Cursor is a canonical base64url five-tuple with valid bill/version/revision/hash/safe offset and request binding. Locator mode cannot combine cursor. Test stale/mismatched lineage and offsets, encoded aliases, malformed JSON and hostile property/getter/prototype values. Current-pointer truth remains adapter qualification, not DTO proof.
+6. Read unavailable/sequential/locator branches correlate tool/owner/status/found, identity, requested version, coverage, text length and continuation. Keep external_untrusted and preserve source locator/nullable dates. No completion/freshness/authority invented from local coverage.
+7. Sequential pages obey 9000 UTF-16 ceiling and exact offset/length/total/continuation relations; locator preserves passage bounds, 6-passage maximum, query parts/hits/combined text and incomplete coverage. Declared stricter emitted cursor/version admission must not silently rewrite source facts.
+8. Factory/schema/entry imports remain inert and cohesive. Reuse shared JSON/plain-object guards and canonical resolver; no copied SQL/tokenizer/retriever, source adapter, loop or activation. Source remains unavailable and public0.1/private0.2 separation preserved.
+9. Independent controls use real candidate factory and schemas, not copied algorithms. Freeze and retain actual failures and corrected replays; appropriate author checks may be receipt-audited instead of broadly repeated.
+10. Final exact source/tree and review-only commits, privacy/preservation/manifest audit and physical owned-process cleanup are recorded. ACCEPT_SOURCE is limited to reviewed DTO/source surface; native/runtime/source adapter, database consistency, current evidence and gateway authority remain HOLD.
+
+References: prior `next-discovery/congressional-reference-identities.json` (nine exact immutable/current pins), `congressional-contracts.json` and preserved `congressional-corrections.json`. Missing local `.agents/skills` has been checked; no repository skill applies to this lane.
