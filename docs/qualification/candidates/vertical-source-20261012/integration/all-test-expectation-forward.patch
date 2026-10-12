@@ -1,0 +1,281 @@
+diff --git a/apps/gateway/test/action-item-context-independent.test.mjs b/apps/gateway/test/action-item-context-independent.test.mjs
+index 71d3eca5..5f0de6a9 100644
+--- a/apps/gateway/test/action-item-context-independent.test.mjs
++++ b/apps/gateway/test/action-item-context-independent.test.mjs
+@@ -7,9 +7,9 @@ import { fixture as originalFixture, NOW, limits, uuid } from './fixtures.mjs';
+ import { connected, clientId, actorId, page, operation, row } from '../../../docs/qualification/candidates/capability-successor-20261012/action-review/fixture.mjs';
+ const tick = () => new Promise(resolve=>setImmediate(resolve));
+ 
+-test('all84 production operations remain unavailable and zero-effect',async()=>{
++test('all97 production operations remain unavailable and zero-effect',async()=>{
+   const f=originalFixture();const gateway=createSourceDisabledGateway({authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('7')});
+-  assert.equal(catalog.operations.length,84);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
++  assert.equal(catalog.operations.length,97);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
+   for(const descriptor of catalog.operations)await assert.rejects(gateway.execute(JSON.stringify({operation:descriptor.operation,arguments:{clientId}}),'synthetic-opaque'),/UNAVAILABLE/);
+   assert.deepEqual(f.calls,[]);
+ });
+diff --git a/apps/gateway/test/capability-next-independent.test.mjs b/apps/gateway/test/capability-next-independent.test.mjs
+index 38090175..24831958 100644
+--- a/apps/gateway/test/capability-next-independent.test.mjs
++++ b/apps/gateway/test/capability-next-independent.test.mjs
+@@ -4,9 +4,9 @@ import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' wit
+ import {createSourceDisabledGateway} from '../index.mjs';
+ import {fixture,NOW,limits,uuid} from './fixtures.mjs';
+ 
+-test('independent combined catalog remains invisible and refuses all84 operations before every effect',async()=>{
++test('independent combined catalog remains invisible and refuses all97 operations before every effect',async()=>{
+   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('7')});
+-  assert.equal(catalog.operations.length,84);assert.equal(gateway.sourceEnabled,false);
++  assert.equal(catalog.operations.length,97);assert.equal(gateway.sourceEnabled,false);
+   assert.deepEqual(await gateway.discover(),[]);
+   for(const {operation} of catalog.operations){
+     await assert.rejects(gateway.execute(JSON.stringify({operation,arguments:{}}),'synthetic-unqualified'),/UNAVAILABLE/);
+diff --git a/apps/gateway/test/mail-context-independent.test.mjs b/apps/gateway/test/mail-context-independent.test.mjs
+index ed57e35b..e0ff7e9a 100644
+--- a/apps/gateway/test/mail-context-independent.test.mjs
++++ b/apps/gateway/test/mail-context-independent.test.mjs
+@@ -180,7 +180,7 @@ test('mail independent: budget-shortened lifetime bounds retained expiry',async(
+ test('mail independent: source-disabled canonical catalog never reaches supplied ports',async()=>{
+   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.authorityPorts,budget:f.budget,limits,now:()=>NOW,newId:()=>id('b')});
+   const catalog=JSON.parse(readFileSync(new URL('packages/contracts/retrieval-0.2/catalog.json',root)));
+-  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
++  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
+   for(const row of catalog.operations){assert.equal(row.availability,'unimplemented');assert.equal(row.handler,null);await assert.rejects(gateway.execute(JSON.stringify({operation:row.operation,arguments:{}}),'synthetic'),/UNAVAILABLE/);}
+   assert.deepEqual(await gateway.discover(),[]);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(f.events,[]);
+ });
+diff --git a/apps/gateway/test/memory-context-independent.test.mjs b/apps/gateway/test/memory-context-independent.test.mjs
+index cbee1df9..d60718b8 100644
+--- a/apps/gateway/test/memory-context-independent.test.mjs
++++ b/apps/gateway/test/memory-context-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalDispatchProfiles} from '../../../packages/contracts/test/vertical-source-expectations.mjs';
+ /** Independent synthetic composition through real canonical contracts and authority. */
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -96,9 +97,9 @@ async function denied(f,args={},changes={}) {
+ 
+ test('independent: canonical mail and memory profiles are selected; actual15 stay unavailable',async()=>{
+   const selected=CATALOG_OPERATION_BINDINGS.filter(row=>row.dispatchProfile!==undefined);
+-  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]),[['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1']]);
++  assert.deepEqual(selected.map(row=>[row.id,row.dispatchProfile]).sort(),[...verticalDispatchProfiles,['list_global_datasets','dataset-metadata/1'],['mail.list_messages','mail-candidates/1'],['mail.search_messages','mail-candidates/1'],[operation.id,'memory-proposals/1']].sort());
+   const catalog=JSON.parse(readFileSync(new URL('packages/contracts/retrieval-0.2/catalog.json',root)));
+-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.length,139);
++  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.length,139);
+   const f=fixture();const gateway=createSourceDisabledGateway({authorityPorts:f.authorityPorts,budget:f.budget,limits,now:()=>NOW,newId:()=>id('b')});
+   const view=createRuntimeCatalog({catalogJson:JSON.stringify(catalog),contracts});
+   for(const row of catalog.operations){assert.equal(row.availability,'unimplemented');assert.equal(row.qualification,'pending');
+diff --git a/packages/contracts/test/backend-execution-expectations.mjs b/packages/contracts/test/backend-execution-expectations.mjs
+index 1eb11acd..622da1e0 100644
+--- a/packages/contracts/test/backend-execution-expectations.mjs
++++ b/packages/contracts/test/backend-execution-expectations.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,expectedVerticalBoundary,expectedVerticalDescriptor,priorVerticalDescriptor} from './vertical-source-expectations.mjs';
+ // Exact declared expected deltas to immutable historical snapshots.
+ import assert from 'node:assert/strict';
+ // No field is ignored; old callbacks, hashes, outputs and behavior still compare.
+@@ -5,7 +6,7 @@ export const addedOperations = Object.freeze(["search_client_knowledge", "query_
+ export const fullActionReference = Object.freeze({id:'actions.query',version:'0.2.0'});
+ const rawRequests = Object.freeze({"query_outreach": {"before": "OutreachQueryInput", "after": "OutreachQueryRequest"}, "search_program_elements": {"before": "ProgramElementSearchInput", "after": "ProgramElementSearchRequest"}, "get_program_element": {"before": "ProgramElementDetailInput", "after": "ProgramElementDetailRequest"}, "get_pe_budget_timeline": {"before": "ProgramElementTimelineInput", "after": "ProgramElementTimelineRequest"}, "search_public_web": {"before": "PublicWebSearchInput", "after": "PublicWebSearchRequest"}, "scrape_web_page": {"before": "PublicWebPageInput", "after": "PublicWebPageRequest"}, "search_sam_opportunities": {"before": "SamOpportunitiesInput", "after": "SamOpportunitiesRequest"}, "get_florida_budget_project": {"before": "FloridaBudgetInput", "after": "FloridaBudgetRequest"}, "get_state_bill_status": {"before": "StateBillStatusInput", "after": "StateBillStatusRequest"}, "search_state_floor_votes": {"before": "StateFloorVotesInput", "after": "StateFloorVotesRequest"}, "find_contacts": {"before": "TenantContactsInput", "after": "TenantContactsRequest"}, "resolve_entity": {"before": "EntityCandidatesInput", "after": "EntityCandidatesRequest"}, "search_tracked_bills": {"before": "TrackedBillsInput", "after": "TrackedBillsRequest"}, "get_committee_roster": {"before": "CommitteeRosterInput", "after": "CommitteeRosterRequest"}, "list_members": {"before": "MemberListInput", "after": "MemberListRequest"}, "get_pe_contractors": {"before": "PeContractorsInput", "after": "PeContractorsRequest"}, "get_pe_bills": {"before": "PeBillsInput", "after": "PeBillsRequest"}, "get_pe_report_language": {"before": "PeReportLanguageInput", "after": "PeReportLanguageRequest"}, "get_state_rule_status": {"before": "RuleStatusInput", "after": "RuleStatusRequest"}, "get_certification_status": {"before": "CertificationStatusInput", "after": "CertificationStatusRequest"}, "search_sec_filings": {"before": "DisclosuresSecInput", "after": "DisclosuresSecRequest"}, "search_fara_registrations": {"before": "DisclosuresFaraInput", "after": "DisclosuresFaraRequest"}, "search_lda_filings": {"before": "DisclosuresLdaInput", "after": "DisclosuresLdaRequest"}, "get_bill_status": {"before": "FederalBillStatusInput", "after": "FederalBillStatusRequest"}, "search_floor_votes": {"before": "FederalFloorVotesInput", "after": "FederalFloorVotesRequest"}, "search_state_bills": {"before": "StateBillSearchInput", "after": "StateBillSearchRequest"}, "get_state_legislator": {"before": "StateLegislatorInput", "after": "StateLegislatorRequest"}, "query_economic_data": {"before": "PublicEconomicInput", "after": "PublicEconomicRequest"}, "search_federal_grants": {"before": "PublicGrantInput", "after": "PublicGrantRequest"}, "search_federal_awards": {"before": "PublicAwardInput", "after": "PublicAwardRequest"}, "lookup_client_registry": {"before": "ClientRegistryInput", "after": "ClientRegistryRequest"}});
+ export function expectedExistingDescriptor(row) {
+-  let result=row;
++  let result=expectedVerticalDescriptor(row);
+   if(rawRequests[row.operation.id]) {
+     const change=rawRequests[row.operation.id], suffix='#/$defs/'+change.before;
+     if(!result.inputSchema.id.endsWith(suffix)) throw Error('Unexpected historical input schema: '+row.operation.id);
+@@ -19,7 +20,7 @@ export function expectedExistingDescriptor(row) {
+ }
+ // Only the declared changed fields are reversed; all other bytes remain hashed.
+ export function priorExistingDescriptor(row) {
+-  let result=row;
++  let result=priorVerticalDescriptor(row);
+   if(rawRequests[row.operation.id]) {
+     const change=rawRequests[row.operation.id],suffix='#/$defs/'+change.after;
+     assert.ok(result.inputSchema.id.endsWith(suffix));
+@@ -46,6 +47,8 @@ export function expectedExistingBinding(row) {
+   return result;
+ }
+ export function expectedExistingOriginal(row) {
++  row={...row,boundary:expectedVerticalBoundary(row.id,row.boundary)};
++  if(verticalOperationIds.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
+   if(row.id==='query_action_items')return {...row,state:'mapped',replacement:fullActionReference};
+   if(addedOperations.includes(row.id))return {...row,state:'mapped',replacement:{id:row.id,version:'0.2.0'}};
+   return row;
+diff --git a/packages/contracts/test/command-artifact-file.test.mjs b/packages/contracts/test/command-artifact-file.test.mjs
+index e97215ed..52c21320 100644
+--- a/packages/contracts/test/command-artifact-file.test.mjs
++++ b/packages/contracts/test/command-artifact-file.test.mjs
+@@ -38,7 +38,7 @@ test('distinct-object observation order does not manufacture aggregate semantics
+ test('saved source observation permits indexed or pending with reused preserved',()=>{for(const indexingStatus of ['indexed','pending']){const f=file();f.indexingStatus=indexingStatus;f.reused=true;check(result(command(),[f]));}});
+ test('pending quarantine remains not_indexed and requires persisted identity and reason',()=>{check(result(command(),[file(object(),'pending')]));for(const mutate of [x=>x.indexingStatus='indexed',x=>delete x.reason,x=>delete x.documentId]){const f=file(object(),'pending');mutate(f);assert.throws(()=>check(result(command(),[f])));}});
+ test('failed before storage and failed persisted observation are distinct valid branches',()=>{check(result(command(),[{object:object(),status:'failed',fileName:null,reason:'Unavailable source attachment'}]));check(result(command(),[file(object(),'failed')]));});
+-test('partial persisted tuples and contradictory saved/failed indexing refuse',()=>{for(const mutate of [x=>delete x.documentId,x=>delete x.location,x=>delete x.indexingStatus,x=>delete x.reused,x=>x.indexingStatus='not_indexed',x=>x.reason='contradiction']){const f=file();mutate(f);assert.throws(()=>check(result(command(),[f])));}const f=file(object(),'failed');f.indexingStatus='pending';assert.throws(()=>check(result(command(),[f])));});
++test('partial persisted tuples and contradictory saved/failed indexing refuse',()=>{for(const mutate of [x=>delete x.documentId,x=>delete x.location,x=>delete x.indexingStatus,x=>delete x.reused,x=>x.indexingStatus='not_indexed']){const f=file();mutate(f);assert.throws(()=>check(result(command(),[f])));}const f=file(object(),'failed');f.indexingStatus='pending';assert.throws(()=>check(result(command(),[f])));});
+ test('no approval/readability/source-completeness flags on observations',()=>{for(const key of ['approved','readable','fullyIndexed','complete','authorization']){const f=file();f[key]=true;assert.throws(()=>check(result(command(),[f])));}});
+ test('result digest must bind the full immutable command',()=>{const page=result();page.commandSha256='b'.repeat(64);assert.throws(()=>check(page));const cmd=command();const p=result(cmd);cmd.idempotencyKey='other';assert.throws(()=>check(p,cmd));});
+ test('receipt outcomes remain supplied observations independent of per-file success',()=>{const cmd=command();for(const outcome of ['succeeded','denied','failed','indeterminate'])assert.equal(v.assertArtifactFileReceipt(receipt(cmd,outcome),cmd,context()).outcome,outcome);check(result(cmd,[file(object(),'pending')]),cmd);});
+diff --git a/packages/contracts/test/retrieval-catalog-bindings.test.mjs b/packages/contracts/test/retrieval-catalog-bindings.test.mjs
+index f25efdb6..1e9714a2 100644
+--- a/packages/contracts/test/retrieval-catalog-bindings.test.mjs
++++ b/packages/contracts/test/retrieval-catalog-bindings.test.mjs
+@@ -1,3 +1,4 @@
++import {expectedVerticalBoundary,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {fullActionReference} from './backend-execution-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -18,9 +19,9 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
+   const c = catalog(); assertCatalog(c);
+   const ledger = JSON.parse(readFileSync(new URL('../../../docs/coordination/r2/capabilities.json', import.meta.url)));
+   assert.deepEqual(c.originals.map(({id,disposition,boundary}) => ({id,disposition,boundary})),
+-    ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:row.acceptedScope.boundary})));
+-  assert.equal(c.operations.length,84); assert.equal(c.originals.filter(row => row.state==='mapped').length,83);
+-  assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,13);
++    ledger.records.map(row => ({id:row.fields.ID,disposition:row.acceptedScope.disposition,boundary:expectedVerticalBoundary(row.fields.ID,row.acceptedScope.boundary)})));
++  assert.equal(c.operations.length,97); assert.equal(c.originals.filter(row => row.state==='mapped').length,96);
++  assert.equal(c.originals.filter(row => row.disposition==='selected' && row.state==='pending').length,0);
+   assert.equal(c.originals.filter(row => row.disposition==='deferred').length,43);
+   for (const native of added) {
+     const mapping = c.originals.find(row => row.id===native);
+@@ -35,7 +36,7 @@ test('preserves the ten typed additions plus memory read within all139/96/43 bou
+ 
+ test('every binding resolves the correct existing definition and exact raw schema hash', () => {
+   for (const binding of CATALOG_OPERATION_BINDINGS) {
+-    const contract=operation(binding.id), raw=readFileSync(new URL(`../retrieval-0.2/${binding.group}.schema.json`,import.meta.url));
++    const contract=operation(binding.id), raw=readFileSync(new URL(schemaRelativePath(binding.group),import.meta.url));
+     const schema=JSON.parse(raw), sha256=createHash('sha256').update(raw).digest('hex');
+     assert.ok(Object.hasOwn(schema.$defs,binding.input)); assert.ok(Object.hasOwn(schema.$defs,binding.output));
+     assert.deepEqual(contract.descriptor.inputSchema,{id:`${schema.$id}#/$defs/${binding.input}`,sha256});
+diff --git a/packages/contracts/test/retrieval-memory-binding.test.mjs b/packages/contracts/test/retrieval-memory-binding.test.mjs
+index 4bfa1814..1a220a18 100644
+--- a/packages/contracts/test/retrieval-memory-binding.test.mjs
++++ b/packages/contracts/test/retrieval-memory-binding.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ // Explicit reviewed continuation allowlist; the original13-descriptor hash is unchanged.
+ const continuationIds = ["search_funding_opportunities", "get_funding_opportunity_requirements", "get_funding_opportunity", "get_opportunity_client_context", "get_opportunity_government_landscape", "read_client_documents", "query_economic_data", "search_federal_grants", "search_federal_awards", "get_district_nexus_context", "get_district_nexus_changes", "search_state_bills", "get_state_legislator", "search_cbo_cost_estimates", "search_gao_reports", "search_crs_reports", "search_sec_filings", "search_fara_registrations", "search_lda_filings", "search_acquisition_personnel", "get_acquisition_person", "get_bill_status", "search_floor_votes", "search_congress_bills", "read_bill_text", "get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+ // Independently specified synthetic DTOs; no source access or authorization.
+@@ -176,12 +177,12 @@ test('all thirteen earlier bindings retain legacy context grammar and refuse mem
+ test('catalog preserves the original thirteen descriptors and complete selected/deferred ledger',()=>{
+   const catalog=JSON.parse(readFileSync(new URL('../retrieval-0.2/catalog.json',import.meta.url)));
+   // Canonical hash of the thirteen descriptors at the assigned source base.
+-  assert.equal(canonicalSha256(catalog.operations.filter(value=>![reference.id,'query_action_items','actions.query',
++  assert.equal(canonicalSha256(catalog.operations.filter(value=>![...verticalOperationIds,reference.id,'query_action_items','actions.query',
+     'lookup_client_registry','get_business_development_context','get_business_development_evidence',
+     'get_business_development_recent_changes','get_research_portfolio','get_research_portfolio_changes',...continuationIds].includes(value.operation.id))),
+     'c60f90cf599299c1edb14538b653772b4f1d52b9c311636653aba7c08de29095');
+-  assert.equal(catalog.operations.length,84);assert.equal(catalog.originals.length,139);
++  assert.equal(catalog.operations.length,97);assert.equal(catalog.originals.length,139);
+   assert.equal(catalog.originals.filter(value=>value.disposition==='selected').length,96);
+   assert.equal(catalog.originals.filter(value=>value.disposition==='deferred').length,43);
+-  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,13);
++  assert.equal(catalog.originals.filter(value=>value.disposition==='selected'&&value.state==='pending').length,0);
+ });
+diff --git a/packages/contracts/test/retrieval-reference-integration-independent.test.mjs b/packages/contracts/test/retrieval-reference-integration-independent.test.mjs
+index 5ca2d0f1..04fdcd5e 100644
+--- a/packages/contracts/test/retrieval-reference-integration-independent.test.mjs
++++ b/packages/contracts/test/retrieval-reference-integration-independent.test.mjs
+@@ -1,3 +1,4 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingBinding,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+@@ -12,7 +13,7 @@ import {fixture,limits,NOW,uuid} from '../../../apps/gateway/test/fixtures.mjs';
+ const evidence=new URL('../../../docs/qualification/candidates/read-continuation-20261012/reference-integration-review/',import.meta.url);
+ const baseline=JSON.parse(readFileSync(new URL('baseline.json',evidence))).catalog;
+ const oldBindings=JSON.parse(readFileSync(new URL('baseline-bindings.json',evidence)));
+-const civicIds=["get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
++const civicIds=[...verticalOperationIds,"get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+ const ids=['get_committee_roster','list_members','get_pe_contractors','get_pe_bills','get_pe_report_language','get_state_rule_status','get_certification_status','search_intel_articles','list_global_datasets','get_representation'];
+ const [ROSTER,MEMBERS,CONTRACTORS,BILLS,REPORT,RULE,CERT,INTEL,DATASETS,FACILITY]=ids;
+ const T='2026-10-12T12:00:00.000Z',AFTER='2026-10-12T12:00:00.001Z',BEFORE='2026-10-12T11:59:59.999Z';
+@@ -42,22 +43,22 @@ function output(id){
+ const check=(id,page=output(id),req=request(id),context=ctx(id))=>resolve(id).assertOutput(page,{...context,request:req});
+ 
+ test('exact PR28 descriptors and callback source survive in single registry with full original inventory',()=>{
+- assertCatalog(catalog);assert.equal(catalog.operations.length,84);assert.equal(bindings.length,84);
+- assert.equal(new Set(bindings.map(x=>x.id)).size,84);
++ assertCatalog(catalog);assert.equal(catalog.operations.length,97);assert.equal(bindings.length,97);
++ assert.equal(new Set(bindings.map(x=>x.id)).size,97);
+  assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!civicIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
+  assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
+  assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+- assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+- assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,13);
++ assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++ assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.replacement===null).length,0);
+  for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(x=>x.id===old.id),(ids.includes(old.id)||civicIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+  const serialized=JSON.parse(JSON.stringify(bindings.filter(x=>!ids.includes(x.id)&&!civicIds.includes(x.id)&&x.id!=='actions.query'),(k,v)=>typeof v==='function'?{source:v.toString()}:v));assert.deepEqual(serialized,oldBindings.map(expectedExistingBinding));
+  for(const id of ['save_memory','create_task','create_word','schedule_task','run_analysis']){
+-  const old=baseline.originals.map(expectedExistingOriginal).find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);assert.throws(()=>resolve(id));
++  const old=baseline.originals.map(expectedExistingOriginal).find(x=>x.id===id);assert.deepEqual(catalog.originals.find(x=>x.id===id),old);assert.equal(resolve(id).descriptor.availability,'unimplemented');assert.equal(resolve(id).descriptor.handler,null);
+  }
+ });
+ 
+ test('all catalog schema fingerprints resolve exact private bytes and keep unavailable admission',()=>{
+- for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(`../retrieval-0.2/${b.group}.schema.json`,import.meta.url)),s=JSON.parse(raw),hash=createHash('sha256').update(raw).digest('hex');
++ for(const b of bindings){const d=resolve(b.id).descriptor,raw=readFileSync(new URL(schemaRelativePath(b.group),import.meta.url)),s=JSON.parse(raw),hash=createHash('sha256').update(raw).digest('hex');
+   for(const [field,def]of [['inputSchema',b.input],['outputSchema',b.output]])assert.deepEqual(d[field],{id:`${s.$id}#/$defs/${def}`,sha256:hash});
+   assert.equal(d.handler,null);assert.equal(d.availability,'unimplemented');assert.equal(d.qualification,'pending');assert.equal(d.retry.maxRetries,0);assert.ok(Object.isFrozen(d));
+  }
+@@ -98,7 +99,7 @@ for(const id of ids){
+  });
+ }
+ 
+-test('actual production gateway keeps all84 unavailable without any authority or budget effects',async()=>{
++test('actual production gateway keeps all97 unavailable without any authority or budget effects',async()=>{
+  const f=fixture(),options={authorityPorts:f.ports,budget:f.budget,limits,now:()=>NOW,newId:()=>uuid('8')};
+  const gateway=createSourceDisabledGateway(options);assert.equal(gateway.sourceEnabled,false);assert.deepEqual(await gateway.discover(),[]);
+  for(const id of catalog.operations.map(x=>x.operation.id))await assert.rejects(gateway.execute(JSON.stringify({operation:{id,version:'0.2.0'},arguments:ids.includes(id)?request(id):{}}),'synthetic-opaque'),/UNAVAILABLE/);
+diff --git a/packages/contracts/test/retrieval-selected-next-bindings.test.mjs b/packages/contracts/test/retrieval-selected-next-bindings.test.mjs
+index cbb4702c..5ccdb62d 100644
+--- a/packages/contracts/test/retrieval-selected-next-bindings.test.mjs
++++ b/packages/contracts/test/retrieval-selected-next-bindings.test.mjs
+@@ -1,6 +1,7 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ // Explicit subsequent reviewed mappings; prior descriptors and original assertions are preserved.
+-const referenceIds = ["get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
++const referenceIds = [...verticalOperationIds,"get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {readFileSync} from 'node:fs';
+@@ -39,15 +40,15 @@ function output(id){
+     note:'No current complete bill-text revision is available for 119-hr-1.'};
+ }
+ test('nine selected contracts preserve exact prior37 descriptors and139 original boundaries',()=>{
+-  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.11');assert.equal(catalog.operations.length,84);
++  assertCatalog(catalog);assert.equal(catalog.catalogVersion,'0.2.15');assert.equal(catalog.operations.length,97);
+   const baseline=JSON.parse(readFileSync(new URL('../../../docs/qualification/candidates/read-continuation-20261012/integration-next/pr26-catalog-baseline.json',import.meta.url)));
+   assert.deepEqual(catalog.operations.filter(row=>!additions.includes(row.operation.id)&&!referenceIds.includes(row.operation.id)&&row.operation.id!=='actions.query'),baseline.operations.map(expectedExistingDescriptor));
+   for(const old of baseline.originals.map(expectedExistingOriginal))assert.deepEqual(catalog.originals.find(row=>row.id===old.id),
+     (additions.includes(old.id)||referenceIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);
+   assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);
+   assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);
+-  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);
+-  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);
++  assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);
++  assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);
+ });
+ for(const id of additions){
+   test(`next canonical normalized request, closed context and result: ${id}`,()=>{
+diff --git a/packages/contracts/test/retrieval-selected-next-independent.test.mjs b/packages/contracts/test/retrieval-selected-next-independent.test.mjs
+index 104aae4d..63be536d 100644
+--- a/packages/contracts/test/retrieval-selected-next-independent.test.mjs
++++ b/packages/contracts/test/retrieval-selected-next-independent.test.mjs
+@@ -1,6 +1,7 @@
++import {verticalOperationIds,schemaRelativePath} from './vertical-source-expectations.mjs';
+ import {expectedExistingDescriptor,expectedExistingOriginal} from './backend-execution-expectations.mjs';
+ // Explicit subsequent reviewed mappings; prior descriptors and original assertions are preserved.
+-const referenceIds = ["get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
++const referenceIds = [...verticalOperationIds,"get_committee_roster", "list_members", "get_pe_contractors", "get_pe_bills", "get_pe_report_language", "get_state_rule_status", "get_certification_status", "search_intel_articles", "list_global_datasets", "get_representation", "get_state_bill_status", "search_state_floor_votes", "query_regulatory_dockets", "find_contacts", "resolve_entity", "search_tracked_bills", "query_intelligence", "search_public_web", "scrape_web_page", "search_sam_opportunities", "get_florida_budget_project", "query_outreach", "search_program_elements", "get_program_element", "get_pe_budget_timeline", "search_client_knowledge", "query_knowledge_graph", "read_monday_client_boards", "read_chat_attachments", "search_memory", "get_client_context", "search_research_sources", "query_global_data", "search_legislative_research", "get_legal_reference", "search_legiwatch_news", "search_committee_hearings"];
+ import test from 'node:test';
+ import assert from 'node:assert/strict';
+ import {readFileSync} from 'node:fs';
+@@ -22,7 +23,7 @@ const federal=JSON.parse(readFileSync(new URL('../retrieval-0.2/federal-legislat
+ function person(){return{id:personId,fullName:'Synthetic read',nameKey:'synthetic-read',programOfRecord:null,service:null,organization:null,title:null,role:null,pePrimary:null,peSecondary:[],emailDomain:null,publicProfileUrl:null,confidence:0.25,status:'unknown',firstSeenAt:instant,lastSeenAt:instant,email:null,phone:null,parentOffice:null,department:null,metadata:{opaque:true},sources:[]};}
+ function page(id){const common={tool:id,generatedAt:instant};switch(id){case 'search_sec_filings':case 'search_fara_registrations':return{...common,data:[],total:0};case 'search_lda_filings':return{...common,data:[],total:0,page:1,limit:15};case 'search_acquisition_personnel':return{...common,data:[],total:0,page:1,limit:20};case 'get_acquisition_person':return{...common,person:person()};case 'get_bill_status':return{...common,authoritativeOwner:'congress_bill_status',currentStatus:'invalid_request',found:false,note:federal.$defs.FederalInvalidBillNote.const};case 'search_floor_votes':return{...common,votesFound:0,votes:[],note:federal.$defs.FederalNoVotesNote.const};case 'search_congress_bills':return{...common,data:[],total:0,page:1,limit:20};case 'read_bill_text':return{tool:id,authoritativeOwner:'federal_evidence_current',currentStatus:'unavailable',billId:'119-hr-789',requestedVersionCode:null,found:false,coverage:{complete:true,truncated:false,nextCursor:null},note:'No current complete bill-text revision is available for 119-hr-789.'};}}
+ 
+-test('next independent: exact37 predecessors and139 boundaries preserved',()=>{assertCatalog(catalog);assert.equal(base.operations.map(expectedExistingDescriptor).length,37);assert.equal(catalog.operations.length,84);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!referenceIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),base.operations.map(expectedExistingDescriptor));for(const old of base.originals.map(expectedExistingOriginal)){const now=catalog.originals.find(x=>x.id===old.id);assert.deepEqual(now,(ids.includes(old.id)||referenceIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);}assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,83);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,13);assert.equal(catalog.originals.find(x=>x.id==='query_action_items').state,'mapped');});
++test('next independent: exact37 predecessors and139 boundaries preserved',()=>{assertCatalog(catalog);assert.equal(base.operations.map(expectedExistingDescriptor).length,37);assert.equal(catalog.operations.length,97);assert.deepEqual(catalog.operations.filter(x=>!ids.includes(x.operation.id)&&!referenceIds.includes(x.operation.id)&&x.operation.id!=='actions.query'),base.operations.map(expectedExistingDescriptor));for(const old of base.originals.map(expectedExistingOriginal)){const now=catalog.originals.find(x=>x.id===old.id);assert.deepEqual(now,(ids.includes(old.id)||referenceIds.includes(old.id))?{...old,state:'mapped',replacement:{id:old.id,version:'0.2.0'}}:old);}assert.equal(catalog.originals.length,139);assert.equal(catalog.originals.filter(x=>x.disposition==='selected').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='deferred').length,43);assert.equal(catalog.originals.filter(x=>x.state==='mapped').length,96);assert.equal(catalog.originals.filter(x=>x.disposition==='selected'&&x.state==='pending').length,0);assert.equal(catalog.originals.find(x=>x.id==='query_action_items').state,'mapped');});
+ for(const id of ids){
+  test(`next independent canonical request hash and snapshots: ${id}`,()=>{const raw=request(id),ctx=context(id),contract=resolve(id),n=contract.normalizeInput(raw,ctx);assert.deepEqual(n.request,raw);assert.equal(n.argumentsSha256,canonicalSha256(n.input));assert.ok(Object.isFrozen(n)&&Object.isFrozen(n.input)&&Object.isFrozen(n.request));raw.foreign='later mutation';ctx.foreign=true;assert.ok(!Object.hasOwn(n.request,'foreign'));assert.equal(n.argumentsSha256,canonicalSha256(n.input));});
+  test(`next independent canonical output and request-only callback boundary: ${id}`,()=>{const c=resolve(id),p=page(id),raw=request(id),ctx=context(id);assert.deepEqual(c.assertOutput(p,{...ctx,request:raw}),p);assert.throws(()=>c.assertOutput(p,ctx));assert.throws(()=>c.assertOutput(p,{...ctx,request:raw,other:true}));assert.throws(()=>c.assertOutput({...p,authoritative:true},{...ctx,request:raw}));assert.throws(()=>c.normalizeInput(raw,{...ctx,request:raw}));});

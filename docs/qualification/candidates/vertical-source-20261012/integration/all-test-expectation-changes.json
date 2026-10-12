@@ -1,0 +1,106 @@
+{
+  "base": "e5fb3963de787bbd7b7663316c368f15814897da",
+  "head": "7c92f09870496855e968784c30869f185f39250f",
+  "changes": [
+    {
+      "path": "apps/gateway/test/action-item-context-independent.test.mjs",
+      "beforeSha256": "2eedfd9929825ab489b765a797c0de97a3d665f3f2f462c0f5fe57e083e8f37f",
+      "afterSha256": "d6cc4511b186a882fa37da64e940f6552cb1c2fc080f1d0b356d84140af68653",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 56,
+      "afterAssertions": 56
+    },
+    {
+      "path": "apps/gateway/test/capability-next-independent.test.mjs",
+      "beforeSha256": "1c9953e0e9efaade981851c20e6592579e63d37c6d2718ebda8732ac13f08b38",
+      "afterSha256": "63ca114b28cd00f354e8e1b38a1be5e5159a31bccb1239f682eed74f2785e90b",
+      "beforeTests": 1,
+      "afterTests": 1,
+      "beforeAssertions": 6,
+      "afterAssertions": 6
+    },
+    {
+      "path": "apps/gateway/test/mail-context-independent.test.mjs",
+      "beforeSha256": "cbe5b1d176bb75f8597879635716d151d86b3dd22a4b4a5fc22f1339f2367390",
+      "afterSha256": "559ab2ba4ad26fe9ea1775dd43a15689890d3443bb7d5dfd8535fe3914b5ceaa",
+      "beforeTests": 18,
+      "afterTests": 18,
+      "beforeAssertions": 82,
+      "afterAssertions": 82
+    },
+    {
+      "path": "apps/gateway/test/memory-context-independent.test.mjs",
+      "beforeSha256": "9dcb48a2ad738276a11f6e2e847bca3c47f48fd7d47fab109ee534189bf47bba",
+      "afterSha256": "6a1ad652c8159c510bb34958ab49293d9c3436e163ce5a9e7656a9c03915c340",
+      "beforeTests": 15,
+      "afterTests": 15,
+      "beforeAssertions": 55,
+      "afterAssertions": 55
+    },
+    {
+      "path": "packages/contracts/test/backend-execution-expectations.mjs",
+      "beforeSha256": "4690f3f4e00fa1e6fda2fe0738b75fd653c654aacd3503994afb927f944da5c4",
+      "afterSha256": "b297ca34f65334544c8a8e1151566806a9d659c8b31f1e792aa6e655ff516418",
+      "beforeTests": 0,
+      "afterTests": 0,
+      "beforeAssertions": 3,
+      "afterAssertions": 3
+    },
+    {
+      "path": "packages/contracts/test/command-artifact-file.test.mjs",
+      "beforeSha256": "6701fa89be4249742ce6a2c74ee8767acfa5a4e28d206c19609e7275fa1ef925",
+      "afterSha256": "87ecc32b4cf448b33fa209b5646e4d6d19f45598f6ef89b558d1544669fca427",
+      "beforeTests": 27,
+      "afterTests": 27,
+      "beforeAssertions": 37,
+      "afterAssertions": 37
+    },
+    {
+      "path": "packages/contracts/test/retrieval-catalog-bindings.test.mjs",
+      "beforeSha256": "0d79fb0acef22a1dc9244d292b7d9b4f87b17de70303fcd210ca63db86de29e1",
+      "afterSha256": "cd904833ebcd711e2d009fcb1375a7da45f184895a42c1527ba9bb59b6f92b70",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 72,
+      "afterAssertions": 72
+    },
+    {
+      "path": "packages/contracts/test/retrieval-memory-binding.test.mjs",
+      "beforeSha256": "8c8bc4217cf72c634ca6ffde599f9040f28660f1a22c2061654a21875a8e9ab2",
+      "afterSha256": "ed54f94fffcd83e813118400cbf8df5b4efcb61cb7cc33a8af6b30cea8054bd5",
+      "beforeTests": 12,
+      "afterTests": 12,
+      "beforeAssertions": 68,
+      "afterAssertions": 68
+    },
+    {
+      "path": "packages/contracts/test/retrieval-reference-integration-independent.test.mjs",
+      "beforeSha256": "9865daf6a32b98f36083ea5cad351e867a50c3b528c9fad518bf62335c8d2e93",
+      "afterSha256": "74ea5539e68310e1a763be79603fe28e478cc8071a8247493260575e3a3e67bd",
+      "beforeTests": 14,
+      "afterTests": 14,
+      "beforeAssertions": 74,
+      "afterAssertions": 75
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-bindings.test.mjs",
+      "beforeSha256": "490f8fc42d40fe19769aba19d5ace0a32c5e426b3ab916658e9f0e4be67885ce",
+      "afterSha256": "739154d7720cbee6999c353a374f7d0fc41b0878a3edd572b57a79c6a1578ff4",
+      "beforeTests": 6,
+      "afterTests": 6,
+      "beforeAssertions": 35,
+      "afterAssertions": 35
+    },
+    {
+      "path": "packages/contracts/test/retrieval-selected-next-independent.test.mjs",
+      "beforeSha256": "02a10746f971979b3f396174b6c97494e90df81eed0ee3284092eb3db755fea2",
+      "afterSha256": "eea3d5625815f2e90b677c22eed6079841dd448c3a9079387d174db3423e2a1f",
+      "beforeTests": 9,
+      "afterTests": 9,
+      "beforeAssertions": 40,
+      "afterAssertions": 40
+    }
+  ],
+  "reason": "Only explicit13 operation mappings, namespaced schema locations, approved Portfolio wording/profile changes and independently reviewed artifact filing saved-with-extraction-warning semantic repair. Original tests retained; no skip or runtime admission."
+}
