@@ -30,6 +30,8 @@ const normalize=(input=request(),ctx=context())=>family.normalizeFacilityReprese
 const check=(page=result(),input=request(),ctx=context())=>family.assertFacilityRepresentationResult(page,input,ctx);
 
 test('independent facility: normalized client and state retain declared slicing and casing',()=>{
+  assert.deepEqual(normalize({}),{clientId:null,state:null});
+  assert.deepEqual(normalize({clientId:' ',state:' '}),{clientId:null,state:null});
   const normalized=normalize({clientId:` ${clientId} `,state:' fl '});
   assert.equal(normalized.clientId,clientId);assert.equal(normalized.state,'FL');
   assert.equal(normalize({clientId,state:'ß'}).state,'SS');assert.throws(()=>normalize({clientId,state:'ßß'}));
@@ -103,16 +105,19 @@ test('independent facility: uncapped facilities and senators do not assert compl
   const rows=Array.from({length:121},(_,n)=>facility({facilityId:uuid(100+n),representation}));check(result(rows));
   assert.throws(()=>check(result([facility(),facility()])));
 });
-test('independent facility: House and Senate retain source chamber and canonical full state joins',()=>{
+test('independent facility: House and Senate retain slot chambers while federal geographic joins remain unqualified',()=>{
   const representation=resolved();representation.federal.house=federal();representation.federal.senate=[federal({bioguideId:'senate',chamber:'senate',district:-1})];
   check(result([facility({representation})]));check(result([facility({state:'fl',representation})]));
-  for(const mutate of [r=>r.federal.house.state='FL',r=>r.federal.house.state='florida',r=>r.federal.house.state=null,r=>r.federal.house.chamber='senate',r=>r.federal.senate[0].chamber='house']) {
+  for(const stored of ['FL','florida',null,'unqualified']) {
+    const clone=structuredClone(representation);clone.federal.house.state=stored;clone.federal.senate[0].state=stored;check(result([facility({representation:clone})]));
+  }
+  for(const mutate of [r=>r.federal.house.chamber='senate',r=>r.federal.senate[0].chamber='house']) {
     const clone=structuredClone(representation);mutate(clone);assert.throws(()=>check(result([facility({representation:clone})])));
   }
 });
-test('independent facility: unknown states cannot carry unrelated federal people',()=>{
-  const representation=resolved();representation.federal.house=federal();assert.throws(()=>check(result([facility({state:'ZZ',representation})])));
-  representation.federal.house=null;representation.federal.senate=[federal({chamber:'senate'})];assert.throws(()=>check(result([facility({state:'ZZ',representation})])));
+test('independent facility: federal summary admission does not certify geographic correspondence',()=>{
+  const representation=resolved();representation.federal.house=federal();check(result([facility({state:'ZZ',representation})]));
+  representation.federal.house=null;representation.federal.senate=[federal({chamber:'senate'})];check(result([facility({state:'ZZ',representation})]));
 });
 test('independent facility: Senate nullable and signed Int district is preserved without list-members coercion',()=>{
   for(const district of [null,-2147483648,0,2147483647]) {
