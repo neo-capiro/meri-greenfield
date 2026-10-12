@@ -1,0 +1,212 @@
+{
+  "ref": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "bodyIncluded": false,
+  "references": [
+    {
+      "path": "apps/api/src/memory/memory-access-grant.service.ts",
+      "gitBlob": "e1ed97f845553b6b9effafba3f8c88e469518eea",
+      "bytes": 7068,
+      "sha256": "9799f85bff928ae35db60e3c33c2c7b37ac32dc6adc90bb1f8ed5ae1194685e3",
+      "targetedLocationChecks": {
+        "tenant_binding": [
+          48,
+          64,
+          106,
+          111,
+          126,
+          133,
+          136,
+          154,
+          160,
+          174
+        ],
+        "actor_binding": [
+          13,
+          26,
+          48,
+          53,
+          56,
+          60,
+          88,
+          89,
+          106,
+          112,
+          124,
+          128,
+          133,
+          134,
+          136,
+          138,
+          152,
+          154,
+          158,
+          162,
+          174
+        ],
+        "active_membership": [
+          113,
+          129,
+          163
+        ],
+        "grant_expiry": [
+          18,
+          29,
+          58,
+          81,
+          98,
+          99,
+          100,
+          102,
+          103,
+          134,
+          138,
+          144
+        ],
+        "grant_revocation": [
+          19,
+          59,
+          124,
+          158
+        ],
+        "admin_role_vocabulary": [],
+        "assignment_guards": [],
+        "transaction_local_capability": [],
+        "withdrawal": []
+      },
+      "reviewExtent": "Targeted source guard/constraint locations and immutable hashes; no SQL/service execution or full unrelated-body audit"
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260818050000_memory_admin_self_approval_policy/migration.sql",
+      "gitBlob": "de01820eb1cf60733eafa04d43ac57562fbaa1e0",
+      "bytes": 5625,
+      "sha256": "0e75f3e48471117070595ce497cb89e7d0fbeca47e175b2eba5efa12fa3df599",
+      "targetedLocationChecks": {
+        "tenant_binding": [
+          58,
+          72,
+          118,
+          139
+        ],
+        "actor_binding": [
+          104,
+          140,
+          147,
+          148,
+          151
+        ],
+        "active_membership": [
+          141
+        ],
+        "grant_expiry": [],
+        "grant_revocation": [],
+        "admin_role_vocabulary": [
+          5,
+          142
+        ],
+        "assignment_guards": [
+          42,
+          92,
+          101,
+          112,
+          116,
+          124
+        ],
+        "transaction_local_capability": [
+          105,
+          149,
+          156
+        ],
+        "withdrawal": [
+          28
+        ]
+      },
+      "reviewExtent": "Targeted source guard/constraint locations and immutable hashes; no SQL/service execution or full unrelated-body audit"
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260818010000_memory_phase2_review_workflow_foundation/migration.sql",
+      "gitBlob": "307dcab8232542ae0f6916c0b43dd3fd5a100da1",
+      "bytes": 11843,
+      "sha256": "de539fe695e125e6a58ee12831b5e9c851e8d46634d244d871c9d054743b5ccd",
+      "targetedLocationChecks": {
+        "tenant_binding": [
+          66,
+          72,
+          182,
+          197,
+          227,
+          247,
+          261,
+          312,
+          362
+        ],
+        "actor_binding": [],
+        "active_membership": [],
+        "grant_expiry": [],
+        "grant_revocation": [],
+        "admin_role_vocabulary": [],
+        "assignment_guards": [
+          71,
+          132,
+          147,
+          152,
+          154,
+          164,
+          170,
+          171,
+          174,
+          178,
+          179,
+          216,
+          224,
+          238,
+          288,
+          289,
+          290,
+          299,
+          306,
+          310,
+          318,
+          340,
+          341,
+          344
+        ],
+        "transaction_local_capability": [],
+        "withdrawal": [
+          11,
+          30,
+          49,
+          346,
+          357
+        ]
+      },
+      "reviewExtent": "Targeted source guard/constraint locations and immutable hashes; no SQL/service execution or full unrelated-body audit"
+    },
+    {
+      "path": "apps/api/prisma/migrations/20260815010000_memory_candidate_withdrawal/migration.sql",
+      "gitBlob": "97de046ed15e150d7ab471842ca3bf778843909b",
+      "bytes": 1371,
+      "sha256": "4c1a9b85039b3a0d914481d0ac9df6daa1db2fa964a4b218c91cf59c2878fcfb",
+      "targetedLocationChecks": {
+        "tenant_binding": [
+          34
+        ],
+        "actor_binding": [],
+        "active_membership": [],
+        "grant_expiry": [],
+        "grant_revocation": [],
+        "admin_role_vocabulary": [],
+        "assignment_guards": [],
+        "transaction_local_capability": [],
+        "withdrawal": [
+          1,
+          31,
+          37
+        ]
+      },
+      "reviewExtent": "Targeted source guard/constraint locations and immutable hashes; no SQL/service execution or full unrelated-body audit"
+    }
+  ],
+  "limitations": [
+    "Presence/location checks do not prove runtime enforcement. Independent reviewer validates action-specific guard semantics."
+  ]
+}
