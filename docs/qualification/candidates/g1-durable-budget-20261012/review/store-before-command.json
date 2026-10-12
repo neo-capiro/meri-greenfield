@@ -1,0 +1,10 @@
+{
+  "state": "uncommitted preliminary source; not accepted freeze",
+  "argv": [
+    "node",
+    "--test",
+    "/workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs"
+  ],
+  "exit_code": 1,
+  "source_sha256": "b98d34353d7a7cd4a2bb1cd98292ccdd6937740048c6e91c171fbd96936f8d55"
+}

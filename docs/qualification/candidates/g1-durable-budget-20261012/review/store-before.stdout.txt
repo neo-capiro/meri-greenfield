@@ -1,0 +1,85 @@
+✔ success uses one transaction and releases one healthy connection (1.586193ms)
+✔ connect failure starts no transaction and creates no retry (1.307825ms)
+✖ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.721975ms)
+✔ acknowledged rollback preserves domain refusal and can release healthy (0.355094ms)
+✖ failed rollback evicts rather than returning dirty transaction to pool (0.281553ms)
+✖ lost COMMIT acknowledgement remains uncertain and never retries (0.35968ms)
+✖ release failure cannot overwrite lost COMMIT classification (0.300291ms)
+✔ release failure after acknowledged COMMIT never yields safe retry or success (3.44837ms)
+✔ lock samples authoritative database time after row-lock acknowledgement (9.456577ms)
+✔ missing budget and invalid database clock fail closed (0.490326ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 6
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.568078
+
+✖ failing tests:
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:35:1
+✖ ambiguous BEGIN acknowledgement evicts the potentially open transaction (0.721975ms)
+  AssertionError [ERR_ASSERTION]: failed BEGIN must evict, not release as healthy
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:38:46)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:48:1
+✖ failed rollback evicts rather than returning dirty transaction to pool (0.281553ms)
+  AssertionError [ERR_ASSERTION]: unobserved rollback must evict
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:51:46)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:55:1
+✖ lost COMMIT acknowledgement remains uncertain and never retries (0.35968ms)
+  AssertionError [ERR_ASSERTION]: unknown COMMIT must evict
+      at TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:59:62)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:62:1
+✖ release failure cannot overwrite lost COMMIT classification (0.300291ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: CONNECTION_RELEASE_UNKNOWN
+      at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:64:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: CONNECTION_RELEASE_UNKNOWN
+        at PostgresBudgetStore.transact (file:///workspace/meri-g1-durable-budget-20261012/apps/gateway/budget/postgres-budget-store.mjs:30:23)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///workspace/meri-g1-durable-budget-review-20261012/docs/qualification/candidates/g1-durable-budget-20261012/review/store-independent.test.mjs:64:3)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
