@@ -98,3 +98,19 @@ for(const phase of ['putHook','commitHook'])test(`outer cancellation during ${ph
   let error;try{await pending;}catch(e){error=e;}finally{gate.resolve();await new Promise(resolve=>setImmediate(resolve));}
   assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN',JSON.stringify({name:error?.name,message:error?.message,ownKeys:Object.keys(error??{}),stored:t.state.stored,committed:t.state.committed,reservation:t.reservation()?.state,completion:t.row()?.completion}));assert.equal(typeof error.versionId,'string');assert.equal(t.reservation().state,'UNKNOWN');assert.equal(t.row().completion,null);
 });
+test('outer cancellation after reservation persistence exposes budget identity without artifact effects',async()=>{
+  const t=setup(),controller=new AbortController();await t.bind();const gate=t.db.parkCommit('reserve');
+  const pending=t.owner().execute(t.call,t.db.credential,controller.signal);await gate.ready;controller.abort();
+  let error;try{await pending;}catch(e){error=e;}finally{gate.resume();await new Promise(resolve=>setImmediate(resolve));}
+  assert.equal(error?.code,'ARTIFACT_BUDGET_RESERVATION_UNKNOWN',JSON.stringify({name:error?.name,message:error?.message,keys:Object.keys(error??{})}));
+  assert.equal(typeof error.budget.requestSha256,'string');assert.equal(typeof error.budget.ticketId,'string');assert.equal(t.state.generated,0);assert.equal(t.reservation().state,'UNKNOWN');
+});
+test('concurrent deliveries keep cancellation identity separate from a successful sibling',async()=>{
+  const t=setup(),entered=deferred(),gate=deferred(),controller=new AbortController();await t.bind();
+  let first=true;t.state.putHook=async()=>{if(first){first=false;entered.resolve();await gate.promise;}};
+  const owner=t.owner(),pending=owner.execute(t.call,t.db.credential,controller.signal);await entered.promise;
+  const sibling=await owner.execute({...t.call,deliveryId:'independent-sibling'},t.db.credential);
+  controller.abort();let error;try{await pending;}catch(e){error=e;}finally{gate.resolve();await new Promise(resolve=>setImmediate(resolve));}
+  assert.equal(error?.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(typeof error.versionId,'string');assert.notEqual(error.versionId,sibling.version.versionId);
+  assert.equal(t.state.committed,1);assert.equal(t.db.state().budget.consumed_micro_usd,'13');assert.deepEqual([...t.db.state().reservations.values()].map(r=>r.state).sort(),['SETTLED','UNKNOWN']);
+});

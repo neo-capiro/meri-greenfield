@@ -1,0 +1,80 @@
+✔ real current-authority + artifact + canonical owner hashes committed record, not delivery (93.22672ms)
+✔ fresh decision ID may rotate while stable selected subject is unchanged (22.665474ms)
+✔ canonical policy refuses decision actor before budget reservation (7.931441ms)
+✔ canonical policy refuses subject actor before budget reservation (6.80768ms)
+✔ canonical policy refuses missing grant before budget reservation (7.49885ms)
+✔ canonical policy refuses decision policy before budget reservation (7.477768ms)
+✔ canonical policy refuses unmatched decision ID before budget reservation (6.995242ms)
+✔ canonical authority refuses current writer fence without effects (5.905383ms)
+✔ canonical authority refuses expired capability without effects (6.706268ms)
+✔ canonical authority refuses disabled source without effects (10.852395ms)
+✔ canonical authority refuses missing source without effects (5.948338ms)
+✔ subject change after reserve refuses execution and leaves UNKNOWN, never refund (8.316019ms)
+✔ artifact resource digest mismatch cannot borrow canonical policy permission (6.838246ms)
+✔ changed trusted scopes cannot be substituted by otherwise valid current policy (6.899429ms)
+✔ current revocation after settlement prevents release but preserves charged version (15.849572ms)
+✔ resource release expiry while marker ACK parked refuses now, reconciles historical completion (22.923362ms)
+✔ wrong commit acknowledgement cannot publish durable completion (14.199976ms)
+✔ wrong immutable readback forbids version commit while retaining object uncertainty (12.862413ms)
+✔ late returned object write is retained as UNKNOWN and never starts version commit (10.615858ms)
+✔ late version acknowledgement cannot become a completion marker (11.473578ms)
+✔ borrowed receivers survive create and revise with exact base object and intent (27.274017ms)
+✔ snapshot of delivery remains exact while generation is parked (11.807691ms)
+✔ lost reserve ACK cannot regenerate, only canonical reconciliation (14.478049ms)
+✔ lost marker ACK cannot regenerate, only canonical reconciliation (22.558694ms)
+✔ lost settle ACK cannot regenerate, only canonical reconciliation (20.301328ms)
+✔ same delivery plus changed parent conflicts before read or regeneration (28.889176ms)
+✔ wrong producer task binding cannot reuse a bound grant (3.535218ms)
+✔ no startup pool calls or invocation bypass; default disabled before prepare (2.917289ms)
+✔ postpublication response ceiling reports exact committed uncertainty (11.768523ms)
+✔ generator exception preserves original cause and durable UNKNOWN without marker (11.306657ms)
+✖ outer cancellation during putHook retains explicit effect uncertainty (24.94298ms)
+✖ outer cancellation during commitHook retains explicit effect uncertainty (10.964783ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 30
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3757.715729
+
+✖ failing tests:
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:94:45
+✖ outer cancellation during putHook retains explicit effect uncertainty (24.94298ms)
+  AssertionError [ERR_ASSERTION]: {"name":"GatewayDenied","message":"CANCELLED","ownKeys":["name"],"stored":1,"committed":0,"reservation":"UNKNOWN","completion":null}
+  + actual - expected
+  
+  + undefined
+  - 'ARTIFACT_EFFECT_UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:99:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ARTIFACT_EFFECT_UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at apps/artifacts/test/postgres-service-independent.test.mjs:94:45
+✖ outer cancellation during commitHook retains explicit effect uncertainty (10.964783ms)
+  AssertionError [ERR_ASSERTION]: {"name":"GatewayDenied","message":"CANCELLED","ownKeys":["name"],"stored":1,"committed":1,"reservation":"UNKNOWN","completion":null}
+  + actual - expected
+  
+  + undefined
+  - 'ARTIFACT_EFFECT_UNKNOWN'
+  
+      at TestContext.<anonymous> (file:///workspace/meri-artifact-budget-review-20261012/apps/artifacts/test/postgres-service-independent.test.mjs:99:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'ARTIFACT_EFFECT_UNKNOWN',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
