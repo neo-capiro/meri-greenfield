@@ -1,0 +1,47 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "url": "https://github.com/neo-capiro/meri-greenfield/pull/24",
+    "number": 24,
+    "state": "open",
+    "merged": false,
+    "mergeable": false,
+    "draft": true,
+    "body": "Six selected reads lacked private contracts and canonical bindings: client\nregistry lookup, three business-development reads, and Research Portfolio detail\nand changes. This successor adds three cohesive schema/validator families and\nbinds them through the existing loader and sole operation registry. It reuses\nthe existing inert-data admission and hashing without changing public exports.\n\nAll 139 original capabilities and accepted boundaries remain: 96 selected and\n43 deferred. Six complete source mappings move the ledger to 20 mapped and\n76 selected unmapped. There are 21 typed operations because the action-item\nbinding remains partial. Every operation is unavailable, has a null handler and\npending qualification, and source connectivity remains disabled.\n\nDomain and combined reviews: ACCEPT_SOURCE. Root replay passed 838/838;\nthe independent replay passed 871/871 (838 existing plus 33 new controls),\nand the source/receipt audit passed 426/426. Registry UTF-16 and portfolio continuation defects were repaired by their\nauthors and independently replayed. Original raw failures and negative controls\nremain in the packet. Public distribution passed 7/7 with unchanged public bytes\nand successful generated/type checks. Owned check groups exited and descendants\nwere reaped.\n\nThis draft is stacked on accepted PR22, preserving main and RC1. G1 remains OPEN\nand G2–G7 unentered. Gateway trusted context for portfolio execution, current\nsource authority, real adapters and runtime qualification remain separate. The\nnative owner retains the approved 33-case RC1 sequence. No runtime, proxy,\nworker, frontend, database, provider, cloud image, security or infrastructure\nchange, paid model call, source connection, deployment or merge is included.\n\nRemaining decisions are documented without choosing semantics: the Clio-backed\nresearch-evidence producer differs from its accepted portfolio boundary, and\nmemory administrator self-approval conflicts with the wrapper's other-reviewer\nrequirement. Next implementable reads are SAM requirements/government landscape,\nthen opportunity detail/search/client context.\n\nSource and handoff: `docs/coordination/reports/CODEX-CAPABILITY-NEXT-20261012.md`;\npriorities: `docs/coordination/reports/CODEX-CAPABILITY-NEXT-PRIORITIES-20261012.md`.\nExact accepted source candidate: `c463f7f7e7580e26d07b31c5f4020eaa469d4f67`\n(tree `552b333286dc42d98602fc255b2e3ec75d834c4a`).\n\nPacket freeze: `703cfd31af3b62aad031b0f998520037cdd3134d` (tree `056b838224d96a99408e4d84f16da1a7e3ca0789`). The 218-member manifest\nSHA256 is `8d69bcda57c1da9a90bf17a01f696fca63178b43caedfc3b1b2abe06c3b0e0c2`. Original author and reviewer branches\nare published for exact-commit recovery.\n",
+    "title": "Add six reviewed private read contracts and canonical bindings",
+    "base": "task/meri-capability-successor-20261012",
+    "base_sha": "4cdabab9ae3ef5f44e2a1eb10ae1a8a6622fa640",
+    "head": "task/meri-capability-next-20261012",
+    "head_sha": "703cfd31af3b62aad031b0f998520037cdd3134d",
+    "head_repo_id": 1412315060,
+    "head_repo_full_name": "neo-capiro/meri-greenfield",
+    "merge_commit_sha": null,
+    "user": {
+      "login": "neo-capiro",
+      "name": "neo-capiro",
+      "email": null,
+      "avatar_url": "https://avatars.githubusercontent.com/u/276034435?v=4",
+      "id": 276034435
+    },
+    "requested_reviewers": null,
+    "requested_team_reviewers": null,
+    "diff": null,
+    "comments": null,
+    "created_at": "2026-10-12T16:01:11Z",
+    "updated_at": "2026-10-12T16:01:11Z",
+    "closed_at": null,
+    "merged_at": null,
+    "commits": 35,
+    "changed_files": 219,
+    "additions": 26484,
+    "deletions": 39,
+    "display_url": "https://github.com/neo-capiro/meri-greenfield/pull/24",
+    "display_title": "Add six reviewed private read contracts and canonical bindings"
+  },
+  "isError": false
+}

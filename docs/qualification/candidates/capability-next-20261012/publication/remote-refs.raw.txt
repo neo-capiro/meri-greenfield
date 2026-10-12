@@ -1,0 +1,12 @@
+8b123bea4c90794dc2d766814b6ddbdbfe0928bc	refs/heads/main
+2f06feccca731d6cd388612cd568185ecc29668f	refs/heads/release/meri-rc1-20261012
+bf430c5ffcd6417c804375f75430d7ed0a28841b	refs/heads/review/meri-business-next-20261012
+ccb58a5fb613b48866128771e55d78e2bcf8cceb	refs/heads/review/meri-capability-next-integration-20261012
+ac3f60962592f83f7226ac18c3c2ea94fc472071	refs/heads/review/meri-portfolio-next-20261012
+c245d4fc9a9d316ee4c5bdb45c08b05aee623242	refs/heads/review/meri-registry-next-20261012
+92d90eaee967d675724a3b8ce4079121e1961f9a	refs/heads/task/meri-business-development-20261012
+703cfd31af3b62aad031b0f998520037cdd3134d	refs/heads/task/meri-capability-next-20261012
+4cdabab9ae3ef5f44e2a1eb10ae1a8a6622fa640	refs/heads/task/meri-capability-successor-20261012
+088cfa10df8af518795a10590ce3e17c8b4fad8a	refs/heads/task/meri-research-portfolio-20261012
+b157217e69d36da1b53fa5944a0781a2f53a2f79	refs/tags/meri-rc1-20261012
+2f06feccca731d6cd388612cd568185ecc29668f	refs/tags/meri-rc1-20261012^{}
