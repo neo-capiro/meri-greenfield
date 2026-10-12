@@ -1,0 +1,58 @@
+✔ concrete boundary plus canonical owner returns exact pending result and one conservative charge (101.711914ms)
+✔ disabled/typed/code requests and borrowed executor injection refuse without I/O (5.014981ms)
+✔ no exposed kernel, legacy invocation, pool disposal or native callback selection (2.99952ms)
+✔ request/context/program snapshots cannot be rebound by caller mutation after submission (14.77105ms)
+✔ same delivery rejects changed immutable program without a second dispatch (13.823655ms)
+✔ changed admission manifest conflicts with same owned delivery identity (12.066203ms)
+✔ foreign program scope and changed trusted binding refuse before pool (3.847215ms)
+✔ credential mismatch and revoked first authority execute no native port (7.452976ms)
+✔ immutable maximum exceeding current capability is refused rather than rewritten (5.571948ms)
+✔ immutable deadline exceeding fresh authority is refused before reservation (5.808183ms)
+✖ shorter persisted allocation window at reservation leaves UNKNOWN without native dispatch (6.581085ms)
+✔ invalid admission receiptSha256 cannot dispatch or fake settlement (7.053325ms)
+✔ invalid admission manifestSha256 cannot dispatch or fake settlement (6.228696ms)
+✔ invalid admission imageDigest cannot dispatch or fake settlement (14.063836ms)
+✔ native port rejection retains exact invocation uncertainty without refund/retry (10.406577ms)
+✔ invalid produced hash retains uncertainty and never publishes (6.663209ms)
+✔ invalid produced output retains uncertainty and never publishes (6.047212ms)
+✔ invalid produced scope retains uncertainty and never publishes (5.921814ms)
+✔ invalid produced bytes retains uncertainty and never publishes (6.79018ms)
+✔ validated output snapshot survives borrowed receipt mutation during later authority await (9.314345ms)
+✔ authority refusal at check2 retains known immutable outputs and pending state (8.414923ms)
+✔ authority refusal at check3 retains known immutable outputs and pending state (10.131474ms)
+✔ lost prepare ACK keeps canonical identity and explicit accounting reconciliation (6.545963ms)
+✔ lost reserve ACK keeps canonical identity and explicit accounting reconciliation (13.535177ms)
+✔ lost marker ACK keeps canonical identity and explicit accounting reconciliation (14.061103ms)
+✔ lost settle ACK keeps canonical identity and explicit accounting reconciliation (23.773811ms)
+✔ admission expiry while completion ACK is parked prevents live settlement but permits explicit reconciliation (16.112827ms)
+✔ cancellation during reserve ACK executes no native port and preserves original UNKNOWN (29.573557ms)
+✔ metadata response overflow preserves produced outputs but no fake settlement/publication (12.623581ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3157.435861
+
+✖ failing tests:
+
+test at apps/artifacts/test/artifact-postgres-analysis.test.mjs:44:1
+✖ shorter persisted allocation window at reservation leaves UNKNOWN without native dispatch (6.581085ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /ANALYSIS_BUDGET_SETTLEMENT_UNKNOWN/. Input:
+  
+  'Error: ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY'
+  
+      at async TestContext.<anonymous> (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/test/artifact-postgres-analysis.test.mjs:44:195)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: ANALYSIS_IMMUTABLE_DEADLINE_EXCEEDS_AUTHORITY
+        at fail (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/postgres-analysis.mjs:6:39)
+        at Object.execute (file:///workspace/meri-artifact-analysis-budget-20261012/apps/artifacts/postgres-analysis.mjs:49:56),
+    expected: /ANALYSIS_BUDGET_SETTLEMENT_UNKNOWN/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
