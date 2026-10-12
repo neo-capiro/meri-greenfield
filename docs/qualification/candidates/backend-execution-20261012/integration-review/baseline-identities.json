@@ -1,0 +1,42 @@
+{
+  "base": "1f7bf122f6180534c8bd43ff93a4f102f1a4eaf8",
+  "baseTree": "ae45075e9af691889467d127cb296e34296dd339",
+  "catalogSha256": "39eb9e4fd4015f19ae975882374ef11ac14b7eb6df91b24884e563ab031d3a2a",
+  "originals": 139,
+  "selected": 96,
+  "deferred": 43,
+  "mapped": 70,
+  "operations": 71,
+  "sourceRoots": [
+    {
+      "path": "packages/contracts/retrieval-0.2/validate.mjs",
+      "bytes": 25928,
+      "sha256": "69c027888d0bd357c37b37de2248647b9d0fe576bd9f5a0278a16a2baa5846d6"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/catalog-validation.mjs",
+      "bytes": 42506,
+      "sha256": "cea81da2ab78b71d55387419cdaa64b0e988f8b086278651dda091f72c1f29c0"
+    },
+    {
+      "path": "packages/contracts/retrieval-0.2/operation-contracts.mjs",
+      "bytes": 5544,
+      "sha256": "f09b6b3a8b0186b3e2f05a17135ce40bac9ed728796493501ce7d8d4d647adfd"
+    },
+    {
+      "path": "packages/contracts/commands-0.2/validate.mjs",
+      "bytes": 2069,
+      "sha256": "6e9c32ed42d304bddeedd8b42851a895e52bc1767ecacc4b88e8001c75e22692"
+    },
+    {
+      "path": "packages/contracts/meri.schema.json",
+      "bytes": 50043,
+      "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b"
+    },
+    {
+      "path": "packages/contracts/validate.mjs",
+      "bytes": 3311,
+      "sha256": "c2449fd55300b31bdc1e829b5d918a531f1c4b2c675085a5b4707726ddd36d10"
+    }
+  ]
+}
