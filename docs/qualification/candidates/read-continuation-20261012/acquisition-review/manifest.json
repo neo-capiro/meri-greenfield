@@ -1,0 +1,172 @@
+{
+  "verdict": "ACCEPT_SOURCE",
+  "sourceCommit": "fbe72ed67b953a991f590ed40767e27c17ee114b",
+  "sourceTree": "a0d9132e46baf413f36441b2fe8d0c6c1797e43d",
+  "authorPacket": "bf212799ce1c601c361577aaf5af7ac48ec4db73",
+  "reviewBase": "ec960fa92ad01836a5df8f6220e67a88a657eab1",
+  "inventoryPin": "fd8765ec01d292013758606204f2c9d886cd31c1",
+  "projectionPolicyPin": "4be13b0b1ed0f2f3fa014040eedbb2fc2c27dace",
+  "runtimeAccepted": false,
+  "members": [
+    {
+      "path": "docs/coordination/reports/CODEX-READ-CONTINUATION-ACQUISITION-REVIEW-20261012.md",
+      "bytes": 8960,
+      "sha256": "93b2ace3af7386a1ec313a3b22c21444c8d21ed4f8651157e0e02d8d0ad51c77"
+    },
+    {
+      "path": "packages/contracts/test/retrieval-acquisition-personnel-independent.test.mjs",
+      "bytes": 16517,
+      "sha256": "716cbbc07442f4d223a3625aec96972acfeaf8cb237c2319bbc4d8df6d144b2c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/author-packet-verification.json",
+      "bytes": 4943,
+      "sha256": "269bea326348cc1e2cfca3207daa58cd2eec89568cd064e292608e63f7dbc290"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/capture-reaped.py",
+      "bytes": 3376,
+      "sha256": "bd0bf024d716c6cfde90904b09dbc2d50713f672769c6b15ec46e15429f308cc"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/criteria.md",
+      "bytes": 2786,
+      "sha256": "0db0fd97be1a1ea5fb0ef5d90cfb3f3bd9f773028dd03a2ad3861752e20d480b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/current-policy-criteria.md",
+      "bytes": 1856,
+      "sha256": "0fe945df3d9a89eaeb6d9ab288a24fa3300b7ece4fabfcad76f99e311004eb5c"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/current-reference-identities.json",
+      "bytes": 2431,
+      "sha256": "64c6eee0f82d88afa88c3d85508000394d6d94ec57e212f34e78de48b3e224a6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.json",
+      "bytes": 1338,
+      "sha256": "29cb7e124719d682a8d1e84bf1a366f190f0de179ef6a2d6fc3776650874624a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/expanded-independent.stdout.bin",
+      "bytes": 2526,
+      "sha256": "755a96e8053bec83b8732f0699a9e87573f353c40673af7cabecc7c3f165af45"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.json",
+      "bytes": 1355,
+      "sha256": "cd19e2fbcd4785b0dfd96c4a8e153ea7fa4c94506f9235c3629197afc9b351d7"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stderr.bin",
+      "bytes": 208,
+      "sha256": "76162e465989f3f070a9de8db711fbf358e53b74d09ce1bbdb57c727e4c4a16d"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/full-source.stdout.bin",
+      "bytes": 81718,
+      "sha256": "efed0e15204d2746181b774329e6b531cfbaaad3de9997507cfb5f4a6f13ad27"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.json",
+      "bytes": 1336,
+      "sha256": "b9b3164fe387215d7fe7b397d82a57f72bfdf34c7e9fe02b00d1fccb348b3199"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/initial-independent.stdout.bin",
+      "bytes": 3584,
+      "sha256": "fd177993fe97b115f918889d2f11f4e13307d2bd1e934bba662c6a59b64f6573"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.json",
+      "bytes": 1445,
+      "sha256": "2ceb6710976084f94bae5204372720f3827c8db8b3e7cba5b71da93028d1c7d8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.stderr.bin",
+      "bytes": 1040,
+      "sha256": "cbbd466f3bf458f7f516c133ea486c1aada38d325ec9a80b698c26da8c18237f"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/public-distribution.stdout.bin",
+      "bytes": 2045,
+      "sha256": "7e52cb345368dafc8dd1b6eb61930f8c70efa8bb692e0cf45601d2e7e455784a"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/reference-identities.json",
+      "bytes": 2902,
+      "sha256": "2cff4ab74eeb8cc5f9e75c9c771a225c8c38cbaebec493eb034e4ca53b35682b"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.json",
+      "bytes": 1338,
+      "sha256": "c13a4f661e72bfe5eab32d8b389aa7981362eed2aa28fda7342b07633cabc5f6"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/repaired-independent.stdout.bin",
+      "bytes": 2156,
+      "sha256": "c727e85a657d69b2305bad05a625e6d62566b1a43a0a0ee96659734ca3b5eadb"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.json",
+      "bytes": 1327,
+      "sha256": "47013b11a06b1acf64b2174538171870a50ba0505bd39841016970b0f7f2d7e8"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-audit.stdout.bin",
+      "bytes": 65236,
+      "sha256": "75c2d61bc76c99b06a2af84620722fcd3ec42506199ee35548b38fcb901fb4fd"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/source-preservation.json",
+      "bytes": 85066,
+      "sha256": "6b8ce93c9bb42572a2c7f6ff877c4a4b42af096855025e1dfb235255921839c2"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/supplemental-controller-reference.json",
+      "bytes": 754,
+      "sha256": "a963828bdb2530375b23ec944a29bcf70412dae9ee931718ffbbb6f369a451b9"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/verify-source.py",
+      "bytes": 4344,
+      "sha256": "753f72006bfe53e77a55564825d92671fca8587a85af3bb45cde8b47a49e5e00"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.json",
+      "bytes": 1556,
+      "sha256": "1436b696130d6cee4880333b31a450f8a6b50cbfce8dde25db5135753fc82d86"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/qualification/candidates/read-continuation-20261012/acquisition-review/whitespace.stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
