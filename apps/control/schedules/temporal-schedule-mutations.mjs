@@ -37,6 +37,7 @@ export async function mutateTemporalSchedule({scheduleClient,workflowClient,bind
       const h=exactHandle(scheduleClient,id,lifetime),update=sdkMethod(h,'update');lifetime.check();
       return update(current=>{
         lifetime.check();
+        if(!current||types.isProxy(current)||Object.getPrototypeOf(current)!==Object.prototype)denySchedule('SCHEDULE_HANDLE');
         const d=current&&Object.getOwnPropertyDescriptor(current,'scheduleId');
         if(!d||!Object.hasOwn(d,'value')||d.value!==id)denySchedule('SCHEDULE_HANDLE');
         const {scheduleId,...options}=scheduleSdkOptions(i);delete options.state.triggerImmediately;
